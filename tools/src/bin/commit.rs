@@ -3,7 +3,10 @@
 //! environment-side producer: `DIR/statements.txt` and `DIR/<name>.env.txt`), exports the statements with
 //! `leanexport` to `DIR/statements.ndjson`, computes the export-side text `DIR/<name>.export.txt`, checks the two
 //! agree byte for byte, and writes `DIR/commitments.txt` (`<sha256>  <name>` lines).
-//! Exit 0 on agreement, 3 when there are no statements yet (step skipped), 1 on any failure.
+//! Then enforces `stamps/pins.txt`: every pinned statement's commitment must equal the `commitment` line of its
+//! pinned stamp manifest, and every file under `OscInt/Statements/` must have the hash that manifest records.
+//! Exit 0 when all statements are pinned and match, 3 when there are no statements or some are not yet pinned
+//! (step incomplete), 1 on any failure.
 
 use oscint_tools::{canon, export::Export, sys};
 use std::fs;
@@ -19,7 +22,17 @@ fn main() {
     }
     let child = std::thread::Builder::new().stack_size(1 << 30).spawn(move || run(&a[1])).unwrap();
     match child.join().unwrap() {
-        Ok(true) => {}
+        Ok(true) => match enforce_pins(Path::new(".")) {
+            Ok(0) => {}
+            Ok(n) => {
+                println!("commit: INCOMPLETE: {n} statement(s) not yet pinned to a stamp (stamps/pins.txt)");
+                std::process::exit(3);
+            }
+            Err(e) => {
+                println!("commit: FAIL: {e}");
+                std::process::exit(1);
+            }
+        },
         Ok(false) => {
             println!("commit: SKIPPED: no statement constants under OscInt.Statements yet");
             std::process::exit(3);
@@ -73,4 +86,50 @@ fn run(dir: &str) -> Result<bool, String> {
     }
     fs::write(dir.join("commitments.txt"), table).map_err(|e| e.to_string())?;
     Ok(true)
+}
+
+/// Returns the number of computed statements without a pin; fails on any mismatch with a pinned stamp.
+fn enforce_pins(root: &Path) -> Result<usize, String> {
+    let computed = fs::read_to_string(root.join("build/commit/commitments.txt")).map_err(|e| e.to_string())?;
+    let pins = fs::read_to_string(root.join("stamps/pins.txt")).unwrap_or_default();
+    let pin_of = |name: &str| {
+        pins.lines()
+            .filter(|l| !l.starts_with('#'))
+            .find_map(|l| l.split_once(' ').filter(|(n, _)| *n == name).map(|(_, d)| d.trim().to_string()))
+    };
+    let mut unpinned = 0;
+    let mut manifests = Vec::new();
+    for line in computed.lines() {
+        let Some((hash, name)) = line.split_once("  ") else { continue };
+        let Some(dir) = pin_of(name) else {
+            println!("commit: {name} is not pinned to a stamp yet");
+            unpinned += 1;
+            continue;
+        };
+        let m = fs::read_to_string(root.join(&dir).join("manifest.txt")).map_err(|e| format!("{dir}: {e}"))?;
+        let want = format!("commitment {hash}  {name}");
+        if !m.lines().any(|l| l == want) {
+            return Err(format!("{name}: commitment {hash} differs from the one stamped in {dir}"));
+        }
+        println!("commit: {name} matches its stamp {dir}");
+        if !manifests.contains(&dir) {
+            manifests.push(dir);
+        }
+    }
+    let stmt_dir = root.join("OscInt/Statements");
+    let mut files: Vec<_> = fs::read_dir(&stmt_dir).map_err(|e| e.to_string())?.flatten().map(|e| e.path()).collect();
+    files.sort();
+    for p in files {
+        let rel = format!("OscInt/Statements/{}", p.file_name().unwrap().to_string_lossy());
+        let h = sys::sha256_file(&p)?;
+        let stamped = manifests.iter().any(|dir| {
+            fs::read_to_string(root.join(dir).join("manifest.txt"))
+                .map(|m| m.lines().any(|l| l == format!("{h}  {rel}")))
+                .unwrap_or(false)
+        });
+        if !stamped && unpinned == 0 {
+            return Err(format!("{rel} (sha256 {h}) is not the file recorded in its pinned stamp"));
+        }
+    }
+    Ok(unpinned)
 }

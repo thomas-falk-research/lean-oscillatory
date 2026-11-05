@@ -3,8 +3,8 @@ import OscInt
 /-!
 Statement-type check: for each final theorem, its type must be syntactically (`Expr` equality, no unfolding) the
 statement constant reviewed and committed in `OscInt/Statements/`. Defeq-but-different types fail.
-The list of pairs grows with the milestones; `tools/src/bin/guard.rs` checks every `OscInt.<X>` theorem named
-in `docs/STATUS.md` as proved appears here.
+The list of pairs grows with the milestones; `tools/src/bin/guard.rs` checks that every theorem named in
+`comparator.json` appears here.
 -/
 
 open Lean Elab Command

@@ -6,6 +6,7 @@ B := build
 SKIP = mkdir -p $(B)/skipped && touch $(B)/skipped/$@
 UNSKIP = mkdir -p $(B)/skipped && rm -f $(B)/skipped/$@
 LATEST_STAMP = $(lastword $(sort $(wildcard stamps/2*/)))
+CHALLENGE_STAMP = $(shell awk '$$1=="challenge"{print $$2}' stamps/pins.txt 2>/dev/null)
 
 .PHONY: challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics
 
@@ -35,7 +36,7 @@ commit: lean
 	$(UNSKIP); $(LAKE) build oscint-commit-env && { $(T)/commit $(B)/commit || { [ $$? -eq 3 ] && $(SKIP); }; }
 
 comparator: lean
-	$(UNSKIP); if [ -f comparator.json ]; then $(T)/challenge check . $(LATEST_STAMP) || { [ $$? -eq 3 ] && $(SKIP); }; else echo "comparator: SKIPPED: no frozen challenge yet"; $(SKIP); fi
+	$(UNSKIP); if [ -f comparator.json ]; then $(T)/challenge check . $(CHALLENGE_STAMP) || { [ $$? -eq 3 ] && $(SKIP); }; else echo "comparator: SKIPPED: no frozen challenge yet"; $(SKIP); fi
 
 challenge-export: tools
 	$(T)/challenge export .

@@ -1,44 +1,43 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first.
+For a reader who saw nothing. Read `docs/lessons.md` first (9 entries).
 
-## What exists (end of M0, 2026-11-05)
-- A Lake project (`lakefile.toml`): library `OscInt` (one skeleton theorem, `OscInt.skeleton_two_mul`), empty
-  `Blueprint` and `Challenge` libraries, and the executable `oscint-commit-env` (`tools/lean/CommitEnv.lean`).
-- Checks: `Axioms.lean` (enumerates every theorem of the `OscInt` modules from the environment and prints its
-  axioms), `StatementTypes.lean` (the `#assert_type_is` checker; no final theorems yet), `MathlibNames.lean`.
-- Rust tools in `tools/` (std only, `cargo test` covers each): `guard`, `audit`, `replay`, `commit`, `challenge`,
-  `stamp`, `toolchain`, `verify_all`. Formats: `docs/commitment-format.md`.
-- CI (`.github/workflows/ci.yml`): `verify-all` on every push; manual job `mathlib-from-source`.
-- Docs: toolchain and Mathlib-gap tables (`docs/toolchain.md`), prior-art gate (`docs/prior_art.md`).
-- `numerics/`: f64 probes of S1's constants and S2–S4's rates and D4 limit (`make numerics`, ~5 min; not in CI;
-  results in `numerics/results-2026-11-05.txt`). Tooling for catching statement errors, not evidence.
+## What exists (end of M1, 2026-11-05)
+- Lake project, Lean v4.35.0, Mathlib `56a0058` (tag v4.35.0). Library `OscInt`:
+  - `OscInt/Statements/VanDerCorput.lean`: S1 statements `VdC1Statement`, `VdC2Statement`, `VdC3Statement`
+    (mathematics in `docs/statements.md`), pins, sanity theorems.
+  - `OscInt/VanDerCorput/`: proof parts `Split` (P0), `One` (P1), `Amplitude` (P2), `Higher` (P3, P4), `Assembly`
+    (lead), `Final` (`OscInt.vanDerCorput_one`, `_two`, `_three`). Route ported from J. Roos and M. Praveen,
+    `roos-j/lean-oscillatory` (Mathlib PR #39406), after Stein VIII §1.2.
+  - `Blueprint/VanDerCorput.lean`: the part propositions; `Challenge/VanDerCorput.lean`: `sorry` theorems for the
+    comparator (not imported, not audited).
+- Checks: `Axioms.lean`, `StatementTypes.lean`, `MathlibNames.lean`; Rust tools in `tools/` (guard, audit, replay,
+  commit, challenge, stamp, toolchain, verify_all); `numerics/` (f64 probes; tooling only).
+- Freezing: `stamps/20261105T203058Z-7516eb518dce` (manifest, three RFC 3161 tokens, two pending OpenTimestamps
+  proofs); `stamps/pins.txt` pins each statement and the challenge to it.
+- Reviews in `review/` (pre-proof, post-proof, adversarial; prompts in `review/prompts/`, including the agent briefs).
 
 ## What is verified, by what
-- Toolchain: `make verify-toolchain` (archive and installer hashes; archive ↔ installed toolchain `diff -r`).
-- Skeleton theorem: axiom audit 1 of 1; replay by seven checker runs (`build/replay/summary.txt`; CI run
-  https://github.com/thomas-falk-research/lean-oscillatory/actions/runs/42099595128, green, INCOMPLETE as expected).
-- Gate self-tests, run by hand on 2026-11-05 (`docs/lessons.md` 3, 5, 6): each rejected by the step named there.
-- Not yet exercised on a real statement: `commit` (validated on a probe statement only), `challenge` (never run;
-  its list of constants required by `lake comparator` must be checked against comparator's `Exporting #[…]` line on
-  first use), `stamp` (authorities and roots validated with a test digest; no manifest stamped yet).
+- S1: `docs/STATUS.md` row and paragraph; full record `docs/replay/2026-11-05-M1-verify-all.txt`.
+- Each push: CI `verify-all` (read the result after every push: lessons 9).
+- Not yet run: the manual `mathlib-from-source` CI job (Mathlib binary cache still trusted); OpenTimestamps proofs
+  not yet upgraded (pending until Bitcoin confirmation; upgrade with any OpenTimestamps client and commit).
 
-## Decision pending (owner)
-The prior-art gate found S1 anticipated: roos-j/lean-oscillatory proves the 1D van der Corput lemma with the
-brief's constants and amplitude form (Lean v4.32.0-rc1, Apache-2.0 header), submitted as Mathlib PR #39406 (open).
-Options for M1: (a) port that proof to v4.35.0 under our statement encoding, crediting it; (b) state S1 here and
-depend on the PR once merged; (c) skip S1's proof and treat it as a named, cited hypothesis for S3/S4. Also: the
-repository is named `lean-oscillatory` (the brief says `oscint-lean`), which collides with roos-j's repository name.
-
-## Next (after the decision)
-M1 per the brief's process: `docs/statements.md` entry, `OscInt/Statements/S1.lean` with sanity theorem, numerics
-probes added to `numerics/` for its exact hypotheses, `make commit`, commit, `make stamp`, blind statement review into `review/`, then proofs.
+## Next
+- M2: infrastructure lemmas (2D integration by parts via Fubini; smooth dyadic partitions of unity from
+  `ContDiffBump`; multivariate Taylor with parametric remainder; IFT with a metric-space parameter via
+  `ContractingWith.fixedPoint`; finite chart covers; GL₂(ℝ)-equivalence of binary cubics with negative
+  discriminant), each upstream-ready and listed in `docs/upstream.md`. Statement-first per lemma group, as for S1.
+- After M2: calibration round (four planted statement errors, sealed key, Clopper–Pearson interval;
+  `docs/calibration.md`), and Mathlib PR drafts (do not open without the owner's go).
+- Open items: fix the S1 header comment wording at the next re-stamp (review NIT); numerics could stress the
+  general hypotheses (piecewise-linear φ′ is excluded by design; unbounded integrable ψ′ is allowed and untested).
 
 ## Commands
 ```bash
 lake exe cache get
 make verify-all
+make numerics
 make stamp
 ```
-`make verify-all` exits 0 on PASS, non-zero otherwise; CI accepts INCOMPLETE (steps with nothing to check) with a
-warning.
+`make verify-all` prints PASS / FAIL / INCOMPLETE; CI accepts INCOMPLETE with a warning.

@@ -47,3 +47,10 @@ Modelling choices (all explicit in the Lean header):
 - The linear term p x in S1.2, S1.3 is the brief's "invariant under adding a linear term": the hypotheses are on φ
   alone and p is arbitrary. S1.1 has no linear term (it would change the hypothesis on φ′).
 - Constants are explicit numbers; no existential constant appears.
+
+Clarification added after the S1 stamp (2026-11-05, from the adversarial review; the stamped text above is
+unchanged): "weaker than Stein" means the *theorem* is weaker, because its hypotheses are stronger. Relative to Stein,
+S1.1 excludes phases whose φ′ is monotone but not differentiable on (a, b) (e.g. piecewise linear φ′) or unbounded at
+an endpoint; S1.2 and S1.3 exclude phases whose φ′ (and, for S1.3, φ″) is not continuous up to the endpoints. The
+endpoint cases are recovered by applying the statement on [a, d] with d < b and letting d → b; the non-differentiable
+case is not.

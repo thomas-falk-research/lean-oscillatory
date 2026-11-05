@@ -84,8 +84,8 @@ fn check(root: &Path, stamp: &Path) -> Result<bool, String> {
     let (ok, o, e) = run(Command::new("lake").current_dir(root)
         .args(["comparator", "--challenge-from-export"]).arg(&out).arg("--paranoid"))?;
     print!("{o}{e}");
-    if !ok || o.to_lowercase().contains("panic") {
-        return Err("lake comparator rejected the solution".into());
+    if !ok || o.to_lowercase().contains("panic") || !o.contains("Your solution is okay!") {
+        return Err("lake comparator rejected the solution (no acceptance line)".into());
     }
     Ok(true)
 }

@@ -19,3 +19,13 @@ Numerics (`make numerics`, output `numerics/results-2026-11-05.txt`): none of th
 families (worst ratio 0.53); m|I| (S2, indefinite), m^{5/6}|I| (S3, fold) and t^{2/3}|I| (S4) are flat in m, and the
 D4 limit for x³+y³ matches Γ(1/3)²/(√3·27^{1/6})·A(0) to 3·10⁻⁶ at t = 3000; for x²y+y³ (Disc −4) the 2D quadrature
 reaches 0.441 at t = 300 against the predicted 0.445 and is still increasing.
+
+## 2026-11-05 — M1 (S1, van der Corput)
+Owner chose to port roos-j/lean-oscillatory. Statements `VdC{1,2,3}Statement` written with `docs/statements.md`,
+sanity theorems, challenge copy; commitments agree between producers; stamped (`stamps/20261105T203058Z-7516eb518dce`,
+RFC 3161 ×3, OpenTimestamps ×2). Blind pre-proof review FAITHFUL ×3. Blueprint P0–P4; four proof agents in parallel
+(P2 in ~1.5 min, P3–P4 ~2 min, P0 ~2 min, P1 ~6 min of agent time; 84 + 137 + 104 + 234 lines) plus the lead's
+assembly (55 lines) and final file. Post-proof review FAITHFUL ×3 (scope full). Adversarial review: 2 MAJOR (no
+recorded comparator/commitment verdict; stamped commitments not enforced, newest stamp used) fixed by
+`stamps/pins.txt` enforcement and a committed `verify-all` record; MINORs fixed or answered (`review/`). CI had been
+red since the stamp (lessons 9), fixed.

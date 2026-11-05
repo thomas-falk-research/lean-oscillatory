@@ -14,7 +14,7 @@ use std::path::{Path, PathBuf};
 pub const FORBIDDEN: &[&str] = &[
     "sorry", "admit", "native_decide", "native", "axiom", "opaque", "unsafe", "implemented_by", "extern",
     "macro_rules", "macro", "notation", "infix", "infixl", "infixr", "prefix", "postfix", "syntax", "elab",
-    "run_cmd", "#eval", "initialize", "debug.skipKernelTC",
+    "run_cmd", "run_meta", "run_elab", "#eval", "initialize", "debug.skipKernelTC",
 ];
 
 fn lean_files(root: &Path, out: &mut Vec<PathBuf>) {
@@ -63,7 +63,22 @@ pub fn scan(root: &Path) -> Report {
             theorems += find_word(&s, "theorem").len() + find_word(&s, "lemma").len();
         }
     }
+    violations.extend(check_statement_types(root));
     Report { violations, theorems, files: files.len() }
+}
+
+/// Every theorem named in `comparator.json` must have an `#assert_type_is` line in `StatementTypes.lean`.
+pub fn check_statement_types(root: &Path) -> Vec<String> {
+    let Ok(cfg) = fs::read_to_string(root.join("comparator.json")) else { return Vec::new() };
+    let st = fs::read_to_string(root.join("StatementTypes.lean")).unwrap_or_default();
+    let Ok(j) = oscint_tools::json::parse(&cfg) else { return vec!["comparator.json: not valid JSON".into()] };
+    let names = j.get("theorem_names").and_then(|v| v.as_arr()).map(|a| a.to_vec()).unwrap_or_default();
+    names
+        .iter()
+        .filter_map(|n| n.as_str())
+        .filter(|n| !st.lines().any(|l| l.split_whitespace().take(2).eq(["#assert_type_is", n])))
+        .map(|n| format!("StatementTypes.lean: no `#assert_type_is {n} …` for a theorem named in comparator.json"))
+        .collect()
 }
 
 pub fn check_source(rel: &str, src: &str) -> Vec<String> {
@@ -81,6 +96,9 @@ pub fn check_source(rel: &str, src: &str) -> Vec<String> {
         }
         if toks.first() == Some(&"import") && toks.iter().skip(1).any(|t| *t == "Challenge" || t.starts_with("Challenge.")) {
             v.push(format!("{rel}:{}: imports the Challenge library", ln + 1));
+        }
+        if toks.first() == Some(&"import") && toks.iter().skip(1).any(|t| *t == "Lean" || t.starts_with("Lean.")) {
+            v.push(format!("{rel}:{}: imports Lean's metaprogramming library", ln + 1));
         }
     }
     if rel.starts_with("OscInt/Statements/") {
@@ -144,6 +162,8 @@ mod tests {
             "notation \"X\" => 1",
             "elab \"x\" : term => pure default",
             "import Challenge.S1",
+            "import Lean.Elab.Command",
+            "run_meta pure ()",
             "@[implemented_by f] def g := 1",
         ] {
             assert!(!check_source("OscInt/X.lean", bad).is_empty(), "missed: {bad}");

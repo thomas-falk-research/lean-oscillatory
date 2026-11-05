@@ -9,12 +9,13 @@ Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801a
 
 | Statement | Status |
 |---|---|
-| S1 1D van der Corput | not started: anticipated by roos-j/lean-oscillatory (Mathlib PR #39406); see `docs/prior_art.md` |
+| S1 1D van der Corput | machine-checked as stated (`OscInt.vanDerCorput_one/two/three`); proof ported from roos-j/lean-oscillatory (Roos–Praveen, Mathlib PR #39406), see `docs/STATUS.md` |
 | S2 stationary phase | not started |
 | S3 fold | not started |
 | S4 D4 | not started |
 
-Nothing in this repository is yet a machine-checked result about oscillatory integrals. Details: `docs/STATUS.md`.
+"As stated" means the hypotheses in `docs/statements.md` (derivatives continuous up to the endpoints, as in the
+source's C^k assumption). Details and evidence: `docs/STATUS.md`.
 
 ## Re-check
 
@@ -44,7 +45,8 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 ## Layout
 
 `OscInt/` library; `OscInt/Statements/` frozen statements; `Blueprint/` intermediate propositions; `Challenge/`
-frozen `sorry` copies for `lake comparator` (never imported); `Axioms.lean`, `StatementTypes.lean`,
+`sorry` theorems over the statement module for `lake comparator` (never imported; the challenge is frozen by the
+stamped export hash and the pinned statement-file hashes, `stamps/pins.txt`); `Axioms.lean`, `StatementTypes.lean`,
 `MathlibNames.lean` checks; `tools/` Rust binaries (std only) and the Lean commitment producer; `docs/`;
 `review/` referee reports; `stamps/` timestamp records.
 
