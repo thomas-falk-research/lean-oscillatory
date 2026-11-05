@@ -1,0 +1,131 @@
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.Analysis.Calculus.Deriv.Add
+import Mathlib.Analysis.Calculus.Deriv.Pow
+import Mathlib.Analysis.Calculus.Deriv.Mul
+
+/-!
+# S1: the one-dimensional van der Corput lemma with amplitude (statements only)
+
+Review copy V4.
+
+Mathematics: `docs/statements.md`, S1. Forms and constants follow J. Roos and M. Praveen,
+`roos-j/lean-oscillatory` (commit `cf564e0`, Mathlib PR #39406), after Stein, *Harmonic Analysis*, VIII §1.2.
+
+Symbols.
+* `HasDerivOn f f' a b` — "f has derivative f′ on [a, b]": `f` continuous on `Set.Icc a b` and
+  `HasDerivAt f (f' x) x` for every `x ∈ Set.Ioo a b`. The values `f' a`, `f' b` are never used.
+* `AmplitudeOn ψ ψ' a b` — `ψ : ℝ → ℂ` has derivative `ψ'` on `[a, b]` in the same sense and
+  `IntervalIntegrable ψ' volume a b`.
+* `oscInt φ ψ a b = ∫ x in a..b, exp (φ x * I) * ψ x` (Lean's oriented interval integral; every statement
+  assumes `a ≤ b`, so it is the Lebesgue integral over `[a, b]`).
+* `ampNorm ψ ψ' a b = ‖ψ b‖ + ∫ x in a..b, ‖ψ' x‖`.
+* The linear term: `oscInt (fun x => φ x + p * x) ψ a b`, `p : ℝ` universally quantified.
+
+Modelling choices.
+* Division and powers: `3 / ν`, `8 / √μ`, `μ ^ (-(1 : ℝ) / 3)` (`Real.rpow`) appear only under `0 < ν`,
+  `0 < μ`, so Lean's conventions `x / 0 = 0`, `√(negative) = 0` are never reached.
+* `IntervalIntegrable ψ'` is required: without it `∫ ‖ψ'‖` would be `0` by Lean's convention and the bound false.
+* Lower bounds are on the open interval `(a, b)`; derivatives of order < k are continuous on `[a, b]`.
+* S1.1 assumes `φ'` differentiable on `(a, b)` (as the source assumes `φ ∈ C²`); nothing about `φ''` beyond
+  existence. "Monotone" is `MonotoneOn ∨ AntitoneOn` on `(a, b)`.
+* Quantifier order: every constant is a numeral; all variables are universally quantified up front.
+-/
+
+namespace OscInt.Statements
+
+open Set MeasureTheory Complex
+
+/-- `f` is continuous on `[a, b]` and has derivative `f' x` at every `x ∈ (a, b)`. -/
+def HasDerivOn (f f' : ℝ → ℝ) (a b : ℝ) : Prop :=
+  ContinuousOn f (Icc a b) ∧ ∀ x ∈ Ioo a b, HasDerivAt f (f' x) x
+
+/-- The amplitude hypothesis: `ψ` continuous on `[a, b]`, derivative `ψ'` on `(a, b)`, `ψ'` integrable. -/
+def AmplitudeOn (ψ ψ' : ℝ → ℂ) (a b : ℝ) : Prop :=
+  ContinuousOn ψ (Icc a b) ∧ (∀ x ∈ Ioo a b, HasDerivAt ψ (ψ' x) x)
+
+/-- `∫_a^b e^{iφ(x)} ψ(x) dx`. -/
+noncomputable def oscInt (φ : ℝ → ℝ) (ψ : ℝ → ℂ) (a b : ℝ) : ℂ :=
+  ∫ x in a..b, Complex.exp (↑(φ x) * Complex.I) * ψ x
+
+/-- `|ψ(b)| + ∫_a^b |ψ'(x)| dx`. -/
+noncomputable def ampNorm (ψ ψ' : ℝ → ℂ) (a b : ℝ) : ℝ :=
+  ‖ψ b‖ + ∫ x in a..b, ‖ψ' x‖
+
+/-- **S1.1** First-derivative van der Corput bound with amplitude, constant 3. -/
+def VdC1Statement : Prop :=
+  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b ν : ℝ), a ≤ b → 0 < ν →
+    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b →
+    (MonotoneOn φ' (Ioo a b) ∨ AntitoneOn φ' (Ioo a b)) →
+    (∀ x ∈ Ioo a b, ν ≤ |φ' x|) →
+    AmplitudeOn ψ ψ' a b →
+    ‖oscInt φ ψ a b‖ ≤ 3 / ν * ampNorm ψ ψ' a b
+
+theorem statement_pin_VdC1 : VdC1Statement = VdC1Statement := rfl
+
+/-- **S1.2** Second-derivative van der Corput bound with amplitude, constant 8, uniform in a linear term. -/
+def VdC2Statement : Prop :=
+  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →
+    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b →
+    (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) →
+    AmplitudeOn ψ ψ' a b →
+    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ 8 / √μ * ampNorm ψ ψ' a b
+
+theorem statement_pin_VdC2 : VdC2Statement = VdC2Statement := rfl
+
+/-- **S1.3** Third-derivative van der Corput bound with amplitude, constant 18, uniform in a linear term. -/
+def VdC3Statement : Prop :=
+  ∀ (φ φ' φ'' φ''' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →
+    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b → HasDerivOn φ'' φ''' a b →
+    (∀ x ∈ Ioo a b, μ ≤ |φ''' x|) →
+    AmplitudeOn ψ ψ' a b →
+    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ 18 * μ ^ (-(1 : ℝ) / 3) * ampNorm ψ ψ' a b
+
+theorem statement_pin_VdC3 : VdC3Statement = VdC3Statement := rfl
+
+/-! ## Sanity: the hypotheses are satisfiable by non-degenerate data, and `ψ ≡ 1` gives the plain form. -/
+
+theorem sanity_amplitude_one (a b : ℝ) :
+    AmplitudeOn (fun _ => 1) (fun _ => 0) a b ∧ ampNorm (fun _ => 1) (fun _ => 0) a b = 1 := by
+  refine ⟨⟨continuousOn_const, fun x _ => hasDerivAt_const x 1⟩, ?_⟩
+  simp [ampNorm]
+
+/-- `φ(x) = x³/6 + x²/2 + x` on `[0, 1]`: `φ' = x²/2 + x + 1` is monotone with `φ' ≥ 1`, `φ'' = x + 1 ≥ 1`,
+`φ''' = 1`; with `ψ = 1` all three hypothesis sets hold (S1.1 with ν = 1, S1.2 and S1.3 with μ = 1). -/
+theorem sanity_hypotheses_satisfiable :
+    let φ : ℝ → ℝ := fun x => x ^ 3 / 6 + x ^ 2 / 2 + x
+    let φ' : ℝ → ℝ := fun x => x ^ 2 / 2 + x + 1
+    let φ'' : ℝ → ℝ := fun x => x + 1
+    let φ''' : ℝ → ℝ := fun _ => 1
+    HasDerivOn φ φ' 0 1 ∧ HasDerivOn φ' φ'' 0 1 ∧ HasDerivOn φ'' φ''' 0 1 ∧
+      MonotoneOn φ' (Ioo 0 1) ∧ (∀ x ∈ Ioo (0 : ℝ) 1, 1 ≤ |φ' x|) ∧
+      (∀ x ∈ Ioo (0 : ℝ) 1, 1 ≤ |φ'' x|) ∧ (∀ x ∈ Ioo (0 : ℝ) 1, 1 ≤ |φ''' x|) ∧
+      AmplitudeOn (fun _ => 1) (fun _ => 0) 0 1 := by
+  intro φ φ' φ'' φ'''
+  have d1 : ∀ x : ℝ, HasDerivAt φ (φ' x) x := fun x =>
+    HasDerivAt.congr_deriv ((((hasDerivAt_pow 3 x).div_const 6).fun_add
+      ((hasDerivAt_pow 2 x).div_const 2)).fun_add (hasDerivAt_id' x)) (by norm_num [φ']; ring)
+  have d2 : ∀ x : ℝ, HasDerivAt φ' (φ'' x) x := fun x =>
+    HasDerivAt.congr_deriv ((((hasDerivAt_pow 2 x).div_const 2).fun_add (hasDerivAt_id' x)).add_const 1)
+      (by norm_num [φ''])
+  have d3 : ∀ x : ℝ, HasDerivAt φ'' (φ''' x) x := fun x => (hasDerivAt_id' x).add_const 1
+  refine ⟨⟨fun x _ => (d1 x).continuousAt.continuousWithinAt, fun x _ => d1 x⟩,
+    ⟨fun x _ => (d2 x).continuousAt.continuousWithinAt, fun x _ => d2 x⟩,
+    ⟨fun x _ => (d3 x).continuousAt.continuousWithinAt, fun x _ => d3 x⟩, ?_, ?_, ?_, ?_,
+    (sanity_amplitude_one 0 1).1⟩
+  · intro x hx y hy hxy
+    simp only [φ']
+    nlinarith [hx.1, hy.1]
+  · intro x hx
+    simp only [φ']
+    rw [abs_of_pos (by nlinarith [hx.1])]
+    nlinarith [hx.1]
+  · intro x hx
+    simp only [φ'']
+    rw [abs_of_pos (by linarith [hx.1])]
+    linarith [hx.1]
+  · intro x _
+    simp [φ''']
+
+end OscInt.Statements

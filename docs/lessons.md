@@ -62,3 +62,10 @@ judged against the newest stamp, so an edited statement plus a fresh stamp would
 freeze is a pin that a check enforces, not a file that exists. Check: `stamps/pins.txt`, enforced by `make commit`
 (commitments and statement-file hashes against the pinned stamp) and by `make comparator` (pinned challenge stamp);
 negative control recorded in `review/2026-11-05-S1-adversarial.md`.
+
+## 11. Calibration round 1: the referee caught 4/4 planted errors, and two controls passed (2026-11-05)
+Why it mattered: it is the first evidence that a FAITHFUL verdict means something (interval [0.40, 1], small n).
+The reports also showed that a sanity theorem restating a hypothesis in its own words tests the restatement, not
+the statement. Rule: hypotheses are bundled as named `def`s used by both the statement and its sanity theorem.
+Check: none automatic yet (a lexical check that each sanity theorem mentions the statement's hypothesis defs is
+possible once S2's statements exist).

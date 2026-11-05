@@ -8,7 +8,7 @@ planted statement error, and how often it raises a false alarm on an unmodified 
 
 | Round | Date | Statements | Planted (kinds) | Detected | Rate, 95% Clopper–Pearson | Controls | False alarms |
 |---|---|---|---|---|---|---|---|
-| 1 | 2026-11-05 | S1 (van der Corput) | 4 (quantifier, hypothesis, definition, weakened conclusion) | pending | pending | 2 | pending |
+| 1 | 2026-11-05 | S1 (van der Corput) | 4 (quantifier, hypothesis, definition, weakened conclusion) | 4 | 1.00, [0.40, 1.00] | 2 | 0 (0/2, upper bound 0.84) |
 
 ## Round 1 protocol (pre-registered 2026-11-05, before any referee ran)
 
@@ -47,3 +47,28 @@ Variant SHA-256:
 Limitations stated in advance: n = 4 planted and 2 controls is small (4/4 gives a lower confidence bound of 0.40);
 one planted error per kind; the planted errors were chosen by the lead, who also scores; blindness is by
 instruction only.
+
+## Round 1 result (scored 2026-11-05 by the pre-registered rule)
+
+Reveal: `review/calibration/round1/key.json`, SHA-256 `993aba079a985ef5064ed94d3efe03b779c0add0361636274b643f864fc46d5d`,
+equal to the sealed value above. Variants as `review/calibration/round1/V*-Statements.lean.txt` (hashes as listed);
+reports verbatim as `review/calibration/round1/V*-report.md`.
+
+| Variant | Kind | Report verdicts (VdC1 / VdC2 / VdC3) | Planted clause identified | Score |
+|---|---|---|---|---|
+| V1 | definition (`ampNorm`: `‖∫ψ'‖`) | UNFAITHFUL ×3, BLOCKER | yes, quoted; `¬ VdC1Statement` proved in Lean | DETECTED |
+| V2 | control | FAITHFUL ×3, NITs only | — | no false alarm |
+| V3 | weakened conclusion (VdC1 `+ ∫‖ψ‖`) | UNFAITHFUL / FAITHFUL / FAITHFUL, BLOCKER | yes, quoted | DETECTED |
+| V4 | hypothesis (integrability of ψ′ dropped) | UNFAITHFUL ×3, BLOCKER | yes, quoted, counterexample | DETECTED |
+| V5 | quantifier (VdC3 `∃ x ∈ Ioo`) | FAITHFUL / FAITHFUL / UNFAITHFUL, BLOCKER | yes, quoted, counterexample | DETECTED |
+| V6 | control | FAITHFUL ×3, NITs only | — | no false alarm |
+
+Detection 4/4, 95% Clopper–Pearson [0.398, 1] (lower bound 0.025^{1/4}); false alarms 0/2, 95% upper bound 0.842
+(1 − 0.025^{1/2}). Reading: on single, isolated statement errors of these four kinds in a ~100-line file, the
+referee caught every one, with the mechanism stated; n is too small to bound the miss rate below 60%. Not tested:
+several simultaneous errors, errors in long statements, errors whose discovery needs Mathlib internals, and errors
+planted by someone other than the scorer.
+
+Process findings from the reports, adopted from S2 on: sanity theorems state hypotheses through the same named
+definitions as the statement (V5 noted the S1 sanity theorem restates the ∀ form); sanity theorems that only
+witness satisfiability cannot catch a false bound (V1, V4), so statements also get a "bite" check where it is cheap.
