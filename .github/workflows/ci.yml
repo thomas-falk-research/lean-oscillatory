@@ -61,10 +61,15 @@ jobs:
           sh /tmp/elan-init.sh -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
       - name: Build Mathlib and the library from source (no cache get)
-        run: lake build
-      - name: Recompute commitments and compare with the latest stamp
         run: |
-          make commit
-          stamp=$(ls -d stamps/2*/ | sort | tail -1)
-          diff <(sed 's/^/commitment /' build/commit/commitments.txt) <(grep '^commitment ' "$stamp/manifest.txt" | grep -v 'commitment none')
-          echo "source-built commitments equal those in $stamp"
+          lake build 2>&1 | tee build-from-source.log | grep -E "error|Build completed" || true
+          test "${PIPESTATUS[0]}" -eq 0
+      - name: Check Mathlib was compiled here, not fetched or replayed
+        run: |
+          built=$(grep -cE "Built Mathlib\." build-from-source.log || true)
+          other=$(grep -E "(Replayed|Fetched|Downloaded|Unpacked) Mathlib\." build-from-source.log | head -5 || true)
+          echo "Mathlib modules compiled in this job: $built"
+          test "$built" -gt 1000
+          test -z "$other" || { echo "not compiled here: $other"; exit 1; }
+      - name: Recompute commitments; make commit enforces the pinned stamps
+        run: make commit
