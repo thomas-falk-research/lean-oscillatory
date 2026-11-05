@@ -54,3 +54,47 @@ S1.1 excludes phases whose φ′ is monotone but not differentiable on (a, b) (e
 an endpoint; S1.2 and S1.3 exclude phases whose φ′ (and, for S1.3, φ″) is not continuous up to the endpoints. The
 endpoint cases are recovered by applying the statement on [a, d] with d < b and letting d → b; the non-differentiable
 case is not.
+
+## S2, S3. Two-dimensional oscillatory integrals: non-stationary phase, nondegenerate stationary phase, fold
+
+Common notation. Points k = (k₁, k₂) ∈ ℝ² (Lean: `ℝ × ℝ` with Lebesgue measure; its norm is the max norm, which
+changes existential constants only). For p ∈ ℝ², p·k = p₁k₁ + p₂k₂. For a real phase Q and a complex amplitude A,
+I(Q, A) = ∫_{ℝ²} e^{iQ(k)} A(k) dk. Directional derivatives: ∂_vΨ(k) = DΨ(k)v, ∂_w∂_vΨ(k), ∂_w∂_v∂_uΨ(k).
+Hessian determinant H(Ψ, k) = ∂₁∂₁Ψ(k)·∂₂∂₂Ψ(k) − (∂₂∂₁Ψ(k))². k is a critical point of Ψ + p·(·) if
+∂₁Ψ(k) + p₁ = ∂₂Ψ(k) + p₂ = 0. "Amplitude bound (n, K, M)": A is Cⁿ on ℝ², its support closure lies in K, and
+‖DʲA(k)‖ ≤ M for all k and all j ≤ n (this replaces a sup-norm ‖A‖_{Cⁿ}: the bound holds with M = ‖A‖_{Cⁿ}).
+A family of phases over a compact topological space Λ is "of class Cⁿ" if each Ψ_σ is Cⁿ on ℝ² and
+(σ, k) ↦ DʲΨ_σ(k) is jointly continuous for j ≤ n. All constants below are existential and depend only on the
+data quantified before them (family, K, K′, c, N), never on A, M, σ, p or m.
+
+**S2.1 (non-stationary phase).** For every compact space Λ, every N ∈ ℕ, every family Ψ of class C^{N+1}, every
+compact K ⊂ ℝ² and every c > 0 there is C such that for all A, M with amplitude bound (N, K, M), all σ ∈ Λ, all
+p ∈ ℝ² with |∇Ψ_σ(k) + p| ≥ c for every k ∈ K, and all m ≥ 1:
+  |I(m(Ψ_σ + p·), A)| ≤ C M m^{−N}.
+
+**S2.2 (nondegenerate stationary phase, uniform in a linear term).** For every C⁴ phase Ψ on ℝ² and compact
+K, K′ ⊂ ℝ² such that H(Ψ, k) ≠ 0 whenever k ∈ K is a critical point of Ψ + p·(·) for some p ∈ K′, there is C such
+that for all A, M with amplitude bound (2, K, M), all p ∈ K′ and all m ≥ 1:
+  |I(m(Ψ + p·), A)| ≤ C M m^{−1}.
+
+**S3 (uniform fold estimate).** For every compact space Λ, every family Ψ of class C⁴ and compact K, K′ ⊂ ℝ² such
+that for every σ and every k ∈ K either H(Ψ_σ, k) ≠ 0, or the Hessian of Ψ_σ at k is nonzero with
+∂_v∂_v∂_vΨ_σ(k) ≠ 0 for every nonzero v in its kernel (rank one, third derivative along the kernel nonzero), there
+is C such that for all A, M with amplitude bound (2, K, M), all σ, all p ∈ K′ and all m ≥ 1:
+  |I(m(Ψ_σ + p·), A)| ≤ C M m^{−5/6}.
+
+Modelling choices and deviations from the brief (explicit in the Lean header):
+- Amplitude regularity C² in S2.2 and S3, where the brief writes ‖A‖_{C^N} and ‖A‖_{C⁴}. This is stronger than
+  the brief; the lead's proof route (implicit function y*(x), one integration by parts in y, 1D van der Corput in x)
+  uses two derivatives of A (PLAUSIBLE, not yet checked by a referee), and C² in S3 is what the brief's S4 bound
+  with ‖A‖_{C²} needs.
+- Phase regularity C⁴ in S2.2 and S3 (the route needs the Hadamard factor Q − Q(x, y*) = (y − y*)²H with H ∈ C²);
+  C^{N+1} in S2.1 (N integrations by parts).
+- Phases are defined on all of ℝ². A phase Cⁿ on a neighbourhood of K can be cut off to a global Cⁿ phase without
+  changing any integral with supp A ⊆ K, so nothing is lost.
+- S2.1 and S3 hold uniformly over a compact family Λ of phases (S4 applies them to the rescaled phases
+  ε⁻³φ(ε·), ε ∈ [0, ε₀]); S2.1 is uniform over all p with the gradient bound, not only p in a compact set (S4's
+  linear term is unbounded after rescaling). Taking Λ a point recovers the single-phase statements.
+- Conditions are imposed at every point of K (not only on supp A), because C is uniform over all A supported in K.
+- In S3, the third-derivative condition is required for every kernel vector; at a rank-one point the kernel is a
+  line, so this is the same as for one spanning vector.

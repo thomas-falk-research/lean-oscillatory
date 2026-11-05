@@ -1,7 +1,8 @@
 # Which stamp freezes each statement and the challenge. `make commit` fails unless every recomputed commitment and
-# every statement file equals its pinned stamp; `make comparator` judges against the pinned challenge export.
+# every statement file equals its pinned stamp; `make comparator` judges each comparator config against its
+# pinned stamp's challenge export (lines `challenge:<config> <stamp dir>`).
 # A statement change requires a new stamp and a new review, then a new pin line here (never an edit of an old one).
 OscInt.Statements.VdC1Statement stamps/20261105T203058Z-7516eb518dce
 OscInt.Statements.VdC2Statement stamps/20261105T203058Z-7516eb518dce
 OscInt.Statements.VdC3Statement stamps/20261105T203058Z-7516eb518dce
-challenge stamps/20261105T203058Z-7516eb518dce
+challenge:comparator.json stamps/20261105T203058Z-7516eb518dce

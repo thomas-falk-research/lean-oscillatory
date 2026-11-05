@@ -67,18 +67,49 @@ pub fn scan(root: &Path) -> Report {
     Report { violations, theorems, files: files.len() }
 }
 
-/// Every theorem named in `comparator.json` must have an `#assert_type_is` line in `StatementTypes.lean`.
+/// Every theorem named in a `comparator*.json` that the library declares must have an `#assert_type_is` line in
+/// `StatementTypes.lean` (unproved challenge theorems are not yet in the library).
 pub fn check_statement_types(root: &Path) -> Vec<String> {
-    let Ok(cfg) = fs::read_to_string(root.join("comparator.json")) else { return Vec::new() };
+    let mut cfgs: Vec<PathBuf> = fs::read_dir(root)
+        .map(|rd| rd.flatten().map(|e| e.path()).collect())
+        .unwrap_or_default();
+    cfgs.retain(|p| p.file_name().is_some_and(|n| {
+        let n = n.to_string_lossy();
+        n.starts_with("comparator") && n.ends_with(".json")
+    }));
+    cfgs.sort();
+    cfgs.iter().flat_map(|p| check_config(root, p)).collect()
+}
+
+fn check_config(root: &Path, path: &Path) -> Vec<String> {
+    let Ok(cfg) = fs::read_to_string(path) else { return Vec::new() };
     let st = fs::read_to_string(root.join("StatementTypes.lean")).unwrap_or_default();
+    let lib = lean_sources_text(root);
     let Ok(j) = oscint_tools::json::parse(&cfg) else { return vec!["comparator.json: not valid JSON".into()] };
     let names = j.get("theorem_names").and_then(|v| v.as_arr()).map(|a| a.to_vec()).unwrap_or_default();
     names
         .iter()
         .filter_map(|n| n.as_str())
+        .filter(|n| declared(&lib, n))
         .filter(|n| !st.lines().any(|l| l.split_whitespace().take(2).eq(["#assert_type_is", n])))
-        .map(|n| format!("StatementTypes.lean: no `#assert_type_is {n} …` for a theorem named in comparator.json"))
+        .map(|n| format!("StatementTypes.lean: no `#assert_type_is {n} …` for a declared theorem named in {}", path.display()))
         .collect()
+}
+
+/// Concatenated stripped sources of the library (`OscInt.lean`, `OscInt/**`).
+fn lean_sources_text(root: &Path) -> String {
+    let mut files = vec![root.join("OscInt.lean")];
+    lean_files(&root.join("OscInt"), &mut files);
+    files.iter().filter_map(|f| fs::read_to_string(f).ok()).map(|s| strip(&s)).collect::<Vec<_>>().join("\n")
+}
+
+/// Whether `OscInt.x` is declared as `theorem x` (inside `namespace OscInt`) or `theorem OscInt.x`.
+fn declared(lib: &str, full: &str) -> bool {
+    let short = full.rsplit('.').next().unwrap_or(full);
+    lib.lines().any(|l| {
+        let t: Vec<&str> = l.split_whitespace().collect();
+        t.windows(2).any(|w| w[0] == "theorem" && (w[1] == short || w[1] == full))
+    })
 }
 
 pub fn check_source(rel: &str, src: &str) -> Vec<String> {
