@@ -1,0 +1,169 @@
+#![forbid(unsafe_code)]
+//! `guard [--count] ROOT`: lexical tripwire over the library sources under ROOT (the repository root).
+//!
+//! Scans `OscInt.lean`, `OscInt/**`, `Blueprint.lean`, `Blueprint/**` (comments and literals stripped) and fails
+//! on any forbidden token, on a `def <X>Statement` in `OscInt/Statements/` without its
+//! `theorem statement_pin_<X>`, and on any import of the `Challenge` library. With `--count` prints only the
+//! number of `theorem`/`lemma` declarations under `OscInt.lean` and `OscInt/` (compared by `audit` with the
+//! number of theorems the Lean-side audit enumerates).
+
+use oscint_tools::lexer::{find_word, strip};
+use std::fs;
+use std::path::{Path, PathBuf};
+
+pub const FORBIDDEN: &[&str] = &[
+    "sorry", "admit", "native_decide", "native", "axiom", "opaque", "unsafe", "implemented_by", "extern",
+    "macro_rules", "macro", "notation", "infix", "infixl", "infixr", "prefix", "postfix", "syntax", "elab",
+    "run_cmd", "#eval", "initialize", "debug.skipKernelTC",
+];
+
+fn lean_files(root: &Path, out: &mut Vec<PathBuf>) {
+    if let Ok(rd) = fs::read_dir(root) {
+        let mut v: Vec<_> = rd.flatten().map(|e| e.path()).collect();
+        v.sort();
+        for p in v {
+            if p.is_dir() {
+                lean_files(&p, out);
+            } else if p.extension().is_some_and(|e| e == "lean") {
+                out.push(p);
+            }
+        }
+    }
+}
+
+pub struct Report {
+    pub violations: Vec<String>,
+    pub theorems: usize,
+    pub files: usize,
+}
+
+pub fn scan(root: &Path) -> Report {
+    let mut files = Vec::new();
+    for f in ["OscInt.lean", "Blueprint.lean"] {
+        if root.join(f).exists() {
+            files.push(root.join(f));
+        }
+    }
+    lean_files(&root.join("OscInt"), &mut files);
+    lean_files(&root.join("Blueprint"), &mut files);
+    let mut violations = Vec::new();
+    let mut theorems = 0;
+    for f in &files {
+        let rel = f.strip_prefix(root).unwrap_or(f).display().to_string();
+        let src = match fs::read_to_string(f) {
+            Ok(s) => s,
+            Err(e) => {
+                violations.push(format!("{rel}: unreadable: {e}"));
+                continue;
+            }
+        };
+        violations.extend(check_source(&rel, &src));
+        if rel == "OscInt.lean" || rel.starts_with("OscInt/") {
+            let s = strip(&src);
+            theorems += find_word(&s, "theorem").len() + find_word(&s, "lemma").len();
+        }
+    }
+    Report { violations, theorems, files: files.len() }
+}
+
+pub fn check_source(rel: &str, src: &str) -> Vec<String> {
+    let s = strip(src);
+    let mut v = Vec::new();
+    for w in FORBIDDEN {
+        for ln in find_word(&s, w) {
+            v.push(format!("{rel}:{ln}: forbidden token `{w}`"));
+        }
+    }
+    for (ln, line) in s.lines().enumerate() {
+        let toks: Vec<&str> = line.split(|c: char| c.is_whitespace() || c == '[' || c == ']').filter(|t| !t.is_empty()).collect();
+        if toks.windows(2).any(|w| w == ["local", "instance"]) {
+            v.push(format!("{rel}:{}: forbidden `local instance`", ln + 1));
+        }
+        if toks.first() == Some(&"import") && toks.iter().skip(1).any(|t| *t == "Challenge" || t.starts_with("Challenge.")) {
+            v.push(format!("{rel}:{}: imports the Challenge library", ln + 1));
+        }
+    }
+    if rel.starts_with("OscInt/Statements/") {
+        let toks: Vec<&str> = s.split_whitespace().collect();
+        for w in toks.windows(2) {
+            if w[0] == "def" {
+                if let Some(x) = w[1].strip_suffix("Statement") {
+                    let pin = format!("statement_pin_{x}");
+                    let want = [ "theorem", pin.as_str(), ":", w[1], "=", w[1], ":=", "rfl" ];
+                    if !toks.windows(want.len()).any(|t| t == want) {
+                        v.push(format!("{rel}: `{}` has no `theorem {pin} : {} = {} := rfl`", w[1], w[1], w[1]));
+                    }
+                }
+            }
+        }
+    }
+    v
+}
+
+fn main() {
+    let args: Vec<String> = std::env::args().skip(1).collect();
+    let (count, root) = match args.as_slice() {
+        [r] => (false, r.clone()),
+        [f, r] if f == "--count" => (true, r.clone()),
+        _ => {
+            eprintln!("usage: guard [--count] ROOT");
+            std::process::exit(2);
+        }
+    };
+    let rep = scan(Path::new(&root));
+    if count {
+        println!("{}", rep.theorems);
+        return;
+    }
+    for v in &rep.violations {
+        println!("guard: {v}");
+    }
+    if rep.files == 0 {
+        println!("guard: FAIL: no Lean sources found under {root}");
+        std::process::exit(1);
+    }
+    if !rep.violations.is_empty() {
+        println!("guard: FAIL: {} violation(s) in {} file(s)", rep.violations.len(), rep.files);
+        std::process::exit(1);
+    }
+    println!("guard: ok: {} file(s), 0 violations, {} theorem declaration(s)", rep.files, rep.theorems);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn negative_controls() {
+        for bad in [
+            "theorem t : 1 = 1 := by sorry",
+            "axiom bad : False",
+            "theorem t : True := by native_decide",
+            "theorem t : True := by decide +native",
+            "attribute [local instance] Classical.propDecidable",
+            "set_option debug.skipKernelTC true in\ntheorem t : False := x",
+            "notation \"X\" => 1",
+            "elab \"x\" : term => pure default",
+            "import Challenge.S1",
+            "@[implemented_by f] def g := 1",
+        ] {
+            assert!(!check_source("OscInt/X.lean", bad).is_empty(), "missed: {bad}");
+        }
+    }
+    #[test]
+    fn positive_controls() {
+        for ok in [
+            "-- sorry in a comment\ntheorem t : 1 = 1 := rfl",
+            "/- axiom -/ def s := \"sorry\"",
+            "theorem sorryFree' : True := trivial",
+        ] {
+            assert!(check_source("OscInt/X.lean", ok).is_empty(), "false positive: {ok}");
+        }
+    }
+    #[test]
+    fn statement_pins() {
+        let good = "def FooStatement : Prop := True\ntheorem statement_pin_Foo : FooStatement = FooStatement := rfl";
+        assert!(check_source("OscInt/Statements/Foo.lean", good).is_empty());
+        let bad = "def FooStatement : Prop := True";
+        assert_eq!(check_source("OscInt/Statements/Foo.lean", bad).len(), 1);
+    }
+}

@@ -1,0 +1,27 @@
+name = "oscint"
+version = "0.1.0"
+defaultTargets = ["OscInt", "Blueprint"]
+
+[leanOptions]
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "56a005855ea17e0b0958f73ec801ae140b0a1679"
+
+[[lean_lib]]
+name = "OscInt"
+
+[[lean_lib]]
+name = "Blueprint"
+
+[[lean_lib]]
+name = "Challenge"
+
+[[lean_exe]]
+name = "oscint-commit-env"
+srcDir = "tools/lean"
+root = "CommitEnv"
+supportInterpreter = true

@@ -1,0 +1,66 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      mathlib_from_source:
+        description: "Build Mathlib from source at the pinned commit (no binary cache) and recompute the commitments"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: ${{ !inputs.mathlib_from_source }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: System packages (bubblewrap for the sandboxed checkers, zstd for the toolchain archive)
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q bubblewrap zstd
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: elan from the pinned, hash-checked installer
+        run: |
+          read -r h f u < <(grep ' elan-init.sh ' toolchain.sha256)
+          curl -sSfL -o /tmp/elan-init.sh "$u"
+          echo "$h  /tmp/elan-init.sh" | sha256sum -c -
+          sh /tmp/elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Mathlib binary cache (trusted; see README)
+        run: lake exe cache get
+      - name: verify-all
+        run: |
+          make tools
+          set +e; tools/target/release/verify_all; rc=$?; set -e
+          if [ "$rc" -eq 3 ]; then echo "::warning::verify-all INCOMPLETE: some steps had nothing to check yet"; exit 0; fi
+          exit "$rc"
+      - name: Replay summary
+        if: always()
+        run: cat build/replay/summary.txt || true
+
+  mathlib-from-source:
+    if: ${{ inputs.mathlib_from_source }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: elan from the pinned, hash-checked installer
+        run: |
+          read -r h f u < <(grep ' elan-init.sh ' toolchain.sha256)
+          curl -sSfL -o /tmp/elan-init.sh "$u"
+          echo "$h  /tmp/elan-init.sh" | sha256sum -c -
+          sh /tmp/elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Build Mathlib and the library from source (no cache get)
+        run: lake build
+      - name: Recompute commitments and compare with the latest stamp
+        run: |
+          make commit
+          stamp=$(ls -d stamps/2*/ | sort | tail -1)
+          diff <(sed 's/^/commitment /' build/commit/commitments.txt) <(grep '^commitment ' "$stamp/manifest.txt" | grep -v 'commitment none')
+          echo "source-built commitments equal those in $stamp"

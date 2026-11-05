@@ -1,0 +1,51 @@
+# OscInt
+
+A Lean 4 + Mathlib library of uniform oscillatory-integral estimates in one and two variables with explicit
+constants: van der Corput (S1), nondegenerate stationary phase uniform in a linear term (S2), the uniform fold
+estimate m^{-5/6} (S3), and the uniform D4 estimate t^{-2/3} with its limit constant (S4).
+Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0).
+
+## Status
+
+| Statement | Status |
+|---|---|
+| S1 1D van der Corput | not started: anticipated by roos-j/lean-oscillatory (Mathlib PR #39406); see `docs/prior_art.md` |
+| S2 stationary phase | not started |
+| S3 fold | not started |
+| S4 D4 | not started |
+
+Nothing in this repository is yet a machine-checked result about oscillatory integrals. Details: `docs/STATUS.md`.
+
+## Re-check
+
+Needs elan, Rust ≥ 1.97, `bubblewrap`, `zstd`, `openssl`, `curl`.
+
+```bash
+lake exe cache get
+make verify-all
+```
+
+`verify-all` runs: `verify-toolchain` (hash pins; installed toolchain byte-identical to the pinned archive),
+`tools-test`, `guard` (forbidden tokens, statement pins), `lean` (build; axiom audit N/N against the guard's
+theorem count; statement-type check; Mathlib name check), `lean-replay` (`leanchecker` per module; export
+re-checked by Lean's kernel, its paranoid mode, nanoda, con-leche, con-ron and, via `lake check --paranoid`,
+lean4lean), `commit` (statement commitments from the environment and from the export must agree),
+`comparator` (frozen challenge, hash-checked against the stamp), `stamp-verify`. It prints PASS, FAIL, or
+INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PASS.
+
+## What stays trusted
+
+- Lean's kernel and the v4.35.0 toolchain archive, from which every checker above comes (one trust source until a
+  checker is built from source at a pinned commit).
+- The Mathlib binary cache, until the `mathlib-from-source` CI job has run (`docs/toolchain.md`).
+- The fidelity readings of statements: AI referees, no human reviewer yet.
+- The roots of the three RFC 3161 timestamp authorities (`stamps/roots/`); the FreeTSA root is trust on first use.
+
+## Layout
+
+`OscInt/` library; `OscInt/Statements/` frozen statements; `Blueprint/` intermediate propositions; `Challenge/`
+frozen `sorry` copies for `lake comparator` (never imported); `Axioms.lean`, `StatementTypes.lean`,
+`MathlibNames.lean` checks; `tools/` Rust binaries (std only) and the Lean commitment producer; `docs/`;
+`review/` referee reports; `stamps/` timestamp records.
+
+Code: Apache-2.0 (`LICENSE`). Documentation: CC BY 4.0 (`LICENSE-docs`). Citation: `CITATION.cff`.

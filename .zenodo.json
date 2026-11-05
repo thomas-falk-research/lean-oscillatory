@@ -1,0 +1,7 @@
+{
+  "title": "OscInt: uniform oscillatory-integral estimates in Lean 4 and Mathlib",
+  "upload_type": "software",
+  "creators": [{"name": "[[AUTHOR]]"}],
+  "license": "Apache-2.0",
+  "version": "0.1.0"
+}
