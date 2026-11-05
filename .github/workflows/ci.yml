@@ -63,14 +63,16 @@ jobs:
       - name: Build Mathlib and the library from source (no cache get)
         run: |
           set -o pipefail
-          lake build 2>&1 | tee build-from-source.log > /dev/null
+          lake build Mathlib 2>&1 | tee build-from-source.log > /dev/null
+          lake build 2>&1 | tee build-library.log > /dev/null
+          tail -1 build-library.log
           tail -1 build-from-source.log
       - name: Check Mathlib was compiled here, not fetched or replayed
         run: |
           built=$(grep -cE "Built Mathlib\." build-from-source.log || true)
           other=$(grep -E "(Replayed|Fetched|Downloaded|Unpacked) Mathlib\." build-from-source.log | head -5 || true)
           echo "Mathlib modules compiled in this job: $built"
-          test "$built" -gt 1000
+          test "$built" -gt 7000
           test -z "$other" || { echo "not compiled here: $other"; exit 1; }
       - name: Recompute commitments; make commit enforces the pinned stamps
         run: make commit
