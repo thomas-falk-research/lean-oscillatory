@@ -16,6 +16,9 @@ permissions:
 jobs:
   verify:
     if: ${{ !inputs.mathlib_from_source }}
+    concurrency:
+      group: verify-${{ github.ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-24.04
     timeout-minutes: 120
     steps:
