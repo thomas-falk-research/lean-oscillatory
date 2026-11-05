@@ -62,8 +62,9 @@ jobs:
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
       - name: Build Mathlib and the library from source (no cache get)
         run: |
-          lake build 2>&1 | tee build-from-source.log | grep -E "error|Build completed" || true
-          test "${PIPESTATUS[0]}" -eq 0
+          set -o pipefail
+          lake build 2>&1 | tee build-from-source.log > /dev/null
+          tail -1 build-from-source.log
       - name: Check Mathlib was compiled here, not fetched or replayed
         run: |
           built=$(grep -cE "Built Mathlib\." build-from-source.log || true)
