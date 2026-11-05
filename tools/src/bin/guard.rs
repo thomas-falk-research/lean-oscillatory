@@ -128,6 +128,9 @@ pub fn check_source(rel: &str, src: &str) -> Vec<String> {
         if toks.first() == Some(&"import") && toks.iter().skip(1).any(|t| *t == "Challenge" || t.starts_with("Challenge.")) {
             v.push(format!("{rel}:{}: imports the Challenge library", ln + 1));
         }
+        if toks.windows(3).any(|w| w[0].trim_start_matches(['(', '@']).starts_with("ContDiff") && w[2].trim_end_matches(')') == "⊤") {
+            v.push(format!("{rel}:{}: `ContDiff … ⊤` is analytic (ω) in this Mathlib; write `∞` for C^∞", ln + 1));
+        }
         if toks.first() == Some(&"import") && toks.iter().skip(1).any(|t| *t == "Lean" || t.starts_with("Lean.")) {
             v.push(format!("{rel}:{}: imports Lean's metaprogramming library", ln + 1));
         }
@@ -194,6 +197,8 @@ mod tests {
             "elab \"x\" : term => pure default",
             "import Challenge.S1",
             "import Lean.Elab.Command",
+            "def P : Prop := ∀ f : ℝ → ℝ, ContDiff ℝ ⊤ f",
+            "theorem t (h : ContDiffOn ℝ ⊤ f s) : True := trivial",
             "run_meta pure ()",
             "@[implemented_by f] def g := 1",
         ] {

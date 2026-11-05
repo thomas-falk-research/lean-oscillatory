@@ -69,3 +69,10 @@ The reports also showed that a sanity theorem restating a hypothesis in its own 
 the statement. Rule: hypotheses are bundled as named `def`s used by both the statement and its sanity theorem.
 Check: none automatic yet (a lexical check that each sanity theorem mentions the statement's hypothesis defs is
 possible once S2's statements exist).
+
+## 12. `ContDiff ℝ ⊤` means analytic in this Mathlib (2026-11-05)
+The S2/S3 infrastructure blueprint wrote `ContDiff ℝ ⊤` for "smooth". At Mathlib 56a0058 the smoothness index is
+`WithTop ℕ∞`, so `⊤ = ω` (analytic); a compactly supported analytic function on ℝ² is zero, which made the partition
+of unity part false and the cut-off part vacuous. Proof agent G3 found it by proving `¬ PartitionFacts` instead of
+weakening it (rule 3 of the briefs worked). Rule: write `∞` (with `open scoped ContDiff`) for C^∞, or a numeral.
+Check: guard rejects `ContDiff…`, `ContDiffOn…` followed by `⊤` (tests in `guard.rs`).

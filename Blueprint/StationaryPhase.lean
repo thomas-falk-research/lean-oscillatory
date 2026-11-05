@@ -12,6 +12,7 @@ Each part is proved as `theorem OscInt.StationaryPhase.<part> : <Prop>` under `O
 namespace OscInt.Blueprint
 
 open Set MeasureTheory OscInt.Statements
+open scoped ContDiff
 
 /-- **F1a** Adding a linear term indexed by a subset `P ⊆ ℝ²` keeps a family of class `Cⁿ`: the family over
 `Λ × P` given by `(σ, p) ↦ Ψ σ + p·(·)` is again of class `Cⁿ`. -/
@@ -44,13 +45,13 @@ def PartitionFacts : Prop :=
   ∀ (r : ℕ) (K : Set (ℝ × ℝ)) (U : Fin r → Set (ℝ × ℝ)),
     IsCompact K → (∀ i, IsOpen (U i)) → K ⊆ ⋃ i, U i →
     ∃ χ : Fin r → ℝ × ℝ → ℝ,
-      (∀ i, ContDiff ℝ ⊤ (χ i)) ∧ (∀ i, HasCompactSupport (χ i)) ∧ (∀ i, tsupport (χ i) ⊆ U i) ∧
+      (∀ i, ContDiff ℝ ∞ (χ i)) ∧ (∀ i, HasCompactSupport (χ i)) ∧ (∀ i, tsupport (χ i) ⊆ U i) ∧
         (∀ i k, χ i k ∈ Icc (0 : ℝ) 1) ∧ ∀ k ∈ K, ∑ i, χ i k = 1
 
 /-- **F2b** Cutting an amplitude off by a smooth compactly supported function: the product satisfies an amplitude
 bound with support in `K ∩ tsupport χ` and a constant depending only on `n` and `χ`. -/
 def AmpBoundMulFacts : Prop :=
-  ∀ (n : ℕ) (χ : ℝ × ℝ → ℝ), ContDiff ℝ ⊤ χ → HasCompactSupport χ →
+  ∀ (n : ℕ) (χ : ℝ × ℝ → ℝ), ContDiff ℝ ∞ χ → HasCompactSupport χ →
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (K : Set (ℝ × ℝ)) (A : ℝ × ℝ → ℂ) (M : ℝ),
       AmpBound n K A M → AmpBound n (K ∩ tsupport χ) (fun k => (χ k : ℂ) * A k) (C * M)
 
