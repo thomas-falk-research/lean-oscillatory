@@ -34,8 +34,8 @@ lean-replay: lean
 commit: lean
 	$(UNSKIP); $(LAKE) build oscint-commit-env && { $(T)/commit $(B)/commit || { [ $$? -eq 3 ] && $(SKIP); }; }
 
-comparator:
-	$(UNSKIP); if [ -f comparator.json ]; then $(T)/challenge check . $(LATEST_STAMP); else echo "comparator: SKIPPED: no frozen challenge yet"; $(SKIP); fi
+comparator: lean
+	$(UNSKIP); if [ -f comparator.json ]; then $(T)/challenge check . $(LATEST_STAMP) || { [ $$? -eq 3 ] && $(SKIP); }; else echo "comparator: SKIPPED: no frozen challenge yet"; $(SKIP); fi
 
 challenge-export: tools
 	$(T)/challenge export .

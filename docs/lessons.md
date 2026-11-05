@@ -47,3 +47,11 @@ The list of constants `challenge` adds to the challenge export was written from 
 proof existed (it rejected, as it must, with no solution). Rule: any list another tool dictates is copied from that
 tool's output, with the date and version. Check: none automatic; the stamp records the challenge export hash, so a
 later list change shows as a hash mismatch in `make comparator`.
+
+## 9. CI was red for six pushes and I did not look (2026-11-05)
+After the S1 stamp every CI run failed: (a) `comparator` correctly rejected because no proof existed yet, an
+expected failure that (b) masked a real one, `stamp-verify` failing on CI's shallow checkout (the stamped commit was
+absent). Both were found only when checking CI at the end of M1. Rules: an expected "not yet" is SKIPPED, never FAIL
+(`challenge check` exits 3 when no challenge theorem is declared, fails on a partial solution); CI checks out full
+history (`fetch-depth: 0`); after every push, read the CI result before the next claim. Check: the first two are
+code (`tools/src/bin/challenge.rs`, `.github/workflows/ci.yml`); the third is a process rule with no automatic check.
