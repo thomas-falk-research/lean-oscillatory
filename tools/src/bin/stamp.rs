@@ -109,6 +109,7 @@ fn create(root: &Path, out: &Path) -> Result<(), String> {
             Err(e) => failures.push(e),
         }
     }
+    let _ = fs::remove_file(&tsq);
     let dbin = out.join("digest.bin");
     fs::write(&dbin, hex_decode(&digest)).map_err(|e| e.to_string())?;
     for (label, url) in OTS_CALENDARS {
