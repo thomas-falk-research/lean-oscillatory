@@ -1,9 +1,11 @@
 #![forbid(unsafe_code)]
-//! `challenge ROOT STAMPDIR`: statement matching against the frozen challenge.
-//! Reads `ROOT/comparator.json`, re-exports its `theorem_names` (plus the constants the comparator requires) from
-//! the `challenge_module` with `leanexport` into `build/challenge/challenge.ndjson`, requires that export's SHA-256
-//! to appear as a `challenge-export` line of `STAMPDIR/manifest.txt` (so the challenge judged is the stamped one:
-//! `lake comparator --challenge-from-export` does not check provenance itself), then runs
+//! Statement matching against the frozen challenge.
+//! `challenge export ROOT`: reads `ROOT/comparator.json`, builds the `challenge_module` and exports its
+//! `theorem_names` (plus the constants the comparator requires) with `leanexport` into
+//! `build/challenge/challenge.ndjson` (`make stamp` records its SHA-256).
+//! `challenge check ROOT STAMPDIR`: re-exports, requires the export's SHA-256 to appear as a `challenge-export`
+//! line of `STAMPDIR/manifest.txt` (so the challenge judged is the stamped one: `lake comparator
+//! --challenge-from-export` does not check provenance itself), then runs
 //! `lake comparator --challenge-from-export build/challenge/challenge.ndjson --paranoid`.
 
 use oscint_tools::json;
@@ -13,15 +15,15 @@ use std::path::Path;
 use std::process::Command;
 
 /// Constants `lake comparator` requires to be present in a challenge export (permitted axioms and the kernel's
-/// built-in extensions), as listed in its `Exporting #[…]` line for Lean v4.35.0.
+/// built-in extensions): copied from its `Exporting #[…]` line under Lean v4.35.0 (2026-11-05).
 pub const REQUIRED: &[&str] = &[
-    "propext", "Quot.sound", "Classical.choice", "Quot", "Quot.mk", "Quot.lift", "Quot.ind", "Nat", "Nat.zero",
-    "Nat.succ", "Nat.add", "Nat.sub", "Nat.mul", "Nat.div", "Nat.mod", "Nat.gcd", "Nat.beq", "Nat.ble", "Nat.land",
-    "Nat.lor", "Nat.xor", "Nat.shiftLeft", "Nat.shiftRight", "Nat.pow", "Nat.log2", "String", "String.ofList",
-    "Eq", "Eq.refl", "Bool", "Bool.true", "Bool.false", "outParam",
+    "Quot", "Quot.mk", "Quot.lift", "Quot.ind", "propext", "Quot.sound", "Classical.choice", "Nat.add", "Nat.sub",
+    "Nat.mul", "Nat.pow", "Nat.gcd", "Nat.div", "Nat.mod", "Nat.beq", "Nat.ble", "Nat.land", "Nat.lor", "Nat.xor",
+    "Nat.shiftLeft", "Nat.shiftRight", "String.ofList", "Char.ofNat", "List", "eagerReduce", "Nat", "String",
+    "String.mk", "Char", "optParam", "autoParam", "semiOutParam", "outParam",
 ];
 
-fn go(root: &Path, stamp: &Path) -> Result<(), String> {
+fn export(root: &Path) -> Result<std::path::PathBuf, String> {
     let cfg = json::parse(&fs::read_to_string(root.join("comparator.json")).map_err(|e| e.to_string())?)?;
     let module = cfg.get("challenge_module").and_then(|v| v.as_str()).ok_or("comparator.json: challenge_module")?;
     let names: Vec<&str> = cfg.get("theorem_names").and_then(|v| v.as_arr()).ok_or("comparator.json: theorem_names")?
@@ -47,6 +49,12 @@ fn go(root: &Path, stamp: &Path) -> Result<(), String> {
         return Err(format!("leanexport: {}", String::from_utf8_lossy(&res.stderr)));
     }
     fs::write(&out, &res.stdout).map_err(|e| e.to_string())?;
+    println!("challenge: export {} sha256 {}", out.display(), sha256_file(&out)?);
+    Ok(out)
+}
+
+fn check(root: &Path, stamp: &Path) -> Result<(), String> {
+    let out = export(root)?;
     let h = sha256_file(&out)?;
     let manifest = fs::read_to_string(stamp.join("manifest.txt")).map_err(|e| format!("stamp manifest: {e}"))?;
     if !manifest.lines().any(|l| l.starts_with(&format!("challenge-export {h}"))) {
@@ -64,11 +72,15 @@ fn go(root: &Path, stamp: &Path) -> Result<(), String> {
 
 fn main() {
     let a: Vec<String> = std::env::args().collect();
-    if a.len() != 3 {
-        eprintln!("usage: challenge ROOT STAMPDIR");
-        std::process::exit(2);
-    }
-    if let Err(e) = go(Path::new(&a[1]), Path::new(&a[2])) {
+    let r = match a.iter().map(String::as_str).collect::<Vec<_>>().as_slice() {
+        [_, "export", root] => export(Path::new(root)).map(|_| ()),
+        [_, "check", root, stamp] => check(Path::new(root), Path::new(stamp)),
+        _ => {
+            eprintln!("usage: challenge export ROOT | challenge check ROOT STAMPDIR");
+            std::process::exit(2);
+        }
+    };
+    if let Err(e) = r {
         println!("challenge: FAIL: {e}");
         std::process::exit(1);
     }

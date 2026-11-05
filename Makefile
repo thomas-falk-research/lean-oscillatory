@@ -7,7 +7,7 @@ SKIP = mkdir -p $(B)/skipped && touch $(B)/skipped/$@
 UNSKIP = mkdir -p $(B)/skipped && rm -f $(B)/skipped/$@
 LATEST_STAMP = $(lastword $(sort $(wildcard stamps/2*/)))
 
-.PHONY: tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics
+.PHONY: challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics
 
 tools:
 	cd tools && cargo build --release --locked --quiet
@@ -35,9 +35,12 @@ commit: lean
 	$(UNSKIP); $(LAKE) build oscint-commit-env && { $(T)/commit $(B)/commit || { [ $$? -eq 3 ] && $(SKIP); }; }
 
 comparator:
-	$(UNSKIP); if [ -f comparator.json ]; then $(T)/challenge . $(LATEST_STAMP); else echo "comparator: SKIPPED: no frozen challenge yet"; $(SKIP); fi
+	$(UNSKIP); if [ -f comparator.json ]; then $(T)/challenge check . $(LATEST_STAMP); else echo "comparator: SKIPPED: no frozen challenge yet"; $(SKIP); fi
 
-stamp: tools
+challenge-export: tools
+	$(T)/challenge export .
+
+stamp: commit challenge-export
 	$(T)/stamp create . stamps/$(shell date -u +%Y%m%dT%H%M%SZ)-$(shell git rev-parse --short=12 HEAD)
 
 stamp-verify: tools

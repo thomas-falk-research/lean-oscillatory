@@ -40,3 +40,10 @@ the export must contain every audited theorem as a theorem and only permitted ax
 `lean-replay` and `commit` each depend on `lean`, so one `verify-all` runs the build and the audit three times
 (about 5 s each with a warm cache). Harmless now; with a large library it will cost minutes. Rule: when the build
 exceeds a minute, make the audit outputs file targets so make skips repeats. No check yet (a timing, not a rule).
+
+## 8. The comparator's required-constant list was wrong from memory (2026-11-05)
+The list of constants `challenge` adds to the challenge export was written from memory; the comparator's own
+`Exporting #[…]` line showed eight missing and seven superfluous. Caught by running `lake comparator` before any
+proof existed (it rejected, as it must, with no solution). Rule: any list another tool dictates is copied from that
+tool's output, with the date and version. Check: none automatic; the stamp records the challenge export hash, so a
+later list change shows as a hash mismatch in `make comparator`.
