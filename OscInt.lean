@@ -1,3 +1,3 @@
 import OscInt.Basic
 import OscInt.Statements.VanDerCorput
-import OscInt.VanDerCorput.Assembly
+import OscInt.VanDerCorput.Final

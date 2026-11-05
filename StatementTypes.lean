@@ -17,3 +17,7 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
   unless ci.type == mkConst s [] do
     throwError m!"statement type check FAILED: the type of {t} is not the constant {s}"
   IO.println s!"TYPE-OK {t} : {s}"
+
+#assert_type_is OscInt.vanDerCorput_one OscInt.Statements.VdC1Statement
+#assert_type_is OscInt.vanDerCorput_two OscInt.Statements.VdC2Statement
+#assert_type_is OscInt.vanDerCorput_three OscInt.Statements.VdC3Statement
