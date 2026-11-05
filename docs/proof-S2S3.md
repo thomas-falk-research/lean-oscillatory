@@ -26,7 +26,9 @@ Write A = Σ_{i∈S(τ)} χ_i^{S(τ)} A; each term has amplitude bound (2, B̄(k
 
 ## 1. Local estimates
 
-Fix (τ₀, k₀) ∈ T × K. Write Q = Q_τ.
+Fix (τ₀, k₀) ∈ T × K. Write Q = Q_τ. Every local step below uses the hypothesis only at the single point
+(τ₀, k₀) and obtains everything it needs on a neighbourhood U × B(k₀, δ) by joint continuity; points of that
+neighbourhood may lie outside K (referee B, S2/S3 pre-proof review), and no hypothesis is used there.
 
 (L1) Non-critical point, ∇Q_{τ₀}(k₀) ≠ 0. Choose a unit coordinate direction e (e₁ or e₂) with ∂_eQ_{τ₀}(k₀) ≠ 0.
 By joint continuity there are U, δ with |∂_eQ_τ| ≥ c > 0 on U × B̄(k₀, 2δ). For B supported in B̄(k₀, δ):

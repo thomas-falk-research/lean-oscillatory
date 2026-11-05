@@ -6,9 +6,9 @@ requires every row of the trust chain (README) for that statement.
 | Statement | Lean | Statement frozen | Blind review | Proof | Replay | Status |
 |---|---|---|---|---|---|---|
 | S1 1D van der Corput | `OscInt.vanDerCorput_one/two/three` | yes, stamp `20261105T203058Z-7516eb518dce` (pinned) | pre: FAITHFUL ×3; post: FAITHFUL ×3, scope full | yes | 7 kernel runs + comparator | machine-checked as stated |
-| S2.1 non-stationary phase | `OscInt.Statements.NonStationaryStatement` | yes (stamp pending review) | pending (2 referees) | — | — | statement frozen |
-| S2.2 nondegenerate stationary phase | `OscInt.Statements.StationaryPhaseStatement` | yes (stamp pending review) | pending (2 referees) | — | — | statement frozen |
-| S3 uniform fold | `OscInt.Statements.FoldStatement` | yes (stamp pending review) | pending (2 referees) | — | — | statement frozen |
+| S2.1 non-stationary phase | `OscInt.Statements.NonStationaryStatement` | yes, stamp `20261105T234456Z-533ae0272521` (pinned) | FAITHFUL ×3 by 2 referees | — | — | statement frozen |
+| S2.2 nondegenerate stationary phase | `OscInt.Statements.StationaryPhaseStatement` | yes, stamp `20261105T234456Z-533ae0272521` (pinned) | FAITHFUL ×3 by 2 referees | — | — | statement frozen |
+| S3 uniform fold | `OscInt.Statements.FoldStatement` | yes, stamp `20261105T234456Z-533ae0272521` (pinned) | FAITHFUL ×3 by 2 referees | — | — | statement frozen |
 | S4 uniform D4 | — | no | — | — | — | not started |
 
 Pipeline skeleton (M0): `OscInt.skeleton_two_mul` builds, audits clean (1 of 1) and replays in six kernels
