@@ -98,3 +98,7 @@ Modelling choices and deviations from the brief (explicit in the Lean header):
 - Conditions are imposed at every point of K (not only on supp A), because C is uniform over all A supported in K.
 - In S3, the third-derivative condition is required for every kernel vector; at a rank-one point the kernel is a
   line, so this is the same as for one spanning vector.
+
+Clarification added after the S2/S3 stamp (2026-11-05, from the route referee; the stamped text above is
+unchanged): the phase regularity C⁴ in S2.2 and S3 is used by second y-derivatives of the Hadamard factors h and K
+(fourth derivatives of the phase), not by the factor H mentioned above, which the refereed route does not use.

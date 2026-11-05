@@ -122,3 +122,28 @@ every point of K for every τ ∈ T). S3 from (R1), (R2), (L1), (L2)–(L6) case
   τ. Derivatives of y* in x must be jointly continuous in (τ, x): from the explicit formulas.
 - (R2) Partitions of unity on ℝ² subordinate to finite ball covers: Mathlib (`SmoothPartitionOfUnity` on a normed
   space as a manifold, or `exists_contDiff_support_eq_eq_one_iff`) with explicit derivative bounds by compactness.
+
+## Revision after the route referee (2026-11-05; `review/2026-11-05-S2S3-proof-route.md`, no BLOCKER)
+
+These amendments override the text above where they conflict.
+1. Uniformity on neighbourhoods (L1, L3–L6): Λ is only a compact topological space, so "shrink U to a compact
+   neighbourhood" is replaced by the tube lemma: if f is continuous on T × C with C compact and |f(τ₀, ·)| < s on C,
+   there is an open U ∋ τ₀ with |f| < s on U × C. Every sup over U × box is obtained this way. Genuine sups over
+   compact sets occur only over T × K (N1) and T × K₁ (N2).
+2. (L2): v ≠ 0 is taken in the D²Q-orthogonal line of w (which does not contain w since D²Q[w, w] ≠ 0); such a w
+   exists by polarisation. New determinant det D²Q · (det L)².
+3. (L3): constants chosen as contraction data: |1 − ∂²_yQ_τ/q₀| ≤ 1/2 on U × [−2a, 2a] × [−2b, 2b]
+   (q₀ = ∂²_yQ_{τ₀}(0, 0)) gives sign constancy and |∂²_yQ| ≥ μ = |q₀|/2; then |∂_yQ_τ(x, 0)| < |q₀| b/2 gives
+   a self-map of [−b, b] with constant 1/2. y* is defined on U × [−2a, 2a] (or regularity is claimed on (−a, a)
+   with g′, g″, y*′ given by their formulas, continuous up to the endpoints, which is all S1 needs). Only y* ∈ C²
+   is used; higher regularity by bootstrapping y*′ = f(x, y*) with f = −∂_x∂_yQ/∂²_yQ ∈ C².
+4. (L5): stated on [−a, a] × [−2b, 2b]; H and Q − g = (y − y*)²H are not used and are dropped. Only y-derivatives of
+   h and K up to order 2 are used. C⁴ is used exactly by ∂²_y(Kθ/h) in (L6b)(ii) (fourth derivatives of Q).
+5. (L6): written for x ∈ [−a, a] (integrand zero outside); the 2D term of (L6a) is bounded by 2a times the
+   supremum over x of the 1D bound. J is differentiable by differentiation under the integral sign.
+6. (N2): with compactness of T × K, |∇Φ_τ| ≥ c/2 on K₁ = K + B̄(0, ρ) for all τ; w uses the Euclidean square
+   (∂₁Φ)² + (∂₂Φ)² (Lean's max norm on ℝ × ℝ is not differentiable).
+7. New part F3 (parametric calculus for families over a topological parameter): closure of "family of class Cⁿ"
+   under sums, products (Leibniz), the reciprocal of a non-vanishing family (induction on n via D(1/f) = −Df/f²) and
+   composition with fixed smooth maps on open sets; with proofs written before encoding. Needed by (N2) for all N
+   and by (L3)–(L6) up to order 4.
