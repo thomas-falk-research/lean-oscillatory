@@ -55,3 +55,10 @@ absent). Both were found only when checking CI at the end of M1. Rules: an expec
 (`challenge check` exits 3 when no challenge theorem is declared, fails on a partial solution); CI checks out full
 history (`fetch-depth: 0`); after every push, read the CI result before the next claim. Check: the first two are
 code (`tools/src/bin/challenge.rs`, `.github/workflows/ci.yml`); the third is a process rule with no automatic check.
+
+## 10. Stamped commitments were recorded but never enforced (2026-11-05)
+The adversarial review found that `make commit` only compared the two producers with each other and `make comparator`
+judged against the newest stamp, so an edited statement plus a fresh stamp would have passed silently. Rule: a
+freeze is a pin that a check enforces, not a file that exists. Check: `stamps/pins.txt`, enforced by `make commit`
+(commitments and statement-file hashes against the pinned stamp) and by `make comparator` (pinned challenge stamp);
+negative control recorded in `review/2026-11-05-S1-adversarial.md`.

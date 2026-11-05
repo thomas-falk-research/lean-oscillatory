@@ -1,0 +1,311 @@
+make verify-all on commit 55a1613e036c9ec6b8574923a04e615deb274693 (clean tree), 2026-11-05T21:27Z; full output follows.
+
+cd tools && cargo build --release --locked --quiet
+tools/target/release/verify_all
+cd tools && cargo build --release --locked --quiet
+tools/target/release/toolchain .
+verify-toolchain: elan-init.sh: sha256 a620ff1641616222c8d37c54845492004bb84d6877cdbc944dd65c1aa685bf53 OK
+verify-toolchain: lean-4.35.0-linux.tar.zst: sha256 7289597a44543246c9227b8cae501767e095ce17f6d448b95fc4a8dc97268f6d OK
+verify-toolchain: installed toolchain /root/.elan/toolchains/leanprover--lean4---v4.35.0 is byte-identical to lean-4.35.0-linux.tar.zst
+cd tools && cargo test --release --locked --quiet
+
+running 7 tests
+.......
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+.....
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+...
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+..
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+..
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+.
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+cd tools && cargo build --release --locked --quiet
+tools/target/release/guard .
+guard: ok: 11 file(s), 0 violations, 36 theorem declaration(s)
+cd tools && cargo build --release --locked --quiet
+lake build
+⚠ [825/1097] Replayed OscInt.Basic
+warning: OscInt/Basic.lean: imports `Mathlib.Basic.Real.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Basic.lean: imports `Mathlib.Tactic.Ring` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2754/2820] Replayed OscInt.Statements.VanDerCorput
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.SpecialFunctions.Pow.Real` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.SpecialFunctions.Sqrt` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Add` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Pow` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Mul` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2770/2820] Replayed OscInt.VanDerCorput.Split
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Analysis.Calculus.Darboux` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Analysis.Calculus.Deriv.MeanValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Topology.Order.IntermediateValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2813/2820] Replayed OscInt.VanDerCorput.One
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Calculus.Deriv.Slope` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Calculus.Deriv.Inv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.SpecialFunctions.ExpDeriv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Complex.RealDeriv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Complex.Trigonometric` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Topology.Perfect` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Topology.Order.IntermediateValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2814/2820] Replayed OscInt.VanDerCorput.Amplitude
+warning: OscInt/VanDerCorput/Amplitude.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Amplitude.lean: imports `Mathlib.Analysis.SpecialFunctions.Exp` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+Build completed successfully (2820 jobs).
+mkdir -p build && lake env lean Axioms.lean > build/axioms.out
+tools/target/release/audit build/axioms.out . build/audited.txt
+axiom audit: 36 of 36 theorems clean (permitted: propext, Classical.choice, Quot.sound)
+lake env lean StatementTypes.lean
+TYPE-OK OscInt.vanDerCorput_one : OscInt.Statements.VdC1Statement
+TYPE-OK OscInt.vanDerCorput_two : OscInt.Statements.VdC2Statement
+TYPE-OK OscInt.vanDerCorput_three : OscInt.Statements.VdC3Statement
+lake env lean MathlibNames.lean > /dev/null
+cd tools && cargo build --release --locked --quiet
+lake build
+⚠ [825/963] Replayed OscInt.Basic
+warning: OscInt/Basic.lean: imports `Mathlib.Basic.Real.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Basic.lean: imports `Mathlib.Tactic.Ring` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2754/2820] Replayed OscInt.Statements.VanDerCorput
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.SpecialFunctions.Pow.Real` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.SpecialFunctions.Sqrt` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Add` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Pow` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Mul` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2770/2820] Replayed OscInt.VanDerCorput.Split
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Analysis.Calculus.Darboux` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Analysis.Calculus.Deriv.MeanValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Topology.Order.IntermediateValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2813/2820] Replayed OscInt.VanDerCorput.One
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Calculus.Deriv.Slope` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Calculus.Deriv.Inv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.SpecialFunctions.ExpDeriv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Complex.RealDeriv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Complex.Trigonometric` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Topology.Perfect` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Topology.Order.IntermediateValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2814/2820] Replayed OscInt.VanDerCorput.Amplitude
+warning: OscInt/VanDerCorput/Amplitude.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Amplitude.lean: imports `Mathlib.Analysis.SpecialFunctions.Exp` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+Build completed successfully (2820 jobs).
+mkdir -p build && lake env lean Axioms.lean > build/axioms.out
+tools/target/release/audit build/axioms.out . build/audited.txt
+axiom audit: 36 of 36 theorems clean (permitted: propext, Classical.choice, Quot.sound)
+lake env lean StatementTypes.lean
+TYPE-OK OscInt.vanDerCorput_one : OscInt.Statements.VdC1Statement
+TYPE-OK OscInt.vanDerCorput_two : OscInt.Statements.VdC2Statement
+TYPE-OK OscInt.vanDerCorput_three : OscInt.Statements.VdC3Statement
+lake env lean MathlibNames.lean > /dev/null
+tools/target/release/replay . build/audited.txt build/replay
+PASS  no stale build products  (0.0s)  9 module(s)
+PASS  leanchecker OscInt  (28.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Basic  (5.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.VanDerCorput  (6.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Amplitude  (5.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Assembly  (5.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Final  (5.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Higher  (5.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.One  (6.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Split  (5.6s)  accepted (exit 0, no error output)
+PASS  leanexport  (24.7s)  39199 declarations, 36 target theorem(s), axioms [propext, Quot.sound, Classical.choice]; sha256 4060a62578278de9bb7745b335ab755ef0f24077380caaed9150656e9e5cbfaf
+PASS  leanchecker --from-export  (45.1s)  Lean default kernel accepts the solution
+PASS  leanchecker-paranoid --from-export  (53.9s)  Lean default kernel accepts the solution
+PASS  nanoda  (25.5s)  Checked 39199 declarations with no typechecker errors
+PASS  con-leche --verified  (17.9s)  con-leche: accepted 37365 declarations (--verified)
+PASS  con-ron --verified  (11.7s)  con-ron: accepted 37365 declarations (--verified)
+PASS  lake check --from-export --paranoid  (190.6s)  lean4lean kernel accepts the solution; 6 kernels accepted
+cd tools && cargo build --release --locked --quiet
+lake build
+⚠ [825/1074] Replayed OscInt.Basic
+warning: OscInt/Basic.lean: imports `Mathlib.Basic.Real.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Basic.lean: imports `Mathlib.Tactic.Ring` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2754/2820] Replayed OscInt.Statements.VanDerCorput
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.SpecialFunctions.Pow.Real` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.SpecialFunctions.Sqrt` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Add` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Pow` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Mul` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2770/2820] Replayed OscInt.VanDerCorput.Split
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Analysis.Calculus.Darboux` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Analysis.Calculus.Deriv.MeanValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Topology.Order.IntermediateValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2813/2820] Replayed OscInt.VanDerCorput.One
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Calculus.Deriv.Slope` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Calculus.Deriv.Inv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.SpecialFunctions.ExpDeriv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Complex.RealDeriv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Complex.Trigonometric` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Topology.Perfect` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Topology.Order.IntermediateValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2814/2820] Replayed OscInt.VanDerCorput.Amplitude
+warning: OscInt/VanDerCorput/Amplitude.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Amplitude.lean: imports `Mathlib.Analysis.SpecialFunctions.Exp` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+Build completed successfully (2820 jobs).
+mkdir -p build && lake env lean Axioms.lean > build/axioms.out
+tools/target/release/audit build/axioms.out . build/audited.txt
+axiom audit: 36 of 36 theorems clean (permitted: propext, Classical.choice, Quot.sound)
+lake env lean StatementTypes.lean
+TYPE-OK OscInt.vanDerCorput_one : OscInt.Statements.VdC1Statement
+TYPE-OK OscInt.vanDerCorput_two : OscInt.Statements.VdC2Statement
+TYPE-OK OscInt.vanDerCorput_three : OscInt.Statements.VdC3Statement
+lake env lean MathlibNames.lean > /dev/null
+mkdir -p build/skipped && rm -f build/skipped/commit; lake build oscint-commit-env && { tools/target/release/commit build/commit || { [ $? -eq 3 ] && mkdir -p build/skipped && touch build/skipped/commit; }; }
+Build completed successfully (4 jobs).
+a837c8bd8352929aa4ba6456ff19603cd34f7ae09b2896de0af2565fd0f803b4  OscInt.Statements.VdC1Statement
+66cc331de7d7bf5fb38076895ff7014f280b41cced6492f70cd87134a78a39f5  OscInt.Statements.VdC2Statement
+30b3f96ca215778d4034c6ca660818b04a842bb4b574f27f4a648a64bf9ab4f4  OscInt.Statements.VdC3Statement
+commit: OscInt.Statements.VdC1Statement matches its stamp stamps/20261105T203058Z-7516eb518dce
+commit: OscInt.Statements.VdC2Statement matches its stamp stamps/20261105T203058Z-7516eb518dce
+commit: OscInt.Statements.VdC3Statement matches its stamp stamps/20261105T203058Z-7516eb518dce
+cd tools && cargo build --release --locked --quiet
+lake build
+⚠ [825/955] Replayed OscInt.Basic
+warning: OscInt/Basic.lean: imports `Mathlib.Basic.Real.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Basic.lean: imports `Mathlib.Tactic.Ring` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2754/2820] Replayed OscInt.Statements.VanDerCorput
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.SpecialFunctions.Pow.Real` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.SpecialFunctions.Sqrt` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Add` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Pow` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Mul` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2770/2820] Replayed OscInt.VanDerCorput.Split
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Analysis.Calculus.Darboux` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Analysis.Calculus.Deriv.MeanValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Topology.Order.IntermediateValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2813/2820] Replayed OscInt.VanDerCorput.One
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Calculus.Deriv.Slope` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Calculus.Deriv.Inv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.SpecialFunctions.ExpDeriv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Complex.RealDeriv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Complex.Trigonometric` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Topology.Perfect` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Topology.Order.IntermediateValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2814/2820] Replayed OscInt.VanDerCorput.Amplitude
+warning: OscInt/VanDerCorput/Amplitude.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Amplitude.lean: imports `Mathlib.Analysis.SpecialFunctions.Exp` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+Build completed successfully (2820 jobs).
+mkdir -p build && lake env lean Axioms.lean > build/axioms.out
+tools/target/release/audit build/axioms.out . build/audited.txt
+axiom audit: 36 of 36 theorems clean (permitted: propext, Classical.choice, Quot.sound)
+lake env lean StatementTypes.lean
+TYPE-OK OscInt.vanDerCorput_one : OscInt.Statements.VdC1Statement
+TYPE-OK OscInt.vanDerCorput_two : OscInt.Statements.VdC2Statement
+TYPE-OK OscInt.vanDerCorput_three : OscInt.Statements.VdC3Statement
+lake env lean MathlibNames.lean > /dev/null
+mkdir -p build/skipped && rm -f build/skipped/comparator; if [ -f comparator.json ]; then tools/target/release/challenge check . stamps/20261105T203058Z-7516eb518dce || { [ $? -eq 3 ] && mkdir -p build/skipped && touch build/skipped/comparator; }; else echo "comparator: SKIPPED: no frozen challenge yet"; mkdir -p build/skipped && touch build/skipped/comparator; fi
+challenge: export ./build/challenge/challenge.ndjson sha256 7fe4db8d718e07752f62e915c55dec0c99a02f1fe39f930cc3114b35f6e9442a
+challenge: export sha256 7fe4db8d718e07752f62e915c55dec0c99a02f1fe39f930cc3114b35f6e9442a matches the stamped manifest
+Resolving dependencies
+Building OscInt
+⚠ [825/872] Replayed OscInt.Basic
+warning: OscInt/Basic.lean: imports `Mathlib.Basic.Real.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Basic.lean: imports `Mathlib.Tactic.Ring` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2754/2818] Replayed OscInt.Statements.VanDerCorput
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.SpecialFunctions.Pow.Real` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.SpecialFunctions.Sqrt` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Add` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Pow` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/Statements/VanDerCorput.lean: imports `Mathlib.Analysis.Calculus.Deriv.Mul` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2770/2818] Replayed OscInt.VanDerCorput.Split
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Analysis.Calculus.Darboux` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Analysis.Calculus.Deriv.MeanValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Split.lean: imports `Mathlib.Topology.Order.IntermediateValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2813/2818] Replayed OscInt.VanDerCorput.One
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Calculus.Deriv.Slope` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Calculus.Deriv.Inv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.SpecialFunctions.ExpDeriv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Complex.RealDeriv` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Analysis.Complex.Trigonometric` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Topology.Perfect` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/One.lean: imports `Mathlib.Topology.Order.IntermediateValue` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+⚠ [2814/2818] Replayed OscInt.VanDerCorput.Amplitude
+warning: OscInt/VanDerCorput/Amplitude.lean: imports `Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+warning: OscInt/VanDerCorput/Amplitude.lean: imports `Mathlib.Analysis.SpecialFunctions.Exp` from package `mathlib`, which is designed for use with the module system; consider adding `module` to the start of this file
+Build completed successfully (2818 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.vanDerCorput_one, OscInt.vanDerCorput_two, OscInt.vanDerCorput_three, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 37294 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 37297 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 37297 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+cd tools && cargo build --release --locked --quiet
+mkdir -p build/skipped && rm -f build/skipped/stamp-verify; if [ -n "stamps/20261105T203058Z-7516eb518dce/" ]; then tools/target/release/stamp verify . stamps/20261105T203058Z-7516eb518dce/; else echo "stamp-verify: SKIPPED: no stamp yet"; mkdir -p build/skipped && touch build/skipped/stamp-verify; fi
+manifest: 60 file hashes match commit 7516eb518dce585ffc7e831ba6171afa9b938e46
+freetsa: Verification: OK; Time stamp: Nov  5 20:30:59 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  5 20:30:59 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  5 20:30:59 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+
+== verify-all
+PASS        verify-toolchain
+PASS        tools-test
+PASS        guard
+PASS        lean
+PASS        lean-replay
+PASS        commit
+PASS        comparator
+PASS        stamp-verify
+RESULT PASS
+exit 0
