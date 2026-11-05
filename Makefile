@@ -45,3 +45,6 @@ stamp-verify: tools
 
 verify-all: tools
 	$(T)/verify_all
+
+numerics:
+	cd numerics && cargo build --release --locked --quiet && ./target/release/oscint-numerics

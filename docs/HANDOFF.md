@@ -11,10 +11,13 @@ For a reader who saw nothing. Read `docs/lessons.md` first.
   `stamp`, `toolchain`, `verify_all`. Formats: `docs/commitment-format.md`.
 - CI (`.github/workflows/ci.yml`): `verify-all` on every push; manual job `mathlib-from-source`.
 - Docs: toolchain and Mathlib-gap tables (`docs/toolchain.md`), prior-art gate (`docs/prior_art.md`).
+- `numerics/`: f64 probes of S1's constants and S2–S4's rates and D4 limit (`make numerics`, ~5 min; not in CI;
+  results in `numerics/results-2026-11-05.txt`). Tooling for catching statement errors, not evidence.
 
 ## What is verified, by what
 - Toolchain: `make verify-toolchain` (archive and installer hashes; archive ↔ installed toolchain `diff -r`).
-- Skeleton theorem: axiom audit 1 of 1; replay by seven checker runs (`build/replay/summary.txt`; CI log).
+- Skeleton theorem: axiom audit 1 of 1; replay by seven checker runs (`build/replay/summary.txt`; CI run
+  https://github.com/thomas-falk-research/lean-oscillatory/actions/runs/42099595128, green, INCOMPLETE as expected).
 - Gate self-tests, run by hand on 2026-11-05 (`docs/lessons.md` 3, 5, 6): each rejected by the step named there.
 - Not yet exercised on a real statement: `commit` (validated on a probe statement only), `challenge` (never run;
   its list of constants required by `lake comparator` must be checked against comparator's `Exporting #[…]` line on
@@ -29,7 +32,7 @@ repository is named `lean-oscillatory` (the brief says `oscint-lean`), which col
 
 ## Next (after the decision)
 M1 per the brief's process: `docs/statements.md` entry, `OscInt/Statements/S1.lean` with sanity theorem, numerics
-binary in `numerics/`, `make commit`, commit, `make stamp`, blind statement review into `review/`, then proofs.
+probes added to `numerics/` for its exact hypotheses, `make commit`, commit, `make stamp`, blind statement review into `review/`, then proofs.
 
 ## Commands
 ```bash

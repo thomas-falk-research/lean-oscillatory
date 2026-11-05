@@ -35,3 +35,8 @@ directory whose `OscInt` oleans all have sources. Check: replay step "no stale b
 An export command that failed produced an empty file, which the checker accepted. Rule: before any checker runs,
 the export must contain every audited theorem as a theorem and only permitted axioms. Check: replay
 `check_export()`.
+
+## 7. `verify-all` rebuilds three times (2026-11-05)
+`lean-replay` and `commit` each depend on `lean`, so one `verify-all` runs the build and the audit three times
+(about 5 s each with a warm cache). Harmless now; with a large library it will cost minutes. Rule: when the build
+exceeds a minute, make the audit outputs file targets so make skips repeats. No check yet (a timing, not a rule).
