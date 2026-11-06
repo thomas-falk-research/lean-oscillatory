@@ -10,3 +10,5 @@ import OscInt.D4.Assembly
 import OscInt.D4.Open
 import OscInt.D4.Basic
 import OscInt.D4.Gauge
+import OscInt.D4.Rescale
+import OscInt.D4.Final
