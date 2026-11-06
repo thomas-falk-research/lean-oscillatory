@@ -11,7 +11,8 @@ marks a set of newly machine-checked statements.
 
 ## v0.2.0 — 2026-11-06
 
-First release. Machine-checked as stated (`docs/STATUS.md`; record `docs/replay/2026-11-06-S4b-final-verify-all.txt`):
+DOI [10.5281/zenodo.24021329](https://doi.org/10.5281/zenodo.24021329) (all versions:
+[10.5281/zenodo.24021328](https://doi.org/10.5281/zenodo.24021328)). First release. Machine-checked as stated (`docs/STATUS.md`; record `docs/replay/2026-11-06-S4b-final-verify-all.txt`):
 
 - S1 one-dimensional van der Corput lemma with amplitude, constants 3, 8, 18 (`OscInt.vanDerCorput_one/two/three`;
   proof ported from roos-j/lean-oscillatory, Mathlib PR #39406).

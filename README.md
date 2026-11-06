@@ -1,8 +1,11 @@
 # OscInt
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24021328.svg)](https://doi.org/10.5281/zenodo.24021328)
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0001--9478--6061-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0001-9478-6061)
 
-Author: Thomas Falk III ([ORCID 0009-0001-9478-6061](https://orcid.org/0009-0001-9478-6061)). Cite via `CITATION.cff`.
+Author: Thomas Falk III ([ORCID 0009-0001-9478-6061](https://orcid.org/0009-0001-9478-6061)). Cite via `CITATION.cff` or the Zenodo record: all versions
+[10.5281/zenodo.24021328](https://doi.org/10.5281/zenodo.24021328), v0.2.0
+[10.5281/zenodo.24021329](https://doi.org/10.5281/zenodo.24021329).
 
 A Lean 4 + Mathlib library of uniform oscillatory-integral estimates in one and two variables: van der Corput with
 explicit constants (S1), nondegenerate stationary phase uniform in a linear term (S2), the uniform fold

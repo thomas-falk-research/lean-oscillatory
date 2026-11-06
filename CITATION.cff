@@ -10,6 +10,15 @@ authors:
 license: Apache-2.0
 repository-code: "https://github.com/thomas-falk-research/lean-oscillatory"
 version: "0.2.0"
+doi: "10.5281/zenodo.24021328"
+date-released: "2026-11-06"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24021328"
+    description: "All versions (concept DOI)"
+  - type: doi
+    value: "10.5281/zenodo.24021329"
+    description: "Version 0.2.0"
 keywords:
   - Lean 4
   - Mathlib

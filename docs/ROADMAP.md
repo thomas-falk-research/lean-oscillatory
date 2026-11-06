@@ -54,7 +54,7 @@ trust chain.
 
 ## 3. Interoperability and packaging
 - [ ] **A stable way to depend on the library** *(downstream)*:
-  - [ ] a tagged release (§6);
+  - [x] a tagged release (`v0.2.0`, §6);
   - [ ] a README section on adding OscInt as a Lake dependency (`require oscint from git … @ "vX.Y.Z"`), with a tested
         example project in CI; Reservoir listing;
   - [ ] a stated Mathlib upgrade policy (below);
@@ -108,11 +108,11 @@ trust chain.
       `make commit`), recorded in `docs/toolchain.md`.
 - [ ] Upgrade the OpenTimestamps proofs in `stamps/` from pending to Bitcoin-attested, and verify them.
 - [ ] **owner** Branch protection on `main` requiring CI; Dependabot for the SHA-pinned GitHub Actions.
-- [ ] **First release** (`v0.2.0`), in this order:
+- [ ] **First release** (`v0.2.0`; steps 1–4 done, step 5 open), in this order:
   1. [x] author name and ORCID iD in `CITATION.cff` and `.zenodo.json`; ORCID badge in `README.md`;
   2. [x] **owner** repository connected to Zenodo and ORCID (2026-11-06);
-  3. [ ] **owner** publish the GitHub release `v0.2.0` with the notes in `CHANGELOG.md` (publishing the release is what
-     makes Zenodo mint the DOI);
-  4. [ ] add the Zenodo DOI badge to `README.md` and `doi:` to `CITATION.cff`;
+  3. [x] **owner** GitHub release `v0.2.0` published (2026-11-06); Zenodo minted 10.5281/zenodo.24021329
+     (concept DOI 10.5281/zenodo.24021328);
+  4. [x] Zenodo DOI badge in `README.md`; `doi:` and `identifiers:` in `CITATION.cff`;
   5. archive in Software Heritage; sign release artifacts (Sigstore).
 - [ ] **owner** Publication: venue, preprint, outreach.
