@@ -1,10 +1,6 @@
 name = "oscint"
 version = "0.1.0"
 defaultTargets = ["OscInt", "Blueprint"]
-# Our files are plain (non-module) Lean files that import Mathlib, which uses the module system. The statement files
-# are stamped and cannot gain a `module` header without a re-freeze (docs/ROADMAP.md §3), so we declare the mix
-# knowingly; this silences Lake's per-import warning and does not change how anything is compiled.
-allowNonModules = true
 
 [leanOptions]
 autoImplicit = false

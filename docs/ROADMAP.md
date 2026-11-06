@@ -66,8 +66,7 @@ trust chain.
       record) the re-freeze rule, e.g. a machine-checked equivalence between each new statement and its stamped
       predecessor, then a new stamp and pin.
 - [ ] Mathlib `module` syntax for the library files (needed to upstream; the statement files can only change with a
-      re-freeze). Until then `allowNonModules = true` in `lakefile.toml` declares the mix and silences Lake's
-      per-import warning.
+      re-freeze). Until then, `allowNonModules = true` in `lakefile.toml` (§4) would declare the mix.
 - [ ] Stable public names and a deprecation policy; semantic versions (`CHANGELOG.md` exists).
 - [ ] **owner** Upstream the general lemmas listed in `docs/upstream.md` to Mathlib *(downstream: partitions of unity
       with compact support, the polar-coordinates integral and the uniform Leibniz bounds first)*.
@@ -78,8 +77,11 @@ trust chain.
 - [ ] Generated API documentation (doc-gen4) published as a site; a browsable blueprint site with the dependency
       graph built from `Blueprint/` and the route documents *(downstream)*; statement docstrings that cite the textbook
       statement they formalise *(downstream)*.
-- [x] Build noise: Lake's module-system warnings silenced by `allowNonModules`; `verify-all` no longer re-runs the
-      Lean step for every later step (`build/lean.ok`); the pinned Rust toolchain is installed explicitly in CI.
+- [ ] Build noise (seen in the CI log of PR #2): silence Lake's per-import module-system warnings with
+      `allowNonModules = true` in `lakefile.toml` (Lake's documented opt-out; tested locally: 0 warnings, compilation
+      unchanged); make `lean-replay`, `commit` and `comparator` depend on a `build/lean.ok` marker so `verify-all`
+      runs the Lean step once instead of four times (lessons 7); replace the deprecated `if_false` in
+      `OscInt/D4/LimitAssembly.lean`; install the pinned Rust toolchain explicitly in CI.
 - [ ] `CONTRIBUTING.md`: how to add a statement end to end (statement file, sanity theorems, challenge, comparator
       configuration, stamp, pins, blind review, blueprint, proofs, replay, post-proof review, STATUS row).
 - [ ] A scaffolder (`tools` binary) that generates the statement file, challenge, comparator configuration, sanity

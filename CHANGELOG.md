@@ -5,9 +5,6 @@ marks a set of newly machine-checked statements.
 
 ## Unreleased
 
-- Build: `allowNonModules = true` in `lakefile.toml` silences Lake's per-import module-system warnings (no change to
-  compilation); `make verify-all` runs the Lean step once instead of once per later step; deprecated `if_false` in
-  `OscInt/D4/LimitAssembly.lean` replaced; CI installs the pinned Rust toolchain explicitly.
 - `docs/ROADMAP.md`: downstream feedback folded in (explicit constants, local smoothness, asymptotic expansions,
   parametric uniformity, stable dependency with a machine-readable statement list, periodic and lattice settings,
   Keel–Tao).
