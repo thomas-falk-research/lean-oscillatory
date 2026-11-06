@@ -88,3 +88,10 @@ With 21 modules, `leanchecker OscInt` (which re-checks every submodule in one pr
 was killed by the memory cgroup; the replay reported a FAIL with an empty message while every per-module run and all
 six export kernels passed. Rule: replay per submodule only; the root module may only import. Check: `replay.rs` skips
 the root; `guard.rs` rejects anything but imports in `OscInt.lean` (test `root_module_imports_only`).
+
+## 15. "Lead-verified" was weaker than it read (2026-11-06)
+The adversarial review showed that module build + guard + `#print axioms` + type check accept a `False` theorem
+added by a `run_tac` metaprogram with kernel checking switched off (option name built from strings). Only kernel
+replays catch it; the final claim rested on them. Rule: verifying an agent's part includes per-module
+`leanchecker`, and the guard forbids metaprogramming entry points in library files. Check: guard tokens and tests
+(`run_tac`, `open Lean`, `Lean.`, `set_option`, …); `replay.rs` per-module `leanchecker` including Blueprint.

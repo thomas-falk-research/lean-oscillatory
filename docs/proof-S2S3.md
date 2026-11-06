@@ -1,6 +1,7 @@
 # On-paper proof of S2.1, S2.2, S3 (route for the blueprint)
 
-Status: written by the lead (2026-11-05), not yet refereed. Every step names the Lean lemma or blueprint part that
+Status: written by the lead (2026-11-05), refereed (`review/2026-11-05-S2S3-proof-route.md`, no BLOCKER), and
+formalised (`OscInt/StationaryPhase/`, final theorems in `Final.lean`). Every step names the Lean lemma or blueprint part that
 will carry it. Notation as in `docs/statements.md` S2/S3. "Family" means a family of class Cⁿ over a compact space.
 Constants C may change from line to line and depend only on the data fixed before A, M, σ, p, m.
 

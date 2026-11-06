@@ -176,13 +176,39 @@ fn verify(root: &Path, dir: &Path) -> Result<(), String> {
     Ok(())
 }
 
+/// Verifies every stamp directory named in `stamps/pins.txt` (each once); fails on a duplicate pin key.
+fn verify_pinned(root: &Path) -> Result<(), String> {
+    let pins = fs::read_to_string(root.join("stamps/pins.txt")).map_err(|e| format!("stamps/pins.txt: {e}"))?;
+    let mut keys = Vec::new();
+    let mut dirs: Vec<String> = Vec::new();
+    for l in pins.lines().filter(|l| !l.starts_with('#') && !l.trim().is_empty()) {
+        let (k, d) = l.split_once(' ').ok_or_else(|| format!("bad pin line: {l}"))?;
+        if keys.contains(&k.to_string()) {
+            return Err(format!("duplicate pin key {k} (replace the line; the last one would win silently)"));
+        }
+        keys.push(k.to_string());
+        if !dirs.contains(&d.trim().to_string()) {
+            dirs.push(d.trim().to_string());
+        }
+    }
+    if dirs.is_empty() {
+        return Err("no pinned stamps".into());
+    }
+    for d in dirs {
+        println!("== {d}");
+        verify(root, &root.join(&d))?;
+    }
+    Ok(())
+}
+
 fn main() {
     let a: Vec<String> = std::env::args().collect();
     let r = match a.iter().map(String::as_str).collect::<Vec<_>>().as_slice() {
         [_, "create", root, out] => create(Path::new(root), Path::new(out)),
         [_, "verify", root, dir] => verify(Path::new(root), Path::new(dir)),
+        [_, "verify-pinned", root] => verify_pinned(Path::new(root)),
         _ => {
-            eprintln!("usage: stamp create ROOT OUTDIR | stamp verify ROOT DIR");
+            eprintln!("usage: stamp create ROOT OUTDIR | stamp verify ROOT DIR | stamp verify-pinned ROOT");
             std::process::exit(2);
         }
     };

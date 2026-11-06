@@ -102,3 +102,11 @@ Modelling choices and deviations from the brief (explicit in the Lean header):
 Clarification added after the S2/S3 stamp (2026-11-05, from the route referee; the stamped text above is
 unchanged): the phase regularity C⁴ in S2.2 and S3 is used by second y-derivatives of the Hadamard factors h and K
 (fourth derivatives of the phase), not by the factor H mentioned above, which the refereed route does not use.
+
+Clarification added after the S2/S3 proofs (2026-11-06, adversarial review MINOR 9 and NIT 11; stamped text
+unchanged): S3 requires the fold-or-nondegenerate condition at every point of K, independently of p, including
+non-critical points; it therefore excludes, e.g., Ψ = k₁³ + k₂³ + k₁ with 0 ∈ K although that phase has no critical
+point. This is a deliberate restriction (it makes the condition independent of K′ and is satisfied by the S4 use, the
+rescaled D4 cubics on an annulus); a version imposing it only at critical points of Ψ_σ + p· for p ∈ K′ would need a
+new statement. In the rank-one branch, "Hessian nonzero" is written `∃ v w, dd ≠ 0`; together with `hessDet = 0`
+(the other disjunct failing) this is exactly rank one.

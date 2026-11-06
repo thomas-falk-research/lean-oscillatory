@@ -44,7 +44,7 @@ stamp: commit challenge-export
 	$(T)/stamp create . stamps/$(shell date -u +%Y%m%dT%H%M%SZ)-$(shell git rev-parse --short=12 HEAD)
 
 stamp-verify: tools
-	$(UNSKIP); if [ -n "$(LATEST_STAMP)" ]; then $(T)/stamp verify . $(LATEST_STAMP); else echo "stamp-verify: SKIPPED: no stamp yet"; $(SKIP); fi
+	$(UNSKIP); if [ -f stamps/pins.txt ]; then $(T)/stamp verify-pinned .; else echo "stamp-verify: SKIPPED: no pinned stamp yet"; $(SKIP); fi
 
 verify-all: tools
 	$(T)/verify_all

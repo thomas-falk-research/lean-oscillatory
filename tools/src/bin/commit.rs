@@ -95,7 +95,8 @@ fn enforce_pins(root: &Path) -> Result<usize, String> {
     let pin_of = |name: &str| {
         pins.lines()
             .filter(|l| !l.starts_with('#'))
-            .find_map(|l| l.split_once(' ').filter(|(n, _)| *n == name).map(|(_, d)| d.trim().to_string()))
+            .filter_map(|l| l.split_once(' ').filter(|(n, _)| *n == name).map(|(_, d)| d.trim().to_string()))
+            .last()
     };
     let mut unpinned = 0;
     let mut manifests = Vec::new();

@@ -7,6 +7,12 @@ no axioms, and no `theorem` keyword for the guard to count), prints one `AUDIT <
 comma-separated list, the content of `#print axioms`), then `AUDIT-TOTAL <n> <clean>`. It fails unless every
 theorem uses a subset of {propext, Classical.choice, Quot.sound}. `tools/src/bin/audit.rs` checks the output and
 that `<n>` equals the number of `theorem`/`lemma` declarations the guard counts in the sources.
+
+Limits (adversarial review 2026-11-06): this audit is not independent of the kernel replay. A metaprogram can add a
+theorem without source position (not enumerated) and with kernel checking switched off; only `leanchecker` per
+module, the export kernels and `lake comparator` reject that, and the guard forbids the metaprogramming needed.
+Excluding projections cannot hide axioms from a final theorem: its transitive axiom set and its kernel replay
+include everything it uses.
 -/
 
 open Lean Elab Command

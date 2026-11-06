@@ -1,6 +1,6 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (12 entries).
+For a reader who saw nothing. Read `docs/lessons.md` first (15 entries).
 
 ## What exists (session 2, 2026-11-06)
 - Lean v4.35.0, Mathlib `56a0058` (tag v4.35.0). Library `OscInt`:

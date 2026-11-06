@@ -40,6 +40,7 @@ fn modules(root: &Path) -> Vec<String> {
     // 13 GB at 21 modules (OOM-killed, lessons 14). Each submodule is checked on its own instead.
     let mut out = Vec::new();
     walk(&root.join("OscInt"), root, &mut out);
+    walk(&root.join("Blueprint"), root, &mut out);
     out
 }
 
@@ -151,6 +152,7 @@ fn go(root: &str, names_path: &str, outdir: &str) -> i32 {
         }
         let lib = root.join(".lake/build/lib/lean");
         walk(&lib.join("OscInt"), &mut oleans);
+        walk(&lib.join("Blueprint"), &mut oleans);
         for o in oleans {
             let rel = o.strip_prefix(&lib).unwrap().with_extension("");
             let m = rel.components().map(|c| c.as_os_str().to_string_lossy().into_owned()).collect::<Vec<_>>().join(".");

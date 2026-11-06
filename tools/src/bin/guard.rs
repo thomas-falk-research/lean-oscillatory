@@ -14,7 +14,8 @@ use std::path::{Path, PathBuf};
 pub const FORBIDDEN: &[&str] = &[
     "sorry", "admit", "native_decide", "native", "axiom", "opaque", "unsafe", "implemented_by", "extern",
     "macro_rules", "macro", "notation", "infix", "infixl", "infixr", "prefix", "postfix", "syntax", "elab",
-    "run_cmd", "run_meta", "run_elab", "#eval", "initialize", "debug.skipKernelTC",
+    "run_cmd", "run_meta", "run_elab", "run_tac", "by_elab", "#eval", "initialize", "debug.skipKernelTC",
+    "withOptions", "addDecl", "addAndCompile", "attribute",
 ];
 
 fn lean_files(root: &Path, out: &mut Vec<PathBuf>) {
@@ -125,6 +126,23 @@ pub fn check_source(rel: &str, src: &str) -> Vec<String> {
         if toks.windows(2).any(|w| w == ["local", "instance"]) {
             v.push(format!("{rel}:{}: forbidden `local instance`", ln + 1));
         }
+        // Metaprogramming from inside a proof file (adversarial review 2026-11-06, MAJOR 1): `open Lean`, any
+        // `Lean.`-qualified identifier, and `set_option` other than a per-declaration heartbeat/recursion limit.
+        if toks.windows(2).any(|w| w[0] == "open" && (w[1] == "Lean" || w[1].starts_with("Lean."))) {
+            v.push(format!("{rel}:{}: forbidden `open Lean`", ln + 1));
+        }
+        if toks.iter().any(|t| t.trim_start_matches(['(', '@', '`', '!']).starts_with("Lean.")) && toks.first() != Some(&"import") {
+            v.push(format!("{rel}:{}: forbidden `Lean.`-qualified identifier", ln + 1));
+        }
+        for (i, t) in toks.iter().enumerate() {
+            if *t == "set_option" {
+                let ok = matches!(toks.get(i + 1), Some(&"maxHeartbeats") | Some(&"maxRecDepth"))
+                    && toks.get(i + 3) == Some(&"in");
+                if !ok {
+                    v.push(format!("{rel}:{}: `set_option` allowed only as `set_option maxHeartbeats N in`", ln + 1));
+                }
+            }
+        }
         if toks.first() == Some(&"import") && toks.iter().skip(1).any(|t| *t == "Challenge" || t.starts_with("Challenge.")) {
             v.push(format!("{rel}:{}: imports the Challenge library", ln + 1));
         }
@@ -205,6 +223,12 @@ mod tests {
             "elab \"x\" : term => pure default",
             "import Challenge.S1",
             "import Lean.Elab.Command",
+            "theorem t : True := by run_tac pure ()",
+            "open Lean Elab Tactic in\ntheorem t : True := trivial",
+            "theorem t : True := by exact (Lean.Elab.Tactic.evalTactic default |> fun _ => trivial)",
+            "set_option pp.all true in\ntheorem t : True := trivial",
+            "set_option maxHeartbeats 400000\ntheorem t : True := trivial",
+            "attribute [simp] foo",
             "def P : Prop := ∀ f : ℝ → ℝ, ContDiff ℝ ⊤ f",
             "theorem t (h : ContDiffOn ℝ ⊤ f s) : True := trivial",
             "run_meta pure ()",
@@ -219,6 +243,7 @@ mod tests {
             "-- sorry in a comment\ntheorem t : 1 = 1 := rfl",
             "/- axiom -/ def s := \"sorry\"",
             "theorem sorryFree' : True := trivial",
+            "set_option maxHeartbeats 400000 in\ntheorem t : True := trivial",
         ] {
             assert!(check_source("OscInt/X.lean", ok).is_empty(), "false positive: {ok}");
         }

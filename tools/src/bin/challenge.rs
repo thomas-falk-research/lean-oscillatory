@@ -82,6 +82,13 @@ fn check(root: &Path, config: &str, stamp: &Path) -> Result<bool, String> {
         }
         _ => {}
     }
+    // The configuration itself (theorem names, permitted axioms) must be the stamped one (adversarial review
+    // 2026-11-06, MINOR 5).
+    let ch = sha256_file(&root.join(config))?;
+    let manifest0 = fs::read_to_string(stamp.join("manifest.txt")).map_err(|e| format!("stamp manifest: {e}"))?;
+    if !manifest0.lines().any(|l| l == format!("{ch}  {config}")) {
+        return Err(format!("{config} (sha256 {ch}) is not the file recorded in {}/manifest.txt", stamp.display()));
+    }
     let out = export(root, config)?;
     let h = sha256_file(&out)?;
     let manifest = fs::read_to_string(stamp.join("manifest.txt")).map_err(|e| format!("stamp manifest: {e}"))?;
@@ -112,7 +119,10 @@ fn configs(root: &Path) -> Vec<String> {
 fn pinned(root: &Path, config: &str) -> Option<String> {
     let pins = fs::read_to_string(root.join("stamps/pins.txt")).ok()?;
     let key = format!("challenge:{config}");
-    pins.lines().find_map(|l| l.split_once(' ').filter(|(k, _)| *k == key).map(|(_, d)| d.trim().to_string()))
+    pins.lines()
+        .filter(|l| !l.starts_with('#'))
+        .filter_map(|l| l.split_once(' ').filter(|(k, _)| *k == key).map(|(_, d)| d.trim().to_string()))
+        .last()
 }
 
 /// Judges every configuration; Ok(false) if any is unpinned or not yet solved (and none failed).
