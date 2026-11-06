@@ -2,7 +2,8 @@ import OscInt
 
 /-!
 Axiom audit. `#audit_axioms` enumerates every theorem declared (with source position) in a module whose name is
-`OscInt` or starts with `OscInt.`, prints one `AUDIT <name> <axioms>` line each (`<axioms>` is `none` or a
+`OscInt` or starts with `OscInt.`, except structure projections (generated for `Prop` fields: kernel projections,
+no axioms, and no `theorem` keyword for the guard to count), prints one `AUDIT <name> <axioms>` line each (`<axioms>` is `none` or a
 comma-separated list, the content of `#print axioms`), then `AUDIT-TOTAL <n> <clean>`. It fails unless every
 theorem uses a subset of {propext, Classical.choice, Quot.sound}. `tools/src/bin/audit.rs` checks the output and
 that `<n>` equals the number of `theorem`/`lemma` declarations the guard counts in the sources.
@@ -18,7 +19,7 @@ elab "#audit_axioms" : command => do
     | none => false
   let mut thms : Array Name := #[]
   for (n, ci) in env.constants.map₁.toList do
-    if ours n && (ci matches .thmInfo _) && !n.isInternalDetail then
+    if ours n && (ci matches .thmInfo _) && !n.isInternalDetail && !env.isProjectionFn n then
       if (← findDeclarationRanges? n).isSome then thms := thms.push n
   thms := thms.qsort Name.lt
   let mut clean := 0

@@ -21,3 +21,6 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
 #assert_type_is OscInt.vanDerCorput_one OscInt.Statements.VdC1Statement
 #assert_type_is OscInt.vanDerCorput_two OscInt.Statements.VdC2Statement
 #assert_type_is OscInt.vanDerCorput_three OscInt.Statements.VdC3Statement
+#assert_type_is OscInt.nonStationary OscInt.Statements.NonStationaryStatement
+#assert_type_is OscInt.stationaryPhase OscInt.Statements.StationaryPhaseStatement
+#assert_type_is OscInt.fold OscInt.Statements.FoldStatement

@@ -76,3 +76,9 @@ The S2/S3 infrastructure blueprint wrote `ContDiff ℝ ⊤` for "smooth". At Mat
 of unity part false and the cut-off part vacuous. Proof agent G3 found it by proving `¬ PartitionFacts` instead of
 weakening it (rule 3 of the briefs worked). Rule: write `∞` (with `open scoped ContDiff`) for C^∞, or a numeral.
 Check: guard rejects `ContDiff…`, `ContDiffOn…` followed by `⊤` (tests in `guard.rs`).
+
+## 13. Structure projections are theorems the guard cannot count (2026-11-06)
+A helper `structure` with `Prop` fields (agent H2) adds one projection theorem per field, with a source position
+but no `theorem` keyword; the audit enumerated 272 theorems, the guard counted 267, and `make lean` failed (the
+cross-check worked). Projections are kernel projections and carry no axioms. Rule: the audit excludes
+`isProjectionFn` constants and says so in its header. Check: the count comparison in `audit.rs` stays strict.
