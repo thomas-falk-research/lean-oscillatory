@@ -69,10 +69,10 @@ nested-`fderiv` `dd`/`ddd`). Users write Mathlib idioms.
 - [ ] Upgrade the OpenTimestamps proofs in `stamps/` from pending to Bitcoin-attested, and verify them.
 - [ ] **owner** Branch protection on `main` requiring CI; Dependabot for the SHA-pinned GitHub Actions.
 - [ ] **First release** (`v0.2.0`), in this order:
-  1. **owner** author name and ORCID iD in `CITATION.cff` (`authors: - family-names, given-names, orcid`);
-  2. **owner** connect the repository to Zenodo (GitHub integration) so a release mints a DOI;
-  3. tag and publish the GitHub release with release notes from `CHANGELOG.md` (owner approves the tag);
-  4. add to `README.md` the Zenodo DOI badge and the ORCID badge linking `https://orcid.org/<iD>`, and the DOI to
-     `CITATION.cff`;
+  1. [x] author name and ORCID iD in `CITATION.cff` and `.zenodo.json`; ORCID badge in `README.md`;
+  2. [x] **owner** repository connected to Zenodo and ORCID (2026-11-06);
+  3. [ ] **owner** publish the GitHub release `v0.2.0` with the notes in `CHANGELOG.md` (publishing the release is what
+     makes Zenodo mint the DOI);
+  4. [ ] add the Zenodo DOI badge to `README.md` and `doi:` to `CITATION.cff`;
   5. archive in Software Heritage; sign release artifacts (Sigstore).
 - [ ] **owner** Publication: venue, preprint, outreach.

@@ -1,7 +1,11 @@
 {
   "title": "OscInt: uniform oscillatory-integral estimates in Lean 4 and Mathlib",
   "upload_type": "software",
-  "creators": [{"name": "[[AUTHOR]]"}],
+  "creators": [
+    {"name": "Falk III, Thomas", "orcid": "0009-0001-9478-6061"}
+  ],
+  "description": "A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates: the one-dimensional van der Corput lemma with explicit constants, non-stationary and nondegenerate stationary phase uniform in a linear term, the uniform fold estimate m^{-5/6}, the uniform D4 (umbilic) estimate t^{-2/3} for both umbilics, the D4 limit t^{2/3}∫e^{itφ}A → c_C A(0) with a Gamma-free constant, and c_C > 0. Statements are frozen and timestamped before their proofs and replayed by six independent kernels.",
+  "keywords": ["Lean 4", "Mathlib", "formal verification", "oscillatory integrals", "stationary phase", "van der Corput lemma"],
   "license": "Apache-2.0",
-  "version": "0.1.0"
+  "version": "0.2.0"
 }
