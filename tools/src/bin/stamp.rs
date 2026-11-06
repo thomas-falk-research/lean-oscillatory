@@ -1,0 +1,236 @@
+#![forbid(unsafe_code)]
+//! `stamp create ROOT OUTDIR`: writes `OUTDIR/manifest.txt` (commit, then `<sha256>  <path>` for every file
+//! tracked at HEAD, then the statement commitments from `build/commit/commitments.txt` and the SHA-256 of each
+//! frozen challenge export in `build/challenge/` if present), obtains RFC 3161 tokens for the manifest from
+//! three authorities and verifies each against its pinned root, and submits the manifest digest to two
+//! OpenTimestamps calendars (pending `.ots` proofs; upgrade them later with any OpenTimestamps client).
+//! Requires a clean working tree.
+//! `stamp verify ROOT DIR`: re-verifies the tokens in DIR against the pinned roots and the manifest against the
+//! files at the recorded commit. Exit 1 on any failure.
+//! Network and certificate work is delegated to `curl` and `openssl`; hashing to `sha256sum`.
+
+use oscint_tools::sys::{run, sha256_file};
+use std::fs;
+use std::path::Path;
+use std::process::Command;
+
+/// (label, URL, pinned root file under `stamps/roots/`, SHA-256 of that file).
+const TSAS: &[(&str, &str, &str, &str)] = &[
+    ("freetsa", "https://freetsa.org/tsr", "freetsa.pem", "2151b61137ffa86bf664691ba67e7da0b19f98c758e3d228d5d8ebf27e044438"),
+    ("digicert", "http://timestamp.digicert.com", "digicert-trusted-root-g4.pem", "ce7d6b44f5d510391be98c8d76b18709400a30cd87659bfebe1c6f97ff5181ee"),
+    ("sectigo", "http://timestamp.sectigo.com", "usertrust-rsa.pem", "8a3dbcb92ab1c6277647fe2ab8536b5c982abbfdb1f1df5728e01b906aba953a"),
+];
+const OTS_CALENDARS: &[(&str, &str)] = &[
+    ("a.pool", "https://a.pool.opentimestamps.org/digest"),
+    ("b.pool", "https://b.pool.opentimestamps.org/digest"),
+];
+const OTS_MAGIC: &[u8] = b"\x00OpenTimestamps\x00\x00Proof\x00\xbf\x89\xe2\xe8\x84\xe8\x92\x94";
+
+fn git(root: &Path, args: &[&str]) -> Result<String, String> {
+    let (ok, o, e) = run(Command::new("git").arg("-C").arg(root).args(args))?;
+    if !ok {
+        return Err(format!("git {args:?}: {e}"));
+    }
+    Ok(o)
+}
+
+fn hex_decode(h: &str) -> Vec<u8> {
+    (0..h.len()).step_by(2).map(|i| u8::from_str_radix(&h[i..i + 2], 16).unwrap()).collect()
+}
+
+fn check_root(root: &Path, file: &str, pin: &str) -> Result<String, String> {
+    let p = root.join("stamps/roots").join(file);
+    let h = sha256_file(&p)?;
+    if h != pin {
+        return Err(format!("pinned root {file} has sha256 {h}, expected {pin}"));
+    }
+    Ok(p.to_string_lossy().into_owned())
+}
+
+fn verify_token(root: &Path, dir: &Path, label: &str, rootfile: &str, pin: &str) -> Result<String, String> {
+    let ca = check_root(root, rootfile, pin)?;
+    let tsr = dir.join(format!("{label}.tsr"));
+    let (ok, o, e) = run(Command::new("openssl").args(["ts", "-verify", "-in"]).arg(&tsr).arg("-data")
+        .arg(dir.join("manifest.txt")).args(["-CAfile", &ca]))?;
+    if !ok || !o.contains("Verification: OK") {
+        return Err(format!("{label}: verification failed: {}{}", o.trim(), e.trim()));
+    }
+    let (_, t, _) = run(Command::new("openssl").args(["ts", "-reply", "-text", "-in"]).arg(&tsr))?;
+    let when = t.lines().find(|l| l.starts_with("Time stamp:")).unwrap_or("Time stamp: ?").trim().to_string();
+    Ok(format!("{label}: Verification: OK; {when}"))
+}
+
+fn create(root: &Path, out: &Path) -> Result<(), String> {
+    if !git(root, &["status", "--porcelain"])?.trim().is_empty() {
+        return Err("working tree not clean; commit first".into());
+    }
+    let commit = git(root, &["rev-parse", "HEAD"])?.trim().to_string();
+    let mut m = format!("OSCINT-MANIFEST 1\ncommit {commit}\n");
+    for f in git(root, &["ls-files"])?.lines() {
+        m.push_str(&format!("{}  {f}\n", sha256_file(&root.join(f))?));
+    }
+    let cpath = root.join("build/commit/commitments.txt");
+    match fs::read_to_string(&cpath) {
+        Ok(c) => {
+            for l in c.lines() {
+                m.push_str(&format!("commitment {l}\n"));
+            }
+        }
+        Err(_) => m.push_str("commitment none (no statements yet)\n"),
+    }
+    if let Ok(rd) = fs::read_dir(root.join("build/challenge")) {
+        let mut v: Vec<_> = rd.flatten().map(|e| e.path()).filter(|p| p.extension().is_some_and(|x| x == "ndjson")).collect();
+        v.sort();
+        for p in v {
+            m.push_str(&format!("challenge-export {}  {}\n", sha256_file(&p)?, p.file_name().unwrap().to_string_lossy()));
+        }
+    }
+    fs::create_dir_all(out).map_err(|e| e.to_string())?;
+    let mpath = out.join("manifest.txt");
+    fs::write(&mpath, &m).map_err(|e| e.to_string())?;
+    let digest = sha256_file(&mpath)?;
+    println!("manifest sha256 {digest}");
+    let tsq = out.join("request.tsq");
+    let (ok, _, e) = run(Command::new("openssl").args(["ts", "-query", "-sha256", "-cert", "-data"]).arg(&mpath).arg("-out").arg(&tsq))?;
+    if !ok {
+        return Err(format!("openssl ts -query: {e}"));
+    }
+    let mut failures = Vec::new();
+    for (label, url, rootfile, pin) in TSAS {
+        let tsr = out.join(format!("{label}.tsr"));
+        let (ok, code, e) = run(Command::new("curl").args(["-sS", "-m", "60", "-H", "Content-Type: application/timestamp-query", "--data-binary"])
+            .arg(format!("@{}", tsq.display())).arg("-o").arg(&tsr).args(["-w", "%{http_code}", url]))?;
+        if !ok || code.trim() != "200" {
+            failures.push(format!("{label}: HTTP {} {e}", code.trim()));
+            continue;
+        }
+        match verify_token(root, out, label, rootfile, pin) {
+            Ok(v) => println!("{v}"),
+            Err(e) => failures.push(e),
+        }
+    }
+    let _ = fs::remove_file(&tsq);
+    let dbin = out.join("digest.bin");
+    fs::write(&dbin, hex_decode(&digest)).map_err(|e| e.to_string())?;
+    for (label, url) in OTS_CALENDARS {
+        let resp = out.join(format!("{label}.ots.resp"));
+        let (ok, code, e) = run(Command::new("curl").args(["-sS", "-m", "60", "--data-binary"]).arg(format!("@{}", dbin.display()))
+            .arg("-o").arg(&resp).args(["-w", "%{http_code}", url]))?;
+        let body = fs::read(&resp).unwrap_or_default();
+        if !ok || code.trim() != "200" || body.is_empty() || body[0] == 0xff {
+            failures.push(format!("opentimestamps {label}: HTTP {} {e}", code.trim()));
+            continue;
+        }
+        let mut ots = OTS_MAGIC.to_vec();
+        ots.push(0x01);
+        ots.push(0x08);
+        ots.extend(hex_decode(&digest));
+        ots.extend(body);
+        fs::write(out.join(format!("manifest.{label}.ots")), ots).map_err(|e| e.to_string())?;
+        let _ = fs::remove_file(&resp);
+        println!("opentimestamps {label}: pending proof written");
+    }
+    let _ = fs::remove_file(&dbin);
+    if failures.is_empty() {
+        Ok(())
+    } else {
+        Err(failures.join("; "))
+    }
+}
+
+fn verify(root: &Path, dir: &Path) -> Result<(), String> {
+    let m = fs::read_to_string(dir.join("manifest.txt")).map_err(|e| format!("manifest: {e}"))?;
+    let commit = m.lines().find_map(|l| l.strip_prefix("commit ")).ok_or("manifest has no commit line")?;
+    let mut n = 0;
+    for l in m.lines() {
+        let Some((h, path)) = l.split_once("  ") else { continue };
+        if h.len() != 64 || l.starts_with("commitment") || l.starts_with("challenge-export") {
+            continue;
+        }
+        let tmp = dir.join(".blob");
+        let blob = Command::new("git").arg("-C").arg(root).args(["show", &format!("{commit}:{path}")]).output().map_err(|e| e.to_string())?;
+        if !blob.status.success() {
+            return Err(format!("{path} not found at {commit}"));
+        }
+        fs::write(&tmp, &blob.stdout).map_err(|e| e.to_string())?;
+        let got = sha256_file(&tmp)?;
+        let _ = fs::remove_file(&tmp);
+        if got != h {
+            return Err(format!("{path}: sha256 at {commit} is {got}, manifest says {h}"));
+        }
+        n += 1;
+    }
+    println!("manifest: {n} file hashes match commit {commit}");
+    for (label, _, rootfile, pin) in TSAS {
+        println!("{}", verify_token(root, dir, label, rootfile, pin)?);
+    }
+    for (label, _) in OTS_CALENDARS {
+        let p = dir.join(format!("manifest.{label}.ots"));
+        let b = fs::read(&p).map_err(|e| format!("{}: {e}", p.display()))?;
+        let digest = hex_decode(&sha256_file(&dir.join("manifest.txt"))?);
+        if !b.starts_with(OTS_MAGIC) || b[OTS_MAGIC.len()..OTS_MAGIC.len() + 2] != [0x01, 0x08] || b[OTS_MAGIC.len() + 2..OTS_MAGIC.len() + 34] != digest[..] {
+            return Err(format!("{}: not an OpenTimestamps proof of this manifest", p.display()));
+        }
+        println!("opentimestamps {label}: proof file commits to the manifest digest (attestation not checked here)");
+    }
+    Ok(())
+}
+
+/// Verifies every stamp directory named in `stamps/pins.txt` (each once); fails on a duplicate pin key.
+fn verify_pinned(root: &Path) -> Result<(), String> {
+    let pins = fs::read_to_string(root.join("stamps/pins.txt")).map_err(|e| format!("stamps/pins.txt: {e}"))?;
+    let mut keys = Vec::new();
+    let mut dirs: Vec<String> = Vec::new();
+    for l in pins.lines().filter(|l| !l.starts_with('#') && !l.trim().is_empty()) {
+        let (k, d) = l.split_once(' ').ok_or_else(|| format!("bad pin line: {l}"))?;
+        if keys.contains(&k.to_string()) {
+            return Err(format!("duplicate pin key {k} (replace the line; the last one would win silently)"));
+        }
+        keys.push(k.to_string());
+        if !dirs.contains(&d.trim().to_string()) {
+            dirs.push(d.trim().to_string());
+        }
+    }
+    if dirs.is_empty() {
+        return Err("no pinned stamps".into());
+    }
+    for d in dirs {
+        println!("== {d}");
+        verify(root, &root.join(&d))?;
+    }
+    Ok(())
+}
+
+fn main() {
+    let a: Vec<String> = std::env::args().collect();
+    let r = match a.iter().map(String::as_str).collect::<Vec<_>>().as_slice() {
+        [_, "create", root, out] => create(Path::new(root), Path::new(out)),
+        [_, "verify", root, dir] => verify(Path::new(root), Path::new(dir)),
+        [_, "verify-pinned", root] => verify_pinned(Path::new(root)),
+        _ => {
+            eprintln!("usage: stamp create ROOT OUTDIR | stamp verify ROOT DIR | stamp verify-pinned ROOT");
+            std::process::exit(2);
+        }
+    };
+    if let Err(e) = r {
+        println!("stamp: FAIL: {e}");
+        std::process::exit(1);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn hex() {
+        assert_eq!(hex_decode("00ff10"), vec![0, 255, 16]);
+    }
+    #[test]
+    fn tampered_root_is_refused() {
+        let d = std::env::temp_dir().join(format!("oscint-stamp-test-{}", std::process::id()));
+        fs::create_dir_all(d.join("stamps/roots")).unwrap();
+        fs::write(d.join("stamps/roots/freetsa.pem"), "not the pinned root").unwrap();
+        assert!(check_root(&d, "freetsa.pem", TSAS[0].3).is_err());
+        let _ = fs::remove_dir_all(&d);
+    }
+}

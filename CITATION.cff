@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this library, please cite it as below."
+title: "OscInt: uniform oscillatory-integral estimates in Lean 4 and Mathlib"
+type: software
+authors:
+  - name: "[[AUTHOR]]"
+license: Apache-2.0
+repository-code: "https://github.com/thomas-falk-research/lean-oscillatory"
+version: "0.2.0"

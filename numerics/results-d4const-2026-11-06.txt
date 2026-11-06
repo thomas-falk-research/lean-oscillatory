@@ -1,0 +1,31 @@
+== Gamma (Lanczos)
+PASS  Γ(1/2) vs √π: 1.772453850906 vs 1.772453850906 (rel diff 0.0e0)
+PASS  Γ(1/3): 2.678938534708 vs 2.678938534708 (rel diff 3.3e-16)
+
+== I = ∫_0^∞ cos u u^(-1/3) du  (S4.3: alternating series)
+PASS  I vs Γ(2/3)/2: 0.677058969713 vs 0.677058969713 (rel diff 5.6e-15)
+      a_0 = 1.471135, a_1 = -1.381024, a_2 = 1.086753, a_3 = -0.947948; a_0 + a_1 = 0.090111 (> 0: lower bound for I)
+PASS  a_k (k ≥ 1) alternate in sign with strictly decreasing modulus, k ≤ 60
+
+== c_C = I · J(C) / 3 vs closed forms
+PASS  x³ + y³  (Disc = -27, J = 10.5998325017, quad err 3e-15): 2.392237224247 vs 2.392237224247 (rel diff 7.1e-15)
+PASS  x²y + y³  (Disc = -4, J = 14.5719038873, quad err 1e-14): 3.288679410904 vs 3.288679410904 (rel diff 7.0e-15)
+PASS  x³ + 2x²y + 3xy² + 5y³  (Disc = -367, J = 6.8614402517, quad err 6e-15): 1.548533222517 vs 1.548533222517 (rel diff 7.6e-15)
+PASS  −2x³ + x²y − 0.5y³  (Disc = -25, J = 10.7366705832, quad err 2e-14): 2.423119707740 vs 2.423119707740 (rel diff 7.1e-15)
+PASS  x³ − 3xy² (elliptic)  (Disc = 108, J = 14.5719038873, quad err 3e-15): 3.288679410904 vs 3.288679410904 (rel diff 7.0e-15)
+PASS  x²y − xy²  (Disc = 1, J = 31.7994975051, quad err 2e-14): 7.176711672742 vs 7.176711672742 (rel diff 6.8e-15)
+PASS  2x³ − x²y − 5xy² + y³  (Disc = 1101, J = 9.8959092547, quad err 8e-14): 2.233371374782 vs 2.233371374782 (rel diff 6.6e-15)
+PASS  0.3x³ − 4xy² + y³  (Disc = 74.37, J = 15.5067443527, quad err 3e-13): 3.499660118347 vs 3.499660118347 (rel diff 7.0e-15)
+
+== Limit t^(2/3) ∫∫ e^(itC) A → c_C A(0), A = bump ⊗ bump (2D Simpson; trend, not a check)
+x³ + y³: c_C A(0) = 0.323754;  t=10: 0.325804+0.000000i (Δn 2e-14)  t=30: 0.325019+0.000000i (Δn 3e-14)  t=100: 0.323994-0.000000i (Δn 1e-14)  t=300: 0.323809+0.000000i (Δn 3e-13)
+PASS  x³ + y³: Richardson (t^(-2/3) correction) from t = 100, 300: 0.323637612138 vs 0.323754102313 (rel diff 3.6e-4)
+x³ − 3xy² (elliptic): c_C A(0) = 0.445074;  t=10: 0.405784-0.000000i (Δn 1e-14)  t=30: 0.426392-0.000000i (Δn 4e-14)  t=100: 0.436696-0.000000i (Δn 9e-14)  t=300: 0.441046-0.000000i (Δn 7e-14)
+PASS  x³ − 3xy² (elliptic): Richardson (t^(-2/3) correction) from t = 100, 300: 0.445073821936 vs 0.445074359549 (rel diff 1.2e-6)
+
+== Referee NIT: quartic terms and a non-even amplitude (trend toward c_C A(0); correction O(t^(-1/3)))
+x³ + y³ + 0.5x⁴ + 0.3x²y², A = bump⊗bump·(1 + 0.5x + 0.3y): c_C A(0) = 0.323754;  t=30: 0.325707+0.023763i  t=100: 0.324314+0.016315i  t=300: 0.323959+0.011360i  t=1000: 0.323832+0.007622i
+x³ − 3xy² (elliptic) + 0.5x⁴ + 0.3x²y², A = bump⊗bump·(1 + 0.5x + 0.3y): c_C A(0) = 0.445074;  t=30: 0.426406+0.001462i  t=100: 0.436660+0.000455i  t=300: 0.441028+0.000149i  t=1000: 0.443261+0.000044i
+
+RESULT PASS
+exit 0

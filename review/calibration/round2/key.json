@@ -1,0 +1,62 @@
+{
+ "round": 2,
+ "salt": "1ac1830e1eb62bb4e889f7175df524d146cf6c9e2f7a4c1a4e1839725791ddba",
+ "variants": {
+  "V1": {
+   "kind": "control",
+   "before": null,
+   "after": null,
+   "statement": null,
+   "why_wrong": null,
+   "sanity_proof_adjustment": "none",
+   "sha256": "41e0ab4e4e77619ddbac0fdb61d83b9c30a88893e6f52716ab93873cc3c8a0ee"
+  },
+  "V2": {
+   "kind": "quantifier",
+   "before": "    (∀ p ∈ K', ∀ k ∈ K, IsCritical Ψ p k → hessDet Ψ k ≠ 0) →",
+   "after": "    (∃ p ∈ K', ∀ k ∈ K, IsCritical Ψ p k → hessDet Ψ k ≠ 0) →",
+   "statement": "S2.2 (StationaryPhaseStatement)",
+   "why_wrong": "Nondegeneracy hypothesis required only for some p in K' instead of every p in K'; false e.g. for Psi = k1^3/3 + k2^2/2, K' containing p=(-1,0) and p=0 (degenerate critical point at 0 for p=0, decay only m^{-5/6}).",
+   "sanity_proof_adjustment": "none",
+   "sha256": "3d2d46913372ec2a3ff6a1e70a50b71b448b01baca2a181408280f08ac17b4b8"
+  },
+  "V3": {
+   "kind": "control",
+   "before": null,
+   "after": null,
+   "statement": null,
+   "why_wrong": null,
+   "sanity_proof_adjustment": "none",
+   "sha256": "34ed0942bc5c08162837ecae5c20c40c0214fac3059fe790d3255d24c479b8c5"
+  },
+  "V4": {
+   "kind": "hypothesis",
+   "before": "    (∀ σ, ∀ k ∈ K, FoldOrNondeg (Ψ σ) k) →",
+   "after": "    (∀ σ, ∀ k ∈ K', FoldOrNondeg (Ψ σ) k) →",
+   "statement": "S3 (FoldStatement)",
+   "why_wrong": "Fold-or-nondegenerate condition imposed on points of K' (the set of linear terms) instead of K; false e.g. for Psi = (k1-5)^4 + k2^2, K = closedBall 0 10, K' = closedBall 0 1 (A3 point (5,0) in K critical for p=0, decay m^{-3/4}).",
+   "sanity_proof_adjustment": "none",
+   "sha256": "66ba7e1fa286fe3f7a9d45199f5818d0d59f13db22c951f560628bcaa15dddd5"
+  },
+  "V5": {
+   "kind": "definition",
+   "before": "    ddd φ 0 (1, 0) (0, 1) (0, 1) / 2, ddd φ 0 (0, 1) (0, 1) (0, 1) / 6)",
+   "after": "    ddd φ 0 (0, 1) (1, 0) (1, 0) / 2, ddd φ 0 (0, 1) (0, 1) (0, 1) / 6)",
+   "statement": "cubicCoeffs, hence S4.1 (D4BoundStatement)",
+   "why_wrong": "Third coefficient c computed as d^3_{112}phi(0)/2 (= b) instead of d^3_{122}phi(0)/2; false e.g. for phi = (x-2y)^3: true disc 0 (triple root, decay t^{-1/3}), fake disc(1,-6,-6,-8) = -11664 < 0.",
+   "sanity_proof_adjustment": "none",
+   "sha256": "de9d563d9c21ad71a90906306f5163e2725691e51659aef67083af611e7ae92e"
+  },
+  "V6": {
+   "kind": "weakened conclusion",
+   "before": "‖oscInt2 (fun k => m * (Ψ σ k + lin p k)) A‖ ≤ C * M / m ^ N",
+   "after": "‖oscInt2 (fun k => m * (Ψ σ k + lin p k)) A‖ ≤ C * M / m ^ (N - 1)",
+   "statement": "S2.1 (NonStationaryStatement)",
+   "why_wrong": "Decay exponent m^{-(N-1)} (natural subtraction) instead of m^{-N}: one order of decay lost; strictly weaker than the docs for N >= 1.",
+   "sanity_proof_adjustment": "none",
+   "sha256": "b81ce110bc75c428b948a830c0272d0a6d537bacb8955f3269be24cbb1693b5a"
+  }
+ },
+ "statements_md_sha256": "18601e4112cc300694b7bb0ecaf8324639181d5341e6e96b15369b17b22ce88d",
+ "compile": "cd /home/user/lean-oscillatory && nice -n 10 lake env lean <file> : exit 0, no output, for base and V1..V6"
+}

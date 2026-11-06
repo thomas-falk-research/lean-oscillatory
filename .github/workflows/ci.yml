@@ -1,0 +1,106 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      mathlib_from_source:
+        description: "Build Mathlib from source at the pinned commit (no binary cache) and recompute the commitments"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: ${{ !inputs.mathlib_from_source }}
+    concurrency:
+      group: verify-${{ github.ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: System packages (bubblewrap for the sandboxed checkers, zstd for the toolchain archive)
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q bubblewrap zstd
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - name: elan from the pinned, hash-checked installer
+        run: |
+          read -r h f u < <(grep ' elan-init.sh ' toolchain.sha256)
+          curl -sSfL -o /tmp/elan-init.sh "$u"
+          echo "$h  /tmp/elan-init.sh" | sha256sum -c -
+          sh /tmp/elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Mathlib binary cache (trusted; see README)
+        run: lake exe cache get
+      - name: verify-all
+        run: |
+          make tools
+          set +e; tools/target/release/verify_all; rc=$?; set -e
+          if [ "$rc" -eq 3 ]; then echo "::warning::verify-all INCOMPLETE: some steps had nothing to check yet"; exit 0; fi
+          exit "$rc"
+      - name: nanoda built from source at a pinned commit, run on the replay export (docs/decisions/2026-11-06-S4.md)
+        env:
+          NANODA_REPO: https://github.com/ammkrn/nanoda_lib
+          NANODA_COMMIT: 8de7e0c4ed3052745a7f8725164efd9e76d84c56
+          RUST_TOOLCHAIN: 1.97.0
+        run: |
+          set -euo pipefail
+          test -s build/replay/export.ndjson
+          git init -q /tmp/nanoda && cd /tmp/nanoda
+          git fetch -q --depth 1 "$NANODA_REPO" "$NANODA_COMMIT"
+          git checkout -q FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$NANODA_COMMIT"
+          rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal
+          cargo +"$RUST_TOOLCHAIN" build --release --locked --bin nanoda_bin
+          rustc +"$RUST_TOOLCHAIN" -V
+          sha256sum target/release/nanoda_bin
+          cd "$GITHUB_WORKSPACE"
+          printf '{"export_file_path": "%s", "use_stdin": false, "permitted_axioms": ["propext", "Classical.choice", "Quot.sound"], "unpermitted_axiom_hard_error": true, "nat_extension": true, "string_extension": true, "print_success_message": true}\n' \
+            "$PWD/build/replay/export.ndjson" > /tmp/nanoda-src.json
+          set +e; /tmp/nanoda/target/release/nanoda_bin /tmp/nanoda-src.json > /tmp/nanoda-src.out 2>&1; rc=$?; set -e
+          cat /tmp/nanoda-src.out
+          # verdict = the checker's own success line (lesson 2), never the exit status alone
+          test "$rc" -eq 0
+          if grep -qi panic /tmp/nanoda-src.out; then echo 'nanoda (from source) panicked'; exit 1; fi
+          grep -E '^Checked [0-9]+ declarations with no (typechecker )?errors' /tmp/nanoda-src.out | grep -qv skipping
+      - name: Replay summary
+        if: always()
+        run: cat build/replay/summary.txt || true
+
+  mathlib-from-source:
+    if: ${{ inputs.mathlib_from_source }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: elan from the pinned, hash-checked installer
+        run: |
+          read -r h f u < <(grep ' elan-init.sh ' toolchain.sha256)
+          curl -sSfL -o /tmp/elan-init.sh "$u"
+          echo "$h  /tmp/elan-init.sh" | sha256sum -c -
+          sh /tmp/elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Build Mathlib and the library from source (no cache get)
+        run: |
+          set -o pipefail
+          lake build Mathlib 2>&1 | tee build-from-source.log > /dev/null
+          lake build 2>&1 | tee build-library.log > /dev/null
+          tail -1 build-library.log
+          tail -1 build-from-source.log
+      - name: Check Mathlib was compiled here, not fetched or replayed
+        run: |
+          built=$(grep -cE "Built Mathlib\." build-from-source.log || true)
+          other=$(grep -E "(Replayed|Fetched|Downloaded|Unpacked) Mathlib\." build-from-source.log | head -5 || true)
+          echo "Mathlib modules compiled in this job: $built"
+          test "$built" -gt 7000
+          test -z "$other" || { echo "not compiled here: $other"; exit 1; }
+      - name: Recompute commitments; make commit enforces the pinned stamps
+        run: make commit

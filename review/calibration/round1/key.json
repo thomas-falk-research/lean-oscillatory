@@ -1,0 +1,55 @@
+{
+ "round": 1,
+ "salt": "0cae35ce574ca5c4ce4e352804ebb03f2f774552c38de86f88113fca4876b931",
+ "key": [
+  {
+   "variant": "V1",
+   "kind": "definition",
+   "plant": "ampNorm: ∫‖ψ'‖ replaced by ‖∫ψ'‖ = |ψ(b) − ψ(a)| (all three bounds become false).",
+   "from": "  ‖ψ b‖ + ∫ x in a..b, ‖ψ' x‖",
+   "to": "  ‖ψ b‖ + ‖∫ x in a..b, ψ' x‖",
+   "sha256": "a4f5cbcf481021e947c825d0274f758d7b74265954a18bfd97ecaba45f41ec63"
+  },
+  {
+   "variant": "V2",
+   "kind": "control",
+   "plant": null,
+   "from": null,
+   "to": null,
+   "sha256": "5e4970d7f551e3a7d35eb386dedb35dc5aa51c13bce579bd4ee6816c5c8cfa3a"
+  },
+  {
+   "variant": "V3",
+   "kind": "weakened-conclusion",
+   "plant": "VdC1Statement: the right-hand side gains the term (3/ν)·∫‖ψ‖ (true but weaker than the mathematics).",
+   "from": "    ‖oscInt φ ψ a b‖ ≤ 3 / ν * ampNorm ψ ψ' a b",
+   "to": "    ‖oscInt φ ψ a b‖ ≤ 3 / ν * (ampNorm ψ ψ' a b + ∫ x in a..b, ‖ψ x‖)",
+   "sha256": "89522666a6997f80394d5692becc825eb288e84e7d02763d6dc7d73c9306b567"
+  },
+  {
+   "variant": "V4",
+   "kind": "hypothesis",
+   "plant": "AmplitudeOn: the integrability of ψ' is dropped (then ∫‖ψ'‖ may be 0 by convention and all three bounds are false).",
+   "from": "  ContinuousOn ψ (Icc a b) ∧ (∀ x ∈ Ioo a b, HasDerivAt ψ (ψ' x) x) ∧ IntervalIntegrable ψ' volume a b",
+   "to": "  ContinuousOn ψ (Icc a b) ∧ (∀ x ∈ Ioo a b, HasDerivAt ψ (ψ' x) x)",
+   "sha256": "c375bbe465dbc39f4cba62949908cef40fb234b4493a87ae624637e143d18de2",
+   "note": "sanity proof of sanity_amplitude_one adjusted to the 2-conjunct AmplitudeOn (proof only)"
+  },
+  {
+   "variant": "V5",
+   "kind": "quantifier",
+   "plant": "VdC3Statement: the lower bound on φ''' is required at one point of (a, b) instead of every point (∀ → ∃).",
+   "from": "    (∀ x ∈ Ioo a b, μ ≤ |φ''' x|) →",
+   "to": "    (∃ x ∈ Ioo a b, μ ≤ |φ''' x|) →",
+   "sha256": "471b7d0c25144b5dfd8f23179c68c907084aa7b915d4c38636c38a941823ba6f"
+  },
+  {
+   "variant": "V6",
+   "kind": "control",
+   "plant": null,
+   "from": null,
+   "to": null,
+   "sha256": "7cdd25d44019ef017abcc14d7e1f411b724f8933d0f6f250da34a5f6d86624e5"
+  }
+ ]
+}

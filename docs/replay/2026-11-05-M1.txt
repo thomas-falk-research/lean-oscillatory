@@ -1,0 +1,29 @@
+commit 5553b78477ca87e352f0f62324a049b3299fca88
+source tree c766574afe04455d97dce7c80c92fa946c55aa74
+sha256 bf8d54e4714cc4b03d3f6bb34c83b7202b87e49c8bfcbff6895c085bb90ceb38 lean
+sha256 8ba83c98f76562d03b8dbc33f1057151ba6cbb121679dde76b2260ccc90495e1 lake
+sha256 12c38901cdbfab178f1bf6145dd30012e9a3b2c11ca695292a5884fa3cbaddb6 leanchecker
+sha256 ca74d1e9a856149ed05acb600d8931a574dd9f465745beeaf93e3de7b7cbe274 leanchecker-paranoid
+sha256 f6a6483d518a11b323c28b9bac176d2220df0e9fc3230833815db9586669c074 leanexport
+sha256 cbf13950fc4a48f635a0beceeb5ed32dd82568b870cfd081b6391c1f2cf02ba5 nanoda_bin
+sha256 23a32522ea2c79f4ec8b48916272b37a423bda171e57cd83cfcf142eec50e621 con-leche
+sha256 60f4ca9fb9436c323789fa49aae33af6dcd1b9b54b43a66b461779ce79fd8eec con-ron
+sha256 baaec030a70c78562ced2c75866ab0d2410e81ce680b835179ed16570ad5ef97 lean4lean
+PASS  no stale build products  (0.0s)  9 module(s)
+PASS  leanchecker OscInt  (40.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Basic  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.VanDerCorput  (5.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Amplitude  (5.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Assembly  (5.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Final  (5.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Higher  (5.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.One  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Split  (5.4s)  accepted (exit 0, no error output)
+PASS  leanexport  (23.3s)  39199 declarations, 36 target theorem(s), axioms [propext, Quot.sound, Classical.choice]; sha256 4060a62578278de9bb7745b335ab755ef0f24077380caaed9150656e9e5cbfaf
+PASS  leanchecker --from-export  (44.2s)  Lean default kernel accepts the solution
+PASS  leanchecker-paranoid --from-export  (56.0s)  Lean default kernel accepts the solution
+PASS  nanoda  (27.1s)  Checked 39199 declarations with no typechecker errors
+PASS  con-leche --verified  (18.9s)  con-leche: accepted 37365 declarations (--verified)
+PASS  con-ron --verified  (11.8s)  con-ron: accepted 37365 declarations (--verified)
+PASS  lake check --from-export --paranoid  (202.6s)  lean4lean kernel accepts the solution; 6 kernels accepted
+RESULT PASS
