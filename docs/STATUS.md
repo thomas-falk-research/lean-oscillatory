@@ -9,7 +9,7 @@ requires every row of the trust chain (README) for that statement.
 | S2.1 non-stationary phase | `OscInt.nonStationary` | yes, stamp `20261105T234456Z-533ae0272521` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full | yes | 7 kernel runs + comparator | machine-checked as stated |
 | S2.2 nondegenerate stationary phase | `OscInt.stationaryPhase` | yes, stamp `20261105T234456Z-533ae0272521` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full | yes | 7 kernel runs + comparator | machine-checked as stated |
 | S3 uniform fold | `OscInt.fold` | yes, stamp `20261105T234456Z-533ae0272521` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2 to the docs (one referee: FAITHFUL-WEAKER than the classical form), scope full | yes | 7 kernel runs + comparator | machine-checked as stated (fold condition on all of K) |
-| S4.1 uniform D4 bound | `OscInt.Statements.D4BoundStatement` | yes, stamp `20261106T033706Z-63564a8d78cd` (pinned) | pending (2 referees) | — | — | statement frozen |
+| S4.1 uniform D4 bound | `OscInt.Statements.D4BoundStatement` | yes, stamp `20261106T033706Z-63564a8d78cd` (pinned) | pre: FAITHFUL ×2 (D4⁺ only, as the brief) | — | — | statement frozen, proof not started |
 | S4.2 D4 limit constant | — | no | — | — | — | awaiting owner decision on the definition of c_C |
 
 Pipeline skeleton (M0): `OscInt.skeleton_two_mul` builds, audits clean (1 of 1) and replays in six kernels

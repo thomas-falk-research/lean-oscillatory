@@ -128,3 +128,9 @@ amplitude regularity C², as in the brief; phase regularity C⁴, which is what 
 Φ(ε, z) = ε⁻³φ(εz) is a C⁴ family on [0, ε₀] by Taylor's formula, S3 on annuli for bounded linear terms and S2.1
 for large ones) needs. B̄(0, δ) is the max-norm ball. S4.2 (the limit t^{2/3}∫e^{itφ}A → c_C A(0)) is not yet
 stated: the definition of c_C awaits the owner's decision (`docs/HANDOFF.md`).
+
+Clarification added after the S4.1 stamp (2026-11-06, from the two pre-proof referees; the stamped text above is
+unchanged): `disc < 0` is the hyperbolic umbilic D4⁺ only, as the brief ("negative discriminant") and its constant
+Γ(1/3)²/(√3|Disc|^{1/6}) require. The classical uniform t^{-2/3} bound also holds for the elliptic umbilic D4⁻
+(Disc > 0); for a binary cubic, Disc ≠ 0 is equivalent to an isolated critical point at 0. Widening to `disc ≠ 0`
+would be a new statement (owner option, `docs/HANDOFF.md`).
