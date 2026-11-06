@@ -12,3 +12,11 @@ OscInt.Statements.FoldStatement stamps/20261105T234456Z-533ae0272521
 challenge:comparator-S2S3.json stamps/20261105T234456Z-533ae0272521
 OscInt.Statements.D4BoundStatement stamps/20261106T033706Z-63564a8d78cd
 challenge:comparator-S4.json stamps/20261106T033706Z-63564a8d78cd
+OscInt.Statements.D4BoundNeStatement stamps/20261106T081634Z-e2d7771c358e
+OscInt.Statements.D4LimitStatement stamps/20261106T081634Z-e2d7771c358e
+OscInt.Statements.D4ConstantPosStatement stamps/20261106T081634Z-e2d7771c358e
+OscInt.Statements.D4ConstantClosedFormStatement stamps/20261106T081634Z-e2d7771c358e
+challenge:comparator-S41w.json stamps/20261106T081634Z-e2d7771c358e
+challenge:comparator-S42.json stamps/20261106T081634Z-e2d7771c358e
+challenge:comparator-S43.json stamps/20261106T081634Z-e2d7771c358e
+challenge:comparator-S44.json stamps/20261106T081634Z-e2d7771c358e
