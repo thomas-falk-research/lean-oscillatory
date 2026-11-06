@@ -7,3 +7,4 @@ import OscInt.StationaryPhase.Change
 import OscInt.StationaryPhase.Partition
 import OscInt.StationaryPhase.Assembly
 import OscInt.StationaryPhase.Localize
+import OscInt.StationaryPhase.LocalCrit
