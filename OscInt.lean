@@ -26,3 +26,6 @@ import OscInt.D4.Tail
 import OscInt.D4.Polar
 import OscInt.D4.PolarLimit
 import OscInt.D4.LimitFinal
+import OscInt.D4.CubicComp
+import OscInt.D4.GammaSixth
+import OscInt.D4.ClosedForm

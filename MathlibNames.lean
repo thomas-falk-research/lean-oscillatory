@@ -22,3 +22,36 @@ import Mathlib
 #check @ImplicitFunctionData
 #check @map_add_eq_sum_add_integral_iteratedFDeriv
 #check @ImplicitFunctionData.contDiffAt_implicitFunction
+
+-- S4.4 route (docs/proof-S44.md), checked 2026-11-06 with signatures (lessons 19): the complex Gamma integral
+-- below takes a real rate `0 < r`, which is why E1 uses the Beta route.
+#check @Complex.integral_cpow_mul_exp_neg_mul_Ioi
+#check @Real.integral_rpow_mul_exp_neg_mul_Ioi
+#check @Real.Gamma_mul_Gamma_one_sub
+#check @Real.Gamma_mul_Gamma_add_half
+#check @Real.Gamma_one_half_eq
+#check @Real.sin_pi_div_three
+#check @Complex.Gamma_mul_Gamma_eq_betaIntegral
+#check @Complex.Gamma_ofReal
+#check @Complex.ofReal_cpow
+#check @MeasureTheory.integral_comp_rpow_Ioi_of_pos
+#check @MeasureTheory.integral_image_eq_integral_abs_deriv_smul
+#check @integral_comp_polarCoord_symm
+#check @MeasureTheory.Measure.map_linearMap_addHaar_eq_smul_addHaar
+#check @Real.range_arctan
+#check @Real.arctan_injective
+#check @Real.hasDerivAt_arctan
+#check @Real.cos_arctan
+#check @Real.sin_arctan
+#check @Function.Periodic.intervalIntegral_add_eq
+#check @MeasureTheory.tendsto_integral_filter_of_dominated_convergence
+#check @MeasureTheory.integral_integral_swap
+#check @MeasureTheory.lintegral_lintegral_swap
+#check @MeasureTheory.Integrable.of_integral_ne_zero
+#check @intervalIntegral.intervalIntegrable_of_integral_ne_zero
+#check @MeasureTheory.setIntegral_union
+#check @integral_comp_neg_Ioi
+#check @integral_rpow_mul_exp_neg_mul_rpow
+#check @Matrix.toLin_finTwoProd_apply
+#check @LinearMap.det_toLin
+#check @Matrix.det_fin_two_of
