@@ -13,7 +13,7 @@ Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801a
 | S2 stationary phase (S2.1 non-stationary, S2.2 nondegenerate) | machine-checked as stated (`OscInt.nonStationary`, `OscInt.stationaryPhase`), see `docs/STATUS.md` |
 | S3 fold | machine-checked as stated (`OscInt.fold`; fold condition required on all of K) |
 | S4.1 uniform D4 bound (hyperbolic umbilic D4⁺, `disc < 0`, as the brief) | machine-checked as stated (`OscInt.d4Bound`), see `docs/STATUS.md` |
-| S4.1′ uniform D4 bound, both umbilics (`disc ≠ 0`) | proved (`OscInt.d4BoundNe`); final replay pending |
+| S4.1′ uniform D4 bound, both umbilics (`disc ≠ 0`) | proved and replayed (`OscInt.d4BoundNe`); post-proof review not yet run |
 | S4.2–S4.4 D4 limit, c_C > 0, closed forms | statements frozen and reviewed; proofs not started (the brief's limit with its constant is S4.2 ∧ S4.4) |
 
 "As stated" means the hypotheses in `docs/statements.md` (derivatives continuous up to the endpoints, as in the
