@@ -1,0 +1,25 @@
+import OscInt
+
+/-!
+# A downstream use of OscInt
+
+Uses the theorems by their reviewed statement names (`stamps/statements.json`); the types of `OscInt.d4Limit` and
+`OscInt.stationaryPhase` *are* `D4LimitStatement` and `StationaryPhaseStatement`, so anything derived from them
+inherits OscInt's trust chain. CI checks this project with `tools/oscint_check.py`.
+-/
+
+open OscInt.Statements
+
+/-- The two results a downstream dispersive estimate typically needs, as one hypothesis-free fact. -/
+theorem consumer_inputs : StationaryPhaseStatement ∧ D4LimitStatement :=
+  ⟨OscInt.stationaryPhase, OscInt.d4Limit⟩
+
+/-- Specialisation: the D4 limit for the hyperbolic umbilic `x³ + y³` (hypotheses from OscInt's own sanity theorem). -/
+theorem consumer_d4Limit_cubes :
+    ∃ δ > 0, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ), AmpBound 2 (Metric.closedBall 0 δ) A M →
+      Filter.Tendsto
+        (fun t : ℝ => ((t ^ ((2 : ℝ) / 3) : ℝ) : ℂ) * oscInt2 (fun κ => t * (κ.1 ^ 3 + κ.2 ^ 3)) A)
+        Filter.atTop
+        (nhds ((d4Constant (cubicCoeffs fun k : ℝ × ℝ => k.1 ^ 3 + k.2 ^ 3) : ℂ) * A 0)) := by
+  obtain ⟨h1, h2, h3, h4, h5⟩ := sanity_D4Limit_hyps
+  exact OscInt.d4Limit _ h1 h2 h3 h4 h5

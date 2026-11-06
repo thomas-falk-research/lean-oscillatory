@@ -29,6 +29,49 @@ Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801a
 "As stated" means the hypotheses in `docs/statements.md` (derivatives continuous up to the endpoints, as in the
 source's C^k assumption). Details and evidence: `docs/STATUS.md`.
 
+## Depending on OscInt
+
+Add OscInt to your Lake project and pin a release (Mathlib comes with it, at the revision OscInt was checked with;
+use the same `lean-toolchain`, `leanprover/lean4:v4.35.0`):
+
+```toml
+# lakefile.toml
+[[require]]
+name = "oscint"
+git = "https://github.com/thomas-falk-research/lean-oscillatory"
+rev = "v0.3.0"   # a release tag; before v0.3.0 is published, a commit hash of main
+```
+
+```bash
+lake update oscint
+lake exe cache get
+lake build
+```
+
+Use the theorems by their statement names; their types *are* the reviewed statements:
+
+```lean
+import OscInt
+
+open OscInt.Statements in
+example : D4LimitStatement := OscInt.d4Limit
+```
+
+`stamps/statements.json` lists every pinned statement with its label, summary, proving theorem, statement file and
+its SHA-256, the commitment to its definitional closure, and the stamp that froze it. Check in your CI that you
+depend on exactly those statements, with no edited file and no extra axiom:
+
+```bash
+python3 .lake/packages/oscint/tools/oscint_check.py \
+  --statement OscInt.Statements.D4LimitStatement \
+  --expect-sha256 <sha256 of stamps/statements.json at the tag you pinned>
+```
+
+Add `--commitments` to recompute the commitments with the package's own `oscint-commit-env` (a few minutes). The
+checker does not replay proofs in independent kernels; that is this repository's CI (`make verify-all`). A tested
+example consumer lives in `examples/consumer/` and runs in CI. Versioning, the stability of names, deprecation and
+the Mathlib-upgrade (re-freeze) rule: `docs/policy.md`.
+
 ## Re-check
 
 Needs elan, Rust ≥ 1.97, `bubblewrap`, `zstd`, `openssl`, `curl`.

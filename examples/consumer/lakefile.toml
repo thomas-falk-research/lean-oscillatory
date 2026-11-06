@@ -1,0 +1,18 @@
+name = "consumer"
+version = "0.1.0"
+defaultTargets = ["Consumer"]
+
+# A downstream project depending on OscInt. CI uses the checkout itself (`path = "../.."`); a real project writes
+#   git = "https://github.com/thomas-falk-research/lean-oscillatory"
+#   rev = "v0.3.0"
+# instead of `path` (README, "Depending on OscInt").
+[[require]]
+name = "oscint"
+path = "../.."
+
+[[lean_lib]]
+name = "Consumer"
+
+# Negative controls for tools/oscint_check.py (tools/test_oscint_check.sh); never a default target.
+[[lean_lib]]
+name = "ConsumerControls"

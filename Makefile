@@ -7,7 +7,8 @@ SKIP = mkdir -p $(B)/skipped && touch $(B)/skipped/$@
 UNSKIP = mkdir -p $(B)/skipped && rm -f $(B)/skipped/$@
 LATEST_STAMP = $(lastword $(sort $(wildcard stamps/2*/)))
 
-.PHONY: challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics
+.PHONY: challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics \
+	quick statements statements-check
 
 tools:
 	cd tools && cargo build --release --locked --quiet
@@ -58,8 +59,22 @@ stamp: commit challenge-export
 stamp-verify: tools
 	$(UNSKIP); if [ -f stamps/pins.txt ]; then $(T)/stamp verify-pinned .; else echo "stamp-verify: SKIPPED: no pinned stamp yet"; $(SKIP); fi
 
+# `make verify-all ONLY="lean guard"` runs only those steps (reported as a partial run, never as a full PASS).
 verify-all: tools
-	$(T)/verify_all
+	$(T)/verify_all $(foreach s,$(ONLY),--only $(s))
+
+# The fast local loop and the pull-request CI job: build, guard, axiom audit, statement types, Mathlib names,
+# Gamma-free check, statement list. Minutes with a warm cache; `verify-all` adds the kernel replay, commitments,
+# comparator and stamps (about an hour).
+quick: guard statements-check
+	$(MAKE) --no-print-directory lean
+
+# stamps/statements.json: the machine-readable list of pinned statements for downstream projects (README).
+statements: tools
+	$(T)/statements gen .
+
+statements-check: tools
+	$(T)/statements check .
 
 numerics:
 	cd numerics && cargo build --release --locked --quiet && ./target/release/oscint-numerics
