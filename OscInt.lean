@@ -16,3 +16,8 @@ import OscInt.D4.Final
 import OscInt.D4.Bite
 import OscInt.D4.LimitSanity
 import OscInt.D4.ConstantPos
+import OscInt.D4.Angular
+import OscInt.D4.SingularPower
+import OscInt.D4.LimitAssembly
+import OscInt.D4.CosMoment
+import OscInt.D4.ConstantPosFinal

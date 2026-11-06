@@ -12,7 +12,7 @@ requires every row of the trust chain (README) for that statement.
 | S4.1 uniform D4 bound | `OscInt.d4Bound` | yes, stamp `20261106T033706Z-63564a8d78cd` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2 to the docs, FAITHFUL-WEAKER than the classical form (D4⁺ only, as the brief), scope full | yes | 7 kernel runs + comparator | machine-checked as stated (hyperbolic umbilic D4⁺) |
 | S4.1′ uniform D4 bound, both umbilics (`disc ≠ 0`) | `OscInt.d4BoundNe` | yes, stamp `20261106T081634Z-e2d7771c358e` (pinned) | pre: FAITHFUL ×2 (STRONGER than the brief) | yes (same parts as S4.1, assembly `d4BoundNe_of`) | 7 kernel runs + comparator (`docs/replay/2026-11-06-S4w-verify-all.txt`, 94f7657) | proved and replayed; post-proof review not yet run |
 | S4.2 D4 limit t^{2/3}∫e^{itφ}A → c_C A(0) | `OscInt.Statements.D4LimitStatement` | yes, stamp `20261106T081634Z-e2d7771c358e` (pinned) | pre: FAITHFUL ×2 | — | — | statement frozen, proof not started |
-| S4.3 c_C > 0 (alternating series, Gamma-free) | `OscInt.Statements.D4ConstantPosStatement` | yes, same stamp | pre: FAITHFUL ×2 | — | — | statement frozen; Gamma-free check pre-registered (`GammaFree.lean`) |
+| S4.3 c_C > 0 (alternating series, Gamma-free) | `OscInt.d4ConstantPos` | yes, same stamp | pre: FAITHFUL ×2; post: not yet run | yes (route `docs/proof-S43.md`, refereed; parts by agents U, V, W) | pending final verify-all | proved; Gamma-free (`GammaFree.lean`: 43 612 constants, with a proof-only control); replay pending |
 | S4.4 closed forms of c_C | `OscInt.Statements.D4ConstantClosedFormStatement` | yes, same stamp | pre: FAITHFUL ×2 | — | — | statement frozen, proof not started |
 
 Pipeline skeleton (M0): `OscInt.skeleton_two_mul` builds, audits clean (1 of 1) and replays in six kernels

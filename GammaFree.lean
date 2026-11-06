@@ -8,7 +8,14 @@ identities". `#assert_gamma_free T` follows the transitive closure of constants 
 `Gamma`, `Beta`, `betaIntegral`, `mellin` or `Mellin`. Baseline: the closure of the statement itself has none
 (referee B, 33 082 constants). If a generic Mathlib lemma pulls such a constant in, the check fails and the proof
 is restructured; exceptions need a new dated decision recorded before they are used. Before the theorem exists the
-check prints SKIPPED. Negative control: `#assert_gamma_free_expect_fail Real.Gamma_pos_of_pos`.
+check prints SKIPPED. Negative control: `#assert_gamma_free_expect_fail Real.Gamma_pos_of_pos
+
+/-- Control whose *type* is Gamma-free and whose *proof* uses `Real.Gamma`: the check must reject it. -/
+theorem gammaProofControl : (0 : ℝ) < 1 := by
+  have := Real.Gamma_pos_of_pos (one_pos : (0 : ℝ) < 1)
+  norm_num
+
+#assert_gamma_free_expect_fail gammaProofControl`.
 -/
 
 open Lean Elab Command
@@ -29,7 +36,10 @@ def gammaClosureBad (env : Environment) (n : Name) : Array Name × Nat := Id.run
     seen := seen.insert c
     if gammaForbidden c then bad := bad.push c
     if let some ci := env.find? c then
-      let used := ci.type.getUsedConstants ++ (ci.value?.map (·.getUsedConstants)).getD #[]
+      -- `value? (allowOpaque := true)`: in this Lean version plain `value?` returns `none` for theorems, which
+      -- made the first version of this check skip every proof (lesson 18; control `gammaProofControl` below).
+      let used := ci.type.getUsedConstants ++
+        ((ci.value? (allowOpaque := true)).map (·.getUsedConstants)).getD #[]
       for d in used do
         unless seen.contains d do stack := stack.push d
   return (bad, seen.size)
@@ -52,5 +62,12 @@ elab "#assert_gamma_free_expect_fail " thm:ident : command => do
   IO.println s!"GAMMA-FREE CONTROL {n} rejected as expected ({bad.size} forbidden constant(s))"
 
 #assert_gamma_free_expect_fail Real.Gamma_pos_of_pos
+
+/-- Control whose *type* is Gamma-free and whose *proof* uses `Real.Gamma`: the check must reject it. -/
+theorem gammaProofControl : (0 : ℝ) < 1 := by
+  have := Real.Gamma_pos_of_pos (one_pos : (0 : ℝ) < 1)
+  norm_num
+
+#assert_gamma_free_expect_fail gammaProofControl
 #assert_gamma_free OscInt.Statements.D4ConstantPosStatement
 #assert_gamma_free OscInt.d4ConstantPos

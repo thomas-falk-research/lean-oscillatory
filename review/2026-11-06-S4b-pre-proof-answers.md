@@ -21,3 +21,8 @@ constant.
   (`numerics/results-d4const-2026-11-06.txt`): real parts approach c_C A(0), imaginary parts decay like t^{-1/3}.
 - a₀ + a₁ > 0 has a 6% margin (B NIT 4): noted for the S4.3 proof route (certified bounds on both integrals needed).
 - No rate or uniformity in S4.2 (B NIT 6): as the brief; unchanged.
+
+Correction (2026-11-06, lesson 18): the first version of `GammaFree.lean` did not follow theorem proofs
+(`value?` returns `none` for theorems at this Lean version), so its OK lines before this date covered types and
+definitions only. Fixed with `value? (allowOpaque := true)` and a proof-only negative control `gammaProofControl`,
+which is rejected; `OscInt.d4ConstantPos` then passes with 43 612 constants in its closure.

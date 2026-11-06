@@ -39,4 +39,31 @@ def DyadicTailFacts : Prop :=
           (t * (2 ^ (j + 1) * (R * t ^ (-(1 : ℝ) / 3))) ^ 3) ^ (-(5 : ℝ) / 6) ≤
         3 * R ^ (-(1 : ℝ) / 2) * t ^ (-(2 : ℝ) / 3)
 
+/-! ## E1 split (route referee, `review/2026-11-06-S42-proof-route.md`, MINOR 2–3 and §3) -/
+
+/-- **E1a** Radial identity: for a `C¹` profile `ψ` equal to `1` on `[0, 1]` and `0` on `[K, ∞)`,
+`λ^{2/3} ∫₀^K cos(λ r³) ψ(r) r dr = −(1/3) ∫₁^K ψ′(ρ) · cosMomentPartial(λ ρ³) dρ`. -/
+def RadialIdentityFacts : Prop :=
+  ∀ ψ : ℝ → ℝ, ContDiff ℝ 1 ψ → ∀ K : ℝ, 1 ≤ K → (∀ r ∈ Icc (0 : ℝ) 1, ψ r = 1) → (∀ r, K ≤ r → ψ r = 0) →
+    ∀ l : ℝ, 0 < l →
+      l ^ ((2 : ℝ) / 3) * ∫ r in (0 : ℝ)..K, Real.cos (l * r ^ 3) * ψ r * r =
+        -(1 / 3) * ∫ ρ in (1 : ℝ)..K, deriv ψ ρ * cosMomentPartial (l * ρ ^ 3)
+
+/-- **E1b** Polar reduction: for an even cut-off vanishing outside the max-norm ball of radius `K₀`, the integral
+is real and equals an iterated polar integral (θ outer, `r ≤ 2K₀R`). -/
+def PolarReductionFacts : Prop :=
+  ∀ (q : ℝ × ℝ × ℝ × ℝ) (χ : ℝ × ℝ → ℝ), Continuous χ → (∀ z, χ (-z) = χ z) →
+    ∀ K₀ : ℝ, 0 < K₀ → (∀ z, K₀ ≤ ‖z‖ → χ z = 0) → ∀ R : ℝ, 0 < R →
+      oscInt2 (cubicForm q) (fun w => ((χ (R⁻¹ • w) : ℝ) : ℂ)) =
+        (((∫ θ in (-Real.pi)..Real.pi, ∫ r in (0 : ℝ)..(2 * K₀ * R),
+            Real.cos (r ^ 3 * circleCubic q θ) * χ (R⁻¹ • (r * Real.cos θ, r * Real.sin θ)) * r) : ℝ) : ℂ)
+
+/-- **E1c** The zeros of the cubic on the circle form a null set. -/
+def CircleZerosNullFacts : Prop :=
+  ∀ q : ℝ × ℝ × ℝ × ℝ, disc q ≠ 0 → volume {θ : ℝ | circleCubic q θ = 0} = 0
+
+/-- **E1d** E1 from E1a–E1c (rescaling `r = Rρ`, uniform bounds, dominated convergence in `θ`, periodicity). -/
+def CubicCutoffLimitCombineFacts : Prop :=
+  RadialIdentityFacts → PolarReductionFacts → CircleZerosNullFacts → CubicCutoffLimitFacts
+
 end OscInt.Blueprint

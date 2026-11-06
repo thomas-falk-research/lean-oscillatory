@@ -26,3 +26,4 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
 #assert_type_is OscInt.fold OscInt.Statements.FoldStatement
 #assert_type_is OscInt.d4Bound OscInt.Statements.D4BoundStatement
 #assert_type_is OscInt.d4BoundNe OscInt.Statements.D4BoundNeStatement
+#assert_type_is OscInt.d4ConstantPos OscInt.Statements.D4ConstantPosStatement

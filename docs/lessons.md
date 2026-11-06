@@ -110,3 +110,14 @@ Why it matters: the referee is the only line of defence against such errors when
 Rule: sanity witnesses use generic data — distinct sets for distinct roles, all coefficients nonzero and distinct,
 and at least one "bite" instance where the hypothesis fails and the definitions must say so. Check: none automatic;
 the S4 file `OscInt/D4/Sanity.lean` follows it (coefficients (1, 2, 3, 5); elliptic case shown excluded).
+
+## 18. A check that never looked at proofs passed everything (2026-11-06)
+The first `GammaFree.lean` collected constants through `ConstantInfo.value?`, which at this Lean version returns
+`none` for theorems (they count as opaque unless `allowOpaque := true`). It followed definitions and types only,
+so every "Gamma-free OK" on a proof was vacuous; its negative control (`Real.Gamma_pos_of_pos`) mentioned Gamma in
+its *type*, so the control could not catch this. Found when the proof's closure (4 493 constants) was barely larger
+than the statement's (4 492), and referee B's independent count was 33 082. Rule: every check gets a negative
+control that exercises the exact path the check exists for (here: a theorem whose type is clean and whose proof
+uses Gamma), and suspicious counts are investigated before a PASS is reported. Check: `gammaProofControl` in
+`GammaFree.lean` (must be rejected); after the fix the statement closure is 33 099 and `OscInt.d4ConstantPos`
+43 612 constants, still clean.

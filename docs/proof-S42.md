@@ -44,3 +44,16 @@ null set) gives L(R) → (1/3) cosMoment ∫ |g|^{−2/3} dθ = d4Constant. (Ang
 ## Step 5. Combine. |t^{2/3}∫e^{itφ}A − c_C A(0)| ≤ 3C₃C_βM R^{−1/2} + |I_R(t) − A(0)L(R)| + |A(0)||L(R) − c_C|
 (using t^{2/3} times the outer bound). Given η > 0 choose R with the first and third terms < η/3, then t₀ with the
 second < η/3 for t ≥ t₀ (Step 3). Hence the limit. δ = ε₀/2 depends only on φ, as the statement requires.
+
+## Revision after the route referee (`review/2026-11-06-S42-proof-route.md`, 2026-11-06; overrides the text above)
+Verdict: route correct, E1–E3 TRUE, no BLOCKER. MAJOR 1 (piece bound not a part): resolved in the assembly —
+`OscInt.D4.exists_piece_bound` (`OscInt/D4/LimitAssembly.lean`) proves it for any D7-type cut-off and every
+ε ∈ (0, ε₀], with constant max(C₃, 0)·C_β ≥ 0 (also NIT 7); the whole assembly `d4Limit_of` is machine-checked
+against E1–E3. MINOR 2: E1's 1D step is replaced by the radial identity E1a,
+λ^{2/3}∫₀^K cos(λr³)ψ(r) r dr = −(1/3)∫₁^K ψ′(ρ) cosMomentPartial(λρ³) dρ (ψ = −∫_r^K ψ′, Fubini, u = λr³ on
+[0, ρ]), so no cube-root profile and no case split are needed; cosMomentPartial is continuous and convergent,
+hence bounded on [0, ∞), which gives the θ-uniform bound and, by dominated convergence, the limit cosMoment/3.
+MINOR 3: the null set of zeros is part E1c (from `OscInt.D4.circleNondeg`). §3: E1 is split into E1a (radial
+identity), E1b (polar reduction, θ ∈ (−π, π), radius 2K₀R), E1c (zeros null), E1d (combination: rescaling
+r = Rρ with R²(|g|R³)^{−2/3} = |g|^{−2/3}, sup|ψ_θ′| ≤ sup‖Dχ‖, dominated convergence along `atTop`, periodic shift
+to [0, 2π]). MINOR 4 (tε³ ≥ 1 in E3) and NIT 6 (`cubicPoly` vs `cubicForm`) are handled in the assembly.
