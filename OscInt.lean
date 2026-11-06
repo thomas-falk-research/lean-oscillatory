@@ -24,3 +24,5 @@ import OscInt.D4.ConstantPosFinal
 import OscInt.D4.Radial
 import OscInt.D4.Tail
 import OscInt.D4.Polar
+import OscInt.D4.PolarLimit
+import OscInt.D4.LimitFinal
