@@ -170,3 +170,10 @@ c_C = Γ(1/3)²/(√3|Disc C|^{1/6})" is S4.2 together with the Disc < 0 clause 
 the Bochner value is the junk 0, so `d4Constant q = 0` when `disc q = 0`; every statement assumes `disc ≠ 0` or a
 sign; (3) S4.4's first conjunct is about the `limUnder` value; that the improper integral converges is S4.3's first
 conjunct; (4) the S4.3 proof-method rule is checked by `GammaFree.lean` (pre-registered before any proof).
+
+Clarification on the S4.3 method (2026-11-06, from the S4.3 route referee; the stamped statement is unchanged): the
+proof integrates by parts once, ∫₀^R cos u · u^{−1/3} du = R^{−1/3} sin R + (1/3)∫₀^R sin u · u^{−4/3} du, and then
+applies the alternating-series argument to the humps of sin weighted by the decreasing u^{−4/3}, each pair
+[2kπ, 2kπ + 2π] contributing ∫_{2kπ}^{2kπ+π} sin u (u^{−4/3} − (u + π)^{−4/3}) du > 0. This replaces the grouping
+"∫₀^{π/2} + ∫_{π/2}^{3π/2} > 0" named above, which needs a numerical bound (6% margin). No Gamma or Mellin identity
+is used (`GammaFree.lean`).

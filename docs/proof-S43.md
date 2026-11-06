@@ -32,3 +32,13 @@ on the latter g is strictly monotone and the change of variables `integrableOn_i
 reduces to |u|^{−α} on a bounded interval.)
 C5. The integrand is ≥ 0, integrable, and > 0 on an open interval (q ≠ 0 since disc q ≠ 0, so g ≢ 0, and g is
 continuous); `intervalIntegral.integral_pos_iff_support_of_nonneg_ae` gives `angularMoment q > 0`.
+
+## Revision after the route referee (`review/2026-11-06-S43-proof-route.md`, 2026-11-06)
+C1–C5 TRUE as stated; no BLOCKER or MAJOR. Adopted: (1) the method text in `docs/statements.md` S4.3 named the
+cosine-hump grouping; the route pairs the sine humps after one integration by parts (recorded as a dated
+clarification there); (2) C1: use `intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le` with
+f u = sin u · u^{−1/3}, continuous on [0, R] (Lean's f 0 = 0 is the limit), derivative on (0, R) only, then
+`integral_sub` — not `integral_mul_deriv_eq_deriv_mul`; (3) C4: prefer the direct bound |g x| ≥ c|x − x₀| near each
+zero (`IntegrableOn.mono'` against c^{−α}|x − x₀|^{−α}, from `intervalIntegrable_rpow'` after a shift) over the
+Jacobian change of variables; (4) C3: `OscInt.D4.GaugeAux.disc_eq_zero` takes (z, v) with H(z)v = 0 and C(v) = 0,
+so z = v = ω applies (H(ω)ω = 2∇C(ω) = 0).
