@@ -134,3 +134,31 @@ unchanged): `disc < 0` is the hyperbolic umbilic D4⁺ only, as the brief ("nega
 Γ(1/3)²/(√3|Disc|^{1/6}) require. The classical uniform t^{-2/3} bound also holds for the elliptic umbilic D4⁻
 (Disc > 0); for a binary cubic, Disc ≠ 0 is equivalent to an isolated critical point at 0. Widening to `disc ≠ 0`
 would be a new statement (owner option, `docs/HANDOFF.md`).
+
+**S4.1′ (uniform D4 bound, both umbilics).** As S4.1 with Disc C ≠ 0 in place of Disc C < 0: for every C⁴ phase φ
+on ℝ² with D²φ(0) = 0 and Disc C ≠ 0 there are δ > 0 and C such that for all A, M with amplitude bound
+(2, B̄(0, δ), M), all y ∈ ℝ² and all t ≥ 1: |∫ e^{i(tφ(κ) + y·κ)} A(κ) dκ| ≤ C M t^{−2/3}. (Disc ≠ 0 is
+equivalent to "C has an isolated critical point at 0", the brief's first condition; it covers the hyperbolic
+umbilic D4⁺, Disc < 0, and the elliptic umbilic D4⁻, Disc > 0. S4.1 is the case Disc < 0.)
+
+**The constant.** For a binary cubic C with Disc C ≠ 0 put
+  I = ∫₀^∞ cos u · u^{−1/3} du (improper),  J(C) = ∫₀^{2π} |C(cos θ, sin θ)|^{−2/3} dθ,  c_C = I · J(C) / 3.
+(Polar coordinates: ∫₀^∞ e^{isr³} r dr = (1/3)|s|^{−2/3} ∫₀^∞ e^{±iu} u^{−1/3} du for s ≠ 0, and C(−z) = −C(z)
+cancels the sine part; J(C) < ∞ exactly when the real linear factors of C are simple, i.e. Disc C ≠ 0.)
+
+**S4.2 (D4 limit).** For every C⁴ phase φ with φ(0) = 0, ∇φ(0) = 0, D²φ(0) = 0 and Disc C ≠ 0 there is δ > 0 such
+that for every amplitude A with amplitude bound (2, B̄(0, δ), M): t^{2/3} ∫ e^{itφ(κ)} A(κ) dκ → c_C A(0) as t → ∞.
+
+**S4.3 (the constant is positive).** The improper integral I converges and I > 0 (by the alternating-series
+argument of the brief: on [π/2 + (k−1)π, π/2 + kπ] the integrals alternate in sign with decreasing modulus and
+∫₀^{π/2} + ∫_{π/2}^{3π/2} > 0); for Disc C ≠ 0 the integrand of J(C) is integrable and c_C > 0. No Gamma function
+or Mellin identity enters the statement, and the proof must not use them (checked mechanically once proved).
+
+**S4.4 (closed form).** I = Γ(2/3)/2, and c_C = Γ(1/3)² / (√3 |Disc C|^{1/6}) if Disc C < 0 (the brief's formula),
+c_C = Γ(1/3)² / (Disc C)^{1/6} if Disc C > 0.
+
+Modelling choices for S4.1′–S4.4: c_C is *defined* by the Gamma-free formula above, so that S4.2 (analysis), S4.3
+(positivity, the brief's argument) and S4.4 (special-function identity) are independent statements; together S4.2
+and S4.4 give the brief's limit with its closed-form constant, and S4.3 gives c_C ≠ 0 without Gamma identities.
+Improper integrals are limits of interval integrals; powers are `Real.rpow`. Decision record:
+`docs/decisions/2026-11-06-S4.md`. Numerical validation: `numerics/results-d4const-2026-11-06.txt`.

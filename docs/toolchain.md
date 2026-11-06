@@ -30,6 +30,12 @@ installed toolchain. VALIDATED 2026-11-05: identical, 17 925 files.
 | `con-ron` | `60f4ca9fb9436c323789fa49aae33af6dcd1b9b54b43a66b461779ce79fd8eec` | export, `--verified` |
 | `lean4lean` | `baaec030a70c78562ced2c75866ab0d2410e81ce680b835179ed16570ad5ef97` | only via `lake check --from-export --paranoid` |
 
+Built from source in CI (from 2026-11-06, `docs/decisions/2026-11-06-S4.md`): `nanoda_bin` from
+`github.com/ammkrn/nanoda_lib` at commit `8de7e0c4ed3052745a7f8725164efd9e76d84c56` (crate 0.4.31, Apache-2.0),
+`cargo build --release --locked` with Rust 1.97.0 on a fresh runner, run on the replay export after `verify-all`;
+the CI log prints `rustc -V` and the binary's sha256. Required to print its own success line. It is a different
+version (0.4.31) from the bundled 0.4.19, so it is a second build and a second implementation version.
+
 Observed behaviour (VALIDATED 2026-11-05, commands in `docs/lessons.md` entries 2–4):
 - `lake env lean4lean OscInt.Basic` prints "found a problem … incompatible header" and **exits 0**; it cannot read
   this toolchain's `.olean` files directly. It is used only inside `lake check --paranoid`, which accepted.

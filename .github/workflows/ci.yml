@@ -44,6 +44,31 @@ jobs:
           set +e; tools/target/release/verify_all; rc=$?; set -e
           if [ "$rc" -eq 3 ]; then echo "::warning::verify-all INCOMPLETE: some steps had nothing to check yet"; exit 0; fi
           exit "$rc"
+      - name: nanoda built from source at a pinned commit, run on the replay export (docs/decisions/2026-11-06-S4.md)
+        env:
+          NANODA_REPO: https://github.com/ammkrn/nanoda_lib
+          NANODA_COMMIT: 8de7e0c4ed3052745a7f8725164efd9e76d84c56
+          RUST_TOOLCHAIN: 1.97.0
+        run: |
+          set -euo pipefail
+          test -s build/replay/export.ndjson
+          git init -q /tmp/nanoda && cd /tmp/nanoda
+          git fetch -q --depth 1 "$NANODA_REPO" "$NANODA_COMMIT"
+          git checkout -q FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$NANODA_COMMIT"
+          rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal
+          cargo +"$RUST_TOOLCHAIN" build --release --locked --bin nanoda_bin
+          rustc +"$RUST_TOOLCHAIN" -V
+          sha256sum target/release/nanoda_bin
+          cd "$GITHUB_WORKSPACE"
+          printf '{"export_file_path": "%s", "use_stdin": false, "permitted_axioms": ["propext", "Classical.choice", "Quot.sound"], "unpermitted_axiom_hard_error": true, "nat_extension": true, "string_extension": true, "print_success_message": true}\n' \
+            "$PWD/build/replay/export.ndjson" > /tmp/nanoda-src.json
+          set +e; /tmp/nanoda/target/release/nanoda_bin /tmp/nanoda-src.json > /tmp/nanoda-src.out 2>&1; rc=$?; set -e
+          cat /tmp/nanoda-src.out
+          # verdict = the checker's own success line (lesson 2), never the exit status alone
+          test "$rc" -eq 0
+          if grep -qi panic /tmp/nanoda-src.out; then echo 'nanoda (from source) panicked'; exit 1; fi
+          grep -E '^Checked [0-9]+ declarations with no (typechecker )?errors' /tmp/nanoda-src.out | grep -qv skipping
       - name: Replay summary
         if: always()
         run: cat build/replay/summary.txt || true
