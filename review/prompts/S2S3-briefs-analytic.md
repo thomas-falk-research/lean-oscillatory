@@ -74,3 +74,33 @@ and the same for `ddd` (chain rule for `C²`/`C³`), symmetry `dd Ψ k v w = dd 
 `ContinuousLinearEquiv.ofEq`/`Matrix.toLin` with nonzero determinant). For L1: pick a coordinate direction `e`
 with `∂_eQ_{τ₀}(k₀) ≠ 0`, tube lemma on `closedBall k₀ (2δ)`, one integration by parts in direction `e`
 (`integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable` with `v = e`).
+
+# Wave 2 (interfaces as hypotheses; the parts they assume are being proved concurrently)
+
+## Task H5: `OscInt/StationaryPhase/Localize.lean`
+`theorem OscInt.StationaryPhase.localization : OscInt.Blueprint.LocalizationFacts`.
+Route: (R2) with the revision's NIT (Σ χ = 1 on K, tsupport χ_i ⊆ open ball). Use
+`OscInt.StationaryPhase.partition` (F2a) and `ampBoundMul` (F2b). Compactness of `T × K`: for each point choose
+the `LocalBound` data, take open product neighbourhoods `interior U × ball k (δ/2)`, a finite subcover
+(`IsCompact.elim_finite_subcover` on `univ ×ˢ K` in `T × (ℝ × ℝ)`), and for each subset S of the finite index set
+whose balls cover K fix a partition subordinate to the balls `ball k_i δ_i`; finitely many S. For τ, the set
+S(τ) = {i : τ ∈ U_i} covers K. `M ≥ 0` from AmpBound; constants: max over S of Σ_i C_i · C_mul(S, i).
+`m ^ (-r)` is `Real.rpow`; no sign assumption on `r` is needed.
+
+## Task H6: `OscInt/StationaryPhase/LocalCrit.lean`
+`theorem OscInt.StationaryPhase.localCrit_of (hNF : OscInt.Blueprint.NormalFormFacts)
+  (hND : OscInt.Blueprint.NormalizedDataFacts) (hCE : OscInt.Blueprint.CoreEstimateFacts) :
+  OscInt.Blueprint.LocalCritFacts` and
+`theorem OscInt.StationaryPhase.nonStationary_of (hNS : OscInt.Blueprint.NonStatCoreFacts) :
+  OscInt.Statements.NonStationaryStatement`.
+LocalCrit: given a critical point, `hNF` gives `L` with `NormalPoint j (Q τ₀ ∘ (k₀ + L·))`; the family
+`τ ↦ Q τ ∘ (k₀ + L·)` is `FamilyCk 4` (`familyAffine`); `hND` gives `U, a, b, μ, ν, D, ys`; `hCE` gives `C`.
+For `A` supported in `closedBall k₀ δ` with `δ = min a b / (‖L⁻¹‖ + 1)` (or similar), `affineChange` and
+`ampBoundAffine` move to `A ∘ (k₀ + L·)` supported in `[-a, a] × [-b, b]` (note the max norm on ℝ × ℝ). Rate:
+`1/2 + 1/2 = 1` for j = 2; `1/2 + 1/3 = 5/6` for j = 3. The second conjunct (FoldOrNondeg → 5/6) uses the j = 2
+case when `hessDet ≠ 0` (rate 1 ≥ 5/6, `m ≥ 1`) and the j = 3 case otherwise.
+NonStationary: route (N1) with the revision: for `|p| ≤ R` the compact parameter set
+`{(σ, p) ∈ Λ × closedBall 0 R : ∀ k ∈ K, GradLower (Ψ σ) p k c}`; for `|p| > R` the family
+`(σ, s, u) ↦ s Ψ_σ + lin u` over `Λ × Icc 0 (1/R) × sphere` with frequency `m / s ≥ m` (here `s = 1/‖p‖₂` for a
+Euclidean normalisation; choose whatever makes `lin p = (1/s) lin u` exact). `familyAddLinear` and the
+`FamilyCk` algebra (multiplication by the continuous parameter `s` needs a small lemma) give the families.
