@@ -1,6 +1,6 @@
 # OscInt
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24021328.svg)](https://doi.org/10.5281/zenodo.24021328)
+[![DOI](https://zenodo.org/badge/1447411529.svg)](https://doi.org/10.5281/zenodo.24021328)
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0001--9478--6061-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0001-9478-6061)
 
 Author: Thomas Falk III ([ORCID 0009-0001-9478-6061](https://orcid.org/0009-0001-9478-6061)). Cite via `CITATION.cff` or the Zenodo record: all versions
