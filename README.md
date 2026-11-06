@@ -9,8 +9,8 @@ Author: Thomas Falk III ([ORCID 0009-0001-9478-6061](https://orcid.org/0009-0001
 
 A Lean 4 + Mathlib library of uniform oscillatory-integral estimates in one and two variables: van der Corput with
 explicit constants (S1), nondegenerate stationary phase uniform in a linear term (S2), the uniform fold
-estimate m^{-5/6} (S3), and the uniform D4 estimate t^{-2/3} (S4.1, S4.1′), the limit t^{2/3}∫e^{itφ}A → c_C A(0) with a Gamma-free c_C (S4.2) and c_C > 0 (S4.3); the
-closed form of c_C (S4.4) is stated, not yet proved.
+estimate m^{-5/6} (S3), and the uniform D4 estimate t^{-2/3} (S4.1, S4.1′), the limit t^{2/3}∫e^{itφ}A → c_C A(0) with a Gamma-free c_C (S4.2), c_C > 0 (S4.3) and the
+closed form of c_C (S4.4, proved and replayed; post-proof review pending).
 Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0).
 
 ## Status
@@ -24,7 +24,7 @@ Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801a
 | S4.1′ uniform D4 bound, both umbilics (`disc ≠ 0`) | machine-checked as stated (`OscInt.d4BoundNe`) |
 | S4.2 D4 limit with the Gamma-free c_C | machine-checked as stated (`OscInt.d4Limit`) |
 | S4.3 c_C > 0 (alternating series, no Gamma) | machine-checked as stated (`OscInt.d4ConstantPos`; Gamma-free by name, `GammaFree.lean`) |
-| S4.4 closed forms of c_C (the brief's Γ(1/3)²/(√3\|Disc\|^{1/6})) | stated and reviewed; not proved. The brief's limit with its constant is S4.2 ∧ S4.4 |
+| S4.4 closed forms of c_C (the brief's Γ(1/3)²/(√3\|Disc\|^{1/6})) | proved and replayed (`OscInt.d4ConstantClosedForm`, verify-all PASS); post-proof review pending, see `docs/STATUS.md`. The brief's limit with its constant is S4.2 ∧ S4.4 |
 
 "As stated" means the hypotheses in `docs/statements.md` (derivatives continuous up to the endpoints, as in the
 source's C^k assumption). Details and evidence: `docs/STATUS.md`.

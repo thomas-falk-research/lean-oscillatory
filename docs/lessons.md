@@ -121,3 +121,27 @@ control that exercises the exact path the check exists for (here: a theorem whos
 uses Gamma), and suspicious counts are investigated before a PASS is reported. Check: `gammaProofControl` in
 `GammaFree.lean` (must be rejected); after the fix the statement closure is 33 099 and `OscInt.d4ConstantPos`
 43 612 constants, still clean.
+
+## 19. The hand-off's S4.4 route needed a lemma that exists only for real rates (2026-11-06)
+The hand-off planned I = Γ(2/3)/2 "by an Abel limit of `integral_cpow_mul_exp_neg_mul_Ioi`" with rate ε − i. The
+name exists (as `Complex.integral_cpow_mul_exp_neg_mul_Ioi`), but its rate is `r : ℝ` with `0 < r`, so the route
+would have needed analytic continuation; found by `#check` before any agent started, replaced by a real-variable
+route through the Beta integral (`docs/proof-S44.md`). Why it mattered: lesson 1 checks that names exist; a name
+with the wrong hypotheses fails just as late. Rule: a route's lemmas are `#check`ed with their full signatures, and
+the route says which hypothesis of each it uses. Check: `MathlibNames.lean` (`#check @name` prints the signature;
+the S4.4 names are added there).
+
+## 20. A blueprint elaborated against too few imports hid a name clash (2026-11-06)
+The S4.4 blueprint and assembly compiled in a scratch file importing only `OscInt.Statements.D4Limit`; the route
+referee found that `OscInt.Blueprint.NormalFormFacts` already existed (`Blueprint/StationaryPhase.lean`), so the
+committed blueprint would have broken the default build and every part that imports `OscInt.d4ConstantPos`. Rule:
+elaborate a new blueprint and its assembly against `import OscInt` and `import Blueprint` (the environment the parts
+will see) before review. Check: once committed, `make quick` builds both libraries; before that, the lead's scratch
+file starts with those two imports.
+
+## 21. A fresh machine without `zstd` and `bwrap` failed `verify-all` after 50 minutes (2026-11-06)
+`verify-toolchain` (archive extraction needs `zstd`) and the `lake check --paranoid` step of `lean-replay` (sandbox
+needs `bwrap`) failed on a new container; every other step passed, and after `apt-get install zstd bubblewrap` the
+two failed checks passed on the same export. CI installs both, so only local runs were exposed. Rule: verify-all
+checks its system tools before running anything and names the package to install. Check: `verify_all` preflight
+(unit test `missing_tools_are_named`).
