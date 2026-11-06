@@ -53,3 +53,18 @@ not change `fderiv`; the integrand identity is pointwise, the factor `exp(i t φ
 norm on `ℝ × ℝ` is `(2r)²` (`closedBall_prod_same`, `Measure.prod_prod`, `Real.volume_Icc`); handle `r < 0`.
 D9: `J := Nat.find` of `∃ j, t (δ/2^j)³ < 1`; the sum is geometric in `2^{-1/2}` after factoring
 `t^{-5/6} ε_{J-1}^{-1/2}`; `1/(1 − 2^{-1/2}) < 4`.
+
+## Revision after the route referee (`review/2026-11-06-S4-proof-route.md`; overrides the text above)
+- Shared bridge already proved: `OscInt.StationaryPhase.ImplicitAux.dd_eq_iteratedFDeriv` and `ddd_eq_iteratedFDeriv`
+  (`OscInt/StationaryPhase/Implicit.lean`), `dd_eq_fderiv_fderiv`, `dd_eq_coord` (`Local.lean`); grep for the exact
+  namespace. Use them instead of re-deriving.
+- Task P (D2), cheaper route (referee MINOR 1): write `φ = C + R` with `C = cubicPoly (cubicCoeffs φ)`; homogeneity
+  gives `rescale φ ε = C + ε⁻³ R(ε ·)` for `ε ≠ 0`; then `D^j(rescale φ ε)(z) = D^jC(z) + ε^{j-3} D^jR(εz)`, and
+  `‖D^jR(x)‖ ≤ S‖x‖^{4-j}` near 0 by iterating `Convex.norm_image_sub_le_of_norm_fderiv_le` with
+  `norm_fderiv_iteratedFDeriv`, since `D^iR(0) = 0` for `i ≤ 3`. The only explicit computation is
+  `D^iC(0) = D^iφ(0)` for `i ≤ 3`; third-order symmetry comes from `isSymmSndFDerivAt` applied to `φ` and to
+  `fderiv φ`.
+- Task Q (D3): no CAS is available offline (no sympy, `polyrith` needs network). Prefer the case argument (rank of
+  `H(z)`, `z.1 ≠ 0` or `z.2 ≠ 0`) with `linear_combination`/`nlinarith` on explicit coefficients; a certificate may need
+  a power `disc^k`.
+- Task S (D7): monotonicity of the bump is not needed: `‖z‖ ≤ 1 ⇒ χ z = 1 ≥ χ(2z)`, else `‖2z‖ > 2 ⇒ χ(2z) = 0`.

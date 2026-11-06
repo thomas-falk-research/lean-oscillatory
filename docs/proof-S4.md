@@ -61,3 +61,9 @@ Total: |I| ≤ (16 + 4 D C_β) M t^{−2/3}, D = max(C₃, C₁, 0). ∎
 
 Constants: C depends on φ through ε₀ (the gauge margin, which degenerates as Disc → 0), G, C₃, C₁; this is allowed
 (φ is fixed before ∃ δ C). Only `disc ≠ 0` is used (D3), so the same route proves the D4⁻ case.
+
+## Revision after the route referee (2026-11-06)
+Referee report `review/2026-11-06-S4-proof-route.md` (commit 9eebece): all of D1–D9 TRUE as stated; no BLOCKER or
+MAJOR. Adopted: the decomposition φ = C + R for D2 (avoids third-order Taylor formulas for `iteratedFDeriv`-valued
+maps), the case argument for D3 (no offline CAS), and the remark that D7 needs no monotonicity of the bump. Not
+changed: the unused hypotheses `Continuous A` (D8) and `δ ≤ 1` (D9) stay, as they cost the provers nothing.
