@@ -1,21 +1,19 @@
 import OscInt
 
 /-!
-Proof-method check for S4.3 (pre-registered 2026-11-06, `review/2026-11-06-S4b-pre-proof-answers.md`, before any
-proof exists). The brief requires `c_C ≠ 0` by the alternating-series argument "not relying on Mellin/Gamma
-identities". `#assert_gamma_free T` follows the transitive closure of constants used by the type and the value of
-`T` (through every definition and theorem proof) and fails if any constant's name has a component containing
-`Gamma`, `Beta`, `betaIntegral`, `mellin` or `Mellin`. Baseline: the closure of the statement itself has none
-(referee B, 33 082 constants). If a generic Mathlib lemma pulls such a constant in, the check fails and the proof
-is restructured; exceptions need a new dated decision recorded before they are used. Before the theorem exists the
-check prints SKIPPED. Negative control: `#assert_gamma_free_expect_fail Real.Gamma_pos_of_pos
+Proof-method check for S4.3. The brief requires `c_C ≠ 0` by the alternating-series argument "not relying on
+Mellin/Gamma identities". `#assert_gamma_free T` follows the transitive closure of the constants used by the type and
+the value of `T`, through every definition, theorem proof and opaque value (`value? (allowOpaque := true)`), and
+fails if any constant's name has a component containing `Gamma`, `Beta`, `betaIntegral`, `mellin` or `Mellin`.
+The criterion is by name: a special-function identity re-proved under neutral names would pass, so the reviewed
+route (integration by parts, then pairing the humps of sin u · u^{-4/3}) is part of the evidence.
 
-/-- Control whose *type* is Gamma-free and whose *proof* uses `Real.Gamma`: the check must reject it. -/
-theorem gammaProofControl : (0 : ℝ) < 1 := by
-  have := Real.Gamma_pos_of_pos (one_pos : (0 : ℝ) < 1)
-  norm_num
-
-#assert_gamma_free_expect_fail gammaProofControl`.
+History (lesson 18): a first version was committed in 94f7657 before any proof existed, but its `value?` skipped
+theorem values, so it never followed proofs; the corrected check and the proof-only control below were introduced
+in e89b610, the commit that added the S4.3 proof, and were re-run independently by the S4.1′–S4.3 adversarial
+referee. Closure sizes count every constant reached (types and values); the statement's closure is 33 099.
+Negative controls: `Real.Gamma_pos_of_pos` (Gamma in the type) and `gammaProofControl` (Gamma only in the proof);
+both must be rejected. Exceptions need a new dated decision recorded before they are used.
 -/
 
 open Lean Elab Command
@@ -71,3 +69,5 @@ theorem gammaProofControl : (0 : ℝ) < 1 := by
 #assert_gamma_free_expect_fail gammaProofControl
 #assert_gamma_free OscInt.Statements.D4ConstantPosStatement
 #assert_gamma_free OscInt.d4ConstantPos
+#assert_gamma_free OscInt.d4Limit
+#assert_gamma_free OscInt.d4BoundNe

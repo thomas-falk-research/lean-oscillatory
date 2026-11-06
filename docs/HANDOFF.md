@@ -3,17 +3,15 @@
 For a reader who saw nothing. Read `docs/lessons.md` first (18 entries).
 
 ## What exists (end of session 2, 2026-11-06)
-- Lean v4.35.0, Mathlib `56a0058` (tag v4.35.0). Machine-checked as stated (`docs/STATUS.md`):
-  - S1 `OscInt.vanDerCorput_one/_two/_three` (`OscInt/VanDerCorput/`);
-  - S2.1 `OscInt.nonStationary`, S2.2 `OscInt.stationaryPhase`, S3 `OscInt.fold` (`OscInt/StationaryPhase/`);
-  - S4.1 `OscInt.d4Bound` (`OscInt/D4/`, route `docs/proof-S4.md`; D4⁺, `disc < 0`, as the brief).
-  Latest full record: `docs/replay/2026-11-06-S4-verify-all.txt` (a0b1fde, PASS 8/8); later commits checked by CI.
-- Reviews for every statement: two blind pre-proof, two post-proof, one adversarial, all in `review/`.
-- Calibration: round 1 (S1) and round 2 (S2–S4, separate planter) both 4/4 detected, 0/2 false alarms; pooled
-  8/8, 95% CP [0.63, 1] (`docs/calibration.md`).
-- Mathlib built from source in CI (run 18): commitments equal the pinned stamps.
-- Tools enforce pinned stamps, per-milestone comparator configs, per-module `leanchecker`, a metaprogramming guard,
-  verification of every pinned stamp.
+- Lean v4.35.0, Mathlib `56a0058` (tag v4.35.0). Machine-checked as stated (`docs/STATUS.md`): S1 (three van der
+  Corput lemmas), S2.1, S2.2, S3, S4.1 (D4⁺ bound), S4.1′ (both umbilics), S4.2 (D4 limit with the Gamma-free c_C),
+  S4.3 (c_C > 0, Gamma-free by name). Latest full record: `docs/replay/2026-11-06-S4b-verify-all.txt` (a71b318;
+  INCOMPLETE only for S4.4); CI green, including nanoda built from source at `8de7e0c`.
+- Open: S4.4 (closed forms of c_C; statement frozen and reviewed). The brief's S4 limit with its closed-form
+  constant is S4.2 ∧ S4.4.
+- Reviews for every statement in `review/`; calibration rounds 1 and 2 (pooled 8/8, 95% CP [0.63, 1]).
+- Tools: pinned stamps, per-milestone comparator configs (export hash tied to the configuration), per-module
+  `leanchecker`, six export kernels, metaprogramming guard, `GammaFree.lean` (follows proofs; lesson 18).
 
 ## Owner decisions
 The three S4 decisions were delegated by the owner and taken on 2026-11-06 (`docs/decisions/2026-11-06-S4.md`):
@@ -21,13 +19,13 @@ c_C defined Gamma-free (S4.2–S4.4 separate); S4.1′ added for `disc ≠ 0`; n
 `8de7e0c`. Still the owner's: venue, outreach, money, publication, Mathlib PRs.
 
 ## Next
-- S4.3 (smallest): route = alternating series on [π/2 + (k−1)π, π/2 + kπ] plus certified bounds for a₀ + a₁ > 0
-  (6% margin); integrability of |C|^{-2/3} for `disc ≠ 0`; must pass `GammaFree.lean`.
-- S4.2: route = rescaling z = t^{-1/3}w, dominated convergence on |w| ≤ R, dyadic tail by S2.1 (N = 2), polar
-  evaluation of ∫e^{iC} with cut-offs; referee the route before agents.
-- S4.4: Abel limit of `integral_cpow_mul_exp_neg_mul_Ioi` for the cosine moment, Beta integrals for the two
-  normal forms, GL₂ covariance.
-- Freeze the tree while referees or the final `verify-all` run (lesson 16); generic sanity witnesses (lesson 17).
+- S4.4: blueprint and route (cosine moment = Γ(2/3)/2 by an Abel limit of `integral_cpow_mul_exp_neg_mul_Ioi`;
+  J(C) for x³ + y³ and x³ − 3xy² by Beta integrals (`Complex.betaIntegral_eq_Gamma_mul_div`); GL₂ covariance of
+  c_C and of |Disc|^{1/6}; reduction of each sign class to its normal form), route referee, agents. Then a full
+  `verify-all` must report PASS.
+- Put `GammaFree.lean` into the next stamp.
+- Freeze the tree while referees or the final `verify-all` run (lesson 16); generic sanity witnesses (lesson 17);
+  negative controls that exercise the checked path (lesson 18).
 
 ## Commands
 ```bash

@@ -36,7 +36,8 @@ Built from source in CI (from 2026-11-06, `docs/decisions/2026-11-06-S4.md`): `n
 the CI log prints `rustc -V` and the binary's sha256. Required to print its own success line. First run: CI run 58
 (commit 94f7657): rustc 1.97.0 (2d8144b78 2026-07-07), `nanoda_bin` sha256
 `a172233ad40e432e49e7c5d3d1f52661c00ec72afb595350f1cd424467a78d8c`, "Checked 52412 declarations with no typechecker
-errors" (one pretty-printer note, "Unable to print axioms", which is not a verdict). It is a different
+errors" (one pretty-printer note, "Unable to print axioms", which is not a verdict; so the from-source checker confirms type
+checking but does not itself print the axiom set, which the audit and the other kernels cover). It is a different
 version (0.4.31) from the bundled 0.4.19, so it is a second build and a second implementation version.
 
 Observed behaviour (VALIDATED 2026-11-05, commands in `docs/lessons.md` entries 2–4):

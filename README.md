@@ -2,7 +2,8 @@
 
 A Lean 4 + Mathlib library of uniform oscillatory-integral estimates in one and two variables with explicit
 constants: van der Corput (S1), nondegenerate stationary phase uniform in a linear term (S2), the uniform fold
-estimate m^{-5/6} (S3), and the uniform D4 estimate t^{-2/3} (S4.1, S4.1′; the limit and its constant S4.2–S4.4 are stated, not yet proved).
+estimate m^{-5/6} (S3), and the uniform D4 estimate t^{-2/3} (S4.1, S4.1′), the limit t^{2/3}∫e^{itφ}A → c_C A(0) with a Gamma-free c_C (S4.2) and c_C > 0 (S4.3); the
+closed form of c_C (S4.4) is stated, not yet proved.
 Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0).
 
 ## Status
@@ -13,8 +14,10 @@ Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801a
 | S2 stationary phase (S2.1 non-stationary, S2.2 nondegenerate) | machine-checked as stated (`OscInt.nonStationary`, `OscInt.stationaryPhase`), see `docs/STATUS.md` |
 | S3 fold | machine-checked as stated (`OscInt.fold`; fold condition required on all of K) |
 | S4.1 uniform D4 bound (hyperbolic umbilic D4⁺, `disc < 0`, as the brief) | machine-checked as stated (`OscInt.d4Bound`), see `docs/STATUS.md` |
-| S4.1′ uniform D4 bound, both umbilics (`disc ≠ 0`) | proved and replayed (`OscInt.d4BoundNe`); post-proof review not yet run |
-| S4.2–S4.4 D4 limit, c_C > 0, closed forms | statements frozen and reviewed; proofs not started (the brief's limit with its constant is S4.2 ∧ S4.4) |
+| S4.1′ uniform D4 bound, both umbilics (`disc ≠ 0`) | machine-checked as stated (`OscInt.d4BoundNe`) |
+| S4.2 D4 limit with the Gamma-free c_C | machine-checked as stated (`OscInt.d4Limit`) |
+| S4.3 c_C > 0 (alternating series, no Gamma) | machine-checked as stated (`OscInt.d4ConstantPos`; Gamma-free by name, `GammaFree.lean`) |
+| S4.4 closed forms of c_C (the brief's Γ(1/3)²/(√3\|Disc\|^{1/6})) | stated and reviewed; not proved. The brief's limit with its constant is S4.2 ∧ S4.4 |
 
 "As stated" means the hypotheses in `docs/statements.md` (derivatives continuous up to the endpoints, as in the
 source's C^k assumption). Details and evidence: `docs/STATUS.md`.

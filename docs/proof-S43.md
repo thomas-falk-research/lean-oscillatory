@@ -2,7 +2,7 @@
 
 Statement: `OscInt.Statements.D4ConstantPosStatement`. Blueprint parts C1–C5: `Blueprint/D4Limit.lean`. Assembly:
 `OscInt.D4.d4ConstantPos_of` (`OscInt/D4/ConstantPos.lean`), checked by Lean against the parts and already passing
-`GammaFree.lean`. Every part's proof must pass it too.
+`GammaFree.lean` (corrected in e89b610 to follow proofs, lesson 18). Every part's proof must pass it too.
 
 ## The cosine moment (C1, C2)
 C1. For R > 0: ∫₀^R cos u · u^{−1/3} du = R^{−1/3} sin R + (1/3)∫₀^R sin u · u^{−4/3} du. Integration by parts on

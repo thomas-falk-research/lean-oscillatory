@@ -92,8 +92,10 @@ fn check(root: &Path, config: &str, stamp: &Path) -> Result<bool, String> {
     let out = export(root, config)?;
     let h = sha256_file(&out)?;
     let manifest = fs::read_to_string(stamp.join("manifest.txt")).map_err(|e| format!("stamp manifest: {e}"))?;
-    if !manifest.lines().any(|l| l.starts_with(&format!("challenge-export {h}"))) {
-        return Err(format!("challenge export sha256 {h} is not in {}/manifest.txt", stamp.display()));
+    // Tied to this configuration's export file name (S4b adversarial review, NIT 7), not to any stamped export.
+    let fname = out.file_name().map(|f| f.to_string_lossy().into_owned()).unwrap_or_default();
+    if !manifest.lines().any(|l| l == format!("challenge-export {h}  {fname}")) {
+        return Err(format!("challenge export {fname} (sha256 {h}) is not in {}/manifest.txt", stamp.display()));
     }
     println!("challenge: export sha256 {h} matches the stamped manifest");
     let (ok, o, e) = run(Command::new("lake").current_dir(root)

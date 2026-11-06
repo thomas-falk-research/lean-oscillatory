@@ -26,3 +26,6 @@ Correction (2026-11-06, lesson 18): the first version of `GammaFree.lean` did no
 (`value?` returns `none` for theorems at this Lean version), so its OK lines before this date covered types and
 definitions only. Fixed with `value? (allowOpaque := true)` and a proof-only negative control `gammaProofControl`,
 which is rejected; `OscInt.d4ConstantPos` then passes with 43 612 constants in its closure.
+
+Correction 2 (2026-11-06, S4b post-proof B NIT 3): with `value? (allowOpaque := true)` the check also follows
+`opaque` values, so the "limitation" above no longer applies; the control now reports 33 forbidden constants.

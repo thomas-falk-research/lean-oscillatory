@@ -177,3 +177,6 @@ applies the alternating-series argument to the humps of sin weighted by the decr
 [2kπ, 2kπ + 2π] contributing ∫_{2kπ}^{2kπ+π} sin u (u^{−4/3} − (u + π)^{−4/3}) du > 0. This replaces the grouping
 "∫₀^{π/2} + ∫_{π/2}^{3π/2} > 0" named above, which needs a numerical bound (6% margin). No Gamma or Mellin identity
 is used (`GammaFree.lean`).
+
+Correction to clarification (2) above (2026-11-06, S4b post-proof referee B, NIT 2): for q ≠ 0 the integrand of
+`angularMoment q` is integrable iff `disc q ≠ 0`; for q = 0 it is identically `0 ^ (-2/3) = 0` (integrable, J = 0).
