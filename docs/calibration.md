@@ -9,6 +9,7 @@ planted statement error, and how often it raises a false alarm on an unmodified 
 | Round | Date | Statements | Planted (kinds) | Detected | Rate, 95% Clopper–Pearson | Controls | False alarms |
 |---|---|---|---|---|---|---|---|
 | 1 | 2026-11-05 | S1 (van der Corput) | 4 (quantifier, hypothesis, definition, weakened conclusion) | 4 | 1.00, [0.40, 1.00] | 2 | 0 (0/2, upper bound 0.84) |
+| 2 | 2026-11-06 | S2.1, S2.2, S3, S4.1 (325 lines) | 4 (same kinds), planted by a separate agent | pending | — | 2 | pending |
 
 ## Round 1 protocol (pre-registered 2026-11-05, before any referee ran)
 
@@ -72,3 +73,37 @@ planted by someone other than the scorer.
 Process findings from the reports, adopted from S2 on: sanity theorems state hypotheses through the same named
 definitions as the statement (V5 noted the S1 sanity theorem restates the ∀ form); sanity theorems that only
 witness satisfiability cannot catch a false bound (V1, V4), so statements also get a "bite" check where it is cheap.
+
+## Round 2 protocol (pre-registered 2026-11-06, before any referee ran)
+
+Changes from round 1, answering its stated limitations: longer statements (S2.1, S2.2, S3 and S4.1 with all shared
+definitions, merged into one 325-line standalone file); the errors were chosen and planted by a separate planter
+agent, not by the lead who scores; the lead has not read the key.
+
+Variants. Base = `OscInt/Statements/StationaryPhase.lean` followed by the body of `OscInt/Statements/D4.lean` (one
+`import Mathlib`), SHA-256 `e83d94df7fddf21243bf2d8e65682618a2be06980108499e069abe5900eef3c8`. Six copies V1–V6, each
+with one added header line "Review copy Vi."; four carry exactly one planted error each, one of each kind
+(quantifier, hypothesis, definition, weakened conclusion), spread over the four statements where possible, chosen to
+be subtle; two are controls. Assignment by `random.SystemRandom().shuffle`. Every variant compiles (`lake env lean`,
+Lean v4.35.0, Mathlib 56a0058; checked by the planter and re-hashed by the lead). The shared `statements.md` is
+`docs/statements.md` with S1 and every post-stamp "Clarification" paragraph removed (SHA-256
+`18601e4112cc300694b7bb0ecaf8324639181d5341e6e96b15369b17b22ce88d`).
+
+Seal. The planter wrote `key.json` (variant → kind, planted text before/after, affected statement, description,
+variant SHA-256, 32-byte random salt) and reported only its hash. Seal SHA-256 of `key.json`:
+`09390e03b7c0cd324805e5030e077669c8319533b8048b3a9bb6b8be162db1d6`. The key is revealed after all six reports are in.
+
+Variant SHA-256:
+- V1 `41e0ab4e4e77619ddbac0fdb61d83b9c30a88893e6f52716ab93873cc3c8a0ee`
+- V2 `3d2d46913372ec2a3ff6a1e70a50b71b448b01baca2a181408280f08ac17b4b8`
+- V3 `34ed0942bc5c08162837ecae5c20c40c0214fac3059fe790d3255d24c479b8c5`
+- V4 `66ba7e1fa286fe3f7a9d45199f5818d0d59f13db22c951f560628bcaa15dddd5`
+- V5 `de9d563d9c21ad71a90906306f5163e2725691e51659aef67083af611e7ae92e`
+- V6 `b81ce110bc75c428b948a830c0272d0a6d537bacb8955f3269be24cbb1693b5a`
+
+Referees: one fresh agent per variant with `review/prompts/calibration-r2.md` and its directory only (blindness by
+instruction, no sandbox). Scoring rule: as round 1, unchanged (DETECTED iff a non-FAITHFUL verdict against
+`statements.md` for an affected statement and identification of the planted clause; FALSE ALARM iff a control gets
+any non-FAITHFUL verdict against the docs or any BLOCKER/MAJOR finding). Pooled with round 1 only if both rounds
+are reported separately as well. Limitations stated in advance: n = 4 + 2 again; the planter is the same model
+family as the referees; the scorer applies the rule after reading the key.
