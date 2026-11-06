@@ -162,3 +162,11 @@ Modelling choices for S4.1′–S4.4: c_C is *defined* by the Gamma-free formula
 and S4.4 give the brief's limit with its closed-form constant, and S4.3 gives c_C ≠ 0 without Gamma identities.
 Improper integrals are limits of interval integrals; powers are `Real.rpow`. Decision record:
 `docs/decisions/2026-11-06-S4.md`. Numerical validation: `numerics/results-d4const-2026-11-06.txt`.
+
+Clarification added after the S4.1′–S4.4 stamp (2026-11-06, from the two pre-proof referees; the stamped text and
+`OscInt/Statements/D4Limit.lean` are unchanged): (1) the brief's S4 limit "t^{2/3}∫e^{itφ}A → c_C A(0) with
+c_C = Γ(1/3)²/(√3|Disc C|^{1/6})" is S4.2 together with the Disc < 0 clause of S4.4, and "c_C ≠ 0" is S4.3;
+(2) in Lean `angularMoment q` is always a real number: its integrand is integrable iff `disc q ≠ 0`, and otherwise
+the Bochner value is the junk 0, so `d4Constant q = 0` when `disc q = 0`; every statement assumes `disc ≠ 0` or a
+sign; (3) S4.4's first conjunct is about the `limUnder` value; that the improper integral converges is S4.3's first
+conjunct; (4) the S4.3 proof-method rule is checked by `GammaFree.lean` (pre-registered before any proof).

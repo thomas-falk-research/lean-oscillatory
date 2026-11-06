@@ -10,7 +10,10 @@ requires every row of the trust chain (README) for that statement.
 | S2.2 nondegenerate stationary phase | `OscInt.stationaryPhase` | yes, stamp `20261105T234456Z-533ae0272521` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full | yes | 7 kernel runs + comparator | machine-checked as stated |
 | S3 uniform fold | `OscInt.fold` | yes, stamp `20261105T234456Z-533ae0272521` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2 to the docs (one referee: FAITHFUL-WEAKER than the classical form), scope full | yes | 7 kernel runs + comparator | machine-checked as stated (fold condition on all of K) |
 | S4.1 uniform D4 bound | `OscInt.d4Bound` | yes, stamp `20261106T033706Z-63564a8d78cd` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2 to the docs, FAITHFUL-WEAKER than the classical form (D4⁺ only, as the brief), scope full | yes | 7 kernel runs + comparator | machine-checked as stated (hyperbolic umbilic D4⁺) |
-| S4.2 D4 limit constant | — | no | — | — | — | awaiting owner decision on the definition of c_C |
+| S4.1′ uniform D4 bound, both umbilics (`disc ≠ 0`) | `OscInt.d4BoundNe` | yes, stamp `20261106T081634Z-e2d7771c358e` (pinned) | pre: FAITHFUL ×2 (STRONGER than the brief) | yes (same parts as S4.1, assembly `d4BoundNe_of`) | pending final verify-all | proved; replay pending |
+| S4.2 D4 limit t^{2/3}∫e^{itφ}A → c_C A(0) | `OscInt.Statements.D4LimitStatement` | yes, stamp `20261106T081634Z-e2d7771c358e` (pinned) | pre: FAITHFUL ×2 | — | — | statement frozen, proof not started |
+| S4.3 c_C > 0 (alternating series, Gamma-free) | `OscInt.Statements.D4ConstantPosStatement` | yes, same stamp | pre: FAITHFUL ×2 | — | — | statement frozen; Gamma-free check pre-registered (`GammaFree.lean`) |
+| S4.4 closed forms of c_C | `OscInt.Statements.D4ConstantClosedFormStatement` | yes, same stamp | pre: FAITHFUL ×2 | — | — | statement frozen, proof not started |
 
 Pipeline skeleton (M0): `OscInt.skeleton_two_mul` builds, audits clean (1 of 1) and replays in six kernels
 (`build/replay/summary.txt` from `make lean-replay`; the CI run on each push records it).
@@ -47,3 +50,8 @@ three configurations, per-module `leanchecker` and six export kernels); CI run 4
 hyperbolic umbilic D4⁺, which is the brief's case ("an isolated critical point and negative discriminant"); the
 proof uses only `disc ≠ 0`, so D4⁻ is a small extension if the owner widens the statement. Non-vacuity:
 `OscInt/D4/Sanity.lean`, `OscInt/D4/Bite.lean`.
+
+S4.1′–S4.4 (2026-11-06). Decisions: `docs/decisions/2026-11-06-S4.md` (c_C defined Gamma-free; widening to
+`disc ≠ 0` as a new statement; nanoda built from source in CI). The brief's S4 limit with its constant is S4.2 ∧ S4.4
+(Disc < 0 clause), and "c_C ≠ 0" is S4.3; none is proved yet. Reviews: `review/2026-11-06-S4b-pre-proof-{A,B}.md`,
+answers `review/2026-11-06-S4b-pre-proof-answers.md`.

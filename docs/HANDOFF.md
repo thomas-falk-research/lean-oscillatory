@@ -15,23 +15,18 @@ For a reader who saw nothing. Read `docs/lessons.md` first (17 entries).
 - Tools enforce pinned stamps, per-milestone comparator configs, per-module `leanchecker`, a metaprogramming guard,
   verification of every pinned stamp.
 
-## Pending owner decisions
-1. S4 limit constant. The brief asks for t^{2/3}∫e^{itφ}A → c_C A(0) with c_C = Γ(1/3)²/(√3|Disc C|^{1/6}) and
-   also asks to prove c_C ≠ 0 by an alternating-series argument "not relying on Mellin/Gamma identities". With the
-   closed form in the statement, c_C ≠ 0 is trivial and the limit itself needs a Gamma identity
-   (∫₀^∞ cos v · v^{-1/3} dv = Γ(2/3)/2). Proposal: S4.2 states the limit with c_C defined Gamma-free as
-   (1/3)(∫₀^∞ cos v · v^{-1/3} dv)(∫₀^{2π} |C(cos θ, sin θ)|^{-2/3} dθ) (improper integral as a limit), S4.3 proves
-   c_C > 0 by the alternating series, and S4.4 states the closed form separately.
-2. An independent checker built from source (nanoda at commit `8de7e0c`): the local build was refused by the
-   session's safety classifier (third-party build code); options: allow it here, or build it in CI.
-3. S4.1 scope: `disc < 0` (D4⁺, as the brief) or `disc ≠ 0` (adds D4⁻); a change is a new statement.
+## Owner decisions
+The three S4 decisions were delegated by the owner and taken on 2026-11-06 (`docs/decisions/2026-11-06-S4.md`):
+c_C defined Gamma-free (S4.2–S4.4 separate); S4.1′ added for `disc ≠ 0`; nanoda built from source in CI at
+`8de7e0c`. Still the owner's: venue, outreach, money, publication, Mathlib PRs.
 
 ## Next
-- S4.2 after decision 1 (statement, stamp, blind review, then route; the limit uses the same dyadic pieces plus
-  dominated convergence on the cubic model).
-- If decision 3 is "widen": a new `disc ≠ 0` statement; the existing parts already cover it (D3 is stated for
-  `disc ≠ 0`).
-- Upstream candidates (`docs/upstream.md`): only with the owner's go.
+- S4.3 (smallest): route = alternating series on [π/2 + (k−1)π, π/2 + kπ] plus certified bounds for a₀ + a₁ > 0
+  (6% margin); integrability of |C|^{-2/3} for `disc ≠ 0`; must pass `GammaFree.lean`.
+- S4.2: route = rescaling z = t^{-1/3}w, dominated convergence on |w| ≤ R, dyadic tail by S2.1 (N = 2), polar
+  evaluation of ∫e^{iC} with cut-offs; referee the route before agents.
+- S4.4: Abel limit of `integral_cpow_mul_exp_neg_mul_Ioi` for the cosine moment, Beta integrals for the two
+  normal forms, GL₂ covariance.
 - Freeze the tree while referees or the final `verify-all` run (lesson 16); generic sanity witnesses (lesson 17).
 
 ## Commands

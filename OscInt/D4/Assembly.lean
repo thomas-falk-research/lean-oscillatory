@@ -1,4 +1,5 @@
 import Blueprint.D4
+import OscInt.Statements.D4Limit
 import OscInt.StationaryPhase.Final
 
 /-!
@@ -123,10 +124,10 @@ theorem sum_pieces (χ : ℝ × ℝ → ℝ) (hχ1 : ∀ z, ‖z‖ ≤ 1 → χ
   calc δ⁻¹ * ‖κ‖ ≤ δ⁻¹ * δ := by gcongr
     _ = 1 := inv_mul_cancel₀ hδ.ne'
 
-/-- **S4.1** from the interfaces. -/
-theorem d4Bound_of (hN : NormalizeFacts) (hR : RescaleFamilyFacts) (hCG : CubicGaugeFacts)
+/-- **S4.1′** from the interfaces (both umbilics: only `disc ≠ 0` is used). -/
+theorem d4BoundNe_of (hN : NormalizeFacts) (hR : RescaleFamilyFacts) (hCG : CubicGaugeFacts)
     (hGF : GaugeFoldFacts) (hGO : GaugeOpenFacts) (hGB : GradBoundFacts) (hCut : CutoffFacts)
-    (hTB : TrivialBoundFacts) (hDS : DyadicSumFacts) : D4BoundStatement := by
+    (hTB : TrivialBoundFacts) (hDS : DyadicSumFacts) : D4BoundNeStatement := by
   intro φ hφ hdd hdisc
   obtain ⟨hψ4, hψ0, hψ1, hψdd, hψddd, hψI⟩ := hN φ hφ
   set ψ := normalize φ with hψ_def
@@ -138,7 +139,7 @@ theorem d4Bound_of (hN : NormalizeFacts) (hR : RescaleFamilyFacts) (hCG : CubicG
     intro z hz
     have : rescale ψ 0 = cubicPoly (cubicCoeffs ψ) := by funext z; simp [rescale]
     rw [this]
-    exact hCG _ (by rw [hcc]; exact hdisc.ne) z (ne_zero_of_mem_annulus hz)
+    exact hCG _ (by rw [hcc]; exact hdisc) z (ne_zero_of_mem_annulus hz)
   obtain ⟨r, hr, hball⟩ := Metric.eventually_nhds_iff.mp
     (hGO ℝ (rescale ψ) 0 annulus (familyCk_of_le (by norm_num) hfam) isCompact_annulus h0)
   set ε₀ : ℝ := min 1 (r / 2) with hε₀_def
@@ -285,5 +286,11 @@ theorem d4Bound_of (hN : NormalizeFacts) (hR : RescaleFamilyFacts) (hCG : CubicG
     _ ≤ 16 * t ^ (-(2 : ℝ) / 3) * M + D * (Cβ * M) * (4 * t ^ (-(2 : ℝ) / 3)) := by
         gcongr
     _ = (16 + 4 * D * Cβ) * M * t ^ (-(2 : ℝ) / 3) := by ring
+
+/-- **S4.1** from the interfaces: the case `disc < 0` of S4.1′. -/
+theorem d4Bound_of (hN : NormalizeFacts) (hR : RescaleFamilyFacts) (hCG : CubicGaugeFacts)
+    (hGF : GaugeFoldFacts) (hGO : GaugeOpenFacts) (hGB : GradBoundFacts) (hCut : CutoffFacts)
+    (hTB : TrivialBoundFacts) (hDS : DyadicSumFacts) : D4BoundStatement :=
+  fun φ hφ hdd hdisc => d4BoundNe_of hN hR hCG hGF hGO hGB hCut hTB hDS φ hφ hdd hdisc.ne
 
 end OscInt.D4

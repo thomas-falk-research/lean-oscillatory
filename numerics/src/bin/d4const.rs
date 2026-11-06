@@ -144,17 +144,22 @@ fn bump(s: f64) -> f64 { if s.abs() >= 1.0 { 0.0 } else { (-1.0 / (1.0 - s * s))
 
 /// t^{2/3} ∫∫ e^{itC} bump(x) bump(y), composite Simpson on [-1,1]² with n intervals per side.
 fn limit2d(q: Q, t: f64, n: usize) -> (f64, f64) {
+    limit2d_gen(&|x, y| cubic(q, x, y), &|x, y| bump(x) * bump(y), t, n)
+}
+
+/// t^{2/3} ∫∫ e^{itφ} A for general φ, A supported in [-1,1]².
+fn limit2d_gen(phi: &dyn Fn(f64, f64) -> f64, amp: &dyn Fn(f64, f64) -> f64, t: f64, n: usize) -> (f64, f64) {
     let n = n + n % 2;
     let h = 2.0 / n as f64;
     let w = |i: usize| if i == 0 || i == n { 1.0 } else if i % 2 == 1 { 4.0 } else { 2.0 };
     let (mut re, mut im) = (0.0, 0.0);
     for i in 1..n {
         let x = -1.0 + h * i as f64;
-        let bx = bump(x) * w(i);
         for j in 1..n {
             let y = -1.0 + h * j as f64;
-            let a = bx * bump(y) * w(j);
-            let ph = t * cubic(q, x, y);
+            let a = amp(x, y) * w(i) * w(j);
+            if a == 0.0 { continue; }
+            let ph = t * phi(x, y);
             re += a * ph.cos();
             im += a * ph.sin();
         }
@@ -225,6 +230,19 @@ fn main() {
         let ext = (r * last[3] - last[2]) / (r - 1.0);
         println!();
         check(&format!("{name}: Richardson (t^(-2/3) correction) from t = 100, 300"), ext, c * a0, 1e-3);
+    }
+    println!("\n== Referee NIT: quartic terms and a non-even amplitude (trend toward c_C A(0); correction O(t^(-1/3)))");
+    for idx in [0usize, 4] {
+        let (name, q, c) = consts[idx];
+        let phi = |x: f64, y: f64| cubic(q, x, y) + 0.5 * x.powi(4) + 0.3 * x * x * y * y;
+        let amp = |x: f64, y: f64| bump(x) * bump(y) * (1.0 + 0.5 * x + 0.3 * y);
+        print!("{name} + 0.5x⁴ + 0.3x²y², A = bump⊗bump·(1 + 0.5x + 0.3y): c_C A(0) = {:.6};", c * a0);
+        for t in [30.0, 100.0, 300.0, 1000.0] {
+            let n = (14.0 * t) as usize + 400;
+            let (re, im) = limit2d_gen(&phi, &amp, t, n);
+            print!("  t={t}: {re:.6}{im:+.6}i");
+        }
+        println!();
     }
     println!("\nRESULT {}", if fail.get() { "FAIL" } else { "PASS" });
     std::process::exit(fail.get() as i32);

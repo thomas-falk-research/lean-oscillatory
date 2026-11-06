@@ -2,7 +2,7 @@
 
 A Lean 4 + Mathlib library of uniform oscillatory-integral estimates in one and two variables with explicit
 constants: van der Corput (S1), nondegenerate stationary phase uniform in a linear term (S2), the uniform fold
-estimate m^{-5/6} (S3), and the uniform D4 estimate t^{-2/3} (S4.1; the limit constant S4.2 is planned, not yet stated).
+estimate m^{-5/6} (S3), and the uniform D4 estimate t^{-2/3} (S4.1, S4.1′; the limit and its constant S4.2–S4.4 are stated, not yet proved).
 Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0).
 
 ## Status
@@ -13,7 +13,8 @@ Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801a
 | S2 stationary phase (S2.1 non-stationary, S2.2 nondegenerate) | machine-checked as stated (`OscInt.nonStationary`, `OscInt.stationaryPhase`), see `docs/STATUS.md` |
 | S3 fold | machine-checked as stated (`OscInt.fold`; fold condition required on all of K) |
 | S4.1 uniform D4 bound (hyperbolic umbilic D4⁺, `disc < 0`, as the brief) | machine-checked as stated (`OscInt.d4Bound`), see `docs/STATUS.md` |
-| S4.2 D4 limit constant | not stated (owner decision on the definition of c_C) |
+| S4.1′ uniform D4 bound, both umbilics (`disc ≠ 0`) | proved (`OscInt.d4BoundNe`); final replay pending |
+| S4.2–S4.4 D4 limit, c_C > 0, closed forms | statements frozen and reviewed; proofs not started (the brief's limit with its constant is S4.2 ∧ S4.4) |
 
 "As stated" means the hypotheses in `docs/statements.md` (derivatives continuous up to the endpoints, as in the
 source's C^k assumption). Details and evidence: `docs/STATUS.md`.

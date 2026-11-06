@@ -23,5 +23,9 @@ PASS  x³ + y³: Richardson (t^(-2/3) correction) from t = 100, 300: 0.323637612
 x³ − 3xy² (elliptic): c_C A(0) = 0.445074;  t=10: 0.405784-0.000000i (Δn 1e-14)  t=30: 0.426392-0.000000i (Δn 4e-14)  t=100: 0.436696-0.000000i (Δn 9e-14)  t=300: 0.441046-0.000000i (Δn 7e-14)
 PASS  x³ − 3xy² (elliptic): Richardson (t^(-2/3) correction) from t = 100, 300: 0.445073821936 vs 0.445074359549 (rel diff 1.2e-6)
 
+== Referee NIT: quartic terms and a non-even amplitude (trend toward c_C A(0); correction O(t^(-1/3)))
+x³ + y³ + 0.5x⁴ + 0.3x²y², A = bump⊗bump·(1 + 0.5x + 0.3y): c_C A(0) = 0.323754;  t=30: 0.325707+0.023763i  t=100: 0.324314+0.016315i  t=300: 0.323959+0.011360i  t=1000: 0.323832+0.007622i
+x³ − 3xy² (elliptic) + 0.5x⁴ + 0.3x²y², A = bump⊗bump·(1 + 0.5x + 0.3y): c_C A(0) = 0.445074;  t=30: 0.426406+0.001462i  t=100: 0.436660+0.000455i  t=300: 0.441028+0.000149i  t=1000: 0.443261+0.000044i
+
 RESULT PASS
 exit 0

@@ -27,6 +27,7 @@ lean: tools
 	$(T)/audit $(B)/axioms.out . $(B)/audited.txt
 	$(LAKE) env lean StatementTypes.lean
 	$(LAKE) env lean MathlibNames.lean > /dev/null
+	$(LAKE) env lean GammaFree.lean
 
 lean-replay: lean
 	$(T)/replay . $(B)/audited.txt $(B)/replay
