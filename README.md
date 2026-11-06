@@ -38,7 +38,8 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 
 - Lean's kernel and the v4.35.0 toolchain archive, from which every checker above comes (one trust source until a
   checker is built from source at a pinned commit).
-- The Mathlib binary cache, until the `mathlib-from-source` CI job has run (`docs/toolchain.md`).
+- The Mathlib binary cache for the proofs: a source build (CI run 18) reproduced the statement commitments, but
+  the replay still uses cache-built `.olean` files (`docs/toolchain.md`).
 - The fidelity readings of statements: AI referees, no human reviewer yet.
 - The roots of the three RFC 3161 timestamp authorities (`stamps/roots/`); the FreeTSA root is trust on first use.
 

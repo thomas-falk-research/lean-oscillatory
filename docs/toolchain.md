@@ -90,6 +90,9 @@ until upgraded with an OpenTimestamps client after Bitcoin confirmation.
 
 ## Mathlib source build
 
-Not yet run. The manual CI job `mathlib-from-source` (workflow_dispatch input `mathlib_from_source`) builds
-Mathlib without the binary cache and compares the recomputed commitments with the latest stamp. Record its first
-run here (date, run URL, result).
+First complete run: CI run 18 (https://github.com/thomas-falk-research/lean-oscillatory/actions/runs/42131847959),
+workflow_dispatch on commit 5ae5589, 2026-11-05 23:45 – 2026-11-06 01:53 UTC (about 2 h). The job compiled all 8624
+Mathlib modules itself (`Mathlib modules compiled in this job: 8624`, no fetched or replayed Mathlib module), built the
+library, and `make commit` found all six statement commitments equal to their pinned stamps. VALIDATED: for these
+statements, the source build and the binary cache give the same elaborated statements. An earlier run (CI run 14,
+commit 9cb9c11) compiled 2512 modules and then failed because `MathlibNames.lean` needs all of Mathlib; fixed.
