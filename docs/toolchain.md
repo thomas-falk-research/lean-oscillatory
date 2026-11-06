@@ -33,7 +33,10 @@ installed toolchain. VALIDATED 2026-11-05: identical, 17 925 files.
 Built from source in CI (from 2026-11-06, `docs/decisions/2026-11-06-S4.md`): `nanoda_bin` from
 `github.com/ammkrn/nanoda_lib` at commit `8de7e0c4ed3052745a7f8725164efd9e76d84c56` (crate 0.4.31, Apache-2.0),
 `cargo build --release --locked` with Rust 1.97.0 on a fresh runner, run on the replay export after `verify-all`;
-the CI log prints `rustc -V` and the binary's sha256. Required to print its own success line. It is a different
+the CI log prints `rustc -V` and the binary's sha256. Required to print its own success line. First run: CI run 58
+(commit 94f7657): rustc 1.97.0 (2d8144b78 2026-07-07), `nanoda_bin` sha256
+`a172233ad40e432e49e7c5d3d1f52661c00ec72afb595350f1cd424467a78d8c`, "Checked 52412 declarations with no typechecker
+errors" (one pretty-printer note, "Unable to print axioms", which is not a verdict). It is a different
 version (0.4.31) from the bundled 0.4.19, so it is a second build and a second implementation version.
 
 Observed behaviour (VALIDATED 2026-11-05, commands in `docs/lessons.md` entries 2–4):

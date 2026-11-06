@@ -15,3 +15,4 @@ import OscInt.D4.Rescale
 import OscInt.D4.Final
 import OscInt.D4.Bite
 import OscInt.D4.LimitSanity
+import OscInt.D4.ConstantPos
