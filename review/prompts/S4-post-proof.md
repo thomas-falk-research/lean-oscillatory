@@ -12,7 +12,7 @@ change the meaning of the statements; say what you looked at. Do not edit reposi
 Run and report verbatim (repository root; `export PATH=$HOME/.elan/bin:$PATH`; one process at a time, `nice -n 10`):
 1. `git rev-parse HEAD`
 2. `lake env lean StatementTypes.lean`
-3. `cat build/commit/commitments.txt` (computed by the lead's `make verify-all` on this commit; if absent, say so),
+3. `cat build/commit/commitments.txt` (computed by the lead's `make verify-all` on a0b1fde; later commits differ in docs only; if absent, say so),
    and compare the S4.1 line with the `commitment` lines of the pinned stamp manifest.
 4. `lake env lean Axioms.lean | grep -E 'OscInt\.d4Bound |AUDIT-TOTAL'`
 

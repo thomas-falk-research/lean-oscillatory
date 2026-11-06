@@ -9,7 +9,7 @@ requires every row of the trust chain (README) for that statement.
 | S2.1 non-stationary phase | `OscInt.nonStationary` | yes, stamp `20261105T234456Z-533ae0272521` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full | yes | 7 kernel runs + comparator | machine-checked as stated |
 | S2.2 nondegenerate stationary phase | `OscInt.stationaryPhase` | yes, stamp `20261105T234456Z-533ae0272521` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full | yes | 7 kernel runs + comparator | machine-checked as stated |
 | S3 uniform fold | `OscInt.fold` | yes, stamp `20261105T234456Z-533ae0272521` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2 to the docs (one referee: FAITHFUL-WEAKER than the classical form), scope full | yes | 7 kernel runs + comparator | machine-checked as stated (fold condition on all of K) |
-| S4.1 uniform D4 bound | `OscInt.d4Bound` | yes, stamp `20261106T033706Z-63564a8d78cd` (pinned) | pre: FAITHFUL ×2 (D4⁺ only, as the brief); post: pending (2 referees) | yes (`docs/replay/2026-11-06-S4-verify-all.txt`, PASS 8/8 on a0b1fde) | 7 kernel runs + comparator | proved and replayed; post-proof review pending |
+| S4.1 uniform D4 bound | `OscInt.d4Bound` | yes, stamp `20261106T033706Z-63564a8d78cd` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2 to the docs, FAITHFUL-WEAKER than the classical form (D4⁺ only, as the brief), scope full | yes | 7 kernel runs + comparator | machine-checked as stated (hyperbolic umbilic D4⁺) |
 | S4.2 D4 limit constant | — | no | — | — | — | awaiting owner decision on the definition of c_C |
 
 Pipeline skeleton (M0): `OscInt.skeleton_two_mul` builds, audits clean (1 of 1) and replays in six kernels
@@ -36,3 +36,14 @@ Final record for S2/S3: `docs/replay/2026-11-06-S2S3-final-verify-all.txt` (comm
 `review/2026-11-05-S2S3-proof-route.md`, `review/2026-11-06-S2S3-post-proof-{A,B}.md`, `review/2026-11-06-S2S3-adversarial.md`
 with answers in `review/2026-11-06-S2S3-answers.md`. "As stated" includes S3's hypothesis at every point of K
 (`docs/statements.md`, clarification of 2026-11-06). Reviewers are AI agents; no human has read the statements.
+
+S4.1 (2026-11-06). Proved: `OscInt.d4Bound` (route `docs/proof-S4.md`, refereed in
+`review/2026-11-06-S4-proof-route.md`; blueprint `Blueprint/D4.lean`, parts D1–D9 by proof agents P, Q, R, S;
+assembly `OscInt.D4.d4Bound_of` by the lead, from S3 and S2.1). Record: `docs/replay/2026-11-06-S4-verify-all.txt`
+(commit a0b1fde, PASS 8/8: axiom audit 365/365, seven commitments equal to the pinned stamps, comparator accepted all
+three configurations, per-module `leanchecker` and six export kernels); CI run 42172708736 green on a0b1fde. Reviews:
+`review/2026-11-06-S4-pre-proof-{A,B}.md`, `review/2026-11-06-S4-post-proof-{A,B}.md`,
+`review/2026-11-06-S4-adversarial.md`, answers in `review/2026-11-06-S4-answers.md`. Scope: `disc < 0` is the
+hyperbolic umbilic D4⁺, which is the brief's case ("an isolated critical point and negative discriminant"); the
+proof uses only `disc ≠ 0`, so D4⁻ is a small extension if the owner widens the statement. Non-vacuity:
+`OscInt/D4/Sanity.lean`, `OscInt/D4/Bite.lean`.

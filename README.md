@@ -2,7 +2,7 @@
 
 A Lean 4 + Mathlib library of uniform oscillatory-integral estimates in one and two variables with explicit
 constants: van der Corput (S1), nondegenerate stationary phase uniform in a linear term (S2), the uniform fold
-estimate m^{-5/6} (S3), and the uniform D4 estimate t^{-2/3} with its limit constant (S4).
+estimate m^{-5/6} (S3), and the uniform D4 estimate t^{-2/3} (S4.1; the limit constant S4.2 is planned, not yet stated).
 Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0).
 
 ## Status
@@ -12,7 +12,8 @@ Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801a
 | S1 1D van der Corput | machine-checked as stated (`OscInt.vanDerCorput_one/two/three`); proof ported from roos-j/lean-oscillatory (Roos–Praveen, Mathlib PR #39406), see `docs/STATUS.md` |
 | S2 stationary phase (S2.1 non-stationary, S2.2 nondegenerate) | machine-checked as stated (`OscInt.nonStationary`, `OscInt.stationaryPhase`), see `docs/STATUS.md` |
 | S3 fold | machine-checked as stated (`OscInt.fold`; fold condition required on all of K) |
-| S4 D4 | not started |
+| S4.1 uniform D4 bound (hyperbolic umbilic D4⁺, `disc < 0`, as the brief) | machine-checked as stated (`OscInt.d4Bound`), see `docs/STATUS.md` |
+| S4.2 D4 limit constant | not stated (owner decision on the definition of c_C) |
 
 "As stated" means the hypotheses in `docs/statements.md` (derivatives continuous up to the endpoints, as in the
 source's C^k assumption). Details and evidence: `docs/STATUS.md`.
@@ -41,6 +42,8 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 - The Mathlib binary cache for the proofs: a source build (CI run 18) reproduced the statement commitments, but
   the replay still uses cache-built `.olean` files (`docs/toolchain.md`).
 - The fidelity readings of statements: AI referees, no human reviewer yet.
+- The newest line of `stamps/pins.txt` is written after the stamp it pins, so no timestamp covers it; its
+  integrity rests on git history.
 - The roots of the three RFC 3161 timestamp authorities (`stamps/roots/`); the FreeTSA root is trust on first use.
 
 ## Layout

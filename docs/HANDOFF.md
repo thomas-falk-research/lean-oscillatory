@@ -5,16 +5,15 @@ For a reader who saw nothing. Read `docs/lessons.md` first (17 entries).
 ## What exists (end of session 2, 2026-11-06)
 - Lean v4.35.0, Mathlib `56a0058` (tag v4.35.0). Machine-checked as stated (`docs/STATUS.md`):
   - S1 `OscInt.vanDerCorput_one/_two/_three` (`OscInt/VanDerCorput/`);
-  - S2.1 `OscInt.nonStationary`, S2.2 `OscInt.stationaryPhase`, S3 `OscInt.fold` (`OscInt/StationaryPhase/`, final
-    record `docs/replay/2026-11-06-S2S3-final-verify-all.txt`, PASS 8/8 on d932c0d; CI run 40 green on d932c0d).
-- S4.1 `OscInt.Statements.D4BoundStatement` (`OscInt/Statements/D4.lean`): stamped
-  (`stamps/20261106T033706Z-63564a8d78cd`), pinned, two blind reviews FAITHFUL; no proof yet. Route in
-  `docs/statements.md` S4 (dyadic rescaling, S3 on annuli for bounded linear terms, S2.1 for large ones).
-- Mathlib built from source in CI (run 18): 8624 modules compiled, commitments equal the pinned stamps.
-- Calibration round 1: 4/4 planted errors caught (95% CP [0.40, 1]), 0/2 false alarms.
-- Tools enforce: pinned stamps (`stamps/pins.txt`, last line wins, duplicates rejected), per-milestone comparator
-  configs with hash-checked config files, per-module `leanchecker` for `OscInt` and `Blueprint`, a guard that forbids
-  metaprogramming entry points, verification of every pinned stamp.
+  - S2.1 `OscInt.nonStationary`, S2.2 `OscInt.stationaryPhase`, S3 `OscInt.fold` (`OscInt/StationaryPhase/`);
+  - S4.1 `OscInt.d4Bound` (`OscInt/D4/`, route `docs/proof-S4.md`; D4⁺, `disc < 0`, as the brief).
+  Latest full record: `docs/replay/2026-11-06-S4-verify-all.txt` (a0b1fde, PASS 8/8); later commits checked by CI.
+- Reviews for every statement: two blind pre-proof, two post-proof, one adversarial, all in `review/`.
+- Calibration: round 1 (S1) and round 2 (S2–S4, separate planter) both 4/4 detected, 0/2 false alarms; pooled
+  8/8, 95% CP [0.63, 1] (`docs/calibration.md`).
+- Mathlib built from source in CI (run 18): commitments equal the pinned stamps.
+- Tools enforce pinned stamps, per-milestone comparator configs, per-module `leanchecker`, a metaprogramming guard,
+  verification of every pinned stamp.
 
 ## Pending owner decisions
 1. S4 limit constant. The brief asks for t^{2/3}∫e^{itφ}A → c_C A(0) with c_C = Γ(1/3)²/(√3|Disc C|^{1/6}) and
@@ -28,11 +27,12 @@ For a reader who saw nothing. Read `docs/lessons.md` first (17 entries).
 3. S4.1 scope: `disc < 0` (D4⁺, as the brief) or `disc ≠ 0` (adds D4⁻); a change is a new statement.
 
 ## Next
-- S4.1 proof: blueprint from the route in `docs/statements.md` S4 (parts: Taylor family Φ(ε, z) = ε⁻³(φ(εz) − φ(0) −
-  ε∇φ(0)·z) of class C⁴ on [0, ε₀]; fold condition for Disc < 0 cubics on the annulus and its openness; dyadic
-  decomposition and rescaling of amplitudes; summation), referee the on-paper route, then agents.
-- S4.2 after decision 1. Calibration round 2 (planned errors in longer statements, other planter).
-- Freeze the tree while referees or the final `verify-all` run (lessons 16).
+- S4.2 after decision 1 (statement, stamp, blind review, then route; the limit uses the same dyadic pieces plus
+  dominated convergence on the cubic model).
+- If decision 3 is "widen": a new `disc ≠ 0` statement; the existing parts already cover it (D3 is stated for
+  `disc ≠ 0`).
+- Upstream candidates (`docs/upstream.md`): only with the owner's go.
+- Freeze the tree while referees or the final `verify-all` run (lesson 16); generic sanity witnesses (lesson 17).
 
 ## Commands
 ```bash

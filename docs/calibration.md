@@ -1,6 +1,7 @@
 # Referee calibration
 
-Purpose: measure how often a fresh-context AI statement referee, given the standard pre-proof prompt, catches a
+Purpose: measure how often a fresh-context AI statement referee, given a statement-review prompt (`review/prompts/calibration-r1.md`, `-r2.md`; the real reviews use
+milestone-specific prompts such as `S4-pre-proof.md`, which may point at likely error sites), catches a
 planted statement error, and how often it raises a false alarm on an unmodified statement. A FAITHFUL verdict in
 `review/` is only as good as this rate.
 
@@ -127,8 +128,10 @@ equal to the sealed value. Variants as `review/calibration/round2/V*-Statements.
 Detection 4/4, 95% Clopper–Pearson [0.398, 1]; false alarms 0/2 (upper bound 0.842). Pooled with round 1 (reported
 separately above): 8/8, [0.631, 1] (lower bound 0.025^{1/8}); 0/4 false alarms, upper bound 0.602. Reading: single
 planted errors of these four kinds, planted by someone other than the scorer, in a 325-line file with ten shared
-definitions, were all caught with the mechanism stated; the miss rate per error is below 37% at 95% confidence on
-this evidence. Not tested: several simultaneous errors, errors that need a Mathlib internal to see, and planters of
+definitions, were all caught with the mechanism stated; if the eight plants are regarded as
+exchangeable draws from these four kinds, the miss rate per error is below 37% at 95% confidence. The plants were
+hand-chosen, the two rounds differ in prompt and file length, and the rate does not transfer to other kinds of
+error or to the milestone-specific prompts. Not tested: several simultaneous errors, errors that need a Mathlib internal to see, and planters of
 a different model family.
 
 Process findings from the reports (applied to the real statements, which are unaffected: their text is the base):

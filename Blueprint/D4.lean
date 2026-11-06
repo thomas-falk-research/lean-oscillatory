@@ -98,7 +98,7 @@ def GradBoundFacts : Prop :=
       ∃ G : ℝ, ∀ σ, ∀ k ∈ K, ∀ p : ℝ × ℝ, G ≤ ‖p‖ → GradLower (Ψ σ) p k 1
 
 /-- **D7** A smooth cut-off: `χ = 1` on `B̄(0, 1)`, `tsupport χ ⊆ B̄(0, 2)`, values in `[0, 1]`, and
-`χ(2z) ≤ χ(z)` (so `χ − χ(2·) ≥ 0`; e.g. a product of two even one-dimensional bumps nonincreasing in `|x|`). -/
+`χ(2z) ≤ χ(z)` (so `χ − χ(2·) ≥ 0`; any such bump satisfies it: `χ z = 1` for `‖z‖ ≤ 1`, else `χ(2z) = 0`). -/
 def CutoffFacts : Prop :=
   ∃ χ : ℝ × ℝ → ℝ, ContDiff ℝ ∞ χ ∧ (∀ z, χ z ∈ Icc (0 : ℝ) 1) ∧
     (∀ z, ‖z‖ ≤ 1 → χ z = 1) ∧ tsupport χ ⊆ Metric.closedBall 0 2 ∧ ∀ z, χ ((2 : ℝ) • z) ≤ χ z
