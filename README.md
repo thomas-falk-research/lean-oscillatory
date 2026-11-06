@@ -70,6 +70,7 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 | `docs/statements.md` | the mathematics of every statement, with dated clarifications |
 | `docs/STATUS.md` | evidence-derived status per statement |
 | `docs/HANDOFF.md` | state and next steps for the next session |
+| `docs/ROADMAP.md` | the path to a production-ready library, as a checklist |
 | `docs/proof-S2S3.md`, `docs/proof-S4.md`, `docs/proof-S42.md`, `docs/proof-S43.md` | refereed proof routes |
 | `docs/decisions/` | dated decision records |
 | `docs/lessons.md` | lessons, each with a rule and (where possible) a check |
