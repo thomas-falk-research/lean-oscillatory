@@ -10,3 +10,5 @@ OscInt.Statements.NonStationaryStatement stamps/20261105T234456Z-533ae0272521
 OscInt.Statements.StationaryPhaseStatement stamps/20261105T234456Z-533ae0272521
 OscInt.Statements.FoldStatement stamps/20261105T234456Z-533ae0272521
 challenge:comparator-S2S3.json stamps/20261105T234456Z-533ae0272521
+OscInt.Statements.D4BoundStatement stamps/20261106T033706Z-63564a8d78cd
+challenge:comparator-S4.json stamps/20261106T033706Z-63564a8d78cd
