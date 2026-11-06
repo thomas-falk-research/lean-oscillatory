@@ -38,6 +38,8 @@ jobs:
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
       - name: Mathlib binary cache (trusted; see README)
         run: lake exe cache get
+      - name: Rust toolchain pinned in tools/rust-toolchain.toml (installed explicitly, not auto-installed)
+        run: cd tools && rustup toolchain install
       - name: verify-all
         run: |
           make tools

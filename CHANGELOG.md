@@ -3,6 +3,15 @@
 Versions follow semantic versioning once the public API (`docs/ROADMAP.md` §2) exists; until then a minor version
 marks a set of newly machine-checked statements.
 
+## Unreleased
+
+- Build: `allowNonModules = true` in `lakefile.toml` silences Lake's per-import module-system warnings (no change to
+  compilation); `make verify-all` runs the Lean step once instead of once per later step; deprecated `if_false` in
+  `OscInt/D4/LimitAssembly.lean` replaced; CI installs the pinned Rust toolchain explicitly.
+- `docs/ROADMAP.md`: downstream feedback folded in (explicit constants, local smoothness, asymptotic expansions,
+  parametric uniformity, stable dependency with a machine-readable statement list, periodic and lattice settings,
+  Keel–Tao).
+
 ## v0.2.0 — 2026-11-06
 
 First release. Machine-checked as stated (`docs/STATUS.md`; record `docs/replay/2026-11-06-S4b-final-verify-all.txt`):

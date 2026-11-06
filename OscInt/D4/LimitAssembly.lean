@@ -148,7 +148,7 @@ theorem inner_eq (φ : ℝ × ℝ → ℝ) (χ : ℝ × ℝ → ℝ) (A : ℝ ×
   rw [hc, one_mul]
   congr 1
   · funext w
-    simp only [zero_add, smulEquiv_apply, rescale, ite_eq_right_iff, hs0, if_false]
+    simp only [zero_add, smulEquiv_apply, rescale, hs0, ite_false]
     have ht' : t = (s ^ 3)⁻¹ := eq_inv_of_mul_eq_one_left h3
     rw [ht']; field_simp
   · funext w
