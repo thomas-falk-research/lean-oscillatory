@@ -36,7 +36,9 @@ fn modules(root: &Path) -> Vec<String> {
             }
         }
     }
-    let mut out = vec!["OscInt".to_string()];
+    // The root module `OscInt` only imports; checking it re-checks every submodule in one process, which exceeded
+    // 13 GB at 21 modules (OOM-killed, lessons 14). Each submodule is checked on its own instead.
+    let mut out = Vec::new();
     walk(&root.join("OscInt"), root, &mut out);
     out
 }

@@ -82,3 +82,9 @@ A helper `structure` with `Prop` fields (agent H2) adds one projection theorem p
 but no `theorem` keyword; the audit enumerated 272 theorems, the guard counted 267, and `make lean` failed (the
 cross-check worked). Projections are kernel projections and carry no axioms. Rule: the audit excludes
 `isProjectionFn` constants and says so in its header. Check: the count comparison in `audit.rs` stays strict.
+
+## 14. `leanchecker` on the root module was OOM-killed (2026-11-06)
+With 21 modules, `leanchecker OscInt` (which re-checks every submodule in one process) reached 13.5 GB resident and
+was killed by the memory cgroup; the replay reported a FAIL with an empty message while every per-module run and all
+six export kernels passed. Rule: replay per submodule only; the root module may only import. Check: `replay.rs` skips
+the root; `guard.rs` rejects anything but imports in `OscInt.lean` (test `root_module_imports_only`).

@@ -135,6 +135,14 @@ pub fn check_source(rel: &str, src: &str) -> Vec<String> {
             v.push(format!("{rel}:{}: imports Lean's metaprogramming library", ln + 1));
         }
     }
+    if rel == "OscInt.lean" {
+        for (ln, line) in s.lines().enumerate() {
+            let t = line.trim();
+            if !t.is_empty() && !t.starts_with("import ") {
+                v.push(format!("{rel}:{}: the root module may only import (it is not replayed on its own)", ln + 1));
+            }
+        }
+    }
     if rel.starts_with("OscInt/Statements/") {
         let toks: Vec<&str> = s.split_whitespace().collect();
         for w in toks.windows(2) {
@@ -214,6 +222,11 @@ mod tests {
         ] {
             assert!(check_source("OscInt/X.lean", ok).is_empty(), "false positive: {ok}");
         }
+    }
+    #[test]
+    fn root_module_imports_only() {
+        assert!(check_source("OscInt.lean", "import OscInt.Basic\n\nimport OscInt.X\n").is_empty());
+        assert_eq!(check_source("OscInt.lean", "import OscInt.Basic\ntheorem t : True := trivial\n").len(), 1);
     }
     #[test]
     fn statement_pins() {
