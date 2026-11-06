@@ -6,3 +6,4 @@ import OscInt.StationaryPhase.Family
 import OscInt.StationaryPhase.Change
 import OscInt.StationaryPhase.Partition
 import OscInt.StationaryPhase.Assembly
+import OscInt.StationaryPhase.Localize
