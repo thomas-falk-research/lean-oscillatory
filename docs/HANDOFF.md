@@ -1,37 +1,49 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (9 entries).
+For a reader who saw nothing. Read `docs/lessons.md` first (12 entries).
 
-## What exists (end of M1, 2026-11-05)
-- Lake project, Lean v4.35.0, Mathlib `56a0058` (tag v4.35.0). Library `OscInt`:
-  - `OscInt/Statements/VanDerCorput.lean`: S1 statements `VdC1Statement`, `VdC2Statement`, `VdC3Statement`
-    (mathematics in `docs/statements.md`), pins, sanity theorems.
-  - `OscInt/VanDerCorput/`: proof parts `Split` (P0), `One` (P1), `Amplitude` (P2), `Higher` (P3, P4), `Assembly`
-    (lead), `Final` (`OscInt.vanDerCorput_one`, `_two`, `_three`). Route ported from J. Roos and M. Praveen,
-    `roos-j/lean-oscillatory` (Mathlib PR #39406), after Stein VIII §1.2.
-  - `Blueprint/VanDerCorput.lean`: the part propositions; `Challenge/VanDerCorput.lean`: `sorry` theorems for the
-    comparator (not imported, not audited).
-- Checks: `Axioms.lean`, `StatementTypes.lean`, `MathlibNames.lean`; Rust tools in `tools/` (guard, audit, replay,
-  commit, challenge, stamp, toolchain, verify_all); `numerics/` (f64 probes; tooling only).
-- Freezing: `stamps/20261105T203058Z-7516eb518dce` (manifest, three RFC 3161 tokens, two pending OpenTimestamps
-  proofs); `stamps/pins.txt` pins each statement and the challenge to it.
-- Reviews in `review/` (pre-proof, post-proof, adversarial; prompts in `review/prompts/`, including the agent briefs).
+## What exists (session 2, 2026-11-06)
+- Lean v4.35.0, Mathlib `56a0058` (tag v4.35.0). Library `OscInt`:
+  - S1 (done): `OscInt/Statements/VanDerCorput.lean`, proofs `OscInt/VanDerCorput/`, final theorems
+    `OscInt.vanDerCorput_one/_two/_three` (machine-checked as stated; `docs/STATUS.md`).
+  - S2.1, S2.2, S3 statements: `OscInt/Statements/StationaryPhase.lean` (`NonStationaryStatement`,
+    `StationaryPhaseStatement`, `FoldStatement`), mathematics in `docs/statements.md`, stamped
+    (`stamps/20261105T234456Z-533ae0272521`, pinned in `stamps/pins.txt`), two independent blind reviews FAITHFUL ×3
+    (`review/2026-11-05-S2S3-pre-proof-{A,B}.md`, answers in `…-answers.md`).
+  - S2/S3 proof route on paper: `docs/proof-S2S3.md` (refereed, no BLOCKER; the final "Revision" section overrides
+    the text above it).
+  - Blueprint `Blueprint/StationaryPhase.lean`: infrastructure F1a–d, F2a–b (proved: `OscInt/StationaryPhase/Family`,
+    `Change`, `Partition`), analytic parts R2, L1, L2, L3–L5, L6, L2–L6 assembly, N2, F3 (being proved by agents H1–H6;
+    briefs `review/prompts/S2S3-briefs-analytic.md`), and the lead's assembly `OscInt/StationaryPhase/Assembly.lean`
+    (S2.2 and S3 from R2, L1 and LocalCrit).
+- Calibration round 1 (`docs/calibration.md`): 4/4 planted errors detected, 95% CP [0.40, 1]; 0/2 false alarms.
+- Tools: `tools/` (guard, audit, replay, commit with pinned-stamp enforcement, challenge with one comparator config
+  per milestone, stamp, toolchain, verify_all), `numerics/`.
 
 ## What is verified, by what
-- S1: `docs/STATUS.md` row and paragraph; full record `docs/replay/2026-11-05-M1-verify-all.txt`.
-- Each push: CI `verify-all` (read the result after every push: lessons 9).
-- Not yet run: the manual `mathlib-from-source` CI job (Mathlib binary cache still trusted); OpenTimestamps proofs
-  not yet upgraded (pending until Bitcoin confirmation; upgrade with any OpenTimestamps client and commit).
+- S1: `docs/replay/2026-11-05-M1-verify-all.txt` (PASS 8/8), reviews in `review/`.
+- S2/S3 infrastructure parts: lead-verified (module build, guard, `#print axioms`, type equals blueprint Prop);
+  in the axiom audit (73/73 at commit ee11996).
+- Not yet: S2/S3 analytic parts; final theorems `OscInt.nonStationary/stationaryPhase/fold` (challenge
+  `Challenge/StationaryPhase.lean`, config `comparator-S2S3.json`); post-proof and adversarial reviews of S2/S3.
+- Mathlib from source: first CI run compiled 2512 Mathlib modules in the job, then failed because
+  `MathlibNames.lean` needs all of Mathlib; the job now builds all of Mathlib (`lake build Mathlib`); second run
+  queued at commit 5ae5589 (result to be recorded in `docs/toolchain.md`).
+
+## Pending owner decisions
+1. S4 limit constant. The brief asks for t^{2/3}∫e^{itφ}A → c_C A(0) with c_C = Γ(1/3)²/(√3|Disc C|^{1/6}) and
+   also asks to prove c_C ≠ 0 by an alternating-series argument "not relying on Mellin/Gamma identities". With the
+   closed form in the statement, c_C ≠ 0 is trivial and the limit itself needs a Gamma identity
+   (∫₀^∞ cos v · v^{-1/3} dv = Γ(2/3)/2). Proposal: S4.2 states the limit with c_C defined Gamma-free as
+   (1/3)(∫₀^∞ cos v · v^{-1/3} dv)(∫₀^{2π} |C(cos θ, sin θ)|^{-2/3} dθ) (improper integral as a limit), S4.3 proves
+   c_C > 0 by the alternating series, and S4.4 states the closed form separately.
+2. An independent checker built from source (nanoda at commit `8de7e0c`): the local build was refused by the
+   session's safety classifier (third-party build code); options: allow it here, or build it in CI.
 
 ## Next
-- M2: infrastructure lemmas (2D integration by parts via Fubini; smooth dyadic partitions of unity from
-  `ContDiffBump`; multivariate Taylor with parametric remainder; IFT with a metric-space parameter via
-  `ContractingWith.fixedPoint`; finite chart covers; GL₂(ℝ)-equivalence of binary cubics with negative
-  discriminant), each upstream-ready and listed in `docs/upstream.md`. Statement-first per lemma group, as for S1.
-- After M2: calibration round (four planted statement errors, sealed key, Clopper–Pearson interval;
-  `docs/calibration.md`), and Mathlib PR drafts (do not open without the owner's go).
-- Open items: fix the S1 header comment wording at the next re-stamp (review NIT); numerics could stress the
-  general hypotheses (piecewise-linear φ′ is excluded by design; unbounded integrable ψ′ is allowed and untested).
+- Integrate H1–H6 as they land (verify each: module build, guard, axioms, type), write
+  `OscInt/StationaryPhase/Final.lean`, `#assert_type_is` lines, `make verify-all`, post-proof review (two
+  referees), adversarial review; then S4 statements after decision 1.
 
 ## Commands
 ```bash
@@ -40,4 +52,3 @@ make verify-all
 make numerics
 make stamp
 ```
-`make verify-all` prints PASS / FAIL / INCOMPLETE; CI accepts INCOMPLETE with a warning.

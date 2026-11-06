@@ -29,3 +29,12 @@ assembly (55 lines) and final file. Post-proof review FAITHFUL ×3 (scope full).
 recorded comparator/commitment verdict; stamped commitments not enforced, newest stamp used) fixed by
 `stamps/pins.txt` enforcement and a committed `verify-all` record; MINORs fixed or answered (`review/`). CI had been
 red since the stamp (lessons 9), fixed.
+
+## 2026-11-05/06 — session 2 (raise the bar)
+Mathlib-from-source CI job made to prove it compiled Mathlib (count of `Built Mathlib.*`, no fetched/replayed
+modules); first run compiled 2512 modules, then failed on `MathlibNames.lean` (needs all of Mathlib); fixed to build
+all of Mathlib. Calibration round 1: 4/4 planted errors caught, 0/2 false alarms. S2.1/S2.2/S3 statements frozen
+with C² amplitudes and compact families (needed by S4), stamped, two independent blind reviews FAITHFUL ×3.
+On-paper route refereed (no BLOCKER, amendments folded in). Infrastructure parts F1a–d, F2a–b proved by three agents;
+agent G3 caught `ContDiff ℝ ⊤` = analytic in the blueprint with a Lean counterexample (lessons 12, guard check
+added). Analytic parts launched to six agents; lead's assembly of S2.2/S3 from interfaces compiled.
