@@ -101,3 +101,12 @@ Post-proof referee A started on c355ee7 and finished on d932c0d because the lead
 review files would also have marked the final replay record DIRTY. Rule: freeze the tree while referees or the final
 `verify-all` run (park new files in the scratchpad), and give referees the commit to review. Check: the replay record
 prints DIRTY for any untracked or modified file.
+
+## 17. Sanity witnesses must separate what a plant could swap (2026-11-06)
+Calibration round 2 caught all four plants, but three reports showed that the real sanity theorems would not have:
+`sanity_Fold_hyps` uses `K = K'` (blind to a `K`/`K'` swap), `sanity_D4_hyps` uses x³ + y³ with zero mixed
+coefficients (blind to a wrong `ddd` index in `cubicCoeffs`), and the S2.2 sanity theorem restates its hypothesis.
+Why it matters: the referee is the only line of defence against such errors when the sanity checks are degenerate.
+Rule: sanity witnesses use generic data — distinct sets for distinct roles, all coefficients nonzero and distinct,
+and at least one "bite" instance where the hypothesis fails and the definitions must say so. Check: none automatic;
+the S4 file `OscInt/D4/Sanity.lean` follows it (coefficients (1, 2, 3, 5); elliptic case shown excluded).

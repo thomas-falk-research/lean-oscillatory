@@ -9,7 +9,8 @@ planted statement error, and how often it raises a false alarm on an unmodified 
 | Round | Date | Statements | Planted (kinds) | Detected | Rate, 95% Clopper–Pearson | Controls | False alarms |
 |---|---|---|---|---|---|---|---|
 | 1 | 2026-11-05 | S1 (van der Corput) | 4 (quantifier, hypothesis, definition, weakened conclusion) | 4 | 1.00, [0.40, 1.00] | 2 | 0 (0/2, upper bound 0.84) |
-| 2 | 2026-11-06 | S2.1, S2.2, S3, S4.1 (325 lines) | 4 (same kinds), planted by a separate agent | pending | — | 2 | pending |
+| 2 | 2026-11-06 | S2.1, S2.2, S3, S4.1 (325 lines) | 4 (same kinds), planted by a separate agent | 4 | 1.00, [0.40, 1.00] | 2 | 0 (0/2, upper bound 0.84) |
+| 1+2 pooled | | | 8 | 8 | 1.00, [0.63, 1.00] | 4 | 0 (0/4, upper bound 0.60) |
 
 ## Round 1 protocol (pre-registered 2026-11-05, before any referee ran)
 
@@ -107,3 +108,31 @@ instruction, no sandbox). Scoring rule: as round 1, unchanged (DETECTED iff a no
 any non-FAITHFUL verdict against the docs or any BLOCKER/MAJOR finding). Pooled with round 1 only if both rounds
 are reported separately as well. Limitations stated in advance: n = 4 + 2 again; the planter is the same model
 family as the referees; the scorer applies the rule after reading the key.
+
+## Round 2 result (scored 2026-11-06 by the pre-registered rule)
+
+Reveal: `review/calibration/round2/key.json`, SHA-256 `09390e03b7c0cd324805e5030e077669c8319533b8048b3a9bb6b8be162db1d6`,
+equal to the sealed value. Variants as `review/calibration/round2/V*-Statements.lean.txt`; reports verbatim as
+`V*-report.md`.
+
+| Variant | Kind (statement) | Report verdicts (S2.1 / S2.2 / S3 / S4.1) | Planted clause identified | Score |
+|---|---|---|---|---|
+| V1 | control | FAITHFUL ×4, NITs | — | no false alarm |
+| V2 | quantifier (S2.2 `∃ p ∈ K'`) | FAITHFUL / UNFAITHFUL, BLOCKER / FAITHFUL / FAITHFUL | yes, quoted; counterexample, hypotheses checked in Lean | DETECTED |
+| V3 | control | FAITHFUL ×4, one MINOR (D4⁺ scope), NITs | — | no false alarm |
+| V4 | hypothesis (S3 `∀ k ∈ K'`) | FAITHFUL / FAITHFUL / UNFAITHFUL, BLOCKER / FAITHFUL | yes, quoted; two counterexamples | DETECTED |
+| V5 | definition (`cubicCoeffs` c-entry = ∂₁₁₂/2) | FAITHFUL / FAITHFUL / FAITHFUL / UNFAITHFUL, BLOCKER | yes, quoted; counterexample x³ + x²y proved in Lean | DETECTED |
+| V6 | weakened conclusion (S2.1 `m ^ (N - 1)`) | FAITHFUL-WEAKER, BLOCKER / FAITHFUL / FAITHFUL / FAITHFUL | yes, quoted | DETECTED |
+
+Detection 4/4, 95% Clopper–Pearson [0.398, 1]; false alarms 0/2 (upper bound 0.842). Pooled with round 1 (reported
+separately above): 8/8, [0.631, 1] (lower bound 0.025^{1/8}); 0/4 false alarms, upper bound 0.602. Reading: single
+planted errors of these four kinds, planted by someone other than the scorer, in a 325-line file with ten shared
+definitions, were all caught with the mechanism stated; the miss rate per error is below 37% at 95% confidence on
+this evidence. Not tested: several simultaneous errors, errors that need a Mathlib internal to see, and planters of
+a different model family.
+
+Process findings from the reports (applied to the real statements, which are unaffected: their text is the base):
+the real `sanity_Fold_hyps` uses the same set for `K` and `K'`, so it cannot detect a `K`/`K'` swap (V4); the real
+`sanity_D4_hyps` has `b = c = 0`, so it cannot detect a wrong mixed coefficient (V5; answered by
+`OscInt/D4/Sanity.lean`, coefficients (1, 2, 3, 5)); the real S2.2 sanity theorem states the hypothesis in its own
+words rather than through the statement (V2; lesson 11). See `docs/lessons.md` 17.
