@@ -10,8 +10,8 @@ Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801a
 | Statement | Status |
 |---|---|
 | S1 1D van der Corput | machine-checked as stated (`OscInt.vanDerCorput_one/two/three`); proof ported from roos-j/lean-oscillatory (Roos–Praveen, Mathlib PR #39406), see `docs/STATUS.md` |
-| S2 stationary phase (S2.1 non-stationary, S2.2 nondegenerate) | proved (`OscInt.nonStationary`, `OscInt.stationaryPhase`); final record and reviews in progress, see `docs/STATUS.md` |
-| S3 fold | proved (`OscInt.fold`); final record and reviews in progress |
+| S2 stationary phase (S2.1 non-stationary, S2.2 nondegenerate) | machine-checked as stated (`OscInt.nonStationary`, `OscInt.stationaryPhase`), see `docs/STATUS.md` |
+| S3 fold | machine-checked as stated (`OscInt.fold`; fold condition required on all of K) |
 | S4 D4 | not started |
 
 "As stated" means the hypotheses in `docs/statements.md` (derivatives continuous up to the endpoints, as in the

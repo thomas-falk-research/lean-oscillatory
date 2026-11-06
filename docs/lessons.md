@@ -95,3 +95,9 @@ added by a `run_tac` metaprogram with kernel checking switched off (option name 
 replays catch it; the final claim rested on them. Rule: verifying an agent's part includes per-module
 `leanchecker`, and the guard forbids metaprogramming entry points in library files. Check: guard tokens and tests
 (`run_tac`, `open Lean`, `Lean.`, `set_option`, …); `replay.rs` per-module `leanchecker` including Blueprint.
+
+## 16. Commits during a referee run blur "this commit" (2026-11-06)
+Post-proof referee A started on c355ee7 and finished on d932c0d because the lead committed in between; untracked
+review files would also have marked the final replay record DIRTY. Rule: freeze the tree while referees or the final
+`verify-all` run (park new files in the scratchpad), and give referees the commit to review. Check: the replay record
+prints DIRTY for any untracked or modified file.

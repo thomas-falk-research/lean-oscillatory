@@ -1,0 +1,240 @@
+make verify-all on commit d932c0d (clean tree), 2026-11-06: RESULT PASS (8/8). Build and Lake progress lines omitted.
+
+cd tools && cargo build --release --locked --quiet
+tools/target/release/verify_all
+cd tools && cargo build --release --locked --quiet
+tools/target/release/toolchain .
+verify-toolchain: elan-init.sh: sha256 a620ff1641616222c8d37c54845492004bb84d6877cdbc944dd65c1aa685bf53 OK
+verify-toolchain: lean-4.35.0-linux.tar.zst: sha256 7289597a44543246c9227b8cae501767e095ce17f6d448b95fc4a8dc97268f6d OK
+verify-toolchain: installed toolchain /root/.elan/toolchains/leanprover--lean4---v4.35.0 is byte-identical to lean-4.35.0-linux.tar.zst
+cd tools && cargo test --release --locked --quiet
+
+running 7 tests
+.......
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+......
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+....
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+..
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+..
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+.
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+cd tools && cargo build --release --locked --quiet
+tools/target/release/guard .
+guard: ok: 25 file(s), 0 violations, 276 theorem declaration(s)
+cd tools && cargo build --release --locked --quiet
+lake build
+Build completed successfully (9073 jobs).
+mkdir -p build && lake env lean Axioms.lean > build/axioms.out
+tools/target/release/audit build/axioms.out . build/audited.txt
+axiom audit: 276 of 276 theorems clean (permitted: propext, Classical.choice, Quot.sound)
+lake env lean StatementTypes.lean
+TYPE-OK OscInt.vanDerCorput_one : OscInt.Statements.VdC1Statement
+TYPE-OK OscInt.vanDerCorput_two : OscInt.Statements.VdC2Statement
+TYPE-OK OscInt.vanDerCorput_three : OscInt.Statements.VdC3Statement
+TYPE-OK OscInt.nonStationary : OscInt.Statements.NonStationaryStatement
+TYPE-OK OscInt.stationaryPhase : OscInt.Statements.StationaryPhaseStatement
+TYPE-OK OscInt.fold : OscInt.Statements.FoldStatement
+lake env lean MathlibNames.lean > /dev/null
+cd tools && cargo build --release --locked --quiet
+lake build
+Build completed successfully (9073 jobs).
+mkdir -p build && lake env lean Axioms.lean > build/axioms.out
+tools/target/release/audit build/axioms.out . build/audited.txt
+axiom audit: 276 of 276 theorems clean (permitted: propext, Classical.choice, Quot.sound)
+lake env lean StatementTypes.lean
+TYPE-OK OscInt.vanDerCorput_one : OscInt.Statements.VdC1Statement
+TYPE-OK OscInt.vanDerCorput_two : OscInt.Statements.VdC2Statement
+TYPE-OK OscInt.vanDerCorput_three : OscInt.Statements.VdC3Statement
+TYPE-OK OscInt.nonStationary : OscInt.Statements.NonStationaryStatement
+TYPE-OK OscInt.stationaryPhase : OscInt.Statements.StationaryPhaseStatement
+TYPE-OK OscInt.fold : OscInt.Statements.FoldStatement
+lake env lean MathlibNames.lean > /dev/null
+tools/target/release/replay . build/audited.txt build/replay
+PASS  no stale build products  (0.0s)  23 module(s)
+PASS  leanchecker OscInt.Basic  (3.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.StationaryPhase  (6.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.VanDerCorput  (4.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Assembly  (5.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Change  (6.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Core  (6.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Family  (6.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Final  (5.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Implicit  (6.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Local  (6.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.LocalCrit  (6.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Localize  (6.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.NonStat  (6.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Partition  (6.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Sanity  (6.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Amplitude  (4.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Assembly  (4.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Final  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Higher  (4.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.One  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Split  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.StationaryPhase  (6.1s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.VanDerCorput  (4.1s)  accepted (exit 0, no error output)
+PASS  leanexport  (30.9s)  52040 declarations, 276 target theorem(s), axioms [Quot.sound, propext, Classical.choice]; sha256 efa1c2e7ea4dde00718ea21b7a89d106bd8316321f23f3fda04d38edfe68b681
+PASS  leanchecker --from-export  (76.0s)  Lean default kernel accepts the solution
+PASS  leanchecker-paranoid --from-export  (91.3s)  Lean default kernel accepts the solution
+PASS  nanoda  (44.7s)  Checked 52040 declarations with no typechecker errors
+PASS  con-leche --verified  (23.7s)  con-leche: accepted 49969 declarations (--verified)
+PASS  con-ron --verified  (13.3s)  con-ron: accepted 49969 declarations (--verified)
+PASS  lake check --from-export --paranoid  (309.6s)  lean4lean kernel accepts the solution; 6 kernels accepted
+cd tools && cargo build --release --locked --quiet
+lake build
+Build completed successfully (9073 jobs).
+mkdir -p build && lake env lean Axioms.lean > build/axioms.out
+tools/target/release/audit build/axioms.out . build/audited.txt
+axiom audit: 276 of 276 theorems clean (permitted: propext, Classical.choice, Quot.sound)
+lake env lean StatementTypes.lean
+TYPE-OK OscInt.vanDerCorput_one : OscInt.Statements.VdC1Statement
+TYPE-OK OscInt.vanDerCorput_two : OscInt.Statements.VdC2Statement
+TYPE-OK OscInt.vanDerCorput_three : OscInt.Statements.VdC3Statement
+TYPE-OK OscInt.nonStationary : OscInt.Statements.NonStationaryStatement
+TYPE-OK OscInt.stationaryPhase : OscInt.Statements.StationaryPhaseStatement
+TYPE-OK OscInt.fold : OscInt.Statements.FoldStatement
+lake env lean MathlibNames.lean > /dev/null
+mkdir -p build/skipped && rm -f build/skipped/commit; lake build oscint-commit-env && { tools/target/release/commit build/commit || { [ $? -eq 3 ] && mkdir -p build/skipped && touch build/skipped/commit; }; }
+Build completed successfully (4 jobs).
+2650f1484b3252166e9442f383ad734075f60f180d595c7d6729d9737edba5ad  OscInt.Statements.FoldStatement
+a837c8bd8352929aa4ba6456ff19603cd34f7ae09b2896de0af2565fd0f803b4  OscInt.Statements.VdC1Statement
+66cc331de7d7bf5fb38076895ff7014f280b41cced6492f70cd87134a78a39f5  OscInt.Statements.VdC2Statement
+30b3f96ca215778d4034c6ca660818b04a842bb4b574f27f4a648a64bf9ab4f4  OscInt.Statements.VdC3Statement
+238318a74792495f2009807e724673e80c4d3f66b91580c564105d84396fe8f8  OscInt.Statements.NonStationaryStatement
+283a23fe63ba052ba6600edd08ee3def6d728a75dbbaa6d7f39fc031fc9eccff  OscInt.Statements.StationaryPhaseStatement
+commit: OscInt.Statements.FoldStatement matches its stamp stamps/20261105T234456Z-533ae0272521
+commit: OscInt.Statements.VdC1Statement matches its stamp stamps/20261105T203058Z-7516eb518dce
+commit: OscInt.Statements.VdC2Statement matches its stamp stamps/20261105T203058Z-7516eb518dce
+commit: OscInt.Statements.VdC3Statement matches its stamp stamps/20261105T203058Z-7516eb518dce
+commit: OscInt.Statements.NonStationaryStatement matches its stamp stamps/20261105T234456Z-533ae0272521
+commit: OscInt.Statements.StationaryPhaseStatement matches its stamp stamps/20261105T234456Z-533ae0272521
+cd tools && cargo build --release --locked --quiet
+lake build
+Build completed successfully (9073 jobs).
+mkdir -p build && lake env lean Axioms.lean > build/axioms.out
+tools/target/release/audit build/axioms.out . build/audited.txt
+axiom audit: 276 of 276 theorems clean (permitted: propext, Classical.choice, Quot.sound)
+lake env lean StatementTypes.lean
+TYPE-OK OscInt.vanDerCorput_one : OscInt.Statements.VdC1Statement
+TYPE-OK OscInt.vanDerCorput_two : OscInt.Statements.VdC2Statement
+TYPE-OK OscInt.vanDerCorput_three : OscInt.Statements.VdC3Statement
+TYPE-OK OscInt.nonStationary : OscInt.Statements.NonStationaryStatement
+TYPE-OK OscInt.stationaryPhase : OscInt.Statements.StationaryPhaseStatement
+TYPE-OK OscInt.fold : OscInt.Statements.FoldStatement
+lake env lean MathlibNames.lean > /dev/null
+mkdir -p build/skipped && rm -f build/skipped/comparator; tools/target/release/challenge check-all . || { [ $? -eq 3 ] && mkdir -p build/skipped && touch build/skipped/comparator; }
+challenge: export ./build/challenge/S2S3.ndjson sha256 41b545cc2ffae644b57c7ac4d0336ef2b5bddb7e9d22a7fa148d8e8e80c1dd06
+challenge: export sha256 41b545cc2ffae644b57c7ac4d0336ef2b5bddb7e9d22a7fa148d8e8e80c1dd06 matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9071 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.nonStationary, OscInt.stationaryPhase, OscInt.fold, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 49812 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 49815 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 49815 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-S2S3.json accepted against stamps/20261105T234456Z-533ae0272521
+challenge: export ./build/challenge/challenge.ndjson sha256 7fe4db8d718e07752f62e915c55dec0c99a02f1fe39f930cc3114b35f6e9442a
+challenge: export sha256 7fe4db8d718e07752f62e915c55dec0c99a02f1fe39f930cc3114b35f6e9442a matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9071 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.vanDerCorput_one, OscInt.vanDerCorput_two, OscInt.vanDerCorput_three, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 37294 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 37297 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 37297 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator.json accepted against stamps/20261105T203058Z-7516eb518dce
+cd tools && cargo build --release --locked --quiet
+mkdir -p build/skipped && rm -f build/skipped/stamp-verify; if [ -f stamps/pins.txt ]; then tools/target/release/stamp verify-pinned .; else echo "stamp-verify: SKIPPED: no pinned stamp yet"; mkdir -p build/skipped && touch build/skipped/stamp-verify; fi
+== stamps/20261105T203058Z-7516eb518dce
+manifest: 60 file hashes match commit 7516eb518dce585ffc7e831ba6171afa9b938e46
+freetsa: Verification: OK; Time stamp: Nov  5 20:30:59 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  5 20:30:59 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  5 20:30:59 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261105T234456Z-533ae0272521
+manifest: 101 file hashes match commit 533ae0272521192adbe020aebb922a2c9559e212
+freetsa: Verification: OK; Time stamp: Nov  5 23:44:57 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  5 23:44:58 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  5 23:44:58 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+
+== verify-all
+PASS        verify-toolchain
+PASS        tools-test
+PASS        guard
+PASS        lean
+PASS        lean-replay
+PASS        commit
+PASS        comparator
+PASS        stamp-verify
+RESULT PASS
+VERIFY-EXIT 0
