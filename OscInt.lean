@@ -10,3 +10,4 @@ import OscInt.StationaryPhase.Localize
 import OscInt.StationaryPhase.LocalCrit
 import OscInt.StationaryPhase.Local
 import OscInt.StationaryPhase.Implicit
+import OscInt.StationaryPhase.NonStat
