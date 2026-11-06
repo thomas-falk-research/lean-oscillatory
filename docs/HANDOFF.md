@@ -19,6 +19,7 @@ c_C defined Gamma-free (S4.2–S4.4 separate); S4.1′ added for `disc ≠ 0`; n
 `8de7e0c`. Still the owner's: venue, outreach, money, publication, Mathlib PRs.
 
 ## Next
+The longer-term plan is `docs/ROADMAP.md`; the items below are its first steps.
 - S4.4: blueprint and route (cosine moment = Γ(2/3)/2 by an Abel limit of `integral_cpow_mul_exp_neg_mul_Ioi`;
   J(C) for x³ + y³ and x³ − 3xy² by Beta integrals (`Complex.betaIntegral_eq_Gamma_mul_div`); GL₂ covariance of
   c_C and of |Disc|^{1/6}; reduction of each sign class to its normal form), route referee, agents. Then a full

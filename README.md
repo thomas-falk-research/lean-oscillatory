@@ -1,7 +1,11 @@
 # OscInt
 
-A Lean 4 + Mathlib library of uniform oscillatory-integral estimates in one and two variables with explicit
-constants: van der Corput (S1), nondegenerate stationary phase uniform in a linear term (S2), the uniform fold
+[![ORCID](https://img.shields.io/badge/ORCID-0009--0001--9478--6061-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0001-9478-6061)
+
+Author: Thomas Falk III ([ORCID 0009-0001-9478-6061](https://orcid.org/0009-0001-9478-6061)). Cite via `CITATION.cff`.
+
+A Lean 4 + Mathlib library of uniform oscillatory-integral estimates in one and two variables: van der Corput with
+explicit constants (S1), nondegenerate stationary phase uniform in a linear term (S2), the uniform fold
 estimate m^{-5/6} (S3), and the uniform D4 estimate t^{-2/3} (S4.1, S4.1′), the limit t^{2/3}∫e^{itφ}A → c_C A(0) with a Gamma-free c_C (S4.2) and c_C > 0 (S4.3); the
 closed form of c_C (S4.4) is stated, not yet proved.
 Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0).
@@ -70,11 +74,13 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 | `docs/statements.md` | the mathematics of every statement, with dated clarifications |
 | `docs/STATUS.md` | evidence-derived status per statement |
 | `docs/HANDOFF.md` | state and next steps for the next session |
+| `docs/ROADMAP.md` | the path to a production-ready library, as a checklist |
 | `docs/proof-S2S3.md`, `docs/proof-S4.md`, `docs/proof-S42.md`, `docs/proof-S43.md` | refereed proof routes |
 | `docs/decisions/` | dated decision records |
 | `docs/lessons.md` | lessons, each with a rule and (where possible) a check |
 | `docs/calibration.md` | referee calibration rounds (planted errors, sealed keys) |
 | `docs/progress.md` | chronological log |
+| `CHANGELOG.md` | released versions |
 | `docs/toolchain.md`, `docs/dependencies.md`, `docs/commitment-format.md` | toolchain, pins, commitment format |
 | `docs/prior_art.md`, `docs/upstream.md` | prior-art gate; Mathlib candidates (no PR without the owner) |
 | `docs/replay/` | committed `verify-all` and replay records |
