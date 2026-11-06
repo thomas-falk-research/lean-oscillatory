@@ -1,0 +1,40 @@
+commit 63ff52bf7fd97de7d5c7f01aafd320a6cdfbaa59
+source tree b12da633b8d0a7725f1f6e54680d36ca4bdb3b7e
+sha256 bf8d54e4714cc4b03d3f6bb34c83b7202b87e49c8bfcbff6895c085bb90ceb38 lean
+sha256 8ba83c98f76562d03b8dbc33f1057151ba6cbb121679dde76b2260ccc90495e1 lake
+sha256 12c38901cdbfab178f1bf6145dd30012e9a3b2c11ca695292a5884fa3cbaddb6 leanchecker
+sha256 ca74d1e9a856149ed05acb600d8931a574dd9f465745beeaf93e3de7b7cbe274 leanchecker-paranoid
+sha256 f6a6483d518a11b323c28b9bac176d2220df0e9fc3230833815db9586669c074 leanexport
+sha256 cbf13950fc4a48f635a0beceeb5ed32dd82568b870cfd081b6391c1f2cf02ba5 nanoda_bin
+sha256 23a32522ea2c79f4ec8b48916272b37a423bda171e57cd83cfcf142eec50e621 con-leche
+sha256 60f4ca9fb9436c323789fa49aae33af6dcd1b9b54b43a66b461779ce79fd8eec con-ron
+sha256 baaec030a70c78562ced2c75866ab0d2410e81ce680b835179ed16570ad5ef97 lean4lean
+PASS  no stale build products  (0.0s)  20 module(s)
+PASS  leanchecker OscInt.Basic  (3.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.StationaryPhase  (6.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.VanDerCorput  (4.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Assembly  (6.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Change  (6.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Core  (7.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Family  (6.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Final  (6.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Implicit  (6.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Local  (6.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.LocalCrit  (6.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Localize  (5.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.NonStat  (6.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Partition  (6.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Amplitude  (4.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Assembly  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Final  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Higher  (4.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.One  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Split  (4.4s)  accepted (exit 0, no error output)
+PASS  leanexport  (31.0s)  52031 declarations, 267 target theorem(s), axioms [Quot.sound, propext, Classical.choice]; sha256 d78305cf5c51ccfae3a1f512deef4940754509933d784c1c8666b6cc04d4187f
+PASS  leanchecker --from-export  (77.0s)  Lean default kernel accepts the solution
+PASS  leanchecker-paranoid --from-export  (90.4s)  Lean default kernel accepts the solution
+PASS  nanoda  (42.6s)  Checked 52031 declarations with no typechecker errors
+PASS  con-leche --verified  (23.3s)  con-leche: accepted 49960 declarations (--verified)
+PASS  con-ron --verified  (13.9s)  con-ron: accepted 49960 declarations (--verified)
+PASS  lake check --from-export --paranoid  (314.2s)  lean4lean kernel accepts the solution; 6 kernels accepted
+RESULT PASS
