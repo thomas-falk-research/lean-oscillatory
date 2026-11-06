@@ -12,7 +12,7 @@ repositories.
 | S1 1D van der Corput, constants 3, 8, 18, amplitude | **ANTICIPATED** (not merged in Mathlib) | roos-j/lean-oscillatory, Mathlib PR #39406 |
 | S2 2D nondegenerate stationary phase, uniform in p | PARTIAL | non-stationary O(μ^{-N}) in ℝⁿ and O(λ^{-n/2}) for *definite* Hessians, existential constants (roos-j/lean-variationalsw); no indefinite case |
 | S3 uniform fold, m^{-5/6} | not found | only a 1D cubic-point limit (lean-DLMF) |
-| S4 D4 umbilic, t^{-2/3}, constant Γ(1/3)²/(√3·\|Disc\|^{1/6}) | not found | lean-DLMF defines umbilic canonical integrals on complex contours; their link to real integrals is `sorry` there |
+| S4 D4 umbilic, t^{-2/3}, constant Γ(1/3)²/(√3·\|Disc\|^{1/6}) (and, found here, Γ(1/3)²/Disc^{1/6} for the elliptic umbilic; PLAUSIBLE known, no novelty claimed) | not found | lean-DLMF defines umbilic canonical integrals on complex contours; their link to real integrals is `sorry` there |
 | Infrastructure | PARTIAL | Mathlib: whole-space integration by parts, normed-parameter IFT, non-parametric multivariate Taylor (`docs/toolchain.md`) |
 
 ## Sources

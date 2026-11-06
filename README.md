@@ -41,8 +41,9 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 
 ## What stays trusted
 
-- Lean's kernel and the v4.35.0 toolchain archive, from which every checker above comes (one trust source until a
-  checker is built from source at a pinned commit).
+- Lean's kernel and the v4.35.0 toolchain archive, from which every local checker above comes. In CI one checker,
+  nanoda (`nanoda_lib` 0.4.31 at commit `8de7e0c`), is additionally built from source on a fresh runner and run on the
+  same export (`docs/toolchain.md`).
 - The Mathlib binary cache for the proofs: a source build (CI run 18) reproduced the statement commitments, but
   the replay still uses cache-built `.olean` files (`docs/toolchain.md`).
 - The fidelity readings of statements: AI referees, no human reviewer yet.
@@ -52,10 +53,30 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 
 ## Layout
 
-`OscInt/` library; `OscInt/Statements/` frozen statements; `Blueprint/` intermediate propositions; `Challenge/`
-`sorry` theorems over the statement module for `lake comparator` (never imported; the challenge is frozen by the
-stamped export hash and the pinned statement-file hashes, `stamps/pins.txt`); `Axioms.lean`, `StatementTypes.lean`,
-`MathlibNames.lean` checks; `tools/` Rust binaries (std only) and the Lean commitment producer; `docs/`;
-`review/` referee reports; `stamps/` timestamp records.
+- `OscInt/` library: `OscInt/Statements/` frozen statements, `OscInt/VanDerCorput/` (S1),
+  `OscInt/StationaryPhase/` (S2, S3), `OscInt/D4/` (S4).
+- `Blueprint/` intermediate propositions (definitions only); `Challenge/` `sorry` theorems over the statement modules
+  for `lake comparator` (never imported; frozen by the stamped export hash and the pinned statement-file hashes,
+  `stamps/pins.txt`); one `comparator*.json` per milestone.
+- Checks run by `make lean`: `Axioms.lean` (axiom audit), `StatementTypes.lean` (final types are the frozen
+  constants), `MathlibNames.lean` (names the plan relies on), `GammaFree.lean` (S4.3 proof method).
+- `tools/` Rust binaries (std only) and the Lean commitment producer; `numerics/` floating-point probes (tooling,
+  never evidence); `stamps/` timestamp records; `review/` referee reports and prompts (`review/README.md`).
+
+## Documents
+
+| File | Content |
+|---|---|
+| `docs/statements.md` | the mathematics of every statement, with dated clarifications |
+| `docs/STATUS.md` | evidence-derived status per statement |
+| `docs/HANDOFF.md` | state and next steps for the next session |
+| `docs/proof-S2S3.md`, `docs/proof-S4.md`, `docs/proof-S42.md`, `docs/proof-S43.md` | refereed proof routes |
+| `docs/decisions/` | dated decision records |
+| `docs/lessons.md` | lessons, each with a rule and (where possible) a check |
+| `docs/calibration.md` | referee calibration rounds (planted errors, sealed keys) |
+| `docs/progress.md` | chronological log |
+| `docs/toolchain.md`, `docs/dependencies.md`, `docs/commitment-format.md` | toolchain, pins, commitment format |
+| `docs/prior_art.md`, `docs/upstream.md` | prior-art gate; Mathlib candidates (no PR without the owner) |
+| `docs/replay/` | committed `verify-all` and replay records |
 
 Code: Apache-2.0 (`LICENSE`). Documentation: CC BY 4.0 (`LICENSE-docs`). Citation: `CITATION.cff`.

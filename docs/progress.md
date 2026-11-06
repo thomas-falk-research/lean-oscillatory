@@ -38,3 +38,29 @@ with C² amplitudes and compact families (needed by S4), stamped, two independen
 On-paper route refereed (no BLOCKER, amendments folded in). Infrastructure parts F1a–d, F2a–b proved by three agents;
 agent G3 caught `ContDiff ℝ ⊤` = analytic in the blueprint with a Lean counterexample (lessons 12, guard check
 added). Analytic parts launched to six agents; lead's assembly of S2.2/S3 from interfaces compiled.
+Analytic parts proved by agents H1–H6; S2.1, S2.2, S3 machine-checked as stated (final record
+`docs/replay/2026-11-06-S2S3-final-verify-all.txt`, d932c0d, PASS 8/8; post-proof FAITHFUL ×2; adversarial answered).
+
+## 2026-11-06 — S4.1 (uniform D4⁺ bound)
+Statement frozen and stamped (`20261106T033706Z-63564a8d78cd`), blind pre-proof FAITHFUL ×2 (D4⁺ only, as the
+brief). Route by dyadic rescaling to S3 (`docs/proof-S4.md`), refereed; blueprint D1–D9; the lead's assembly
+`d4Bound_of` compiled against the parts before any part was proved; parts by agents P, Q, R, S. Record
+`docs/replay/2026-11-06-S4-verify-all.txt` (a0b1fde, PASS 8/8); post-proof FAITHFUL ×2; adversarial answered.
+Calibration round 2 (S2–S4 statements, separate planter, sealed key): 4/4 detected, 0/2 false alarms; pooled 8/8,
+95% CP [0.63, 1]; lesson 17 (generic sanity witnesses).
+
+## 2026-11-06 — S4 decisions, S4.1′, S4.2, S4.3
+The owner delegated three decisions (`docs/decisions/2026-11-06-S4.md`): c_C defined Gamma-free with the limit
+(S4.2), positivity (S4.3) and closed forms (S4.4) as separate statements; S4.1′ for `disc ≠ 0` (both umbilics);
+nanoda built from source in CI at `8de7e0c` (first run: CI run 58, accepted). Numerical validation
+(`numerics/src/bin/d4const.rs`): closed forms for both signs to ≤ 8e-15 on eight cubics, including the elliptic
+constant Γ(1/3)²/Disc^{1/6}. Four statements stamped (`20261106T081634Z-e2d7771c358e`), blind pre-proof FAITHFUL ×2.
+S4.1′ proved by generalising the S4.1 assembly. S4.3: route by one integration by parts and pairing the humps of
+sin u·u^{-4/3} (no numerical margin), refereed; parts by agents U, V, W. `GammaFree.lean` found not to follow
+proofs (lesson 18), fixed with a proof-only control; the S4.3 proof's closure (43 612 constants) is clean.
+S4.2: route by rescaling at R t^{-1/3}, dominated convergence and a polar evaluation via a radial identity,
+refereed; assembly `d4Limit_of` by the lead, parts by agents X, Y, Z, Q2. Records
+`docs/replay/2026-11-06-S4b-verify-all.txt` (a71b318) and `-S4b-final-verify-all.txt` (17e5478): every proved
+configuration accepted by the comparator and six kernels; INCOMPLETE only for S4.4. Post-proof FAITHFUL ×2 for
+S4.1′, S4.2, S4.3; adversarial (bite for both umbilics, seven Gamma-hiding attempts rejected) answered.
+Open: S4.4.
