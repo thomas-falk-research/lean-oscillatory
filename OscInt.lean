@@ -22,3 +22,4 @@ import OscInt.D4.LimitAssembly
 import OscInt.D4.CosMoment
 import OscInt.D4.ConstantPosFinal
 import OscInt.D4.Radial
+import OscInt.D4.Tail
