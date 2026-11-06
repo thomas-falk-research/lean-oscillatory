@@ -29,3 +29,7 @@ import OscInt.D4.LimitFinal
 import OscInt.D4.CubicComp
 import OscInt.D4.GammaSixth
 import OscInt.D4.ClosedForm
+import OscInt.D4.Chart
+import OscInt.D4.Covariance
+import OscInt.D4.NormalForm
+import OscInt.D4.CosMomentValue
