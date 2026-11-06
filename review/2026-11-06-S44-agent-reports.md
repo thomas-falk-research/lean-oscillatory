@@ -131,3 +131,56 @@ Task M is done. `theorem OscInt.D4.cosMomentValue (hB : OscInt.Blueprint.BetaIoi
 **Blueprint:** no problems; E1 is true as stated and proved without weakening.
 
 I edited no other file and made no git operations. `git status` also shows changes I did not make (to `.gitignore`, `Makefile`, `tools/…`, and the other agents' `Chart`/`Covariance`/`NormalForm` files); I did not touch them.
+
+## Agent K (E6a, E6b, E6c, `OscInt/D4/Beta.lean`, `OscInt/D4/LineMoments.lean`)
+
+Run interrupted by a container restart and resumed from its transcript (9.5 min in total). Route change, recorded in
+`docs/proof-S44.md`: E6a by the substitution x = t/(1+t) from E6b instead of Tonelli; statement unchanged. Lead's
+integration check as above, plus the final theorem `OscInt.d4ConstantClosedForm` (type check, axioms, `leanchecker`
+of `ClosedFormFinal`, `ClosedForm`, `CubicComp`, `GammaSixth`, `Beta`, `LineMoments`).
+
+Task K is done. All three theorems are proved exactly as stated, the build succeeds and `make guard` passes. One change from the route: I proved E6a (`betaIoi`) by a change of variables from E6b, not by the Tonelli argument in the route doc.
+
+**Files** (new and untracked; nothing else edited, no commit):
+- `/home/user/lean-oscillatory/OscInt/D4/Beta.lean`, 100 lines.
+  - `OscInt.D4.betaUnit : OscInt.Blueprint.BetaUnitFacts` (E6b).
+  - `OscInt.D4.betaIoi : OscInt.Blueprint.BetaIoiFacts` (E6a).
+- `/home/user/lean-oscillatory/OscInt/D4/LineMoments.lean`, 129 lines.
+  - `OscInt.D4.lineMomentValues (hB : BetaIoiFacts) (hU : BetaUnitFacts) : LineMomentValuesFacts` (E6c).
+  - It does not import `Beta.lean`; it uses E6a and E6b only as the hypotheses `hB` and `hU`. Its imports are `Blueprint.D4ClosedForm` and two Mathlib modules.
+
+**Checks run:**
+- `#print axioms` on a temporary copy of each file (the `#print` lines are not in the real files) gave `[propext, Classical.choice, Quot.sound]` for `betaIoi`, `betaUnit` and `lineMomentValues`.
+- `nice -n 10 lake build OscInt.D4.Beta OscInt.D4.LineMoments`: "Build completed successfully", with no `sorry` warnings.
+- `make guard`: "ok: 60 file(s), 0 violations".
+- No `maxHeartbeats` or other `set_option` anywhere.
+
+**How each part is proved:**
+- **E6b:** uses `Complex.Gamma_mul_Gamma_eq_betaIntegral`. On `[0, 1]` the complex integrand is rewritten as the real one with `Complex.ofReal_cpow`, then `intervalIntegral.integral_ofReal`, `Complex.Gamma_ofReal`, and division by Γ(a+b) > 0.
+- **E6a (the change from the route):** substitute x = t/(1+t), which maps (0, ∞) onto (0, 1) with dx = dt/(1+t)², and apply E6b, using `integral_image_eq_integral_abs_deriv_smul` and `integral_Ioc_eq_integral_Ioo`. This avoids the measurability and `lintegral` bookkeeping of the Tonelli argument. The statement is unchanged, and both theorems are in the same file, so no cross-part dependency arises.
+- **E6c, the 1 + u² case:** follows the route, item 6. `integral_comp_abs` turns the integral over ℝ into twice the integral over (0, ∞). Then `integral_comp_rpow_Ioi_of_pos` with p = 2, `hB (1/2) (1/6)` and `Real.Gamma_one_half_eq`.
+- **E6c, the u + u² case:** ℝ is split as Iic(−1), Ioc(−1, 0] and Ioi 0, using `intervalIntegral.integral_Iic_add_Ioi`, `Ioc_union_Ioi_eq_Ioi` and `setIntegral_union`.
+  - On Ioi 0 it is `hB (1/3) (1/3)`.
+  - On Iic(−1) the reflection u ↦ −1−u reduces it to Ioi 0, via `integral_image_eq_integral_abs_deriv_smul` and `integral_Iic_eq_integral_Iio`.
+  - On (−1, 0) the substitution u ↦ −u (`intervalIntegral.integral_comp_neg`) and `hU (1/3) (1/3)` finish it.
+  - Each piece is integrable because its value is positive and so nonzero (`Integrable.of_integral_ne_zero`, `intervalIntegral.intervalIntegrable_of_integral_ne_zero`).
+
+**Helpers and reusable lemmas:**
+- Public in `OscInt.D4`:
+  - `lineMomentPlus (hB) : lineMoment (1,0,1,0) = √π Γ(1/6)/Γ(2/3)`
+  - `lineMomentMinus (hB) (hU) : lineMoment (0,1,1,0) = 3 Γ(1/3)²/Γ(2/3)`
+- In `OscInt.D4.BetaAux`:
+  - `img`: (t ↦ t/(1+t)) maps Ioi 0 onto Ioo 0 1.
+  - `injOn'`: that map is injective on Ioi 0.
+  - `deriv'`: its derivative at t is 1/(1+t)².
+  - `pointwise`: the Jacobian identity for the substitution.
+- In `OscInt.D4.LineMomentsAux`:
+  - `fm u = |u+u²|^(-2/3)`.
+  - `fm_reflect`: fm(−1−x) = fm x.
+  - `fm_pos`, `fm_neg`: closed forms of `fm` on (0, ∞) and on [0, 1] reflected.
+  - `I1`, `I2`, `I3`: the three piece integrals.
+  - `K1pt`: the pointwise identity for the u = √t substitution.
+
+**Blueprint:** no problems found.
+
+Scratch files are in `/tmp/K/`.

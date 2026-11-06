@@ -120,7 +120,7 @@
       "name": "OscInt.Statements.D4ConstantClosedFormStatement",
       "label": "S4.4",
       "summary": "Closed forms: `∫₀^∞ cos u · u^{-1/3} du = Γ(2/3)/2`; `c_C = Γ(1/3)²/(√3 |Disc|^{1/6})` for `Disc < 0` and `c_C = Γ(1/3)²/Disc^{1/6}` for `Disc > 0`.",
-      "proved_by": null,
+      "proved_by": "OscInt.d4ConstantClosedForm",
       "file": "OscInt/Statements/D4Limit.lean",
       "file_sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6",
       "commitment": "3f089384d33ac7f6d4a24195c64b10af9093125fec7456da342a0477e510e6cc",

@@ -33,3 +33,6 @@ import OscInt.D4.Chart
 import OscInt.D4.Covariance
 import OscInt.D4.NormalForm
 import OscInt.D4.CosMomentValue
+import OscInt.D4.Beta
+import OscInt.D4.LineMoments
+import OscInt.D4.ClosedFormFinal

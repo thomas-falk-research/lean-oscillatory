@@ -122,3 +122,7 @@ E1, E2, E3, E5, E6a, E6b, E6c TRUE as stated; one BLOCKER, no MAJOR. Adopted:
    `integral_comp_neg_Ioi` is in the root namespace.
 7. E5: the zero θ₀ by `intermediate_value_Icc` or `intermediate_value_Icc'` according to the sign of g(0); the cube
    root as `SignType.sign a₂ * |a₂| ^ (-(1:ℝ)/3)`, never `a₂ ^ (-(1:ℝ)/3)` (`Real.rpow` of a negative base).
+
+## Change during the proof (agent K, 2026-11-06)
+E6a was proved by the substitution x = t/(1 + t) from E6b (`integral_image_eq_integral_abs_deriv_smul`) instead of
+Tonelli; the Prop is unchanged and both are in `OscInt/D4/Beta.lean`.

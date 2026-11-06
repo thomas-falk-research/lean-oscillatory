@@ -28,3 +28,4 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
 #assert_type_is OscInt.d4BoundNe OscInt.Statements.D4BoundNeStatement
 #assert_type_is OscInt.d4ConstantPos OscInt.Statements.D4ConstantPosStatement
 #assert_type_is OscInt.d4Limit OscInt.Statements.D4LimitStatement
+#assert_type_is OscInt.d4ConstantClosedForm OscInt.Statements.D4ConstantClosedFormStatement
