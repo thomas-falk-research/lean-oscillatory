@@ -7,7 +7,7 @@ marks a set of newly machine-checked statements.
 
 Planned as v0.3.0 (the owner publishes releases).
 
-### Machine-checked
+### Machine-checked as stated
 - **S4.4** closed forms of the D4 constant (`OscInt.d4ConstantClosedForm`): ∫₀^∞ cos u · u^{−1/3} du = Γ(2/3)/2, and
   c_C = Γ(1/3)²/(√3|Disc C|^{1/6}) for Disc C < 0, c_C = Γ(1/3)²/(Disc C)^{1/6} for Disc C > 0. With S4.2 this is
   the brief's S4 limit with its closed-form constant. Route `docs/proof-S44.md` (real-variable: Fubini and dominated
@@ -19,8 +19,10 @@ Planned as v0.3.0 (the owner publishes releases).
 ### Depending on OscInt (new)
 - `stamps/statements.json`: every pinned statement with label, summary, proving theorem, statement file and SHA-256,
   commitment, stamp and stamped commit; generated (`make statements`) and checked in CI (`statements-check`).
-- `tools/oscint_check.py`: a downstream CI checks it depends on exactly the reviewed statements (file hashes, syntactic
-  statement types, axioms, optionally recomputed commitments); negative controls in `tools/test_oscint_check.sh`.
+- `tools/oscint_check.py`: a downstream CI checks the toolchain and Mathlib, the statement file hashes, that each
+  statement constant comes from its frozen file, syntactic statement types, axioms, a kernel replay of every OscInt
+  module and recomputed commitments; it detects drift, not tampering (README); negative controls, one per check, in
+  `tools/test_oscint_check.sh` (the first version, found breakable by the adversarial review, is not released).
 - `examples/consumer/`: a tested downstream Lake project; README section "Depending on OscInt".
 - `docs/policy.md`: semantic versions from v0.3.0, the stable surface, deprecation, and the Mathlib re-freeze rule.
 

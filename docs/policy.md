@@ -14,15 +14,17 @@ Everything else (`OscInt.D4.*`, `OscInt.StationaryPhase.*`, `OscInt.Blueprint.*`
 it may be renamed or removed in any release. Depend on it only if you accept that.
 
 ## Versions (semantic versioning, from v0.3.0)
-- **Patch** (0.3.x): no change to any statement constant, commitment or `proved_by` name. Proof refactors, tools,
-  docs, CI. `stamps/statements.json` may change only in `version`.
-- **Minor** (0.x.0): adds statements or theorems; existing entries of `stamps/statements.json` unchanged except
-  `version`, and except `proved_by` going from `null` to a theorem (a statement newly proved).
-- **Major** (x.0.0, and every 0.x.0 while the major version is 0): may change commitments, e.g. a Mathlib upgrade
-  (below). Before 1.0.0 a minor version may therefore change commitments; it says so in the CHANGELOG under
-  "Statement changes" and lists every changed commitment.
-A downstream project pins a release tag and the SHA-256 of `stamps/statements.json`
-(`tools/oscint_check.py --expect-sha256`), so any change to the statement list fails its CI until someone reads it.
+- **Patch** (x.y.Z): no change to any statement constant, commitment, statement file or `proved_by` name. Proof
+  refactors, tools, docs, CI. `stamps/statements.json` is byte-identical (it carries no version number), so a
+  downstream pin of its SHA-256 survives a patch release.
+- **Minor** (x.Y.0, from 1.0.0): adds statements or theorems; existing entries of `stamps/statements.json` unchanged,
+  except `proved_by` going from `null` to a theorem.
+- **Major** (X.0.0): may change commitments, e.g. a Mathlib upgrade (below).
+- **Before 1.0.0** the minor version plays the role of the major one: 0.y.0 may do anything a major release may, and
+  says so in the CHANGELOG under "Statement changes", listing every changed commitment; 0.y.Z is a patch.
+A downstream project pins a release by commit hash and the SHA-256 of `stamps/statements.json` from the release notes
+(`tools/oscint_check.py --expect-sha256`). A change to the statement list then fails its check until someone reads
+the CHANGELOG. This detects drift; what it does not detect is in README, "Depending on OscInt".
 
 ## Never in place
 A stamped statement file is never edited (lessons 10; `make commit`, `statements check`). A statement that has to
@@ -44,19 +46,19 @@ OscInt's statement files. Procedure:
    byte (the guard and `make commit` check this).
 2. `make commit`. For each statement whose commitment is **unchanged**: nothing more to do; the old stamp still
    pins it (the commitment says the closure is identical up to binder names, `docs/commitment-format.md`).
-3. For each statement whose commitment **changed**: Mathlib changed a definition it depends on. The statement keeps
-   its text, but the old review and stamp no longer certify the new closure. Re-freeze:
-   a. record the closure diff: `make commit` writes the new closure text `build/commit/<name>.env.txt`; the old one
-      is reproduced by `make commit` at the old pin. Commit the `diff` of the two under `review/` and have **one**
-      blind referee read it and answer one question: does any change alter the meaning of the statement? (verdict
-      SAME-MEANING or CHANGED, naming the constants);
-   b. on SAME-MEANING: a new stamp (`make stamp`), a new pin line for the statement (the old line stays in history),
-      CHANGELOG "Statement changes: commitment of X changed from … to … by the Mathlib upgrade …; referee
-      SAME-MEANING, review/…"; the release is a minor version (before 1.0) or a major one (after);
-   c. on CHANGED: the statement is treated as a new statement (full review, two referees).
+3. For each statement whose commitment **changed**: Mathlib changed a definition it depends on, and the old review
+   and stamp no longer certify the new closure. Today this means a re-freeze as a new statement: the same text under
+   a new constant name (for example `D4LimitStatement₂`), stamped, pinned and reviewed by two blind referees like any
+   new statement, with the old constant superseded under the deprecation rule. A cheaper rule, "one referee reads the
+   list of changed constants and answers SAME-MEANING or CHANGED", needs a tool that the repository does not have yet:
+   the closure text numbers its lines globally, so a `diff` of two closures of thousands of constants is unreadable.
+   Technical debt, ROADMAP §3: per-constant canonical hashes with local numbering, and a tool that lists the changed
+   constants and prints their old and new values. Until it exists, the cheaper rule is not used.
    A machine-checked equivalence `OldStatement ↔ NewStatement` is not available across a Mathlib version (the two
-   closures live in different environments); the closure diff plus a referee is the evidence instead, and the
-   rule says so rather than claiming more.
+   closures live in different environments).
+   If a frozen statement file no longer elaborates under the new Mathlib, the upgrade waits: the file cannot change,
+   so the statement is restated in a new file under a new name (as above) before the upgrade lands, and the old
+   theorem stays available on the last release that has it.
 4. The full replay (`make verify-all`) on the upgraded tree, recorded in `docs/replay/`; then the release.
 5. A scheduled CI job (ROADMAP §3) builds against the newest Mathlib weekly and only warns; it never changes pins.
 

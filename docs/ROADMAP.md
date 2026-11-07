@@ -11,8 +11,8 @@ constants for the 2D results; local smoothness hypotheses; asymptotic expansions
 a stable way to depend on the library. It asked not to change the trust chain.
 
 ## 1. Finish and stabilise the mathematics
-- [ ] **S4.4** closed forms of c_C (statement frozen and reviewed; route in `docs/HANDOFF.md`): blueprint, route
-      referee, proof agents, post-proof and adversarial review. After it, `make verify-all` must report PASS.
+- [x] **S4.4** closed forms of c_C: machine-checked as stated (2026-11-07; `docs/STATUS.md`; verify-all PASS,
+      `docs/replay/2026-11-06-S44-verify-all.txt`; post-proof FAITHFUL ×2; adversarial answered).
 - [ ] Remove the duplication between `OscInt.D4.exists_piece_bound` and `d4BoundNe_of` (refactor the S4.1′
       assembly onto the lemma; the statement types are fixed, so the replay and type checks are the regression test).
 - [ ] Put `GammaFree.lean` into the next stamp.
@@ -55,34 +55,38 @@ trust chain.
 ## 3. Interoperability and packaging
 - [ ] **A stable way to depend on the library** *(downstream)*:
   - [x] a tagged release (`v0.2.0`, §6);
-  - [ ] a README section on adding OscInt as a Lake dependency (`require oscint from git … @ "vX.Y.Z"`), with a tested
-        example project in CI; Reservoir listing;
-  - [ ] a stated Mathlib upgrade policy (below);
-  - [ ] a machine-readable list of statement names with their SHA-256 commitments, stamps and statement-file hashes
-        (e.g. `stamps/statements.json`, generated from `stamps/pins.txt` and the manifests and checked in CI), so a
-        downstream project can check in its own CI that it depends on exactly the reviewed statements.
+  - [x] a README section on adding OscInt as a Lake dependency, with a tested example project (`examples/consumer/`,
+        built and checked locally; CI job `consumer` on main and pull requests); [ ] Reservoir listing (owner);
+  - [x] a stated Mathlib upgrade policy (`docs/policy.md`; its cheap re-freeze path waits on the closure-diff tool below);
+  - [x] a machine-readable list of statement names with their SHA-256 commitments, stamps and statement-file hashes
+        (`stamps/statements.json`, generated and checked in verify-all), and a downstream checker
+        (`tools/oscint_check.py`, hardened after the adversarial review of 2026-11-07; negative controls
+        `tools/test_oscint_check.sh`). It detects drift, not tampering (README).
+  - [ ] Closure-diff tool (technical debt from `docs/policy.md`): per-constant canonical hashes with local numbering
+        and a listing of changed constants with old and new values, so a Mathlib upgrade can be re-frozen by one
+        referee instead of a full new statement.
 - [ ] **Mathlib version policy**: a documented bump procedure; a scheduled CI job building against a newer Mathlib
       that warns early. Statement commitments depend on Mathlib's definitions, so a bump changes them: decide (and
       record) the re-freeze rule, e.g. a machine-checked equivalence between each new statement and its stamped
       predecessor, then a new stamp and pin.
 - [ ] Mathlib `module` syntax for the library files (needed to upstream; the statement files can only change with a
       re-freeze). Until then, `allowNonModules = true` in `lakefile.toml` (§4) would declare the mix.
-- [ ] Stable public names and a deprecation policy; semantic versions (`CHANGELOG.md` exists).
+- [x] Stable public names and a deprecation policy; semantic versions (`docs/policy.md`, from v0.3.0).
 - [ ] **owner** Upstream the general lemmas listed in `docs/upstream.md` to Mathlib *(downstream: partitions of unity
       with compact support, the polar-coordinates integral and the uniform Leibniz bounds first)*.
 
 ## 4. Developer experience
-- [ ] Split CI: a fast pull-request job (build, guard, axiom audit, type checks, `GammaFree.lean`) and the full
+- [x] Split CI (CI jobs `quick`, `verify`, `consumer`; `make quick`; `verify-all ONLY=`): a fast pull-request job (build, guard, axiom audit, type checks, `GammaFree.lean`) and the full
       replay (`verify-all`) on `main` and on a schedule; `make quick` for the local loop; `verify-all --only <step>`.
 - [ ] Generated API documentation (doc-gen4) published as a site; a browsable blueprint site with the dependency
       graph built from `Blueprint/` and the route documents *(downstream)*; statement docstrings that cite the textbook
       statement they formalise *(downstream)*.
-- [ ] Build noise (seen in the CI log of PR #2): silence Lake's per-import module-system warnings with
+- [x] Build noise (seen in the CI log of PR #2; fixed in 828309a, 0 warnings): silence Lake's per-import module-system warnings with
       `allowNonModules = true` in `lakefile.toml` (Lake's documented opt-out; tested locally: 0 warnings, compilation
       unchanged); make `lean-replay`, `commit` and `comparator` depend on a `build/lean.ok` marker so `verify-all`
       runs the Lean step once instead of four times (lessons 7); replace the deprecated `if_false` in
       `OscInt/D4/LimitAssembly.lean`; install the pinned Rust toolchain explicitly in CI.
-- [ ] `CONTRIBUTING.md`: how to add a statement end to end (statement file, sanity theorems, challenge, comparator
+- [x] `CONTRIBUTING.md`: how to add a statement end to end (statement file, sanity theorems, challenge, comparator
       configuration, stamp, pins, blind review, blueprint, proofs, replay, post-proof review, STATUS row).
 - [ ] A scaffolder (`tools` binary) that generates the statement file, challenge, comparator configuration, sanity
       stub and pin lines for a new statement.

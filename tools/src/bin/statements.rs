@@ -6,9 +6,11 @@
 //! Every field is derived, never typed: the statement names and stamps from `stamps/pins.txt`; the commitment, the
 //! stamped commit and the statement file's SHA-256 from the pinned stamp's `manifest.txt`; the label and summary
 //! from the statement's docstring in `OscInt/Statements/`; the proving theorem from `StatementTypes.lean`
-//! (`#assert_type_is`); the version, toolchain and Mathlib revision from `lakefile.toml`, `lean-toolchain` and
-//! `lake-manifest.json`. Generation fails if a statement file no longer has the hash its stamp records (a frozen
-//! file was edited: lessons 10).
+//! (`#assert_type_is`); the toolchain and Mathlib revision from `lean-toolchain` and `lake-manifest.json`; and
+//! `statement_files`, every file under `OscInt/Statements/` with the pinned stamp that records its hash (the files a
+//! statement's closure can draw on, not only those declaring one). Generation fails if any such file has no pinned
+//! stamp recording its current hash (a frozen file was edited: lessons 10). There is no package version in the
+//! file, so a patch release leaves it, and a downstream pin of its SHA-256, unchanged (docs/policy.md).
 
 use oscint_tools::{json, sys};
 use std::fs;
@@ -108,12 +110,6 @@ pub fn generate(root: &Path) -> Result<String, String> {
     let pins_src = read(root, "stamps/pins.txt")?;
     let types = read(root, "StatementTypes.lean")?;
     let toolchain = read(root, "lean-toolchain")?.trim().to_string();
-    let lakefile = read(root, "lakefile.toml")?;
-    let version = lakefile
-        .lines()
-        .find_map(|l| l.trim().strip_prefix("version = \"")?.strip_suffix('"'))
-        .ok_or("lakefile.toml: no `version = \"…\"` line")?
-        .to_string();
     let manifest = json::parse(&read(root, "lake-manifest.json")?)?;
     let mathlib = manifest
         .get("packages")
@@ -177,14 +173,32 @@ pub fn generate(root: &Path) -> Result<String, String> {
     if entries.is_empty() {
         return Err("stamps/pins.txt pins no statement".into());
     }
-    Ok(render(&version, &toolchain, &mathlib, &entries))
+    let mut stamps: Vec<String> = entries.iter().map(|e| e.stamp.clone()).collect();
+    stamps.sort();
+    stamps.dedup();
+    let mut sfiles = Vec::new();
+    for f in &files {
+        let now = sys::sha256_file(&root.join(f))?;
+        let mut by = None;
+        for st in &stamps {
+            if file_hash(&read(root, &format!("{st}/manifest.txt"))?, f) == Some(now.as_str()) {
+                by = Some(st.clone());
+            }
+        }
+        let st = by.ok_or(format!(
+            "{f} (sha256 {now}) is recorded by no pinned stamp: a frozen statement file was edited, or a new one \
+             is not stamped yet (`make stamp`, then pin it in stamps/pins.txt)"
+        ))?;
+        sfiles.push((f.clone(), now, st));
+    }
+    Ok(render(&toolchain, &mathlib, &entries, &sfiles))
 }
 
-pub fn render(version: &str, toolchain: &str, mathlib: &str, entries: &[Entry]) -> String {
+pub fn render(toolchain: &str, mathlib: &str, entries: &[Entry], files: &[(String, String, String)]) -> String {
     let mut o = String::new();
     o.push_str("{\n  \"format\": \"oscint-statements 1\",\n");
     o.push_str("  \"generated_by\": \"tools/src/bin/statements.rs (make statements); do not edit by hand\",\n");
-    o.push_str(&format!("  \"package\": \"oscint\",\n  \"version\": {},\n", esc(version)));
+    o.push_str("  \"package\": \"oscint\",\n");
     o.push_str(&format!("  \"lean_toolchain\": {},\n  \"mathlib_rev\": {},\n", esc(toolchain), esc(mathlib)));
     o.push_str("  \"statements\": [\n");
     for (i, e) in entries.iter().enumerate() {
@@ -199,6 +213,16 @@ pub fn render(version: &str, toolchain: &str, mathlib: &str, entries: &[Entry]) 
         o.push_str(&format!("      \"stamp\": {},\n", esc(&e.stamp)));
         o.push_str(&format!("      \"stamp_commit\": {}\n", esc(&e.stamp_commit)));
         o.push_str(if i + 1 == entries.len() { "    }\n" } else { "    },\n" });
+    }
+    o.push_str("  ],\n  \"statement_files\": [\n");
+    for (i, (f, h, st)) in files.iter().enumerate() {
+        o.push_str(&format!(
+            "    {{\"file\": {}, \"sha256\": {}, \"stamp\": {}}}{}\n",
+            esc(f),
+            esc(h),
+            esc(st),
+            if i + 1 == files.len() { "" } else { "," }
+        ));
     }
     o.push_str("  ]\n}\n");
     o
@@ -285,8 +309,11 @@ mod tests {
             file_sha256: "h".into(), commitment: "c".into(), stamp: "st".into(), stamp_commit: "sc".into(),
             proved_by: None,
         };
-        let j = json::parse(&render("0.2.0", "t", "m", &[e])).unwrap();
-        assert_eq!(j.get("version").and_then(|v| v.as_str()), Some("0.2.0"));
+        let j = json::parse(&render("t", "m", &[e], &[("f".into(), "h".into(), "st".into())])).unwrap();
+        assert_eq!(j.get("mathlib_rev").and_then(|v| v.as_str()), Some("m"));
+        assert!(j.get("version").is_none());
+        let f = &j.get("statement_files").and_then(|s| s.as_arr()).unwrap()[0];
+        assert_eq!(f.get("stamp").and_then(|v| v.as_str()), Some("st"));
         let s = &j.get("statements").and_then(|s| s.as_arr()).unwrap()[0];
         assert_eq!(s.get("summary").and_then(|v| v.as_str()), Some("s \"q\""));
     }

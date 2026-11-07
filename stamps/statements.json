@@ -2,7 +2,6 @@
   "format": "oscint-statements 1",
   "generated_by": "tools/src/bin/statements.rs (make statements); do not edit by hand",
   "package": "oscint",
-  "version": "0.2.0",
   "lean_toolchain": "leanprover/lean4:v4.35.0",
   "mathlib_rev": "56a005855ea17e0b0958f73ec801ae140b0a1679",
   "statements": [
@@ -127,5 +126,11 @@
       "stamp": "stamps/20261106T081634Z-e2d7771c358e",
       "stamp_commit": "e2d7771c358eed0b1d52521d2d92255ef6967072"
     }
+  ],
+  "statement_files": [
+    {"file": "OscInt/Statements/D4.lean", "sha256": "6965ce63488b6f81ff5c4685b46e252027423d8a6916ac274ea9dea21d4395c9", "stamp": "stamps/20261106T081634Z-e2d7771c358e"},
+    {"file": "OscInt/Statements/D4Limit.lean", "sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6", "stamp": "stamps/20261106T081634Z-e2d7771c358e"},
+    {"file": "OscInt/Statements/StationaryPhase.lean", "sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf", "stamp": "stamps/20261106T081634Z-e2d7771c358e"},
+    {"file": "OscInt/Statements/VanDerCorput.lean", "sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44", "stamp": "stamps/20261106T081634Z-e2d7771c358e"}
   ]
 }

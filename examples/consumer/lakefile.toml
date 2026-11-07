@@ -16,3 +16,6 @@ name = "Consumer"
 # Negative controls for tools/oscint_check.py (tools/test_oscint_check.sh); never a default target.
 [[lean_lib]]
 name = "ConsumerControls"
+
+[[lean_lib]]
+name = "ConsumerKernelControl"

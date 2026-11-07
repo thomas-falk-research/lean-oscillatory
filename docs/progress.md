@@ -64,3 +64,20 @@ refereed; assembly `d4Limit_of` by the lead, parts by agents X, Y, Z, Q2. Record
 configuration accepted by the comparator and six kernels; INCOMPLETE only for S4.4. Post-proof FAITHFUL ×2 for
 S4.1′, S4.2, S4.3; adversarial (bite for both umbilics, seven Gamma-hiding attempts rejected) answered.
 Open: S4.4.
+
+## 2026-11-06/07 — session 3 (S4.4; depending on OscInt)
+Housekeeping: build-noise diff of 7bd3151 re-applied (0 warnings), `lakefile.toml` 0.2.0; verify-all on 828309a failed
+only for missing `zstd`, `bwrap` and a shallow clone, the three steps passing after installing and unshallowing
+(record `docs/replay/2026-11-06-housekeeping-verify-all.txt`; lessons 21, preflight added). S4.4: the hand-off's route
+needed a complex-rate Gamma integral that Mathlib does not state (lessons 19); new real-variable route
+(`docs/proof-S44.md`): Fubini and dominated convergence for the cosine moment, the chart u = tan θ, GL₂ covariance of
+J by polar coordinates and a linear change of variables, reduction to x(x² + y²) and xy(x + y), Beta integrals,
+duplication and reflection. Blueprint E1–E7 with the lead's assembly checked first; the route referee found a
+blueprint name clash (lessons 20). Parts by agents M, N, O, T (2.5–6 min each) and K (9.5 min, resumed after a
+container restart); E4, E7 and the assembly by the lead. verify-all PASS on 1c7ebe3 (the first full PASS);
+post-proof FAITHFUL ×2; adversarial: no finding on S4.4. S4.4 machine-checked as stated, so all eleven pinned
+statements are. Depending on OscInt: `stamps/statements.json`, `tools/oscint_check.py`, `examples/consumer/`,
+`docs/policy.md`, `CONTRIBUTING.md`, CI split (`quick`, `verify`, `consumer`). The adversarial referee broke the first
+checker (a redefined statement and a kernel-skipped theorem both passed; lessons 22); hardened (module of the
+statement, kernel replay of the dependency closure, recomputed commitments, toolchain and Mathlib match) with 13
+negative controls and the referee's two reproductions now rejected. Front-end batch 1 (F1, F2) drafted.

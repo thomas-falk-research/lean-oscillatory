@@ -145,3 +145,13 @@ needs `bwrap`) failed on a new container; every other step passed, and after `ap
 two failed checks passed on the same export. CI installs both, so only local runs were exposed. Rule: verify-all
 checks its system tools before running anything and names the package to install. Check: `verify_all` preflight
 (unit test `missing_tools_are_named`).
+
+## 22. A downstream checker hashed the sources and trusted the build (2026-11-07)
+The first `tools/oscint_check.py` checked that the statement files had their stamped hashes and that the proving
+theorem had the statement's type and clean axioms. The adversarial referee passed it with a package whose statement
+constant was redefined as `True` in another module, and with a theorem added under `debug.skipKernelTC`; neither
+check looked at what the build actually contains. Why it mattered: the README told downstream projects this proved
+they depend on exactly the reviewed statements. Rule: a check verifies the artefact that is used (the loaded
+environment: the constant's module, its commitment, the kernel's verdict on the `.olean`), not a proxy for it (a
+source hash), and its documentation says what it does not cover. Check: `tools/test_oscint_check.sh` (a control
+for each path, including both of the referee's reproductions).

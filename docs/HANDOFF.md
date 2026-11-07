@@ -1,6 +1,6 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (21 entries); every rule in it is binding.
+For a reader who saw nothing. Read `docs/lessons.md` first (22 entries); every rule in it is binding.
 
 ## What exists (session 3, 2026-11-06)
 - Lean v4.35.0, Mathlib `56a0058` (tag v4.35.0). All eleven pinned statements are proved: S1 (three van der Corput

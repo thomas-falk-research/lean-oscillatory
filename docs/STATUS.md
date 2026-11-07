@@ -13,7 +13,7 @@ requires every row of the trust chain (README) for that statement.
 | S4.1′ uniform D4 bound, both umbilics (`disc ≠ 0`) | `OscInt.d4BoundNe` | yes, stamp `20261106T081634Z-e2d7771c358e` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2 (STRONGER than the brief), scope full | yes (same parts as S4.1, assembly `d4BoundNe_of`) | 7 kernel runs + comparator (`docs/replay/2026-11-06-S4b-verify-all.txt`, a71b318) | machine-checked as stated |
 | S4.2 D4 limit t^{2/3}∫e^{itφ}A → c_C A(0), c_C Gamma-free (the brief's closed form is S4.4) | `OscInt.d4Limit` | yes, stamp `20261106T081634Z-e2d7771c358e` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full (part of the brief's S4, which also needs S4.4) | yes (route `docs/proof-S42.md`, refereed; parts by agents X, Y, Z, Q2; assembly by the lead) | 7 kernel runs + comparator (`docs/replay/2026-11-06-S4b-verify-all.txt`, a71b318) | machine-checked as stated |
 | S4.3 c_C > 0 (alternating series, Gamma-free) | `OscInt.d4ConstantPos` | yes, same stamp | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full | yes (route `docs/proof-S43.md`, refereed; parts by agents U, V, W) | 7 kernel runs + comparator (`docs/replay/2026-11-06-S4b-verify-all.txt`, a71b318) | machine-checked as stated; proof Gamma/Beta/Mellin-free by name (`GammaFree.lean`, transitive through types and proofs, 43 612 constants; first committed 94f7657 without following proofs, corrected with the proof in e89b610, re-run independently by the adversarial referee) |
-| S4.4 closed forms of c_C | `OscInt.d4ConstantClosedForm` | yes, stamp `20261106T081634Z-e2d7771c358e` (pinned) | pre: FAITHFUL ×2; post: pending | yes (route `docs/proof-S44.md`, refereed; parts by agents M, N, O, T, K; E4, E7 and the assembly by the lead) | 7 kernel runs + comparator (`docs/replay/2026-11-06-S44-verify-all.txt`, 1c7ebe3, verify-all PASS) | proved and replayed; post-proof review pending |
+| S4.4 closed forms of c_C | `OscInt.d4ConstantClosedForm` | yes, stamp `20261106T081634Z-e2d7771c358e` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full | yes (route `docs/proof-S44.md`, refereed; parts by agents M, N, O, T, K; E4, E7 and the assembly by the lead) | 7 kernel runs + comparator (`docs/replay/2026-11-06-S44-verify-all.txt`, 1c7ebe3, verify-all PASS) | machine-checked as stated |
 
 Pipeline skeleton (M0): `OscInt.skeleton_two_mul` builds, audits clean (1 of 1) and replays in six kernels
 (`build/replay/summary.txt` from `make lean-replay`; the CI run on each push records it).
@@ -71,7 +71,12 @@ by the lead, the assembly compiled against the parts before any part was proved)
 moment needed `Complex.integral_cpow_mul_exp_neg_mul_Ioi` with a complex rate, which that lemma does not take
 (lessons 19); the proof uses a real-variable route through the Beta integral instead. Record
 `docs/replay/2026-11-06-S44-verify-all.txt` (1c7ebe3): `make verify-all` RESULT PASS, 9 of 9 steps, the first full PASS
-(axiom audit 521/521; comparator accepted all eight configurations; eleven commitments equal their pinned stamps;
+(axiom audit 521/521; comparator accepted all seven configurations; eleven commitments equal their pinned stamps;
 per-module `leanchecker` and six export kernels). Non-vacuity on generic data: `OscInt.d4Constant_example`
-(x³ + 2x²y + 3xy² + 5y³, disc −367). With S4.2 this is the brief's S4 limit with its closed-form constant. Post-proof
-and adversarial reviews: pending at the time of writing (this paragraph is updated when they exist).
+(x³ + 2x²y + 3xy² + 5y³, disc −367). With S4.2 this is the brief's S4 limit with its closed-form constant. Reviews:
+post-proof FAITHFUL ×2, scope full, pinned to commitment `3f089384…` (`review/2026-11-07-S44-post-proof-{A,B}.md`; each
+checked the closed forms numerically on generic cubics of both signs to ≤ 2·10⁻¹¹); adversarial
+`review/2026-11-07-S44-adversarial.md`: no finding on S4.4 or its trust chain; one BLOCKER and four MAJOR on the new
+downstream checker, answered in `review/2026-11-07-S44-answers.md`. Citation: the brief's S4 limit with its constant
+is `OscInt.d4Limit` ∧ `OscInt.d4ConstantClosedForm`, with `OscInt.d4ConstantPos` for c_C ≠ 0 and for the
+convergence of the improper integral (referee NITs).
