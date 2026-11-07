@@ -23,9 +23,10 @@ For a reader who saw nothing. Read `docs/lessons.md` first (23 entries); every r
   released: notes in `CHANGELOG.md` "Unreleased".
 
 ## Owner decisions (stop and ask)
-- **Release v0.3.0.** Bump `lakefile.toml`, `CITATION.cff`, `.zenodo.json` to 0.3.0 together, publish the GitHub
-  release with the CHANGELOG notes, and put in the notes the SHA-256 of `stamps/statements.json` and of
-  `tools/oscint_check.py` at the tag (downstream projects pin them; README).
+- **Release v0.3.0 (prepared in session 4).** Tag `v0.3.0` at commit
+  `2e8707a` (branch `claude/sleepy-thompson-37yj33`; full hash via `git rev-parse 2e8707a`) — not at a later commit:
+  later commits add statements, so `stamps/statements.json` would no longer have the SHA-256 in the notes and CI job
+  `release-pin` would fail, as it should. Steps: `docs/release-notes/v0.3.0.md`, "Publishing".
 - Merge the session's pull request (CI: the `consumer` job runs there for the first time).
 - Still the owner's: venue, outreach, money, publication, Mathlib PRs, branch protection, Reservoir listing, a human
   expert review of the statements, Mathlib built from source on a second machine.
