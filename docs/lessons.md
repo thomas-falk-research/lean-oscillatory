@@ -209,3 +209,12 @@ proof" is the claim that makes "as stated" credible, and it must rest on timesta
 stamp the review reports (a stamp of the tree after the review commit) before launching proof agents, and word the
 claim as "statements timestamped; no Lean proof before the reviews (git order, reviews stamped at …)". Check: none
 automatic; the hand-off checklist.
+
+## 30. `leanchecker M` replays every module whose name starts with `M` (2026-11-07)
+After front-end batch 2 added eight `OscInt.API.*` modules, `leanchecker OscInt.API` went from 11.5 s to an OOM kill
+at 13.46 GB (limit 14.3 GB), alone on the machine. The toolchain source (`src/lean/LeanChecker.lean`) selects
+`target.isPrefixOf m` and replays the matches in parallel tasks, each with its own imported environment; lessons 14
+saw the same for the root. Why it mattered: the replay could not pass, and the first diagnosis (a referee's
+concurrent process, lessons 28) was wrong until the step was re-run alone. Rule: no module except the root has
+submodules; library code that belongs to a namespace with an entry-point module lives in another directory
+(`OscInt/Front/`). Check: `tools/check_entry_point.sh` (in `make quick`), with a self-test of the detector.

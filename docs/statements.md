@@ -210,7 +210,7 @@ the claim "statement fixed before the proof" is therefore not made for F1 and F2
 Order restored. Unlike batch 1 (process note above), this batch follows the statement-first order: the statements
 below, their Lean file `OscInt/Statements/Convert.lean`, sanity theorems, challenge and comparator configuration are
 committed, stamped, pinned and blind-reviewed before any proof of them is written or drafted, in the repository or
-in scratch (lessons 23). Bridges go in `OscInt/API/Convert.lean`.
+in scratch (lessons 23). Bridges go in `OscInt/API/Convert.lean` (since moved to `OscInt/Front/Convert.lean`, names unchanged).
 
 Notation as in S2/S3 and S4. Points of ℝ² are `ℝ × ℝ` (max norm). e₁ = (1, 0), e₂ = (0, 1) (`coordVec 0`,
 `coordVec 1`); for e : Fin 2 → ℝ, ofFin2 e = (e 0, e 1). DⁿΨ(k) is Mathlib's `iteratedFDeriv ℝ n Ψ k`, a continuous
@@ -295,14 +295,28 @@ Modelling choices and what is omitted.
 - C1–C4, C7 assume smoothness only near the point (`ContDiffAt`), as their content is local.
 - Pre-proof sanity theorems are on data (matrices, cubics, Euclidean coordinates); non-vacuity of the derivative
   hypotheses of the front ends for explicit phases (fold x³ + y², elliptic and generic D4 cubics) is shown after the
-  proofs, through the bridges, in `OscInt/API/ConvertSanity.lean` and the consumer example, as for batch 1.
+  proofs, through the bridges, in `OscInt/API/ConvertSanity.lean` (now `OscInt/Front/ConvertSanity.lean`) and the consumer example, as for batch 1.
 
 Clarification added after the API2 stamp (2026-11-07, from the two blind pre-proof referees, FAITHFUL ×2 on all
 fourteen statements; the stamped text above and `OscInt/Statements/Convert.lean` are unchanged): (1) C7′ assumes
 `HasFDerivAt` at every point; a neighbourhood of k would suffice and give a stronger statement, which would be a new
 statement (candidate for the next batch); (2) C7′ is an equivalence despite its name `…OfHasFDeriv…`; (3) `disc` and
 `Cubic.discr` are invariant under (a, b, c, d) ↦ (d, c, b, a), so sanity theorems on discriminant values cannot pin
-the coefficient order; it is pinned by the derivative-level checks in `OscInt/API/ConvertSanity.lean`; (4) order of
-work: no proof of a batch-2 statement existed in the repository or in the lead's scratch before the stamp and both
+the coefficient order; it is pinned by the derivative-level checks in `OscInt/Front/ConvertSanity.lean`; (4) order of
+work: no Lean proof of a batch-2 statement existed in the repository or in the lead's scratch before the stamp and both
 reviews; referee A wrote a one-line proof of C5 in its own scratch during its review (disclosed in
 `review/2026-11-07-API2-pre-proof-answers.md`).
+
+Correction to (4) and to the opening paragraph of this section (2026-11-07, adversarial review M3; stamped files
+unchanged): what the evidence shows is narrower. The statements are timestamped (stamp
+`stamps/20261107T101640Z-4acb308f54f4`, RFC 3161 ×3 at 10:16:43Z, manifest of commit 4acb308). That the two blind
+reviews came before any Lean proof rests on git order and on the lead's account; the reviews were not timestamped.
+The proof route, including the C6 algebraic certificates, was drafted in the lead's scratch during the review window
+(the process allows a route draft; it is not Lean proof code), so "no proof drafted" in the opening paragraph is too
+strong and should read "no Lean proof written". `OscInt/Front/ConvertSanity.lean` was written while the proof agents
+ran. Rule for later batches: stamp the reviews before launching proof agents (lessons 29).
+
+Note on file locations (2026-11-07, after the adversarial review M5 and lessons 30): the bridge and helper files of
+batches 1 and 2 moved from `OscInt/API/` to `OscInt/Front/`; declaration names are unchanged (namespace
+`OscInt.API`), and `OscInt/API.lean` is now an imports-only entry point. The stamped
+`OscInt/Statements/Convert.lean` still names the old path `OscInt/API/Convert.lean` in its docstring; it cannot change.

@@ -5,9 +5,9 @@ proof code, lessons 23); committed after the blind statement reviews (FAITHFUL �
 The C6 certificates were computed with sympy 1.13.3 (scripts kept in the lead's scratch; the identities are re-checked
 by `linear_combination` in Lean, which is the evidence).
 
-## Parts (disjoint files under OscInt/API/)
+## Parts (disjoint files under OscInt/API/, since moved to OscInt/Front/)
 
-**P-Deriv** (`OscInt/API/ConvertDeriv.lean`): C1, C2, C3, C4.
+**P-Deriv** (`OscInt/Front/ConvertDeriv.lean`): C1, C2, C3, C4.
 - C1. `ContDiffAt ℝ 2 Ψ k` ⇒ `fderiv ℝ Ψ` is differentiable at k (`ContDiffAt.fderiv_right`, then
   `.differentiableAt`). `dd Ψ k v w = fderiv (fun y => fderiv Ψ y v) k w = fderiv (fderiv Ψ) k w v`
   (`fderiv_clm_apply` with a constant `v`). `iteratedFDeriv_two_apply`: `D²Ψ(k)[v, w] = fderiv (fderiv Ψ) k v w`.
@@ -23,7 +23,7 @@ by `linear_combination` in Lean, which is the evidence).
   `map_smul` on `Function.update`, or through the curried form `fderiv (fderiv (fderiv φ))`), collect with full
   symmetry, compare with `cubicCoeffs` through C2.
 
-**P-Disc** (`OscInt/API/ConvertDisc.lean`): C5, C6.
+**P-Disc** (`OscInt/Front/ConvertDisc.lean`): C5, C6.
 - C5. `simp [disc, Cubic.discr]` (definitional up to unfolding).
 - C6. `fderiv ℝ (cubicForm q) z = 0` iff `C_x(z) = C_y(z) = 0` (compute the derivative of the polynomial).
   (⇒ of the iff, i.e. disc ≠ 0 ⇒ isolated) Certificate (sympy, checked): with
@@ -39,7 +39,7 @@ by `linear_combination` in Lean, which is the evidence).
   C_y = (27a²d − b³)/(9a²) = 0 (checked);
   a = b = 0: z₀ = (1, 0) (C = y²(cx + dy)).
 
-**P-Fold** (`OscInt/API/ConvertFold.lean`): the linear-algebra core used by C7 and C7′, and C7′ itself. The core,
+**P-Fold** (`OscInt/Front/ConvertFold.lean`): the linear-algebra core used by C7 and C7′, and C7′ itself. The core,
 exactly as the assembly uses it (`OscInt.API.FoldAux.foldCore`):
 ```lean
 theorem foldCore (B : (ℝ × ℝ) →L[ℝ] (ℝ × ℝ) →L[ℝ] ℝ) (T : ℝ × ℝ → ℝ) (hB : ∀ v w, B v w = B w v)
@@ -61,14 +61,14 @@ theorem foldCore (B : (ℝ × ℝ) →L[ℝ] (ℝ × ℝ) →L[ℝ] ℝ) (T : �
   `second_derivative_symmetric_of_eventually`; ddd Ψ k v v v = D₃ v v v (`HasFDerivAt.fderiv`, congruence of
   `fun y => dd Ψ y u v` with `fun y => D₂ y v u` everywhere).
 
-**P-Norm** (`OscInt/API/ConvertNorm.lean`): C8, C9.
+**P-Norm** (`OscInt/Front/ConvertNorm.lean`): C8, C9.
 - C8. For a functional ℓ(h) = a h₀ + b h₁: on `EuclideanSpace ℝ (Fin 2)`, ‖ℓ‖ = √(a² + b²) (upper bound by
   Cauchy–Schwarz and `opNorm_le_bound`, lower bound by the test vector (a, b)); on ℝ × ℝ (max norm), ‖ℓ‖ = |a| + |b|
   (test vector (sign a, sign b)). Chain rule for `Ψ ∘ (x ↦ (x 0, x 1))`.
 - C9. (i) `HasCompactSupport.intro`/`of_support_subset_isCompact` with `tsupport ⊆ K`; (ii) F1
   (`OscInt.API.ampBoundOfContDiff`) with K = tsupport A.
 
-**Lead: front ends** (`OscInt/API/Convert.lean`).
+**Lead: front ends** (`OscInt/Front/Convert.lean`).
 - Linear terms: L ↦ p_L = (L e₁, L e₂) is a continuous linear map ((ℝ × ℝ) →L ℝ) → ℝ × ℝ; L k = lin p_L k;
   K′ compact ⇒ image compact. `fderiv Ψ k + L = 0` ⇔ `IsCritical Ψ p_L k`.
 - FE-S2.1: S2.1 with Λ = Unit (`sanity_familyCk_const`), c/√2 by C8(iii) (‖fderiv Ψ k + L‖ = ‖fderiv (Ψ + L) k‖).
@@ -78,9 +78,9 @@ theorem foldCore (B : (ℝ × ℝ) →L[ℝ] (ℝ × ℝ) →L[ℝ] ℝ) (T : �
   cubic is determined by its values at (1,0), (0,1), (1,1), (1,−1)… solve); disc by C5; S4.1′ with y = p_L.
 
 ## After the proofs
-- `OscInt/API/ConvertSanity.lean`: derivative-level non-vacuity (fold x³ + y² satisfies FoldOrNondegMatrix on
+- `OscInt/Front/ConvertSanity.lean`: derivative-level non-vacuity (fold x³ + y² satisfies FoldOrNondegMatrix on
   closedBall 0 1; x³ − 3xy² + x⁴ satisfies FE-S4.1′'s hypotheses with (1, 0, −3, 0)).
-- P2 helpers (`OscInt/API/Poly.lean`, not frozen: they only produce hypotheses): iteratedFDeriv along a line of a
+- P2 helpers (`OscInt/Front/Poly.lean`, not frozen: they only produce hypotheses): iteratedFDeriv along a line of a
   function whose restriction is a polynomial in t (`iteratedDeriv` of `Polynomial.eval`), polarisation for the
   Hessian, `FoldCondSpan` from an elementary rank-one test.
 - `examples/consumer/ConsumerFormula.lean`: FE-S3 and FE-S4.1′ on explicit formulas.

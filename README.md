@@ -128,7 +128,8 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 ## Layout
 
 - `OscInt/` library: `OscInt/Statements/` frozen statements, `OscInt/VanDerCorput/` (S1),
-  `OscInt/StationaryPhase/` (S2, S3), `OscInt/D4/` (S4).
+  `OscInt/StationaryPhase/` (S2, S3), `OscInt/D4/` (S4), `OscInt/Front/` (front ends, conversions, hypothesis helpers;
+  entry point `OscInt/API.lean`).
 - `Blueprint/` intermediate propositions (definitions only); `Challenge/` `sorry` theorems over the statement modules
   for `lake comparator` (never imported; frozen by the stamped export hash and the pinned statement-file hashes,
   `stamps/pins.txt`); one `comparator*.json` per milestone.

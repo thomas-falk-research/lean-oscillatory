@@ -14,6 +14,20 @@ for s in d["statements"]:
     print(s["name"])
     if s.get("proved_by"): print(s["proved_by"])
 ') || { echo "ERROR entry-point: cannot read stamps/statements.json"; exit 2; }
+# No module except the root may have submodules: `leanchecker M` replays every module whose name starts with `M.`,
+# each in a parallel task with its own environment (LeanChecker.lean), which ran out of memory (lessons 30).
+mods=$(find OscInt -name '*.lean' | sed 's#\.lean$##; s#/#.#g' | sort)
+nested=$(for m in $mods; do grep -q "^$m\." <<<"$mods" && echo "$m"; done)
+if [ "${1:-}" = "--self-test" ]; then
+  fake=$'OscInt.A\nOscInt.A.B\nOscInt.C'
+  got=$(for m in $fake; do grep -q "^$m\." <<<"$fake" && echo "$m"; done)
+  [ "$got" = "OscInt.A" ] && echo "ok   self-test: nested-module detector flags OscInt.A (has OscInt.A.B) and nothing else" \
+    || { echo "FAIL self-test: nested-module detector returned '$got'"; exit 1; }
+fi
+if [ "${1:-}" != "--self-test" ] && [ -n "$nested" ]; then
+  echo "FAIL entry-point: these modules have submodules (move the submodules elsewhere, e.g. OscInt/Front/): $nested"
+  exit 1
+fi
 [ "${1:-}" = "--self-test" ] && names="$names
 OscInt.API.noSuchTheoremForTheSelfTest"
 { echo "import OscInt.API"; for n in $names; do echo "#check @$n"; done; } > "$T/Entry.lean"

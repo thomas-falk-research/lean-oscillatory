@@ -1,5 +1,5 @@
 import OscInt.Statements.Convert
-import OscInt.API
+import OscInt.Front.Core
 
 /-!
 # Front-end batch 2, P-Norm: `GradLower` as a norm bound (C8) and `AmpBound` in Mathlib's idiom (C9)

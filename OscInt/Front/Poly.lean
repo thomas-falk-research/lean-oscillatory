@@ -1,5 +1,5 @@
 import OscInt.Statements.Convert
-import OscInt.API.ConvertDeriv
+import OscInt.Front.ConvertDeriv
 
 /-!
 # Hypothesis helpers for explicit phases (P2)

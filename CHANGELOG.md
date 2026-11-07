@@ -37,7 +37,7 @@ equals its pinned stamp; this session's records under `docs/replay/2026-11-07-*`
   `ContDiff` + `HasCompactSupport` (C9).
 - Front ends for S2.1, S2.2, S3, S4.1′ with `ContDiff`, `tsupport`, `iteratedFDeriv` bounds and linear terms as
   continuous linear functionals (one phase each). Entry point unchanged: `import OscInt.API` (now exposes them).
-- Hypothesis helpers `OscInt/API/Poly.lean` (P2): derivative data of explicit polynomial phases from `ring`
+- Hypothesis helpers `OscInt/Front/Poly.lean` (P2): derivative data of explicit polynomial phases from `ring`
   identities; `examples/consumer/ConsumerFormula.lean`: FE-S3 and FE-S4.1′ on phases given only by a formula.
 - Order: statements stamped (RFC 3161 ×3) and reviewed blind (FAITHFUL ×2) before any Lean proof; post-proof
   FAITHFUL ×2; adversarial review answered (`review/2026-11-07-API2-*`). What is and is not evidenced about the order:
@@ -54,7 +54,7 @@ equals its pinned stamp; this session's records under `docs/replay/2026-11-07-*`
 - Front-end batch 1 (`OscInt/API.lean`, the new entry point): F1 `OscInt.API.ampBoundOfContDiff` (a Cⁿ amplitude with
   compact support satisfies `AmpBound`) and F2 `OscInt.API.d4LimitClosedForm` (the D4 limit with its closed-form
   constant for one C² amplitude, both umbilics); bridges drafted before the statement review, disclosed. Non-vacuity
-  and bite: `OscInt/API/Sanity.lean`.
+  and bite: `OscInt/Front/Sanity.lean`.
 
 ### Depending on OscInt (new)
 - `stamps/statements.json`: every pinned statement with label, summary, proving theorem, statement file and SHA-256,

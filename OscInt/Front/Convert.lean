@@ -1,8 +1,8 @@
-import OscInt.API
-import OscInt.API.ConvertDeriv
-import OscInt.API.ConvertDisc
-import OscInt.API.ConvertFold
-import OscInt.API.ConvertNorm
+import OscInt.Front.Core
+import OscInt.Front.ConvertDeriv
+import OscInt.Front.ConvertDisc
+import OscInt.Front.ConvertFold
+import OscInt.Front.ConvertNorm
 
 /-!
 # Front-end batch 2: the lead's assembly (C7) and the front ends (FE-S2.1, FE-S2.2, FE-S3, FE-S4.1′)

@@ -86,7 +86,7 @@ convergence of the improper integral (referee NITs).
 Front-end batch 1, F1 and F2 (2026-11-07, session 3). Statements `OscInt/Statements/FrontEnd.lean`, stamped
 `20261107T012459Z-2d5356432156` and pinned; blind statement review FAITHFUL ×2 (`review/2026-11-07-API1-pre-proof-{A,B}.md`;
 each referee wrote its own bridge independently); proofs `OscInt.API.ampBoundOfContDiff`, `OscInt.API.d4LimitClosedForm`
-in `OscInt/API.lean`; non-vacuity and bite `OscInt/API/Sanity.lean` (elliptic and generic phases, an independent
+in `OscInt/API.lean`; non-vacuity and bite `OscInt/Front/Sanity.lean` (elliptic and generic phases, an independent
 elliptic value, a nonzero limit); record `docs/replay/2026-11-07-API1-verify-all.txt` (2ddcbe0, verify-all PASS, axiom
 audit 536/536, comparator-API1 accepted); post-proof FAITHFUL ×2 (`review/2026-11-07-API1-post-proof-{A,B}.md`; answers
 `review/2026-11-07-API1-answers.md`). Disclosure: the bridge proofs were drafted in the lead's scratch directory before
