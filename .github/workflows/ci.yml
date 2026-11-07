@@ -79,6 +79,7 @@ jobs:
           lake update
           lake exe cache get
           lake build
+          lake build OscInt Blueprint
       - name: The package is the recorded release commit, and its checker is the pinned one
         working-directory: examples/consumer-release
         run: |

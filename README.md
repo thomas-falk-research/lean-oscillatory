@@ -77,6 +77,7 @@ commitment to its definitional closure and the stamp that froze it, and every st
 your CI, after `lake build`:
 
 ```bash
+lake build OscInt Blueprint   # the check replays every OscInt and Blueprint module, not only those you import
 python3 .lake/packages/oscint/tools/oscint_check.py \
   --statement OscInt.Statements.D4LimitStatement \
   --expect-sha256 <sha256 of stamps/statements.json, from docs/release-notes/<tag>.md>
