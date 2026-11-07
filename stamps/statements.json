@@ -147,13 +147,168 @@
       "commitment": "7db2d5f188ee0984ee684caa10e18c74af554e0c718a903cd643e540d278f741",
       "stamp": "stamps/20261107T012459Z-2d5356432156",
       "stamp_commit": "2d5356432156977cc66afd7e05f2d845e1004687"
+    },
+    {
+      "name": "OscInt.Statements.DdEqIteratedStatement",
+      "label": "C1",
+      "summary": "Second derivatives: `dd Ψ k v w = D²Ψ(k)[v, w]` for `Ψ` of class `C²` near `k`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Convert.lean",
+      "file_sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49",
+      "commitment": "88880a9377a1cb58aaa315e01ddcc83055a294e8518316c5d843aede69859375",
+      "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+      "stamp_commit": "4acb308f54f447ea703d7cdd07ff6527156307e2"
+    },
+    {
+      "name": "OscInt.Statements.DddEqIteratedStatement",
+      "label": "C2",
+      "summary": "Third derivatives: `ddd Ψ k u v w = D³Ψ(k)[u, v, w]` for `Ψ` of class `C³` near `k`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Convert.lean",
+      "file_sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49",
+      "commitment": "c90a3e07e9299b77bee1425af8810b3d745982ce1fc01d03281d1e167541db27",
+      "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+      "stamp_commit": "4acb308f54f447ea703d7cdd07ff6527156307e2"
+    },
+    {
+      "name": "OscInt.Statements.HessDetEqDetStatement",
+      "label": "C3",
+      "summary": "`hessDet Ψ k = det (hessianMatrix Ψ k)` for `Ψ` of class `C²` near `k`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Convert.lean",
+      "file_sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49",
+      "commitment": "ad8bfd7283e818c8b9ae1290765dec3f6122e76790f493f35c02139189cb16b8",
+      "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+      "stamp_commit": "4acb308f54f447ea703d7cdd07ff6527156307e2"
+    },
+    {
+      "name": "OscInt.Statements.CubicCoeffsEqStatement",
+      "label": "C4",
+      "summary": "The cubic part: `cubicForm (cubicCoeffs φ) κ = D³φ(0)[κ, κ, κ] / 6` for `φ` of class `C³` near `0`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Convert.lean",
+      "file_sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49",
+      "commitment": "b3a10d767ce7cc1558a06629db152378bb13c719d58b62f9ee2db8bbd7635a70",
+      "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+      "stamp_commit": "4acb308f54f447ea703d7cdd07ff6527156307e2"
+    },
+    {
+      "name": "OscInt.Statements.DiscEqCubicDiscrStatement",
+      "label": "C5",
+      "summary": "`disc` is Mathlib's discriminant of the cubic polynomial `a X³ + b X² + c X + d`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Convert.lean",
+      "file_sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49",
+      "commitment": "b695631f883cf016c403cefef9e9b41f753dcab0ff8acf7e7dc331c3525207bc",
+      "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+      "stamp_commit": "4acb308f54f447ea703d7cdd07ff6527156307e2"
+    },
+    {
+      "name": "OscInt.Statements.DiscNeZeroIffIsolatedStatement",
+      "label": "C6",
+      "summary": "`disc q ≠ 0` iff `0` is an isolated critical point of the binary cubic `cubicForm q`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Convert.lean",
+      "file_sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49",
+      "commitment": "129d6bfd60d242a109cb1ca4a9f021a85d1d0829c1a9d01fd2f88f59c15455ef",
+      "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+      "stamp_commit": "4acb308f54f447ea703d7cdd07ff6527156307e2"
+    },
+    {
+      "name": "OscInt.Statements.FoldOrNondegIffStatement",
+      "label": "C7",
+      "summary": "`FoldOrNondeg` in matrix form (span form and rank form) for `Ψ` of class `C³` near `k`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Convert.lean",
+      "file_sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49",
+      "commitment": "b05dd45ea11747ed3f364fd9ed95819be61b82d91a0ba2e617b7d7ff729de907",
+      "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+      "stamp_commit": "4acb308f54f447ea703d7cdd07ff6527156307e2"
+    },
+    {
+      "name": "OscInt.Statements.FoldOrNondegOfHasFDerivStatement",
+      "label": "C7′",
+      "summary": "`FoldOrNondeg` from derivative data: `Ψ' = D₁`, `D₁' = D₂` everywhere and `D₂'(k) = D₃`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Convert.lean",
+      "file_sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49",
+      "commitment": "cf87f81a3e5eaab15f2e671a7efefcc88ce509646daf6cf75a56d5d86c813a56",
+      "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+      "stamp_commit": "4acb308f54f447ea703d7cdd07ff6527156307e2"
+    },
+    {
+      "name": "OscInt.Statements.GradLowerIffStatement",
+      "label": "C8",
+      "summary": "`GradLower` as a norm bound: Euclidean (an equivalence) and max norm (both directions, losing `√2`).",
+      "proved_by": null,
+      "file": "OscInt/Statements/Convert.lean",
+      "file_sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49",
+      "commitment": "c46e578b3f119cb9f17dd3690e103e2fb641ac03288e8b863f94f1e940ff443c",
+      "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+      "stamp_commit": "4acb308f54f447ea703d7cdd07ff6527156307e2"
+    },
+    {
+      "name": "OscInt.Statements.AmpBoundConvStatement",
+      "label": "C9",
+      "summary": "`AmpBound` and Mathlib's idiom: (i) on a compact `K` it gives `Cⁿ` with compact support; (ii) `Cⁿ` with compact support gives `AmpBound n (tsupport A) A M` for some `M`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Convert.lean",
+      "file_sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49",
+      "commitment": "bdcb71a321987be7a5de005f6984f193b3947aade4acf29bbe4a155bedc5c6c9",
+      "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+      "stamp_commit": "4acb308f54f447ea703d7cdd07ff6527156307e2"
+    },
+    {
+      "name": "OscInt.Statements.NonStationaryFEStatement",
+      "label": "FE-S2.1",
+      "summary": "Non-stationary phase in Mathlib's idiom (one phase): decay `m^{-N}`, uniform over amplitudes with derivative bound `M` and over linear terms `L` with `‖DΨ(k) + L‖ ≥ c` on `K`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Convert.lean",
+      "file_sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49",
+      "commitment": "658ca3ba7c2aa48bd189db69c7fa6de41dccc5b293c13da3e35262a407ad3670",
+      "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+      "stamp_commit": "4acb308f54f447ea703d7cdd07ff6527156307e2"
+    },
+    {
+      "name": "OscInt.Statements.StationaryPhaseFEStatement",
+      "label": "FE-S2.2",
+      "summary": "Nondegenerate stationary phase in Mathlib's idiom: decay `m^{-1}`, uniform over `L ∈ K'`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Convert.lean",
+      "file_sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49",
+      "commitment": "853de5aec4e7209f3452e92c038f15ae35a9ba77ec68e668b81b54993be7fcf8",
+      "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+      "stamp_commit": "4acb308f54f447ea703d7cdd07ff6527156307e2"
+    },
+    {
+      "name": "OscInt.Statements.FoldFEStatement",
+      "label": "FE-S3",
+      "summary": "Uniform fold estimate in Mathlib's idiom (one phase): decay `m^{-5/6}`, uniform over `L ∈ K'`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Convert.lean",
+      "file_sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49",
+      "commitment": "0f3fb86be54bedd6800f47e92a4ec39ea40b02aaa525a55810bc1b2e706131e5",
+      "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+      "stamp_commit": "4acb308f54f447ea703d7cdd07ff6527156307e2"
+    },
+    {
+      "name": "OscInt.Statements.D4BoundFEStatement",
+      "label": "FE-S4.1′",
+      "summary": "Uniform D4 bound in Mathlib's idiom: `D²φ(0) = 0`, cubic part `a x³ + b x²y + c xy² + d y³` with nonzero discriminant; decay `t^{-2/3}` uniformly over all linear terms.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Convert.lean",
+      "file_sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49",
+      "commitment": "6d19397535704238238140de06b3e7f4c4fc3296a03d1b4685a9fbcafb8722df",
+      "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+      "stamp_commit": "4acb308f54f447ea703d7cdd07ff6527156307e2"
     }
   ],
   "statement_files": [
-    {"file": "OscInt/Statements/D4.lean", "sha256": "6965ce63488b6f81ff5c4685b46e252027423d8a6916ac274ea9dea21d4395c9", "stamp": "stamps/20261107T012459Z-2d5356432156"},
-    {"file": "OscInt/Statements/D4Limit.lean", "sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6", "stamp": "stamps/20261107T012459Z-2d5356432156"},
-    {"file": "OscInt/Statements/FrontEnd.lean", "sha256": "4851a9543e712d2a3734b37dbf3cfabbc63fabb0a930a22f96eb3e60e8852ee7", "stamp": "stamps/20261107T012459Z-2d5356432156"},
-    {"file": "OscInt/Statements/StationaryPhase.lean", "sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf", "stamp": "stamps/20261107T012459Z-2d5356432156"},
-    {"file": "OscInt/Statements/VanDerCorput.lean", "sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44", "stamp": "stamps/20261107T012459Z-2d5356432156"}
+    {"file": "OscInt/Statements/Convert.lean", "sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49", "stamp": "stamps/20261107T101640Z-4acb308f54f4"},
+    {"file": "OscInt/Statements/D4.lean", "sha256": "6965ce63488b6f81ff5c4685b46e252027423d8a6916ac274ea9dea21d4395c9", "stamp": "stamps/20261107T101640Z-4acb308f54f4"},
+    {"file": "OscInt/Statements/D4Limit.lean", "sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6", "stamp": "stamps/20261107T101640Z-4acb308f54f4"},
+    {"file": "OscInt/Statements/FrontEnd.lean", "sha256": "4851a9543e712d2a3734b37dbf3cfabbc63fabb0a930a22f96eb3e60e8852ee7", "stamp": "stamps/20261107T101640Z-4acb308f54f4"},
+    {"file": "OscInt/Statements/StationaryPhase.lean", "sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf", "stamp": "stamps/20261107T101640Z-4acb308f54f4"},
+    {"file": "OscInt/Statements/VanDerCorput.lean", "sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44", "stamp": "stamps/20261107T101640Z-4acb308f54f4"}
   ]
 }
