@@ -35,7 +35,9 @@ trust chain.
       critical points, as in the classical statement (S3 now requires it on all of K; its referee noted this).
 - [ ] **Asymptotic expansions** *(downstream)*: the leading term of nondegenerate stationary phase,
       (2π/m)^{n/2} |det D²Ψ|^{-1/2} e^{iπ sgn/4} e^{imΨ(k₀)} A(k₀) + O(m^{-n/2-1}), and the Airy leading term for folds.
-- [ ] **Front-end theorems** in Mathlib idioms (integrals over `EuclideanSpace ℝ (Fin n)`, `ContDiff` plus
+- [ ] **Front-end theorems** in Mathlib idioms (batch 1 done 2026-11-07: F1 `ContDiff`-plus-compact-support amplitudes,
+      F2 the D4 limit with its closed-form constant, entry point `OscInt/API.lean`; next: S2.2, S3, S4.1′ front ends,
+      `iteratedFDeriv` conversions, `EuclideanSpace`) (integrals over `EuclideanSpace ℝ (Fin n)`, `ContDiff` plus
       `HasCompactSupport` amplitudes, norms via `iteratedFDeriv`).
 - [ ] **Conversion lemmas** *(downstream)* from standard formulations (a Hessian as a `Matrix`, rank and kernel
       conditions, the classical discriminant) to `FoldOrNondeg`, `hessDet`, `cubicCoeffs`, `GradLower`, `AmpBound`.

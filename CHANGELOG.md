@@ -15,6 +15,10 @@ Planned as v0.3.0 (the owner publishes releases).
   normal forms, Beta integrals, Legendre duplication and Euler reflection); the hand-off's Abel/complex-rate route
   was replaced because `Complex.integral_cpow_mul_exp_neg_mul_Ioi` takes a real rate (lessons 19).
 - `OscInt.d4Constant_example`: the closed form on x³ + 2x²y + 3xy² + 5y³ (disc −367).
+- Front-end batch 1 (`OscInt/API.lean`, the new entry point): F1 `OscInt.API.ampBoundOfContDiff` (a Cⁿ amplitude with
+  compact support satisfies `AmpBound`) and F2 `OscInt.API.d4LimitClosedForm` (the D4 limit with its closed-form
+  constant for one C² amplitude, both umbilics); bridges drafted before the statement review, disclosed. Non-vacuity
+  and bite: `OscInt/API/Sanity.lean`.
 
 ### Depending on OscInt (new)
 - `stamps/statements.json`: every pinned statement with label, summary, proving theorem, statement file and SHA-256,

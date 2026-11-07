@@ -14,8 +14,8 @@ requires every row of the trust chain (README) for that statement.
 | S4.2 D4 limit t^{2/3}∫e^{itφ}A → c_C A(0), c_C Gamma-free (the brief's closed form is S4.4) | `OscInt.d4Limit` | yes, stamp `20261106T081634Z-e2d7771c358e` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full (part of the brief's S4, which also needs S4.4) | yes (route `docs/proof-S42.md`, refereed; parts by agents X, Y, Z, Q2; assembly by the lead) | 7 kernel runs + comparator (`docs/replay/2026-11-06-S4b-verify-all.txt`, a71b318) | machine-checked as stated |
 | S4.3 c_C > 0 (alternating series, Gamma-free) | `OscInt.d4ConstantPos` | yes, same stamp | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full | yes (route `docs/proof-S43.md`, refereed; parts by agents U, V, W) | 7 kernel runs + comparator (`docs/replay/2026-11-06-S4b-verify-all.txt`, a71b318) | machine-checked as stated; proof Gamma/Beta/Mellin-free by name (`GammaFree.lean`, transitive through types and proofs, 43 612 constants; first committed 94f7657 without following proofs, corrected with the proof in e89b610, re-run independently by the adversarial referee) |
 | S4.4 closed forms of c_C | `OscInt.d4ConstantClosedForm` | yes, stamp `20261106T081634Z-e2d7771c358e` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full | yes (route `docs/proof-S44.md`, refereed; parts by agents M, N, O, T, K; E4, E7 and the assembly by the lead) | 7 kernel runs + comparator (`docs/replay/2026-11-06-S44-verify-all.txt`, 1c7ebe3, verify-all PASS) | machine-checked as stated |
-| F1 amplitude bounds from `ContDiff` and compact support (front end) | `OscInt.API.ampBoundOfContDiff` | yes, stamp `20261107T012459Z-2d5356432156` (pinned) | pre: FAITHFUL ×2; post: pending | yes (bridge in `OscInt/API.lean`; drafted before the review, disclosed) | 7 kernel runs + comparator (`docs/replay/2026-11-07-API1-verify-all.txt`, 2ddcbe0, verify-all PASS) | proved and replayed; post-proof review pending |
-| F2 D4 limit with the closed-form constant, `ContDiff` amplitudes (front end; the brief's S4 as one theorem) | `OscInt.API.d4LimitClosedForm` | yes, same stamp | pre: FAITHFUL ×2 (FAITHFUL-STRONGER than the brief: elliptic branch, C² amplitudes) | yes (from S4.2, S4.4, F1; same disclosure) | same record | proved and replayed; post-proof review pending |
+| F1 amplitude bounds from `ContDiff` and compact support (front end) | `OscInt.API.ampBoundOfContDiff` | yes, stamp `20261107T012459Z-2d5356432156` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full | yes (bridge in `OscInt/API.lean`; drafted before the review, disclosed) | 7 kernel runs + comparator (`docs/replay/2026-11-07-API1-verify-all.txt`, 2ddcbe0, verify-all PASS) | machine-checked as stated (no "statement before proof" claim) |
+| F2 D4 limit with the closed-form constant, `ContDiff` amplitudes (front end; the brief's S4 limit with its constant as one theorem) | `OscInt.API.d4LimitClosedForm` | yes, same stamp | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full (FAITHFUL-STRONGER than the brief's limit: elliptic branch, C² amplitudes) | yes (from S4.2, S4.4, F1; same disclosure) | same record | machine-checked as stated (no "statement before proof" claim) |
 
 Pipeline skeleton (M0): `OscInt.skeleton_two_mul` builds, audits clean (1 of 1) and replays in six kernels
 (`build/replay/summary.txt` from `make lean-replay`; the CI run on each push records it).
@@ -82,3 +82,12 @@ checked the closed forms numerically on generic cubics of both signs to ≤ 2·1
 downstream checker, answered in `review/2026-11-07-S44-answers.md`. Citation: the brief's S4 limit with its constant
 is `OscInt.d4Limit` ∧ `OscInt.d4ConstantClosedForm`, with `OscInt.d4ConstantPos` for c_C ≠ 0 and for the
 convergence of the improper integral (referee NITs).
+
+Front-end batch 1, F1 and F2 (2026-11-07, session 3). Statements `OscInt/Statements/FrontEnd.lean`, stamped
+`20261107T012459Z-2d5356432156` and pinned; blind statement review FAITHFUL ×2 (`review/2026-11-07-API1-pre-proof-{A,B}.md`;
+each referee wrote its own bridge independently); proofs `OscInt.API.ampBoundOfContDiff`, `OscInt.API.d4LimitClosedForm`
+in `OscInt/API.lean`; non-vacuity and bite `OscInt/API/Sanity.lean` (elliptic and generic phases, an independent
+elliptic value, a nonzero limit); record `docs/replay/2026-11-07-API1-verify-all.txt` (2ddcbe0, verify-all PASS, axiom
+audit 536/536, comparator-API1 accepted); post-proof FAITHFUL ×2 (`review/2026-11-07-API1-post-proof-{A,B}.md`; answers
+`review/2026-11-07-API1-answers.md`). Disclosure: the bridge proofs were drafted in the lead's scratch directory before
+the stamp and review, so "statement fixed before the proof" is not claimed for F1 and F2.

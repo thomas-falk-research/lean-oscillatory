@@ -25,6 +25,7 @@ Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801a
 | S4.2 D4 limit with the Gamma-free c_C | machine-checked as stated (`OscInt.d4Limit`) |
 | S4.3 c_C > 0 (alternating series, no Gamma) | machine-checked as stated (`OscInt.d4ConstantPos`; Gamma-free by name, `GammaFree.lean`) |
 | S4.4 closed forms of c_C (the brief's Γ(1/3)²/(√3\|Disc\|^{1/6})) | machine-checked as stated (`OscInt.d4ConstantClosedForm`; verify-all PASS). The brief's limit with its constant is S4.2 ∧ S4.4 (`OscInt.d4Limit`, `OscInt.d4ConstantClosedForm`) |
+| F1, F2 front end (`ContDiff` amplitudes; the D4 limit with its closed-form constant as one theorem) | machine-checked as stated (`OscInt.API.ampBoundOfContDiff`, `OscInt.API.d4LimitClosedForm`; bridges drafted before the review, disclosed), see `docs/STATUS.md` |
 
 "As stated" means the hypotheses in `docs/statements.md` (derivatives continuous up to the endpoints, as in the
 source's C^k assumption). Details and evidence: `docs/STATUS.md`.
@@ -48,13 +49,17 @@ lake exe cache get
 lake build
 ```
 
-Use the theorems by their statement names; their types *are* the reviewed statements:
+Import `OscInt.API` (the entry point: every theorem with the textbook statement it formalises, and front-end
+forms in Mathlib's idiom). Use the theorems by their statement names; their types *are* the reviewed statements:
 
 ```lean
-import OscInt
+import OscInt.API
 
 open OscInt.Statements in
 example : D4LimitStatement := OscInt.d4Limit
+
+-- the D4 limit with its closed-form constant, for one C² amplitude (no `AmpBound`)
+example : OscInt.Statements.D4LimitClosedFormStatement := OscInt.API.d4LimitClosedForm
 ```
 
 `stamps/statements.json` lists every pinned statement with its label, summary, proving theorem, statement file, the

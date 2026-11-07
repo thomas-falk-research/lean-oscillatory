@@ -81,3 +81,9 @@ statements are. Depending on OscInt: `stamps/statements.json`, `tools/oscint_che
 checker (a redefined statement and a kernel-skipped theorem both passed; lessons 22); hardened (module of the
 statement, kernel replay of the dependency closure, recomputed commitments, toolchain and Mathlib match) with 13
 negative controls and the referee's two reproductions now rejected. Front-end batch 1 (F1, F2) drafted.
+Front-end batch 1 (2026-11-07): F1 (amplitude bounds from `ContDiff` and compact support) and F2 (the D4 limit with
+its closed-form constant for one C² amplitude) frozen, stamped `20261107T012459Z-2d5356432156`, reviewed FAITHFUL ×2,
+proved in `OscInt/API.lean` (the new entry point) with a bite file, verify-all PASS on 2ddcbe0, post-proof FAITHFUL ×2.
+The bridges were drafted before the review (lessons 23). The audit's strict count caught two `private theorem`s,
+which it does not enumerate (CONTRIBUTING). `statements-check` now reports INCOMPLETE, not FAIL, for a new
+statement file not yet stamped (lessons 9).

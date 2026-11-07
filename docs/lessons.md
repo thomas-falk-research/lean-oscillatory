@@ -155,3 +155,12 @@ they depend on exactly the reviewed statements. Rule: a check verifies the artef
 environment: the constant's module, its commitment, the kernel's verdict on the `.olean`), not a proxy for it (a
 source hash), and its documentation says what it does not cover. Check: `tools/test_oscint_check.sh` (a control
 for each path, including both of the referee's reproductions).
+
+## 23. A front-end bridge drafted before its statement's review cost the "fixed before proof" claim (2026-11-07)
+For F1 and F2 the lead wrote and compiled the bridge proofs (about 30 lines) in the scratch directory while the tree
+was frozen for another run, then stamped and reviewed the statements. Nothing changed afterwards and both reviews
+were FAITHFUL, but the order can no longer be claimed, and the docs and `OscInt/API.lean` had to say so. Why it
+mattered: a short, obvious proof is exactly where the temptation is greatest and the cost of waiting smallest. Rule:
+no proof code for a statement, even in scratch, before its stamp and blind review; check the assembly against the
+parts only when the parts are blueprint hypotheses. Check: none automatic (scratch is outside the tree); the hand-off
+lists it under process notes.

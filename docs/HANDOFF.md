@@ -1,38 +1,54 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (22 entries); every rule in it is binding.
+For a reader who saw nothing. Read `docs/lessons.md` first (23 entries); every rule in it is binding.
 
-## What exists (session 3, 2026-11-06)
-- Lean v4.35.0, Mathlib `56a0058` (tag v4.35.0). All eleven pinned statements are proved: S1 (three van der Corput
-  lemmas), S2.1, S2.2, S3, S4.1, S4.1′, S4.2, S4.3, and, new in session 3, **S4.4** (closed forms of c_C,
-  `OscInt.d4ConstantClosedForm`). S1–S4.3 are machine-checked as stated (`docs/STATUS.md`); S4.4 is proved and replayed
-  and its post-proof and adversarial reviews are the next step (status in `docs/STATUS.md`).
-- `make verify-all` reports **PASS** (9 of 9 steps) on 1c7ebe3: `docs/replay/2026-11-06-S44-verify-all.txt`. The
-  brief's S4 limit with its closed-form constant Γ(1/3)²/(√3|Disc|^{1/6}) is S4.2 ∧ S4.4.
-- Released: v0.2.0 (DOI 10.5281/zenodo.24021329; all versions 10.5281/zenodo.24021328). `CHANGELOG.md` "Unreleased"
-  holds the notes for v0.3.0; `lakefile.toml`, `CITATION.cff` and `.zenodo.json` say 0.2.0 and are bumped together
-  when the owner cuts the release.
-- Depending on OscInt (new): `stamps/statements.json` (generated, `make statements`; checked by `make
-  statements-check` and verify-all), `tools/oscint_check.py` (downstream checker; negative controls in
-  `tools/test_oscint_check.sh`), `examples/consumer/` (tested consumer project), README "Depending on OscInt",
-  `docs/policy.md` (semver from v0.3.0, stable surface, deprecation, Mathlib re-freeze rule).
-- Developer experience: `make quick`, `make verify-all ONLY="…"`, a preflight in verify-all (missing `zstd`, `bwrap`,
-  shallow clone), CI jobs `quick`, `verify` (every push and weekly), `consumer` (main, PRs, weekly),
-  `CONTRIBUTING.md`; build noise fixed (0 warnings).
+## What exists (end of session 3, 2026-11-07)
+- Lean v4.35.0, Mathlib `56a0058` (tag v4.35.0). **Every pinned statement is machine-checked as stated**
+  (`docs/STATUS.md`): S1 (three van der Corput lemmas), S2.1, S2.2, S3, S4.1, S4.1′, S4.2, S4.3, S4.4 (new: closed
+  forms of c_C, `OscInt.d4ConstantClosedForm`) and the front-end batch 1, F1 and F2 (new; bridges drafted before
+  their review, disclosed).
+- `make verify-all` reports PASS (records in `docs/replay/`, newest first). The brief's S4 limit with its closed-form
+  constant is `OscInt.API.d4LimitClosedForm` (F2) as one theorem, or S4.2 ∧ S4.4.
+- **Entry point for users:** `import OscInt.API` (a table of every theorem with the textbook statement it formalises,
+  and the front-end theorems in Mathlib's idiom). Example consumer: `examples/consumer/`.
+- **Depending on OscInt:** `stamps/statements.json` (generated, `make statements`; checked by verify-all),
+  `tools/oscint_check.py` (toolchain and Mathlib match, statement files, the statement constant's module, syntactic
+  types, axioms, kernel replay of each theorem's dependency closure, recomputed commitments; it detects drift, not
+  tampering), its controls `tools/test_oscint_check.sh` (15/15, `docs/replay/2026-11-07-oscint-check-controls.txt`),
+  README "Depending on OscInt", `docs/policy.md` (semver from v0.3.0, stable surface, deprecation, re-freeze rule).
+- Developer experience: `make quick` (minutes), `make verify-all ONLY="…"`, verify-all preflight (`zstd`, `bwrap`,
+  full clone), CI jobs `quick` (every push and PR), `verify` (every push, weekly), `consumer` (main, PRs, weekly),
+  `CONTRIBUTING.md`, 0 build warnings.
+- Released: v0.2.0 (DOI 10.5281/zenodo.24021329; all versions 10.5281/zenodo.24021328). v0.3.0 is prepared, not
+  released: notes in `CHANGELOG.md` "Unreleased".
 
-## Owner decisions
-Venue, outreach, money, publication, Mathlib PRs, release tags, and anything needing the owner's accounts (Zenodo,
-ORCID, branch protection) are the owner's. Open: publish v0.3.0 once S4.4's reviews are in (notes in CHANGELOG).
+## Owner decisions (stop and ask)
+- **Release v0.3.0.** Bump `lakefile.toml`, `CITATION.cff`, `.zenodo.json` to 0.3.0 together, publish the GitHub
+  release with the CHANGELOG notes, and put in the notes the SHA-256 of `stamps/statements.json` and of
+  `tools/oscint_check.py` at the tag (downstream projects pin them; README).
+- Merge the session's pull request (CI: the `consumer` job runs there for the first time).
+- Still the owner's: venue, outreach, money, publication, Mathlib PRs, branch protection, Reservoir listing, a human
+  expert review of the statements, Mathlib built from source on a second machine.
 
-## Next
-The plan is `docs/ROADMAP.md`, in its order.
-- S4.4 post-proof reviews (prompts `review/prompts/S44-post-proof.md`, `S44-adversarial.md`, committed before the
-  final theorem existed), answers, STATUS row.
-- Public API batch 1 (ROADMAP §2): front-end statements F1 (amplitude bounds from `ContDiff` and compact support) and
-  F2 (the D4 limit with the closed-form constant, Mathlib-idiom amplitudes), then `OscInt/API.lean`.
-- Put `GammaFree.lean` into the next stamp.
-- Mathlib from source on a second machine (owner): `lake build Mathlib` in a fresh clone without `lake exe cache get`,
-  then `make commit`; record in `docs/toolchain.md`.
+## Next (ROADMAP order)
+1. Closure-diff tool (ROADMAP §3, technical debt from `docs/policy.md`): per-constant canonical hashes with local
+   numbering and a listing of changed constants; until it exists a Mathlib upgrade that changes a commitment means
+   a new statement.
+2. ROADMAP §2 front ends, next batches: conversions from `iteratedFDeriv`, `Matrix` Hessians and the classical
+   discriminant to `dd`, `hessDet`, `cubicCoeffs`; front ends for S2.2, S3, S4.1′ with `ContDiff` amplitudes;
+   `EuclideanSpace ℝ (Fin 2)` versions.
+3. Explicit constants (downstream's first priority), local smoothness, parametric uniformity, hypothesis checkers,
+   worked examples, sharpness lemma (ROADMAP §2).
+4. Put `GammaFree.lean` into the next stamp.
+
+## Process notes for the next lead
+- Statement first; for a front end too. In session 3 the F1/F2 bridges were drafted in the scratch directory before
+  the stamp and review; this is disclosed in `docs/statements.md` and no "fixed before the proof" claim is made for
+  F1/F2. Do not repeat it.
+- Agents were fast when the route named exact, `#check`ed lemmas with signatures (2.5–10 min per part).
+- Elaborate a blueprint against `import OscInt` and `import Blueprint` (lessons 20).
+- After an adversarial finding, re-run the referee's own reproduction against the fix (lessons 22).
+- `verify-all` takes about an hour, `make commit` about 15 minutes, `test_oscint_check.sh` about 22 minutes.
 
 ## Commands
 ```bash
@@ -40,6 +56,6 @@ lake exe cache get
 make quick
 make verify-all            # about an hour; needs zstd, bubblewrap and a full clone (preflight checks)
 make statements            # regenerate stamps/statements.json after a pin or StatementTypes change
-make numerics
+cd examples/consumer && lake build && ../../tools/test_oscint_check.sh
 make stamp
 ```

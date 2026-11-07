@@ -9,9 +9,12 @@ import OscInt.Statements.FrontEnd
 /-!
 # OscInt public API
 
-Import this file. Every theorem below has, as its type, a statement that was frozen, stamped and reviewed before it
-was used (`stamps/statements.json`, `docs/statements.md`); the frozen theorems are re-exported here under the names a
-reader would look for, and the front-end theorems (F1, F2) are proved from them by short bridge lemmas.
+Import this file: it imports every final theorem of OscInt. Every theorem in the table below has, as its type, a
+statement constant that was frozen, stamped and blind-reviewed (`stamps/statements.json`, `docs/statements.md`); the
+S1–S4 theorems keep their names in `OscInt`, and the front-end theorems F1 and F2 are proved here from them by short
+bridge lemmas (`d4Constant_eq_closed` is such a helper; its type is not a frozen statement). For S1–S4 the statement
+was reviewed before any proof existed; for F1 and F2 the bridge proofs were drafted before the statements were
+stamped and reviewed, so that claim is not made for them (process note in `docs/statements.md`, "Front end, batch 1").
 
 | Name | Statement | Textbook form |
 |---|---|---|
@@ -20,7 +23,7 @@ reader would look for, and the front-end theorems (F1, F2) are proved from them 
 | `OscInt.stationaryPhase` | S2.2 | the stationary-phase bound O(m^{−n/2}) for n = 2 (Hörmander, *ALPDO I*, §7.7; Stein, Ch. VIII §2), uniform in the linear term |
 | `OscInt.fold` | S3 | the uniform fold (A₂) estimate O(m^{−5/6}) (Arnold–Gusein-Zade–Varchenko, *Singularities of Differentiable Maps II*; Duistermaat 1974) |
 | `OscInt.d4Bound`, `OscInt.d4BoundNe` | S4.1, S4.1′ | the uniform D4 (umbilic) estimate O(t^{−2/3}) (oscillation index −2/3 of D4, AGV II) |
-| `OscInt.d4Limit`, `OscInt.d4ConstantPos`, `OscInt.d4ConstantClosedForm` | S4.2–S4.4 | the D4 leading term t^{2/3}∫e^{itφ}A → c_C A(0), c_C > 0, and c_C = Γ(1/3)²/(√3 \|Disc\|^{1/6}) |
+| `OscInt.d4Limit`, `OscInt.d4ConstantPos`, `OscInt.d4ConstantClosedForm` | S4.2–S4.4 | the D4 leading term t^{2/3}∫e^{itφ}A → c_C A(0), c_C > 0, and c_C = Γ(1/3)²/(√3 \|Disc\|^{1/6}) for Disc < 0, Γ(1/3)²/Disc^{1/6} for Disc > 0 |
 | `OscInt.API.ampBoundOfContDiff` | F1 | a Cⁿ function with compact support has bounded derivatives |
 | `OscInt.API.d4LimitClosedForm` | F2 | the D4 leading term with the closed-form constant, for one C² amplitude (S4.2 ∧ S4.4 ∧ F1) |
 

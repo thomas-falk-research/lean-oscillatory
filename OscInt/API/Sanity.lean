@@ -7,8 +7,10 @@ import OscInt.D4.Sanity
 Answers the statement referees' MINORs (`review/2026-11-07-API1-pre-proof-{A,B}.md`):
 * `apiSanity_elliptic_hyps`, `apiSanity_generic_hyps`: F2's phase hypotheses hold for the elliptic umbilic
   x³ − 3xy² (`disc = 108 > 0`) and for x³ + 2x²y + 3xy² + 5y³ (all coefficients nonzero, `disc = −367 < 0`).
-* `apiSanity_elliptic_constant`: an independent value for the elliptic branch, `d4ClosedConstant 108 = √π Γ(1/6)/3`,
-  through Legendre duplication and Euler reflection (`OscInt.D4.gammaSixth`), not by unfolding the definition alone.
+* `apiSanity_elliptic_constant`: an independent value for the elliptic branch, `d4ClosedConstant 108 = √π Γ(1/6)/3`.
+  The right-hand side is derived off-line for x³ − 3xy²: C(cos θ, sin θ) = cos 3θ, so J = ∫₀^{2π} |cos 3θ|^{−2/3} dθ
+  = 2 B(1/2, 1/6) and c = (Γ(2/3)/2) · J/3 = √π Γ(1/6)/3; the Lean proof reaches it from the definition through
+  Legendre duplication and Euler reflection (`OscInt.D4.gammaSixth`, which the S4.4 proof also uses).
 * `apiSanity_elliptic_bite`: F2 applied to x³ − 3xy² and a bump amplitude gives a nonzero limit, so
   `t^{2/3} |∫ e^{itφ} A|` does not tend to `0`.
 -/
