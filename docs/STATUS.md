@@ -113,7 +113,8 @@ proof agents D (C1–C4), Q (C5, C6), F (fold core, C7′), N (C8, C9), assembly
 (`OscInt/Front/Convert.lean`, from `OscInt.nonStationary`, `stationaryPhase`, `fold`, `d4BoundNe`); post-proof
 FAITHFUL ×2, scope full (`review/2026-11-07-API2-post-proof-{A,B}.md`); adversarial review (no BLOCKER, six MAJOR,
 answered in `review/2026-11-07-API2-answers.md`). Record `docs/replay/2026-11-07-session4-final-verify-all.txt`
-(c462966, verify-all PASS). Non-vacuity: `OscInt/Front/ConvertSanity.lean`, `OscInt/Front/Examples.lean`,
+(c462966, verify-all PASS); independently, CI run 42373634892 on c462966: job `verify` (full verify-all on a fresh
+runner, plus nanoda built from source) and job `quick` green. Non-vacuity: `OscInt/Front/ConvertSanity.lean`, `OscInt/Front/Examples.lean`,
 `examples/consumer/ConsumerFormula.lean` (the P1 acceptance: FE-S3 and FE-S4.1′ on phases given only by a formula).
 Order: the statements are timestamped; that the reviews preceded the Lean proofs rests on git order (reviews not
 stamped; `docs/statements.md`, correction of 2026-11-07). C7′'s hypotheses are not yet witnessed by an explicit

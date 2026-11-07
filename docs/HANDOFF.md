@@ -11,7 +11,8 @@ For a reader who saw nothing. Read `docs/lessons.md` first (30 entries); every r
   checks it exposes every statement and proving theorem). For a phase given by a formula:
   `examples/consumer/ConsumerFormula.lean` and the helpers `OscInt.API.Poly` (`OscInt/Front/Poly.lean`).
 - Final record: `docs/replay/2026-11-07-session4-final-verify-all.txt` (`make verify-all` on c462966, alone on the
-  machine). Earlier session-4 records: `2026-11-07-session4-baseline-quick.txt` (baseline on cb39601),
+  machine); CI run 42373634892 on c462966: `quick` and `verify` green, `release-pin` red until the tag exists,
+  `consumer` and `consumer-release` not run (they run on main and pull requests; `consumer-release` after the tag). Earlier session-4 records: `2026-11-07-session4-baseline-quick.txt` (baseline on cb39601),
   `2026-11-07-API2-verify-all-9e5540a.txt` (FAIL: OOM and a network reset; explained in the answers).
 - Reviews of batch 2: `review/2026-11-07-API2-*` (pre-proof FAITHFUL ×2, post-proof FAITHFUL ×2, adversarial: no
   BLOCKER, six MAJOR, all answered in `review/2026-11-07-API2-answers.md`).
