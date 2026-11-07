@@ -15,7 +15,8 @@ a stable way to depend on the library. It asked not to change the trust chain.
       `docs/replay/2026-11-06-S44-verify-all.txt`; post-proof FAITHFUL ×2; adversarial answered).
 - [ ] Remove the duplication between `OscInt.D4.exists_piece_bound` and `d4BoundNe_of` (refactor the S4.1′
       assembly onto the lemma; the statement types are fixed, so the replay and type checks are the regression test).
-- [ ] Put `GammaFree.lean` into the next stamp.
+- [x] Put `GammaFree.lean` into the next stamp: it is in `stamps/20261107T012459Z-2d5356432156` (RFC 3161 ×3) at its
+      current SHA-256 `5dc19eb4…` (verified 2026-11-07, `docs/replay/2026-11-07-session4-baseline-quick.txt`).
 - [ ] Commitment computation time (`make commit`, minutes): profile `oscint-commit-env` and make it incremental.
 
 ## 2. A usable public API
@@ -121,4 +122,6 @@ trust chain.
      (concept DOI 10.5281/zenodo.24021328);
   4. [x] Zenodo DOI badge in `README.md`; `doi:` and `identifiers:` in `CITATION.cff`;
   5. archive in Software Heritage; sign release artifacts (Sigstore).
+- [ ] **owner** Release v0.3.0: prepared 2026-11-07 (`docs/release-notes/v0.3.0.md`, CHANGELOG, version 0.3.0 in
+      `lakefile.toml`, `CITATION.cff`, `.zenodo.json`); CI job `release-pin` is red until the tag exists.
 - [ ] **owner** Publication: venue, preprint, outreach.

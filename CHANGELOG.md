@@ -1,11 +1,27 @@
 # Changelog
 
-Versions follow semantic versioning once the public API (`docs/ROADMAP.md` §2) exists; until then a minor version
-marks a set of newly machine-checked statements.
+Versions follow semantic versioning from v0.3.0 (`docs/policy.md`): before 1.0.0, a minor version (0.y.0) may change
+statements and says so under "Statement changes"; a patch (0.y.Z) changes no statement, commitment, statement file
+or `proved_by` name. Every release lists its statement changes, even when there are none.
 
 ## Unreleased
 
-Planned as v0.3.0 (the owner publishes releases).
+Nothing yet.
+
+## v0.3.0 — prepared 2026-11-07, not yet published
+
+The owner publishes releases; the steps and the SHA-256 pins are in `docs/release-notes/v0.3.0.md`.
+
+### Statement changes
+Against v0.2.0 (`stamps/pins.txt` at tag `v0.2.0` and now): **no existing statement changed**. The eleven statement
+constants of v0.2.0 keep their statement files byte for byte and their commitments (`make commit` compares every
+commitment with its pinned stamp; record `docs/replay/2026-11-07-API1-verify-all.txt`, lines 161–173, and this
+session's verify-all record listed in the release notes).
+- Added: `OscInt.Statements.AmpBoundOfContDiffStatement` (F1) and `OscInt.Statements.D4LimitClosedFormStatement` (F2),
+  file `OscInt/Statements/FrontEnd.lean`, stamp `stamps/20261107T012459Z-2d5356432156`.
+- `proved_by` changed from none to a theorem: S4.4 `D4ConstantClosedFormStatement` (`OscInt.d4ConstantClosedForm`),
+  F1 (`OscInt.API.ampBoundOfContDiff`), F2 (`OscInt.API.d4LimitClosedForm`).
+- New: `stamps/statements.json` itself (v0.2.0 had none), SHA-256 in the release notes.
 
 ### Machine-checked as stated
 - **S4.4** closed forms of the D4 constant (`OscInt.d4ConstantClosedForm`): ∫₀^∞ cos u · u^{−1/3} du = Γ(2/3)/2, and
@@ -36,11 +52,20 @@ Planned as v0.3.0 (the owner publishes releases).
   `verify` (every push, weekly), `consumer`; `CONTRIBUTING.md`.
 - Build noise: `allowNonModules = true` (0 warnings), the Lean step runs once per `verify-all` (`build/lean.ok`),
   `ite_false` for the deprecated `if_false`, the Rust toolchain installed explicitly in CI.
+- `tools/check_release_pin.sh` and CI job `release-pin`: CI fails while README, `docs/policy.md` or the consumer
+  example pin a release tag that does not exist, or whose release notes do not give the SHA-256 of
+  `stamps/statements.json` and `tools/oscint_check.py` at that tag (with a self-test of negative controls).
+- `examples/consumer-release/` and CI job `consumer-release`: a downstream project requiring OscInt from GitHub by its
+  release tag, built and checked against the pinned SHA-256 (runs once the tag exists).
 
 ### Fixed
-- `lakefile.toml` said version 0.1.0; now matches `CITATION.cff` and `.zenodo.json`.
+- `lakefile.toml` said version 0.1.0 (then 0.2.0); it, `CITATION.cff` and `.zenodo.json` now say 0.3.0.
+- README told users to pin `v0.3.0` before that tag existed; the pin is now checked (`release-pin`).
+- `docs/policy.md` showed the pin in `lakefile.lean` syntax next to README's `lakefile.toml`; both use TOML now.
+- `docs/ROADMAP.md` and `docs/HANDOFF.md` listed "put `GammaFree.lean` into the next stamp" as open; it already is
+  (manifest of `stamps/20261107T012459Z-2d5356432156`, SHA-256 `5dc19eb4…`, the file's current hash).
 
-
+### Documentation
 - `docs/ROADMAP.md`: downstream feedback folded in (explicit constants, local smoothness, asymptotic expansions,
   parametric uniformity, stable dependency with a machine-readable statement list, periodic and lattice settings,
   Keel–Tao).

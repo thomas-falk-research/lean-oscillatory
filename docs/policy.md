@@ -63,7 +63,8 @@ OscInt's statement files. Procedure:
 5. A scheduled CI job (ROADMAP §3) builds against the newest Mathlib weekly and only warns; it never changes pins.
 
 ## What a downstream project should do
-- Pin a release tag (`require oscint from git "…" @ "v0.3.0"`) and the SHA-256 of `stamps/statements.json`.
+- Pin a release tag (in `lakefile.toml`: `rev = "v0.3.0"` under `[[require]] name = "oscint"`, README) and the
+  SHA-256 of `stamps/statements.json` from that release's notes (`docs/release-notes/<tag>.md`).
 - Run `python3 .lake/packages/oscint/tools/oscint_check.py --statement <each statement you use> --expect-sha256 <pin>`
   in CI (add `--commitments` to recompute the commitments; it takes a few minutes).
 - Use the theorems listed as `proved_by`, not internal lemmas; or accept that internal names can change in a patch.

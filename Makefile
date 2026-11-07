@@ -8,7 +8,7 @@ UNSKIP = mkdir -p $(B)/skipped && rm -f $(B)/skipped/$@
 LATEST_STAMP = $(lastword $(sort $(wildcard stamps/2*/)))
 
 .PHONY: challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics \
-	quick statements statements-check
+	quick statements statements-check release-pin
 
 tools:
 	cd tools && cargo build --release --locked --quiet
@@ -78,3 +78,7 @@ statements-check: tools
 
 numerics:
 	cd numerics && cargo build --release --locked --quiet && ./target/release/oscint-numerics
+
+# The release tag that README pins exists and its release notes give the pinned SHA-256s (tools/check_release_pin.sh).
+release-pin:
+	tools/check_release_pin.sh --self-test && tools/check_release_pin.sh

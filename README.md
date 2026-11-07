@@ -40,8 +40,13 @@ use the same `lean-toolchain`, `leanprover/lean4:v4.35.0`):
 [[require]]
 name = "oscint"
 git = "https://github.com/thomas-falk-research/lean-oscillatory"
-rev = "v0.3.0"   # a release tag; before v0.3.0 is published, a commit hash of main
+rev = "v0.3.0"   # a release tag (pins and notes: docs/release-notes/v0.3.0.md)
 ```
+
+v0.3.0 is the first release with `OscInt.API`, `stamps/statements.json` and `tools/oscint_check.py` (v0.2.0 has none
+of them). **Status on 2026-11-07: prepared, not yet published by the owner;** until the tag exists, CI job
+`release-pin` is red and you can pin the commit named in `docs/HANDOFF.md` instead. A tested project of this shape:
+`examples/consumer-release/`.
 
 ```bash
 lake update oscint
@@ -69,7 +74,7 @@ your CI, after `lake build`:
 ```bash
 python3 .lake/packages/oscint/tools/oscint_check.py \
   --statement OscInt.Statements.D4LimitStatement \
-  --expect-sha256 <sha256 of stamps/statements.json, from the release notes>
+  --expect-sha256 <sha256 of stamps/statements.json, from docs/release-notes/<tag>.md>
 ```
 
 It checks that your toolchain and Mathlib are the ones OscInt was checked with, that no statement file was edited,

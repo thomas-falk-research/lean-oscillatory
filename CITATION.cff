@@ -9,9 +9,9 @@ authors:
     orcid: "https://orcid.org/0009-0001-9478-6061"
 license: Apache-2.0
 repository-code: "https://github.com/thomas-falk-research/lean-oscillatory"
-version: "0.2.0"
+version: "0.3.0"
 doi: "10.5281/zenodo.24021328"
-date-released: "2026-11-06"
+date-released: "2026-11-07"
 identifiers:
   - type: doi
     value: "10.5281/zenodo.24021328"
