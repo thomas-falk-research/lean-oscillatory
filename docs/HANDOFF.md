@@ -30,7 +30,9 @@ For a reader who saw nothing. Read `docs/lessons.md` first (30 entries); every r
 
 ## Owner decisions (stop and ask)
 - **Release v0.3.0.** Tag `v0.3.0` at the commit whose full hash is in `docs/release-notes/v0.3.0.commit` (the release
-  commit: it adds the final replay record to c462966; nothing else changes). Steps: `docs/release-notes/v0.3.0.md`,
+  commit; it differs from c462966, the replayed commit, only in docs, records, CI and the checker's instructions and
+  error message). An external dry run (`docs/replay/2026-11-07-external-downstream-dry-run.txt`) found that downstream
+  projects must run `lake build OscInt Blueprint` before the checker; README, checker and CI now say so. Steps: `docs/release-notes/v0.3.0.md`,
   "Publishing". Do not tag 2e8707a (withdrawn; adversarial M1, M6). Until the tag exists CI job `release-pin` is red
   by design; every other job should be green.
 - Merge the session's branch `claude/sleepy-thompson-37yj33` (no pull request was opened).

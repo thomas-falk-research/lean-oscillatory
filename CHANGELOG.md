@@ -82,6 +82,9 @@ equals its pinned stamp; this session's records under `docs/replay/2026-11-07-*`
   release tag, built and checked against the pinned SHA-256 (runs once the tag exists).
 
 ### Fixed
+- Downstream projects that import only `OscInt.API` could not run `tools/oscint_check.py` (it needs every OscInt and
+  Blueprint module built): README, the checker's docstring and error message, and CI `consumer-release` now run
+  `lake build OscInt Blueprint` first (found by an external dry run, `docs/replay/2026-11-07-external-downstream-dry-run.txt`).
 - `lakefile.toml` said version 0.1.0 (then 0.2.0); it, `CITATION.cff` and `.zenodo.json` now say 0.3.0.
 - README told users to pin `v0.3.0` before that tag existed; this is now detected (`release-pin`), and README says
   the release is pending.
