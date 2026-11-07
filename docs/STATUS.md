@@ -13,7 +13,9 @@ requires every row of the trust chain (README) for that statement.
 | S4.1′ uniform D4 bound, both umbilics (`disc ≠ 0`) | `OscInt.d4BoundNe` | yes, stamp `20261106T081634Z-e2d7771c358e` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2 (STRONGER than the brief), scope full | yes (same parts as S4.1, assembly `d4BoundNe_of`) | 7 kernel runs + comparator (`docs/replay/2026-11-06-S4b-verify-all.txt`, a71b318) | machine-checked as stated |
 | S4.2 D4 limit t^{2/3}∫e^{itφ}A → c_C A(0), c_C Gamma-free (the brief's closed form is S4.4) | `OscInt.d4Limit` | yes, stamp `20261106T081634Z-e2d7771c358e` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full (part of the brief's S4, which also needs S4.4) | yes (route `docs/proof-S42.md`, refereed; parts by agents X, Y, Z, Q2; assembly by the lead) | 7 kernel runs + comparator (`docs/replay/2026-11-06-S4b-verify-all.txt`, a71b318) | machine-checked as stated |
 | S4.3 c_C > 0 (alternating series, Gamma-free) | `OscInt.d4ConstantPos` | yes, same stamp | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full | yes (route `docs/proof-S43.md`, refereed; parts by agents U, V, W) | 7 kernel runs + comparator (`docs/replay/2026-11-06-S4b-verify-all.txt`, a71b318) | machine-checked as stated; proof Gamma/Beta/Mellin-free by name (`GammaFree.lean`, transitive through types and proofs, 43 612 constants; first committed 94f7657 without following proofs, corrected with the proof in e89b610, re-run independently by the adversarial referee) |
-| S4.4 closed forms of c_C | `OscInt.Statements.D4ConstantClosedFormStatement` | yes, same stamp | pre: FAITHFUL ×2 | — | — | statement frozen, proof not started |
+| S4.4 closed forms of c_C | `OscInt.d4ConstantClosedForm` | yes, stamp `20261106T081634Z-e2d7771c358e` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full | yes (route `docs/proof-S44.md`, refereed; parts by agents M, N, O, T, K; E4, E7 and the assembly by the lead) | 7 kernel runs + comparator (`docs/replay/2026-11-06-S44-verify-all.txt`, 1c7ebe3, verify-all PASS) | machine-checked as stated |
+| F1 amplitude bounds from `ContDiff` and compact support (front end) | `OscInt.API.ampBoundOfContDiff` | yes, stamp `20261107T012459Z-2d5356432156` (pinned) | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full | yes (bridge in `OscInt/API.lean`; drafted before the review, disclosed) | 7 kernel runs + comparator (`docs/replay/2026-11-07-API1-verify-all.txt`, 2ddcbe0, verify-all PASS) | machine-checked as stated (no "statement before proof" claim) |
+| F2 D4 limit with the closed-form constant, `ContDiff` amplitudes (front end; the brief's S4 limit with its constant as one theorem) | `OscInt.API.d4LimitClosedForm` | yes, same stamp | pre: FAITHFUL ×2; post: FAITHFUL ×2, scope full (FAITHFUL-STRONGER than the brief's limit: elliptic branch, C² amplitudes) | yes (from S4.2, S4.4, F1; same disclosure) | same record | machine-checked as stated (no "statement before proof" claim) |
 
 Pipeline skeleton (M0): `OscInt.skeleton_two_mul` builds, audits clean (1 of 1) and replays in six kernels
 (`build/replay/summary.txt` from `make lean-replay`; the CI run on each push records it).
@@ -62,3 +64,30 @@ S4.3 (proved, Gamma-free by name). Reviews: `review/2026-11-06-S4b-pre-proof-{A,
 `review/2026-11-06-S43-proof-route.md`, `review/2026-11-06-S42-proof-route.md`, `review/2026-11-06-S4b-post-proof-{A,B}.md`,
 `review/2026-11-06-S4b-adversarial.md`; answers in `review/2026-11-06-S4b-pre-proof-answers.md` and
 `review/2026-11-06-S4b-answers.md`.
+
+S4.4 (2026-11-06, session 3). Proved: `OscInt.d4ConstantClosedForm` (route `docs/proof-S44.md`, refereed in
+`review/2026-11-06-S44-proof-route.md`: all parts TRUE, one BLOCKER, a name clash in the blueprint, fixed before any
+agent started; blueprint `Blueprint/D4ClosedForm.lean`; parts E1 agent M, E2 agent N, E3 agent O, E5 agent T,
+E6a–c agent K, reports `review/2026-11-06-S44-agent-reports.md`; E4, E7 and the assembly `d4ConstantClosedForm_of`
+by the lead, the assembly compiled against the parts before any part was proved). The hand-off's route for the cosine
+moment needed `Complex.integral_cpow_mul_exp_neg_mul_Ioi` with a complex rate, which that lemma does not take
+(lessons 19); the proof uses a real-variable route through the Beta integral instead. Record
+`docs/replay/2026-11-06-S44-verify-all.txt` (1c7ebe3): `make verify-all` RESULT PASS, 9 of 9 steps, the first full PASS
+(axiom audit 521/521; comparator accepted all seven configurations; eleven commitments equal their pinned stamps;
+per-module `leanchecker` and six export kernels). Non-vacuity on generic data: `OscInt.d4Constant_example`
+(x³ + 2x²y + 3xy² + 5y³, disc −367). With S4.2 this is the brief's S4 limit with its closed-form constant. Reviews:
+post-proof FAITHFUL ×2, scope full, pinned to commitment `3f089384…` (`review/2026-11-07-S44-post-proof-{A,B}.md`; each
+checked the closed forms numerically on generic cubics of both signs to ≤ 2·10⁻¹¹); adversarial
+`review/2026-11-07-S44-adversarial.md`: no finding on S4.4 or its trust chain; one BLOCKER and four MAJOR on the new
+downstream checker, answered in `review/2026-11-07-S44-answers.md`. Citation: the brief's S4 limit with its constant
+is `OscInt.d4Limit` ∧ `OscInt.d4ConstantClosedForm`, with `OscInt.d4ConstantPos` for c_C ≠ 0 and for the
+convergence of the improper integral (referee NITs).
+
+Front-end batch 1, F1 and F2 (2026-11-07, session 3). Statements `OscInt/Statements/FrontEnd.lean`, stamped
+`20261107T012459Z-2d5356432156` and pinned; blind statement review FAITHFUL ×2 (`review/2026-11-07-API1-pre-proof-{A,B}.md`;
+each referee wrote its own bridge independently); proofs `OscInt.API.ampBoundOfContDiff`, `OscInt.API.d4LimitClosedForm`
+in `OscInt/API.lean`; non-vacuity and bite `OscInt/API/Sanity.lean` (elliptic and generic phases, an independent
+elliptic value, a nonzero limit); record `docs/replay/2026-11-07-API1-verify-all.txt` (2ddcbe0, verify-all PASS, axiom
+audit 536/536, comparator-API1 accepted); post-proof FAITHFUL ×2 (`review/2026-11-07-API1-post-proof-{A,B}.md`; answers
+`review/2026-11-07-API1-answers.md`). Disclosure: the bridge proofs were drafted in the lead's scratch directory before
+the stamp and review, so "statement fixed before the proof" is not claimed for F1 and F2.

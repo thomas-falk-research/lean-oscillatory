@@ -7,7 +7,8 @@ SKIP = mkdir -p $(B)/skipped && touch $(B)/skipped/$@
 UNSKIP = mkdir -p $(B)/skipped && rm -f $(B)/skipped/$@
 LATEST_STAMP = $(lastword $(sort $(wildcard stamps/2*/)))
 
-.PHONY: challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics
+.PHONY: challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics \
+	quick statements statements-check
 
 tools:
 	cd tools && cargo build --release --locked --quiet
@@ -21,21 +22,32 @@ verify-toolchain: tools
 guard: tools
 	$(T)/guard .
 
+# `lean` runs once per change: `lean-replay`, `commit` and `comparator` depend on the marker `$(B)/lean.ok`, which
+# is rebuilt only when a Lean source, the Lake configuration or the toolchain pin is newer (lessons 7).
+LEAN_INPUTS := $(shell find OscInt Blueprint Challenge tools/lean -name '*.lean' 2>/dev/null) OscInt.lean Blueprint.lean \
+	Challenge.lean Axioms.lean StatementTypes.lean MathlibNames.lean GammaFree.lean lakefile.toml lake-manifest.json \
+	lean-toolchain
+
+$(B)/lean.ok: $(LEAN_INPUTS)
+	$(MAKE) lean
+
 lean: tools
+	rm -f $(B)/lean.ok
 	$(LAKE) build
 	mkdir -p $(B) && $(LAKE) env lean Axioms.lean > $(B)/axioms.out
 	$(T)/audit $(B)/axioms.out . $(B)/audited.txt
 	$(LAKE) env lean StatementTypes.lean
 	$(LAKE) env lean MathlibNames.lean > /dev/null
 	$(LAKE) env lean GammaFree.lean
+	touch $(B)/lean.ok
 
-lean-replay: lean
+lean-replay: $(B)/lean.ok tools
 	$(T)/replay . $(B)/audited.txt $(B)/replay
 
-commit: lean
+commit: $(B)/lean.ok tools
 	$(UNSKIP); $(LAKE) build oscint-commit-env && { $(T)/commit $(B)/commit || { [ $$? -eq 3 ] && $(SKIP); }; }
 
-comparator: lean
+comparator: $(B)/lean.ok tools
 	$(UNSKIP); $(T)/challenge check-all . || { [ $$? -eq 3 ] && $(SKIP); }
 
 challenge-export: tools
@@ -47,8 +59,22 @@ stamp: commit challenge-export
 stamp-verify: tools
 	$(UNSKIP); if [ -f stamps/pins.txt ]; then $(T)/stamp verify-pinned .; else echo "stamp-verify: SKIPPED: no pinned stamp yet"; $(SKIP); fi
 
+# `make verify-all ONLY="lean guard"` runs only those steps (reported as a partial run, never as a full PASS).
 verify-all: tools
-	$(T)/verify_all
+	$(T)/verify_all $(foreach s,$(ONLY),--only $(s))
+
+# The fast local loop and the pull-request CI job: build, guard, axiom audit, statement types, Mathlib names,
+# Gamma-free check, statement list. Minutes with a warm cache; `verify-all` adds the kernel replay, commitments,
+# comparator and stamps (about an hour).
+quick: guard statements-check
+	$(MAKE) --no-print-directory lean
+
+# stamps/statements.json: the machine-readable list of pinned statements for downstream projects (README).
+statements: tools
+	$(T)/statements gen .
+
+statements-check: tools
+	$(UNSKIP); $(T)/statements check . || { [ $$? -eq 3 ] && $(SKIP); }
 
 numerics:
 	cd numerics && cargo build --release --locked --quiet && ./target/release/oscint-numerics

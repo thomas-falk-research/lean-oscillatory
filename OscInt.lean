@@ -3,6 +3,7 @@ import OscInt.Statements.VanDerCorput
 import OscInt.Statements.StationaryPhase
 import OscInt.Statements.D4
 import OscInt.Statements.D4Limit
+import OscInt.Statements.FrontEnd
 import OscInt.VanDerCorput.Final
 import OscInt.StationaryPhase.Final
 import OscInt.StationaryPhase.Sanity
@@ -26,3 +27,15 @@ import OscInt.D4.Tail
 import OscInt.D4.Polar
 import OscInt.D4.PolarLimit
 import OscInt.D4.LimitFinal
+import OscInt.D4.CubicComp
+import OscInt.D4.GammaSixth
+import OscInt.D4.ClosedForm
+import OscInt.D4.Chart
+import OscInt.D4.Covariance
+import OscInt.D4.NormalForm
+import OscInt.D4.CosMomentValue
+import OscInt.D4.Beta
+import OscInt.D4.LineMoments
+import OscInt.D4.ClosedFormFinal
+import OscInt.API
+import OscInt.API.Sanity

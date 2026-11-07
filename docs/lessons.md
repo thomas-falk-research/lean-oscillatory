@@ -121,3 +121,46 @@ control that exercises the exact path the check exists for (here: a theorem whos
 uses Gamma), and suspicious counts are investigated before a PASS is reported. Check: `gammaProofControl` in
 `GammaFree.lean` (must be rejected); after the fix the statement closure is 33 099 and `OscInt.d4ConstantPos`
 43 612 constants, still clean.
+
+## 19. The hand-off's S4.4 route needed a lemma that exists only for real rates (2026-11-06)
+The hand-off planned I = Γ(2/3)/2 "by an Abel limit of `integral_cpow_mul_exp_neg_mul_Ioi`" with rate ε − i. The
+name exists (as `Complex.integral_cpow_mul_exp_neg_mul_Ioi`), but its rate is `r : ℝ` with `0 < r`, so the route
+would have needed analytic continuation; found by `#check` before any agent started, replaced by a real-variable
+route through the Beta integral (`docs/proof-S44.md`). Why it mattered: lesson 1 checks that names exist; a name
+with the wrong hypotheses fails just as late. Rule: a route's lemmas are `#check`ed with their full signatures, and
+the route says which hypothesis of each it uses. Check: `MathlibNames.lean` (`#check @name` prints the signature;
+the S4.4 names are added there).
+
+## 20. A blueprint elaborated against too few imports hid a name clash (2026-11-06)
+The S4.4 blueprint and assembly compiled in a scratch file importing only `OscInt.Statements.D4Limit`; the route
+referee found that `OscInt.Blueprint.NormalFormFacts` already existed (`Blueprint/StationaryPhase.lean`), so the
+committed blueprint would have broken the default build and every part that imports `OscInt.d4ConstantPos`. Rule:
+elaborate a new blueprint and its assembly against `import OscInt` and `import Blueprint` (the environment the parts
+will see) before review. Check: once committed, `make quick` builds both libraries; before that, the lead's scratch
+file starts with those two imports.
+
+## 21. A fresh machine without `zstd` and `bwrap` failed `verify-all` after 50 minutes (2026-11-06)
+`verify-toolchain` (archive extraction needs `zstd`) and the `lake check --paranoid` step of `lean-replay` (sandbox
+needs `bwrap`) failed on a new container; every other step passed, and after `apt-get install zstd bubblewrap` the
+two failed checks passed on the same export. CI installs both, so only local runs were exposed. Rule: verify-all
+checks its system tools before running anything and names the package to install. Check: `verify_all` preflight
+(unit test `missing_tools_are_named`).
+
+## 22. A downstream checker hashed the sources and trusted the build (2026-11-07)
+The first `tools/oscint_check.py` checked that the statement files had their stamped hashes and that the proving
+theorem had the statement's type and clean axioms. The adversarial referee passed it with a package whose statement
+constant was redefined as `True` in another module, and with a theorem added under `debug.skipKernelTC`; neither
+check looked at what the build actually contains. Why it mattered: the README told downstream projects this proved
+they depend on exactly the reviewed statements. Rule: a check verifies the artefact that is used (the loaded
+environment: the constant's module, its commitment, the kernel's verdict on the `.olean`), not a proxy for it (a
+source hash), and its documentation says what it does not cover. Check: `tools/test_oscint_check.sh` (a control
+for each path, including both of the referee's reproductions).
+
+## 23. A front-end bridge drafted before its statement's review cost the "fixed before proof" claim (2026-11-07)
+For F1 and F2 the lead wrote and compiled the bridge proofs (about 30 lines) in the scratch directory while the tree
+was frozen for another run, then stamped and reviewed the statements. Nothing changed afterwards and both reviews
+were FAITHFUL, but the order can no longer be claimed, and the docs and `OscInt/API.lean` had to say so. Why it
+mattered: a short, obvious proof is exactly where the temptation is greatest and the cost of waiting smallest. Rule:
+no proof code for a statement, even in scratch, before its stamp and blind review; check the assembly against the
+parts only when the parts are blueprint hypotheses. Check: none automatic (scratch is outside the tree); the hand-off
+lists it under process notes.

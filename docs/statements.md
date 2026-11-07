@@ -180,3 +180,27 @@ is used (`GammaFree.lean`).
 
 Correction to clarification (2) above (2026-11-06, S4b post-proof referee B, NIT 2): for q ≠ 0 the integrand of
 `angularMoment q` is integrable iff `disc q ≠ 0`; for q = 0 it is identically `0 ^ (-2/3) = 0` (integrable, J = 0).
+
+## Front end, batch 1 (F1, F2; 2026-11-06)
+
+User-facing forms of frozen statements, in Mathlib's idiom, proved from them by bridge lemmas in `OscInt/API.lean`
+(ROADMAP §2). Lean: `OscInt/Statements/FrontEnd.lean`.
+
+**F1 (amplitude bounds from smoothness).** For every n ∈ ℕ, every compact K ⊆ ℝ² and every A : ℝ² → ℂ of class Cⁿ
+whose support closure lies in K there is M with AmpBound(n, K, A, M), i.e. A ∈ Cⁿ, tsupport A ⊆ K and
+‖D^j A(k)‖ ≤ M for all j ≤ n and all k. (A continuous function with compact support is bounded; D^j A has support in
+tsupport A.) It turns the amplitude hypothesis of S2–S4 into Mathlib's `ContDiff ℝ n A ∧ tsupport A ⊆ K`; what is
+lost is the uniformity in M, which the frozen statements keep.
+
+**F2 (the D4 limit with its closed-form constant).** For every C⁴ phase φ on ℝ² with φ(0) = 0, ∇φ(0) = 0,
+D²φ(0) = 0 and Disc C ≠ 0 (C the cubic part of φ at 0) there is δ > 0 such that for every A ∈ C² with
+tsupport A ⊆ B̄(0, δ):
+  t^{2/3} ∫_{ℝ²} e^{itφ(k)} A(k) dk → c(Disc C) · A(0) as t → ∞,
+where c(D) = Γ(1/3)²/(√3 |D|^{1/6}) for D < 0 (the brief's constant, hyperbolic umbilic) and c(D) = Γ(1/3)²/D^{1/6}
+for D > 0 (elliptic umbilic); `d4ClosedConstant`. This is S4.2 ∧ S4.4 with F1 for the amplitude. Modelling choices:
+the integral is written out (the same term as `oscInt2`); the phase hypotheses and `cubicCoeffs` are those of S4.2
+(nested `fderiv`s); B̄(0, δ) is the max-norm ball; c(D) for D = 0 is never used.
+
+Process note: the bridge proofs of F1 and F2 (about 30 lines, from S4.2, S4.4 and Mathlib) were drafted in the lead's
+scratch directory before this statement was stamped and reviewed; the statements were not changed afterwards, and
+the claim "statement fixed before the proof" is therefore not made for F1 and F2.

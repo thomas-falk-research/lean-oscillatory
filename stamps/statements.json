@@ -1,0 +1,159 @@
+{
+  "format": "oscint-statements 1",
+  "generated_by": "tools/src/bin/statements.rs (make statements); do not edit by hand",
+  "package": "oscint",
+  "lean_toolchain": "leanprover/lean4:v4.35.0",
+  "mathlib_rev": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+  "statements": [
+    {
+      "name": "OscInt.Statements.VdC1Statement",
+      "label": "S1.1",
+      "summary": "First-derivative van der Corput bound with amplitude, constant 3.",
+      "proved_by": "OscInt.vanDerCorput_one",
+      "file": "OscInt/Statements/VanDerCorput.lean",
+      "file_sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44",
+      "commitment": "a837c8bd8352929aa4ba6456ff19603cd34f7ae09b2896de0af2565fd0f803b4",
+      "stamp": "stamps/20261105T203058Z-7516eb518dce",
+      "stamp_commit": "7516eb518dce585ffc7e831ba6171afa9b938e46"
+    },
+    {
+      "name": "OscInt.Statements.VdC2Statement",
+      "label": "S1.2",
+      "summary": "Second-derivative van der Corput bound with amplitude, constant 8, uniform in a linear term.",
+      "proved_by": "OscInt.vanDerCorput_two",
+      "file": "OscInt/Statements/VanDerCorput.lean",
+      "file_sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44",
+      "commitment": "66cc331de7d7bf5fb38076895ff7014f280b41cced6492f70cd87134a78a39f5",
+      "stamp": "stamps/20261105T203058Z-7516eb518dce",
+      "stamp_commit": "7516eb518dce585ffc7e831ba6171afa9b938e46"
+    },
+    {
+      "name": "OscInt.Statements.VdC3Statement",
+      "label": "S1.3",
+      "summary": "Third-derivative van der Corput bound with amplitude, constant 18, uniform in a linear term.",
+      "proved_by": "OscInt.vanDerCorput_three",
+      "file": "OscInt/Statements/VanDerCorput.lean",
+      "file_sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44",
+      "commitment": "30b3f96ca215778d4034c6ca660818b04a842bb4b574f27f4a648a64bf9ab4f4",
+      "stamp": "stamps/20261105T203058Z-7516eb518dce",
+      "stamp_commit": "7516eb518dce585ffc7e831ba6171afa9b938e46"
+    },
+    {
+      "name": "OscInt.Statements.NonStationaryStatement",
+      "label": "S2.1",
+      "summary": "Non-stationary phase: decay `m^{-N}`, uniform over a compact family and over every linear term with `|∇(Ψ_σ + p·)| ≥ c` on `K`.",
+      "proved_by": "OscInt.nonStationary",
+      "file": "OscInt/Statements/StationaryPhase.lean",
+      "file_sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf",
+      "commitment": "238318a74792495f2009807e724673e80c4d3f66b91580c564105d84396fe8f8",
+      "stamp": "stamps/20261105T234456Z-533ae0272521",
+      "stamp_commit": "533ae0272521192adbe020aebb922a2c9559e212"
+    },
+    {
+      "name": "OscInt.Statements.StationaryPhaseStatement",
+      "label": "S2.2",
+      "summary": "Nondegenerate stationary phase: decay `m^{-1}`, uniform over `p ∈ K'`.",
+      "proved_by": "OscInt.stationaryPhase",
+      "file": "OscInt/Statements/StationaryPhase.lean",
+      "file_sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf",
+      "commitment": "283a23fe63ba052ba6600edd08ee3def6d728a75dbbaa6d7f39fc031fc9eccff",
+      "stamp": "stamps/20261105T234456Z-533ae0272521",
+      "stamp_commit": "533ae0272521192adbe020aebb922a2c9559e212"
+    },
+    {
+      "name": "OscInt.Statements.FoldStatement",
+      "label": "S3",
+      "summary": "Uniform fold estimate: decay `m^{-5/6}`, uniform over a compact family and over `p ∈ K'`.",
+      "proved_by": "OscInt.fold",
+      "file": "OscInt/Statements/StationaryPhase.lean",
+      "file_sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf",
+      "commitment": "2650f1484b3252166e9442f383ad734075f60f180d595c7d6729d9737edba5ad",
+      "stamp": "stamps/20261105T234456Z-533ae0272521",
+      "stamp_commit": "533ae0272521192adbe020aebb922a2c9559e212"
+    },
+    {
+      "name": "OscInt.Statements.D4BoundStatement",
+      "label": "S4.1",
+      "summary": "Uniform D4 estimate: at a point with vanishing Hessian whose cubic part has negative discriminant, `|∫ e^{i(tφ(κ) + y·κ)} A(κ) dκ| ≤ C M t^{-2/3}` for amplitudes supported near `0`, uniformly in `y ∈ ℝ²`.",
+      "proved_by": "OscInt.d4Bound",
+      "file": "OscInt/Statements/D4.lean",
+      "file_sha256": "6965ce63488b6f81ff5c4685b46e252027423d8a6916ac274ea9dea21d4395c9",
+      "commitment": "5205ebc0a6a6286803155f16135a6405e8217037c93cb17ff876a9ec2902cdfd",
+      "stamp": "stamps/20261106T033706Z-63564a8d78cd",
+      "stamp_commit": "63564a8d78cd2a36f80a660d16b04b4139095835"
+    },
+    {
+      "name": "OscInt.Statements.D4BoundNeStatement",
+      "label": "S4.1′",
+      "summary": "Uniform D4 estimate at both umbilics: as `D4BoundStatement` with `disc ≠ 0`.",
+      "proved_by": "OscInt.d4BoundNe",
+      "file": "OscInt/Statements/D4Limit.lean",
+      "file_sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6",
+      "commitment": "f4e245bd4b1a3f0ca2e8fb006f574568849b717c089099de66c70f91843d4292",
+      "stamp": "stamps/20261106T081634Z-e2d7771c358e",
+      "stamp_commit": "e2d7771c358eed0b1d52521d2d92255ef6967072"
+    },
+    {
+      "name": "OscInt.Statements.D4LimitStatement",
+      "label": "S4.2",
+      "summary": "D4 limit: `t^{2/3} ∫ e^{itφ} A → c_C A(0)`.",
+      "proved_by": "OscInt.d4Limit",
+      "file": "OscInt/Statements/D4Limit.lean",
+      "file_sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6",
+      "commitment": "9490bf1bdc254b2bd297cb0c4a7f76db64fa363ccf1141a92a14fd78331552a9",
+      "stamp": "stamps/20261106T081634Z-e2d7771c358e",
+      "stamp_commit": "e2d7771c358eed0b1d52521d2d92255ef6967072"
+    },
+    {
+      "name": "OscInt.Statements.D4ConstantPosStatement",
+      "label": "S4.3",
+      "summary": "The constant is positive: the improper integral converges to a positive number, and for `disc ≠ 0` the angular integrand is integrable and `c_C > 0`.",
+      "proved_by": "OscInt.d4ConstantPos",
+      "file": "OscInt/Statements/D4Limit.lean",
+      "file_sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6",
+      "commitment": "96eb2416b768396e5f29e3bfc865d4f181c6ec9ccaf1f1ac0aaf01ef18053be1",
+      "stamp": "stamps/20261106T081634Z-e2d7771c358e",
+      "stamp_commit": "e2d7771c358eed0b1d52521d2d92255ef6967072"
+    },
+    {
+      "name": "OscInt.Statements.D4ConstantClosedFormStatement",
+      "label": "S4.4",
+      "summary": "Closed forms: `∫₀^∞ cos u · u^{-1/3} du = Γ(2/3)/2`; `c_C = Γ(1/3)²/(√3 |Disc|^{1/6})` for `Disc < 0` and `c_C = Γ(1/3)²/Disc^{1/6}` for `Disc > 0`.",
+      "proved_by": "OscInt.d4ConstantClosedForm",
+      "file": "OscInt/Statements/D4Limit.lean",
+      "file_sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6",
+      "commitment": "3f089384d33ac7f6d4a24195c64b10af9093125fec7456da342a0477e510e6cc",
+      "stamp": "stamps/20261106T081634Z-e2d7771c358e",
+      "stamp_commit": "e2d7771c358eed0b1d52521d2d92255ef6967072"
+    },
+    {
+      "name": "OscInt.Statements.AmpBoundOfContDiffStatement",
+      "label": "F1",
+      "summary": "Amplitude bounds from Mathlib's idiom: a `Cⁿ` amplitude with `tsupport A ⊆ K`, `K` compact, satisfies `AmpBound n K A M` for some `M`.",
+      "proved_by": "OscInt.API.ampBoundOfContDiff",
+      "file": "OscInt/Statements/FrontEnd.lean",
+      "file_sha256": "4851a9543e712d2a3734b37dbf3cfabbc63fabb0a930a22f96eb3e60e8852ee7",
+      "commitment": "ec40ed3e51ec4cc137fcc2c1a5462f076cabd712d0701b729f9cb64856a50c58",
+      "stamp": "stamps/20261107T012459Z-2d5356432156",
+      "stamp_commit": "2d5356432156977cc66afd7e05f2d845e1004687"
+    },
+    {
+      "name": "OscInt.Statements.D4LimitClosedFormStatement",
+      "label": "F2",
+      "summary": "The D4 limit with its closed-form constant (the brief's S4), for a `C²` amplitude supported near `0`: `t^{2/3} ∫ e^{itφ} A → Γ(1/3)²/(√3 |Disc|^{1/6}) A(0)` if `Disc < 0`, and `→ Γ(1/3)²/Disc^{1/6} A(0)` if `Disc > 0`.",
+      "proved_by": "OscInt.API.d4LimitClosedForm",
+      "file": "OscInt/Statements/FrontEnd.lean",
+      "file_sha256": "4851a9543e712d2a3734b37dbf3cfabbc63fabb0a930a22f96eb3e60e8852ee7",
+      "commitment": "7db2d5f188ee0984ee684caa10e18c74af554e0c718a903cd643e540d278f741",
+      "stamp": "stamps/20261107T012459Z-2d5356432156",
+      "stamp_commit": "2d5356432156977cc66afd7e05f2d845e1004687"
+    }
+  ],
+  "statement_files": [
+    {"file": "OscInt/Statements/D4.lean", "sha256": "6965ce63488b6f81ff5c4685b46e252027423d8a6916ac274ea9dea21d4395c9", "stamp": "stamps/20261107T012459Z-2d5356432156"},
+    {"file": "OscInt/Statements/D4Limit.lean", "sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6", "stamp": "stamps/20261107T012459Z-2d5356432156"},
+    {"file": "OscInt/Statements/FrontEnd.lean", "sha256": "4851a9543e712d2a3734b37dbf3cfabbc63fabb0a930a22f96eb3e60e8852ee7", "stamp": "stamps/20261107T012459Z-2d5356432156"},
+    {"file": "OscInt/Statements/StationaryPhase.lean", "sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf", "stamp": "stamps/20261107T012459Z-2d5356432156"},
+    {"file": "OscInt/Statements/VanDerCorput.lean", "sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44", "stamp": "stamps/20261107T012459Z-2d5356432156"}
+  ]
+}

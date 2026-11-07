@@ -1,8 +1,14 @@
 name: ci
 
+# Jobs: `quick` (build, guard, audit, statement types, Gamma-free, statement list; minutes) on every push and pull
+# request for fast feedback; `verify` (the full replay, about an hour) on every push (lessons 3), weekly and on demand;
+# `consumer` (a downstream Lake project depending on this checkout, plus the checker's negative controls) on main,
+# pull requests, weekly and on demand; `mathlib-from-source` on demand only.
 on:
   push:
   pull_request:
+  schedule:
+    - cron: "17 3 * * 1"
   workflow_dispatch:
     inputs:
       mathlib_from_source:
@@ -14,6 +20,57 @@ permissions:
   contents: read
 
 jobs:
+  quick:
+    if: ${{ !inputs.mathlib_from_source && github.event_name != 'schedule' }}
+    concurrency:
+      group: quick-${{ github.ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: elan from the pinned, hash-checked installer
+        run: |
+          read -r h f u < <(grep ' elan-init.sh ' toolchain.sha256)
+          curl -sSfL -o /tmp/elan-init.sh "$u"
+          echo "$h  /tmp/elan-init.sh" | sha256sum -c -
+          sh /tmp/elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Mathlib binary cache (trusted; see README)
+        run: lake exe cache get
+      - name: Rust toolchain pinned in tools/rust-toolchain.toml
+        run: cd tools && rustup toolchain install
+      - name: make quick (build, guard, axiom audit, statement types, Mathlib names, Gamma-free, statements.json)
+        run: make quick
+
+  consumer:
+    if: ${{ !inputs.mathlib_from_source && (github.ref == 'refs/heads/main' || github.event_name != 'push') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: elan from the pinned, hash-checked installer
+        run: |
+          read -r h f u < <(grep ' elan-init.sh ' toolchain.sha256)
+          curl -sSfL -o /tmp/elan-init.sh "$u"
+          echo "$h  /tmp/elan-init.sh" | sha256sum -c -
+          sh /tmp/elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Build the example consumer (examples/consumer, OscInt as a Lake dependency)
+        working-directory: examples/consumer
+        run: |
+          lake exe cache get
+          lake build
+      - name: Downstream checker (tools/oscint_check.py) with recomputed commitments
+        working-directory: examples/consumer
+        run: |
+          python3 ../../tools/oscint_check.py --oscint ../.. \
+            --statement OscInt.Statements.D4LimitStatement --statement OscInt.Statements.StationaryPhaseStatement \
+            --expect-sha256 "$(sha256sum ../../stamps/statements.json | cut -d' ' -f1)" --commitments
+      - name: Negative controls for the checker (each must be rejected with its own message)
+        working-directory: examples/consumer
+        run: ../../tools/test_oscint_check.sh
+
   verify:
     if: ${{ !inputs.mathlib_from_source }}
     concurrency:
@@ -38,6 +95,8 @@ jobs:
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
       - name: Mathlib binary cache (trusted; see README)
         run: lake exe cache get
+      - name: Rust toolchain pinned in tools/rust-toolchain.toml (installed explicitly, not auto-installed)
+        run: cd tools && rustup toolchain install
       - name: verify-all
         run: |
           make tools

@@ -1,0 +1,4 @@
+{"challenge_module": "Challenge", "solution_module": "OscInt",
+ "theorem_names": ["OscInt.API.ampBoundOfContDiff", "OscInt.API.d4LimitClosedForm"],
+ "definition_names": [],
+ "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]}
