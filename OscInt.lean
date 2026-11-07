@@ -37,3 +37,5 @@ import OscInt.D4.CosMomentValue
 import OscInt.D4.Beta
 import OscInt.D4.LineMoments
 import OscInt.D4.ClosedFormFinal
+import OscInt.API
+import OscInt.API.Sanity

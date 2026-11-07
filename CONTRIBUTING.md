@@ -58,7 +58,9 @@ The order matters: the statement is frozen and reviewed before any proof exists,
 
 ## Changing a proof (no statement change)
 Refactors are welcome: the statement types are fixed, so `make quick` (types and audit) and the replay are the
-regression test. Keep each declaration under about 60 lines; helpers go in an `…Aux` namespace or are `private`.
+regression test. Keep each declaration under about 60 lines; helpers go in an `…Aux` namespace. Do not use `private theorem`: the
+axiom audit (`Axioms.lean`) skips internal names such as private ones, so its count no longer matches the guard's
+and `make quick` fails (found 2026-11-07; the strict count is the safety net, lessons 13).
 
 ## Commits and releases
 Commit messages say what changed and what evidence was run. Releases follow `docs/policy.md`; the owner publishes
