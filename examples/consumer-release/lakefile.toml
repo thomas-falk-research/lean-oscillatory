@@ -1,0 +1,14 @@
+name = "consumer_release"
+version = "0.1.0"
+defaultTargets = ["ConsumerRelease"]
+
+# A downstream project exactly as README "Depending on OscInt" describes it: OscInt from GitHub at a release tag.
+# CI job `consumer-release` runs `lake update`, builds, and checks it against the SHA-256 in
+# docs/release-notes/v0.3.0.md; it runs only after job `release-pin` has confirmed the tag exists.
+[[require]]
+name = "oscint"
+git = "https://github.com/thomas-falk-research/lean-oscillatory"
+rev = "v0.3.0"
+
+[[lean_lib]]
+name = "ConsumerRelease"

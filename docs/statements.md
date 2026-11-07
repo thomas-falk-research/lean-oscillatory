@@ -204,3 +204,119 @@ the integral is written out (the same term as `oscInt2`); the phase hypotheses a
 Process note: the bridge proofs of F1 and F2 (about 30 lines, from S4.2, S4.4 and Mathlib) were drafted in the lead's
 scratch directory before this statement was stamped and reviewed; the statements were not changed afterwards, and
 the claim "statement fixed before the proof" is therefore not made for F1 and F2.
+
+## Front end, batch 2: conversions and Mathlib-idiom front ends (API2; session 4, 2026-11-07)
+
+Order restored. Unlike batch 1 (process note above), this batch follows the statement-first order: the statements
+below, their Lean file `OscInt/Statements/Convert.lean`, sanity theorems, challenge and comparator configuration are
+committed, stamped, pinned and blind-reviewed before any proof of them is written or drafted, in the repository or
+in scratch (lessons 23). Bridges go in `OscInt/API/Convert.lean` (since moved to `OscInt/Front/Convert.lean`, names unchanged).
+
+Notation as in S2/S3 and S4. Points of ℝ² are `ℝ × ℝ` (max norm). e₁ = (1, 0), e₂ = (0, 1) (`coordVec 0`,
+`coordVec 1`); for e : Fin 2 → ℝ, ofFin2 e = (e 0, e 1). DⁿΨ(k) is Mathlib's `iteratedFDeriv ℝ n Ψ k`, a continuous
+n-linear map; DⁿΨ(k)[v₁, …, vₙ] its value. The Hessian matrix is H(Ψ, k)ᵢⱼ = D²Ψ(k)[eᵢ, eⱼ] (`hessianMatrix`), a
+`Matrix (Fin 2) (Fin 2) ℝ`; its kernel is that of `Matrix.toLin' H` (vectors e : Fin 2 → ℝ with H e = 0). A linear
+term is a continuous linear functional L : ℝ² → ℝ (Mathlib's `(ℝ × ℝ) →L[ℝ] ℝ`); L(k) = p·k with p = (L e₁, L e₂).
+‖L‖ is its operator norm with respect to the max norm of ℝ × ℝ, which is |L e₁| + |L e₂|. The amplitude hypothesis
+"(n, K, M) in Mathlib's idiom" is: A ∈ Cⁿ (`ContDiff ℝ n A`), `tsupport A ⊆ K`, and ‖DʲA(k)‖ ≤ M for all j ≤ n and
+all k; this is `AmpBound n K A M` written out, so S2–S4 apply with the same M.
+
+Two matrix forms of the fold condition, for a 2×2 real matrix H and a function T on Fin 2 → ℝ:
+- span form (`FoldCondSpan H T`): det H ≠ 0, or there is e ≠ 0 with ker H = span{e} and T(e) ≠ 0;
+- rank form (`FoldCondRank H T`): det H ≠ 0, or rank H = 1 and T(e) ≠ 0 for every nonzero e ∈ ker H.
+`FoldOrNondegMatrix Ψ k` is the span form with H = H(Ψ, k) and T(e) = D³Ψ(k)[ofFin2 e, ofFin2 e, ofFin2 e].
+
+**C1 (second derivatives).** If Ψ is C² on a neighbourhood of k (`ContDiffAt ℝ 2 Ψ k`), then for all v, w:
+dd Ψ k v w = D²Ψ(k)[v, w].
+
+**C2 (third derivatives).** If Ψ is C³ on a neighbourhood of k, then for all u, v, w: ddd Ψ k u v w = D³Ψ(k)[u, v, w].
+(`ddd Ψ k u v w` is ∂_w∂_v∂_uΨ(k); equality in the stated argument order uses the symmetry of D³ for C³ functions.)
+
+**C3 (Hessian determinant).** If Ψ is C² near k: hessDet Ψ k = det H(Ψ, k).
+
+**C4 (cubic part).** If φ is C³ near 0, then for every κ ∈ ℝ²: with (a, b, c, d) = cubicCoeffs φ,
+a κ₁³ + b κ₁²κ₂ + c κ₁κ₂² + d κ₂³ = (1/6) D³φ(0)[κ, κ, κ] (`cubicForm (cubicCoeffs φ) κ`). A binary cubic is
+determined by its values, so this identifies cubicCoeffs φ as the coefficients of (1/6) D³φ(0)[κ, κ, κ].
+
+**C5 (discriminant).** For all real a, b, c, d: disc (a, b, c, d) equals Mathlib's discriminant
+`(Cubic.mk a b c d).discr` of the cubic polynomial a X³ + b X² + c X + d (the dehomogenisation of the binary cubic at
+κ₂ = 1). Mathlib relates `Cubic.discr` to the roots (`Cubic.discr_eq_prod_three_roots`,
+`Cubic.discr_ne_zero_iff_roots_nodup`).
+
+**C6 (isolated critical point).** For every binary cubic q: disc q ≠ 0 if and only if 0 is an isolated critical
+point of κ ↦ cubicForm q κ, i.e. the derivative of the cubic is nonzero at every point of a punctured neighbourhood of
+0 (`∀ᶠ z in 𝓝[≠] 0, fderiv ℝ (cubicForm q) z ≠ 0`). (For a homogeneous cubic the critical set is a cone, so
+"isolated" is the same as "the only critical point"; q = 0 has disc 0 and every point critical.)
+
+**C7 (fold condition, matrix forms).** If Ψ is C³ near k, then FoldOrNondeg Ψ k holds if and only if the span form
+holds for H(Ψ, k) and T(e) = D³Ψ(k)[ofFin2 e, ofFin2 e, ofFin2 e], and if and only if the rank form holds for them.
+
+**C7′ (fold condition from derivative data).** If Ψ has derivative D₁(y) at every y (`HasFDerivAt Ψ (D₁ y) y`), D₁ has
+derivative D₂(y) at every y (D₂(y) a continuous bilinear map), and D₂ has derivative D₃ at k, then FoldOrNondeg Ψ k
+holds if and only if the span form holds for H'ᵢⱼ = D₂(k)[eᵢ][eⱼ] and T(e) = D₃[ofFin2 e][ofFin2 e][ofFin2 e]. This is
+the form in which a user who has computed the derivatives of an explicit phase can discharge the fold condition.
+
+**C8 (gradient lower bound).** If Ψ is differentiable at k and c ≥ 0, then: (i) GradLower Ψ p k c holds if and only if
+c ≤ ‖Dψ(k̃)‖ where ψ(x) = Ψ(x₀, x₁) + p·(x₀, x₁) on Euclidean ℝ² (`EuclideanSpace ℝ (Fin 2)`) and k̃ is k there, i.e.
+the Euclidean length of ∇Ψ(k) + p is at least c; (ii) GradLower Ψ p k c implies c ≤ ‖D(Ψ + p·)(k)‖ (operator norm on
+ℝ × ℝ, the max norm, so ‖·‖ = |∂₁| + |∂₂|); (iii) c ≤ ‖D(Ψ + p·)(k)‖ implies GradLower Ψ p k (c/√2).
+
+**C9 (amplitude bounds).** (i) If K is compact and AmpBound n K A M, then A is Cⁿ and has compact support
+(`HasCompactSupport A`). (ii) If A is Cⁿ with compact support, then AmpBound n (tsupport A) A M for some M. With F1
+this makes AmpBound(n, K, ·, some M) equivalent to "Cⁿ and tsupport ⊆ K" for compact K.
+
+**FE-S2.1 (non-stationary phase, Mathlib idiom).** For every N ∈ ℕ, every C^{N+1} phase Ψ, compact K and c > 0 there is
+C such that for every amplitude (N, K, M) in Mathlib's idiom, every linear term L with c ≤ ‖DΨ(k) + L‖ for all k ∈ K,
+and every m ≥ 1: |∫ e^{im(Ψ(k) + L(k))} A(k) dk| ≤ C M m^{−N}. (S2.1 for one phase; the gradient bound in the max
+norm's operator norm, which by C8 (iii) gives S2.1's hypothesis with c/√2.)
+
+**FE-S2.2 (nondegenerate stationary phase, Mathlib idiom).** For every C⁴ phase Ψ, compact K ⊆ ℝ² and compact set K′ of
+linear terms such that det H(Ψ, k) ≠ 0 whenever k ∈ K, L ∈ K′ and DΨ(k) + L = 0, there is C such that for every
+amplitude (2, K, M) in Mathlib's idiom, every L ∈ K′ and every m ≥ 1: |∫ e^{im(Ψ(k) + L(k))} A(k) dk| ≤ C M m^{−1}.
+
+**FE-S3 (uniform fold estimate, Mathlib idiom, one phase).** As FE-S2.2, with the hypothesis FoldOrNondegMatrix Ψ k
+for every k ∈ K in place of the Hessian condition, and the bound C M m^{−5/6}.
+
+**FE-S4.1′ (uniform D4 bound, Mathlib idiom).** For every C⁴ phase φ and reals a, b, c, d such that D²φ(0) = 0,
+D³φ(0)[(x, y), (x, y), (x, y)] = 6(a x³ + b x²y + c xy² + d y³) for all x, y, and `(Cubic.mk a b c d).discr ≠ 0`, there
+are δ > 0 and C such that for every amplitude (2, B̄(0, δ), M) in Mathlib's idiom, every linear term L and every
+t ≥ 1: |∫ e^{i(tφ(κ) + L(κ))} A(κ) dκ| ≤ C M t^{−2/3}.
+
+Modelling choices and what is omitted.
+- Front ends are for one phase. Uniformity over compact families (S2.1, S3) stays in the frozen S2.1 and S3 and a
+  family front end is a later statement (ROADMAP §2, parametric uniformity).
+- The linear term is a functional L, not a vector p; S2.2 and S3 ask for a compact set of functionals (the image of a
+  compact set of vectors under p ↦ p·(·) is one, and conversely). FE-S2.1 is uniform over every L with the gradient
+  bound, as S2.1.
+- B̄(0, δ) and ‖DΨ(k) + L‖ use the max norm of ℝ × ℝ, Mathlib's norm on a product; C8 converts to the Euclidean norm.
+- The cubic part in FE-S4.1′ is given by its coefficients through the identity for D³φ(0); C4 shows that these are
+  `cubicCoeffs φ`. The user names the coefficients, which is what makes the hypothesis checkable for an explicit
+  formula.
+- C1–C4, C7 assume smoothness only near the point (`ContDiffAt`), as their content is local.
+- Pre-proof sanity theorems are on data (matrices, cubics, Euclidean coordinates); non-vacuity of the derivative
+  hypotheses of the front ends for explicit phases (fold x³ + y², elliptic and generic D4 cubics) is shown after the
+  proofs, through the bridges, in `OscInt/API/ConvertSanity.lean` (now `OscInt/Front/ConvertSanity.lean`) and the consumer example, as for batch 1.
+
+Clarification added after the API2 stamp (2026-11-07, from the two blind pre-proof referees, FAITHFUL ×2 on all
+fourteen statements; the stamped text above and `OscInt/Statements/Convert.lean` are unchanged): (1) C7′ assumes
+`HasFDerivAt` at every point; a neighbourhood of k would suffice and give a stronger statement, which would be a new
+statement (candidate for the next batch); (2) C7′ is an equivalence despite its name `…OfHasFDeriv…`; (3) `disc` and
+`Cubic.discr` are invariant under (a, b, c, d) ↦ (d, c, b, a), so sanity theorems on discriminant values cannot pin
+the coefficient order; it is pinned by the derivative-level checks in `OscInt/Front/ConvertSanity.lean`; (4) order of
+work: no Lean proof of a batch-2 statement existed in the repository or in the lead's scratch before the stamp and both
+reviews; referee A wrote a one-line proof of C5 in its own scratch during its review (disclosed in
+`review/2026-11-07-API2-pre-proof-answers.md`).
+
+Correction to (4) and to the opening paragraph of this section (2026-11-07, adversarial review M3; stamped files
+unchanged): what the evidence shows is narrower. The statements are timestamped (stamp
+`stamps/20261107T101640Z-4acb308f54f4`, RFC 3161 ×3 at 10:16:43Z, manifest of commit 4acb308). That the two blind
+reviews came before any Lean proof rests on git order and on the lead's account; the reviews were not timestamped.
+The proof route, including the C6 algebraic certificates, was drafted in the lead's scratch during the review window
+(the process allows a route draft; it is not Lean proof code), so "no proof drafted" in the opening paragraph is too
+strong and should read "no Lean proof written". `OscInt/Front/ConvertSanity.lean` was written while the proof agents
+ran. Rule for later batches: stamp the reviews before launching proof agents (lessons 29).
+
+Note on file locations (2026-11-07, after the adversarial review M5 and lessons 30): the bridge and helper files of
+batches 1 and 2 moved from `OscInt/API/` to `OscInt/Front/`; declaration names are unchanged (namespace
+`OscInt.API`), and `OscInt/API.lean` is now an imports-only entry point. The stamped
+`OscInt/Statements/Convert.lean` still names the old path `OscInt/API/Convert.lean` in its docstring; it cannot change.

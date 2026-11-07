@@ -1,0 +1,85 @@
+make quick on commit cb39601 (clean tree, fresh clone, Lean v4.35.0, Mathlib cache), 2026-11-07, session 4 baseline: exit 0, 8m00s wall. Build and Lake progress lines omitted.
+
+cd tools && cargo build --release --locked --quiet
+tools/target/release/guard .
+guard: ok: 64 file(s), 0 violations, 536 theorem declaration(s)
+mkdir -p build/skipped && rm -f build/skipped/statements-check; tools/target/release/statements check . || { [ $? -eq 3 ] && mkdir -p build/skipped && touch build/skipped/statements-check; }
+statements: ok: stamps/statements.json matches pins, manifests and sources (13 statements)
+make --no-print-directory lean
+cd tools && cargo build --release --locked --quiet
+rm -f build/lean.ok
+lake build
+Build completed successfully (9112 jobs).
+mkdir -p build && lake env lean Axioms.lean > build/axioms.out
+tools/target/release/audit build/axioms.out . build/audited.txt
+axiom audit: 536 of 536 theorems clean (permitted: propext, Classical.choice, Quot.sound)
+lake env lean StatementTypes.lean
+TYPE-OK OscInt.vanDerCorput_one : OscInt.Statements.VdC1Statement
+TYPE-OK OscInt.vanDerCorput_two : OscInt.Statements.VdC2Statement
+TYPE-OK OscInt.vanDerCorput_three : OscInt.Statements.VdC3Statement
+TYPE-OK OscInt.nonStationary : OscInt.Statements.NonStationaryStatement
+TYPE-OK OscInt.stationaryPhase : OscInt.Statements.StationaryPhaseStatement
+TYPE-OK OscInt.fold : OscInt.Statements.FoldStatement
+TYPE-OK OscInt.d4Bound : OscInt.Statements.D4BoundStatement
+TYPE-OK OscInt.d4BoundNe : OscInt.Statements.D4BoundNeStatement
+TYPE-OK OscInt.d4ConstantPos : OscInt.Statements.D4ConstantPosStatement
+TYPE-OK OscInt.d4Limit : OscInt.Statements.D4LimitStatement
+TYPE-OK OscInt.d4ConstantClosedForm : OscInt.Statements.D4ConstantClosedFormStatement
+TYPE-OK OscInt.API.ampBoundOfContDiff : OscInt.Statements.AmpBoundOfContDiffStatement
+TYPE-OK OscInt.API.d4LimitClosedForm : OscInt.Statements.D4LimitClosedFormStatement
+lake env lean MathlibNames.lean > /dev/null
+lake env lean GammaFree.lean
+GAMMA-FREE CONTROL Real.Gamma_pos_of_pos rejected as expected (33 forbidden constant(s))
+GAMMA-FREE CONTROL gammaProofControl rejected as expected (33 forbidden constant(s))
+GAMMA-FREE OK OscInt.Statements.D4ConstantPosStatement (33099 constants in the closure)
+GAMMA-FREE OK OscInt.d4ConstantPos (43612 constants in the closure)
+GAMMA-FREE OK OscInt.d4Limit (53780 constants in the closure)
+GAMMA-FREE OK OscInt.d4BoundNe (51302 constants in the closure)
+touch build/lean.ok
+
+real	8m0.126s
+user	10m53.067s
+sys	0m58.062s
+
+== make stamp-verify (same tree), 2026-11-07
+mkdir -p build/skipped && rm -f build/skipped/stamp-verify; if [ -f stamps/pins.txt ]; then tools/target/release/stamp verify-pinned .; else echo "stamp-verify: SKIPPED: no pinned stamp yet"; mkdir -p build/skipped && touch build/skipped/stamp-verify; fi
+== stamps/20261105T203058Z-7516eb518dce
+manifest: 60 file hashes match commit 7516eb518dce585ffc7e831ba6171afa9b938e46
+freetsa: Verification: OK; Time stamp: Nov  5 20:30:59 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  5 20:30:59 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  5 20:30:59 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261105T234456Z-533ae0272521
+manifest: 101 file hashes match commit 533ae0272521192adbe020aebb922a2c9559e212
+freetsa: Verification: OK; Time stamp: Nov  5 23:44:57 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  5 23:44:58 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  5 23:44:58 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261106T033706Z-63564a8d78cd
+manifest: 141 file hashes match commit 63564a8d78cd2a36f80a660d16b04b4139095835
+freetsa: Verification: OK; Time stamp: Nov  6 03:37:07 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  6 03:37:08 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  6 03:37:08 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261106T081634Z-e2d7771c358e
+manifest: 198 file hashes match commit e2d7771c358eed0b1d52521d2d92255ef6967072
+freetsa: Verification: OK; Time stamp: Nov  6 08:16:37 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  6 08:16:37 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  6 08:16:37 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261107T012459Z-2d5356432156
+manifest: 282 file hashes match commit 2d5356432156977cc66afd7e05f2d845e1004687
+freetsa: Verification: OK; Time stamp: Nov  7 01:25:01 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  7 01:25:01 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  7 01:25:01 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+
+GammaFree.lean: sha256sum now:
+5dc19eb4a0c065b88ff86fcec751de0c3fac869ea50321b9873e85376df1aec6  GammaFree.lean
+line in stamps/20261107T012459Z-2d5356432156/manifest.txt:
+5dc19eb4a0c065b88ff86fcec751de0c3fac869ea50321b9873e85376df1aec6  GammaFree.lean

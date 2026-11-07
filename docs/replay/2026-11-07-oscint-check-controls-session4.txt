@@ -1,0 +1,18 @@
+tools/test_oscint_check.sh in examples/consumer, 2026-11-07 (session 4), checker SHA-256 a184f2ec0c8d3893bec491749b198ccd3d80b4ad288045e5ce4f97d85bb0c0db (commit 3290127: message and docstring changes only since session 3). Result: 15 of 15 (each control rejected with its own message; positive and partial runs as expected), 22m07s.
+
+Build completed successfully (9124 jobs).
+ok   positive: full check of S4.2 (rc 0)
+ok   partial run is not PASS (rc 0)
+ok   wrong pinned hash (rc 1)
+ok   unknown statement (rc 1)
+ok   edited statement file (rc 1)
+ok   unstamped statement file (rc 1)
+ok   unproved statement requested (rc 1)
+ok   other toolchain (rc 1)
+ok   other Mathlib (rc 1)
+ok   theorem of another statement (rc 1)
+ok   defeq-only type (rc 1)
+ok   statement from another module (rc 1)
+ok   extra axiom (rc 1)
+ok   kernel-unchecked theorem (rc 1)
+ok   changed commitment (rc 1)

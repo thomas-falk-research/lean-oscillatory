@@ -1,0 +1,8 @@
+{"challenge_module": "Challenge", "solution_module": "OscInt",
+ "theorem_names": ["OscInt.API.dd_iteratedFDeriv", "OscInt.API.ddd_iteratedFDeriv", "OscInt.API.hessDet_eq_det",
+   "OscInt.API.cubicCoeffs_eq", "OscInt.API.disc_eq_cubic_discr", "OscInt.API.disc_ne_zero_iff_isolated",
+   "OscInt.API.foldOrNondeg_iff", "OscInt.API.foldOrNondeg_of_hasFDeriv", "OscInt.API.gradLower_iff",
+   "OscInt.API.ampBound_conv", "OscInt.API.nonStationaryFE", "OscInt.API.stationaryPhaseFE", "OscInt.API.foldFE",
+   "OscInt.API.d4BoundFE"],
+ "definition_names": [],
+ "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]}

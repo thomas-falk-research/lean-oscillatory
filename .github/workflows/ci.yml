@@ -3,7 +3,8 @@ name: ci
 # Jobs: `quick` (build, guard, audit, statement types, Gamma-free, statement list; minutes) on every push and pull
 # request for fast feedback; `verify` (the full replay, about an hour) on every push (lessons 3), weekly and on demand;
 # `consumer` (a downstream Lake project depending on this checkout, plus the checker's negative controls) on main,
-# pull requests, weekly and on demand; `mathlib-from-source` on demand only.
+# pull requests, weekly and on demand; `release-pin` (the pinned release tag exists) on every push and pull request;
+# `mathlib-from-source` on demand only.
 on:
   push:
   pull_request:
@@ -42,6 +43,60 @@ jobs:
         run: cd tools && rustup toolchain install
       - name: make quick (build, guard, axiom audit, statement types, Mathlib names, Gamma-free, statements.json)
         run: make quick
+
+  # Separate job (lessons 9): an unpublished release must not mask other failures. Red until the tag that README,
+  # docs/policy.md and examples/consumer pin exists and docs/release-notes/<tag>.md gives the SHA-256 of
+  # stamps/statements.json and tools/oscint_check.py at that tag.
+  release-pin:
+    if: ${{ !inputs.mathlib_from_source }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Self-test of the check (negative controls)
+        run: tools/check_release_pin.sh --self-test
+      - name: Every pinned release tag exists and matches its release notes
+        run: tools/check_release_pin.sh "https://github.com/${{ github.repository }}"
+
+  # The README's instructions end to end: a project that requires OscInt by its release tag from GitHub.
+  consumer-release:
+    needs: release-pin
+    if: ${{ !inputs.mathlib_from_source && (github.ref == 'refs/heads/main' || github.event_name != 'push') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: elan from the pinned, hash-checked installer
+        run: |
+          read -r h f u < <(grep ' elan-init.sh ' toolchain.sha256)
+          curl -sSfL -o /tmp/elan-init.sh "$u"
+          echo "$h  /tmp/elan-init.sh" | sha256sum -c -
+          sh /tmp/elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Build examples/consumer-release (OscInt from GitHub at the release tag)
+        working-directory: examples/consumer-release
+        run: |
+          lake update
+          lake exe cache get
+          lake build
+          lake build OscInt Blueprint
+      - name: The package is the recorded release commit, and its checker is the pinned one
+        working-directory: examples/consumer-release
+        run: |
+          tag=$(grep -oE 'rev = "v[0-9.]+"' lakefile.toml | grep -oE 'v[0-9.]+')
+          want=$(tr -d '[:space:]' < "../../docs/release-notes/$tag.commit")
+          test "$(git -C .lake/packages/oscint rev-parse HEAD)" = "$want"
+          ck=$(grep -F '| `tools/oscint_check.py` |' "../../docs/release-notes/$tag.md" | grep -oE '[0-9a-f]{64}')
+          echo "$ck  .lake/packages/oscint/tools/oscint_check.py" | sha256sum -c -
+      - name: Downstream checker (this repository's reviewed copy), against the SHA-256 in the release notes
+        working-directory: examples/consumer-release
+        run: |
+          tag=$(grep -oE 'rev = "v[0-9.]+"' lakefile.toml | grep -oE 'v[0-9.]+')
+          pin=$(grep -F '| `stamps/statements.json` |' "../../docs/release-notes/$tag.md" | grep -oE '[0-9a-f]{64}')
+          python3 ../../tools/oscint_check.py --oscint .lake/packages/oscint \
+            --statement OscInt.Statements.StationaryPhaseStatement --statement OscInt.Statements.FoldStatement \
+            --statement OscInt.Statements.D4LimitClosedFormStatement --statement OscInt.Statements.FoldFEStatement \
+            --statement OscInt.Statements.D4BoundFEStatement --expect-sha256 "$pin" --commitments
 
   consumer:
     if: ${{ !inputs.mathlib_from_source && (github.ref == 'refs/heads/main' || github.event_name != 'push') }}

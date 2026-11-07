@@ -1,0 +1,121 @@
+import OscInt.Statements.D4Limit
+
+/-! Draft statements (design only, not part of the repository): torus and lattice kernels. -/
+
+namespace OscInt.Statements.Draft
+
+open Set MeasureTheory Complex OscInt.Statements
+open scoped ContDiff
+
+/-- `f` is `2π`-periodic in each coordinate. -/
+def Periodic2 {β : Type} (f : ℝ × ℝ → β) : Prop :=
+  Function.Periodic f ((2 * Real.pi, 0) : ℝ × ℝ) ∧ Function.Periodic f ((0, 2 * Real.pi) : ℝ × ℝ)
+
+/-- The fundamental box `[-π, π]²`. -/
+def torusBox : Set (ℝ × ℝ) := Icc (-Real.pi) Real.pi ×ˢ Icc (-Real.pi) Real.pi
+
+/-- A lattice point as a point of `ℝ²`. -/
+def latticePt (x : ℤ × ℤ) : ℝ × ℝ := ((x.1 : ℝ), (x.2 : ℝ))
+
+/-- `K_t(x) = ∫_{[-π,π]²} e^{i(tθ(k) + x·k)} a(k) dk`. -/
+noncomputable def latticeKernel (θ : ℝ × ℝ → ℝ) (a : ℝ × ℝ → ℂ) (t : ℝ) (x : ℤ × ℤ) : ℂ :=
+  ∫ k in torusBox, Complex.exp (↑(t * θ k + lin (latticePt x) k) * Complex.I) * a k
+
+/-- Periodic amplitude bound `(n, M)`: `a ∈ Cⁿ`, periodic, derivatives of order `≤ n` bounded by `M`. -/
+def PerAmpBound (n : ℕ) (a : ℝ × ℝ → ℂ) (M : ℝ) : Prop :=
+  ContDiff ℝ n a ∧ Periodic2 a ∧ ∀ j ≤ n, ∀ k, ‖iteratedFDeriv ℝ j a k‖ ≤ M
+
+/-- At `k` the Hessian vanishes and the cubic part has nonzero discriminant (a D4 point). -/
+def IsD4Point (θ : ℝ × ℝ → ℝ) (k : ℝ × ℝ) : Prop :=
+  (∀ v w, dd θ k v w = 0) ∧ disc (cubicCoeffs (fun κ => θ (k + κ))) ≠ 0
+
+/-- **T1** Unfolding: one smooth compactly supported cutoff turns the torus integral of every continuous
+periodic function into an integral over `ℝ²`. -/
+def TorusUnfoldStatement : Prop :=
+  ∃ χ : ℝ × ℝ → ℝ, ContDiff ℝ ∞ χ ∧ HasCompactSupport χ ∧
+    ∀ f : ℝ × ℝ → ℂ, Continuous f → Periodic2 f →
+      ∫ k in torusBox, f k = ∫ k, (χ k : ℂ) * f k
+
+/-- **T2** Localisation: for every open cover of `ℝ²` there are finitely many smooth compactly supported
+cutoffs, each supported in one member of the cover, splitting every torus integral. -/
+def TorusLocalizeStatement : Prop :=
+  ∀ (ι : Type) (U : ι → Set (ℝ × ℝ)), (∀ i, IsOpen (U i)) → (⋃ i, U i) = univ →
+    ∃ (s : Finset ι) (χ : ι → ℝ × ℝ → ℝ),
+      (∀ i ∈ s, ContDiff ℝ ∞ (χ i) ∧ HasCompactSupport (χ i) ∧ tsupport (χ i) ⊆ U i) ∧
+      ∀ f : ℝ × ℝ → ℂ, Continuous f → Periodic2 f →
+        ∫ k in torusBox, f k = ∑ i ∈ s, ∫ k, (χ i k : ℂ) * f k
+
+/-- **T3** Outside the light cone: `|K_t(x)| ≤ C M |x|^{-N}` when `|x| ≥ (G + 1) t`, `G` a bound on `∇θ`. -/
+def LatticeLightConeStatement : Prop :=
+  ∀ (N : ℕ) (θ : ℝ × ℝ → ℝ) (G : ℝ), ContDiff ℝ (N + 1) θ → Periodic2 θ →
+    (∀ k, |fderiv ℝ θ k (1, 0)| ≤ G ∧ |fderiv ℝ θ k (0, 1)| ≤ G) →
+    ∃ C : ℝ, ∀ (a : ℝ × ℝ → ℂ) (M t : ℝ) (x : ℤ × ℤ),
+      PerAmpBound N a M → 1 ≤ t → (G + 1) * t ≤ ‖latticePt x‖ →
+        ‖latticeKernel θ a t x‖ ≤ C * M / ‖latticePt x‖ ^ N
+
+/-- **T4** Nondegenerate cone: `|K_t(x)| ≤ C M t^{-1}` for `x/t` in a compact set `V` of velocities at which
+every critical point is nondegenerate. -/
+def LatticeConeNondegStatement : Prop :=
+  ∀ (θ : ℝ × ℝ → ℝ) (V : Set (ℝ × ℝ)), ContDiff ℝ 4 θ → Periodic2 θ → IsCompact V →
+    (∀ v ∈ V, ∀ k, IsCritical θ v k → hessDet θ k ≠ 0) →
+    ∃ C : ℝ, ∀ (a : ℝ × ℝ → ℂ) (M t : ℝ) (x : ℤ × ℤ),
+      PerAmpBound 2 a M → 1 ≤ t → t⁻¹ • latticePt x ∈ V →
+        ‖latticeKernel θ a t x‖ ≤ C * M / t
+
+/-- **T5** Folds: if every point is nondegenerate or a fold, `sup_x |K_t(x)| ≤ C M t^{-5/6}`. -/
+def LatticeFoldStatement : Prop :=
+  ∀ θ : ℝ × ℝ → ℝ, ContDiff ℝ 4 θ → Periodic2 θ → (∀ k, FoldOrNondeg θ k) →
+    ∃ C : ℝ, ∀ (a : ℝ × ℝ → ℂ) (M t : ℝ) (x : ℤ × ℤ),
+      PerAmpBound 2 a M → 1 ≤ t → ‖latticeKernel θ a t x‖ ≤ C * M * t ^ (-(5 : ℝ) / 6)
+
+/-- **T6** D4: if every point is nondegenerate, a fold or a D4 point, `sup_x |K_t(x)| ≤ C M t^{-2/3}`. -/
+def LatticeD4Statement : Prop :=
+  ∀ θ : ℝ × ℝ → ℝ, ContDiff ℝ 4 θ → Periodic2 θ → (∀ k, FoldOrNondeg θ k ∨ IsD4Point θ k) →
+    ∃ C : ℝ, ∀ (a : ℝ × ℝ → ℂ) (M t : ℝ) (x : ℤ × ℤ),
+      PerAmpBound 2 a M → 1 ≤ t → ‖latticeKernel θ a t x‖ ≤ C * M * t ^ (-(2 : ℝ) / 3)
+
+
+
+/-- **T5′** Folds in a cone: fold-or-nondegenerate at every critical point for velocities in `V`. -/
+def LatticeConeFoldStatement : Prop :=
+  ∀ (θ : ℝ × ℝ → ℝ) (V : Set (ℝ × ℝ)), ContDiff ℝ 4 θ → Periodic2 θ → IsCompact V →
+    (∀ v ∈ V, ∀ k, IsCritical θ v k → FoldOrNondeg θ k) →
+    ∃ C : ℝ, ∀ (a : ℝ × ℝ → ℂ) (M t : ℝ) (x : ℤ × ℤ),
+      PerAmpBound 2 a M → 1 ≤ t → t⁻¹ • latticePt x ∈ V →
+        ‖latticeKernel θ a t x‖ ≤ C * M * t ^ (-(5 : ℝ) / 6)
+
+/-- **T6′** D4 in a cone: nondegenerate, fold or D4 at every critical point for velocities in `V`. -/
+def LatticeConeD4Statement : Prop :=
+  ∀ (θ : ℝ × ℝ → ℝ) (V : Set (ℝ × ℝ)), ContDiff ℝ 4 θ → Periodic2 θ → IsCompact V →
+    (∀ v ∈ V, ∀ k, IsCritical θ v k → FoldOrNondeg θ k ∨ IsD4Point θ k) →
+    ∃ C : ℝ, ∀ (a : ℝ × ℝ → ℂ) (M t : ℝ) (x : ℤ × ℤ),
+      PerAmpBound 2 a M → 1 ≤ t → t⁻¹ • latticePt x ∈ V →
+        ‖latticeKernel θ a t x‖ ≤ C * M * t ^ (-(2 : ℝ) / 3)
+
+/-- **T0** One dimension (S1 route): `|∫_{-π}^{π} e^{i(tθ(k) + xk)} a(k) dk| ≤ C M t^{-1/3}` when `θ''` and
+`θ'''` never vanish together. -/
+def LatticeOneDimStatement : Prop :=
+  ∀ θ : ℝ → ℝ, ContDiff ℝ 3 θ → Function.Periodic θ (2 * Real.pi) →
+    (∀ k, iteratedDeriv 2 θ k ≠ 0 ∨ iteratedDeriv 3 θ k ≠ 0) →
+    ∃ C : ℝ, ∀ (a : ℝ → ℂ) (M t : ℝ) (x : ℤ),
+      ContDiff ℝ 1 a → Function.Periodic a (2 * Real.pi) → (∀ k, ‖a k‖ ≤ M ∧ ‖deriv a k‖ ≤ M) → 1 ≤ t →
+        ‖∫ k in (-Real.pi)..Real.pi, Complex.exp (↑(t * θ k + x * k) * Complex.I) * a k‖ ≤
+          C * M * t ^ (-(1 : ℝ) / 3)
+
+/-- **T7** (obstruction, why T4 is a cone statement) A periodic `C³` phase has a degenerate Hessian somewhere. -/
+def TorusHessDegenerateStatement : Prop :=
+  ∀ θ : ℝ × ℝ → ℝ, ContDiff ℝ 3 θ → Periodic2 θ → ∃ k, hessDet θ k = 0
+
+/-- Front end on Mathlib's torus (period 1): the kernel as a multivariate Fourier coefficient. -/
+noncomputable def torusKernel (Θ : UnitAddTorus (Fin 2) → ℝ) (α : UnitAddTorus (Fin 2) → ℂ) (t : ℝ)
+    (n : Fin 2 → ℤ) : ℂ :=
+  UnitAddTorus.mFourierCoeff (fun z => Complex.exp (↑(t * Θ z) * Complex.I) * α z) n
+
+/-- Sanity target: the 2D lattice Laplacian symbol. -/
+noncomputable def latticeLaplacian (k : ℝ × ℝ) : ℝ := 2 * Real.cos k.1 + 2 * Real.cos k.2
+
+example : Prop := LatticeD4Statement
+example : Periodic2 latticeLaplacian := by
+  constructor <;> intro k <;> simp [latticeLaplacian, Real.cos_add_two_pi]
+
+end OscInt.Statements.Draft

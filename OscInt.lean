@@ -4,6 +4,7 @@ import OscInt.Statements.StationaryPhase
 import OscInt.Statements.D4
 import OscInt.Statements.D4Limit
 import OscInt.Statements.FrontEnd
+import OscInt.Statements.Convert
 import OscInt.VanDerCorput.Final
 import OscInt.StationaryPhase.Final
 import OscInt.StationaryPhase.Sanity
@@ -38,4 +39,3 @@ import OscInt.D4.Beta
 import OscInt.D4.LineMoments
 import OscInt.D4.ClosedFormFinal
 import OscInt.API
-import OscInt.API.Sanity

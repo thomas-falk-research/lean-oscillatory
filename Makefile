@@ -8,7 +8,7 @@ UNSKIP = mkdir -p $(B)/skipped && rm -f $(B)/skipped/$@
 LATEST_STAMP = $(lastword $(sort $(wildcard stamps/2*/)))
 
 .PHONY: challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics \
-	quick statements statements-check
+	quick statements statements-check release-pin entry-point
 
 tools:
 	cd tools && cargo build --release --locked --quiet
@@ -68,6 +68,13 @@ verify-all: tools
 # comparator and stamps (about an hour).
 quick: guard statements-check
 	$(MAKE) --no-print-directory lean
+	$(MAKE) --no-print-directory entry-point
+
+# `import OscInt.API` exposes every statement and proving theorem of stamps/statements.json, and the P1 acceptance
+# example (front ends on phases given only by a formula) elaborates against the root build.
+entry-point:
+	tools/check_entry_point.sh --self-test && tools/check_entry_point.sh
+	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerFormula.lean
 
 # stamps/statements.json: the machine-readable list of pinned statements for downstream projects (README).
 statements: tools
@@ -78,3 +85,7 @@ statements-check: tools
 
 numerics:
 	cd numerics && cargo build --release --locked --quiet && ./target/release/oscint-numerics
+
+# The release tag that README pins exists and its release notes give the pinned SHA-256s (tools/check_release_pin.sh).
+release-pin:
+	tools/check_release_pin.sh --self-test && tools/check_release_pin.sh

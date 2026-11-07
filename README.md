@@ -10,7 +10,8 @@ Author: Thomas Falk III ([ORCID 0009-0001-9478-6061](https://orcid.org/0009-0001
 A Lean 4 + Mathlib library of uniform oscillatory-integral estimates in one and two variables: van der Corput with
 explicit constants (S1), nondegenerate stationary phase uniform in a linear term (S2), the uniform fold
 estimate m^{-5/6} (S3), and the uniform D4 estimate t^{-2/3} (S4.1, S4.1′), the limit t^{2/3}∫e^{itφ}A → c_C A(0) with a Gamma-free c_C (S4.2), c_C > 0 (S4.3) and the
-closed form of c_C (S4.4); every pinned statement is machine-checked as stated.
+closed form of c_C (S4.4), and Mathlib-idiom front ends and conversions (F1, F2, C1–C9, C7′, FE-S2.1, FE-S2.2, FE-S3,
+FE-S4.1′); every statement with a row in `docs/STATUS.md` has its status there, derived from evidence files.
 Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0).
 
 ## Status
@@ -26,6 +27,7 @@ Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801a
 | S4.3 c_C > 0 (alternating series, no Gamma) | machine-checked as stated (`OscInt.d4ConstantPos`; Gamma-free by name, `GammaFree.lean`) |
 | S4.4 closed forms of c_C (the brief's Γ(1/3)²/(√3\|Disc\|^{1/6})) | machine-checked as stated (`OscInt.d4ConstantClosedForm`; verify-all PASS). The brief's limit with its constant is S4.2 ∧ S4.4 (`OscInt.d4Limit`, `OscInt.d4ConstantClosedForm`) |
 | F1, F2 front end (`ContDiff` amplitudes; the D4 limit with its closed-form constant as one theorem) | machine-checked as stated (`OscInt.API.ampBoundOfContDiff`, `OscInt.API.d4LimitClosedForm`; bridges drafted before the review, disclosed), see `docs/STATUS.md` |
+| Front-end batch 2: conversions C1–C9, C7′ (`iteratedFDeriv`, Hessian matrices, `Cubic.discr`, kernel/rank fold condition, norms, `HasCompactSupport`) and front ends FE-S2.1, FE-S2.2, FE-S3, FE-S4.1′ (`OscInt.API.*`, `import OscInt.API`) | see `docs/STATUS.md` (post-proof FAITHFUL ×2; final replay record named there) |
 
 "As stated" means the hypotheses in `docs/statements.md` (derivatives continuous up to the endpoints, as in the
 source's C^k assumption). Details and evidence: `docs/STATUS.md`.
@@ -40,8 +42,13 @@ use the same `lean-toolchain`, `leanprover/lean4:v4.35.0`):
 [[require]]
 name = "oscint"
 git = "https://github.com/thomas-falk-research/lean-oscillatory"
-rev = "v0.3.0"   # a release tag; before v0.3.0 is published, a commit hash of main
+rev = "v0.3.0"   # a release tag (pins and notes: docs/release-notes/v0.3.0.md)
 ```
+
+v0.3.0 is the first release with `OscInt.API`, `stamps/statements.json` and `tools/oscint_check.py` (v0.2.0 has none
+of them). **Status on 2026-11-07: prepared, not yet published by the owner;** until the tag exists, CI job
+`release-pin` is red. The release commit is named in `docs/HANDOFF.md` ("Owner decisions"); once tagged, its full
+hash is in `docs/release-notes/v0.3.0.commit`. A tested project of this shape: `examples/consumer-release/`.
 
 ```bash
 lake update oscint
@@ -50,7 +57,10 @@ lake build
 ```
 
 Import `OscInt.API` (the entry point: every theorem with the textbook statement it formalises, and front-end
-forms in Mathlib's idiom). Use the theorems by their statement names; their types *are* the reviewed statements:
+forms in Mathlib's idiom; `tools/check_entry_point.sh` checks that it exposes every name in `stamps/statements.json`).
+Use the theorems by their statement names; their types *are* the reviewed statements. For a phase given by a formula,
+see `examples/consumer/ConsumerFormula.lean` (front ends FE-S3, FE-S4.1′ with Mathlib-only hypotheses, derivative data
+from `OscInt.API.Poly`):
 
 ```lean
 import OscInt.API
@@ -67,9 +77,10 @@ commitment to its definitional closure and the stamp that froze it, and every st
 your CI, after `lake build`:
 
 ```bash
+lake build OscInt Blueprint   # the check replays every OscInt and Blueprint module, not only those you import
 python3 .lake/packages/oscint/tools/oscint_check.py \
   --statement OscInt.Statements.D4LimitStatement \
-  --expect-sha256 <sha256 of stamps/statements.json, from the release notes>
+  --expect-sha256 <sha256 of stamps/statements.json, from docs/release-notes/<tag>.md>
 ```
 
 It checks that your toolchain and Mathlib are the ones OscInt was checked with, that no statement file was edited,
@@ -118,7 +129,8 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 ## Layout
 
 - `OscInt/` library: `OscInt/Statements/` frozen statements, `OscInt/VanDerCorput/` (S1),
-  `OscInt/StationaryPhase/` (S2, S3), `OscInt/D4/` (S4).
+  `OscInt/StationaryPhase/` (S2, S3), `OscInt/D4/` (S4), `OscInt/Front/` (front ends, conversions, hypothesis helpers;
+  entry point `OscInt/API.lean`).
 - `Blueprint/` intermediate propositions (definitions only); `Challenge/` `sorry` theorems over the statement modules
   for `lake comparator` (never imported; frozen by the stamped export hash and the pinned statement-file hashes,
   `stamps/pins.txt`); one `comparator*.json` per milestone.

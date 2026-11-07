@@ -16,7 +16,9 @@ it may be renamed or removed in any release. Depend on it only if you accept tha
 ## Versions (semantic versioning, from v0.3.0)
 - **Patch** (x.y.Z): no change to any statement constant, commitment, statement file or `proved_by` name. Proof
   refactors, tools, docs, CI. `stamps/statements.json` is byte-identical (it carries no version number), so a
-  downstream pin of its SHA-256 survives a patch release.
+  downstream pin of its SHA-256 survives a patch release. (A patch adds no stamp: stamps only freeze new statements,
+  which only a minor release adds. A new stamp does change the file even for unchanged statement files, because each
+  `statement_files` entry names the newest stamp that covers the file; adversarial review 2026-11-07, m8.)
 - **Minor** (x.Y.0, from 1.0.0): adds statements or theorems; existing entries of `stamps/statements.json` unchanged,
   except `proved_by` going from `null` to a theorem.
 - **Major** (X.0.0): may change commitments, e.g. a Mathlib upgrade (below).
@@ -63,7 +65,9 @@ OscInt's statement files. Procedure:
 5. A scheduled CI job (ROADMAP §3) builds against the newest Mathlib weekly and only warns; it never changes pins.
 
 ## What a downstream project should do
-- Pin a release tag (`require oscint from git "…" @ "v0.3.0"`) and the SHA-256 of `stamps/statements.json`.
+- Pin a release tag (in `lakefile.toml`: `rev = "v0.3.0"` under `[[require]] name = "oscint"`, README) and the
+  SHA-256 of `stamps/statements.json` from that release's notes (`docs/release-notes/<tag>.md`); against tampering,
+  pin the full commit hash recorded in `docs/release-notes/<tag>.commit` instead of the tag name.
 - Run `python3 .lake/packages/oscint/tools/oscint_check.py --statement <each statement you use> --expect-sha256 <pin>`
   in CI (add `--commitments` to recompute the commitments; it takes a few minutes).
 - Use the theorems listed as `proved_by`, not internal lemmas; or accept that internal names can change in a patch.

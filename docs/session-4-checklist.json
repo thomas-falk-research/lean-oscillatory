@@ -1,0 +1,86 @@
+{
+ "session": 4,
+ "started": "2026-11-07",
+ "base_commit": "cb39601",
+ "rule": "An item is done only with an evidence path; 'open' items say where they stopped.",
+ "items": [
+  {
+   "id": "baseline",
+   "title": "Re-verify the downstream review's baseline on cb39601",
+   "status": "done",
+   "evidence": "docs/replay/2026-11-07-session4-baseline-quick.txt (make quick exit 0; axiom audit 536/536; guard 0 violations; 13 statement types; GammaFree controls rejected; 5 pinned stamps verified)"
+  },
+  {
+   "id": "P0a",
+   "title": "Prepare v0.3.0: CHANGELOG with Statement changes, release notes with SHA-256 pins, version bumps, consumer pinned by tag",
+   "status": "done-pending-owner",
+   "evidence": "re-prepared for the session final commit after adversarial M1/M6: CHANGELOG v0.3.0; docs/release-notes/v0.3.0.md and .commit; examples/consumer-release; owner publishes (docs/HANDOFF.md)"
+  },
+  {
+   "id": "P0b",
+   "title": "GammaFree.lean in a stamp",
+   "status": "done",
+   "evidence": "already in stamps/20261107T012459Z-2d5356432156 at its current SHA-256 (docs/replay/2026-11-07-session4-baseline-quick.txt)"
+  },
+  {
+   "id": "P0c",
+   "title": "Doc inconsistencies; CI fails when README's pinned tag does not exist",
+   "status": "done",
+   "evidence": "tools/check_release_pin.sh (25 self-test cases, hardened after review/2026-11-07-API2-adversarial.md), CI jobs release-pin, consumer-release; tools/check_entry_point.sh"
+  },
+  {
+   "id": "P1",
+   "title": "Conversion layer and Mathlib-idiom front ends (batch API2)",
+   "status": "done",
+   "evidence": "14 statements stamped stamps/20261107T101640Z-4acb308f54f4; pre-proof FAITHFUL x2; proofs OscInt/Front/Convert*.lean; post-proof FAITHFUL x2; adversarial answered (review/2026-11-07-API2-*); acceptance examples/consumer/ConsumerFormula.lean; replay docs/replay/2026-11-07-session4-final-verify-all.txt"
+  },
+  {
+   "id": "P2",
+   "title": "Hypothesis checkers",
+   "status": "partial",
+   "evidence": "OscInt/Front/Poly.lean lemmas (line expansions, polarisation, Hessian from diagonal values, rank-one fold test), used by ConsumerFormula.lean. Not done: a tactic and failure-message negative controls (a tactic needs a guard-policy decision: metaprogramming is forbidden in library files)."
+  },
+  {
+   "id": "P3",
+   "title": "Classical forms and parametric uniformity",
+   "status": "open",
+   "evidence": null
+  },
+  {
+   "id": "P4",
+   "title": "Asymptotic expansions",
+   "status": "open",
+   "evidence": null
+  },
+  {
+   "id": "P5",
+   "title": "Explicit constants (exploration, docs/constants.md)",
+   "status": "explored",
+   "evidence": "docs/constants.md; decision: do not formalise along this route yet (owner)"
+  },
+  {
+   "id": "P6",
+   "title": "Vector-valued amplitudes",
+   "status": "open",
+   "evidence": null
+  },
+  {
+   "id": "P7",
+   "title": "Worked examples",
+   "status": "partial",
+   "evidence": "OscInt/Front/Examples.lean (FE-S2.1, FE-S2.2, FE-S4.1-prime instances, C8 values); Schrodinger, Airy, Bessel not started"
+  },
+  {
+   "id": "P8",
+   "title": "Developer experience",
+   "status": "open",
+   "evidence": null
+  },
+  {
+   "id": "P9",
+   "title": "Design documents beyond the 2D toolkit",
+   "status": "partial",
+   "evidence": "docs/design/torus-lattice.md (P9a); P9b-e not started"
+  }
+ ]
+}

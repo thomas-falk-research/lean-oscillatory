@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Check, from a downstream Lake project, that the OscInt you depend on is exactly the reviewed one.
 
-Run it from your project's root after `lake build` (Python 3.8+, standard library only):
+Run it from your project's root after `lake build` and `lake build OscInt Blueprint` (the kernel replay needs every
+OscInt and Blueprint module built, not only those your project imports; Python 3.8+, standard library only):
 
     python3 .lake/packages/oscint/tools/oscint_check.py --statement OscInt.Statements.D4LimitStatement
 
@@ -207,7 +208,9 @@ def main(argv=None):
         r = subprocess.run(["lake", "env", "lean", lf], cwd=project, capture_output=True, text=True)
         out = r.stdout + r.stderr
         if r.returncode != 0 and "OSCINT-" not in out:
-            print(f"oscint-check: ERROR: `lake env lean` failed in {project} (did you run `lake build`?):\n{out}")
+            print(f"oscint-check: ERROR: `lake env lean` failed in {project}. Run `lake build OscInt Blueprint` there "
+                  f"(the check imports OscInt's root module and replays every OscInt and Blueprint module), then "
+                  f"retry:\n{out}")
             return 2
         for s in selected:
             m = re.search(rf"^OSCINT-OK {re.escape(s['proved_by'])} : {re.escape(s['name'])} axioms \[(.*)\]$",

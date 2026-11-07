@@ -1,0 +1,37 @@
+External downstream dry run, 2026-11-07 (session 4). A fresh Lake project outside the repository, exactly as README
+"Depending on OscInt" describes, with the release tag replaced by the commit it will point to (the tag does not exist
+yet): lean-toolchain leanprover/lean4:v4.35.0; lakefile.toml
+
+    [[require]]
+    name = "oscint"
+    git = "https://github.com/thomas-falk-research/lean-oscillatory"
+    rev = "0440beacb17b267807b6aa281f8ab7ac5a8d1639"
+
+and one file Downstream.lean: `import OscInt.API` and
+`example : StationaryPhaseStatement ∧ D4LimitStatement ∧ FoldFEStatement ∧ D4BoundFEStatement :=
+  ⟨OscInt.stationaryPhase, OscInt.d4Limit, OscInt.API.foldFE, OscInt.API.d4BoundFE⟩`.
+
+1. lake update; lake exe cache get (4m53s); lake build: "Build completed successfully (9117 jobs)" (2m51s).
+2. python3 .lake/packages/oscint/tools/oscint_check.py --statement …FoldFEStatement --statement …D4BoundFEStatement
+   --statement …StationaryPhaseStatement --expect-sha256 32eac265…24c0  ->  EXIT 2 (finding):
+oscint-check: OscInt statements (27 statements, Lean leanprover/lean4:v4.35.0, Mathlib 56a005855ea1)
+oscint-check: ok: toolchain and Mathlib match; 6 statement file(s) match their stamps
+oscint-check: ERROR: `lake env lean` failed in /tmp/claude-0/-home-user-lean-oscillatory/fcbe6bfc-8b3f-5437-8e7d-78671c19013e/scratchpad/external (did you run `lake build`?):
+/tmp/tmpao4b_5cm/OscIntCheck.lean:1:0: error: object file '/tmp/claude-0/-home-user-lean-oscillatory/fcbe6bfc-8b3f-5437-8e7d-78671c19013e/scratchpad/external/.lake/packages/oscint/.lake/build/lib/lean/OscInt.olean' of module OscInt does not exist
+
+   The checker imports OscInt's root module and replays every OscInt and Blueprint module; a downstream build that
+   imports only OscInt.API does not build them. Fix (commit 3290127): README, the checker's docstring and its error
+   message say to run `lake build OscInt Blueprint` first; CI consumer-release does it.
+3. lake build OscInt Blueprint: "Build completed successfully (9122 jobs)" (18 s).
+4. The same checker command again (13m15s):
+oscint-check: OscInt statements (27 statements, Lean leanprover/lean4:v4.35.0, Mathlib 56a005855ea1)
+oscint-check: ok: toolchain and Mathlib match; 6 statement file(s) match their stamps
+oscint-check: ok: FE-S3 OscInt.API.foldFE : OscInt.Statements.FoldFEStatement (axioms ['Classical.choice', 'Quot.sound', 'propext'])
+oscint-check: ok: FE-S4.1′ OscInt.API.d4BoundFE : OscInt.Statements.D4BoundFEStatement (axioms ['Classical.choice', 'Quot.sound', 'propext'])
+oscint-check: ok: S2.2 OscInt.stationaryPhase : OscInt.Statements.StationaryPhaseStatement (axioms ['Classical.choice', 'Quot.sound', 'propext'])
+oscint-check: ok: kernel replay (leanchecker) accepted 72 module(s)
+oscint-check: ok: commitment of OscInt.Statements.FoldFEStatement equals its stamp
+oscint-check: ok: commitment of OscInt.Statements.D4BoundFEStatement equals its stamp
+oscint-check: ok: commitment of OscInt.Statements.StationaryPhaseStatement equals its stamp
+oscint-check: PASS (0 problem(s))
+EXIT 0
