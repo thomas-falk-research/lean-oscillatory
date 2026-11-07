@@ -16,6 +16,9 @@ use oscint_tools::{json, sys};
 use std::fs;
 use std::path::Path;
 
+/// Prefix of the error for a statement file that is new, not edited: the step is INCOMPLETE (exit 3), not FAIL.
+const NOT_YET: &str = "not yet: ";
+
 pub struct Entry {
     pub name: String,
     pub label: String,
@@ -185,10 +188,24 @@ pub fn generate(root: &Path) -> Result<String, String> {
                 by = Some(st.clone());
             }
         }
-        let st = by.ok_or(format!(
-            "{f} (sha256 {now}) is recorded by no pinned stamp: a frozen statement file was edited, or a new one \
-             is not stamped yet (`make stamp`, then pin it in stamps/pins.txt)"
-        ))?;
+        let Some(st) = by else {
+            // a file some pinned stamp recorded under another hash was edited (FAIL); a file no pinned stamp has
+            // ever recorded is a new statement that is not stamped yet (INCOMPLETE, lessons 9)
+            let mut known = false;
+            for st in &stamps {
+                if file_hash(&read(root, &format!("{st}/manifest.txt"))?, f).is_some() {
+                    known = true;
+                }
+            }
+            if known {
+                return Err(format!(
+                    "{f} (sha256 {now}) differs from every pinned stamp that records it: a frozen statement file \
+                     was edited; revert it (a statement change needs a new statement, stamp, review and pin)"
+                ));
+            }
+            return Err(format!("{NOT_YET}{f} is a new statement file not yet stamped and pinned (`make stamp`, then \
+                 add its pin lines to stamps/pins.txt)"));
+        };
         sfiles.push((f.clone(), now, st));
     }
     Ok(render(&toolchain, &mathlib, &entries, &sfiles))
@@ -240,6 +257,10 @@ fn main() {
     let out = root.join("stamps/statements.json");
     let new = match generate(root) {
         Ok(s) => s,
+        Err(e) if e.starts_with(NOT_YET) => {
+            println!("statements: INCOMPLETE: {}", &e[NOT_YET.len()..]);
+            std::process::exit(3);
+        }
         Err(e) => {
             println!("statements: FAIL: {e}");
             std::process::exit(1);

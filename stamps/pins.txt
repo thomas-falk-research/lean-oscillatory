@@ -20,3 +20,6 @@ challenge:comparator-S41w.json stamps/20261106T081634Z-e2d7771c358e
 challenge:comparator-S42.json stamps/20261106T081634Z-e2d7771c358e
 challenge:comparator-S43.json stamps/20261106T081634Z-e2d7771c358e
 challenge:comparator-S44.json stamps/20261106T081634Z-e2d7771c358e
+OscInt.Statements.AmpBoundOfContDiffStatement stamps/20261107T012459Z-2d5356432156
+OscInt.Statements.D4LimitClosedFormStatement stamps/20261107T012459Z-2d5356432156
+challenge:comparator-API1.json stamps/20261107T012459Z-2d5356432156

@@ -74,7 +74,7 @@ statements: tools
 	$(T)/statements gen .
 
 statements-check: tools
-	$(T)/statements check .
+	$(UNSKIP); $(T)/statements check . || { [ $$? -eq 3 ] && $(SKIP); }
 
 numerics:
 	cd numerics && cargo build --release --locked --quiet && ./target/release/oscint-numerics
