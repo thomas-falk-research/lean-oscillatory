@@ -217,4 +217,6 @@ at 13.46 GB (limit 14.3 GB), alone on the machine. The toolchain source (`src/le
 saw the same for the root. Why it mattered: the replay could not pass, and the first diagnosis (a referee's
 concurrent process, lessons 28) was wrong until the step was re-run alone. Rule: no module except the root has
 submodules; library code that belongs to a namespace with an entry-point module lives in another directory
-(`OscInt/Front/`). Check: `tools/check_entry_point.sh` (in `make quick`), with a self-test of the detector.
+(`OscInt/Front/`). Check: `tools/check_entry_point.sh` (in `make quick`), with a self-test of the detector. After moving a module,
+delete its old build outputs (`.lake/build/lib/lean/<old path>`, `.lake/build/ir/<old path>`), or the replay's
+stale-build check fails, as it did once on c462966 (lessons 5 working).

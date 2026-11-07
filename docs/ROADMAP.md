@@ -24,7 +24,8 @@ The frozen statements use audit-friendly encodings (`oscInt2` on `ℝ × ℝ` wi
 nested-`fderiv` `dd`/`ddd`). Users write Mathlib idioms. Each new statement below is frozen, stamped and reviewed
 like the existing ones; front-end versions are proved from frozen statements by bridge lemmas, so they inherit the
 trust chain.
-- [ ] **Explicit or effective constants** for S2–S4 *(downstream, first priority)*: C as a computable function of
+- [ ] **Explicit or effective constants** for S2–S4 *(downstream, first priority; explored 2026-11-07,
+      `docs/constants.md`: the existing route gives only crude constants)*: C as a computable function of
       the derivative bounds of the phase, the gradient lower bound, the amplitude bound and the support size. The
       downstream project found a gap of about 20 orders of magnitude between what an existential constant allowed it
       to prove and what was observed.
@@ -37,12 +38,15 @@ trust chain.
 - [ ] **Asymptotic expansions** *(downstream)*: the leading term of nondegenerate stationary phase,
       (2π/m)^{n/2} |det D²Ψ|^{-1/2} e^{iπ sgn/4} e^{imΨ(k₀)} A(k₀) + O(m^{-n/2-1}), and the Airy leading term for folds.
 - [ ] **Front-end theorems** in Mathlib idioms (batch 1 done 2026-11-07: F1 `ContDiff`-plus-compact-support amplitudes,
-      F2 the D4 limit with its closed-form constant, entry point `OscInt/API.lean`; next: S2.2, S3, S4.1′ front ends,
+      F2 the D4 limit with its closed-form constant, entry point `OscInt/API.lean`; batch 2 done 2026-11-07: S2.1, S2.2,
+      S3, S4.1′ front ends for one phase, `docs/STATUS.md`; next: family versions,
       `iteratedFDeriv` conversions, `EuclideanSpace`) (integrals over `EuclideanSpace ℝ (Fin n)`, `ContDiff` plus
       `HasCompactSupport` amplitudes, norms via `iteratedFDeriv`).
-- [ ] **Conversion lemmas** *(downstream)* from standard formulations (a Hessian as a `Matrix`, rank and kernel
+- [x] **Conversion lemmas** *(downstream)*, front-end batch 2 (2026-11-07; C1–C9, C7′; `docs/STATUS.md`, record
+      `docs/replay/2026-11-07-session4-final-verify-all.txt`), from standard formulations (a Hessian as a `Matrix`, rank and kernel
       conditions, the classical discriminant) to `FoldOrNondeg`, `hessDet`, `cubicCoeffs`, `GradLower`, `AmpBound`.
-- [ ] **Hypothesis checkers**: lemmas and a small tactic that discharge `disc (cubicCoeffs φ) ≠ 0`,
+- [ ] **Hypothesis checkers** (lemmas done: `OscInt/Front/Poly.lean`, used by `examples/consumer/ConsumerFormula.lean`;
+      tactic not started, needs a guard-policy decision): lemmas and a small tactic that discharge `disc (cubicCoeffs φ) ≠ 0`,
       `FoldOrNondeg`, `GradLower` and `AmpBound` for concrete polynomial phases and standard bumps, with failure
       messages naming the condition that fails rather than an unsolved goal.
 - [ ] **Worked examples that double as non-vacuity checks** *(downstream)*: free Schrödinger decay, Bessel-function
