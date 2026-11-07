@@ -1,0 +1,12 @@
+import Mathlib
+#check @fderiv_comp_add_right
+#check @iteratedFDeriv_comp_add_right
+#check @HasStrictFDerivAt.map_nhds_eq_of_equiv
+#check @isCompact_sphere
+#check @Function.Periodic.isBounded_of_continuous
+#check @Real.cos_add_two_pi
+#check @MeasureTheory.Measure.prod.instIsAddHaarMeasure
+#check @Complex.besselJ_int_neg
+#check @UnitAddTorus.mFourierCoeff
+#check @IsCompact.exists_isMinOn
+#check @SmoothPartitionOfUnity.IsSubordinate

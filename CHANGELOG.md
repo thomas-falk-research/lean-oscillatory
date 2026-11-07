@@ -10,18 +10,38 @@ Nothing yet.
 
 ## v0.3.0 — prepared 2026-11-07, not yet published
 
-The owner publishes releases; the steps and the SHA-256 pins are in `docs/release-notes/v0.3.0.md`.
+The owner publishes releases; the steps, the SHA-256 pins and (after the release commit) its full hash are in
+`docs/release-notes/v0.3.0.md` and `docs/release-notes/v0.3.0.commit`. A first preparation at 2e8707a was withdrawn
+after the adversarial review (`review/2026-11-07-API2-adversarial.md`, M1, M6): v0.3.0 is the session's final commit.
 
 ### Statement changes
 Against v0.2.0 (`stamps/pins.txt` at tag `v0.2.0` and now): **no existing statement changed**. The eleven statement
-constants of v0.2.0 keep their statement files byte for byte and their commitments (`make commit` compares every
-commitment with its pinned stamp; record `docs/replay/2026-11-07-API1-verify-all.txt`, lines 161–173, and this
-session's verify-all record listed in the release notes).
-- Added: `OscInt.Statements.AmpBoundOfContDiffStatement` (F1) and `OscInt.Statements.D4LimitClosedFormStatement` (F2),
-  file `OscInt/Statements/FrontEnd.lean`, stamp `stamps/20261107T012459Z-2d5356432156`.
-- `proved_by` changed from none to a theorem: S4.4 `D4ConstantClosedFormStatement` (`OscInt.d4ConstantClosedForm`),
-  F1 (`OscInt.API.ampBoundOfContDiff`), F2 (`OscInt.API.d4LimitClosedForm`).
-- New: `stamps/statements.json` itself (v0.2.0 had none), SHA-256 in the release notes.
+constants of v0.2.0 keep their statement files byte for byte and their commitments (`make commit`: every commitment
+equals its pinned stamp; this session's records under `docs/replay/2026-11-07-*`).
+- Added (front-end batch 1): `AmpBoundOfContDiffStatement` (F1), `D4LimitClosedFormStatement` (F2), file
+  `OscInt/Statements/FrontEnd.lean`, stamp `stamps/20261107T012459Z-2d5356432156`.
+- Added (front-end batch 2): fourteen statements in `OscInt/Statements/Convert.lean`, stamp
+  `stamps/20261107T101640Z-4acb308f54f4`: C1 `DdEqIteratedStatement`, C2 `DddEqIteratedStatement`, C3
+  `HessDetEqDetStatement`, C4 `CubicCoeffsEqStatement`, C5 `DiscEqCubicDiscrStatement`, C6
+  `DiscNeZeroIffIsolatedStatement`, C7 `FoldOrNondegIffStatement`, C7′ `FoldOrNondegOfHasFDerivStatement`, C8
+  `GradLowerIffStatement`, C9 `AmpBoundConvStatement`, FE-S2.1 `NonStationaryFEStatement`, FE-S2.2
+  `StationaryPhaseFEStatement`, FE-S3 `FoldFEStatement`, FE-S4.1′ `D4BoundFEStatement`.
+- `proved_by` set: S4.4 (`OscInt.d4ConstantClosedForm`), F1, F2, and all fourteen batch-2 statements (`OscInt.API.*`).
+- New: `stamps/statements.json` itself (v0.2.0 had none); 27 statements.
+
+### Front-end batch 2 (new; statement-first order restored)
+- Conversions from Mathlib's idiom to the frozen encodings: `iteratedFDeriv` ↔ `dd`/`ddd` (C1, C2), `hessDet` ↔
+  `Matrix.det` of the Hessian matrix (C3), `cubicCoeffs` ↔ the coefficients of D³φ(0)[κ,κ,κ]/6 (C4), `disc` ↔
+  Mathlib's `Cubic.discr` (C5), `disc ≠ 0` ↔ isolated critical point (C6), `FoldOrNondeg` ↔ kernel/rank form of the
+  Hessian matrix (C7) and from `HasFDerivAt` data (C7′), `GradLower` ↔ Euclidean and max-norm bounds (C8), `AmpBound` ↔
+  `ContDiff` + `HasCompactSupport` (C9).
+- Front ends for S2.1, S2.2, S3, S4.1′ with `ContDiff`, `tsupport`, `iteratedFDeriv` bounds and linear terms as
+  continuous linear functionals (one phase each). Entry point unchanged: `import OscInt.API` (now exposes them).
+- Hypothesis helpers `OscInt/API/Poly.lean` (P2): derivative data of explicit polynomial phases from `ring`
+  identities; `examples/consumer/ConsumerFormula.lean`: FE-S3 and FE-S4.1′ on phases given only by a formula.
+- Order: statements stamped (RFC 3161 ×3) and reviewed blind (FAITHFUL ×2) before any Lean proof; post-proof
+  FAITHFUL ×2; adversarial review answered (`review/2026-11-07-API2-*`). What is and is not evidenced about the order:
+  `docs/statements.md`, clarification of 2026-11-07 (lessons 29).
 
 ### Machine-checked as stated
 - **S4.4** closed forms of the D4 constant (`OscInt.d4ConstantClosedForm`): ∫₀^∞ cos u · u^{−1/3} du = Γ(2/3)/2, and
@@ -53,14 +73,18 @@ session's verify-all record listed in the release notes).
 - Build noise: `allowNonModules = true` (0 warnings), the Lean step runs once per `verify-all` (`build/lean.ok`),
   `ite_false` for the deprecated `if_false`, the Rust toolchain installed explicitly in CI.
 - `tools/check_release_pin.sh` and CI job `release-pin`: CI fails while README, `docs/policy.md` or the consumer
-  example pin a release tag that does not exist, or whose release notes do not give the SHA-256 of
-  `stamps/statements.json` and `tools/oscint_check.py` at that tag (with a self-test of negative controls).
+  examples pin a release tag that does not exist, that does not point to the commit recorded in
+  `docs/release-notes/<tag>.commit`, or whose notes do not give the SHA-256 of `stamps/statements.json` and
+  `tools/oscint_check.py` at that commit (25 self-test cases; hardened after the adversarial review).
+- `tools/check_entry_point.sh` (in `make quick`): `import OscInt.API` exposes every statement and proving theorem of
+  `stamps/statements.json`.
 - `examples/consumer-release/` and CI job `consumer-release`: a downstream project requiring OscInt from GitHub by its
   release tag, built and checked against the pinned SHA-256 (runs once the tag exists).
 
 ### Fixed
 - `lakefile.toml` said version 0.1.0 (then 0.2.0); it, `CITATION.cff` and `.zenodo.json` now say 0.3.0.
-- README told users to pin `v0.3.0` before that tag existed; the pin is now checked (`release-pin`).
+- README told users to pin `v0.3.0` before that tag existed; this is now detected (`release-pin`), and README says
+  the release is pending.
 - `docs/policy.md` showed the pin in `lakefile.lean` syntax next to README's `lakefile.toml`; both use TOML now.
 - `docs/ROADMAP.md` and `docs/HANDOFF.md` listed "put `GammaFree.lean` into the next stamp" as open; it already is
   (manifest of `stamps/20261107T012459Z-2d5356432156`, SHA-256 `5dc19eb4…`, the file's current hash).

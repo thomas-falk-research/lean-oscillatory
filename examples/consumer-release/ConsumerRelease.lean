@@ -11,3 +11,7 @@ open OscInt.Statements
 
 theorem release_inputs : StationaryPhaseStatement ∧ FoldStatement ∧ D4LimitClosedFormStatement :=
   ⟨OscInt.stationaryPhase, OscInt.fold, OscInt.API.d4LimitClosedForm⟩
+
+/-- The Mathlib-idiom front ends of v0.3.0 (front-end batch 2), from the documented entry point. -/
+theorem release_front_ends : FoldFEStatement ∧ D4BoundFEStatement ∧ NonStationaryFEStatement :=
+  ⟨OscInt.API.foldFE, OscInt.API.d4BoundFE, OscInt.API.nonStationaryFE⟩

@@ -1,0 +1,46 @@
+import Mathlib
+open MeasureTheory
+#check @Function.Periodic
+#check @AddCircle
+#check @AddCircle.intervalIntegral_preimage
+#check @AddCircle.integral_preimage
+#check @UnitAddTorus
+#check @UnitAddTorus.integral_preimage
+#check @UnitAddTorus.mFourierCoeff
+#check @UnitAddTorus.mFourier
+#check @fourierCoeffOn
+#check @Real.smoothTransition
+#check @Real.smoothTransition.one_of_one_le
+#check @Real.smoothTransition.zero_of_nonpos
+#check @Real.smoothTransition.contDiff
+#check @SmoothPartitionOfUnity.exists_isSubordinate
+#check @PartitionOfUnity.exists_isSubordinate
+#check @exists_contDiff_tsupport_subset
+#check @MeasureTheory.integral_prod
+#check @MeasureTheory.setIntegral_prod
+#check @MeasureTheory.integral_add_right_eq_self
+#check @norm_iteratedFDeriv_mul_le
+#check @MeasureTheory.IsAddFundamentalDomain.integral_eq_tsum
+#check @isAddFundamentalDomain_Ioc
+#check @ZSpan.isAddFundamentalDomain
+#check @Function.Periodic.intervalIntegral_add_eq
+#check @toIcoMod_add_toIcoDiv_zsmul
+#check @HasStrictFDerivAt.map_nhds_eq
+#check @Complex.besselJ
+#check @ContDiff.continuous_iteratedFDeriv
+#check @Continuous.bddAbove_range_of_hasCompactSupport
+#check @Real.rpow_le_rpow_of_exponent_ge
+#check @Function.Periodic.exists_mem_Ico₀
+#check @IsCompact.exists_bound_of_continuousOn
+#check @IsCompact.elim_finite_subcover
+#check @ContDiffBump
+#check @Function.Periodic.integral_add_eq
+#check @MeasureTheory.integral_indicator
+#check @Metric.isCompact_sphere
+#check @Function.Periodic.comp
+#check @ContDiff.periodic_iteratedFDeriv
+#check @Function.Periodic.bddAbove_range
+example : (Set.Icc (-Real.pi) Real.pi ×ˢ Set.Icc (-Real.pi) Real.pi : Set (ℝ × ℝ)) = _ := rfl
+example (f : ℝ × ℝ → ℂ) : Prop := Function.Periodic f ((2 * Real.pi, 0) : ℝ × ℝ)
+open scoped ContDiff in
+example (χ : ℝ × ℝ → ℝ) : Prop := ContDiff ℝ ∞ χ

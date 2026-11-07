@@ -79,14 +79,23 @@ jobs:
           lake update
           lake exe cache get
           lake build
-      - name: Downstream checker from the package, against the SHA-256 in the release notes
+      - name: The package is the recorded release commit, and its checker is the pinned one
         working-directory: examples/consumer-release
         run: |
           tag=$(grep -oE 'rev = "v[0-9.]+"' lakefile.toml | grep -oE 'v[0-9.]+')
-          pin=$(grep -E '^\| `stamps/statements.json` \|' "../../docs/release-notes/$tag.md" | grep -oE '[0-9a-f]{64}')
-          python3 .lake/packages/oscint/tools/oscint_check.py \
+          want=$(tr -d '[:space:]' < "../../docs/release-notes/$tag.commit")
+          test "$(git -C .lake/packages/oscint rev-parse HEAD)" = "$want"
+          ck=$(grep -F '| `tools/oscint_check.py` |' "../../docs/release-notes/$tag.md" | grep -oE '[0-9a-f]{64}')
+          echo "$ck  .lake/packages/oscint/tools/oscint_check.py" | sha256sum -c -
+      - name: Downstream checker (this repository's reviewed copy), against the SHA-256 in the release notes
+        working-directory: examples/consumer-release
+        run: |
+          tag=$(grep -oE 'rev = "v[0-9.]+"' lakefile.toml | grep -oE 'v[0-9.]+')
+          pin=$(grep -F '| `stamps/statements.json` |' "../../docs/release-notes/$tag.md" | grep -oE '[0-9a-f]{64}')
+          python3 ../../tools/oscint_check.py --oscint .lake/packages/oscint \
             --statement OscInt.Statements.StationaryPhaseStatement --statement OscInt.Statements.FoldStatement \
-            --statement OscInt.Statements.D4LimitClosedFormStatement --expect-sha256 "$pin" --commitments
+            --statement OscInt.Statements.D4LimitClosedFormStatement --statement OscInt.Statements.FoldFEStatement \
+            --statement OscInt.Statements.D4BoundFEStatement --expect-sha256 "$pin" --commitments
 
   consumer:
     if: ${{ !inputs.mathlib_from_source && (github.ref == 'refs/heads/main' || github.event_name != 'push') }}

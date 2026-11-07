@@ -164,3 +164,48 @@ mattered: a short, obvious proof is exactly where the temptation is greatest and
 no proof code for a statement, even in scratch, before its stamp and blind review; check the assembly against the
 parts only when the parts are blueprint hypotheses. Check: none automatic (scratch is outside the tree); the hand-off
 lists it under process notes.
+
+## 24. A referee proved the statement it was reviewing (2026-11-07)
+In the blind pre-proof review of batch 2, referee A checked that C5 is true by proving it in its own scratch
+(`simp only [disc, Cubic.discr]`) and disclosed it. Harmless here (one line, after the stamp, outside the tree), but
+"no proof existed before the review" is then true only of the lead and the repository, and a referee that proves a
+statement has stopped reviewing its meaning. Rule: pre-proof referee prompts say "do not prove the statements under
+review; numerical and counterexample checks only", and the docs state the claim at the strength the evidence has.
+Check: none automatic (referee scratch is outside the tree); the prompt template.
+
+## 25. `make stamp` refuses a dirty tree, after the commitment step (2026-11-07)
+An untracked referee prompt made `make stamp` fail at its last step, after nine minutes of commitments and exports,
+so the whole target ran twice. Rule: park every new file in the scratchpad before `make stamp` (as for referee runs,
+lessons 16), and commit the prompt after the stamp. Check: `stamp create` already refuses (correct); a preflight
+`git status --porcelain` in the `stamp` target would fail in seconds instead of minutes (not yet added).
+
+## 26. Mathlib renamed `Cubic.disc` to `Cubic.discr` (2026-11-07)
+The plan for C5 named `Cubic.disc` from memory; `#check` at the pin found only `Cubic.discr` (and
+`discr_eq_prod_three_roots`, `discr_ne_zero_iff_roots_nodup`). Caught before the statement was written (lessons 1
+working as intended). Rule unchanged: `#check` before writing a statement; the new names are now used by a frozen
+statement, so `MathlibNames.lean` should list them (not yet added).
+
+## 27. The guard matches theorem names by their last component (2026-11-07)
+A challenge theorem `OscInt.API.dd_eq_iteratedFDeriv` was flagged because an internal lemma
+`…ImplicitAux.dd_eq_iteratedFDeriv` exists; the guard demanded a `#assert_type_is` line for a theorem not yet
+declared. Conservative (a false positive, not a hole); renamed the API theorem instead of changing the guard, since a
+guard change needs an adversarial review. Rule: public API names must not repeat an internal short name. Check: the
+guard itself.
+
+## 28. A referee's Lean process OOM-killed the replay (2026-11-07)
+`make verify-all` on 9e5540a reported `FAIL leanchecker OscInt.API` with an empty message: the memory cgroup killed
+`leanchecker` at 13.5 GB while three referees ran Lean on the same machine (one `import OscInt` was enough). The
+step was correct to fail and the record cannot be used. Why it mattered: the final replay is the evidence, and a
+contended machine turns it into noise (lessons 14 had the same signature). Rule: the final `verify-all` runs with no
+other Lean process on the machine; referees run before or after it, never during. Check: none automatic; the replay
+record names the commit and the run's isolation in its header.
+
+## 29. A fast proof campaign outran the order claim (2026-11-07)
+The statement-first order held for the Lean proofs of batch 2 (stamp, two blind reviews, then proof agents), but the
+adversarial referee showed that the docs claimed more than the evidence: the reviews were not timestamped, the route
+with its algebraic certificates was drafted during the review window, and the derivative-level sanity file was
+written while the agents ran although the answers said "before". Why it mattered: "frozen and reviewed before the
+proof" is the claim that makes "as stated" credible, and it must rest on timestamps, not on commit order. Rule:
+stamp the review reports (a stamp of the tree after the review commit) before launching proof agents, and word the
+claim as "statements timestamped; no Lean proof before the reviews (git order, reviews stamped at …)". Check: none
+automatic; the hand-off checklist.
