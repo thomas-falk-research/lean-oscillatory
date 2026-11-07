@@ -1,6 +1,6 @@
 name = "consumer"
 version = "0.1.0"
-defaultTargets = ["Consumer"]
+defaultTargets = ["Consumer", "ConsumerFormula"]
 
 # A downstream project depending on OscInt. CI uses the checkout itself (`path = "../.."`); a real project writes
 #   git = "https://github.com/thomas-falk-research/lean-oscillatory"
@@ -12,6 +12,10 @@ path = "../.."
 
 [[lean_lib]]
 name = "Consumer"
+
+# P1 acceptance: front ends on phases given only by a formula (Mathlib-only hypotheses).
+[[lean_lib]]
+name = "ConsumerFormula"
 
 # Negative controls for tools/oscint_check.py (tools/test_oscint_check.sh); never a default target.
 [[lean_lib]]

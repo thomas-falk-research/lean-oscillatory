@@ -31,3 +31,17 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
 #assert_type_is OscInt.d4ConstantClosedForm OscInt.Statements.D4ConstantClosedFormStatement
 #assert_type_is OscInt.API.ampBoundOfContDiff OscInt.Statements.AmpBoundOfContDiffStatement
 #assert_type_is OscInt.API.d4LimitClosedForm OscInt.Statements.D4LimitClosedFormStatement
+#assert_type_is OscInt.API.dd_iteratedFDeriv OscInt.Statements.DdEqIteratedStatement
+#assert_type_is OscInt.API.ddd_iteratedFDeriv OscInt.Statements.DddEqIteratedStatement
+#assert_type_is OscInt.API.hessDet_eq_det OscInt.Statements.HessDetEqDetStatement
+#assert_type_is OscInt.API.cubicCoeffs_eq OscInt.Statements.CubicCoeffsEqStatement
+#assert_type_is OscInt.API.disc_eq_cubic_discr OscInt.Statements.DiscEqCubicDiscrStatement
+#assert_type_is OscInt.API.disc_ne_zero_iff_isolated OscInt.Statements.DiscNeZeroIffIsolatedStatement
+#assert_type_is OscInt.API.foldOrNondeg_iff OscInt.Statements.FoldOrNondegIffStatement
+#assert_type_is OscInt.API.foldOrNondeg_of_hasFDeriv OscInt.Statements.FoldOrNondegOfHasFDerivStatement
+#assert_type_is OscInt.API.gradLower_iff OscInt.Statements.GradLowerIffStatement
+#assert_type_is OscInt.API.ampBound_conv OscInt.Statements.AmpBoundConvStatement
+#assert_type_is OscInt.API.nonStationaryFE OscInt.Statements.NonStationaryFEStatement
+#assert_type_is OscInt.API.stationaryPhaseFE OscInt.Statements.StationaryPhaseFEStatement
+#assert_type_is OscInt.API.foldFE OscInt.Statements.FoldFEStatement
+#assert_type_is OscInt.API.d4BoundFE OscInt.Statements.D4BoundFEStatement
