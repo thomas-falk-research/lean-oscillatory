@@ -296,3 +296,13 @@ Modelling choices and what is omitted.
 - Pre-proof sanity theorems are on data (matrices, cubics, Euclidean coordinates); non-vacuity of the derivative
   hypotheses of the front ends for explicit phases (fold x³ + y², elliptic and generic D4 cubics) is shown after the
   proofs, through the bridges, in `OscInt/API/ConvertSanity.lean` and the consumer example, as for batch 1.
+
+Clarification added after the API2 stamp (2026-11-07, from the two blind pre-proof referees, FAITHFUL ×2 on all
+fourteen statements; the stamped text above and `OscInt/Statements/Convert.lean` are unchanged): (1) C7′ assumes
+`HasFDerivAt` at every point; a neighbourhood of k would suffice and give a stronger statement, which would be a new
+statement (candidate for the next batch); (2) C7′ is an equivalence despite its name `…OfHasFDeriv…`; (3) `disc` and
+`Cubic.discr` are invariant under (a, b, c, d) ↦ (d, c, b, a), so sanity theorems on discriminant values cannot pin
+the coefficient order; it is pinned by the derivative-level checks in `OscInt/API/ConvertSanity.lean`; (4) order of
+work: no proof of a batch-2 statement existed in the repository or in the lead's scratch before the stamp and both
+reviews; referee A wrote a one-line proof of C5 in its own scratch during its review (disclosed in
+`review/2026-11-07-API2-pre-proof-answers.md`).
