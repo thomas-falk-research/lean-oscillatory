@@ -1,0 +1,30 @@
+tools/test_oscint_check.sh, run from examples/consumer on commit f3b8881 (tools/oscint_check.py sha256 f45b18d520f8901a3568c45e107fadda5572df06c609458ff13eb7d81d503706), 2026-11-07, local container (4 CPUs). Positive full run (expect-sha256, kernel replay of the dependency closure, recomputed commitments) and 13 negative controls, one per check path: 15/15 as required.
+
+ok   positive: full check of S4.2 (rc 0)
+ok   partial run is not PASS (rc 0)
+ok   wrong pinned hash (rc 1)
+ok   unknown statement (rc 1)
+ok   edited statement file (rc 1)
+ok   unstamped statement file (rc 1)
+ok   unproved statement requested (rc 1)
+ok   other toolchain (rc 1)
+ok   other Mathlib (rc 1)
+ok   theorem of another statement (rc 1)
+ok   defeq-only type (rc 1)
+ok   statement from another module (rc 1)
+ok   extra axiom (rc 1)
+ok   kernel-unchecked theorem (rc 1)
+ok   changed commitment (rc 1)
+test_oscint_check: 0 failure(s)
+
+real	21m39.177s
+user	17m26.513s
+sys	4m7.374s
+EXIT 0
+
+== The adversarial referee's reproductions (review/2026-11-07-S44-adversarial.md), re-run with the same checker
+B1 (/tmp/adv6/A: D4LimitStatement redefined as True in the root module; --fast):
+oscint-check: FAIL: OscInt.d4Limit: statement OscInt.Statements.D4LimitStatement is declared in module OscInt, not in OscInt.Statements.D4Limit (S4.2)
+M1 (/tmp/adv6/B: OscInt.d4Limit := True.intro added with debug.skipKernelTC in the root module; --no-commitments):
+oscint-check: FAIL: kernel replay rejected module OscInt: declares OscInt.d4Limit or a constant it depends on; OscInt's root module may only import
+(The first hardened version, which replayed only the package's module files, reported PARTIAL with 0 problems on M1; see review/2026-11-07-S44-answers.md.)
