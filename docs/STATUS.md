@@ -49,6 +49,10 @@ requires every row of the trust chain (README) for that statement.
 | T6 2D lattice-Laplacian dispersive decay t^{-2/3} | `OscInt.API.latticeLaplacianDecay` | yes, same stamp | same | yes (lead; classification by agent GD-P3) | 7 kernel runs + comparator (`docs/replay/2026-11-08-session6-GD-verify-all.txt`, c62a621, verify-all PASS) | machine-checked as stated (replay of c62a621; the pull request's head is replayed by CI `verify / verdict`) |
 | T6L its diagonal leading term | `OscInt.API.latticeLaplacianLimit` | yes, same stamp | same | yes (agent GD-P4) | 7 kernel runs + comparator (`docs/replay/2026-11-08-session6-GD-verify-all.txt`, c62a621, verify-all PASS) | machine-checked as stated (replay of c62a621; the pull request's head is replayed by CI `verify / verdict`) |
 
+T6, T6L prior art (2026-11-08, session 7): both are classical, because the 2D kernel factorises into two 1D Bessel
+kernels; the rows above are unchanged (the proofs are unaffected), but they claim "machine-checked", not new
+mathematics, and are not evidence for non-separable symbols (`docs/prior_art.md`, "Lattice kernels").
+
 Pipeline skeleton (M0): `OscInt.skeleton_two_mul` builds, audits clean (1 of 1) and replays in six kernels
 (`build/replay/summary.txt` from `make lean-replay`; the CI run on each push records it).
 

@@ -10,6 +10,9 @@ in Lean; numerics in `numerics/` are tooling and are never cited as evidence.
   diagonal: statements T6, T6L (`OscInt/Statements/Global.lean`), **demonstrated** (proved; `docs/STATUS.md`) with the
   ℓ¹ → ℓ^∞ estimate for finitely supported data in `examples/consumer/ConsumerLattice.lean` (free discrete Laplacian,
   `t ≥ 1`; a potential is not covered).
+  The 2D kernel factorises into two 1D Bessel kernels, so T6 and T6L are classical and do not show that the global
+  theorems reach non-separable symbols (`docs/prior_art.md`, "Lattice kernels"); a non-separable model is **proposed**
+  (session-7 batch VV).
 - **Arccos-type dispersion relations** `arccos(a cos x + b cos y)` (split-step quantum walks, photonic lattices):
   non-stationary decay uniform over a compact set of parameters, **demonstrated** (`examples/consumer/ConsumerLocal.lean`,
   FE-S2.1L). The global `t^{-2/3}` bound for one fixed `(a, b)` follows from GD once the classification (four D4 points

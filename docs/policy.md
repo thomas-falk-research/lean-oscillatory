@@ -76,3 +76,26 @@ OscInt's statement files. Procedure:
   in CI (add `--commitments` to recompute the commitments; it takes a few minutes).
 - Use the theorems listed as `proved_by`, not internal lemmas; or accept that internal names can change in a patch.
 - On an OscInt upgrade, read the CHANGELOG's "Statement changes" section before updating the pin.
+
+## Human expert review of statements (owner decision 2026-11-08, session 7)
+The owner chose to defer a commissioned human expert review of statement fidelity until the library is more mature.
+The deferral holds under three conditions.
+1. **Wording.** Until a human expert has reviewed a statement, every public text (README, release notes, Zenodo
+   description, `CITATION.cff` abstract, outreach) describes it as "machine-checked; statement fidelity reviewed by AI
+   referees, not yet by a human expert". Never "verified" or "peer-reviewed" alone. `docs/STATUS.md` already says this
+   per batch; keep it there.
+2. **Strengthen the AI layer meanwhile.**
+   - Calibration: plant known fidelity errors in copies of statements, measure the referees' catch rate and report it
+     with a Clopper–Pearson interval; until then AI verdicts carry unknown weight.
+   - Independence: where possible a second model family or prompt for fidelity reviews; disagreements recorded.
+   - Judgement-free evidence first: limit theorems that land on a classical constant (T6L reproduces the Cauchy–Watson
+     asymptotic of `Jₙ(n)`), explicit constants checked against external reference values (batch LE against Landau's
+     constant), and non-vacuity examples.
+   - A review packet grows with each frozen batch: a one-page plain-English reading per statement, its non-vacuity
+     examples and known limitations, so the eventual request is one ready document.
+3. **Triggers.** A human expert review is requested before the first of: an arXiv preprint or paper submission; a
+   public claim of "first machine-checked" anything; a Mathlib pull request that rests on OscInt statements; outreach
+   aimed at downstream users (as opposed to listing or archiving the project). Releases, Software Heritage, swMATH
+   and Reservoir listings do not wait for it, provided condition 1 holds.
+Prior-art disclosures (for example T6/T6L being classical, `docs/prior_art.md`) are made as soon as they are found;
+they are not review results and never wait.

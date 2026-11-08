@@ -10,6 +10,24 @@ library) is folded in below; items it raised are marked *(downstream)*. Its top 
 constants for the 2D results; local smoothness hypotheses; asymptotic expansions; parametric uniformity everywhere;
 a stable way to depend on the library. It asked not to change the trust chain.
 
+## Session-7 order (owner, 2026-11-08)
+Agreed in chat after reconciling the session-6 brief with an external review of `main` at 96f55a2. Research, in order:
+0. Session-6 review follow-ups: `stamp verify` over every stamp directory (a1), no `.blob` files in stamp directories
+   (f4), hash-locked pip installs (f5), a GD-N sanity datum smooth only on U (b2).
+1. **Batch LE**: explicit constants for the 1D lattice kernel, pre-registered; by the factorisation
+   (`docs/prior_art.md`, "Lattice kernels") they give the 2D constant of T6 as `C₁²`. Landau's constant is the external
+   reference; certified numerics (P6) fold in as the independent comparison.
+2. **Batch VV**: vector-valued amplitudes, done only when a non-separable model (two-band, or the scalar triangular
+   lattice) compiles end to end; fallback a finite-dimensional componentwise corollary.
+3. Strichartz estimates, non-endpoint (TT*), planned over 2–3 sessions: blueprint, prior-art sweep, frozen statement first.
+4. The D4 bound uniform over compact families (read Karpushkin and Duistermaat 1974 first), then the arccos family.
+Usability, in order: a reusable `oscint-verify` action and Lake template; doc-gen4 site with `llms.txt` from
+`docs/api.json` (MCP server postponed); the `HasOscDecay` facade, each lemma an `Iff` with a frozen statement or frozen
+itself; `oscint check` as a Python package; one Mathlib pull request (non-stationary phase); a Mathlib compatibility
+matrix after the release. Developer experience: `make ci-dry`, the statement-closure diff tool, linters (SPDX outside
+`Challenge/`, docstrings), elaboration times in CI, an opt-in pre-push hook. Human expert review: deferred under
+`docs/policy.md`.
+
 ## 1. Finish and stabilise the mathematics
 - [x] **S4.4** closed forms of c_C: machine-checked as stated (2026-11-07; `docs/STATUS.md`; verify-all PASS,
       `docs/replay/2026-11-06-S44-verify-all.txt`; post-proof FAITHFUL ×2; adversarial answered).
