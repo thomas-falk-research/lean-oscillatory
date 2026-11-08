@@ -28,3 +28,18 @@ plant-T6-rate: rejected (want rejected)
 ok-T6L-zero: accepted (want accepted)
 plant-T6L-zero: rejected (want rejected)
     first error: plant-T6L-zero.lean:18:4: error: Type mismatch: After simplification, term
+ok-GD-fold-to-det: accepted (want accepted)
+plant-GD-fold-to-det: rejected (want rejected)
+    first error: plant-GD-fold-to-det.lean:19:17: error: Type mismatch
+ok-GDC-fold-to-det: accepted (want accepted)
+plant-GDC-fold-to-det: rejected (want rejected)
+    first error: plant-GDC-fold-to-det.lean:27:25: error: Type mismatch
+ok-GDC-crit-dropped: accepted (want accepted)
+plant-GDC-crit-dropped: rejected (want rejected)
+    first error: plant-GDC-crit-dropped.lean:26:5: error: Application type mismatch: The argument
+ok-GD-D-in-K: accepted (want accepted)
+plant-GD-D-in-K: rejected (want rejected)
+    first error: plant-GD-D-in-K.lean:26:5: error: unsolved goals
+ok-GD-D4-at-zero: accepted (want accepted)
+plant-GD-D4-at-zero: rejected (want rejected)
+    first error: plant-GD-D4-at-zero.lean:28:56: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern

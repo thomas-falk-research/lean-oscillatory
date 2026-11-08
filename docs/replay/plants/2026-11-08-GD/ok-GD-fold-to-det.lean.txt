@@ -1,0 +1,31 @@
+import OscInt.Front.GlobalSanity
+
+namespace OscInt.API.GlobalSanity
+
+open OscInt.Statements OscInt.D4 OscInt.API.ConvertSanity Filter Topology
+open scoped ContDiff
+
+def P_Classified (Ψ : ℝ × ℝ → ℝ) (K : Set (ℝ × ℝ)) (D : Finset (ℝ × ℝ)) : Prop :=
+  (∀ k ∈ K, k ∉ D → FoldOrNondegMatrix Ψ k) ∧ ∀ k₀ ∈ D, IsD4Point Ψ k₀
+
+def P_GlobalDecayStatement : Prop :=
+  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)) (D : Finset (ℝ × ℝ)),
+    IsCompact K → IsOpen U → K ⊆ U → (↑D : Set (ℝ × ℝ)) ⊆ U → ContDiffOn ℝ 4 Ψ U → P_Classified Ψ K D →
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →
+      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(2 : ℝ) / 3)
+
+theorem P_hyp_classified : P_Classified hypPhase (Metric.closedBall 0 1) {0} :=
+  ⟨fun k _ hk => hyp_foldOrNondeg k (by simpa using hk), fun k₀ hk₀ => by
+    rw [Finset.mem_singleton] at hk₀; subst hk₀; exact hyp_isD4⟩
+
+theorem P_globalDecay_hyp (h : P_GlobalDecayStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 1 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+      1 ≤ m → ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (hypPhase k + L k)) * Complex.I) * A k‖ ≤
+        C * M * m ^ (-(2 : ℝ) / 3) :=
+  h hypPhase (Metric.closedBall 0 1) (Metric.ball 0 2) {0} (isCompact_closedBall _ _) Metric.isOpen_ball
+    (Metric.closedBall_subset_ball (by norm_num)) (by simp)
+    (genCubic_contDiff 1 0 0 1).contDiffOn P_hyp_classified
+
+end OscInt.API.GlobalSanity

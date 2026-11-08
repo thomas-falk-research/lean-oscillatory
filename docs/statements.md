@@ -478,3 +478,16 @@ Modelling choices and what is omitted.
   uniformly in the parameter; new analysis); the 2D stationary-phase leading term (P2; the proof needs a Morse lemma
   with parameters, not available; draft statement in `docs/design/leading-term.md`); the 1D lattice kernel (T0) and the
   cone statements (T4/T5′/T6′).
+
+Clarification added after the GD stamp (2026-11-08, from the two blind pre-proof referees, FAITHFUL and TRUE ×2 on all
+eight statements; `OscInt/Statements/Global.lean` unchanged; answers `review/2026-11-08-GD-pre-proof-answers.md`):
+(1) Near a D4 point every other degenerate point is a fold: for a binary cubic with nonzero discriminant every nonzero
+degenerate point has rank one and is a fold, and by continuity of D²Ψ, D³Ψ the same holds in a punctured
+neighbourhood of a D4 point of a C⁴ phase (argued on paper by both referees, not formalised; it replaces the
+"CONJECTURED" above). The GD route does not need it. (2) GD's pointwise hypothesis is not stronger than the classical
+one: over all L every point is a critical point of Ψ + L for L = −DΨ(k). (3) GD-C and GD keep the rate 2/3 for D = ∅;
+use GD-F or GD-N for the better rates. (4) T6 is for t ≥ 1; for a dispersive estimate on all of ℝ use
+K(−t, x) = conj K(t, −x) and |K(t, x)| ≤ (2π)² for |t| < 1 (consumer notes, not statements). (5) T6L's cubic
+coefficients are the Taylor coefficients D³φ(0)/6 (the convention of `cubicCoeffs` and F2). (6) For the arccos
+relations the fold condition along the degenerate curve is numerical only; using GD for them needs a Lean proof of
+the classification, which is open.

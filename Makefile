@@ -7,7 +7,7 @@ SKIP = mkdir -p $(B)/skipped && touch $(B)/skipped/$@
 UNSKIP = mkdir -p $(B)/skipped && rm -f $(B)/skipped/$@
 LATEST_STAMP = $(lastword $(sort $(wildcard stamps/2*/)))
 
-.PHONY: challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics \
+.PHONY: api api-check challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics \
 	quick statements statements-check release-pin entry-point
 
 tools:
@@ -66,7 +66,7 @@ verify-all: tools
 # The fast local loop and the pull-request CI job: build, guard, axiom audit, statement types, Mathlib names,
 # Gamma-free check, statement list. Minutes with a warm cache; `verify-all` adds the kernel replay, commitments,
 # comparator and stamps (about an hour).
-quick: guard statements-check
+quick: guard statements-check api-check
 	$(MAKE) --no-print-directory lean
 	$(MAKE) --no-print-directory entry-point
 
@@ -77,6 +77,15 @@ entry-point:
 	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerFormula.lean
 	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerLocal.lean
 	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerLocalChecks.lean
+	$(LAKE) env lean -DautoImplicit=false examples/api/Snippets.lean
+
+# The API index docs/api.json and examples/api/Snippets.lean, generated from stamps/statements.json and
+# docs/api/annotations.json (`tools/gen_api.py`); `api-check` fails on drift (and is part of `quick`).
+api:
+	python3 -I tools/gen_api.py .
+
+api-check:
+	tools/test_gen_api.sh && python3 -I tools/gen_api.py --check .
 
 # stamps/statements.json: the machine-readable list of pinned statements for downstream projects (README).
 statements: tools

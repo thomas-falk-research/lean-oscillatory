@@ -47,6 +47,16 @@ PLANTS = [
      ('LatticeLaplacianDecayStatement', 'C * t ^ (-(2 : ℝ) / 3)', 'C * t ^ (-(1 : ℝ) / 2)')),
     ('T6L-zero', ['LatticeLaplacianLimitStatement'], ['latticeLaplacian_sharp'],
      ('LatticeLaplacianLimitStatement', '(𝓝 (d4ClosedConstant (-1 / 48) : ℂ))', '(𝓝 (0 : ℂ))')),
+    ('GD-fold-to-det', ['Classified', 'GlobalDecayStatement'], ['hyp_classified', 'globalDecay_hyp'],
+     ('Classified', '(∀ k ∈ K, k ∉ D → FoldOrNondegMatrix Ψ k)', '(∀ k ∈ K, k ∉ D → (hessianMatrix Ψ k).det ≠ 0)')),
+    ('GDC-fold-to-det', ['ClassifiedCrit', 'GlobalDecayCritStatement'], ['globalDecayCrit_hyp'],
+     ('ClassifiedCrit', '= 0 → FoldOrNondegMatrix Ψ k)', '= 0 → (hessianMatrix Ψ k).det ≠ 0)')),
+    ('GDC-crit-dropped', ['ClassifiedCrit', 'GlobalDecayCritStatement'], ['globalDecayCrit_hyp_crit'],
+     ('ClassifiedCrit', 'k ∉ D → fderiv ℝ Ψ k + L = 0 → FoldOrNondegMatrix', 'k ∉ D → FoldOrNondegMatrix')),
+    ('GD-D-in-K', ['GlobalDecayStatement'], ['globalDecay_hyp_offK'],
+     ('GlobalDecayStatement', '(↑D : Set (ℝ × ℝ)) ⊆ U', '(↑D : Set (ℝ × ℝ)) ⊆ K')),
+    ('GD-D4-at-zero', ['IsD4Point', 'Classified', 'GlobalDecayStatement'], ['hypShift_isD4', 'globalDecay_hypShift'],
+     ('IsD4Point', 'iteratedFDeriv ℝ 2 Ψ k₀ = 0', 'iteratedFDeriv ℝ 2 Ψ 0 = 0')),
 ]
 
 HEADER = """import OscInt.Front.GlobalSanity

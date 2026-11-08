@@ -1,0 +1,45 @@
+import OscInt.Front.GlobalSanity
+
+namespace OscInt.API.GlobalSanity
+
+open OscInt.Statements OscInt.D4 OscInt.API.ConvertSanity Filter Topology
+open scoped ContDiff
+
+def P_IsD4Point (Ψ : ℝ × ℝ → ℝ) (k₀ : ℝ × ℝ) : Prop :=
+  iteratedFDeriv ℝ 2 Ψ k₀ = 0 ∧ ∃ a b c d : ℝ,
+    (∀ x y : ℝ, iteratedFDeriv ℝ 3 Ψ k₀ ![(x, y), (x, y), (x, y)] =
+      6 * (a * x ^ 3 + b * x ^ 2 * y + c * x * y ^ 2 + d * y ^ 3)) ∧
+    (Cubic.mk a b c d).discr ≠ 0
+
+def P_Classified (Ψ : ℝ × ℝ → ℝ) (K : Set (ℝ × ℝ)) (D : Finset (ℝ × ℝ)) : Prop :=
+  (∀ k ∈ K, k ∉ D → FoldOrNondegMatrix Ψ k) ∧ ∀ k₀ ∈ D, P_IsD4Point Ψ k₀
+
+def P_GlobalDecayStatement : Prop :=
+  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)) (D : Finset (ℝ × ℝ)),
+    IsCompact K → IsOpen U → K ⊆ U → (↑D : Set (ℝ × ℝ)) ⊆ U → ContDiffOn ℝ 4 Ψ U → P_Classified Ψ K D →
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →
+      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(2 : ℝ) / 3)
+
+theorem P_hypShift_isD4 : P_IsD4Point hypShift (1, 1) := by
+  have h0 : ((1, 1) : ℝ × ℝ) + (-1, -1) = 0 := by ext <;> norm_num
+  obtain ⟨h2, a, b, c, d, h3, hd⟩ := hyp_isD4
+  refine ⟨?_, a, b, c, d, fun x y => ?_, hd⟩
+  · unfold hypShift; rw [iteratedFDeriv_comp_add_right, h0]; exact h2
+  · unfold hypShift; rw [iteratedFDeriv_comp_add_right, h0]; exact h3 x y
+
+theorem P_globalDecay_hypShift (h : P_GlobalDecayStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall (1, 1) 1 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+      1 ≤ m → ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (hypShift k + L k)) * Complex.I) * A k‖ ≤
+        C * M * m ^ (-(2 : ℝ) / 3) :=
+  h hypShift (Metric.closedBall (1, 1) 1) Set.univ {(1, 1)} (isCompact_closedBall _ _) isOpen_univ
+    (Set.subset_univ _) (Set.subset_univ _)
+    ((genCubic_contDiff 1 0 0 1).comp (contDiff_id.add contDiff_const)).contDiffOn
+    ⟨fun k _ hk => (foldOrNondegMatrix_hypShift k).2 (hyp_foldOrNondeg _ (by
+        intro h0; apply hk; rw [Finset.mem_singleton]
+        have := congrArg (· + ((1 : ℝ), (1 : ℝ))) h0; simp only [zero_add] at this
+        rw [← this]; ext <;> simp)),
+      fun k₀ hk₀ => by rw [Finset.mem_singleton] at hk₀; subst hk₀; exact P_hypShift_isD4⟩
+
+end OscInt.API.GlobalSanity

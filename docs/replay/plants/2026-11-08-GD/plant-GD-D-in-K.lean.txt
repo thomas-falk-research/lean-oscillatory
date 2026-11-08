@@ -1,0 +1,28 @@
+import OscInt.Front.GlobalSanity
+
+namespace OscInt.API.GlobalSanity
+
+open OscInt.Statements OscInt.D4 OscInt.API.ConvertSanity Filter Topology
+open scoped ContDiff
+
+def P_GlobalDecayStatement : Prop :=
+  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)) (D : Finset (ℝ × ℝ)),
+    IsCompact K → IsOpen U → K ⊆ U → (↑D : Set (ℝ × ℝ)) ⊆ K → ContDiffOn ℝ 4 Ψ U → Classified Ψ K D →
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →
+      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(2 : ℝ) / 3)
+
+theorem P_globalDecay_hyp_offK (h : P_GlobalDecayStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall (3 / 4, 3 / 4) (1 / 4) →
+      (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →
+      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (hypPhase k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(2 : ℝ) / 3) :=
+  h hypPhase (Metric.closedBall (3 / 4, 3 / 4) (1 / 4)) (Metric.ball 0 2) {0} (isCompact_closedBall _ _)
+    Metric.isOpen_ball (fun k hk => by
+      rw [Metric.mem_closedBall, Prod.dist_eq, max_le_iff, Real.dist_eq, Real.dist_eq, abs_le, abs_le] at hk
+      rw [Metric.mem_ball, Prod.dist_eq, max_lt_iff, Real.dist_eq, Real.dist_eq, abs_lt, abs_lt]
+      simp only [Prod.fst_zero, Prod.snd_zero, sub_zero]
+      refine ⟨⟨?_, ?_⟩, ?_, ?_⟩ <;> linarith [hk.1.1, hk.1.2, hk.2.1, hk.2.2])
+    (by simp) (genCubic_contDiff 1 0 0 1).contDiffOn hyp_classified_offK
+
+end OscInt.API.GlobalSanity

@@ -1,10 +1,11 @@
-# Planted controls for batch GD (2026-11-08, session 6, lead), BEFORE the GD stamp and before any proof of a GD statement
+# Planted controls for batch GD (2026-11-08, session 6, lead): first run before the GD stamp, second run (below) after the pre-proof reviews; both before any proof of a GD statement
 # Generator: docs/replay/plants/2026-11-08-GD/plants_gd.py.txt (copies the named defs of OscInt/Statements/Global.lean and the
 # sanity theorems of OscInt/Front/GlobalSanity.lean under the prefix P_, applies exactly one textual mutation, compiles
 # with: lake env lean -DautoImplicit=false <file>). Sources (.lean.txt) and full compiler output (.out) in that directory.
 # Every planted copy must be rejected and every unplanted copy accepted; the first error must fall at the discharge of
 # the mutated hypothesis or at the conclusion (checked by hand, listed below).
-# Coverage: all eight GD statements (GD has two plants plus the rate).
+# Coverage: all eight GD statements. Second run (same day, after the pre-proof reviews, before any proof): five plants
+# added for the referees' MINORs (A m1, m3; B m1, m2); all fifteen re-run on the extended sanity file.
 
 ok-GD-drop-kD: accepted (want accepted)
 plant-GD-drop-kD: rejected (want rejected)
@@ -36,15 +37,33 @@ plant-T6-rate: rejected (want rejected)
 ok-T6L-zero: accepted (want accepted)
 plant-T6L-zero: rejected (want rejected)
     first error: plant-T6L-zero.lean:18:4: error: Type mismatch: After simplification, term
+ok-GD-fold-to-det: accepted (want accepted)
+plant-GD-fold-to-det: rejected (want rejected)
+    first error: plant-GD-fold-to-det.lean:19:17: error: Type mismatch
+ok-GDC-fold-to-det: accepted (want accepted)
+plant-GDC-fold-to-det: rejected (want rejected)
+    first error: plant-GDC-fold-to-det.lean:27:25: error: Type mismatch
+ok-GDC-crit-dropped: accepted (want accepted)
+plant-GDC-crit-dropped: rejected (want rejected)
+    first error: plant-GDC-crit-dropped.lean:26:5: error: Application type mismatch: The argument
+ok-GD-D-in-K: accepted (want accepted)
+plant-GD-D-in-K: rejected (want rejected)
+    first error: plant-GD-D-in-K.lean:26:5: error: unsolved goals
+ok-GD-D4-at-zero: accepted (want accepted)
+plant-GD-D4-at-zero: rejected (want rejected)
+    first error: plant-GD-D4-at-zero.lean:28:56: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
 
 Location of the first error of each plant (lead's reading of the .out files):
-- GD-drop-kD: discharge of the classification off D (ell_classified, needs FoldOrNondegMatrix at 0; false: not_foldOrNondegMatrix_ell_zero)
-- GD-disc-neg: discharge of the discriminant hypothesis (hd : discr ≠ 0 where discr < 0 is required; E has discr = 108)
-- GD-rate: conclusion (weaker rate)
+- GD-drop-kD: discharge of the classification off D (ell_classified needs FoldOrNondegMatrix at 0; false: not_foldOrNondegMatrix_ell_zero)
+- GD-disc-neg: discharge of the discriminant hypothesis (E has discr = 108)
+- GD-rate, T6-rate: conclusion (weaker rate)
 - GDC-drop-kD: discharge of the classification at critical points (the origin, critical for L = 0)
-- GDF-det: discharge of the pointwise hypothesis (foldOrNondegMatrix_fold supplies a fold, det = 0 on x = 0: fold_det_zero)
+- GDF-det: discharge of the pointwise hypothesis (a fold; det = 0 on x = 0: fold_det_zero)
 - GDN-KU-reversed: discharge of K ⊆ U (ball 0 2 ⊄ closedBall 0 1)
 - SH-c: discharge of the nonvanishing hypothesis (1 < ‖1‖ is false)
-- T1-period: discharge of the period hypothesis for e^{ik₁} (period π fails: e^{i(k₁+π)} = −e^{ik₁})
-- T6-rate: conclusion (weaker rate)
-- T6L-zero: the limit's constant (c ≠ 0 is needed by SH; the planted limit 0 fails it)
+- T1-period: discharge of the period hypothesis for e^{ik₁}
+- T6L-zero: the limit's constant (SH needs c ≠ 0)
+- GD-fold-to-det, GDC-fold-to-det: discharge of the classification on the axes (hyp_foldOrNondeg gives a fold; det = 0 there: hyp_det_zero_axis)
+- GDC-crit-dropped: discharge of the classification, now required at 0 ∈ B̄(0, 2) (false: not_foldOrNondegMatrix_hyp_zero)
+- GD-D-in-K: discharge of ↑D ⊆ K (goal 3/4 ≤ 1/4, i.e. 0 ∈ K, false)
+- GD-D4-at-zero: discharge of the Hessian condition at 0 instead of (1, 1) (false: hypShift_hessian_zero_ne)

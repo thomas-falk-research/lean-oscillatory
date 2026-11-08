@@ -56,28 +56,25 @@ theorem ell_isD4 : IsD4Point ellPhase 0 := by
   obtain ⟨-, h2, h3, hd⟩ := d4FE_hyps_elliptic
   exact ⟨h2, 1, 0, -3, 0, h3, hd⟩
 
+/-- The zero matrix satisfies no fold condition: its kernel is the whole plane, not a line. -/
+theorem not_foldCondSpan_zero (T : (Fin 2 → ℝ) → ℝ) : ¬ FoldCondSpan (0 : Matrix (Fin 2) (Fin 2) ℝ) T := by
+  rintro (h | ⟨e, -, hker, -⟩)
+  · simp at h
+  · have h1 : (Pi.single 0 1 : Fin 2 → ℝ) ∈ Submodule.span ℝ {e} := by rw [← hker]; simp
+    have h2 : (Pi.single 1 1 : Fin 2 → ℝ) ∈ Submodule.span ℝ {e} := by rw [← hker]; simp
+    obtain ⟨a, ha⟩ := Submodule.mem_span_singleton.mp h1
+    obtain ⟨b, hb⟩ := Submodule.mem_span_singleton.mp h2
+    have ha0 := congrFun ha 0; have ha1 := congrFun ha 1; have hb1 := congrFun hb 1
+    simp at ha0 ha1 hb1
+    rcases ha1 with h | h
+    · rw [h, zero_mul] at ha0; exact absurd ha0 (by norm_num)
+    · rw [h, mul_zero] at hb1; exact absurd hb1 (by norm_num)
+
 /-- Bite: `E` is not fold-or-nondegenerate at the origin (zero Hessian). -/
 theorem not_foldOrNondegMatrix_ell_zero : ¬ FoldOrNondegMatrix ellPhase 0 := by
-  unfold FoldOrNondegMatrix FoldCondSpan
-  have hH : hessianMatrix ellPhase 0 = 0 := by
-    rw [hessian_ell]; ext i j; fin_cases i <;> fin_cases j <;> simp
-  rw [hH]
-  rintro (h | ⟨e, he, hker, -⟩)
-  · simp at h
-  · have h1 : (Pi.single 0 1 : Fin 2 → ℝ) ∈ LinearMap.ker (Matrix.toLin' (0 : Matrix (Fin 2) (Fin 2) ℝ)) := by simp
-    have h2 : (Pi.single 1 1 : Fin 2 → ℝ) ∈ LinearMap.ker (Matrix.toLin' (0 : Matrix (Fin 2) (Fin 2) ℝ)) := by simp
-    rw [hker, Submodule.mem_span_singleton] at h1 h2
-    obtain ⟨a, ha⟩ := h1
-    obtain ⟨b, hb⟩ := h2
-    have ha0 := congrFun ha 0; have ha1 := congrFun ha 1
-    have hb0 := congrFun hb 0; have hb1 := congrFun hb 1
-    simp at ha0 ha1 hb0 hb1
-    -- a e₀ = 1, a e₁ = 0, b e₀ = 0, b e₁ = 1: then a ≠ 0, so e₁ = 0, contradicting b e₁ = 1
-    have : e 1 = 0 := by
-      rcases ha1 with h | h
-      · rw [h, zero_mul] at ha0; exact absurd ha0 (by norm_num)
-      · exact h
-    rw [this, mul_zero] at hb1; exact absurd hb1 (by norm_num)
+  unfold FoldOrNondegMatrix
+  rw [show hessianMatrix ellPhase 0 = 0 by rw [hessian_ell]; ext i j; fin_cases i <;> fin_cases j <;> simp]
+  exact not_foldCondSpan_zero _
 
 theorem ell_classified : Classified ellPhase (Metric.closedBall 0 1) {0} :=
   ⟨fun k _ hk => Or.inl (ell_nondeg k (by simpa using hk)), fun k₀ hk₀ => by
@@ -95,8 +92,8 @@ theorem globalDecay_ell (h : GlobalDecayStatement) :
   h ellPhase (Metric.closedBall 0 1) Set.univ {0} (isCompact_closedBall _ _) isOpen_univ (Set.subset_univ _)
     (Set.subset_univ _) ellPhase_contDiff.contDiffOn ell_classified
 
-/-- `L₁ = 3·fst`: the critical points of `E + L₁` are `(±1/√… )`-free: `3x² − 3y² + 3 = 0`, `xy = 0` forces `x = 0`,
-`y = ±1`, both nondegenerate. -/
+/-- `L₁ = 3·fst`: the critical points of `E + L₁` solve `3x² − 3y² + 3 = 0`, `xy = 0`, so they are `(0, ±1)`, both
+nondegenerate. -/
 noncomputable def L₁ : (ℝ × ℝ) →L[ℝ] ℝ := (3 : ℝ) • ContinuousLinearMap.fst ℝ ℝ ℝ
 
 /-- **GD-C through the statement constant.** `Ψ = E`, `K = B̄(0, 1)`, `U = ℝ²`, `K′ = {0, L₁}`, `D = {0}`. Plants
@@ -166,6 +163,209 @@ theorem sharpness_sqrt (h : SharpnessStatement) :
   refine ⟨by simpa using h1, fun hC => h2 1 (by norm_num) ?_⟩
   simpa using hC
 
+/-! ## The hyperbolic umbilic `x³ + y³`: fold lines on the axes (pre-proof referee A, m1) -/
+
+/-- `H = x³ + y³`. -/
+noncomputable def hypPhase : ℝ × ℝ → ℝ := genCubic 1 0 0 1
+
+theorem hessian_hyp (k : ℝ × ℝ) : hessianMatrix hypPhase k = !![6 * k.1, 0; 0, 6 * k.2] := by
+  unfold hypPhase
+  have h := iteratedFDeriv_two_eq_dd (f := genCubic 1 0 0 1) ((genCubic_contDiff 1 0 0 1).of_le (by norm_num)) k
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [hessianMatrix, h, dd_genCubic, coordVec] <;> ring_nf <;> simp
+
+theorem third_hyp (k : ℝ × ℝ) (e : Fin 2 → ℝ) :
+    iteratedFDeriv ℝ 3 hypPhase k ![ofFin2 e, ofFin2 e, ofFin2 e] = 6 * e 0 ^ 3 + 6 * e 1 ^ 3 := by
+  unfold hypPhase
+  rw [iteratedFDeriv_three_diag ((genCubic_contDiff 1 0 0 1).of_le (by norm_num)), ddd_genCubic]
+  simp [ofFin2]; ring
+
+/-- The kernel of `diag(a, b)` with `a = 0 ≠ b` is the first axis. -/
+theorem ker_diag_left (b : ℝ) (hb : b ≠ 0) :
+    LinearMap.ker (Matrix.toLin' !![(0 : ℝ), 0; 0, b]) = Submodule.span ℝ {(![1, 0] : Fin 2 → ℝ)} := by
+  ext v
+  simp only [LinearMap.mem_ker, Matrix.toLin'_apply, Submodule.mem_span_singleton]
+  constructor
+  · intro h
+    have h1 := congrFun h 1
+    simp [Matrix.mulVec, dotProduct, Fin.sum_univ_two] at h1
+    refine ⟨v 0, ?_⟩
+    ext i; fin_cases i <;> simp [h1.resolve_left hb]
+  · rintro ⟨a, rfl⟩
+    ext i; fin_cases i <;> simp [Matrix.mulVec, dotProduct, Fin.sum_univ_two]
+
+/-- The kernel of `diag(a, b)` with `a ≠ 0 = b` is the second axis. -/
+theorem ker_diag_right (a : ℝ) (ha : a ≠ 0) :
+    LinearMap.ker (Matrix.toLin' !![a, 0; 0, (0 : ℝ)]) = Submodule.span ℝ {(![0, 1] : Fin 2 → ℝ)} := by
+  ext v
+  simp only [LinearMap.mem_ker, Matrix.toLin'_apply, Submodule.mem_span_singleton]
+  constructor
+  · intro h
+    have h0 := congrFun h 0
+    simp [Matrix.mulVec, dotProduct, Fin.sum_univ_two] at h0
+    refine ⟨v 1, ?_⟩
+    ext i; fin_cases i <;> simp [h0.resolve_left ha]
+  · rintro ⟨a, rfl⟩
+    ext i; fin_cases i <;> simp [Matrix.mulVec, dotProduct, Fin.sum_univ_two]
+
+/-- Off the origin `x³ + y³` is nondegenerate (`xy ≠ 0`) or a fold (on the axes). -/
+theorem hyp_foldOrNondeg (k : ℝ × ℝ) (hk : k ≠ 0) : FoldOrNondegMatrix hypPhase k := by
+  unfold FoldOrNondegMatrix FoldCondSpan
+  rw [hessian_hyp]
+  simp only [third_hyp]
+  by_cases h1 : k.1 = 0
+  · have h2 : k.2 ≠ 0 := fun h2 => hk (Prod.ext h1 h2)
+    right
+    refine ⟨![1, 0], by simp, ?_, by norm_num⟩
+    rw [h1, mul_zero]; exact ker_diag_left _ (mul_ne_zero (by norm_num) h2)
+  · by_cases h2 : k.2 = 0
+    · right
+      refine ⟨![0, 1], by simp, ?_, by norm_num⟩
+      rw [h2, mul_zero]; exact ker_diag_right _ (mul_ne_zero (by norm_num) h1)
+    · left
+      rw [Matrix.det_fin_two]; simp
+      exact ⟨h1, h2⟩
+
+/-- Bite: `x³ + y³` is degenerate (not nondegenerate) on the axes: `det H = 0` at `(0, 1/2)`. -/
+theorem hyp_det_zero_axis : (hessianMatrix hypPhase (0, 1 / 2)).det = 0 := by
+  rw [hessian_hyp, Matrix.det_fin_two]; simp
+
+theorem hyp_isD4 : IsD4Point hypPhase 0 := by
+  refine ⟨?_, 1, 0, 0, 1, ?_, ?_⟩
+  · unfold hypPhase; exact iteratedFDeriv_two_genCubic_zero 1 0 0 1
+  · intro x y; unfold hypPhase; exact third_genCubic 1 0 0 1 x y
+  · rw [Cubic.discr]; norm_num
+
+theorem hyp_classified : Classified hypPhase (Metric.closedBall 0 1) {0} :=
+  ⟨fun k _ hk => hyp_foldOrNondeg k (by simpa using hk), fun k₀ hk₀ => by
+    rw [Finset.mem_singleton] at hk₀; subst hk₀; exact hyp_isD4⟩
+
+/-- **GD through the statement constant, with fold points.** `Ψ = x³ + y³` (hyperbolic umbilic, `discr = −27`),
+`K = B̄(0, 1)`, `U = B(0, 2)` (so `↑D ⊆ U` and `K ⊆ U` are not discharged by `univ`), `D = {0}`. Plants detected
+(recorded): `FoldOrNondegMatrix ↦ det ≠ 0` in `Classified` (fails on the axes, `hyp_det_zero_axis`). -/
+theorem globalDecay_hyp (h : GlobalDecayStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 1 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+      1 ≤ m → ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (hypPhase k + L k)) * Complex.I) * A k‖ ≤
+        C * M * m ^ (-(2 : ℝ) / 3) :=
+  h hypPhase (Metric.closedBall 0 1) (Metric.ball 0 2) {0} (isCompact_closedBall _ _) Metric.isOpen_ball
+    (Metric.closedBall_subset_ball (by norm_num)) (by simp)
+    (genCubic_contDiff 1 0 0 1).contDiffOn hyp_classified
+
+/-- **GD-C through the statement constant, with fold points**: same data, `K′ = {0}` (the origin is critical). -/
+theorem globalDecayCrit_hyp (h : GlobalDecayCritStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 1 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+      L ∈ ({0} : Set ((ℝ × ℝ) →L[ℝ] ℝ)) → 1 ≤ m →
+      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (hypPhase k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(2 : ℝ) / 3) :=
+  h hypPhase (Metric.closedBall 0 1) (Metric.ball 0 2) {0} {0} (isCompact_closedBall _ _) Metric.isOpen_ball
+    (Metric.closedBall_subset_ball (by norm_num)) (by simp) isCompact_singleton
+    (genCubic_contDiff 1 0 0 1).contDiffOn
+    ⟨fun _ _ k _ hk _ => hyp_foldOrNondeg k (by simpa using hk), hyp_classified.2⟩
+
+/-- On `K = B̄((3/4, 3/4), 1/4)` (the square `[1/2, 1]²`) `x³ + y³` is nondegenerate; the D4 point `0` lies in
+`U = B(0, 2)` but not in `K`. -/
+theorem hyp_classified_offK : Classified hypPhase (Metric.closedBall (3 / 4, 3 / 4) (1 / 4)) {0} := by
+  refine ⟨fun k hk _ => ?_, hyp_classified.2⟩
+  have hk' := hk
+  rw [Metric.mem_closedBall, Prod.dist_eq, max_le_iff, Real.dist_eq, Real.dist_eq, abs_le, abs_le] at hk'
+  left
+  rw [hessian_hyp, Matrix.det_fin_two]; simp
+  constructor <;> linarith [hk'.1.1, hk'.2.1]
+
+theorem zero_not_mem_offK : (0 : ℝ × ℝ) ∉ Metric.closedBall ((3 : ℝ) / 4, (3 : ℝ) / 4) (1 / 4) := by
+  rw [Metric.mem_closedBall, Prod.dist_eq, max_le_iff]; norm_num [Real.dist_eq, abs_of_neg]
+
+/-- **GD through the statement constant, D4 point outside `K`.** Plants detected (recorded): `↑D ⊆ U ↦ ↑D ⊆ K`
+(`zero_not_mem_offK`) — pre-proof referee A, m3. -/
+theorem globalDecay_hyp_offK (h : GlobalDecayStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall (3 / 4, 3 / 4) (1 / 4) →
+      (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →
+      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (hypPhase k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(2 : ℝ) / 3) :=
+  h hypPhase (Metric.closedBall (3 / 4, 3 / 4) (1 / 4)) (Metric.ball 0 2) {0} (isCompact_closedBall _ _)
+    Metric.isOpen_ball (fun k hk => by
+      rw [Metric.mem_closedBall, Prod.dist_eq, max_le_iff, Real.dist_eq, Real.dist_eq, abs_le, abs_le] at hk
+      rw [Metric.mem_ball, Prod.dist_eq, max_lt_iff, Real.dist_eq, Real.dist_eq, abs_lt, abs_lt]
+      simp only [Prod.fst_zero, Prod.snd_zero, sub_zero]
+      refine ⟨⟨?_, ?_⟩, ?_, ?_⟩ <;> linarith [hk.1.1, hk.1.2, hk.2.1, hk.2.2])
+    (by simp) (genCubic_contDiff 1 0 0 1).contDiffOn hyp_classified_offK
+
+/-! ## Critical points only (pre-proof referee B, m1) and a D4 point away from the origin (B, m2) -/
+
+/-- `L₃ = −3 fst − 3 snd`: the critical points of `x³ + y³ + L₃` are `(±1, ±1)`, all nondegenerate, while
+`0 ∈ B̄(0, 2)` is degenerate and not a fold (so the pointwise classification fails there). -/
+noncomputable def L₃ : (ℝ × ℝ) →L[ℝ] ℝ := (-3 : ℝ) • ContinuousLinearMap.fst ℝ ℝ ℝ + (-3 : ℝ) • ContinuousLinearMap.snd ℝ ℝ ℝ
+
+theorem hyp_crit_nondeg (k : ℝ × ℝ) (hc : fderiv ℝ hypPhase k + L₃ = 0) : (hessianMatrix hypPhase k).det ≠ 0 := by
+  have h1 := congrArg (fun f => f (1, 0)) hc
+  have h2 := congrArg (fun f => f (0, 1)) hc
+  simp only [hypPhase, add_apply, fd_genCubic, L₃, smul_apply,
+    ContinuousLinearMap.coe_fst', ContinuousLinearMap.coe_snd', smul_eq_mul, zero_apply] at h1 h2
+  have hx : k.1 ≠ 0 := by intro h; rw [h] at h1; norm_num at h1
+  have hy : k.2 ≠ 0 := by intro h; rw [h] at h2; norm_num at h2
+  rw [hessian_hyp, Matrix.det_fin_two]; simp; exact ⟨hx, hy⟩
+
+/-- Bite: `0` is not fold-or-nondegenerate for `x³ + y³` (zero Hessian). -/
+theorem not_foldOrNondegMatrix_hyp_zero : ¬ FoldOrNondegMatrix hypPhase 0 := by
+  unfold FoldOrNondegMatrix
+  rw [show hessianMatrix hypPhase 0 = 0 by rw [hessian_hyp]; ext i j; fin_cases i <;> fin_cases j <;> simp]
+  exact not_foldCondSpan_zero _
+
+/-- **GD-C through the statement constant, critical points only.** `Ψ = x³ + y³`, `K = B̄(0, 2)`, `U = ℝ²`,
+`K′ = {L₃}`, `D = ∅`: the classification holds at the critical points `(±1, ±1)` but not pointwise (`0 ∈ K`,
+`not_foldOrNondegMatrix_hyp_zero`). Plants detected (recorded): dropping `fderiv ℝ Ψ k + L = 0 →` in
+`ClassifiedCrit`. -/
+theorem globalDecayCrit_hyp_crit (h : GlobalDecayCritStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 2 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+      L ∈ ({L₃} : Set ((ℝ × ℝ) →L[ℝ] ℝ)) → 1 ≤ m →
+      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (hypPhase k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(2 : ℝ) / 3) :=
+  h hypPhase (Metric.closedBall 0 2) Set.univ {L₃} ∅ (isCompact_closedBall _ _) isOpen_univ
+    (Set.subset_univ _) (by simp) isCompact_singleton (genCubic_contDiff 1 0 0 1).contDiffOn
+    ⟨fun L hL k _ _ hc => by
+      rw [Set.mem_singleton_iff] at hL; subst hL; exact Or.inl (hyp_crit_nondeg k hc), by simp⟩
+
+/-- `x³ + y³` moved to `(1, 1)`: `Ψ(k) = (k₁ − 1)³ + (k₂ − 1)³`, written as `hypPhase (k + (−1, −1))`. -/
+noncomputable def hypShift (k : ℝ × ℝ) : ℝ := hypPhase (k + (-1, -1))
+
+theorem hessian_hypShift (k : ℝ × ℝ) : hessianMatrix hypShift k = hessianMatrix hypPhase (k + (-1, -1)) := by
+  unfold hessianMatrix hypShift; rw [iteratedFDeriv_comp_add_right]
+
+theorem foldOrNondegMatrix_hypShift (k : ℝ × ℝ) :
+    FoldOrNondegMatrix hypShift k ↔ FoldOrNondegMatrix hypPhase (k + (-1, -1)) := by
+  unfold FoldOrNondegMatrix; rw [hessian_hypShift]; unfold hypShift; rw [iteratedFDeriv_comp_add_right]
+
+theorem hypShift_isD4 : IsD4Point hypShift (1, 1) := by
+  have h0 : ((1, 1) : ℝ × ℝ) + (-1, -1) = 0 := by ext <;> norm_num
+  obtain ⟨h2, a, b, c, d, h3, hd⟩ := hyp_isD4
+  refine ⟨?_, a, b, c, d, fun x y => ?_, hd⟩
+  · unfold hypShift; rw [iteratedFDeriv_comp_add_right, h0]; exact h2
+  · unfold hypShift; rw [iteratedFDeriv_comp_add_right, h0]; exact h3 x y
+
+/-- Bite for a plant evaluating `IsD4Point`'s derivatives at `0` instead of `k₀`: the Hessian of `hypShift` at `0`
+is `diag(−6, −6) ≠ 0`. -/
+theorem hypShift_hessian_zero_ne : hessianMatrix hypShift 0 ≠ 0 := by
+  rw [hessian_hypShift, hessian_hyp]; intro h
+  have := congrFun (congrFun h 0) 0; simp at this
+
+/-- **GD through the statement constant, D4 point at `(1, 1)`.** `Ψ = hypShift`, `K = B̄((1, 1), 1)`, `U = ℝ²`,
+`D = {(1, 1)}`. Plants detected (recorded): `IsD4Point Ψ k₀ ↦ IsD4Point Ψ 0`-type plants (Hessian at `0` instead of
+`k₀`, `hypShift_hessian_zero_ne`). -/
+theorem globalDecay_hypShift (h : GlobalDecayStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall (1, 1) 1 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+      1 ≤ m → ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (hypShift k + L k)) * Complex.I) * A k‖ ≤
+        C * M * m ^ (-(2 : ℝ) / 3) :=
+  h hypShift (Metric.closedBall (1, 1) 1) Set.univ {(1, 1)} (isCompact_closedBall _ _) isOpen_univ
+    (Set.subset_univ _) (Set.subset_univ _)
+    ((genCubic_contDiff 1 0 0 1).comp (contDiff_id.add contDiff_const)).contDiffOn
+    ⟨fun k _ hk => (foldOrNondegMatrix_hypShift k).2 (hyp_foldOrNondeg _ (by
+        intro h0; apply hk; rw [Finset.mem_singleton]
+        have := congrArg (· + ((1 : ℝ), (1 : ℝ))) h0; simp only [zero_add] at this
+        rw [← this]; ext <;> simp)),
+      fun k₀ hk₀ => by rw [Finset.mem_singleton] at hk₀; subst hk₀; exact hypShift_isD4⟩
+
 /-! ## T1 and the lattice kernel: the box, the period and the linear term -/
 
 theorem volume_torusBox : MeasureTheory.volume torusBox = ENNReal.ofReal ((2 * Real.pi) ^ 2) := by
@@ -228,8 +428,8 @@ theorem torusUnfold_moments (h : TorusUnfoldStatement) :
     simpa using this
 
 /-- **T6 through the statement constant**, on the diagonal `x = (n, n)` at time `n ≥ 1` (where T6L shows the rate is
-attained). Plants detected: the rate weakened (`-(2/3) ↦ -(1/2)`); the uniformity over `x` restricted (e.g. `x = 0`
-only). Not detected: a strengthened rate (false by T6L and SH, `latticeLaplacian_sharp`, but not a discharge failure). -/
+attained). Plants detected: the rate weakened (`-(2/3) ↦ -(1/2)`); the uniformity over `x` restricted so that it misses the
+diagonal (e.g. `x = 0` only). Not detected: a restriction to the diagonal itself; a strengthened rate (false by T6L and SH, `latticeLaplacian_sharp`, but not a discharge failure). -/
 theorem latticeLaplacianDecay_diag (h : LatticeLaplacianDecayStatement) :
     ∃ C : ℝ, ∀ n : ℕ, 1 ≤ n → ‖latticeKernel n ((n : ℤ), (n : ℤ))‖ ≤ C * (n : ℝ) ^ (-(2 : ℝ) / 3) := by
   obtain ⟨C, hC⟩ := h
