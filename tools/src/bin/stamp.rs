@@ -10,10 +10,13 @@
 //! OpenTimestamps calendars (pending `.ots` proofs; upgrade them later with any OpenTimestamps client).
 //! Requires a clean working tree.
 //! `stamp verify ROOT DIR`: re-verifies the tokens in DIR against the pinned roots and the manifest against the
-//! files at the recorded commit. Exit 1 on any failure.
+//! files at the recorded commit. Exit 1 on any failure. Blobs are hashed in memory; nothing is written to DIR.
+//! `stamp verify-every ROOT`: checks `stamps/pins.txt` (no duplicate key, every pinned directory exists) and then
+//! verifies every stamp directory: each pinned one and every other directory under `stamps/` except `roots/`
+//! (review stamps are not pinned and are verified all the same). All directories are tried; exit 1 if any fails.
 //! Network and certificate work is delegated to `curl` and `openssl`; hashing to `sha256sum`.
 
-use oscint_tools::sys::{run, sha256_file};
+use oscint_tools::sys::{run, sha256_bytes, sha256_file};
 use std::fs;
 use std::path::Path;
 use std::process::Command;
@@ -142,7 +145,9 @@ fn create(root: &Path, out: &Path) -> Result<(), String> {
     }
 }
 
-fn verify(root: &Path, dir: &Path) -> Result<(), String> {
+/// Checks every `<sha256>  <path>` line of DIR/manifest.txt against the blob at the recorded commit (hashed in
+/// memory). Returns the number of files checked.
+fn verify_manifest(root: &Path, dir: &Path) -> Result<usize, String> {
     let m = fs::read_to_string(dir.join("manifest.txt")).map_err(|e| format!("manifest: {e}"))?;
     let commit = m.lines().find_map(|l| l.strip_prefix("commit ")).ok_or("manifest has no commit line")?;
     let mut n = 0;
@@ -151,20 +156,22 @@ fn verify(root: &Path, dir: &Path) -> Result<(), String> {
         if h.len() != 64 || l.starts_with("commitment") || l.starts_with("challenge-export") {
             continue;
         }
-        let tmp = dir.join(".blob");
         let blob = Command::new("git").arg("-C").arg(root).args(["show", &format!("{commit}:{path}")]).output().map_err(|e| e.to_string())?;
         if !blob.status.success() {
             return Err(format!("{path} not found at {commit}"));
         }
-        fs::write(&tmp, &blob.stdout).map_err(|e| e.to_string())?;
-        let got = sha256_file(&tmp)?;
-        let _ = fs::remove_file(&tmp);
+        let got = sha256_bytes(&blob.stdout)?;
         if got != h {
             return Err(format!("{path}: sha256 at {commit} is {got}, manifest says {h}"));
         }
         n += 1;
     }
     println!("manifest: {n} file hashes match commit {commit}");
+    Ok(n)
+}
+
+fn verify(root: &Path, dir: &Path) -> Result<(), String> {
+    verify_manifest(root, dir)?;
     for (label, _, rootfile, pin) in TSAS {
         println!("{}", verify_token(root, dir, label, rootfile, pin)?);
     }
@@ -180,8 +187,9 @@ fn verify(root: &Path, dir: &Path) -> Result<(), String> {
     Ok(())
 }
 
-/// Verifies every stamp directory named in `stamps/pins.txt` (each once); fails on a duplicate pin key.
-fn verify_pinned(root: &Path) -> Result<(), String> {
+/// The stamp directories named in `stamps/pins.txt` (each once, in pin order); fails on a bad line or a duplicate
+/// pin key.
+fn pinned_dirs(root: &Path) -> Result<Vec<String>, String> {
     let pins = fs::read_to_string(root.join("stamps/pins.txt")).map_err(|e| format!("stamps/pins.txt: {e}"))?;
     let mut keys = Vec::new();
     let mut dirs: Vec<String> = Vec::new();
@@ -198,11 +206,68 @@ fn verify_pinned(root: &Path) -> Result<(), String> {
     if dirs.is_empty() {
         return Err("no pinned stamps".into());
     }
-    for d in dirs {
-        println!("== {d}");
-        verify(root, &root.join(&d))?;
+    Ok(dirs)
+}
+
+/// Every directory directly under `stamps/` except `roots/`, as `stamps/<name>`, sorted. Each one is a stamp
+/// directory and must verify; a directory that is not a stamp fails verification (no manifest).
+fn all_stamp_dirs(root: &Path) -> Result<Vec<String>, String> {
+    let rd = fs::read_dir(root.join("stamps")).map_err(|e| format!("stamps/: {e}"))?;
+    let mut v = Vec::new();
+    for e in rd {
+        let e = e.map_err(|e| format!("stamps/: {e}"))?;
+        if !e.file_type().map_err(|e| e.to_string())?.is_dir() {
+            continue;
+        }
+        let name = e.file_name().to_string_lossy().into_owned();
+        if name != "roots" {
+            v.push(format!("stamps/{name}"));
+        }
     }
-    Ok(())
+    v.sort();
+    Ok(v)
+}
+
+/// The pinned directories (in pin order) followed by every other stamp directory; fails if a pinned one is
+/// missing.
+fn dirs_to_verify(root: &Path) -> Result<Vec<String>, String> {
+    let mut dirs = pinned_dirs(root)?;
+    for d in &dirs {
+        if !root.join(d).is_dir() {
+            return Err(format!("pinned stamp directory {d} does not exist"));
+        }
+    }
+    for d in all_stamp_dirs(root)? {
+        if !dirs.iter().any(|p| p.trim_end_matches('/') == d) {
+            dirs.push(d);
+        }
+    }
+    Ok(dirs)
+}
+
+/// Verifies every stamp directory (`dirs_to_verify`) with `check`, trying all of them; fails if any fails.
+fn verify_every_with(root: &Path, check: impl Fn(&Path, &Path) -> Result<(), String>) -> Result<(), String> {
+    let pinned = pinned_dirs(root)?;
+    let dirs = dirs_to_verify(root)?;
+    let mut failures = Vec::new();
+    for d in &dirs {
+        let kind = if pinned.contains(d) { "pinned" } else { "unpinned" };
+        println!("== {d} ({kind})");
+        if let Err(e) = check(root, &root.join(d)) {
+            println!("FAIL {d}: {e}");
+            failures.push(format!("{d}: {e}"));
+        }
+    }
+    println!("stamp directories: {} verified, {} failed", dirs.len() - failures.len(), failures.len());
+    if failures.is_empty() {
+        Ok(())
+    } else {
+        Err(failures.join("; "))
+    }
+}
+
+fn verify_every(root: &Path) -> Result<(), String> {
+    verify_every_with(root, verify)
 }
 
 fn main() {
@@ -210,9 +275,9 @@ fn main() {
     let r = match a.iter().map(String::as_str).collect::<Vec<_>>().as_slice() {
         [_, "create", root, out] => create(Path::new(root), Path::new(out)),
         [_, "verify", root, dir] => verify(Path::new(root), Path::new(dir)),
-        [_, "verify-pinned", root] => verify_pinned(Path::new(root)),
+        [_, "verify-every", root] => verify_every(Path::new(root)),
         _ => {
-            eprintln!("usage: stamp create ROOT OUTDIR | stamp verify ROOT DIR | stamp verify-pinned ROOT");
+            eprintln!("usage: stamp create ROOT OUTDIR | stamp verify ROOT DIR | stamp verify-every ROOT");
             std::process::exit(2);
         }
     };
@@ -228,6 +293,92 @@ mod tests {
     #[test]
     fn hex() {
         assert_eq!(hex_decode("00ff10"), vec![0, 255, 16]);
+    }
+    /// A fresh git repository in the system temp dir with `a.txt` committed; returns (root, commit).
+    fn repo(tag: &str) -> (std::path::PathBuf, String) {
+        let d = std::env::temp_dir().join(format!("oscint-stamp-{tag}-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&d);
+        fs::create_dir_all(d.join("stamps/roots")).unwrap();
+        fs::write(d.join("a.txt"), "frozen\n").unwrap();
+        let g = |args: &[&str]| {
+            let o = Command::new("git")
+                .arg("-C")
+                .arg(&d)
+                .args(["-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false"])
+                .args(args)
+                .output()
+                .unwrap();
+            assert!(o.status.success(), "git {args:?}: {}", String::from_utf8_lossy(&o.stderr));
+            String::from_utf8_lossy(&o.stdout).trim().to_string()
+        };
+        g(&["init", "-q"]);
+        g(&["add", "a.txt"]);
+        g(&["commit", "-q", "-m", "t"]);
+        let c = g(&["rev-parse", "HEAD"]);
+        (d, c)
+    }
+    fn write_stamp(root: &Path, name: &str, commit: &str, hash: &str) {
+        let d = root.join("stamps").join(name);
+        fs::create_dir_all(&d).unwrap();
+        fs::write(d.join("manifest.txt"), format!("OSCINT-MANIFEST 1\ncommit {commit}\n{hash}  a.txt\n")).unwrap();
+    }
+    fn entries(d: &Path) -> Vec<String> {
+        let mut v: Vec<String> = fs::read_dir(d).unwrap().map(|e| e.unwrap().file_name().to_string_lossy().into_owned()).collect();
+        v.sort();
+        v
+    }
+    #[test]
+    fn every_directory_is_verified_pinned_first() {
+        let (d, c) = repo("list");
+        let good = sha256_bytes(b"frozen\n").unwrap();
+        write_stamp(&d, "20260101T000000Z-bbbbbbbbbbbb", &c, &good);
+        write_stamp(&d, "20260101T000000Z-aaaaaaaaaaaa", &c, &good);
+        write_stamp(&d, "20260102T000000Z-cccccccccccc", &c, &good);
+        fs::write(d.join("stamps/pins.txt"), "# c\nX stamps/20260101T000000Z-bbbbbbbbbbbb\nY stamps/20260101T000000Z-bbbbbbbbbbbb\n").unwrap();
+        assert_eq!(
+            dirs_to_verify(&d).unwrap(),
+            vec!["stamps/20260101T000000Z-bbbbbbbbbbbb", "stamps/20260101T000000Z-aaaaaaaaaaaa", "stamps/20260102T000000Z-cccccccccccc"]
+        );
+        let _ = fs::remove_dir_all(&d);
+    }
+    #[test]
+    fn missing_pinned_directory_is_refused() {
+        let (d, _) = repo("missing");
+        fs::write(d.join("stamps/pins.txt"), "X stamps/20260101T000000Z-bbbbbbbbbbbb\n").unwrap();
+        assert!(dirs_to_verify(&d).unwrap_err().contains("does not exist"));
+        let _ = fs::remove_dir_all(&d);
+    }
+    #[test]
+    fn duplicate_pin_key_is_refused() {
+        let (d, c) = repo("dup");
+        write_stamp(&d, "P", &c, &sha256_bytes(b"frozen\n").unwrap());
+        fs::write(d.join("stamps/pins.txt"), "X stamps/P\nX stamps/P\n").unwrap();
+        assert!(verify_every(&d).unwrap_err().contains("duplicate pin key"));
+        let _ = fs::remove_dir_all(&d);
+    }
+    /// Planted defect (adversarial a1): a corrupted stamp directory that no pin names must be rejected; and the
+    /// manifest check must leave the stamp directories untouched (f4).
+    #[test]
+    fn corrupted_unpinned_stamp_is_rejected_and_nothing_is_written() {
+        let (d, c) = repo("plant");
+        let good = sha256_bytes(b"frozen\n").unwrap();
+        let bad = format!("{}{}", if good.starts_with('0') { "1" } else { "0" }, &good[1..]);
+        write_stamp(&d, "P", &c, &good);
+        write_stamp(&d, "U", &c, &bad);
+        fs::write(d.join("stamps/pins.txt"), "X stamps/P\n").unwrap();
+        let before = (entries(&d.join("stamps/P")), entries(&d.join("stamps/U")));
+        let manifest_only = |r: &Path, s: &Path| verify_manifest(r, s).map(|_| ());
+        let e = verify_every_with(&d, manifest_only).unwrap_err();
+        assert!(e.contains("stamps/U") && e.contains("manifest says"), "{e}");
+        assert!(!e.contains("stamps/P"), "{e}");
+        assert_eq!((entries(&d.join("stamps/P")), entries(&d.join("stamps/U"))), before);
+        // Control: the same tree with U repaired passes.
+        write_stamp(&d, "U", &c, &good);
+        verify_every_with(&d, manifest_only).unwrap();
+        // A directory that is not a stamp at all is unverifiable, hence rejected.
+        fs::create_dir_all(d.join("stamps/stray")).unwrap();
+        assert!(verify_every_with(&d, manifest_only).unwrap_err().contains("stamps/stray: manifest"));
+        let _ = fs::remove_dir_all(&d);
     }
     #[test]
     fn tampered_root_is_refused() {

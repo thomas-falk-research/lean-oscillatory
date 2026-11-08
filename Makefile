@@ -61,7 +61,7 @@ stamp: commit challenge-export
 	$(T)/stamp create . stamps/$(shell date -u +%Y%m%dT%H%M%SZ)-$(shell git rev-parse --short=12 HEAD)
 
 stamp-verify: tools
-	$(UNSKIP); if [ -f stamps/pins.txt ]; then $(T)/stamp verify-pinned .; else echo "stamp-verify: SKIPPED: no pinned stamp yet"; $(SKIP); fi
+	$(UNSKIP); if [ -f stamps/pins.txt ]; then $(T)/stamp verify-every .; else echo "stamp-verify: SKIPPED: no pinned stamp yet"; $(SKIP); fi
 
 # `make verify-all ONLY="lean guard"` runs only those steps (reported as a partial run, never as a full PASS).
 verify-all: tools
