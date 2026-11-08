@@ -5,6 +5,7 @@ import OscInt.Front.Poly
 import OscInt.Front.Sanity
 import OscInt.Front.Examples
 import OscInt.Front.FamilySanity
+import OscInt.Front.FamilySanity2
 import OscInt.Front.FamilyC10
 import OscInt.Front.Local
 

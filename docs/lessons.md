@@ -220,3 +220,47 @@ submodules; library code that belongs to a namespace with an entry-point module 
 (`OscInt/Front/`). Check: `tools/check_entry_point.sh` (in `make quick`), with a self-test of the detector. After moving a module,
 delete its old build outputs (`.lake/build/lib/lean/<old path>`, `.lake/build/ir/<old path>`), or the replay's
 stale-build check fails, as it did once on c462966 (lessons 5 working).
+
+## 31. The hand-off described a state the owner had already changed (2026-11-08)
+The session-5 brief said `main` = cb39601 with the session-4 branch unmerged and the release perhaps unpublished; in
+fact PR #4 was merged (6acef2a) and v0.3.0 published hours earlier. Acting on the brief would have opened a duplicate
+pull request and prepared owner steps that were already done. Rule: the first action of a session is to read the
+remote state (`git fetch`, the releases API, the latest CI run on `main`) and record any difference from the brief in
+the session checklist (`handover_corrections`) before planning. Check: none automatic; the checklist field.
+
+## 32. A shallow clone made `stamp-verify` fail on the oldest stamp (2026-11-08)
+The session container's clone was shallow; `make stamp-verify` stopped at `stamps/20261105T203058Z-7516eb518dce`
+("ci.yml not found at 7516eb5…") because the stamped commit was not present. After `git fetch --unshallow` every
+stamp verified. The check was right to fail (lessons 9 is the CI form of this). Rule: unshallow before
+`stamp-verify` or `verify-all`; a stamp failure that names a missing commit is first checked with
+`git rev-parse --is-shallow-repository`. Check: none automatic (an actionable message in `stamp` would be a tool
+change; it needs an adversarial review, candidate for ROADMAP §4 "actionable error messages").
+
+## 33. Sanity theorems through the statement constant, with planted controls (2026-11-08)
+Both API3 pre-proof referees found that the sanity theorems restated the hypotheses (lessons 11 again), so a plant in
+a statement body (`p ↦ −p`, `p ↦ 0`, `+L ↦ −L`, "everywhere") would leave them green. Answered before any proof by
+theorems that take the statement constant as a hypothesis and apply it to data on which the plant makes the
+discharge impossible, and by compiling planted copies (four rejected, unplanted copies accepted). Why it matters:
+this tests the frozen text itself, which a restated hypothesis cannot, and it needs no re-freeze. Rule: from the next
+batch on, write sanity theorems in this conditional form (or bundle each hypothesis as a `def` shared with the
+statement, lessons 11), choose data that separate each new feature (generic, p ≠ 0, k ≠ 0, a sign that matters,
+lessons 17), and run at least one planted copy per statement before the stamp. Check: `OscInt/Front/FamilySanity.lean`
+compiles in `make quick`; the planted controls are a record (`docs/replay/2026-11-08-API3-sanity-plants.txt`), not yet
+a CI job.
+
+## 34. A quadrature rule chosen from habit would have made a pre-registered check meaningless (2026-11-08)
+The first draft of the P3b protocol used composite Simpson with 4096 panels up to m = 640; its error term is O(1) there
+(about 1.25 rad of phase per panel), so the check would have measured the quadrature, not the remainder. Caught while
+writing the program, before the run; replaced by the trapezoid rule, which converges faster than any power for
+integrands vanishing to all orders at the boundary once π/h exceeds the largest frequency. Rule: a pre-registered
+numeric protocol states the resolution argument (frequency versus step) and an a-posteriori quadrature check
+(|I_n − I_2n| against the quantity measured), and is revised only before its first run. Check: the protocol template
+in `docs/prereg/`.
+
+## 35. Two intermediate pushes were red; both checks were right (2026-11-08)
+CI `quick` failed on e42dcd3 (the pins added ten statements to `stamps/statements.json` that `import OscInt.API` did
+not yet expose; entry-point check) and on 3b05946 (proof files declared theorems named in `comparator-API3.json`
+without `#assert_type_is` lines; guard). Locally only targeted commands had run before those pushes (`make
+statements`, `make commit`, `lake build <module>`), not `make quick`. Both were fixed by later commits on the branch;
+`main` was never red. Rule: run `make quick` before every push, including "intermediate" ones, and read the CI result
+of the previous push before the next claim (lessons 9). Check: none automatic (a pre-push hook would be one).

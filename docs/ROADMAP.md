@@ -29,10 +29,13 @@ trust chain.
       the derivative bounds of the phase, the gradient lower bound, the amplitude bound and the support size. The
       downstream project found a gap of about 20 orders of magnitude between what an existential constant allowed it
       to prove and what was observed.
-- [ ] **Local smoothness hypotheses** *(downstream)*: every 2D statement now asks for a phase of class C⁴ on all of
+- [x] **Local smoothness hypotheses** *(downstream)* (front-end batch 3, 2026-11-08: FE-S2.1L/S2.2L/S3L/S4.1′L and single-phase
+      forms, `docs/STATUS.md`, record `docs/replay/2026-11-08-session5-API3-verify-all.txt`; acceptance
+      `examples/consumer/ConsumerLocal.lean`): every 2D statement now asks for a phase of class C⁴ on all of
       ℝ². Versions assuming smoothness only on a neighbourhood of the amplitude's support (natural for dispersion
       relations such as arccos-type phases, smooth only on an open set).
-- [ ] **Parametric uniformity everywhere** *(downstream)*: uniformity over compact families of phases for S2.2 and
+- [ ] **Parametric uniformity everywhere** *(downstream)* (done 2026-11-08 except S4: S2.2F family stationary phase,
+      S3c fold with the classical hypothesis, family front ends; `docs/STATUS.md`; open: S4.1′ over a family): uniformity over compact families of phases for S2.2 and
       S4 (now only S3 and S2.1 have it), and a fold statement requiring the fold-or-nondegenerate condition only at
       critical points, as in the classical statement (S3 now requires it on all of K; its referee noted this).
 - [ ] **Asymptotic expansions** *(downstream)*: the leading term of nondegenerate stationary phase,
@@ -126,6 +129,7 @@ trust chain.
      (concept DOI 10.5281/zenodo.24021328);
   4. [x] Zenodo DOI badge in `README.md`; `doi:` and `identifiers:` in `CITATION.cff`;
   5. archive in Software Heritage; sign release artifacts (Sigstore).
-- [ ] **owner** Release v0.3.0: prepared 2026-11-07 (`docs/release-notes/v0.3.0.md`, CHANGELOG, version 0.3.0 in
+- [x] **owner** Release v0.3.0: published 2026-11-07 (tag → 7098f09; external dry run
+      `docs/replay/2026-11-08-external-downstream-dry-run-v0.3.0.txt`); prepared 2026-11-07 (`docs/release-notes/v0.3.0.md`, CHANGELOG, version 0.3.0 in
       `lakefile.toml`, `CITATION.cff`, `.zenodo.json`); CI job `release-pin` is red until the tag exists.
 - [ ] **owner** Publication: venue, preprint, outreach.

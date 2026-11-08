@@ -1,0 +1,24 @@
+import OscInt.Front.FamilySanity
+namespace PlantTest
+open OscInt.Statements OscInt.API.ConvertAux OscInt.API.FamilySanity
+def PFoldCritStatement : Prop :=
+  ∀ (Λ : Type) [TopologicalSpace Λ] [CompactSpace Λ] (Ψ : Λ → ℝ × ℝ → ℝ) (K K' : Set (ℝ × ℝ)),
+    FamilyCk 4 Ψ → IsCompact K → IsCompact K' →
+    (∀ σ, ∀ p ∈ K', ∀ k ∈ K, IsCritical (Ψ σ) p k → FoldOrNondeg (Ψ σ) k) →
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (σ : Λ) (p : ℝ × ℝ) (m : ℝ),
+      AmpBound 2 K A M → p ∈ K' → 1 ≤ m →
+      ‖oscInt2 (fun k => m * (Ψ σ k + lin p k)) A‖ ≤ C * M * m ^ (-(5 : ℝ) / 6)
+
+
+theorem PfoldCrit_sign_bite (hC10 : FamilyCkOfUncurryStatement) (h : PFoldCritStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (σ : Set.Icc (1 : ℝ) 2) (m : ℝ),
+      AmpBound 2 (Metric.closedBall 0 2) A M → 1 ≤ m →
+      ‖oscInt2 (fun k => m * (signFamily σ k + lin (4, 0) k)) A‖ ≤ C * M * m ^ (-(5 : ℝ) / 6) := by
+  obtain ⟨C, hC⟩ := h (Set.Icc (1 : ℝ) 2) (fun σ => signFamily σ) (Metric.closedBall 0 2)
+    {((4 : ℝ), (0 : ℝ))} (familyCkOfUncurry_nonconst hC10) (isCompact_closedBall _ _) isCompact_singleton
+    (fun σ p hp k _ hk => Or.inl (signFamily_nondeg σ p hp k hk))
+  exact ⟨C, fun A M σ m hA hm => hC A M σ (4, 0) m hA (Set.mem_singleton _) hm⟩
+
+/-! ## Bite 3: a phase singular outside `U`, through the Mathlib-idiom single-phase forms -/
+
+end PlantTest

@@ -23,7 +23,7 @@
    "id": "P0b",
    "title": "CI fails if README/consumer examples pin a tag that main does not contain",
    "status": "done",
-   "evidence": "tools/check_release_pin.sh check 4 (release commit must be an ancestor of HEAD); self-test case added; real negative control: on a worktree at 3290127 (before 7098f09) the check FAILs with the new message; CI release-pin job now checks out with fetch-depth 0; committed bb8619f"
+   "evidence": "tools/check_release_pin.sh check 4 (release commit must be an ancestor of HEAD); self-test case added; real negative control: on a worktree at 3290127 (before 7098f09) the check FAILs with the new message; CI release-pin job now checks out with fetch-depth 0; committed bb8619f; check 5 (raw commit pins) and real-git self-test after adversarial m1/m2"
   },
   {
    "id": "P0c",
@@ -40,8 +40,8 @@
   {
    "id": "P1+P2+P3a",
    "title": "Statement batch API3: S2.2F, S3c (classical fold hypothesis), C10, FE-S2.1L, FE-S2.2L, FE-S3L, FE-S4.1'L, FE-S2.1l, FE-S2.2l, FE-S3l",
-   "status": "in-progress: stamped e42dcd3 (stamps/20261108T002603Z-9d03130c8f3a); pre-proof FAITHFUL+TRUE x2 (review/2026-11-08-API3-pre-proof-{A,B}.md); MAJOR (sanity layer) answered by OscInt/Front/FamilySanity.lean with negative controls; review stamp next, then proofs",
-   "evidence": "OscInt/Statements/Family.lean, docs/statements.md section 'Front end, batch 3'"
+   "status": "done (owner decision pending on CONTRIBUTING step 5)",
+   "evidence": "stamps 20261108T002603Z-9d03130c8f3a (statements) and 20261108T010546Z-7bb457958327 (reviews); proofs OscInt/Front/{Family,FamilyC10,Cutoff,Local}.lean; docs/replay/2026-11-08-session5-API3-verify-all.txt (a638f70, PASS 9/9); review/2026-11-08-API3-{pre-proof-A,pre-proof-B,post-proof-A,post-proof-B,adversarial,answers}.md; sanity OscInt/Front/FamilySanity{,2}.lean, examples/consumer/ConsumerLocal{,Checks}.lean; plants docs/replay/plants/2026-11-08-API3/"
   },
   {
    "id": "P1-D4-family",
@@ -52,7 +52,7 @@
   {
    "id": "P3b",
    "title": "2D nondegenerate stationary-phase leading term with O(m^-2), numerics pre-registered",
-   "status": "open",
+   "status": "protocol pre-registered (docs/prereg/2026-11-08-P3b-leading-term.md, program numerics/src/bin/spleading.rs); run after the commit that registers it; no Lean statement",
    "evidence": null
   },
   {
@@ -84,6 +84,12 @@
    "title": "Adoption and developer experience",
    "status": "open",
    "evidence": null
+  },
+  {
+   "id": "P0-ci",
+   "title": "CI on the branch",
+   "status": "red on two intermediate pushes (e42dcd3 entry point, 3b05946 guard; both correct), green on a638f70 quick and release-pin; see lessons 35",
+   "evidence": "CI runs 42430272765, 42432947544, 42433679517"
   }
  ]
 }

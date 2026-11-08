@@ -405,3 +405,12 @@ that bound; the bite that neither S2.2 nor S3 covers is `OscInt.API.FamilySanity
 constants are in `OscInt/Front/FamilySanity.lean` (negative controls `docs/replay/2026-11-08-API3-sanity-plants.txt`).
 (7) Metric balls on ℝ × ℝ are max-norm squares; for a phase smooth on a Euclidean disc use the set
 `{k | k.1 ^ 2 + k.2 ^ 2 < 1}` for U.
+
+Correction to the "Order" paragraph of batch 3 (2026-11-08, adversarial review m3; `review/2026-11-08-API3-answers.md`):
+what the stamps show is that no proof file was committed before the review stamp
+`stamps/20261108T010546Z-7bb457958327` (01:05:48Z; neither stamp's manifest contains a proof file of the batch). That
+no Lean proof existed in scratch before it rests on the lead's statement; the scratch birth times the adversarial
+referee observed (first proof file 01:06:25Z) are consistent with it but are not durable evidence. Also (adversarial
+M1–M3): every statement of the batch now has a sanity theorem through its constant (`OscInt/Front/FamilySanity.lean`,
+`FamilySanity2.lean`); such theorems cannot detect a plant that weakens a hypothesis; answering the pre-proof MAJOR this
+way instead of re-freezing awaits the owner's decision on CONTRIBUTING step 5.

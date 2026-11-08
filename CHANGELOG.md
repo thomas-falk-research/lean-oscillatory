@@ -6,9 +6,37 @@ or `proved_by` name. Every release lists its statement changes, even when there 
 
 ## Unreleased
 
-Nothing yet.
+### Statement changes
+Against v0.3.0: **no existing statement changed** (`make commit`: every commitment equals its pinned stamp,
+`docs/replay/2026-11-08-session5-API3-verify-all.txt`). Added (front-end batch 3, `OscInt/Statements/Family.lean`, stamp
+`stamps/20261108T002603Z-9d03130c8f3a`): S2.2F `StationaryPhaseFamilyStatement`, S3c `FoldCritStatement`, C10
+`FamilyCkOfUncurryStatement`, FE-S2.1L `NonStationaryLocalStatement`, FE-S2.2L `StationaryPhaseLocalStatement`, FE-S3L
+`FoldLocalStatement`, FE-S4.1′L `D4BoundLocalStatement`, FE-S2.1l `NonStationaryOnStatement`, FE-S2.2l
+`StationaryPhaseOnStatement`, FE-S3l `FoldOnStatement`; all ten proved (`proved_by` in `stamps/statements.json`, 37
+statements). A release containing them is a minor release (0.4.0).
 
-## v0.3.0 — prepared 2026-11-07, not yet published
+### Front-end batch 3 (new)
+- Uniformity over compact families of phases for nondegenerate stationary phase (S2.2F) and, with the classical
+  hypothesis (fold-or-nondegenerate only at critical points), for the fold estimate (S3c, strictly stronger than S3).
+- Local smoothness: front ends for S2.1, S2.2, S3 (families indexed by a compact set of a real normed space, smooth
+  on `V ×ˢ U`) and S4.1′, and single-phase forms, assuming `ContDiffOn` on an open set containing the amplitude's
+  support; the phase may be arbitrary (even discontinuous) outside it.
+- C10: `ContDiff` of the uncurried family gives `FamilyCk`.
+- Sanity theorems that apply the statement constants to separating data, for all ten statements, with planted
+  negative controls (`OscInt/Front/FamilySanity.lean`, `FamilySanity2.lean`,
+  `docs/replay/2026-11-08-API3-sanity-plants.txt`).
+
+### Tooling and CI
+- `tools/check_release_pin.sh` check 4: the pinned release commit must be contained in HEAD (CI `release-pin` checks
+  out full history); check 5: a raw commit pin must be a commit contained in HEAD; the self-test runs the real ancestry
+  predicate on a git fixture (adversarial review m1, m2).
+- Consumer examples `examples/consumer/ConsumerLocal.lean` (arccos dispersion family, phase singular outside the
+  support) and `ConsumerLocalChecks.lean` (non-vacuity and plant falsity), compiled by `make quick`.
+- Numerics: pre-registered protocol for the 2D stationary-phase leading term (`docs/prereg/`), program
+  `numerics/src/bin/spleading.rs`.
+- External downstream dry run of v0.3.0 by tag: `docs/replay/2026-11-08-external-downstream-dry-run-v0.3.0.txt`.
+
+## v0.3.0 — 2026-11-07 (published by the owner; tag `v0.3.0` → 7098f09)
 
 The owner publishes releases; the steps, the SHA-256 pins and (after the release commit) its full hash are in
 `docs/release-notes/v0.3.0.md` and `docs/release-notes/v0.3.0.commit`. A first preparation at 2e8707a was withdrawn
