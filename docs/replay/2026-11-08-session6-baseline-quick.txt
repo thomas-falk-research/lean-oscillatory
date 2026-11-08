@@ -1,0 +1,87 @@
+# make quick on 34f8793 (main, merge of PR #5) in a fresh session-6 container (4 cores, 15 GB), 2026-11-08
+# toolchain: elan's release asset returned HTTP 504 repeatedly; lean-4.35.0-linux.tar.zst downloaded directly from the
+#   GitHub release, sha256 7289597a44543246c9227b8cae501767e095ce17f6d448b95fc4a8dc97268f6d (= toolchain.sha256), extracted
+#   to ~/.elan/toolchains/leanprover--lean4---v4.35.0 and put on PATH (no elan binary); lake exe cache get 9031 files, 62 s
+# command: make quick; exit status 0; wall 9m06s (lines 'Built …' and 'Replayed …' omitted below)
+
+cd tools && cargo build --release --locked --quiet
+info: syncing channel updates for '1.97.0-x86_64-unknown-linux-gnu'
+info: latest update on 2026-07-09, rust version 1.97.0 (2d8144b78 2026-07-07)
+info: downloading component 'cargo'
+info: downloading component 'rust-std'
+info: downloading component 'rustc'
+info: installing component 'cargo'
+info: installing component 'rust-std'
+info: installing component 'rustc'
+tools/target/release/guard .
+guard: ok: 81 file(s), 0 violations, 747 theorem declaration(s)
+mkdir -p build/skipped && rm -f build/skipped/statements-check; tools/target/release/statements check . || { [ $? -eq 3 ] && mkdir -p build/skipped && touch build/skipped/statements-check; }
+statements: ok: stamps/statements.json matches pins, manifests and sources (37 statements)
+make --no-print-directory lean
+cd tools && cargo build --release --locked --quiet
+rm -f build/lean.ok
+lake build
+Build completed successfully (9129 jobs).
+mkdir -p build && lake env lean Axioms.lean > build/axioms.out
+tools/target/release/audit build/axioms.out . build/audited.txt
+axiom audit: 747 of 747 theorems clean (permitted: propext, Classical.choice, Quot.sound)
+lake env lean StatementTypes.lean
+TYPE-OK OscInt.vanDerCorput_one : OscInt.Statements.VdC1Statement
+TYPE-OK OscInt.vanDerCorput_two : OscInt.Statements.VdC2Statement
+TYPE-OK OscInt.vanDerCorput_three : OscInt.Statements.VdC3Statement
+TYPE-OK OscInt.nonStationary : OscInt.Statements.NonStationaryStatement
+TYPE-OK OscInt.stationaryPhase : OscInt.Statements.StationaryPhaseStatement
+TYPE-OK OscInt.fold : OscInt.Statements.FoldStatement
+TYPE-OK OscInt.d4Bound : OscInt.Statements.D4BoundStatement
+TYPE-OK OscInt.d4BoundNe : OscInt.Statements.D4BoundNeStatement
+TYPE-OK OscInt.d4ConstantPos : OscInt.Statements.D4ConstantPosStatement
+TYPE-OK OscInt.d4Limit : OscInt.Statements.D4LimitStatement
+TYPE-OK OscInt.d4ConstantClosedForm : OscInt.Statements.D4ConstantClosedFormStatement
+TYPE-OK OscInt.API.ampBoundOfContDiff : OscInt.Statements.AmpBoundOfContDiffStatement
+TYPE-OK OscInt.API.d4LimitClosedForm : OscInt.Statements.D4LimitClosedFormStatement
+TYPE-OK OscInt.API.dd_iteratedFDeriv : OscInt.Statements.DdEqIteratedStatement
+TYPE-OK OscInt.API.ddd_iteratedFDeriv : OscInt.Statements.DddEqIteratedStatement
+TYPE-OK OscInt.API.hessDet_eq_det : OscInt.Statements.HessDetEqDetStatement
+TYPE-OK OscInt.API.cubicCoeffs_eq : OscInt.Statements.CubicCoeffsEqStatement
+TYPE-OK OscInt.API.disc_eq_cubic_discr : OscInt.Statements.DiscEqCubicDiscrStatement
+TYPE-OK OscInt.API.disc_ne_zero_iff_isolated : OscInt.Statements.DiscNeZeroIffIsolatedStatement
+TYPE-OK OscInt.API.foldOrNondeg_iff : OscInt.Statements.FoldOrNondegIffStatement
+TYPE-OK OscInt.API.foldOrNondeg_of_hasFDeriv : OscInt.Statements.FoldOrNondegOfHasFDerivStatement
+TYPE-OK OscInt.API.gradLower_iff : OscInt.Statements.GradLowerIffStatement
+TYPE-OK OscInt.API.ampBound_conv : OscInt.Statements.AmpBoundConvStatement
+TYPE-OK OscInt.API.nonStationaryFE : OscInt.Statements.NonStationaryFEStatement
+TYPE-OK OscInt.API.stationaryPhaseFE : OscInt.Statements.StationaryPhaseFEStatement
+TYPE-OK OscInt.API.foldFE : OscInt.Statements.FoldFEStatement
+TYPE-OK OscInt.API.d4BoundFE : OscInt.Statements.D4BoundFEStatement
+TYPE-OK OscInt.API.stationaryPhaseFamily : OscInt.Statements.StationaryPhaseFamilyStatement
+TYPE-OK OscInt.API.foldCrit : OscInt.Statements.FoldCritStatement
+TYPE-OK OscInt.API.familyCk_of_uncurry : OscInt.Statements.FamilyCkOfUncurryStatement
+TYPE-OK OscInt.API.nonStationaryLocal : OscInt.Statements.NonStationaryLocalStatement
+TYPE-OK OscInt.API.stationaryPhaseLocal : OscInt.Statements.StationaryPhaseLocalStatement
+TYPE-OK OscInt.API.foldLocal : OscInt.Statements.FoldLocalStatement
+TYPE-OK OscInt.API.d4BoundLocal : OscInt.Statements.D4BoundLocalStatement
+TYPE-OK OscInt.API.nonStationaryOn : OscInt.Statements.NonStationaryOnStatement
+TYPE-OK OscInt.API.stationaryPhaseOn : OscInt.Statements.StationaryPhaseOnStatement
+TYPE-OK OscInt.API.foldOn : OscInt.Statements.FoldOnStatement
+lake env lean MathlibNames.lean > /dev/null
+lake env lean GammaFree.lean
+GAMMA-FREE CONTROL Real.Gamma_pos_of_pos rejected as expected (33 forbidden constant(s))
+GAMMA-FREE CONTROL gammaProofControl rejected as expected (33 forbidden constant(s))
+GAMMA-FREE OK OscInt.Statements.D4ConstantPosStatement (33099 constants in the closure)
+GAMMA-FREE OK OscInt.d4ConstantPos (43612 constants in the closure)
+GAMMA-FREE OK OscInt.d4Limit (53780 constants in the closure)
+GAMMA-FREE OK OscInt.d4BoundNe (51302 constants in the closure)
+touch build/lean.ok
+make --no-print-directory entry-point
+tools/check_entry_point.sh --self-test && tools/check_entry_point.sh
+ok   self-test: nested-module detector flags OscInt.A (has OscInt.A.B) and nothing else
+entry-point self-test: PASS (the planted name is reported, nothing else)
+entry-point: PASS (74 names from stamps/statements.json, all visible under import OscInt.API)
+lake env lean -DautoImplicit=false examples/consumer/ConsumerFormula.lean
+lake env lean -DautoImplicit=false examples/consumer/ConsumerLocal.lean
+lake env lean -DautoImplicit=false examples/consumer/ConsumerLocalChecks.lean
+
+real	9m5.786s
+user	12m51.108s
+sys	1m21.654s
+EXIT=0

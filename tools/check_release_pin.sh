@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Release-pin check. Fails unless, for every release tag the user-facing files tell people to pin:
 #   1. README.md itself pins a tag (a pin elsewhere does not count for README);
 #   2. the tag exists in REMOTE, and the commit it points to (peeled) is exactly the commit recorded in

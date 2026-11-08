@@ -1,0 +1,63 @@
+# Re-run of every API3 plant source in docs/replay/plants/2026-11-08-API3/ (session 6, 2026-11-08, commit bbafeeb, toolchain v4.35.0, Mathlib 56a0058)
+# Why: the step-5 rule referee (review/2026-11-08-step5-rule-referee.md, finding 2) found that the S2.2F binder plants
+# (adversarial M2) had sources but no recorded outcome; review/2026-11-08-API3-answers.md cited a 'second part' of
+# docs/replay/2026-11-08-API3-sanity-plants.txt that does not exist. This record is that outcome, produced today, not last session.
+# Command per file (copied to a scratch directory as <name>.lean): lake --dir <repo> env lean -DautoImplicit=false <name>.lean
+# Coverage: planted controls exist for 3 of 10 API3 statements (S3c, FE-S2.2l, S2.2F); none for C10, FE-S3l, FE-S2.1L,
+# FE-S2.2L, FE-S3L, FE-S4.1'L, FE-S2.1l.
+
+== ok-binder: exit 0, 0 error(s)
+== univ-binder: exit 1, 1 error(s)
+univ-binder.lean:323:41: error: Type mismatch
+  binder_nondeg
+has type
+  ∀ p ∈ {(0, 0), (3, 0)}, ∀ k ∈ Metric.closedBall 0 1, IsCritical binderPhase p k → hessDet binderPhase k ≠ 0
+but is expected to have type
+  ∀ p ∈ {(0, 0), (3, 0)}, ∀ k ∈ Set.univ, IsCritical binderPhase p k → hessDet binderPhase k ≠ 0
+== Kprime-binder: exit 1, 1 error(s)
+Kprime-binder.lean:323:41: error: Type mismatch
+  binder_nondeg
+has type
+  ∀ p ∈ {(0, 0), (3, 0)}, ∀ k ∈ Metric.closedBall 0 1, IsCritical binderPhase p k → hessDet binderPhase k ≠ 0
+but is expected to have type
+  ∀ p ∈ {(0, 0), (3, 0)}, ∀ k ∈ {(0, 0), (3, 0)}, IsCritical binderPhase p k → hessDet binderPhase k ≠ 0
+== ok-foldcrit: exit 0, 0 error(s)
+== ok-spon: exit 0, 0 error(s)
+== neg-p-foldcrit: exit 1, 1 error(s)
+neg-p-foldcrit.lean:19:61: error: Application type mismatch: The argument
+  hk
+has type
+  IsCritical (signFamily ↑σ) (-p) k
+but is expected to have type
+  IsCritical (signFamily ↑σ) p k
+in the application
+  signFamily_nondeg σ p hp k hk
+== zero-p-foldcrit: exit 1, 1 error(s)
+zero-p-foldcrit.lean:18:34: error: Type mismatch
+  cubes_fold_at_crit
+has type
+  ∀ p ∈ {(0, -3)},
+    ∀ k ∈ Metric.closedBall 0 2,
+      IsCritical (fun k => k.1 ^ 3 + k.2 ^ 3) p k → FoldOrNondeg (fun k => k.1 ^ 3 + k.2 ^ 3) k
+but is expected to have type
+  ∀ p ∈ {(0, -3)},
+    ∀ k ∈ Metric.closedBall 0 2,
+      IsCritical (fun k => k.1 ^ 3 + k.2 ^ 3) 0 k → FoldOrNondeg (fun k => k.1 ^ 3 + k.2 ^ 3) k
+== neg-L-spon: exit 1, 1 error(s)
+neg-L-spon.lean:20:55: error: Application type mismatch: The argument
+  hc
+has type
+  fderiv ℝ kinkPhase k - L₀ = 0
+but is expected to have type
+  fderiv ℝ kinkPhase k + L₀ = 0
+in the application
+  kink_det_ne k (closedBall_subset_kinkU hk) hc
+== everywhere-spon: exit 1, 1 error(s)
+everywhere-spon.lean:20:55: error: Application type mismatch: The argument
+  hc
+has type
+  (hessianMatrix kinkPhase k).det = 0
+but is expected to have type
+  fderiv ℝ kinkPhase k + L₀ = 0
+in the application
+  kink_det_ne k (closedBall_subset_kinkU hk) hc

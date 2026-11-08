@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #![forbid(unsafe_code)]
 //! `verify-all`: runs each verification target with `make` and prints one line per step and a final verdict:
 //! PASS only if every step passed; INCOMPLETE if none failed but some step was skipped (exit status 3 from the

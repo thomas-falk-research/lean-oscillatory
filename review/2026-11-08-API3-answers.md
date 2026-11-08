@@ -31,6 +31,12 @@ two S2.2F plants (`∀ k ∈ K ↦ ∀ k ∈ univ`, `↦ ∀ k, k ∈ K′`) are
 same data do not catch the plant ((3, 0) is a fold: Hessian diag(0, 2), ∂₁₁₁Ψ = 6); S3c's `k ∈ K` binder is caught by
 `foldCrit_fold_bite`, whose binder is typed (`k ∈ closedBall 0 2`), as the referee noted.
 
+**Erratum (2026-11-08, session 6).** The "second part" of `docs/replay/2026-11-08-API3-sanity-plants.txt` cited
+under M2 never existed (one commit, one part; step-5 rule referee, finding 2). The M2 plant sources were in
+`docs/replay/plants/2026-11-08-API3/{Kprime,univ,ok}-binder.lean.txt` with the outcome only in the ff5b80e commit
+message; they were re-run and recorded in `docs/replay/2026-11-08-session6-API3-plants-rerun.txt`. The M2 text above
+is kept as written.
+
 **M3 (MAJOR): not re-freezing departs from CONTRIBUTING step 5.** Agreed that it is a departure from the written rule,
 and it stays one until the owner decides. What changed since the referee read it: the substitute now covers all ten
 constants (M1) and the demonstrated M2 plants, with the limit above stated. The documents no longer say the MAJOR is

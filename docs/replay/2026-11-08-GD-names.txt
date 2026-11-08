@@ -1,0 +1,76 @@
+@iteratedFDeriv_comp_add_left : ∀ {𝕜 : Type u_1} [inst : NontriviallyNormedField 𝕜] {E : Type u_2}
+  [inst_1 : NormedAddCommGroup E] [inst_2 : NormedSpace 𝕜 E] {F : Type u_3} [inst_3 : NormedAddCommGroup F]
+  [inst_4 : NormedSpace 𝕜 F] {f : E → F} (n : ℕ) (a x : E),
+  iteratedFDeriv 𝕜 n (fun z => f (a + z)) x = iteratedFDeriv 𝕜 n f (a + x)
+@iteratedFDeriv_comp_add_right : ∀ {𝕜 : Type u_1} [inst : NontriviallyNormedField 𝕜] {E : Type u_2}
+  [inst_1 : NormedAddCommGroup E] [inst_2 : NormedSpace 𝕜 E] {F : Type u_3} [inst_3 : NormedAddCommGroup F]
+  [inst_4 : NormedSpace 𝕜 F] {f : E → F} (n : ℕ) (a x : E),
+  iteratedFDeriv 𝕜 n (fun z => f (z + a)) x = iteratedFDeriv 𝕜 n f (x + a)
+@integral_add_left_eq_self : ∀ {G : Type u_1} {E : Type u_2} [inst : MeasurableSpace G] [inst_1 : NormedAddCommGroup E]
+  [inst_2 : NormedSpace ℝ E] {μ : Measure G} [inst_3 : AddGroup G] [MeasurableAdd G] [μ.IsAddLeftInvariant] (f : G → E)
+  (g : G), ∫ (x : G), f (g + x) ∂μ = ∫ (x : G), f x ∂μ
+@ContDiffBump : {E : Type u_1} → E → Type
+@norm_iteratedFDeriv_mul_le : ∀ {𝕜 : Type u_2} [inst : NontriviallyNormedField 𝕜] {E : Type u_1}
+  [inst_1 : NormedAddCommGroup E] [inst_2 : NormedSpace 𝕜 E] {A : Type u_3} [inst_3 : NormedRing A]
+  [inst_4 : NormedAlgebra 𝕜 A] {f g : E → A} {N : WithTop ℕ∞},
+  ContDiff 𝕜 N f →
+    ContDiff 𝕜 N g →
+      ∀ (x : E) {n : ℕ},
+        ↑n ≤ N →
+          ‖iteratedFDeriv 𝕜 n (fun y => f y * g y) x‖ ≤
+            ∑ i ∈ Finset.range (n + 1), ↑(n.choose i) * ‖iteratedFDeriv 𝕜 i f x‖ * ‖iteratedFDeriv 𝕜 (n - i) g x‖
+Real.smoothTransition : ℝ → ℝ
+@Real.smoothTransition.contDiff : ∀ {n : ℕ∞}, ContDiff ℝ (↑n) Real.smoothTransition
+@Real.smoothTransition.zero_of_nonpos : ∀ {x : ℝ}, x ≤ 0 → x.smoothTransition = 0
+@Real.smoothTransition.one_of_one_le : ∀ {x : ℝ}, 1 ≤ x → x.smoothTransition = 1
+@Function.Periodic.intervalIntegral_add_eq : ∀ {E : Type u_1} [inst : NormedAddCommGroup E] {f : ℝ → E} {T : ℝ}
+  [inst_1 : NormedSpace ℝ E],
+  Function.Periodic f T → ∀ (t s : ℝ), ∫ (x : ℝ) in t..t + T, f x = ∫ (x : ℝ) in s..s + T, f x
+@intervalIntegral.integral_comp_sub_right : ∀ {E : Type u_1} [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℝ E]
+  {a b : ℝ} (f : ℝ → E) (d : ℝ), ∫ (x : ℝ) in a..b, f (x - d) = ∫ (x : ℝ) in a - d..b - d, f x
+@integral_prod : ∀ {α : Type u_1} {β : Type u_2} {E : Type u_3} [inst : MeasurableSpace α] [inst_1 : MeasurableSpace β]
+  {μ : Measure α} {ν : Measure β} [inst_2 : NormedAddCommGroup E] [SFinite ν] [inst_4 : NormedSpace ℝ E] [SFinite μ]
+  (f : α × β → E), Integrable f (μ.prod ν) → ∫ (z : α × β), f z ∂μ.prod ν = ∫ (x : α), ∫ (y : β), f (x, y) ∂ν ∂μ
+@setIntegral_prod : ∀ {α : Type u_1} {β : Type u_2} {E : Type u_3} [inst : MeasurableSpace α]
+  [inst_1 : MeasurableSpace β] {μ : Measure α} {ν : Measure β} [inst_2 : NormedAddCommGroup E] [SFinite ν]
+  [inst_4 : NormedSpace ℝ E] [SFinite μ] (f : α × β → E) {s : Set α} {t : Set β},
+  IntegrableOn f (s ×ˢ t) (μ.prod ν) →
+    ∫ (z : α × β) in s ×ˢ t, f z ∂μ.prod ν = ∫ (x : α) in s, ∫ (y : β) in t, f (x, y) ∂ν ∂μ
+@Real.cos_eq_zero_iff : ∀ {θ : ℝ}, Real.cos θ = 0 ↔ ∃ k, θ = (2 * ↑k + 1) * Real.pi / 2
+Complex.exp_int_mul_two_pi_mul_I : ∀ (n : ℤ), Complex.exp (↑n * (2 * ↑Real.pi * Complex.I)) = 1
+@IsCompact.exists_isMinOn : ∀ {α : Type u_1} {β : Type u_2} [inst : LinearOrder α] [inst_1 : TopologicalSpace α]
+  [inst_2 : TopologicalSpace β] [ClosedIicTopology α] {s : Set β},
+  IsCompact s → s.Nonempty → ∀ {f : β → α}, ContinuousOn f s → ∃ x ∈ s, IsMinOn f s x
+@tendsto_natCast_atTop_atTop : ∀ {R : Type u_1} [inst : Semiring R] [inst_1 : PartialOrder R] [IsOrderedRing R]
+  [Archimedean R], Filter.Tendsto Nat.cast Filter.atTop Filter.atTop
+@ContDiffOn.continuousOn_fderiv_of_isOpen : ∀ {𝕜 : Type u_1} [inst : NontriviallyNormedField 𝕜] {E : Type u_2}
+  [inst_1 : NormedAddCommGroup E] [inst_2 : NormedSpace 𝕜 E] {F : Type u_3} [inst_3 : NormedAddCommGroup F]
+  [inst_4 : NormedSpace 𝕜 F] {s : Set E} {f : E → F} {n : WithTop ℕ∞},
+  ContDiffOn 𝕜 n f s → IsOpen s → 1 ≤ n → ContinuousOn (fderiv 𝕜 f) s
+@IsCompact.exists_bound_of_continuousOn : ∀ {α : Type u_1} {E : Type u_2} [inst : SeminormedAddGroup E]
+  [inst_1 : TopologicalSpace α] {s : Set α}, IsCompact s → ∀ {f : α → E}, ContinuousOn f s → ∃ C, ∀ x ∈ s, ‖f x‖ ≤ C
+@tendsto_rpow_neg_atTop : ∀ {y : ℝ}, 0 < y → Filter.Tendsto (fun x => x ^ (-y)) Filter.atTop (nhds 0)
+@Real.rpow_le_rpow_of_exponent_le : ∀ {x y z : ℝ}, 1 ≤ x → y ≤ z → x ^ y ≤ x ^ z
+/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/names.lean:24:8: warning: `MeasureTheory.integral_finset_sum` has been deprecated: Use `MeasureTheory.integral_finsetSum` instead
+
+Hint: Replace the deprecated name:
+  M̵e̵a̵s̵u̵r̵e̵T̵h̵e̵o̵r̵y̵.̵i̵n̵t̵e̵g̵r̵a̵l̵_̵f̵i̵n̵s̵e̵t̵_̵s̵u̵m̵i̲n̲t̲e̲g̲r̲a̲l̲_̲f̲i̲n̲s̲e̲t̲S̲u̲m̲
+@integral_finset_sum : ∀ {α : Type u_1} {G : Type u_2} [inst : NormedAddCommGroup G] [inst_1 : NormedSpace ℝ G]
+  {m : MeasurableSpace α} {μ : Measure α} {ι : Type u_3} (s : Finset ι) {f : ι → α → G},
+  (∀ i ∈ s, Integrable (f i) μ) → ∫ (a : α), ∑ i ∈ s, f i a ∂μ = ∑ i ∈ s, ∫ (a : α), f i a ∂μ
+@Continuous.integrable_of_hasCompactSupport : ∀ {X : Type u_1} {E : Type u_2} [inst : MeasurableSpace X]
+  [inst_1 : TopologicalSpace X] [inst_2 : NormedAddCommGroup E] {μ : Measure X} [OpensMeasurableSpace X] {f : X → E}
+  [IsFiniteMeasureOnCompacts μ], Continuous f → HasCompactSupport f → Integrable f μ
+@ContDiffOn.comp : ∀ {𝕜 : Type u_1} {E : Type u_2} {F : Type u_3} {G : Type u_4} [inst : NontriviallyNormedField 𝕜]
+  [inst_1 : NormedAddCommGroup E] [inst_2 : NormedSpace 𝕜 E] [inst_3 : NormedAddCommGroup F] [inst_4 : NormedSpace 𝕜 F]
+  [inst_5 : NormedAddCommGroup G] [inst_6 : NormedSpace 𝕜 G] {n : WithTop ℕ∞} {s : Set E} {t : Set F} {g : F → G}
+  {f : E → F}, ContDiffOn 𝕜 n g t → ContDiffOn 𝕜 n f s → Set.MapsTo f s t → ContDiffOn 𝕜 n (g ∘ f) s
+/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/names.lean:27:8: error(lean.unknownIdentifier): Unknown constant `HasCompactSupport.contDiff_mul`
+@ContDiffBump.contDiff : ∀ {E : Type u_1} [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℝ E]
+  [inst_2 : HasContDiffBump E] {c : E} (f : ContDiffBump c) {n : ℕ∞}, ContDiff ℝ ↑n ↑f
+@ContDiffBump.one_of_mem_closedBall : ∀ {E : Type u_1} [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℝ E]
+  [inst_2 : HasContDiffBump E] {c : E} (f : ContDiffBump c) {x : E}, x ∈ Metric.closedBall c f.rIn → ↑f x = 1
+@ContDiffBump.support_eq : ∀ {E : Type u_1} [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℝ E]
+  [inst_2 : HasContDiffBump E] {c : E} (f : ContDiffBump c), Function.support ↑f = Metric.ball c f.rOut
+@ContDiffBump.tsupport_eq : ∀ {E : Type u_1} [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℝ E]
+  [inst_2 : HasContDiffBump E] {c : E} (f : ContDiffBump c), tsupport ↑f = Metric.closedBall c f.rOut

@@ -1,0 +1,29 @@
+import OscInt.Front.GlobalSanity
+
+namespace OscInt.API.GlobalSanity
+
+open OscInt.Statements OscInt.D4 OscInt.API.ConvertSanity Filter Topology
+open scoped ContDiff
+
+def P_TorusUnfoldStatement : Prop :=
+  ∃ η : ℝ × ℝ → ℝ, ContDiff ℝ ∞ η ∧ tsupport η ⊆ Metric.closedBall 0 400 ∧
+    ∀ g : ℝ × ℝ → ℂ, Continuous g → (∀ k : ℝ × ℝ, g (k.1 + 2 * Real.pi, k.2) = g k) →
+      (∀ k : ℝ × ℝ, g (k.1, k.2 + 2 * Real.pi) = g k) →
+      ∫ k in torusBox, g k = ∫ k : ℝ × ℝ, (η k : ℂ) * g k
+
+theorem P_torusUnfold_moments (h : P_TorusUnfoldStatement) :
+    ∃ η : ℝ × ℝ → ℝ, ContDiff ℝ ∞ η ∧ tsupport η ⊆ Metric.closedBall 0 4 ∧
+      ∫ k : ℝ × ℝ, (η k : ℂ) * 1 = ((2 * Real.pi) ^ 2 : ℝ) ∧
+      ∫ k : ℝ × ℝ, (η k : ℂ) * Complex.exp (↑(k.1) * Complex.I) = 0 := by
+  obtain ⟨η, hs, hsupp, hη⟩ := h
+  refine ⟨η, hs, hsupp, ?_, ?_⟩
+  · rw [← hη (fun _ => 1) continuous_const (fun _ => rfl) (fun _ => rfl), integral_one_torusBox]
+  · have h0 := latticeKernel_zero_one
+    rw [latticeKernel] at h0
+    simp only [Int.cast_one, one_mul, Int.cast_zero, zero_mul, add_zero, zero_add] at h0
+    rw [← hη (fun k : ℝ × ℝ => Complex.exp (↑(k.1) * Complex.I)) (by fun_prop) (fun k => ?_) (fun _ => rfl), h0]
+    have : Complex.exp (↑(k.1 + 2 * Real.pi) * Complex.I) = Complex.exp (↑k.1 * Complex.I) * 1 := by
+      rw [← Complex.exp_two_pi_mul_I, ← Complex.exp_add]; congr 1; push_cast; ring
+    simpa using this
+
+end OscInt.API.GlobalSanity

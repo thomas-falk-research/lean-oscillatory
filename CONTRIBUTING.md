@@ -63,6 +63,18 @@ axiom audit (`Axioms.lean`) skips internal names such as private ones, so its co
 and `make quick` fails (found 2026-11-07; the strict count is the safety net, lessons 13).
 
 ## Commits and releases
-Commit messages say what changed and what evidence was run. Releases follow `docs/policy.md`; the owner publishes
-GitHub releases (Zenodo then mints the version DOI). Bump `lakefile.toml`, `CITATION.cff` and `.zenodo.json`
-together.
+Commit messages say what changed and what evidence was run. Releases follow `docs/policy.md`. Prepare a release
+in a pull request: bump `lakefile.toml`, `CITATION.cff` and `.zenodo.json` together, add the CHANGELOG section
+`## vX.Y.Z`, and write `docs/release-notes/vX.Y.Z.md` with the SHA-256 rows of `stamps/statements.json` and
+`tools/oscint_check.py` (`tools/release_preflight.sh X.Y.Z` checks all of this locally and prints the exact rows).
+After it merges, the owner dispatches `release-candidate` on `main` with the version (Actions → release-candidate →
+Run workflow): it re-runs preflight and the full replay on that commit, builds the assets with `SHA256SUMS` and a
+Sigstore build-provenance attestation, and prints the exact commands; the owner creates the tag and the GitHub
+release with them (CI never writes tags or releases). Publishing triggers `post-release`: the tag must be on `main`
+and have a successful candidate run, the published assets must be the attested ones, `examples/consumer-release` is
+built against the tag, and a pull request records `docs/release-notes/vX.Y.Z.commit` and moves the pins. Zenodo
+then mints the version DOI.
+
+CI (`docs/decisions/2026-11-08-ci-release-review.md`): `ci.yml` (quick, tools, consumer) on every pull request and on
+`main`; `verify.yml` (the replay, in parallel jobs, verdict in `verify / verdict`) on pull requests to `main` that
+are not drafts, on `main`, weekly and from the release; open pull requests as drafts while work is in progress.

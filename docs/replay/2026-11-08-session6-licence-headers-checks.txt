@@ -1,0 +1,78 @@
+# Licence headers (REUSE 3.3) do not change what the trust chain checks — session 6, 2026-11-08, tree = c62a621 + the licensing change
+# 1. Frozen statement files untouched: sha256 of OscInt/Statements/*.lean identical before and after (also enforced by statements-check below).
+# 2. Challenge exports: the first attempt put headers on Challenge/*.lean and changed all 11 exports (sorry carries source positions;
+#    lessons 39); the Challenge files were reverted to HEAD and licensed via REUSE.toml; re-export (tools/target/release/challenge export-all .):
+#    all 11 byte-identical to the replayed (stamped) exports:
+     API1 1a23282ebd666f960c05fcd89c1be6097b3e5041afd5c30fa9135ebb97489d7b
+     API2 497bd5320495333f949c9cd8390e8caf2633c602c56f2e079e866da16899ad38
+     API3 cfb9e77b8076a30c9d79389ba41d3cad9e457e779cca01c217c1110f6da80407
+     GD d64efdedfdfd7dde2393d9cb8768d3851e1c62674a60ab78a1e20c09498147c4
+     S2S3 41b545cc2ffae644b57c7ac4d0336ef2b5bddb7e9d22a7fa148d8e8e80c1dd06
+     S4 01c2722eee9bcb93ec9f3eab147c67fb3516a51461947c5e2ba3fa641fb12bca
+     S41w 577ec19b55a9cf38b385d7cc2647c0d7e34fe7761a72418b7ce17b0611672dd0
+     S42 cd71c5498da32b9414d9c0d9a89224f58d5175da8e7aba32b793e684b71993ec
+     S43 91cf89c62badf698a2fb9a8812f1934ddd7e7cbb49c2f62773c958587050c5e1
+     S44 44a646d1a708b6717bc4195749d1701ee4de3ade8285dfa98ac6ad92779d9bc1
+     challenge 7fe4db8d718e07752f62e915c55dec0c99a02f1fe39f930cc3114b35f6e9442a
+# 3. make commit: exit 0; 45 of 45 statements 'matches its stamp' (both commitment producers):
+     commit: OscInt.Statements.FoldStatement matches its stamp stamps/20261105T234456Z-533ae0272521
+     commit: OscInt.Statements.VdC1Statement matches its stamp stamps/20261105T203058Z-7516eb518dce
+     commit: OscInt.Statements.VdC2Statement matches its stamp stamps/20261105T203058Z-7516eb518dce
+     commit: OscInt.Statements.VdC3Statement matches its stamp stamps/20261105T203058Z-7516eb518dce
+     commit: OscInt.Statements.FoldFEStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+     commit: OscInt.Statements.FoldOnStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+     commit: OscInt.Statements.D4BoundStatement matches its stamp stamps/20261106T033706Z-63564a8d78cd
+     commit: OscInt.Statements.D4LimitStatement matches its stamp stamps/20261106T081634Z-e2d7771c358e
+     commit: OscInt.Statements.FoldCritStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+     commit: OscInt.Statements.D4BoundFEStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+     commit: OscInt.Statements.D4BoundNeStatement matches its stamp stamps/20261106T081634Z-e2d7771c358e
+     commit: OscInt.Statements.FoldLocalStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+     commit: OscInt.Statements.SharpnessStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+     commit: OscInt.Statements.GlobalFoldStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+     commit: OscInt.Statements.GlobalDecayStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+     commit: OscInt.Statements.TorusUnfoldStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+     commit: OscInt.Statements.AmpBoundConvStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+     commit: OscInt.Statements.D4BoundLocalStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+     commit: OscInt.Statements.DdEqIteratedStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+     commit: OscInt.Statements.GlobalNondegStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+     commit: OscInt.Statements.GradLowerIffStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+     commit: OscInt.Statements.HessDetEqDetStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+     commit: OscInt.Statements.CubicCoeffsEqStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+     commit: OscInt.Statements.D4ConstantPosStatement matches its stamp stamps/20261106T081634Z-e2d7771c358e
+     commit: OscInt.Statements.DddEqIteratedStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+     commit: OscInt.Statements.NonStationaryStatement matches its stamp stamps/20261105T234456Z-533ae0272521
+     commit: OscInt.Statements.FoldOrNondegIffStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+     commit: OscInt.Statements.GlobalDecayCritStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+     commit: OscInt.Statements.NonStationaryFEStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+     commit: OscInt.Statements.NonStationaryOnStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+     commit: OscInt.Statements.StationaryPhaseStatement matches its stamp stamps/20261105T234456Z-533ae0272521
+     commit: OscInt.Statements.DiscEqCubicDiscrStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+     commit: OscInt.Statements.D4LimitClosedFormStatement matches its stamp stamps/20261107T012459Z-2d5356432156
+     commit: OscInt.Statements.FamilyCkOfUncurryStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+     commit: OscInt.Statements.StationaryPhaseFEStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+     commit: OscInt.Statements.StationaryPhaseOnStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+     commit: OscInt.Statements.AmpBoundOfContDiffStatement matches its stamp stamps/20261107T012459Z-2d5356432156
+     commit: OscInt.Statements.NonStationaryLocalStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+     commit: OscInt.Statements.D4ConstantClosedFormStatement matches its stamp stamps/20261106T081634Z-e2d7771c358e
+     commit: OscInt.Statements.StationaryPhaseLocalStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+     commit: OscInt.Statements.DiscNeZeroIffIsolatedStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+     commit: OscInt.Statements.LatticeLaplacianDecayStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+     commit: OscInt.Statements.LatticeLaplacianLimitStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+     commit: OscInt.Statements.StationaryPhaseFamilyStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+     commit: OscInt.Statements.FoldOrNondegOfHasFDerivStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+# 4. reuse lint (reuse 6.3.0):
+     # SUMMARY
+     
+     * Bad licenses: 0
+     * Deprecated licenses: 0
+     * Licenses without file extension: 0
+     * Missing licenses: 0
+     * Unused licenses: 0
+     * Used licenses: Apache-2.0, CC-BY-4.0, LicenseRef-PublicCertificate
+     * Read errors: 0
+     * Invalid SPDX License Expressions: 0
+     * Files with copyright information: 518 / 518
+     * Files with license information: 518 / 518
+     
+     Congratulations! Your project is compliant with version 3.3 of the REUSE Specification :-)
+# 5. cffconvert 2.0.0: Citation metadata are valid according to schema version 1.2.0.

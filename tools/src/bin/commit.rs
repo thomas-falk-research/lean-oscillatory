@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #![forbid(unsafe_code)]
 //! `commit DIR`, run from the Lake project root after `lake build`: runs `lake exe oscint-commit-env DIR` (the
 //! environment-side producer: `DIR/statements.txt` and `DIR/<name>.env.txt`), exports the statements with

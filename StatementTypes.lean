@@ -1,3 +1,10 @@
+/-
+Copyright (c) 2026 Thomas Falk III. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Thomas Falk III
+SPDX-License-Identifier: Apache-2.0
+-/
+
 import OscInt
 
 /-!
@@ -55,3 +62,11 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
 #assert_type_is OscInt.API.nonStationaryOn OscInt.Statements.NonStationaryOnStatement
 #assert_type_is OscInt.API.stationaryPhaseOn OscInt.Statements.StationaryPhaseOnStatement
 #assert_type_is OscInt.API.foldOn OscInt.Statements.FoldOnStatement
+#assert_type_is OscInt.API.globalDecayCrit OscInt.Statements.GlobalDecayCritStatement
+#assert_type_is OscInt.API.globalDecay OscInt.Statements.GlobalDecayStatement
+#assert_type_is OscInt.API.globalFold OscInt.Statements.GlobalFoldStatement
+#assert_type_is OscInt.API.globalNondeg OscInt.Statements.GlobalNondegStatement
+#assert_type_is OscInt.API.sharpness OscInt.Statements.SharpnessStatement
+#assert_type_is OscInt.API.torusUnfold OscInt.Statements.TorusUnfoldStatement
+#assert_type_is OscInt.API.latticeLaplacianDecay OscInt.Statements.LatticeLaplacianDecayStatement
+#assert_type_is OscInt.API.latticeLaplacianLimit OscInt.Statements.LatticeLaplacianLimitStatement

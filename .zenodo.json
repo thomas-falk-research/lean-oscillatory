@@ -2,10 +2,33 @@
   "title": "OscInt: uniform oscillatory-integral estimates in Lean 4 and Mathlib",
   "upload_type": "software",
   "creators": [
-    {"name": "Falk III, Thomas", "orcid": "0009-0001-9478-6061"}
+    {
+      "name": "Falk III, Thomas",
+      "orcid": "0009-0001-9478-6061"
+    }
   ],
-  "description": "A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates: the one-dimensional van der Corput lemma with explicit constants, non-stationary and nondegenerate stationary phase uniform in a linear term, the uniform fold estimate m^{-5/6}, the uniform D4 (umbilic) estimate t^{-2/3} for both umbilics, the D4 limit t^{2/3}∫e^{itφ}A → c_C A(0) with a Gamma-free constant, c_C > 0, and the closed form c_C = Γ(1/3)²/(√3|Disc|^{1/6}) (Disc < 0), Γ(1/3)²/Disc^{1/6} (Disc > 0). Statements are frozen and timestamped before their proofs and replayed by six independent kernels.",
-  "keywords": ["Lean 4", "Mathlib", "formal verification", "oscillatory integrals", "stationary phase", "van der Corput lemma"],
+  "description": "A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates in one and two variables: van der Corput's lemma with explicit constants, non-stationary and nondegenerate stationary phase, the uniform fold and D4 (umbilic) estimates with the D4 leading term and its closed-form constant, and front ends in Mathlib's idiom. Statements are frozen and timestamped before their proofs and replayed by several independent kernels.",
+  "keywords": [
+    "Lean 4",
+    "Mathlib",
+    "formal verification",
+    "oscillatory integrals",
+    "stationary phase",
+    "van der Corput lemma",
+    "dispersive estimates",
+    "MSC2020: 42B20 Singular and oscillatory integrals",
+    "MSC2020: 41A60 Asymptotic approximations, asymptotic expansions",
+    "MSC2020: 35Q41 Time-dependent Schrödinger equations",
+    "MSC2020: 68V20 Formalization of mathematics in connection with theorem provers",
+    "MSC2020: 03B35 Mechanization of proofs and logical operations"
+  ],
   "license": "Apache-2.0",
-  "version": "0.3.0"
+  "version": "0.3.0",
+  "notes": "Code is licensed under Apache-2.0 (LICENSE); documentation under CC-BY-4.0 (LICENSE-docs); per-file licensing follows the REUSE specification 3.3 (REUSE.toml, LICENSES/). The one-dimensional van der Corput proofs are derived from roos-j/lean-oscillatory by J. Roos and M. Praveen (Apache-2.0).",
+  "references": [
+    "The mathlib Community (2020). The Lean Mathematical Library. Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs, 367–381. ACM. https://doi.org/10.1145/3372885.3373824",
+    "de Moura, L., Ullrich, S. (2021). The Lean 4 Theorem Prover and Programming Language. Automated Deduction – CADE 28 (Lecture Notes in Computer Science), 625–635. Springer. https://doi.org/10.1007/978-3-030-79876-5_37",
+    "Roos, J., Praveen, M. lean-oscillatory (software, Apache-2.0). https://github.com/roos-j/lean-oscillatory",
+    "Stein, E. M. (1993). Harmonic Analysis: Real-Variable Methods, Orthogonality, and Oscillatory Integrals. Princeton Mathematical Series 43. Princeton University Press. ISBN 0691032165"
+  ]
 }

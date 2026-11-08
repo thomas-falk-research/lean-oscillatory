@@ -1,3 +1,10 @@
+/-
+Copyright (c) 2026 Thomas Falk III. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Thomas Falk III
+SPDX-License-Identifier: Apache-2.0
+-/
+
 import OscInt.Front.Core
 import OscInt.Front.Convert
 import OscInt.Front.ConvertSanity
@@ -8,6 +15,9 @@ import OscInt.Front.FamilySanity
 import OscInt.Front.FamilySanity2
 import OscInt.Front.FamilyC10
 import OscInt.Front.Local
+import OscInt.Front.GlobalSanity
+import OscInt.Front.GlobalFinal
+import OscInt.Front.LatticeFinal
 
 /-!
 # OscInt public API

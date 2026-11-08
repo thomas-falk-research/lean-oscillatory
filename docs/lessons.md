@@ -264,3 +264,46 @@ without `#assert_type_is` lines; guard). Locally only targeted commands had run 
 statements`, `make commit`, `lake build <module>`), not `make quick`. Both were fixed by later commits on the branch;
 `main` was never red. Rule: run `make quick` before every push, including "intermediate" ones, and read the CI result
 of the previous push before the next claim (lessons 9). Check: none automatic (a pre-push hook would be one).
+
+## 36. A record cited in an answer file did not exist (2026-11-08)
+The API3 answers cited "the second part of `docs/replay/2026-11-08-API3-sanity-plants.txt`" for the M2 plants; the file
+had one part (one commit), and the outcome lived only in a commit message. Found by the step-5 rule referee in session
+6, not by the post-proof or adversarial referees who read the same answers. Why it mattered: a waiver drafted on the
+answers would have claimed controls that were never recorded. Rule: cite a record only by a path (and, for a part, a
+heading) that exists in the tree at the commit that cites it; re-run and record rather than cite a commit message.
+Check: none automatic yet (a link checker over `review/` and `docs/` for backticked repository paths is cheap).
+
+## 37. One push without `make quick`, docs-only (2026-11-08)
+Session 6 pushed 3581074 (memo, records, a numerics binary) before running `make quick`, on the judgment that nothing
+Lean-facing changed; the run afterwards passed. The judgment was right this time and is exactly what lessons 35 says
+not to rely on. Rule unchanged (lessons 35): `make quick` before every push. Check: none automatic (a pre-push hook).
+
+## 38. Sanity data must contain every point type a statement distinguishes (2026-11-08)
+The first GD sanity file tested GD and GD-C only on the elliptic umbilic x³ − 3xy², which has no fold points, so a
+plant replacing "fold or nondegenerate" by "nondegenerate" passed; and every D4 datum sat at 0 inside K, so plants
+evaluating the D4 conditions at 0, or requiring D ⊆ K, passed (pre-proof referees A m1, m3; B m1, m2). Answered
+before any proof by x³ + y³ (folds on the axes), a translate with its D4 point at (1, 1), a D4 point outside K, and a
+critical-points-only datum; 15/15 plants rejected. Rule (extends lessons 17): for each case split a statement makes
+(point types, exceptional sets, inside/outside K, critical vs pointwise) at least one datum lies in each branch.
+Check: the plant generator `docs/replay/plants/2026-11-08-GD/plants_gd.py.txt` (one plant per branch).
+
+## 39. A comment changed a hash: `sorry` records its source position (2026-11-08)
+Adding licence headers (comments only) to the `Challenge/` files changed all eleven challenge exports, so every
+comparator configuration would have been rejected against its stamp. The challenges are statements with `sorry`
+proofs, and at this Lean version each `sorry` carries its source position; shifting the file by seven lines changes
+the exported term. Found by re-exporting and comparing with the stamped hashes before committing, not by assuming
+"comments are inert". Rule: a file whose build product is hashed by the trust chain (statement files, challenge files)
+is never edited for any reason, comments included; its metadata goes in `REUSE.toml`. Check: `make comparator`
+(export hash against the stamp), and the session re-export comparison recorded with the licensing change.
+
+## 40. Ten red CI runs went unread (2026-11-08)
+Every push of session 6 failed CI at the toolchain install (an unpinned elan download during a GitHub outage); the lead
+noticed only when the owner asked for a CI review. The failures were infrastructure, but a real failure would have gone
+unseen just the same. Rule (lessons 9 again): read the CI result of each push before the next claim. Check: the
+`verify / verdict` and `ci` checks as required status checks under branch protection (owner item).
+
+41. **Run every new CI command line locally once, verbatim, before pushing the workflow.** The redesigned `verify`
+    comparator matrix called `challenge check ROOT CONFIG STAMP`, a subcommand the tool's doc comment described but its
+    argument dispatch never had; all 11 comparator jobs exited 2 on the usage message (PR #6, run 42485206068).
+    actionlint cannot see this. Fixed by adding the dispatch arm; checked by running the job's exact command on
+    `comparator-GD.json` (accepted, exit 0) and against a wrong stamp (exit 1).

@@ -1,0 +1,95 @@
+classify (protocol docs/prereg/2026-11-08-P1-classify.md); grid 2048x2048, f64
+== control x^2 y + y^2 on [-1,1]^2
+degenerate points refined: 4033
+Hessian-zero points: 0
+minfold_far = 0.000e0 at (+0.000000, +0.000000)
+minfold_all = 0.000e0 at (+0.000000, +0.000000)
+cusp-type common zeros of (det H, T[w,w,w]): 1
+  (+0.0000000000, -0.0000000000)
+VERDICT control x^2 y + y^2 on [-1,1]^2: CUSP
+== L: cos x + cos y
+degenerate points refined: 8192
+Hessian-zero points: 4
+  (-1.570796326795, -1.570796326795) disc = -2.083333e-2  |disc|/|T|^4 = 2.083e-2
+  (-1.570796326795, +1.570796326795) disc = -2.083333e-2  |disc|/|T|^4 = 2.083e-2
+  (+1.570796326795, -1.570796326795) disc = -2.083333e-2  |disc|/|T|^4 = 2.083e-2
+  (+1.570796326795, +1.570796326795) disc = -2.083333e-2  |disc|/|T|^4 = 2.083e-2
+minfold_far = 1.000e0 at (-3.141593, -1.570796)
+minfold_all = 1.000e0 at (-3.141593, -1.570796)
+cusp-type common zeros of (det H, T[w,w,w]): 0
+VERDICT L: cos x + cos y: NFD4
+== A(a=0.5, b=0.3): arccos(a cos x + b cos y)
+degenerate points refined: 9464
+Hessian-zero points: 4
+  (-1.570796326795, -1.570796326795) disc = -1.620000e-4  |disc|/|T|^4 = 6.893e-3
+  (-1.570796326795, +1.570796326795) disc = -1.620000e-4  |disc|/|T|^4 = 6.893e-3
+  (+1.570796326795, -1.570796326795) disc = -1.620000e-4  |disc|/|T|^4 = 6.893e-3
+  (+1.570796326795, +1.570796326795) disc = -1.620000e-4  |disc|/|T|^4 = 6.893e-3
+minfold_far = 5.123e-1 at (-0.871301, -1.415389)
+minfold_all = 5.123e-1 at (-0.871301, -1.415389)
+cusp-type common zeros of (det H, T[w,w,w]): 0
+VERDICT A(a=0.5, b=0.3): arccos(a cos x + b cos y): NFD4
+== A(a=0.45, b=0.45): arccos(a cos x + b cos y)
+degenerate points refined: 10296
+Hessian-zero points: 4
+  (-1.570796326795, -1.570796326795) disc = -1.623164e-4  |disc|/|T|^4 = 7.818e-3
+  (-1.570796326795, +1.570796326795) disc = -1.623164e-4  |disc|/|T|^4 = 7.818e-3
+  (+1.570796326795, -1.570796326795) disc = -1.623164e-4  |disc|/|T|^4 = 7.818e-3
+  (+1.570796326795, +1.570796326795) disc = -1.623164e-4  |disc|/|T|^4 = 7.818e-3
+minfold_far = 4.909e-1 at (+1.552389, +1.523927)
+minfold_all = 4.908e-1 at (-1.569591, -1.567728)
+cusp-type common zeros of (det H, T[w,w,w]): 0
+VERDICT A(a=0.45, b=0.45): arccos(a cos x + b cos y): NFD4
+== A(a=0.2, b=0.7): arccos(a cos x + b cos y)
+degenerate points refined: 9944
+Hessian-zero points: 4
+  (-1.570796326795, -1.570796326795) disc = -5.818750e-5  |disc|/|T|^4 = 2.583e-3
+  (-1.570796326795, +1.570796326795) disc = -5.818750e-5  |disc|/|T|^4 = 2.583e-3
+  (+1.570796326795, -1.570796326795) disc = -5.818750e-5  |disc|/|T|^4 = 2.583e-3
+  (+1.570796326795, +1.570796326795) disc = -5.818750e-5  |disc|/|T|^4 = 2.583e-3
+minfold_far = 1.858e-1 at (-1.866460, -2.650719)
+minfold_all = 1.858e-1 at (-1.866460, -2.650719)
+cusp-type common zeros of (det H, T[w,w,w]): 0
+VERDICT A(a=0.2, b=0.7): arccos(a cos x + b cos y): NFD4
+== A(a=-0.3, b=0.6): arccos(a cos x + b cos y)
+degenerate points refined: 10168
+Hessian-zero points: 4
+  (-1.570796326795, -1.570796326795) disc = -1.167075e-4  |disc|/|T|^4 = 3.931e-3
+  (-1.570796326795, +1.570796326795) disc = -1.167075e-4  |disc|/|T|^4 = 3.931e-3
+  (+1.570796326795, -1.570796326795) disc = -1.167075e-4  |disc|/|T|^4 = 3.931e-3
+  (+1.570796326795, +1.570796326795) disc = -1.167075e-4  |disc|/|T|^4 = 3.931e-3
+minfold_far = 3.159e-1 at (-1.865321, +0.678079)
+minfold_all = 3.159e-1 at (-1.865321, +0.678079)
+cusp-type common zeros of (det H, T[w,w,w]): 0
+VERDICT A(a=-0.3, b=0.6): arccos(a cos x + b cos y): NFD4
+== A(a=0.6, b=-0.35): arccos(a cos x + b cos y)
+degenerate points refined: 10984
+Hessian-zero points: 4
+  (-1.570796326795, -1.570796326795) disc = -8.397949e-5  |disc|/|T|^4 = 2.630e-3
+  (-1.570796326795, +1.570796326795) disc = -8.397949e-5  |disc|/|T|^4 = 2.630e-3
+  (+1.570796326795, -1.570796326795) disc = -8.397949e-5  |disc|/|T|^4 = 2.630e-3
+  (+1.570796326795, +1.570796326795) disc = -8.397949e-5  |disc|/|T|^4 = 2.630e-3
+minfold_far = 2.384e-1 at (+0.932660, +1.880919)
+minfold_all = 2.384e-1 at (+0.932660, +1.880919)
+cusp-type common zeros of (det H, T[w,w,w]): 0
+VERDICT A(a=0.6, b=-0.35): arccos(a cos x + b cos y): NFD4
+== A(a=0.05, b=0.9): arccos(a cos x + b cos y)
+degenerate points refined: 9544
+Hessian-zero points: 4
+  (-1.570796326795, -1.570796326795) disc = -1.141436e-6  |disc|/|T|^4 = 1.007e-3
+  (-1.570796326795, +1.570796326795) disc = -1.141436e-6  |disc|/|T|^4 = 1.007e-3
+  (+1.570796326795, -1.570796326795) disc = -1.141436e-6  |disc|/|T|^4 = 1.007e-3
+  (+1.570796326795, +1.570796326795) disc = -1.141436e-6  |disc|/|T|^4 = 1.007e-3
+minfold_far = 2.362e-2 at (-1.821042, -2.890020)
+minfold_all = 2.362e-2 at (-1.821042, -2.890020)
+cusp-type common zeros of (det H, T[w,w,w]): 0
+VERDICT A(a=0.05, b=0.9): arccos(a cos x + b cos y): NFD4
+== Part B: (-1)^n n^(2/3) K(n,(n,n)) vs c* = 7.898993276562
+n =    10: value = +7.888681940035 +1.055e-15i  rel.err = 1.3054e-3  quad.check = 6.58e-16
+n =    40: value = +7.897434244008 +5.672e-14i  rel.err = 1.9737e-4  quad.check = 4.77e-15
+n =   160: value = +7.898751890277 -3.621e-13i  rel.err = 3.0559e-5  quad.check = 2.89e-14
+n =   640: value = +7.898955520772 +2.901e-14i  rel.err = 4.7798e-6  quad.check = 1.44e-14
+n =  2560: value = +7.898987346675 -1.106e-12i  rel.err = 7.5071e-7  quad.check = 2.44e-13
+control (no (-1)^n, n = 2559): rel.err = 2.0000e0 (must be > 1)
+criteria: (i) true (ii) true (iii) true resolved true control-fails true
+VERDICT part B: PASS

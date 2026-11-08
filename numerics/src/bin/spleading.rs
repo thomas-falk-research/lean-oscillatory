@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! Pre-registered numeric check of the 2D nondegenerate stationary-phase leading term (P3b).
 //! Protocol: docs/prereg/2026-11-08-P3b-leading-term.md (fixed before this program was run). Tooling, not evidence.
 //! Trapezoid rule on [-1, 1]^2 (the integrand vanishes to all orders on the boundary), n and 2n panels, f64.

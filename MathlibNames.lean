@@ -1,3 +1,10 @@
+/-
+Copyright (c) 2026 Thomas Falk III. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Thomas Falk III
+SPDX-License-Identifier: Apache-2.0
+-/
+
 import Mathlib
 
 /-! Every Mathlib declaration the plan or the docs rely on by name; `make lean` fails if one disappears. -/

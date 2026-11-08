@@ -1,0 +1,1104 @@
+{
+ "format": "oscint-api/1",
+ "generated_by": "tools/gen_api.py from stamps/statements.json and docs/api/annotations.json",
+ "entry_point": "import OscInt.API",
+ "conventions": {
+  "plane": "ℝ × ℝ with Mathlib's max norm (balls are squares)",
+  "integral": "∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k (Lebesgue measure). Outside a statement, where Ψ k does not fix the type, write the cast as ((m * (Ψ k + L k) : ℝ) : ℂ), else elaboration fails with HMul ℝ ℝ ℂ. The D4 front ends (FE-S4.1′, FE-S4.1′L) use t * φ κ + L κ with L NOT scaled by t (uniform over all L).",
+  "linear_terms": "L : (ℝ × ℝ) →L[ℝ] ℝ; a vector x is x.1 • fst + x.2 • snd",
+  "amplitudes": "amplitude A : ℝ×ℝ → ℂ of class C² with tsupport A ⊆ K and ‖D^j A‖ ≤ M for j ≤ 2 (F1 gives M for any compactly supported Cⁿ A)",
+  "smooth": "write ∞ (open scoped ContDiff) for C^∞; ContDiff ℝ ⊤ means analytic in this Mathlib",
+  "status": "docs/STATUS.md is authoritative; this index does not state statuses",
+  "gradient_norm": "‖fderiv ℝ Ψ k + L‖ is the operator norm of a functional on ℝ × ℝ with the max norm, i.e. |a| + |b| for (a, b) ↦ a x + b y",
+  "smoothness_cast": "C^{N+1} is ContDiff ℝ (↑N + 1) with N : ℕ; a numeral N may need ((3 : ℕ) + 1) to unify",
+  "hessian": "OscInt.Statements.hessianMatrix Ψ k = Matrix.of fun i j => iteratedFDeriv ℝ 2 Ψ k ![coordVec i, coordVec j], coordVec = ![(1,0),(0,1)]; nondegenerate means (hessianMatrix Ψ k).det ≠ 0",
+  "discriminant": "disc / discr is Mathlib's Cubic.discr of a X³ + b X² + c X + d (C5), the discriminant of the binary cubic a x³ + b x²y + c xy² + d y³; discr < 0 hyperbolic, > 0 elliptic umbilic",
+  "multilinear_arguments": "Statements apply D³φ(0) to ![(x, y), (x, y), (x, y)]; the Poly helpers produce (fun _ => v); convert with funext i; fin_cases i <;> rfl",
+  "rpow": "t ^ (-(2 : ℝ) / 3) is Real.rpow; m ≥ 1 throughout",
+  "lean_statement": "each entry's lean_statement is the frozen definition, verbatim from its statement file; the proving theorem has exactly this type"
+ },
+ "helpers": [
+  {
+   "name": "OscInt.API.Poly.iteratedFDeriv_diag_of_poly",
+   "use": "Dⁿf(k)[v,…,v] = n! cₙ from a polynomial expansion t ↦ f(k + t v) = Σ cᵢ tⁱ (prove the expansion by simp; ring); diagonal second derivatives and the cubic identity of FE-S4.1′"
+  },
+  {
+   "name": "OscInt.API.Poly.iteratedFDeriv_two_eq_zero_of_diag",
+   "use": "D²f(k) = 0 from D²f(k)[v, v] = 0 for all v (FE-S4.1′'s iteratedFDeriv ℝ 2 φ 0 = 0)"
+  },
+  {
+   "name": "OscInt.API.Poly.hessianMatrix_eq_of_diag",
+   "use": "the Hessian matrix from the diagonal values at e₀, e₁, e₀ + e₁"
+  },
+  {
+   "name": "OscInt.API.Poly.foldCondSpan_of_rankOne",
+   "use": "FoldOrNondegMatrix's fold branch from H ≠ 0, det H = 0 and T nonzero on nonzero kernel vectors"
+  },
+  {
+   "name": "OscInt.API.Poly.iteratedFDeriv_two_polar",
+   "use": "polarisation of D²f(k)"
+  },
+  {
+   "name": "OscInt.API.ConvertSanity.iteratedFDeriv_two_eq_dd",
+   "use": "iteratedFDeriv ℝ 2 f k ![a, b] = dd f k b a (nested fderiv, for HasFDerivAt computations)"
+  },
+  {
+   "name": "OscInt.API.ConvertSanity.iteratedFDeriv_three_diag",
+   "use": "iteratedFDeriv ℝ 3 f k ![a, a, a] = ddd f k a a a"
+  },
+  {
+   "name": "OscInt.API.ampBoundOfContDiff",
+   "use": "(F1) a Cⁿ amplitude with tsupport ⊆ K compact has derivative bounds M"
+  }
+ ],
+ "lean_toolchain": "leanprover/lean4:v4.35.0",
+ "mathlib_rev": "56a005855ea17e0b0958f73ec801ae140b0a1679",
+ "statements": [
+  {
+   "label": "S1.1",
+   "name": "OscInt.Statements.VdC1Statement",
+   "proved_by": "OscInt.vanDerCorput_one",
+   "summary": "First-derivative van der Corput bound with amplitude, constant 3.",
+   "file": "OscInt/Statements/VanDerCorput.lean",
+   "commitment": "a837c8bd8352929aa4ba6456ff19603cd34f7ae09b2896de0af2565fd0f803b4",
+   "stamp": "stamps/20261105T203058Z-7516eb518dce",
+   "lean_statement": "def VdC1Statement : Prop :=\n  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b ν : ℝ), a ≤ b → 0 < ν →\n    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b →\n    (MonotoneOn φ' (Ioo a b) ∨ AntitoneOn φ' (Ioo a b)) →\n    (∀ x ∈ Ioo a b, ν ≤ |φ' x|) →\n    AmplitudeOn ψ ψ' a b →\n    ‖oscInt φ ψ a b‖ ≤ 3 / ν * ampNorm ψ ψ' a b",
+   "hypotheses": [
+    "φ, φ′ with derivatives on [a, b] (continuous up to the endpoints)",
+    "φ′ monotone on (a, b)",
+    "|φ′| ≥ ν > 0 on (a, b)",
+    "amplitude ψ with integrable ψ′"
+   ],
+   "conclusion": "|∫_a^b e^{iφ} ψ| ≤ (3/ν)(|ψ(b)| + ∫|ψ′|)",
+   "rate": "ν^{-1}",
+   "uniform_over": "none (explicit constant 3)",
+   "smoothness": "φ C² on [a, b]",
+   "see_also": [
+    "S1.2",
+    "S1.3"
+   ],
+   "snippet": "example : VdC1Statement := OscInt.vanDerCorput_one",
+   "status": "see docs/STATUS.md (row S1.1)"
+  },
+  {
+   "label": "S1.2",
+   "name": "OscInt.Statements.VdC2Statement",
+   "proved_by": "OscInt.vanDerCorput_two",
+   "summary": "Second-derivative van der Corput bound with amplitude, constant 8, uniform in a linear term.",
+   "file": "OscInt/Statements/VanDerCorput.lean",
+   "commitment": "66cc331de7d7bf5fb38076895ff7014f280b41cced6492f70cd87134a78a39f5",
+   "stamp": "stamps/20261105T203058Z-7516eb518dce",
+   "lean_statement": "def VdC2Statement : Prop :=\n  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →\n    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b →\n    (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) →\n    AmplitudeOn ψ ψ' a b →\n    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ 8 / √μ * ampNorm ψ ψ' a b",
+   "hypotheses": [
+    "|φ″| ≥ μ > 0 on (a, b)",
+    "amplitude ψ with integrable ψ′",
+    "any linear term p x"
+   ],
+   "conclusion": "|∫_a^b e^{i(φ+px)} ψ| ≤ 8 μ^{-1/2} (|ψ(b)| + ∫|ψ′|)",
+   "rate": "μ^{-1/2}",
+   "uniform_over": "the linear term p",
+   "smoothness": "φ C² on [a, b]",
+   "see_also": [
+    "S1.1",
+    "S1.3"
+   ],
+   "snippet": "example : VdC2Statement := OscInt.vanDerCorput_two",
+   "status": "see docs/STATUS.md (row S1.2)"
+  },
+  {
+   "label": "S1.3",
+   "name": "OscInt.Statements.VdC3Statement",
+   "proved_by": "OscInt.vanDerCorput_three",
+   "summary": "Third-derivative van der Corput bound with amplitude, constant 18, uniform in a linear term.",
+   "file": "OscInt/Statements/VanDerCorput.lean",
+   "commitment": "30b3f96ca215778d4034c6ca660818b04a842bb4b574f27f4a648a64bf9ab4f4",
+   "stamp": "stamps/20261105T203058Z-7516eb518dce",
+   "lean_statement": "def VdC3Statement : Prop :=\n  ∀ (φ φ' φ'' φ''' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →\n    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b → HasDerivOn φ'' φ''' a b →\n    (∀ x ∈ Ioo a b, μ ≤ |φ''' x|) →\n    AmplitudeOn ψ ψ' a b →\n    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ 18 * μ ^ (-(1 : ℝ) / 3) * ampNorm ψ ψ' a b",
+   "hypotheses": [
+    "|φ‴| ≥ μ > 0 on (a, b)",
+    "amplitude ψ with integrable ψ′",
+    "any linear term p x"
+   ],
+   "conclusion": "|∫_a^b e^{i(φ+px)} ψ| ≤ 18 μ^{-1/3} (|ψ(b)| + ∫|ψ′|)",
+   "rate": "μ^{-1/3}",
+   "uniform_over": "the linear term p",
+   "smoothness": "φ C³ on [a, b]",
+   "see_also": [
+    "S1.2"
+   ],
+   "snippet": "example : VdC3Statement := OscInt.vanDerCorput_three",
+   "status": "see docs/STATUS.md (row S1.3)"
+  },
+  {
+   "label": "S2.1",
+   "name": "OscInt.Statements.NonStationaryStatement",
+   "proved_by": "OscInt.nonStationary",
+   "summary": "Non-stationary phase: decay `m^{-N}`, uniform over a compact family and over every linear term with `|∇(Ψ_σ + p·)| ≥ c` on `K`.",
+   "file": "OscInt/Statements/StationaryPhase.lean",
+   "commitment": "238318a74792495f2009807e724673e80c4d3f66b91580c564105d84396fe8f8",
+   "stamp": "stamps/20261105T234456Z-533ae0272521",
+   "lean_statement": "def NonStationaryStatement : Prop :=\n  ∀ (Λ : Type) [TopologicalSpace Λ] [CompactSpace Λ] (N : ℕ) (Ψ : Λ → ℝ × ℝ → ℝ) (K : Set (ℝ × ℝ)) (c : ℝ),\n    FamilyCk (N + 1) Ψ → IsCompact K → 0 < c →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (σ : Λ) (p : ℝ × ℝ) (m : ℝ),\n      AmpBound N K A M → (∀ k ∈ K, GradLower (Ψ σ) p k c) → 1 ≤ m →\n      ‖oscInt2 (fun k => m * (Ψ σ k + lin p k)) A‖ ≤ C * M / m ^ N",
+   "hypotheses": [
+    "compact family Ψ_σ (FamilyCk (N+1))",
+    "compact K",
+    "|∇(Ψ_σ + p·)| ≥ c > 0 on K"
+   ],
+   "conclusion": "|oscInt2(m(Ψ_σ + p·), A)| ≤ C M m^{-N} for AmpBound N K A M",
+   "rate": "m^{-N}",
+   "uniform_over": "σ, p with the gradient bound, A, M",
+   "smoothness": "C^{N+1} on ℝ² (internal encoding)",
+   "see_also": [
+    "FE-S2.1",
+    "FE-S2.1L",
+    "FE-S2.1l"
+   ],
+   "snippet": "example : NonStationaryStatement := OscInt.nonStationary",
+   "status": "see docs/STATUS.md (row S2.1)"
+  },
+  {
+   "label": "S2.2",
+   "name": "OscInt.Statements.StationaryPhaseStatement",
+   "proved_by": "OscInt.stationaryPhase",
+   "summary": "Nondegenerate stationary phase: decay `m^{-1}`, uniform over `p ∈ K'`.",
+   "file": "OscInt/Statements/StationaryPhase.lean",
+   "commitment": "283a23fe63ba052ba6600edd08ee3def6d728a75dbbaa6d7f39fc031fc9eccff",
+   "stamp": "stamps/20261105T234456Z-533ae0272521",
+   "lean_statement": "def StationaryPhaseStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (K K' : Set (ℝ × ℝ)),\n    ContDiff ℝ 4 Ψ → IsCompact K → IsCompact K' →\n    (∀ p ∈ K', ∀ k ∈ K, IsCritical Ψ p k → hessDet Ψ k ≠ 0) →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (p : ℝ × ℝ) (m : ℝ),\n      AmpBound 2 K A M → p ∈ K' → 1 ≤ m →\n      ‖oscInt2 (fun k => m * (Ψ k + lin p k)) A‖ ≤ C * M / m",
+   "hypotheses": [
+    "Ψ C⁴ on ℝ²",
+    "K, K′ compact",
+    "Hessian nondegenerate at every critical point of Ψ + p· in K, p ∈ K′"
+   ],
+   "conclusion": "bound C M m^{-1}",
+   "rate": "m^{-1}",
+   "uniform_over": "p ∈ K′, A, M",
+   "smoothness": "C⁴ on ℝ²",
+   "see_also": [
+    "FE-S2.2",
+    "FE-S2.2l",
+    "S2.2F",
+    "GD-N"
+   ],
+   "snippet": "example : StationaryPhaseStatement := OscInt.stationaryPhase",
+   "status": "see docs/STATUS.md (row S2.2)"
+  },
+  {
+   "label": "S3",
+   "name": "OscInt.Statements.FoldStatement",
+   "proved_by": "OscInt.fold",
+   "summary": "Uniform fold estimate: decay `m^{-5/6}`, uniform over a compact family and over `p ∈ K'`.",
+   "file": "OscInt/Statements/StationaryPhase.lean",
+   "commitment": "2650f1484b3252166e9442f383ad734075f60f180d595c7d6729d9737edba5ad",
+   "stamp": "stamps/20261105T234456Z-533ae0272521",
+   "lean_statement": "def FoldStatement : Prop :=\n  ∀ (Λ : Type) [TopologicalSpace Λ] [CompactSpace Λ] (Ψ : Λ → ℝ × ℝ → ℝ) (K K' : Set (ℝ × ℝ)),\n    FamilyCk 4 Ψ → IsCompact K → IsCompact K' →\n    (∀ σ, ∀ k ∈ K, FoldOrNondeg (Ψ σ) k) →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (σ : Λ) (p : ℝ × ℝ) (m : ℝ),\n      AmpBound 2 K A M → p ∈ K' → 1 ≤ m →\n      ‖oscInt2 (fun k => m * (Ψ σ k + lin p k)) A‖ ≤ C * M * m ^ (-(5 : ℝ) / 6)",
+   "hypotheses": [
+    "compact family, FamilyCk 4",
+    "fold-or-nondegenerate at every point of K"
+   ],
+   "conclusion": "bound C M m^{-5/6}",
+   "rate": "m^{-5/6}",
+   "uniform_over": "σ, p ∈ K′, A, M",
+   "smoothness": "C⁴ on ℝ²",
+   "see_also": [
+    "S3c",
+    "FE-S3",
+    "FE-S3l",
+    "GD-F"
+   ],
+   "snippet": "example : FoldStatement := OscInt.fold",
+   "status": "see docs/STATUS.md (row S3)"
+  },
+  {
+   "label": "S4.1",
+   "name": "OscInt.Statements.D4BoundStatement",
+   "proved_by": "OscInt.d4Bound",
+   "summary": "Uniform D4 estimate: at a point with vanishing Hessian whose cubic part has negative discriminant, `|∫ e^{i(tφ(κ) + y·κ)} A(κ) dκ| ≤ C M t^{-2/3}` for amplitudes supported near `0`, uniformly in `y ∈ ℝ²`.",
+   "file": "OscInt/Statements/D4.lean",
+   "commitment": "5205ebc0a6a6286803155f16135a6405e8217037c93cb17ff876a9ec2902cdfd",
+   "stamp": "stamps/20261106T033706Z-63564a8d78cd",
+   "lean_statement": "def D4BoundStatement : Prop :=\n  ∀ φ : ℝ × ℝ → ℝ, ContDiff ℝ 4 φ → (∀ v w, dd φ 0 v w = 0) → disc (cubicCoeffs φ) < 0 →\n    ∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (y : ℝ × ℝ) (t : ℝ),\n      AmpBound 2 (Metric.closedBall 0 δ) A M → 1 ≤ t →\n        ‖oscInt2 (fun κ => t * φ κ + lin y κ) A‖ ≤ C * M * t ^ (-(2 : ℝ) / 3)",
+   "hypotheses": [
+    "φ C⁴ on ℝ²",
+    "D²φ(0) = 0",
+    "cubic part with disc < 0 (hyperbolic umbilic)"
+   ],
+   "conclusion": "∃ δ, C: |oscInt2(tφ + y·, A)| ≤ C M t^{-2/3} for A supported in B̄(0, δ)",
+   "rate": "t^{-2/3}",
+   "uniform_over": "all linear terms y, A, M",
+   "smoothness": "C⁴ on ℝ²",
+   "see_also": [
+    "S4.1′"
+   ],
+   "snippet": "example : D4BoundStatement := OscInt.d4Bound",
+   "status": "see docs/STATUS.md (row S4.1)"
+  },
+  {
+   "label": "S4.1′",
+   "name": "OscInt.Statements.D4BoundNeStatement",
+   "proved_by": "OscInt.d4BoundNe",
+   "summary": "Uniform D4 estimate at both umbilics: as `D4BoundStatement` with `disc ≠ 0`.",
+   "file": "OscInt/Statements/D4Limit.lean",
+   "commitment": "f4e245bd4b1a3f0ca2e8fb006f574568849b717c089099de66c70f91843d4292",
+   "stamp": "stamps/20261106T081634Z-e2d7771c358e",
+   "lean_statement": "def D4BoundNeStatement : Prop :=\n  ∀ φ : ℝ × ℝ → ℝ, ContDiff ℝ 4 φ → (∀ v w, dd φ 0 v w = 0) → disc (cubicCoeffs φ) ≠ 0 →\n    ∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (y : ℝ × ℝ) (t : ℝ),\n      AmpBound 2 (Metric.closedBall 0 δ) A M → 1 ≤ t →\n        ‖oscInt2 (fun κ => t * φ κ + lin y κ) A‖ ≤ C * M * t ^ (-(2 : ℝ) / 3)",
+   "hypotheses": [
+    "as S4.1 with disc ≠ 0 (both umbilics)"
+   ],
+   "conclusion": "as S4.1",
+   "rate": "t^{-2/3}",
+   "uniform_over": "all linear terms",
+   "smoothness": "C⁴ on ℝ²",
+   "see_also": [
+    "FE-S4.1′",
+    "FE-S4.1′L",
+    "GD"
+   ],
+   "snippet": "example : D4BoundNeStatement := OscInt.d4BoundNe",
+   "status": "see docs/STATUS.md (row S4.1′)"
+  },
+  {
+   "label": "S4.2",
+   "name": "OscInt.Statements.D4LimitStatement",
+   "proved_by": "OscInt.d4Limit",
+   "summary": "D4 limit: `t^{2/3} ∫ e^{itφ} A → c_C A(0)`.",
+   "file": "OscInt/Statements/D4Limit.lean",
+   "commitment": "9490bf1bdc254b2bd297cb0c4a7f76db64fa363ccf1141a92a14fd78331552a9",
+   "stamp": "stamps/20261106T081634Z-e2d7771c358e",
+   "lean_statement": "def D4LimitStatement : Prop :=\n  ∀ φ : ℝ × ℝ → ℝ, ContDiff ℝ 4 φ → φ 0 = 0 → fderiv ℝ φ 0 = 0 → (∀ v w, dd φ 0 v w = 0) →\n    disc (cubicCoeffs φ) ≠ 0 →\n    ∃ δ > 0, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ), AmpBound 2 (Metric.closedBall 0 δ) A M →\n      Tendsto (fun t : ℝ => ((t ^ ((2 : ℝ) / 3) : ℝ) : ℂ) * oscInt2 (fun κ => t * φ κ) A) atTop\n        (𝓝 ((d4Constant (cubicCoeffs φ) : ℂ) * A 0))",
+   "hypotheses": [
+    "φ C⁴, φ(0) = 0, Dφ(0) = 0, D²φ(0) = 0, disc ≠ 0"
+   ],
+   "conclusion": "t^{2/3} oscInt2(tφ, A) → c_C A(0) for A supported in B̄(0, δ)",
+   "rate": "t^{-2/3} (exact leading term)",
+   "uniform_over": "—",
+   "smoothness": "C⁴ on ℝ²",
+   "see_also": [
+    "S4.3",
+    "S4.4",
+    "F2"
+   ],
+   "snippet": "example : D4LimitStatement := OscInt.d4Limit",
+   "status": "see docs/STATUS.md (row S4.2)"
+  },
+  {
+   "label": "S4.3",
+   "name": "OscInt.Statements.D4ConstantPosStatement",
+   "proved_by": "OscInt.d4ConstantPos",
+   "summary": "The constant is positive: the improper integral converges to a positive number, and for `disc ≠ 0` the angular integrand is integrable and `c_C > 0`.",
+   "file": "OscInt/Statements/D4Limit.lean",
+   "commitment": "96eb2416b768396e5f29e3bfc865d4f181c6ec9ccaf1f1ac0aaf01ef18053be1",
+   "stamp": "stamps/20261106T081634Z-e2d7771c358e",
+   "lean_statement": "def D4ConstantPosStatement : Prop :=\n  Tendsto cosMomentPartial atTop (𝓝 cosMoment) ∧ 0 < cosMoment ∧\n    ∀ q : ℝ × ℝ × ℝ × ℝ, disc q ≠ 0 →\n      IntervalIntegrable (fun θ => |cubicForm q (Real.cos θ, Real.sin θ)| ^ (-(2 : ℝ) / 3))\n        MeasureTheory.volume 0 (2 * Real.pi) ∧ 0 < d4Constant q",
+   "hypotheses": [
+    "disc q ≠ 0"
+   ],
+   "conclusion": "c_C(q) > 0 (and the defining improper integral converges)",
+   "rate": "—",
+   "uniform_over": "—",
+   "smoothness": "—",
+   "see_also": [
+    "S4.2",
+    "S4.4"
+   ],
+   "snippet": "example : D4ConstantPosStatement := OscInt.d4ConstantPos",
+   "status": "see docs/STATUS.md (row S4.3)"
+  },
+  {
+   "label": "S4.4",
+   "name": "OscInt.Statements.D4ConstantClosedFormStatement",
+   "proved_by": "OscInt.d4ConstantClosedForm",
+   "summary": "Closed forms: `∫₀^∞ cos u · u^{-1/3} du = Γ(2/3)/2`; `c_C = Γ(1/3)²/(√3 |Disc|^{1/6})` for `Disc < 0` and `c_C = Γ(1/3)²/Disc^{1/6}` for `Disc > 0`.",
+   "file": "OscInt/Statements/D4Limit.lean",
+   "commitment": "3f089384d33ac7f6d4a24195c64b10af9093125fec7456da342a0477e510e6cc",
+   "stamp": "stamps/20261106T081634Z-e2d7771c358e",
+   "lean_statement": "def D4ConstantClosedFormStatement : Prop :=\n  cosMoment = Real.Gamma (2 / 3) / 2 ∧\n    (∀ q : ℝ × ℝ × ℝ × ℝ, disc q < 0 →\n      d4Constant q = Real.Gamma (1 / 3) ^ 2 / (Real.sqrt 3 * |disc q| ^ ((1 : ℝ) / 6))) ∧\n    ∀ q : ℝ × ℝ × ℝ × ℝ, 0 < disc q → d4Constant q = Real.Gamma (1 / 3) ^ 2 / disc q ^ ((1 : ℝ) / 6)",
+   "hypotheses": [
+    "disc q < 0, resp. > 0"
+   ],
+   "conclusion": "c_C = Γ(1/3)²/(√3 |disc|^{1/6}), resp. Γ(1/3)²/disc^{1/6}",
+   "rate": "—",
+   "uniform_over": "—",
+   "smoothness": "—",
+   "see_also": [
+    "S4.2",
+    "F2"
+   ],
+   "snippet": "example : D4ConstantClosedFormStatement := OscInt.d4ConstantClosedForm",
+   "status": "see docs/STATUS.md (row S4.4)"
+  },
+  {
+   "label": "F1",
+   "name": "OscInt.Statements.AmpBoundOfContDiffStatement",
+   "proved_by": "OscInt.API.ampBoundOfContDiff",
+   "summary": "Amplitude bounds from Mathlib's idiom: a `Cⁿ` amplitude with `tsupport A ⊆ K`, `K` compact, satisfies `AmpBound n K A M` for some `M`.",
+   "file": "OscInt/Statements/FrontEnd.lean",
+   "commitment": "ec40ed3e51ec4cc137fcc2c1a5462f076cabd712d0701b729f9cb64856a50c58",
+   "stamp": "stamps/20261107T012459Z-2d5356432156",
+   "lean_statement": "def AmpBoundOfContDiffStatement : Prop :=\n  ∀ (n : ℕ) (K : Set (ℝ × ℝ)) (A : ℝ × ℝ → ℂ), IsCompact K → ContDiff ℝ n A → tsupport A ⊆ K →\n    ∃ M : ℝ, AmpBound n K A M",
+   "hypotheses": [
+    "K compact",
+    "A of class Cⁿ with tsupport A ⊆ K"
+   ],
+   "conclusion": "∃ M, AmpBound n K A M",
+   "rate": "—",
+   "uniform_over": "—",
+   "smoothness": "Cⁿ",
+   "see_also": [
+    "C9"
+   ],
+   "snippet": "example : AmpBoundOfContDiffStatement := OscInt.API.ampBoundOfContDiff",
+   "status": "see docs/STATUS.md (row F1)"
+  },
+  {
+   "label": "F2",
+   "name": "OscInt.Statements.D4LimitClosedFormStatement",
+   "proved_by": "OscInt.API.d4LimitClosedForm",
+   "summary": "The D4 limit with its closed-form constant (the brief's S4), for a `C²` amplitude supported near `0`: `t^{2/3} ∫ e^{itφ} A → Γ(1/3)²/(√3 |Disc|^{1/6}) A(0)` if `Disc < 0`, and `→ Γ(1/3)²/Disc^{1/6} A(0)` if `Disc > 0`.",
+   "file": "OscInt/Statements/FrontEnd.lean",
+   "commitment": "7db2d5f188ee0984ee684caa10e18c74af554e0c718a903cd643e540d278f741",
+   "stamp": "stamps/20261107T012459Z-2d5356432156",
+   "lean_statement": "def D4LimitClosedFormStatement : Prop :=\n  ∀ φ : ℝ × ℝ → ℝ, ContDiff ℝ 4 φ → φ 0 = 0 → fderiv ℝ φ 0 = 0 → (∀ v w, dd φ 0 v w = 0) →\n    disc (cubicCoeffs φ) ≠ 0 →\n    ∃ δ > 0, ∀ A : ℝ × ℝ → ℂ, ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 δ →\n      Tendsto (fun t : ℝ => ((t ^ ((2 : ℝ) / 3) : ℝ) : ℂ) *\n          ∫ k : ℝ × ℝ, Complex.exp (↑(t * φ k) * Complex.I) * A k) atTop\n        (𝓝 ((d4ClosedConstant (disc (cubicCoeffs φ)) : ℂ) * A 0))",
+   "hypotheses": [
+    "φ C⁴, φ(0) = 0, Dφ(0) = 0, D²φ(0) = 0, disc ≠ 0",
+    "A of class C² supported in B̄(0, δ)"
+   ],
+   "conclusion": "t^{2/3} ∫ e^{itφ} A → d4ClosedConstant(disc) A(0)",
+   "rate": "t^{-2/3} (exact leading term)",
+   "uniform_over": "—",
+   "smoothness": "C⁴ on ℝ²",
+   "see_also": [
+    "S4.2",
+    "S4.4",
+    "T6L"
+   ],
+   "snippet": "example : D4LimitClosedFormStatement := OscInt.API.d4LimitClosedForm",
+   "status": "see docs/STATUS.md (row F2)"
+  },
+  {
+   "label": "C1",
+   "name": "OscInt.Statements.DdEqIteratedStatement",
+   "proved_by": "OscInt.API.dd_iteratedFDeriv",
+   "summary": "Second derivatives: `dd Ψ k v w = D²Ψ(k)[v, w]` for `Ψ` of class `C²` near `k`.",
+   "file": "OscInt/Statements/Convert.lean",
+   "commitment": "88880a9377a1cb58aaa315e01ddcc83055a294e8518316c5d843aede69859375",
+   "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+   "lean_statement": "def DdEqIteratedStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (k : ℝ × ℝ), ContDiffAt ℝ 2 Ψ k → ∀ v w, dd Ψ k v w = iteratedFDeriv ℝ 2 Ψ k ![v, w]",
+   "hypotheses": [
+    "see the conclusion"
+   ],
+   "conclusion": "dd Ψ k v w = D²Ψ(k)[v, w] for Ψ C² near k",
+   "rate": "—",
+   "uniform_over": "—",
+   "smoothness": "as stated",
+   "see_also": [],
+   "snippet": "example : DdEqIteratedStatement := OscInt.API.dd_iteratedFDeriv",
+   "status": "see docs/STATUS.md (row C1)"
+  },
+  {
+   "label": "C2",
+   "name": "OscInt.Statements.DddEqIteratedStatement",
+   "proved_by": "OscInt.API.ddd_iteratedFDeriv",
+   "summary": "Third derivatives: `ddd Ψ k u v w = D³Ψ(k)[u, v, w]` for `Ψ` of class `C³` near `k`.",
+   "file": "OscInt/Statements/Convert.lean",
+   "commitment": "c90a3e07e9299b77bee1425af8810b3d745982ce1fc01d03281d1e167541db27",
+   "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+   "lean_statement": "def DddEqIteratedStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (k : ℝ × ℝ), ContDiffAt ℝ 3 Ψ k →\n    ∀ u v w, ddd Ψ k u v w = iteratedFDeriv ℝ 3 Ψ k ![u, v, w]",
+   "hypotheses": [
+    "see the conclusion"
+   ],
+   "conclusion": "ddd = D³Ψ(k)[u, v, w] for Ψ C³ near k",
+   "rate": "—",
+   "uniform_over": "—",
+   "smoothness": "as stated",
+   "see_also": [],
+   "snippet": "example : DddEqIteratedStatement := OscInt.API.ddd_iteratedFDeriv",
+   "status": "see docs/STATUS.md (row C2)"
+  },
+  {
+   "label": "C3",
+   "name": "OscInt.Statements.HessDetEqDetStatement",
+   "proved_by": "OscInt.API.hessDet_eq_det",
+   "summary": "`hessDet Ψ k = det (hessianMatrix Ψ k)` for `Ψ` of class `C²` near `k`.",
+   "file": "OscInt/Statements/Convert.lean",
+   "commitment": "ad8bfd7283e818c8b9ae1290765dec3f6122e76790f493f35c02139189cb16b8",
+   "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+   "lean_statement": "def HessDetEqDetStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (k : ℝ × ℝ), ContDiffAt ℝ 2 Ψ k → hessDet Ψ k = (hessianMatrix Ψ k).det",
+   "hypotheses": [
+    "see the conclusion"
+   ],
+   "conclusion": "hessDet Ψ k = det (hessianMatrix Ψ k) for Ψ C² near k",
+   "rate": "—",
+   "uniform_over": "—",
+   "smoothness": "as stated",
+   "see_also": [],
+   "snippet": "example : HessDetEqDetStatement := OscInt.API.hessDet_eq_det",
+   "status": "see docs/STATUS.md (row C3)"
+  },
+  {
+   "label": "C4",
+   "name": "OscInt.Statements.CubicCoeffsEqStatement",
+   "proved_by": "OscInt.API.cubicCoeffs_eq",
+   "summary": "The cubic part: `cubicForm (cubicCoeffs φ) κ = D³φ(0)[κ, κ, κ] / 6` for `φ` of class `C³` near `0`.",
+   "file": "OscInt/Statements/Convert.lean",
+   "commitment": "b3a10d767ce7cc1558a06629db152378bb13c719d58b62f9ee2db8bbd7635a70",
+   "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+   "lean_statement": "def CubicCoeffsEqStatement : Prop :=\n  ∀ φ : ℝ × ℝ → ℝ, ContDiffAt ℝ 3 φ 0 →\n    ∀ κ : ℝ × ℝ, cubicForm (cubicCoeffs φ) κ = iteratedFDeriv ℝ 3 φ 0 ![κ, κ, κ] / 6",
+   "hypotheses": [
+    "see the conclusion"
+   ],
+   "conclusion": "cubicForm (cubicCoeffs φ) κ = D³φ(0)[κ, κ, κ]/6",
+   "rate": "—",
+   "uniform_over": "—",
+   "smoothness": "as stated",
+   "see_also": [],
+   "snippet": "example : CubicCoeffsEqStatement := OscInt.API.cubicCoeffs_eq",
+   "status": "see docs/STATUS.md (row C4)"
+  },
+  {
+   "label": "C5",
+   "name": "OscInt.Statements.DiscEqCubicDiscrStatement",
+   "proved_by": "OscInt.API.disc_eq_cubic_discr",
+   "summary": "`disc` is Mathlib's discriminant of the cubic polynomial `a X³ + b X² + c X + d`.",
+   "file": "OscInt/Statements/Convert.lean",
+   "commitment": "b695631f883cf016c403cefef9e9b41f753dcab0ff8acf7e7dc331c3525207bc",
+   "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+   "lean_statement": "def DiscEqCubicDiscrStatement : Prop :=\n  ∀ a b c d : ℝ, disc (a, b, c, d) = (Cubic.mk a b c d).discr",
+   "hypotheses": [
+    "see the conclusion"
+   ],
+   "conclusion": "disc (a, b, c, d) = (Cubic.mk a b c d).discr",
+   "rate": "—",
+   "uniform_over": "—",
+   "smoothness": "as stated",
+   "see_also": [],
+   "snippet": "example : DiscEqCubicDiscrStatement := OscInt.API.disc_eq_cubic_discr",
+   "status": "see docs/STATUS.md (row C5)"
+  },
+  {
+   "label": "C6",
+   "name": "OscInt.Statements.DiscNeZeroIffIsolatedStatement",
+   "proved_by": "OscInt.API.disc_ne_zero_iff_isolated",
+   "summary": "`disc q ≠ 0` iff `0` is an isolated critical point of the binary cubic `cubicForm q`.",
+   "file": "OscInt/Statements/Convert.lean",
+   "commitment": "129d6bfd60d242a109cb1ca4a9f021a85d1d0829c1a9d01fd2f88f59c15455ef",
+   "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+   "lean_statement": "def DiscNeZeroIffIsolatedStatement : Prop :=\n  ∀ q : ℝ × ℝ × ℝ × ℝ, disc q ≠ 0 ↔ ∀ᶠ z in 𝓝[≠] (0 : ℝ × ℝ), fderiv ℝ (cubicForm q) z ≠ 0",
+   "hypotheses": [
+    "see the conclusion"
+   ],
+   "conclusion": "disc q ≠ 0 iff 0 is an isolated critical point of the binary cubic",
+   "rate": "—",
+   "uniform_over": "—",
+   "smoothness": "as stated",
+   "see_also": [],
+   "snippet": "example : DiscNeZeroIffIsolatedStatement := OscInt.API.disc_ne_zero_iff_isolated",
+   "status": "see docs/STATUS.md (row C6)"
+  },
+  {
+   "label": "C7",
+   "name": "OscInt.Statements.FoldOrNondegIffStatement",
+   "proved_by": "OscInt.API.foldOrNondeg_iff",
+   "summary": "`FoldOrNondeg` in matrix form (span form and rank form) for `Ψ` of class `C³` near `k`.",
+   "file": "OscInt/Statements/Convert.lean",
+   "commitment": "b05dd45ea11747ed3f364fd9ed95819be61b82d91a0ba2e617b7d7ff729de907",
+   "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+   "lean_statement": "def FoldOrNondegIffStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (k : ℝ × ℝ), ContDiffAt ℝ 3 Ψ k →\n    (FoldOrNondeg Ψ k ↔ FoldOrNondegMatrix Ψ k) ∧\n      (FoldOrNondeg Ψ k ↔\n        FoldCondRank (hessianMatrix Ψ k) (fun e => iteratedFDeriv ℝ 3 Ψ k ![ofFin2 e, ofFin2 e, ofFin2 e]))",
+   "hypotheses": [
+    "see the conclusion"
+   ],
+   "conclusion": "FoldOrNondeg ↔ FoldOrNondegMatrix (span form) ↔ rank form, for Ψ C³ near k",
+   "rate": "—",
+   "uniform_over": "—",
+   "smoothness": "as stated",
+   "see_also": [],
+   "snippet": "example : FoldOrNondegIffStatement := OscInt.API.foldOrNondeg_iff",
+   "status": "see docs/STATUS.md (row C7)"
+  },
+  {
+   "label": "C7′",
+   "name": "OscInt.Statements.FoldOrNondegOfHasFDerivStatement",
+   "proved_by": "OscInt.API.foldOrNondeg_of_hasFDeriv",
+   "summary": "`FoldOrNondeg` from derivative data: `Ψ' = D₁`, `D₁' = D₂` everywhere and `D₂'(k) = D₃`.",
+   "file": "OscInt/Statements/Convert.lean",
+   "commitment": "cf87f81a3e5eaab15f2e671a7efefcc88ce509646daf6cf75a56d5d86c813a56",
+   "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+   "lean_statement": "def FoldOrNondegOfHasFDerivStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (D₁ : ℝ × ℝ → (ℝ × ℝ) →L[ℝ] ℝ) (D₂ : ℝ × ℝ → (ℝ × ℝ) →L[ℝ] (ℝ × ℝ) →L[ℝ] ℝ)\n    (D₃ : (ℝ × ℝ) →L[ℝ] (ℝ × ℝ) →L[ℝ] (ℝ × ℝ) →L[ℝ] ℝ) (k : ℝ × ℝ),\n    (∀ y, HasFDerivAt Ψ (D₁ y) y) → (∀ y, HasFDerivAt D₁ (D₂ y) y) → HasFDerivAt D₂ D₃ k →\n    (FoldOrNondeg Ψ k ↔\n      FoldCondSpan (Matrix.of fun i j => D₂ k (coordVec i) (coordVec j))\n        (fun e => D₃ (ofFin2 e) (ofFin2 e) (ofFin2 e)))",
+   "hypotheses": [
+    "see the conclusion"
+   ],
+   "conclusion": "FoldOrNondeg from HasFDerivAt data D₁, D₂, D₃",
+   "rate": "—",
+   "uniform_over": "—",
+   "smoothness": "as stated",
+   "see_also": [],
+   "snippet": "example : FoldOrNondegOfHasFDerivStatement := OscInt.API.foldOrNondeg_of_hasFDeriv",
+   "status": "see docs/STATUS.md (row C7′)"
+  },
+  {
+   "label": "C8",
+   "name": "OscInt.Statements.GradLowerIffStatement",
+   "proved_by": "OscInt.API.gradLower_iff",
+   "summary": "`GradLower` as a norm bound: Euclidean (an equivalence) and max norm (both directions, losing `√2`).",
+   "file": "OscInt/Statements/Convert.lean",
+   "commitment": "c46e578b3f119cb9f17dd3690e103e2fb641ac03288e8b863f94f1e940ff443c",
+   "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+   "lean_statement": "def GradLowerIffStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (p k : ℝ × ℝ) (c : ℝ), DifferentiableAt ℝ Ψ k → 0 ≤ c →\n    (GradLower Ψ p k c ↔\n        c ≤ ‖fderiv ℝ (fun x : EuclideanSpace ℝ (Fin 2) => Ψ (x 0, x 1) + lin p (x 0, x 1)) (toEuclid k)‖) ∧\n      (GradLower Ψ p k c → c ≤ ‖fderiv ℝ (fun x => Ψ x + lin p x) k‖) ∧\n      (c ≤ ‖fderiv ℝ (fun x => Ψ x + lin p x) k‖ → GradLower Ψ p k (c / Real.sqrt 2))",
+   "hypotheses": [
+    "see the conclusion"
+   ],
+   "conclusion": "GradLower ↔ Euclidean gradient bound; max-norm bounds losing √2",
+   "rate": "—",
+   "uniform_over": "—",
+   "smoothness": "as stated",
+   "see_also": [],
+   "snippet": "example : GradLowerIffStatement := OscInt.API.gradLower_iff",
+   "status": "see docs/STATUS.md (row C8)"
+  },
+  {
+   "label": "C9",
+   "name": "OscInt.Statements.AmpBoundConvStatement",
+   "proved_by": "OscInt.API.ampBound_conv",
+   "summary": "`AmpBound` and Mathlib's idiom: (i) on a compact `K` it gives `Cⁿ` with compact support; (ii) `Cⁿ` with compact support gives `AmpBound n (tsupport A) A M` for some `M`.",
+   "file": "OscInt/Statements/Convert.lean",
+   "commitment": "bdcb71a321987be7a5de005f6984f193b3947aade4acf29bbe4a155bedc5c6c9",
+   "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+   "lean_statement": "def AmpBoundConvStatement : Prop :=\n  (∀ (n : ℕ) (K : Set (ℝ × ℝ)) (A : ℝ × ℝ → ℂ) (M : ℝ), IsCompact K → AmpBound n K A M →\n      ContDiff ℝ n A ∧ HasCompactSupport A) ∧\n    ∀ (n : ℕ) (A : ℝ × ℝ → ℂ), ContDiff ℝ n A → HasCompactSupport A → ∃ M : ℝ, AmpBound n (tsupport A) A M",
+   "hypotheses": [
+    "see the conclusion"
+   ],
+   "conclusion": "AmpBound ↔ ContDiff with compact support",
+   "rate": "—",
+   "uniform_over": "—",
+   "smoothness": "as stated",
+   "see_also": [
+    "F1"
+   ],
+   "snippet": "example : AmpBoundConvStatement := OscInt.API.ampBound_conv",
+   "status": "see docs/STATUS.md (row C9)"
+  },
+  {
+   "label": "FE-S2.1",
+   "name": "OscInt.Statements.NonStationaryFEStatement",
+   "proved_by": "OscInt.API.nonStationaryFE",
+   "summary": "Non-stationary phase in Mathlib's idiom (one phase): decay `m^{-N}`, uniform over amplitudes with derivative bound `M` and over linear terms `L` with `‖DΨ(k) + L‖ ≥ c` on `K`.",
+   "file": "OscInt/Statements/Convert.lean",
+   "commitment": "658ca3ba7c2aa48bd189db69c7fa6de41dccc5b293c13da3e35262a407ad3670",
+   "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+   "lean_statement": "def NonStationaryFEStatement : Prop :=\n  ∀ (N : ℕ) (Ψ : ℝ × ℝ → ℝ) (K : Set (ℝ × ℝ)) (c : ℝ), ContDiff ℝ (N + 1) Ψ → IsCompact K → 0 < c →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      ContDiff ℝ N A → tsupport A ⊆ K → (∀ j ≤ N, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →\n      (∀ k ∈ K, c ≤ ‖fderiv ℝ Ψ k + L‖) → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M / m ^ N",
+   "hypotheses": [
+    "Ψ C^{N+1} on ℝ²",
+    "K compact",
+    "‖DΨ(k) + L‖ ≥ c > 0 on K"
+   ],
+   "conclusion": "|∫ e^{im(Ψ+L)} A| ≤ C M m^{-N} for amplitudes (N, K, M)",
+   "rate": "m^{-N}",
+   "uniform_over": "L with the gradient bound, A, M",
+   "smoothness": "C^{N+1} on ℝ²",
+   "see_also": [
+    "FE-S2.1l",
+    "S2.1"
+   ],
+   "snippet": "example : NonStationaryFEStatement := OscInt.API.nonStationaryFE",
+   "status": "see docs/STATUS.md (row FE-S2.1)"
+  },
+  {
+   "label": "FE-S2.2",
+   "name": "OscInt.Statements.StationaryPhaseFEStatement",
+   "proved_by": "OscInt.API.stationaryPhaseFE",
+   "summary": "Nondegenerate stationary phase in Mathlib's idiom: decay `m^{-1}`, uniform over `L ∈ K'`.",
+   "file": "OscInt/Statements/Convert.lean",
+   "commitment": "853de5aec4e7209f3452e92c038f15ae35a9ba77ec68e668b81b54993be7fcf8",
+   "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+   "lean_statement": "def StationaryPhaseFEStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (K : Set (ℝ × ℝ)) (K' : Set ((ℝ × ℝ) →L[ℝ] ℝ)),\n    ContDiff ℝ 4 Ψ → IsCompact K → IsCompact K' →\n    (∀ L ∈ K', ∀ k ∈ K, fderiv ℝ Ψ k + L = 0 → (hessianMatrix Ψ k).det ≠ 0) →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → L ∈ K' → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M / m",
+   "hypotheses": [
+    "Ψ C⁴ on ℝ²",
+    "K, K′ compact",
+    "Hessian matrix invertible at critical points of Ψ + L, L ∈ K′"
+   ],
+   "conclusion": "bound C M m^{-1}",
+   "rate": "m^{-1}",
+   "uniform_over": "L ∈ K′, A, M",
+   "smoothness": "C⁴ on ℝ²",
+   "see_also": [
+    "FE-S2.2l",
+    "GD-N"
+   ],
+   "snippet": "example : StationaryPhaseFEStatement := OscInt.API.stationaryPhaseFE",
+   "status": "see docs/STATUS.md (row FE-S2.2)"
+  },
+  {
+   "label": "FE-S3",
+   "name": "OscInt.Statements.FoldFEStatement",
+   "proved_by": "OscInt.API.foldFE",
+   "summary": "Uniform fold estimate in Mathlib's idiom (one phase): decay `m^{-5/6}`, uniform over `L ∈ K'`.",
+   "file": "OscInt/Statements/Convert.lean",
+   "commitment": "0f3fb86be54bedd6800f47e92a4ec39ea40b02aaa525a55810bc1b2e706131e5",
+   "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+   "lean_statement": "def FoldFEStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (K : Set (ℝ × ℝ)) (K' : Set ((ℝ × ℝ) →L[ℝ] ℝ)),\n    ContDiff ℝ 4 Ψ → IsCompact K → IsCompact K' → (∀ k ∈ K, FoldOrNondegMatrix Ψ k) →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → L ∈ K' → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(5 : ℝ) / 6)",
+   "hypotheses": [
+    "Ψ C⁴ on ℝ²",
+    "FoldOrNondegMatrix at every point of K"
+   ],
+   "conclusion": "bound C M m^{-5/6}",
+   "rate": "m^{-5/6}",
+   "uniform_over": "L ∈ K′, A, M",
+   "smoothness": "C⁴ on ℝ²",
+   "see_also": [
+    "FE-S3l",
+    "GD-F"
+   ],
+   "snippet": "example : FoldFEStatement := OscInt.API.foldFE",
+   "status": "see docs/STATUS.md (row FE-S3)"
+  },
+  {
+   "label": "FE-S4.1′",
+   "name": "OscInt.Statements.D4BoundFEStatement",
+   "proved_by": "OscInt.API.d4BoundFE",
+   "summary": "Uniform D4 bound in Mathlib's idiom: `D²φ(0) = 0`, cubic part `a x³ + b x²y + c xy² + d y³` with nonzero discriminant; decay `t^{-2/3}` uniformly over all linear terms.",
+   "file": "OscInt/Statements/Convert.lean",
+   "commitment": "6d19397535704238238140de06b3e7f4c4fc3296a03d1b4685a9fbcafb8722df",
+   "stamp": "stamps/20261107T101640Z-4acb308f54f4",
+   "lean_statement": "def D4BoundFEStatement : Prop :=\n  ∀ (φ : ℝ × ℝ → ℝ) (a b c d : ℝ), ContDiff ℝ 4 φ → iteratedFDeriv ℝ 2 φ 0 = 0 →\n    (∀ x y : ℝ, iteratedFDeriv ℝ 3 φ 0 ![(x, y), (x, y), (x, y)] =\n      6 * (a * x ^ 3 + b * x ^ 2 * y + c * x * y ^ 2 + d * y ^ 3)) →\n    (Cubic.mk a b c d).discr ≠ 0 →\n    ∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (t : ℝ),\n      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 δ → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →\n      1 ≤ t →\n      ‖∫ κ : ℝ × ℝ, Complex.exp (↑(t * φ κ + L κ) * Complex.I) * A κ‖ ≤ C * M * t ^ (-(2 : ℝ) / 3)",
+   "hypotheses": [
+    "φ C⁴ on ℝ²",
+    "D²φ(0) = 0, D³φ(0)[(x,y)³] = 6(a x³ + b x²y + c xy² + d y³), discr ≠ 0"
+   ],
+   "conclusion": "∃ δ, C: |∫ e^{i(tφ + L)} A| ≤ C M t^{-2/3} for A supported in B̄(0, δ)",
+   "rate": "t^{-2/3}",
+   "uniform_over": "all L, A, M",
+   "smoothness": "C⁴ on ℝ²",
+   "see_also": [
+    "FE-S4.1′L"
+   ],
+   "snippet": "example : D4BoundFEStatement := OscInt.API.d4BoundFE",
+   "status": "see docs/STATUS.md (row FE-S4.1′)"
+  },
+  {
+   "label": "S2.2F",
+   "name": "OscInt.Statements.StationaryPhaseFamilyStatement",
+   "proved_by": "OscInt.API.stationaryPhaseFamily",
+   "summary": "Nondegenerate stationary phase, uniform over a compact family: decay `m^{-1}`, uniform over `σ` and `p ∈ K'`, when the Hessian of `Ψ_σ` is nondegenerate at every critical point of `Ψ_σ + p·` in `K`.",
+   "file": "OscInt/Statements/Family.lean",
+   "commitment": "c2038a6b5bfd58f54af6f056f4c71232db914131199a05804b878c5161f880be",
+   "stamp": "stamps/20261108T002603Z-9d03130c8f3a",
+   "lean_statement": "def StationaryPhaseFamilyStatement : Prop :=\n  ∀ (Λ : Type) [TopologicalSpace Λ] [CompactSpace Λ] (Ψ : Λ → ℝ × ℝ → ℝ) (K K' : Set (ℝ × ℝ)),\n    FamilyCk 4 Ψ → IsCompact K → IsCompact K' →\n    (∀ σ, ∀ p ∈ K', ∀ k ∈ K, IsCritical (Ψ σ) p k → hessDet (Ψ σ) k ≠ 0) →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (σ : Λ) (p : ℝ × ℝ) (m : ℝ),\n      AmpBound 2 K A M → p ∈ K' → 1 ≤ m →\n      ‖oscInt2 (fun k => m * (Ψ σ k + lin p k)) A‖ ≤ C * M / m",
+   "hypotheses": [
+    "compact family (FamilyCk 4)",
+    "Hessian nondegenerate at critical points of Ψ_σ + p·, p ∈ K′"
+   ],
+   "conclusion": "bound C M m^{-1}",
+   "rate": "m^{-1}",
+   "uniform_over": "σ, p ∈ K′, A, M",
+   "smoothness": "C⁴ (internal encoding)",
+   "see_also": [
+    "FE-S2.2L"
+   ],
+   "snippet": "example : StationaryPhaseFamilyStatement := OscInt.API.stationaryPhaseFamily",
+   "status": "see docs/STATUS.md (row S2.2F)"
+  },
+  {
+   "label": "S3c",
+   "name": "OscInt.Statements.FoldCritStatement",
+   "proved_by": "OscInt.API.foldCrit",
+   "summary": "Uniform fold estimate with the classical hypothesis: decay `m^{-5/6}`, uniform over a compact family and `p ∈ K'`, when `Ψ_σ` is fold-or-nondegenerate at every critical point of `Ψ_σ + p·` in `K`.",
+   "file": "OscInt/Statements/Family.lean",
+   "commitment": "250229601f6b6504443fcb896fd5310ef3e152d84d4ea35d1a001705197fd550",
+   "stamp": "stamps/20261108T002603Z-9d03130c8f3a",
+   "lean_statement": "def FoldCritStatement : Prop :=\n  ∀ (Λ : Type) [TopologicalSpace Λ] [CompactSpace Λ] (Ψ : Λ → ℝ × ℝ → ℝ) (K K' : Set (ℝ × ℝ)),\n    FamilyCk 4 Ψ → IsCompact K → IsCompact K' →\n    (∀ σ, ∀ p ∈ K', ∀ k ∈ K, IsCritical (Ψ σ) p k → FoldOrNondeg (Ψ σ) k) →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (σ : Λ) (p : ℝ × ℝ) (m : ℝ),\n      AmpBound 2 K A M → p ∈ K' → 1 ≤ m →\n      ‖oscInt2 (fun k => m * (Ψ σ k + lin p k)) A‖ ≤ C * M * m ^ (-(5 : ℝ) / 6)",
+   "hypotheses": [
+    "compact family (FamilyCk 4)",
+    "fold-or-nondegenerate at critical points of Ψ_σ + p·, p ∈ K′ (classical hypothesis)"
+   ],
+   "conclusion": "bound C M m^{-5/6}",
+   "rate": "m^{-5/6}",
+   "uniform_over": "σ, p ∈ K′, A, M",
+   "smoothness": "C⁴ (internal encoding)",
+   "see_also": [
+    "FE-S3L",
+    "S3"
+   ],
+   "snippet": "example : FoldCritStatement := OscInt.API.foldCrit",
+   "status": "see docs/STATUS.md (row S3c)"
+  },
+  {
+   "label": "C10",
+   "name": "OscInt.Statements.FamilyCkOfUncurryStatement",
+   "proved_by": "OscInt.API.familyCk_of_uncurry",
+   "summary": "A family that is `Cⁿ` jointly in a real normed parameter and the point is `FamilyCk n` on every parameter set `S` (subspace topology).",
+   "file": "OscInt/Statements/Family.lean",
+   "commitment": "d7326dcfb104149d688373165af573d87f934d15c8ed9189579bd6d954ee732c",
+   "stamp": "stamps/20261108T002603Z-9d03130c8f3a",
+   "lean_statement": "def FamilyCkOfUncurryStatement : Prop :=\n  ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (n : ℕ) (Ψ : E → ℝ × ℝ → ℝ),\n    ContDiff ℝ n (Function.uncurry Ψ) → ∀ S : Set E, FamilyCk n (fun σ : S => Ψ σ)",
+   "hypotheses": [
+    "Ψ : E → ℝ² → ℝ jointly Cⁿ (E a real normed space)"
+   ],
+   "conclusion": "FamilyCk n on every parameter set S",
+   "rate": "—",
+   "uniform_over": "—",
+   "smoothness": "Cⁿ jointly",
+   "see_also": [
+    "FE-S2.1L"
+   ],
+   "snippet": "example : FamilyCkOfUncurryStatement := OscInt.API.familyCk_of_uncurry",
+   "status": "see docs/STATUS.md (row C10)"
+  },
+  {
+   "label": "FE-S2.1L",
+   "name": "OscInt.Statements.NonStationaryLocalStatement",
+   "proved_by": "OscInt.API.nonStationaryLocal",
+   "summary": "Non-stationary phase, Mathlib idiom, compact family, local smoothness: decay `m^{-N}`, uniform over `σ ∈ S`, amplitudes with derivative bound `M` supported in `K`, and linear terms `L` with `‖DΨ_σ(k) + L‖ ≥ c` on `K`, for a family `C^{N+1}` on `V ×ˢ U` (`S ⊆ V`, `K ⊆ U`, both open).",
+   "file": "OscInt/Statements/Family.lean",
+   "commitment": "db12dc1d9f844151b7320bf2490a1f94fa73e9fedc08217aab59a75e4d1c9e1c",
+   "stamp": "stamps/20261108T002603Z-9d03130c8f3a",
+   "lean_statement": "def NonStationaryLocalStatement : Prop :=\n  ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (N : ℕ) (Ψ : E → ℝ × ℝ → ℝ) (S V : Set E)\n    (K U : Set (ℝ × ℝ)) (c : ℝ),\n    IsCompact S → IsOpen V → S ⊆ V → IsCompact K → IsOpen U → K ⊆ U →\n    ContDiffOn ℝ (N + 1) (Function.uncurry Ψ) (V ×ˢ U) → 0 < c →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (σ : E) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      σ ∈ S → ContDiff ℝ N A → tsupport A ⊆ K → (∀ j ≤ N, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →\n      (∀ k ∈ K, c ≤ ‖fderiv ℝ (Ψ σ) k + L‖) → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ σ k + L k)) * Complex.I) * A k‖ ≤ C * M / m ^ N",
+   "hypotheses": [
+    "family Ψ : E → ℝ² → ℝ, C^{N+1} on V ×ˢ U (V ⊇ S, U ⊇ K open; S, K compact)",
+    "‖DΨ_σ(k) + L‖ ≥ c > 0 on K"
+   ],
+   "conclusion": "bound C M m^{-N}",
+   "rate": "m^{-N}",
+   "uniform_over": "σ ∈ S, L with the gradient bound, A, M",
+   "smoothness": "C^{N+1} on V ×ˢ U only",
+   "see_also": [
+    "FE-S2.1l"
+   ],
+   "snippet": "example : NonStationaryLocalStatement := OscInt.API.nonStationaryLocal",
+   "status": "see docs/STATUS.md (row FE-S2.1L)"
+  },
+  {
+   "label": "FE-S2.2L",
+   "name": "OscInt.Statements.StationaryPhaseLocalStatement",
+   "proved_by": "OscInt.API.stationaryPhaseLocal",
+   "summary": "Nondegenerate stationary phase, Mathlib idiom, compact family, local smoothness: decay `m^{-1}`, uniform over `σ ∈ S` and `L ∈ K'`, when the Hessian matrix of `Ψ_σ` is invertible at every critical point of `Ψ_σ + L` in `K`.",
+   "file": "OscInt/Statements/Family.lean",
+   "commitment": "80c251734768c1948733e2d437b26b61ec01d9dbd96d4a507192ccad4f7b99e0",
+   "stamp": "stamps/20261108T002603Z-9d03130c8f3a",
+   "lean_statement": "def StationaryPhaseLocalStatement : Prop :=\n  ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (Ψ : E → ℝ × ℝ → ℝ) (S V : Set E)\n    (K U : Set (ℝ × ℝ)) (K' : Set ((ℝ × ℝ) →L[ℝ] ℝ)),\n    IsCompact S → IsOpen V → S ⊆ V → IsCompact K → IsOpen U → K ⊆ U → IsCompact K' →\n    ContDiffOn ℝ 4 (Function.uncurry Ψ) (V ×ˢ U) →\n    (∀ σ ∈ S, ∀ L ∈ K', ∀ k ∈ K, fderiv ℝ (Ψ σ) k + L = 0 → (hessianMatrix (Ψ σ) k).det ≠ 0) →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (σ : E) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      σ ∈ S → ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → L ∈ K' →\n      1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ σ k + L k)) * Complex.I) * A k‖ ≤ C * M / m",
+   "hypotheses": [
+    "family C⁴ on V ×ˢ U",
+    "Hessian matrix invertible at critical points of Ψ_σ + L, σ ∈ S, L ∈ K′"
+   ],
+   "conclusion": "bound C M m^{-1}",
+   "rate": "m^{-1}",
+   "uniform_over": "σ ∈ S, L ∈ K′, A, M",
+   "smoothness": "C⁴ on V ×ˢ U only",
+   "see_also": [
+    "FE-S2.2l"
+   ],
+   "snippet": "example : StationaryPhaseLocalStatement := OscInt.API.stationaryPhaseLocal",
+   "status": "see docs/STATUS.md (row FE-S2.2L)"
+  },
+  {
+   "label": "FE-S3L",
+   "name": "OscInt.Statements.FoldLocalStatement",
+   "proved_by": "OscInt.API.foldLocal",
+   "summary": "Uniform fold estimate, Mathlib idiom, compact family, local smoothness, classical hypothesis: decay `m^{-5/6}`, uniform over `σ ∈ S` and `L ∈ K'`, when `Ψ_σ` satisfies the matrix fold-or-nondegenerate condition at every critical point of `Ψ_σ + L` in `K`.",
+   "file": "OscInt/Statements/Family.lean",
+   "commitment": "dba23e4faf26f648b9048a14557f6f5d81e90bfc534d9a749e0c6202420f592e",
+   "stamp": "stamps/20261108T002603Z-9d03130c8f3a",
+   "lean_statement": "def FoldLocalStatement : Prop :=\n  ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (Ψ : E → ℝ × ℝ → ℝ) (S V : Set E)\n    (K U : Set (ℝ × ℝ)) (K' : Set ((ℝ × ℝ) →L[ℝ] ℝ)),\n    IsCompact S → IsOpen V → S ⊆ V → IsCompact K → IsOpen U → K ⊆ U → IsCompact K' →\n    ContDiffOn ℝ 4 (Function.uncurry Ψ) (V ×ˢ U) →\n    (∀ σ ∈ S, ∀ L ∈ K', ∀ k ∈ K, fderiv ℝ (Ψ σ) k + L = 0 → FoldOrNondegMatrix (Ψ σ) k) →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (σ : E) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      σ ∈ S → ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → L ∈ K' →\n      1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ σ k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(5 : ℝ) / 6)",
+   "hypotheses": [
+    "family C⁴ on V ×ˢ U",
+    "FoldOrNondegMatrix at critical points of Ψ_σ + L, σ ∈ S, L ∈ K′"
+   ],
+   "conclusion": "bound C M m^{-5/6}",
+   "rate": "m^{-5/6}",
+   "uniform_over": "σ ∈ S, L ∈ K′, A, M",
+   "smoothness": "C⁴ on V ×ˢ U only",
+   "see_also": [
+    "FE-S3l"
+   ],
+   "snippet": "example : FoldLocalStatement := OscInt.API.foldLocal",
+   "status": "see docs/STATUS.md (row FE-S3L)"
+  },
+  {
+   "label": "FE-S4.1′L",
+   "name": "OscInt.Statements.D4BoundLocalStatement",
+   "proved_by": "OscInt.API.d4BoundLocal",
+   "summary": "Uniform D4 bound, Mathlib idiom, phase smooth only on an open neighbourhood `U` of `0`: `D²φ(0) = 0`, cubic part `a x³ + b x²y + c xy² + d y³` with nonzero discriminant; decay `t^{-2/3}` uniformly over all linear terms, for amplitudes supported in a small ball.",
+   "file": "OscInt/Statements/Family.lean",
+   "commitment": "996bbfaff4b255ce57d21bc8810527b0001c9c0df254348e9dcbbaaa2a0be852",
+   "stamp": "stamps/20261108T002603Z-9d03130c8f3a",
+   "lean_statement": "def D4BoundLocalStatement : Prop :=\n  ∀ (φ : ℝ × ℝ → ℝ) (U : Set (ℝ × ℝ)) (a b c d : ℝ), IsOpen U → (0 : ℝ × ℝ) ∈ U → ContDiffOn ℝ 4 φ U →\n    iteratedFDeriv ℝ 2 φ 0 = 0 →\n    (∀ x y : ℝ, iteratedFDeriv ℝ 3 φ 0 ![(x, y), (x, y), (x, y)] =\n      6 * (a * x ^ 3 + b * x ^ 2 * y + c * x * y ^ 2 + d * y ^ 3)) →\n    (Cubic.mk a b c d).discr ≠ 0 →\n    ∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (t : ℝ),\n      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 δ → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →\n      1 ≤ t →\n      ‖∫ κ : ℝ × ℝ, Complex.exp (↑(t * φ κ + L κ) * Complex.I) * A κ‖ ≤ C * M * t ^ (-(2 : ℝ) / 3)",
+   "hypotheses": [
+    "φ C⁴ on an open U ∋ 0",
+    "D²φ(0) = 0, cubic part with discr ≠ 0"
+   ],
+   "conclusion": "∃ δ, C: |∫ e^{i(tφ + L)} A| ≤ C M t^{-2/3} for A supported in B̄(0, δ)",
+   "rate": "t^{-2/3}",
+   "uniform_over": "all L, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD-C",
+    "GD"
+   ],
+   "snippet": "example : D4BoundLocalStatement := OscInt.API.d4BoundLocal",
+   "status": "see docs/STATUS.md (row FE-S4.1′L)"
+  },
+  {
+   "label": "FE-S2.1l",
+   "name": "OscInt.Statements.NonStationaryOnStatement",
+   "proved_by": "OscInt.API.nonStationaryOn",
+   "summary": "Non-stationary phase, Mathlib idiom, one phase smooth on an open `U ⊇ K`.",
+   "file": "OscInt/Statements/Family.lean",
+   "commitment": "ca7b598d6e0643d8adf1c14873b7a8a51684be08ea266a0aac895b22c5a1ce2d",
+   "stamp": "stamps/20261108T002603Z-9d03130c8f3a",
+   "lean_statement": "def NonStationaryOnStatement : Prop :=\n  ∀ (N : ℕ) (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)) (c : ℝ),\n    IsCompact K → IsOpen U → K ⊆ U → ContDiffOn ℝ (N + 1) Ψ U → 0 < c →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      ContDiff ℝ N A → tsupport A ⊆ K → (∀ j ≤ N, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →\n      (∀ k ∈ K, c ≤ ‖fderiv ℝ Ψ k + L‖) → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M / m ^ N",
+   "hypotheses": [
+    "Ψ C^{N+1} on open U ⊇ K",
+    "‖DΨ(k) + L‖ ≥ c > 0 on K"
+   ],
+   "conclusion": "bound C M m^{-N}",
+   "rate": "m^{-N}",
+   "uniform_over": "L with the gradient bound, A, M",
+   "smoothness": "C^{N+1} on U only",
+   "see_also": [
+    "FE-S2.1L"
+   ],
+   "snippet": "example : NonStationaryOnStatement := OscInt.API.nonStationaryOn",
+   "status": "see docs/STATUS.md (row FE-S2.1l)"
+  },
+  {
+   "label": "FE-S2.2l",
+   "name": "OscInt.Statements.StationaryPhaseOnStatement",
+   "proved_by": "OscInt.API.stationaryPhaseOn",
+   "summary": "Nondegenerate stationary phase, Mathlib idiom, one phase smooth on an open `U ⊇ K`.",
+   "file": "OscInt/Statements/Family.lean",
+   "commitment": "57a3c45db40bbfe67d37c192208d2e7025b68d28af93226a8565e890c9cd07e5",
+   "stamp": "stamps/20261108T002603Z-9d03130c8f3a",
+   "lean_statement": "def StationaryPhaseOnStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)) (K' : Set ((ℝ × ℝ) →L[ℝ] ℝ)),\n    IsCompact K → IsOpen U → K ⊆ U → IsCompact K' → ContDiffOn ℝ 4 Ψ U →\n    (∀ L ∈ K', ∀ k ∈ K, fderiv ℝ Ψ k + L = 0 → (hessianMatrix Ψ k).det ≠ 0) →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → L ∈ K' → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M / m",
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K",
+    "Hessian matrix invertible at critical points of Ψ + L, L ∈ K′"
+   ],
+   "conclusion": "bound C M m^{-1}",
+   "rate": "m^{-1}",
+   "uniform_over": "L ∈ K′, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD-N"
+   ],
+   "snippet": "example : StationaryPhaseOnStatement := OscInt.API.stationaryPhaseOn",
+   "status": "see docs/STATUS.md (row FE-S2.2l)"
+  },
+  {
+   "label": "FE-S3l",
+   "name": "OscInt.Statements.FoldOnStatement",
+   "proved_by": "OscInt.API.foldOn",
+   "summary": "Uniform fold estimate, Mathlib idiom, one phase smooth on an open `U ⊇ K`, classical hypothesis.",
+   "file": "OscInt/Statements/Family.lean",
+   "commitment": "9e5060bc1dcb931cb5f903b812d9f769c0272a13c7d8ab722802525c3e3682f7",
+   "stamp": "stamps/20261108T002603Z-9d03130c8f3a",
+   "lean_statement": "def FoldOnStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)) (K' : Set ((ℝ × ℝ) →L[ℝ] ℝ)),\n    IsCompact K → IsOpen U → K ⊆ U → IsCompact K' → ContDiffOn ℝ 4 Ψ U →\n    (∀ L ∈ K', ∀ k ∈ K, fderiv ℝ Ψ k + L = 0 → FoldOrNondegMatrix Ψ k) →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → L ∈ K' → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(5 : ℝ) / 6)",
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K",
+    "FoldOrNondegMatrix at critical points of Ψ + L, L ∈ K′"
+   ],
+   "conclusion": "bound C M m^{-5/6}",
+   "rate": "m^{-5/6}",
+   "uniform_over": "L ∈ K′, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD-F",
+    "GD-C"
+   ],
+   "snippet": "example : FoldOnStatement := OscInt.API.foldOn",
+   "status": "see docs/STATUS.md (row FE-S3l)"
+  },
+  {
+   "label": "GD-C",
+   "name": "OscInt.Statements.GlobalDecayCritStatement",
+   "proved_by": "OscInt.API.globalDecayCrit",
+   "summary": "Global decay from the classification at critical points: decay `m^{-2/3}`, uniform over amplitudes supported in `K` and over `L ∈ K'`.",
+   "file": "OscInt/Statements/Global.lean",
+   "commitment": "8135968718f6b9a261141f06d6155953423cd93dd1e4a13e1175304d6795ee7e",
+   "stamp": "stamps/20261108T094842Z-edf7787a2845",
+   "lean_statement": "def GlobalDecayCritStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)) (K' : Set ((ℝ × ℝ) →L[ℝ] ℝ)) (D : Finset (ℝ × ℝ)),\n    IsCompact K → IsOpen U → K ⊆ U → (↑D : Set (ℝ × ℝ)) ⊆ U → IsCompact K' → ContDiffOn ℝ 4 Ψ U →\n    ClassifiedCrit Ψ K K' D →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → L ∈ K' → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(2 : ℝ) / 3)",
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact, K′ compact",
+    "D a Finset ⊆ U of D4 points (IsD4Point)",
+    "FoldOrNondegMatrix at every critical point of Ψ + L in K \\ D, L ∈ K′ (ClassifiedCrit)"
+   ],
+   "conclusion": "bound C M m^{-2/3}",
+   "rate": "m^{-2/3}",
+   "uniform_over": "L ∈ K′, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD",
+    "FE-S4.1′L",
+    "FE-S3l"
+   ],
+   "snippet": "example : GlobalDecayCritStatement := OscInt.API.globalDecayCrit",
+   "status": "see docs/STATUS.md (row GD-C)"
+  },
+  {
+   "label": "GD",
+   "name": "OscInt.Statements.GlobalDecayStatement",
+   "proved_by": "OscInt.API.globalDecay",
+   "summary": "Global decay from the pointwise classification: decay `m^{-2/3}`, uniform over amplitudes supported in `K` and over all linear terms `L`.",
+   "file": "OscInt/Statements/Global.lean",
+   "commitment": "b87a60a72581eec6cedb64ec8a2a8f94322a83fce7e0a9e91b66e1a2d83e7fe2",
+   "stamp": "stamps/20261108T094842Z-edf7787a2845",
+   "lean_statement": "def GlobalDecayStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)) (D : Finset (ℝ × ℝ)),\n    IsCompact K → IsOpen U → K ⊆ U → (↑D : Set (ℝ × ℝ)) ⊆ U → ContDiffOn ℝ 4 Ψ U → Classified Ψ K D →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(2 : ℝ) / 3)",
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact",
+    "D a Finset ⊆ U of D4 points",
+    "FoldOrNondegMatrix at every point of K \\ D (Classified)"
+   ],
+   "conclusion": "bound C M m^{-2/3} for every linear term L",
+   "rate": "m^{-2/3}",
+   "uniform_over": "all L, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD-C",
+    "GD-F",
+    "GD-N",
+    "T6"
+   ],
+   "snippet": "example : GlobalDecayStatement := OscInt.API.globalDecay",
+   "status": "see docs/STATUS.md (row GD)"
+  },
+  {
+   "label": "GD-F",
+   "name": "OscInt.Statements.GlobalFoldStatement",
+   "proved_by": "OscInt.API.globalFold",
+   "summary": "Every point of `K` nondegenerate or a fold: decay `m^{-5/6}` over all linear terms.",
+   "file": "OscInt/Statements/Global.lean",
+   "commitment": "dc7e03cebd759bf1bfce95671f04833ed6b8498bb3f4ce35ba5e604d3f3a5e08",
+   "stamp": "stamps/20261108T094842Z-edf7787a2845",
+   "lean_statement": "def GlobalFoldStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)),\n    IsCompact K → IsOpen U → K ⊆ U → ContDiffOn ℝ 4 Ψ U → (∀ k ∈ K, FoldOrNondegMatrix Ψ k) →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(5 : ℝ) / 6)",
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact",
+    "FoldOrNondegMatrix at every point of K"
+   ],
+   "conclusion": "bound C M m^{-5/6} for every L",
+   "rate": "m^{-5/6}",
+   "uniform_over": "all L, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD",
+    "FE-S3l"
+   ],
+   "snippet": "example : GlobalFoldStatement := OscInt.API.globalFold",
+   "status": "see docs/STATUS.md (row GD-F)"
+  },
+  {
+   "label": "GD-N",
+   "name": "OscInt.Statements.GlobalNondegStatement",
+   "proved_by": "OscInt.API.globalNondeg",
+   "summary": "Every point of `K` nondegenerate: decay `m^{-1}` over all linear terms.",
+   "file": "OscInt/Statements/Global.lean",
+   "commitment": "81a7043fa38d91646a25bf72ee2bfee15cd2ec5e4eaa027b9bf6ac52c65cec30",
+   "stamp": "stamps/20261108T094842Z-edf7787a2845",
+   "lean_statement": "def GlobalNondegStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)),\n    IsCompact K → IsOpen U → K ⊆ U → ContDiffOn ℝ 4 Ψ U → (∀ k ∈ K, (hessianMatrix Ψ k).det ≠ 0) →\n    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M / m",
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact",
+    "det hessianMatrix ≠ 0 at every point of K"
+   ],
+   "conclusion": "bound C M m^{-1} for every L",
+   "rate": "m^{-1}",
+   "uniform_over": "all L, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD",
+    "FE-S2.2l"
+   ],
+   "snippet": "example : GlobalNondegStatement := OscInt.API.globalNondeg",
+   "status": "see docs/STATUS.md (row GD-N)"
+  },
+  {
+   "label": "SH",
+   "name": "OscInt.Statements.SharpnessStatement",
+   "proved_by": "OscInt.API.sharpness",
+   "summary": "Sharpness: if `m^σ I(m) → c ≠ 0`, then eventually `|I(m)| ≥ (|c|/2) m^{-σ}`, and no bound `|I(m)| ≤ C m^{-σ'}` with `σ' > σ` holds eventually; for functions on `ℝ` and for sequences.",
+   "file": "OscInt/Statements/Global.lean",
+   "commitment": "7e2d846d91a10c1089e2be02c5c3a11a3fa3356c92a5d05ac36672dd49fff8f4",
+   "stamp": "stamps/20261108T094842Z-edf7787a2845",
+   "lean_statement": "def SharpnessStatement : Prop :=\n  (∀ (I : ℝ → ℂ) (σ : ℝ) (c : ℂ), Tendsto (fun m : ℝ => ((m ^ σ : ℝ) : ℂ) * I m) atTop (𝓝 c) → c ≠ 0 →\n    (∀ᶠ m : ℝ in atTop, ‖c‖ / 2 * m ^ (-σ) ≤ ‖I m‖) ∧\n    ∀ σ' > σ, ¬ ∃ C : ℝ, ∀ᶠ m : ℝ in atTop, ‖I m‖ ≤ C * m ^ (-σ')) ∧\n  (∀ (I : ℕ → ℂ) (σ : ℝ) (c : ℂ), Tendsto (fun n : ℕ => (((n : ℝ) ^ σ : ℝ) : ℂ) * I n) atTop (𝓝 c) → c ≠ 0 →\n    (∀ᶠ n : ℕ in atTop, ‖c‖ / 2 * (n : ℝ) ^ (-σ) ≤ ‖I n‖) ∧\n    ∀ σ' > σ, ¬ ∃ C : ℝ, ∀ᶠ n : ℕ in atTop, ‖I n‖ ≤ C * (n : ℝ) ^ (-σ'))",
+   "hypotheses": [
+    "m^σ I(m) → c ≠ 0 (real m → ∞, or n ∈ ℕ)"
+   ],
+   "conclusion": "eventually |I(m)| ≥ (|c|/2) m^{-σ}; no eventual bound C m^{-σ′} with σ′ > σ",
+   "rate": "lower bound m^{-σ}",
+   "uniform_over": "—",
+   "smoothness": "—",
+   "see_also": [
+    "T6L",
+    "F2"
+   ],
+   "snippet": "example : SharpnessStatement := OscInt.API.sharpness",
+   "status": "see docs/STATUS.md (row SH)"
+  },
+  {
+   "label": "T1",
+   "name": "OscInt.Statements.TorusUnfoldStatement",
+   "proved_by": "OscInt.API.torusUnfold",
+   "summary": "Unfolding: a smooth weight `η` supported in `closedBall 0 4` (max norm) with `∫_{[−π, π]²} g = ∫_{ℝ²} η g` for every continuous `g` that is `2π`-periodic in each variable.",
+   "file": "OscInt/Statements/Global.lean",
+   "commitment": "15f6d28880063e4e7be0ebca30e3f887c84bbdcf87dd13719ddf6ef686eb28f2",
+   "stamp": "stamps/20261108T094842Z-edf7787a2845",
+   "lean_statement": "def TorusUnfoldStatement : Prop :=\n  ∃ η : ℝ × ℝ → ℝ, ContDiff ℝ ∞ η ∧ tsupport η ⊆ Metric.closedBall 0 4 ∧\n    ∀ g : ℝ × ℝ → ℂ, Continuous g → (∀ k : ℝ × ℝ, g (k.1 + 2 * Real.pi, k.2) = g k) →\n      (∀ k : ℝ × ℝ, g (k.1, k.2 + 2 * Real.pi) = g k) →\n      ∫ k in torusBox, g k = ∫ k : ℝ × ℝ, (η k : ℂ) * g k",
+   "hypotheses": [
+    "g : ℝ² → ℂ continuous and 2π-periodic in each variable"
+   ],
+   "conclusion": "∃ η C^∞ with tsupport η ⊆ B̄(0, 4) (max norm) and ∫_{[−π,π]²} g = ∫_{ℝ²} η g",
+   "rate": "—",
+   "uniform_over": "all such g (one η)",
+   "smoothness": "C^∞ weight",
+   "see_also": [
+    "T6",
+    "GD"
+   ],
+   "snippet": "example : TorusUnfoldStatement := OscInt.API.torusUnfold",
+   "status": "see docs/STATUS.md (row T1)"
+  },
+  {
+   "label": "T6",
+   "name": "OscInt.Statements.LatticeLaplacianDecayStatement",
+   "proved_by": "OscInt.API.latticeLaplacianDecay",
+   "summary": "Dispersive decay of the 2D lattice Laplacian: `|K(t, x)| ≤ C t^{-2/3}` for `t ≥ 1`, uniformly over `x ∈ ℤ²`.",
+   "file": "OscInt/Statements/Global.lean",
+   "commitment": "5e66240de60fe7c659a563e5bae55782c37690afc14c8ec735d5ac60425e5ad0",
+   "stamp": "stamps/20261108T094842Z-edf7787a2845",
+   "lean_statement": "def LatticeLaplacianDecayStatement : Prop :=\n  ∃ C : ℝ, ∀ (t : ℝ) (x : ℤ × ℤ), 1 ≤ t → ‖latticeKernel t x‖ ≤ C * t ^ (-(2 : ℝ) / 3)",
+   "hypotheses": [
+    "none"
+   ],
+   "conclusion": "|∫_{[−π,π]²} e^{i(t(cos k₁ + cos k₂) + x·k)} dk| ≤ C t^{-2/3} for t ≥ 1",
+   "rate": "t^{-2/3}",
+   "uniform_over": "x ∈ ℤ², t ≥ 1",
+   "smoothness": "—",
+   "see_also": [
+    "T6L",
+    "GD",
+    "T1"
+   ],
+   "snippet": "example : LatticeLaplacianDecayStatement := OscInt.API.latticeLaplacianDecay",
+   "status": "see docs/STATUS.md (row T6)"
+  },
+  {
+   "label": "T6L",
+   "name": "OscInt.Statements.LatticeLaplacianLimitStatement",
+   "proved_by": "OscInt.API.latticeLaplacianLimit",
+   "summary": "The leading term on the diagonal: `(−1)ⁿ n^{2/3} K(n, (n, n)) → Γ(1/3)² 48^{1/6}/√3` (`= d4ClosedConstant (−1/48)`, the D4 constant of the cubic `(κ₁³ + κ₂³)/6` at `(π/2, π/2)`).",
+   "file": "OscInt/Statements/Global.lean",
+   "commitment": "cd82929010093efb087c595f96277006f986a116233a87628889b3d71e2750f1",
+   "stamp": "stamps/20261108T094842Z-edf7787a2845",
+   "lean_statement": "def LatticeLaplacianLimitStatement : Prop :=\n  Tendsto (fun n : ℕ => (((n : ℝ) ^ ((2 : ℝ) / 3) : ℝ) : ℂ) * (-1 : ℂ) ^ n * latticeKernel n ((n : ℤ), (n : ℤ)))\n    atTop (𝓝 (d4ClosedConstant (-1 / 48) : ℂ))",
+   "hypotheses": [
+    "none"
+   ],
+   "conclusion": "(−1)ⁿ n^{2/3} K(n, (n, n)) → Γ(1/3)² 48^{1/6}/√3",
+   "rate": "t^{-2/3} attained (sharp, with SH)",
+   "uniform_over": "—",
+   "smoothness": "—",
+   "see_also": [
+    "T6",
+    "SH",
+    "F2"
+   ],
+   "snippet": "example : LatticeLaplacianLimitStatement := OscInt.API.latticeLaplacianLimit",
+   "status": "see docs/STATUS.md (row T6L)"
+  }
+ ]
+}

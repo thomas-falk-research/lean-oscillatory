@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Positive run and negative controls for tools/oscint_check.py: one control per check path, each must be rejected
 # with its own message (lessons 18). Run from examples/consumer after `lake build`. Exit 0 iff all hold.
 # The full positive run and the kernel and commitment controls take about half an hour.

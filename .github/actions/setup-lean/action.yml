@@ -1,0 +1,63 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: setup-lean
+description: >-
+  Install the Lean toolchain pinned in toolchain.sha256 from its hash-checked release archive (no elan, no
+  unpinned download), keep the archive in build/toolchain/ for `make verify-toolchain`, and fetch the Mathlib
+  binary cache. Downloads retry; the toolchain is cached by its SHA-256.
+inputs:
+  mathlib-cache:
+    description: Run `lake exe cache get` (Mathlib binaries) after installing the toolchain.
+    default: "true"
+  verify-tools:
+    description: >-
+      Install the system tools `verify_all` checks before running any step (bubblewrap, zstd) and allow the
+      unprivileged user namespaces bubblewrap needs. Every job that calls `tools/target/release/verify_all` sets it.
+    default: "false"
+runs:
+  using: composite
+  steps:
+    - name: System tools for verify_all (bubblewrap, zstd)
+      if: inputs.verify-tools == 'true'
+      shell: bash
+      run: |
+        sudo apt-get update -q && sudo apt-get install -y -q bubblewrap zstd
+        sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+    - name: Read the toolchain pin
+      id: pin
+      shell: bash
+      run: |
+        set -euo pipefail
+        read -r h f u < <(grep -E ' lean-[0-9.]+-linux\.tar\.zst ' toolchain.sha256)
+        { echo "hash=$h"; echo "file=$f"; echo "url=$u"; } >> "$GITHUB_OUTPUT"
+    - name: Restore the toolchain archive (cached by its SHA-256)
+      id: cache
+      uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6.0.0
+      with:
+        path: ~/lean-archive
+        key: lean-archive-${{ steps.pin.outputs.hash }}
+    - name: Download the archive (retries) and check its SHA-256
+      shell: bash
+      run: |
+        set -euo pipefail
+        mkdir -p ~/lean-archive
+        a=~/lean-archive/${{ steps.pin.outputs.file }}
+        if [ ! -s "$a" ]; then
+          curl -sSfL --retry 8 --retry-all-errors --retry-delay 15 -o "$a" "${{ steps.pin.outputs.url }}"
+        fi
+        # checked on every run, also on a cache hit: the cache is not trusted for the toolchain's identity
+        echo "${{ steps.pin.outputs.hash }}  $a" | sha256sum -c -
+        mkdir -p build/toolchain && cp "$a" build/toolchain/
+        command -v zstd >/dev/null || { sudo apt-get update -q && sudo apt-get install -y -q zstd; }
+        mkdir -p ~/lean && tar --zstd -xf "$a" -C ~/lean
+        d=$(ls -d ~/lean/lean-*-linux)
+        echo "$d/bin" >> "$GITHUB_PATH"
+        "$d/bin/lean" --version
+    - name: Mathlib binary cache (trusted; see README), with retries
+      if: inputs.mathlib-cache == 'true'
+      shell: bash
+      run: |
+        for i in 1 2 3 4; do lake exe cache get && exit 0; echo "cache get failed (attempt $i), retrying"; sleep $((i * 20)); done
+        exit 1

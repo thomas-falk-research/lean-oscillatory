@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the batch-GD statements against copies of their sanity theorems.
+
+For each plant: copy the named defs (from OscInt/Statements/Global.lean) and theorems (from
+OscInt/Front/GlobalSanity.lean) under the prefix P_, apply exactly one textual mutation to one copied def, compile with
+`lake env lean -DautoImplicit=false`. The unplanted copy (no mutation) must compile; the planted copy must fail.
+Usage: plants_gd.py REPO OUTDIR
+"""
+import os, re, subprocess, sys
+
+REPO, OUT = sys.argv[1], sys.argv[2]
+os.makedirs(OUT, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/Global.lean')).read().split('\n')
+SAN = open(os.path.join(REPO, 'OscInt/Front/GlobalSanity.lean')).read().split('\n')
+
+
+def block(lines, kind, name):
+    pat = re.compile(r'^(noncomputable )?' + kind + r' ' + re.escape(name) + r'\b')
+    for i, l in enumerate(lines):
+        if pat.match(l):
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {kind} {name}')
+
+
+PLANTS = [
+    # (id, defs, theorems, (def to mutate, old, new), where the failure must be)
+    ('GD-drop-kD', ['Classified', 'GlobalDecayStatement'], ['ell_classified', 'globalDecay_ell'],
+     ('Classified', '(∀ k ∈ K, k ∉ D → FoldOrNondegMatrix Ψ k)', '(∀ k ∈ K, FoldOrNondegMatrix Ψ k)')),
+    ('GD-disc-neg', ['IsD4Point', 'Classified', 'GlobalDecayStatement'], ['ell_isD4', 'ell_classified', 'globalDecay_ell'],
+     ('IsD4Point', '(Cubic.mk a b c d).discr ≠ 0', '(Cubic.mk a b c d).discr < 0')),
+    ('GD-rate', ['GlobalDecayStatement'], ['globalDecay_ell'],
+     ('GlobalDecayStatement', 'C * M * m ^ (-(2 : ℝ) / 3)', 'C * M * m ^ (-(1 : ℝ) / 2)')),
+    ('GDC-drop-kD', ['ClassifiedCrit', 'GlobalDecayCritStatement'], ['globalDecayCrit_ell'],
+     ('ClassifiedCrit', '∀ k ∈ K, k ∉ D → fderiv', '∀ k ∈ K, fderiv')),
+    ('GDF-det', ['GlobalFoldStatement'], ['globalFold_fold'],
+     ('GlobalFoldStatement', '(∀ k ∈ K, FoldOrNondegMatrix Ψ k)', '(∀ k ∈ K, (hessianMatrix Ψ k).det ≠ 0)')),
+    ('GDN-KU-reversed', ['GlobalNondegStatement'], ['globalNondeg_quad'],
+     ('GlobalNondegStatement', 'K ⊆ U → ContDiffOn', 'U ⊆ K → ContDiffOn')),
+    ('SH-c', ['SharpnessStatement'], ['sharpness_sqrt'],
+     ('SharpnessStatement', "(𝓝 c) → c ≠ 0 →\n    (∀ᶠ m : ℝ", "(𝓝 c) → 1 < ‖c‖ →\n    (∀ᶠ m : ℝ")),
+    ('T1-period', ['TorusUnfoldStatement'], ['torusUnfold_moments'],
+     ('TorusUnfoldStatement', 'g (k.1 + 2 * Real.pi, k.2)', 'g (k.1 + Real.pi, k.2)')),
+    ('T6-rate', ['LatticeLaplacianDecayStatement'], ['latticeLaplacianDecay_diag'],
+     ('LatticeLaplacianDecayStatement', 'C * t ^ (-(2 : ℝ) / 3)', 'C * t ^ (-(1 : ℝ) / 2)')),
+    ('T6L-zero', ['LatticeLaplacianLimitStatement'], ['latticeLaplacian_sharp'],
+     ('LatticeLaplacianLimitStatement', '(𝓝 (d4ClosedConstant (-1 / 48) : ℂ))', '(𝓝 (0 : ℂ))')),
+    ('GD-fold-to-det', ['Classified', 'GlobalDecayStatement'], ['hyp_classified', 'globalDecay_hyp'],
+     ('Classified', '(∀ k ∈ K, k ∉ D → FoldOrNondegMatrix Ψ k)', '(∀ k ∈ K, k ∉ D → (hessianMatrix Ψ k).det ≠ 0)')),
+    ('GDC-fold-to-det', ['ClassifiedCrit', 'GlobalDecayCritStatement'], ['globalDecayCrit_hyp'],
+     ('ClassifiedCrit', '= 0 → FoldOrNondegMatrix Ψ k)', '= 0 → (hessianMatrix Ψ k).det ≠ 0)')),
+    ('GDC-crit-dropped', ['ClassifiedCrit', 'GlobalDecayCritStatement'], ['globalDecayCrit_hyp_crit'],
+     ('ClassifiedCrit', 'k ∉ D → fderiv ℝ Ψ k + L = 0 → FoldOrNondegMatrix', 'k ∉ D → FoldOrNondegMatrix')),
+    ('GD-D-in-K', ['GlobalDecayStatement'], ['globalDecay_hyp_offK'],
+     ('GlobalDecayStatement', '(↑D : Set (ℝ × ℝ)) ⊆ U', '(↑D : Set (ℝ × ℝ)) ⊆ K')),
+    ('GD-D4-at-zero', ['IsD4Point', 'Classified', 'GlobalDecayStatement'], ['hypShift_isD4', 'globalDecay_hypShift'],
+     ('IsD4Point', 'iteratedFDeriv ℝ 2 Ψ k₀ = 0', 'iteratedFDeriv ℝ 2 Ψ 0 = 0')),
+    ('T1-support-400', ['TorusUnfoldStatement'], ['torusUnfold_moments'],
+     ('TorusUnfoldStatement', 'tsupport η ⊆ Metric.closedBall 0 4', 'tsupport η ⊆ Metric.closedBall 0 400')),
+    ('T1-only-continuous', ['TorusUnfoldStatement'], ['torusUnfold_moments'],
+     ('TorusUnfoldStatement', 'ContDiff ℝ ∞ η ∧', 'Continuous η ∧')),
+]
+
+HEADER = """import OscInt.Front.GlobalSanity
+
+namespace OscInt.API.GlobalSanity
+
+open OscInt.Statements OscInt.D4 OscInt.API.ConvertSanity Filter Topology
+open scoped ContDiff
+"""
+
+
+def make(defs, thms, mut, planted):
+    names = defs + thms
+    parts = []
+    for d in defs:
+        t = block(STMT, 'def', d)
+        if planted and d == mut[0]:
+            assert t.count(mut[1]) == 1, (d, mut[1])
+            t = t.replace(mut[1], mut[2])
+        parts.append(t)
+    for th in thms:
+        parts.append(block(SAN, 'theorem', th))
+    text = '\n\n'.join(parts)
+    for n in sorted(names, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r'(?![\w])', 'P_' + n, text)
+    return HEADER + '\n' + text + '\n\nend OscInt.API.GlobalSanity\n'
+
+
+env = dict(os.environ)
+summary = []
+for pid, defs, thms, mut in PLANTS:
+    for planted in (False, True):
+        tag = ('plant-' if planted else 'ok-') + pid
+        src = os.path.join(OUT, tag + '.lean')
+        open(src, 'w').write(make(defs, thms, mut, planted))
+        r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                           cwd=REPO, capture_output=True, text=True)
+        out = r.stdout + r.stderr
+        open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+        errs = [l for l in out.split('\n') if ': error' in l]
+        verdict = ('accepted' if r.returncode == 0 and not errs else 'rejected')
+        want = 'rejected' if planted else 'accepted'
+        line = f"{tag}: {verdict} (want {want}){'' if verdict == want else '  <-- MISMATCH'}"
+        if errs:
+            line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+        print(line, flush=True)
+        summary.append(line)
+open(os.path.join(OUT, 'SUMMARY.txt'), 'w').write('\n'.join(summary) + '\n')

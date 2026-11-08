@@ -1,3 +1,14 @@
-The documentation in this repository (docs/, review/, README.md) is licensed under the Creative Commons
-Attribution 4.0 International License (CC BY 4.0): https://creativecommons.org/licenses/by/4.0/legalcode
-Code (Lean, Rust, Makefile, CI configuration) is licensed under the Apache License 2.0 (LICENSE).
+The documentation in this repository is licensed under the Creative Commons Attribution 4.0 International License
+(CC BY 4.0): https://creativecommons.org/licenses/by/4.0/legalcode (full text: LICENSES/CC-BY-4.0.txt). This covers
+docs/, review/, README.md, CHANGELOG.md, CONTRIBUTING.md, .github/ISSUE_TEMPLATE/, CITATION.cff, .zenodo.json and
+codemeta.json, except docs/api.json and docs/replay/plants/, which are generated from or copy the code.
+
+Code (Lean, Rust, Python, shell, Makefile, CI configuration), configuration and data files, generated files and
+records of the software are licensed under the Apache License 2.0 (LICENSE; LICENSES/Apache-2.0.txt).
+
+Third-party public certificates and timestamp tokens under stamps/ belong to their issuers and are redistributed
+unmodified for verification only (LICENSES/LicenseRef-PublicCertificate.txt).
+
+The per-file licensing information follows the REUSE specification 3.3 (https://reuse.software/spec-3.3/): comment
+headers in source files, REUSE.toml for the rest; `reuse lint` checks it. Where this summary and the per-file
+information differ, the per-file information applies.

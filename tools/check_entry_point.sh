@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Entry-point check: `import OscInt.API` (the documented entry point, README) must expose every statement constant
 # and every proving theorem listed in stamps/statements.json. Generates a Lean file and elaborates it.
 # Usage: tools/check_entry_point.sh            (from anywhere; needs a built library)

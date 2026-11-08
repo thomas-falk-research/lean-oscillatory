@@ -1,0 +1,6 @@
+/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/plants-gd2/plant-GD-fold-to-det.lean:19:17: error: Type mismatch
+  hyp_foldOrNondeg k ?m.17
+has type
+  FoldOrNondegMatrix hypPhase k
+but is expected to have type
+  (hessianMatrix hypPhase k).det ≠ 0

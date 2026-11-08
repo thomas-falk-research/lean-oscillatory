@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! Lexical view of Lean source: comments and string/char literals blanked out (newlines kept, so line numbers
 //! survive), then identifier-boundary token search. A tripwire, not a parser: the kernel replay is the check.
 

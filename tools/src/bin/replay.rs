@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #![forbid(unsafe_code)]
 //! `replay ROOT NAMES OUTDIR`: kernel replay of the built library. Run from the Lake project ROOT after
 //! `lake build` and the axiom audit (NAMES = the audited theorem names). Steps, each recorded in

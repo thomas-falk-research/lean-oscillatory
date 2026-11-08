@@ -1,0 +1,27 @@
+import OscInt.Front.GlobalSanity
+
+namespace OscInt.API.GlobalSanity
+
+open OscInt.Statements OscInt.D4 OscInt.API.ConvertSanity Filter Topology
+open scoped ContDiff
+
+def P_SharpnessStatement : Prop :=
+  (∀ (I : ℝ → ℂ) (σ : ℝ) (c : ℂ), Tendsto (fun m : ℝ => ((m ^ σ : ℝ) : ℂ) * I m) atTop (𝓝 c) → c ≠ 0 →
+    (∀ᶠ m : ℝ in atTop, ‖c‖ / 2 * m ^ (-σ) ≤ ‖I m‖) ∧
+    ∀ σ' > σ, ¬ ∃ C : ℝ, ∀ᶠ m : ℝ in atTop, ‖I m‖ ≤ C * m ^ (-σ')) ∧
+  (∀ (I : ℕ → ℂ) (σ : ℝ) (c : ℂ), Tendsto (fun n : ℕ => (((n : ℝ) ^ σ : ℝ) : ℂ) * I n) atTop (𝓝 c) → c ≠ 0 →
+    (∀ᶠ n : ℕ in atTop, ‖c‖ / 2 * (n : ℝ) ^ (-σ) ≤ ‖I n‖) ∧
+    ∀ σ' > σ, ¬ ∃ C : ℝ, ∀ᶠ n : ℕ in atTop, ‖I n‖ ≤ C * (n : ℝ) ^ (-σ'))
+
+theorem P_sharpness_sqrt (h : P_SharpnessStatement) :
+    (∀ᶠ m : ℝ in atTop, 1 / 2 * m ^ (-(1 / 2 : ℝ)) ≤ ‖((m ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)‖) ∧
+      ¬ ∃ C : ℝ, ∀ᶠ m : ℝ in atTop, ‖((m ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)‖ ≤ C * m ^ (-(1 : ℝ)) := by
+  have ht : Tendsto (fun m : ℝ => ((m ^ (1 / 2 : ℝ) : ℝ) : ℂ) * ((m ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)) atTop (𝓝 1) := by
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with m hm
+    rw [← Complex.ofReal_mul, ← Real.rpow_add hm]; norm_num
+  obtain ⟨h1, h2⟩ := h.1 _ _ _ ht one_ne_zero
+  refine ⟨by simpa using h1, fun hC => h2 1 (by norm_num) ?_⟩
+  simpa using hC
+
+end OscInt.API.GlobalSanity

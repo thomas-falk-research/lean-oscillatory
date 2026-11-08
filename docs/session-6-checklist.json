@@ -1,0 +1,73 @@
+{
+ "session": 6,
+ "started": "2026-11-08",
+ "base_commit": "34f8793",
+ "rule": "An item is done only with an evidence path; 'open' items say where they stopped.",
+ "handover_corrections": [
+  "Verified 2026-11-08: origin/main = 34f8793 (merge of PR #5), as the brief says. Tags v0.2.0, v0.3.0 present; no v0.4.0.",
+  "Container: no Lean toolchain; elan's GitHub release asset returned HTTP 504 repeatedly, so the pinned toolchain archive was downloaded directly (sha256 matches toolchain.sha256) and put on PATH without elan. Clone was shallow; unshallowed before any history-reading step (lessons 32).",
+  "Brief item 'Batch API3 ... STATUS rows owner decision pending' holds; but a record cited by review/2026-11-08-API3-answers.md (a 'second part' of the plant record) does not exist (step-5 rule referee, finding 2); corrected by a re-run record and an erratum."
+ ],
+ "items": [
+  {
+   "id": "baseline",
+   "title": "make quick on 34f8793 in a fresh container",
+   "status": "done",
+   "evidence": "docs/replay/2026-11-08-session6-baseline-quick.txt (exit 0, 9m06s; guard 81 files 0 violations; audit 747/747; 37 TYPE-OK; 37 statements; Gamma-free control rejected; entry point 74 names PASS)"
+  },
+  {
+   "id": "P0-step5",
+   "title": "Owner memo on CONTRIBUTING step 5 with exact texts, reviewed by a fresh adversarial referee",
+   "status": "done (owner decision pending)",
+   "evidence": "docs/decisions/2026-11-08-step5-memo.md (rewritten after review); review/2026-11-08-step5-rule-referee.md (ADOPTABLE-WITH-CHANGES, 1 BLOCKER, 7 MAJOR); review/2026-11-08-step5-rule-answers.md; docs/replay/2026-11-08-session6-API3-plants-rerun.txt"
+  },
+  {
+   "id": "P0-v040",
+   "title": "v0.4.0 release notes, CHANGELOG",
+   "status": "prepared; pins checked on the final tree (tools/release_preflight.sh 0.4.0 reports only the owner-set version and CHANGELOG items)",
+   "evidence": "docs/release-notes/v0.4.0.md"
+  },
+  {
+   "id": "P1-prereg",
+   "title": "Pre-registered numeric classification (arccos family, lattice Laplacian) and lattice-kernel limit",
+   "status": "done",
+   "evidence": "docs/prereg/2026-11-08-P1-classify.md, numerics/results-classify-2026-11-08.txt (PASS: lattice Laplacian and six arccos relations NFD4; cusp control detected; lattice diagonal limit within 7.5e-7)"
+  },
+  {
+   "id": "P1-GD",
+   "title": "Batch GD statements (global decay, sharpness, torus unfolding, lattice Laplacian)",
+   "status": "done",
+   "evidence": "OscInt/Statements/Global.lean (stamp 20261108T094842Z-edf7787a2845), review/2026-11-08-GD-pre-proof-{A,B}.md + answers (reviews stamp 20261108T102629Z-8c8d7b090adb), plants docs/replay/2026-11-08-GD-sanity-plants.txt (15/15), proofs OscInt/Front/{GlobalLocal,Torus,LatticeSymbol,LatticeLimit,GlobalAssembly,Sharpness,LatticeKernel,GlobalFinal,LatticeFinal}.lean, docs/replay/2026-11-08-session6-GD-verify-all.txt (c62a621 PASS 9/9), examples/consumer/ConsumerLattice.lean; post-proof review/2026-11-08-GD-post-proof-{A,B}.md (FAITHFUL x2, full); adversarial review/2026-11-08-GD-adversarial.md (no BLOCKER/MAJOR); answers review/2026-11-08-GD-post-proof-answers.md; make quick docs/replay/2026-11-08-session6-final-quick.txt"
+  },
+  {
+   "id": "P4-api",
+   "title": "Machine-readable API index, generator, drift check, agent evaluation",
+   "status": "done",
+   "evidence": "docs/api.json, tools/gen_api.py, tools/test_gen_api.sh (6 plants), examples/api/Snippets.lean (make quick), docs/replay/2026-11-08-api-eval.md (3/3 tasks)"
+  },
+  {
+   "id": "P4-docs",
+   "title": "Decision tree, cookbook, applications, downstream guide, issue template, outreach drafts",
+   "status": "done",
+   "evidence": "docs/which-theorem.md, docs/cookbook.md, docs/applications.md, docs/downstream.md, docs/outreach.md, .github/ISSUE_TEMPLATE/phase-does-not-fit.md"
+  },
+  {
+   "id": "CI",
+   "title": "CI and release review and redesign (owner request)",
+   "status": "done (first CI runs on the PR)",
+   "evidence": "docs/decisions/2026-11-08-ci-release-review.md, .github/workflows/*, .github/actions/setup-lean/action.yml, tools/release_preflight.sh (self-test 9 plants), actionlint clean"
+  },
+  {
+   "id": "REUSE",
+   "title": "Licensing and citation metadata (owner request)",
+   "status": "done",
+   "evidence": "reuse lint compliant 517/517 (REUSE 3.3), cffconvert --validate OK, challenge exports byte-identical after headers, make quick exit 0; REUSE.toml, LICENSES/, CITATION.cff, .zenodo.json, codemeta.json"
+  },
+  {
+   "id": "not-done",
+   "title": "Deferred with reasons",
+   "status": "open",
+   "evidence": "docs/HANDOFF.md 'Not done, and why': family D4, arccos in Lean, leading terms (design only), T0/T4/T5'/T6', two-band model (needs vector amplitudes), P5-P7, numerics CLI"
+  }
+ ]
+}

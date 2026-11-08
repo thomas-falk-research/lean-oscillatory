@@ -1,0 +1,6 @@
+{"challenge_module": "Challenge", "solution_module": "OscInt",
+ "theorem_names": ["OscInt.API.globalDecayCrit", "OscInt.API.globalDecay", "OscInt.API.globalFold",
+   "OscInt.API.globalNondeg", "OscInt.API.sharpness", "OscInt.API.torusUnfold", "OscInt.API.latticeLaplacianDecay",
+   "OscInt.API.latticeLaplacianLimit"],
+ "definition_names": [],
+ "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]}

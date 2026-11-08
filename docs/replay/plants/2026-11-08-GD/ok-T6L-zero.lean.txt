@@ -1,0 +1,26 @@
+import OscInt.Front.GlobalSanity
+
+namespace OscInt.API.GlobalSanity
+
+open OscInt.Statements OscInt.D4 OscInt.API.ConvertSanity Filter Topology
+open scoped ContDiff
+
+def P_LatticeLaplacianLimitStatement : Prop :=
+  Tendsto (fun n : ℕ => (((n : ℝ) ^ ((2 : ℝ) / 3) : ℝ) : ℂ) * (-1 : ℂ) ^ n * latticeKernel n ((n : ℤ), (n : ℤ)))
+    atTop (𝓝 (d4ClosedConstant (-1 / 48) : ℂ))
+
+theorem P_latticeLaplacian_sharp (hS : SharpnessStatement) (hL : P_LatticeLaplacianLimitStatement) :
+    ¬ ∃ C : ℝ, ∀ (t : ℝ) (x : ℤ × ℤ), 1 ≤ t → ‖latticeKernel t x‖ ≤ C * t ^ (-(3 : ℝ) / 4) := by
+  rintro ⟨C, hC⟩
+  have hL' : Tendsto (fun n : ℕ => (((n : ℝ) ^ ((2 : ℝ) / 3) : ℝ) : ℂ) *
+      ((-1 : ℂ) ^ n * latticeKernel n ((n : ℤ), (n : ℤ)))) atTop (𝓝 (d4ClosedConstant (-1 / 48) : ℂ)) := by
+    unfold P_LatticeLaplacianLimitStatement at hL
+    simpa only [mul_assoc] using hL
+  obtain ⟨-, h2⟩ := hS.2 _ _ _ hL' (by exact_mod_cast d4ClosedConstant_lattice_pos.ne')
+  refine h2 (3 / 4) (by norm_num) ⟨C, ?_⟩
+  filter_upwards [eventually_ge_atTop 1] with n hn
+  rw [norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul]
+  have := hC n ((n : ℤ), (n : ℤ)) (by exact_mod_cast hn)
+  convert this using 2; norm_num
+
+end OscInt.API.GlobalSanity

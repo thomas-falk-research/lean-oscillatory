@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #![forbid(unsafe_code)]
 //! Numerical probes of the OscInt statements (IEEE-754 binary64, round-to-nearest; tooling, never evidence for a
 //! theorem). Integrals by composite Simpson; each value is computed at n and 2n nodes and the difference is
