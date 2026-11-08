@@ -5,6 +5,11 @@
 # compiler output (.out) in that directory. Every planted copy must be rejected and every unplanted copy accepted; the first
 # error falls at the rewrite of 8^(-1/3) (T0E-rate), at the conclusion (T0E-int, T0E-const, T6F-swap, T6E-rate) or at the
 # discharge of the threshold (T6E-threshold), checked by hand. Coverage: all three LE statements, six plants.
+# Second run (same day, after the two pre-proof reviews, before any proof): sanity file extended (T0E at t = 1/8, T6F at
+# t = -2) and four plants added: T0E-const-smaller (review B: a smaller constant IS detected), T0E-threshold (1 < t added;
+# review A), T6F-tpos (0 < t added; review A), and the known blind spot T0E-nonneg-BLINDSPOT (0 < t -> 0 <= t, which makes
+# T0E false at t = 0): expected and observed ACCEPTED; the conditional form cannot see it (review B, MINOR-3). Ten plants,
+# 9 rejected as required, 1 blind spot accepted as recorded; ten unplanted copies accepted.
 
 ok-T0E-rate: accepted (want accepted)
 plant-T0E-rate: rejected (want rejected)
@@ -24,3 +29,14 @@ plant-T6E-rate: rejected (want rejected)
 ok-T6E-threshold: accepted (want accepted)
 plant-T6E-threshold: rejected (want rejected)
     first error: plant-T6E-threshold.lean:14:26: error: Application type mismatch: The argument
+ok-T0E-const-smaller: accepted (want accepted)
+plant-T0E-const-smaller: rejected (want rejected)
+    first error: plant-T0E-const-smaller.lean:17:2: error: linarith failed to find a contradiction
+ok-T0E-threshold: accepted (want accepted)
+plant-T0E-threshold: rejected (want rejected)
+    first error: plant-T0E-threshold.lean:15:29: error: unsolved goals
+ok-T6F-tpos: accepted (want accepted)
+plant-T6F-tpos: rejected (want rejected)
+    first error: plant-T6F-tpos.lean:12:2: error: Type mismatch: After simplification, term
+ok-T0E-nonneg-BLINDSPOT: accepted (want accepted)
+plant-T0E-nonneg-BLINDSPOT: accepted (want accepted)

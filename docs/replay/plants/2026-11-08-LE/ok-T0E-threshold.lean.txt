@@ -1,0 +1,19 @@
+import OscInt.Front.LatticeExplicitSanity
+
+namespace OscInt.API.LatticeExplicitSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity
+
+def P_LatticeKernel1ExplicitStatement : Prop :=
+  ∀ t ξ : ℝ, 0 < t →
+    ‖latticeKernel1 t ξ‖ ≤
+      24 * (2 : ℝ) ^ ((1 : ℝ) / 4) * t ^ (-(1 : ℝ) / 2) + 36 * (2 : ℝ) ^ ((1 : ℝ) / 6) * t ^ (-(1 : ℝ) / 3)
+
+theorem P_latticeKernel1Explicit_eighth (h : P_LatticeKernel1ExplicitStatement) :
+    ‖latticeKernel1 (1 / 8) (1 / 2)‖ ≤ 24 * (2 : ℝ) ^ ((1 : ℝ) / 4) * (1 / 8 : ℝ) ^ (-(1 : ℝ) / 2) +
+      72 * (2 : ℝ) ^ ((1 : ℝ) / 6) := by
+  have := h (1 / 8) (1 / 2) (by norm_num)
+  rw [eighth_rpow_neg_third] at this
+  linarith
+
+end OscInt.API.LatticeExplicitSanity

@@ -39,6 +39,16 @@ PLANTS = [
      ('LatticeLaplacianExplicitStatement', 't ^ (-(2 : ℝ) / 3)', 't ^ (-(1 : ℝ) / 2)')),
     ('T6E-threshold', ['LatticeLaplacianExplicitStatement'], ['latticeLaplacianExplicit_one'],
      ('LatticeLaplacianExplicitStatement', '1 ≤ t →', '2 ≤ t →')),
+    # second run, after the pre-proof reviews (A: MINOR sanity coverage; B: MINOR-3)
+    ('T0E-const-smaller', ['LatticeKernel1ExplicitStatement'], ['latticeKernel1Explicit_eight'],
+     ('LatticeKernel1ExplicitStatement', '      24 * (2 : ℝ)', '      23 * (2 : ℝ)')),
+    ('T0E-threshold', ['LatticeKernel1ExplicitStatement'], ['latticeKernel1Explicit_eighth'],
+     ('LatticeKernel1ExplicitStatement', '∀ t ξ : ℝ, 0 < t →', '∀ t ξ : ℝ, 1 < t →')),
+    ('T6F-tpos', ['LatticeKernelFactorStatement'], ['latticeKernelFactor_neg'],
+     ('LatticeKernelFactorStatement', '∀ (t : ℝ) (x : ℤ × ℤ), latticeKernel', '∀ (t : ℝ) (x : ℤ × ℤ), 0 < t → latticeKernel')),
+    # known blind spot (want accepted): makes T0E false at t = 0; the conditional form cannot see it (review B)
+    ('T0E-nonneg-BLINDSPOT', ['LatticeKernel1ExplicitStatement'], ['latticeKernel1Explicit_eight', 'latticeKernel1Explicit_eighth'],
+     ('LatticeKernel1ExplicitStatement', '∀ t ξ : ℝ, 0 < t →', '∀ t ξ : ℝ, 0 ≤ t →', 'accepted')),
 ]
 
 HEADER = """import OscInt.Front.LatticeExplicitSanity
@@ -79,7 +89,7 @@ for pid, defs, thms, mut in PLANTS:
         open(os.path.join(OUT, tag + '.out'), 'w').write(out)
         errs = [l for l in out.split('\n') if ': error' in l]
         verdict = ('accepted' if r.returncode == 0 and not errs else 'rejected')
-        want = 'rejected' if planted else 'accepted'
+        want = (mut[3] if len(mut) > 3 else 'rejected') if planted else 'accepted'
         line = f"{tag}: {verdict} (want {want}){'' if verdict == want else '  <-- MISMATCH'}"
         if errs:
             line += '\n    first error: ' + errs[0].split('/')[-1][:160]

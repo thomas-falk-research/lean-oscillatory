@@ -707,7 +707,7 @@
     "t > 0",
     "ξ real (any linear term)"
    ],
-   "conclusion": "|∫_{−π}^{π} e^{i(t cos k + ξk)} dk| ≤ 24·2^{1/4} t^{-1/2} + 36·2^{1/6} t^{-1/3}",
+   "conclusion": "|∫_{−π}^{π} e^{i(t cos k + ξk)} dk| ≤ 24·2^{1/4} t^{-1/2} + 36·2^{1/6} t^{-1/3} (beats the trivial bound 2π only for t > 518)",
    "rate": "t^{-1/3} (explicit constant)",
    "uniform_over": "ξ ∈ ℝ, t > 0",
    "smoothness": "—",
@@ -740,7 +740,7 @@
    "hypotheses": [
     "t ≥ 1"
    ],
-   "conclusion": "|∫_{[−π,π]²} e^{i(t(cos k₁ + cos k₂) + x·k)} dk| ≤ (24·2^{1/4} + 36·2^{1/6})² t^{-2/3} (constant < 4761)",
+   "conclusion": "|∫_{[−π,π]²} e^{i(t(cos k₁ + cos k₂) + x·k)} dk| ≤ (24·2^{1/4} + 36·2^{1/6})² t^{-2/3} (constant < 4761; beats the trivial bound 4π² only for t > 1321, docs/statements.md Batch LE, clarification 6)",
    "rate": "t^{-2/3} (explicit constant)",
    "uniform_over": "x ∈ ℤ², t ≥ 1",
    "smoothness": "—",

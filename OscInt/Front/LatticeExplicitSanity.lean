@@ -18,9 +18,11 @@ or strengthens a conclusion is not detected and rests on the blind fidelity revi
 check (`numerics/results-lattice1-2026-11-08.txt`).
 
 Data (generic where the statement has roles to separate, lessons 17):
-* `I(0, 0) = 2π`, `I(0, 1) = 0` (unconditional: pins the interval `[−π, π]` and the sign and scale of `ξk`).
-* T0E at `t = 8`, `ξ = 1/2` (`8^{−1/3} = 1/2` separates the two exponents; `ξ` not an integer).
-* T6F at `t = 3`, `x = (1, −2)` (distinct coordinates).
+* `I(0, 0) = 2π`, `I(0, 1) = 0` (unconditional: pins the length `2π` of the interval and the integer frequency scale of
+  `ξk`; not the `t cos k` part, which only T6F's proof ties to the frozen `latticeKernel`; pre-proof review B).
+* T0E at `t = 8`, `ξ = 1/2` (`8^{−1/3} = 1/2` separates the two exponents; `ξ` not an integer) and at `t = 1/8`
+  (`(1/8)^{−1/3} = 2`; detects a threshold such as `1 < t` added to T0E; review A).
+* T6F at `t = 3` and `t = −2`, `x = (1, −2)` (distinct coordinates; `t < 0` detects a restriction on `t`; review A).
 * T6E at `t = 1`, `x = (1, −2)` (the threshold itself) and on the diagonal `x = (n, n)`, `t = n`.
 * The size of the constant: `68 < 24 · 2^{1/4} + 36 · 2^{1/6} < 69`.
 -/
@@ -47,8 +49,9 @@ theorem eight_rpow_neg_third : (8 : ℝ) ^ (-(1 : ℝ) / 3) = 1 / 2 := by
   norm_num
 
 /-- **T0E through the statement constant** at `t = 8`, `ξ = 1/2`. Plants detected: the exponent `−1/3 ↦ −1/2` of the
-second term (then `8^{−1/3} = 1/2` no longer rewrites the conclusion); `ξ` restricted to integers; a changed constant.
-Not detected: a strengthened bound (e.g. smaller constants), which the numeric check and the proof decide. -/
+second term (then `8^{−1/3} = 1/2` no longer rewrites the conclusion); `ξ` restricted to integers; a changed constant,
+larger or smaller (the conclusion spells out the numerals; plants `24 ↦ 25` and `24 ↦ 23`, review B). Not detected:
+`0 < t ↦ 0 ≤ t`, which makes T0E false (`t = 0`, `ξ = 0`) and is left to the reviews and the proof (plant record). -/
 theorem latticeKernel1Explicit_eight (h : LatticeKernel1ExplicitStatement) :
     ‖latticeKernel1 8 (1 / 2)‖ ≤ 24 * (2 : ℝ) ^ ((1 : ℝ) / 4) * (8 : ℝ) ^ (-(1 : ℝ) / 2) +
       18 * (2 : ℝ) ^ ((1 : ℝ) / 6) := by
@@ -56,13 +59,35 @@ theorem latticeKernel1Explicit_eight (h : LatticeKernel1ExplicitStatement) :
   rw [eight_rpow_neg_third] at this
   linarith
 
+/-- `(1/8)^{−1/3} = 2`. -/
+theorem eighth_rpow_neg_third : (1 / 8 : ℝ) ^ (-(1 : ℝ) / 3) = 2 := by
+  rw [show (1 / 8 : ℝ) = 2 ^ (-3 : ℝ) by norm_num, ← Real.rpow_mul (by norm_num)]
+  norm_num
+
+/-- **T0E through the statement constant** at `t = 1/8` (below 1), `ξ = 1/2`. Plant detected: a threshold such as
+`1 < t` added to T0E (pre-proof review A). -/
+theorem latticeKernel1Explicit_eighth (h : LatticeKernel1ExplicitStatement) :
+    ‖latticeKernel1 (1 / 8) (1 / 2)‖ ≤ 24 * (2 : ℝ) ^ ((1 : ℝ) / 4) * (1 / 8 : ℝ) ^ (-(1 : ℝ) / 2) +
+      72 * (2 : ℝ) ^ ((1 : ℝ) / 6) := by
+  have := h (1 / 8) (1 / 2) (by norm_num)
+  rw [eighth_rpow_neg_third] at this
+  linarith
+
+/-- **T6F through the statement constant** at a negative time. Plant detected: a restriction on `t` (`0 < t`,
+`1 ≤ t`) added to T6F (pre-proof review A). -/
+theorem latticeKernelFactor_neg (h : LatticeKernelFactorStatement) :
+    latticeKernel (-2) (1, -2) = latticeKernel1 (-2) 1 * latticeKernel1 (-2) (-2) := by
+  simpa using h (-2) (1, -2)
+
 /-- **T6F through the statement constant** on generic data. Plants detected: a coordinate used twice
 (`x.2 ↦ x.1`), a changed time in a factor. -/
 theorem latticeKernelFactor_generic (h : LatticeKernelFactorStatement) :
     latticeKernel 3 (1, -2) = latticeKernel1 3 1 * latticeKernel1 3 (-2) := by
   simpa using h 3 (1, -2)
 
-/-- **T6E through the statement constant** at the threshold `t = 1`. Plant detected: the threshold `1 ≤ t ↦ 2 ≤ t`. -/
+/-- **T6E through the statement constant** at the threshold `t = 1`. A plant moving the threshold (`1 ≤ t ↦ 2 ≤ t`, but
+also the true strengthening `1 ≤ t ↦ 0 < t`) is rejected only because `le_rfl` no longer fits: this is not a fidelity
+test of the threshold (pre-proof review B, NIT-1). -/
 theorem latticeLaplacianExplicit_one (h : LatticeLaplacianExplicitStatement) :
     ‖latticeKernel 1 (1, -2)‖ ≤ (24 * (2 : ℝ) ^ ((1 : ℝ) / 4) + 36 * (2 : ℝ) ^ ((1 : ℝ) / 6)) ^ 2 := by
   simpa using h 1 (1, -2) le_rfl

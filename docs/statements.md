@@ -539,3 +539,21 @@ Modelling choices and what is omitted.
    constants are future work; these are the ones the frozen S1 constants give by the route above.
 4. The normalisation (2π)^{−2}, the time scale and the phase e^{−4it} are omitted as in T6.
 5. The Bessel identification I(t, n) = 2π iⁿ Jₙ(t) is not stated (Mathlib has no Bessel functions at the pin).
+
+Clarifications after the pre-proof reviews (`review/2026-11-08-LE-pre-proof-{A,B}.md`; no statement text changed):
+6. **Where the explicit bounds have content** (review A, MAJOR). The trivial bounds are |I| ≤ 2π and |K| ≤ 4π². T0E's
+   right side falls below 2π only for t > 518.5, and T6E's below 4π² only for t > ((A + B)²/(4π²))^{3/2} ≈ 1321.5.
+   On 1 ≤ t ≤ 1321 T6E says less than |K| ≤ 4π²; use min(4π², (A + B)² t^{−2/3}). The constants are what the frozen
+   S1 constants 8 and 18 give by the route above; sharper ones are future work.
+7. **Landau's constant applies to integer ξ only** (review B, MINOR-1). For non-integer ξ, I(t, ξ) is an Anger-type
+   integral, not 2π i^ξ J_ξ(t), and sup t^{1/3}|I|/(2π) over real ξ exceeds 0.7858: at (t, ξ) = (5.7972479262309164,
+   4.404) it is 0.80366 (review B, two methods; recomputed by the lead with Simpson's rule, N = 200000). The comparison
+   in item 3 ("B about 9.5 times too large") is for integer ξ.
+8. **Better bounds from the same statements** (review A, MINOR). Composing T6F with T0E directly gives
+   |K(t, x)| ≤ (A t^{−1/2} + B t^{−1/3})², better than T6E by up to (A + B)²/B² ≈ 2.9 at large t. T6E with `0 < t` in
+   place of `1 ≤ t` is also true (for t ≤ 1, |K| ≤ 4π² < (A + B)² t^{−2/3}; review B, MINOR-2); a corollary, not a
+   re-freeze.
+9. **User normalisation** (reviews A and B). For H = 2 cos k₁ + 2 cos k₂ on ℓ²(ℤ²), the kernel of e^{itH} is
+   (2π)^{−2} K(2t, x), so ‖e^{itH}‖_{ℓ¹→ℓ^∞} ≤ (2π)^{−2}(A + B)²(2t)^{−2/3} ≈ 75.9 t^{−2/3} for t ≥ 1/2. Negative times
+   reduce to positive ones by |K(−t, x)| = |K(t, −x)| (not formalised).
+

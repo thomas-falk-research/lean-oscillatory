@@ -16,3 +16,14 @@ plant-T6E-rate: rejected (want rejected)
 ok-T6E-threshold: accepted (want accepted)
 plant-T6E-threshold: rejected (want rejected)
     first error: plant-T6E-threshold.lean:14:26: error: Application type mismatch: The argument
+ok-T0E-const-smaller: accepted (want accepted)
+plant-T0E-const-smaller: rejected (want rejected)
+    first error: plant-T0E-const-smaller.lean:17:2: error: linarith failed to find a contradiction
+ok-T0E-threshold: accepted (want accepted)
+plant-T0E-threshold: rejected (want rejected)
+    first error: plant-T0E-threshold.lean:15:29: error: unsolved goals
+ok-T6F-tpos: accepted (want accepted)
+plant-T6F-tpos: rejected (want rejected)
+    first error: plant-T6F-tpos.lean:12:2: error: Type mismatch: After simplification, term
+ok-T0E-nonneg-BLINDSPOT: accepted (want accepted)
+plant-T0E-nonneg-BLINDSPOT: accepted (want accepted)

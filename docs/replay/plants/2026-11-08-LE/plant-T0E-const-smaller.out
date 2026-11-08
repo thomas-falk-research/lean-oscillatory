@@ -1,0 +1,6 @@
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-LE/plant-T0E-const-smaller.lean:17:2: error: linarith failed to find a contradiction
+h : P_LatticeKernel1ExplicitStatement
+this : ‖latticeKernel1 8 (1 / 2)‖ ≤ 23 * 2 ^ (1 / 4) * 8 ^ (-1 / 2) + 36 * 2 ^ (1 / 6) * (1 / 2)
+a✝ : 24 * 2 ^ (1 / 4) * 8 ^ (-1 / 2) + 18 * 2 ^ (1 / 6) < ‖latticeKernel1 8 (1 / 2)‖
+⊢ False
+failed
