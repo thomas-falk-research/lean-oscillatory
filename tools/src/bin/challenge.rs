@@ -155,6 +155,17 @@ fn main() {
     let r = match a.iter().map(String::as_str).collect::<Vec<_>>().as_slice() {
         [_, "export", root, config] => export(Path::new(root), config).map(|_| ()),
         [_, "export-all", root] => configs(Path::new(root)).iter().try_for_each(|c| export(Path::new(root), c).map(|_| ())),
+        [_, "check", root, config, stamp] => match check(Path::new(root), config, Path::new(stamp)) {
+            Ok(true) => {
+                println!("comparator: {config} accepted against {stamp}");
+                Ok(())
+            }
+            Ok(false) => {
+                println!("comparator: {config}: no challenge theorem is declared yet");
+                std::process::exit(3);
+            }
+            Err(e) => Err(format!("{config}: {e}")),
+        },
         [_, "check-all", root] => match check_all(Path::new(root)) {
             Ok(true) => Ok(()),
             Ok(false) => {
@@ -164,7 +175,7 @@ fn main() {
             Err(e) => Err(e),
         },
         _ => {
-            eprintln!("usage: challenge export ROOT CONFIG | challenge export-all ROOT | challenge check-all ROOT");
+            eprintln!("usage: challenge export ROOT CONFIG | challenge export-all ROOT | challenge check ROOT CONFIG STAMPDIR | challenge check-all ROOT");
             std::process::exit(2);
         }
     };

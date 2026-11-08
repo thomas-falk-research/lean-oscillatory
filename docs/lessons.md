@@ -301,3 +301,9 @@ Every push of session 6 failed CI at the toolchain install (an unpinned elan dow
 noticed only when the owner asked for a CI review. The failures were infrastructure, but a real failure would have gone
 unseen just the same. Rule (lessons 9 again): read the CI result of each push before the next claim. Check: the
 `verify / verdict` and `ci` checks as required status checks under branch protection (owner item).
+
+41. **Run every new CI command line locally once, verbatim, before pushing the workflow.** The redesigned `verify`
+    comparator matrix called `challenge check ROOT CONFIG STAMP`, a subcommand the tool's doc comment described but its
+    argument dispatch never had; all 11 comparator jobs exited 2 on the usage message (PR #6, run 42485206068).
+    actionlint cannot see this. Fixed by adding the dispatch arm; checked by running the job's exact command on
+    `comparator-GD.json` (accepted, exit 0) and against a wrong stamp (exit 1).
