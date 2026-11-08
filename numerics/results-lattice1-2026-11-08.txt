@@ -1,0 +1,39 @@
+batch LE numeric check (docs/prereg/2026-11-08-LE-lattice-constants.md)
+A = 24*2^(1/4) = 28.5409707601  B = 36*2^(1/6) = 40.4086337391  A+B = 68.9496044992  (A+B)^2 = 4754.047961
+t =     0.1000  sup_n|I| = 6.267487e0  bound T0E = 1.773122e2  ratio = 3.5347e-2  t^(1/3) sup/(2pi) = 0.462999
+t =     0.2298  sup_n|I| = 6.200477e0  bound T0E = 1.254999e2  ratio = 4.9406e-2  t^(1/3) sup/(2pi) = 0.604490
+t =     0.5283  sup_n|I| = 5.852399e0  bound T0E = 8.925448e1  ratio = 6.5570e-2  t^(1/3) sup/(2pi) = 0.752965
+t =     1.2142  sup_n|I| = 4.172206e0  bound T0E = 6.377840e1  ratio = 6.5417e-2  t^(1/3) sup/(2pi) = 0.708408
+t =     2.7908  sup_n|I| = 2.997345e0  bound T0E = 4.578582e1  ratio = 6.5464e-2  t^(1/3) sup/(2pi) = 0.671633
+t =     6.4144  sup_n|I| = 2.350494e0  bound T0E = 3.301730e1  ratio = 7.1190e-2  t^(1/3) sup/(2pi) = 0.695074
+t =    14.7430  sup_n|I| = 1.745204e0  bound T0E = 2.391274e1  ratio = 7.2982e-2  t^(1/3) sup/(2pi) = 0.681075
+t =    33.8858  sup_n|I| = 1.317557e0  bound T0E = 1.739027e1  ratio = 7.5764e-2  t^(1/3) sup/(2pi) = 0.678571
+t =    77.8841  sup_n|I| = 9.908389e-1  bound T0E = 1.269621e1  ratio = 7.8042e-2  t^(1/3) sup/(2pi) = 0.673451
+t =   179.0110  sup_n|I| = 7.510625e-1  bound T0E = 9.303105e0  ratio = 8.0732e-2  t^(1/3) sup/(2pi) = 0.673684
+t =   411.4442  sup_n|I| = 5.697201e-1  bound T0E = 6.840031e0  ratio = 8.3292e-2  t^(1/3) sup/(2pi) = 0.674402
+t =   945.6752  sup_n|I| = 4.322384e-1  bound T0E = 5.044910e0  ratio = 8.5678e-2  t^(1/3) sup/(2pi) = 0.675239
+t =  2000.0000  sup_n|I| = 3.367286e-1  bound T0E = 3.845431e0  ratio = 8.7566e-2  t^(1/3) sup/(2pi) = 0.675217
+Q1 vs Q2 max |difference| = 9.214e-14 (tolerance 1e-9): agree
+symmetry max ||I(t,-n)| - |I(t,n)|| = 5.278e-14
+(a) max |I| / T0E bound = 0.087566 at (t, xi) = (2000.0000, 1990.0000): PASS
+(b) slope of log sup_n|I| vs log t over t in [100, 2000] (36 points) = -0.33412: PASS
+(c) max t^(1/3)|I|/(2pi) = 0.785610 at (t, n) = (0.8009, 0) vs Landau 0.7858: PASS
+  2D t =   0.7  x = ( 0,  0)  |K| = 3.0655583686e1  |K - I I| = 5.100e-13  |K - wrong| = 5.100e-13
+  2D t =   0.7  x = ( 1, -2)  |K| = 7.6353842933e-1  |K - I I| = 7.452e-15  |K - wrong| = 1.221e1
+  2D t =   0.7  x = ( 3,  3)  |K| = 1.8957581936e-3  |K - I I| = 1.398e-16  |K - wrong| = 1.808e-3
+  2D t =   0.7  x = (-5,  2)  |K| = 9.9522156665e-5  |K - I I| = 2.028e-15  |K - wrong| = 2.410e-1
+  2D t =     3  x = ( 0,  0)  |K| = 2.6698077072e0  |K - I I| = 2.958e-14  |K - wrong| = 2.958e-14
+  2D t =     3  x = ( 1, -2)  |K| = 6.5065799920e0  |K - I I| = 3.838e-14  |K - wrong| = 3.026e0
+  2D t =     3  x = ( 3,  3)  |K| = 3.7709692230e0  |K - I I| = 1.623e-14  |K - wrong| = 3.888e0
+  2D t =     3  x = (-5,  2)  |K| = 8.2572056103e-1  |K - I I| = 1.027e-14  |K - wrong| = 3.999e0
+  2D t =    25  x = ( 0,  0)  |K| = 3.6585808531e-1  |K - I I| = 2.976e-15  |K - wrong| = 2.976e-15
+  2D t =    25  x = ( 1, -2)  |K| = 5.2601359899e-1  |K - I I| = 3.719e-15  |K - wrong| = 4.962e-2
+  2D t =    25  x = ( 3,  3)  |K| = 4.6340647797e-1  |K - I I| = 6.682e-16  |K - wrong| = 1.067e0
+  2D t =    25  x = (-5,  2)  |K| = 2.7699269318e-1  |K - I I| = 4.187e-15  |K - wrong| = 1.348e-1
+(d) max |K - I(t,x1) I(t,x2)| = 5.100e-13 (tolerance 1e-9): PASS
+(e) max over t >= 1 of (sup_n|I|)^2 / ((A+B)^2 t^(-2/3)) = 0.004793: PASS
+(c1) control exponent -1/2: slope -0.33412 outside [-0.55, -0.45]: control FAILS (good)
+(c2) control 0.9 * 2pi * 0.7858 * t^(-1/3): violated at 18 grid points: control FAILS (good)
+(c3) control wrong factorisation: min |K - I(t,x1+x2) I(t,0)| over x1 x2 != 0 = 1.808e-3: control FAILS (good)
+reported: (A+B) / (2pi * 0.7858) = 13.965
+OVERALL: PASS
