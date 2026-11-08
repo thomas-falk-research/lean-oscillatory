@@ -11,9 +11,20 @@ inputs:
   mathlib-cache:
     description: Run `lake exe cache get` (Mathlib binaries) after installing the toolchain.
     default: "true"
+  verify-tools:
+    description: >-
+      Install the system tools `verify_all` checks before running any step (bubblewrap, zstd) and allow the
+      unprivileged user namespaces bubblewrap needs. Every job that calls `tools/target/release/verify_all` sets it.
+    default: "false"
 runs:
   using: composite
   steps:
+    - name: System tools for verify_all (bubblewrap, zstd)
+      if: inputs.verify-tools == 'true'
+      shell: bash
+      run: |
+        sudo apt-get update -q && sudo apt-get install -y -q bubblewrap zstd
+        sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
     - name: Read the toolchain pin
       id: pin
       shell: bash
