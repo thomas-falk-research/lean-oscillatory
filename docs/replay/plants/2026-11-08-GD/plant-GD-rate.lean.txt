@@ -1,0 +1,23 @@
+import OscInt.Front.GlobalSanity
+
+namespace OscInt.API.GlobalSanity
+
+open OscInt.Statements OscInt.D4 OscInt.API.ConvertSanity Filter Topology
+open scoped ContDiff
+
+def P_GlobalDecayStatement : Prop :=
+  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)) (D : Finset (ℝ × ℝ)),
+    IsCompact K → IsOpen U → K ⊆ U → (↑D : Set (ℝ × ℝ)) ⊆ U → ContDiffOn ℝ 4 Ψ U → Classified Ψ K D →
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →
+      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(1 : ℝ) / 2)
+
+theorem P_globalDecay_ell (h : P_GlobalDecayStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 1 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+      1 ≤ m → ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (ellPhase k + L k)) * Complex.I) * A k‖ ≤
+        C * M * m ^ (-(2 : ℝ) / 3) :=
+  h ellPhase (Metric.closedBall 0 1) Set.univ {0} (isCompact_closedBall _ _) isOpen_univ (Set.subset_univ _)
+    (Set.subset_univ _) ellPhase_contDiff.contDiffOn ell_classified
+
+end OscInt.API.GlobalSanity

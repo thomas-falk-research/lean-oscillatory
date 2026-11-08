@@ -1,0 +1,40 @@
+import OscInt.Front.GlobalSanity
+
+namespace OscInt.API.GlobalSanity
+
+open OscInt.Statements OscInt.D4 OscInt.API.ConvertSanity Filter Topology
+open scoped ContDiff
+
+def P_IsD4Point (Ψ : ℝ × ℝ → ℝ) (k₀ : ℝ × ℝ) : Prop :=
+  iteratedFDeriv ℝ 2 Ψ k₀ = 0 ∧ ∃ a b c d : ℝ,
+    (∀ x y : ℝ, iteratedFDeriv ℝ 3 Ψ k₀ ![(x, y), (x, y), (x, y)] =
+      6 * (a * x ^ 3 + b * x ^ 2 * y + c * x * y ^ 2 + d * y ^ 3)) ∧
+    (Cubic.mk a b c d).discr < 0
+
+def P_Classified (Ψ : ℝ × ℝ → ℝ) (K : Set (ℝ × ℝ)) (D : Finset (ℝ × ℝ)) : Prop :=
+  (∀ k ∈ K, k ∉ D → FoldOrNondegMatrix Ψ k) ∧ ∀ k₀ ∈ D, P_IsD4Point Ψ k₀
+
+def P_GlobalDecayStatement : Prop :=
+  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)) (D : Finset (ℝ × ℝ)),
+    IsCompact K → IsOpen U → K ⊆ U → (↑D : Set (ℝ × ℝ)) ⊆ U → ContDiffOn ℝ 4 Ψ U → P_Classified Ψ K D →
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →
+      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-(2 : ℝ) / 3)
+
+theorem P_ell_isD4 : P_IsD4Point ellPhase 0 := by
+  obtain ⟨-, h2, h3, hd⟩ := d4FE_hyps_elliptic
+  exact ⟨h2, 1, 0, -3, 0, h3, hd⟩
+
+theorem P_ell_classified : P_Classified ellPhase (Metric.closedBall 0 1) {0} :=
+  ⟨fun k _ hk => Or.inl (ell_nondeg k (by simpa using hk)), fun k₀ hk₀ => by
+    rw [Finset.mem_singleton] at hk₀; subst hk₀; exact P_ell_isD4⟩
+
+theorem P_globalDecay_ell (h : P_GlobalDecayStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 1 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+      1 ≤ m → ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (ellPhase k + L k)) * Complex.I) * A k‖ ≤
+        C * M * m ^ (-(2 : ℝ) / 3) :=
+  h ellPhase (Metric.closedBall 0 1) Set.univ {0} (isCompact_closedBall _ _) isOpen_univ (Set.subset_univ _)
+    (Set.subset_univ _) ellPhase_contDiff.contDiffOn P_ell_classified
+
+end OscInt.API.GlobalSanity

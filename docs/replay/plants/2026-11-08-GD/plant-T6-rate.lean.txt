@@ -1,0 +1,16 @@
+import OscInt.Front.GlobalSanity
+
+namespace OscInt.API.GlobalSanity
+
+open OscInt.Statements OscInt.D4 OscInt.API.ConvertSanity Filter Topology
+open scoped ContDiff
+
+def P_LatticeLaplacianDecayStatement : Prop :=
+  ∃ C : ℝ, ∀ (t : ℝ) (x : ℤ × ℤ), 1 ≤ t → ‖latticeKernel t x‖ ≤ C * t ^ (-(1 : ℝ) / 2)
+
+theorem P_latticeLaplacianDecay_diag (h : P_LatticeLaplacianDecayStatement) :
+    ∃ C : ℝ, ∀ n : ℕ, 1 ≤ n → ‖latticeKernel n ((n : ℤ), (n : ℤ))‖ ≤ C * (n : ℝ) ^ (-(2 : ℝ) / 3) := by
+  obtain ⟨C, hC⟩ := h
+  exact ⟨C, fun n hn => hC n _ (by exact_mod_cast hn)⟩
+
+end OscInt.API.GlobalSanity

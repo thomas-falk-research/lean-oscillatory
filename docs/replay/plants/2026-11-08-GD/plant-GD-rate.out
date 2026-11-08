@@ -1,0 +1,18 @@
+/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/plants-gd/plant-GD-rate.lean:20:2: error: Type mismatch
+  h ellPhase (Metric.closedBall 0 1) Set.univ {0} (isCompact_closedBall 0 1) isOpen_univ
+    (Set.subset_univ (Metric.closedBall 0 1)) (Set.subset_univ ↑{0}) (ContDiff.contDiffOn ellPhase_contDiff)
+    ell_classified
+has type
+  ∃ C,
+    ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : ℝ × ℝ →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A →
+        tsupport A ⊆ Metric.closedBall 0 1 →
+          (∀ j ≤ 2, ∀ (k : ℝ × ℝ), ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+            1 ≤ m → ‖∫ (k : ℝ × ℝ), Complex.exp (↑(m * (ellPhase k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-1 / 2)
+but is expected to have type
+  ∃ C,
+    ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : ℝ × ℝ →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A →
+        tsupport A ⊆ Metric.closedBall 0 1 →
+          (∀ j ≤ 2, ∀ (k : ℝ × ℝ), ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+            1 ≤ m → ‖∫ (k : ℝ × ℝ), Complex.exp (↑(m * (ellPhase k + L k)) * Complex.I) * A k‖ ≤ C * M * m ^ (-2 / 3)

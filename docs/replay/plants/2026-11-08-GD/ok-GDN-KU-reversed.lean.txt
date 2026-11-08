@@ -1,0 +1,24 @@
+import OscInt.Front.GlobalSanity
+
+namespace OscInt.API.GlobalSanity
+
+open OscInt.Statements OscInt.D4 OscInt.API.ConvertSanity Filter Topology
+open scoped ContDiff
+
+def P_GlobalNondegStatement : Prop :=
+  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)),
+    IsCompact K → IsOpen U → K ⊆ U → ContDiffOn ℝ 4 Ψ U → (∀ k ∈ K, (hessianMatrix Ψ k).det ≠ 0) →
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →
+      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M / m
+
+theorem P_globalNondeg_quad (h : P_GlobalNondegStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 1 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+      1 ≤ m → ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (quadPhase k + L k)) * Complex.I) * A k‖ ≤ C * M / m :=
+  h quadPhase (Metric.closedBall 0 1) (Metric.ball 0 2)
+    (isCompact_closedBall _ _) Metric.isOpen_ball (Metric.closedBall_subset_ball (by norm_num))
+    (by unfold quadPhase; fun_prop : ContDiff ℝ 4 quadPhase).contDiffOn
+    (fun k _ => by unfold quadPhase; rw [(hessian_mixed k).2]; norm_num)
+
+end OscInt.API.GlobalSanity

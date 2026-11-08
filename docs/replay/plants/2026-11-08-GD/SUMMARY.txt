@@ -1,0 +1,30 @@
+ok-GD-drop-kD: accepted (want accepted)
+plant-GD-drop-kD: rejected (want rejected)
+    first error: plant-GD-drop-kD.lean:19:3: error: Application type mismatch: The argument
+ok-GD-disc-neg: accepted (want accepted)
+plant-GD-disc-neg: rejected (want rejected)
+    first error: plant-GD-disc-neg.lean:26:30: error: Application type mismatch: The argument
+ok-GD-rate: accepted (want accepted)
+plant-GD-rate: rejected (want rejected)
+    first error: plant-GD-rate.lean:20:2: error: Type mismatch
+ok-GDC-drop-kD: accepted (want accepted)
+plant-GDC-drop-kD: rejected (want rejected)
+    first error: plant-GDC-drop-kD.lean:27:5: error: Application type mismatch: The argument
+ok-GDF-det: accepted (want accepted)
+plant-GDF-det: rejected (want rejected)
+    first error: plant-GDF-det.lean:21:68: error: Type mismatch
+ok-GDN-KU-reversed: accepted (want accepted)
+plant-GDN-KU-reversed: rejected (want rejected)
+    first error: plant-GDN-KU-reversed.lean:20:50: error: Application type mismatch: The argument
+ok-SH-c: accepted (want accepted)
+plant-SH-c: rejected (want rejected)
+    first error: plant-SH-c.lean:23:34: error: Application type mismatch: The argument
+ok-T1-period: accepted (want accepted)
+plant-T1-period: rejected (want rejected)
+    first error: plant-T1-period.lean:26:4: error: Type mismatch: After simplification, term
+ok-T6-rate: accepted (want accepted)
+plant-T6-rate: rejected (want rejected)
+    first error: plant-T6-rate.lean:14:24: error: Type mismatch
+ok-T6L-zero: accepted (want accepted)
+plant-T6L-zero: rejected (want rejected)
+    first error: plant-T6L-zero.lean:18:4: error: Type mismatch: After simplification, term

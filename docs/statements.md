@@ -414,3 +414,67 @@ referee observed (first proof file 01:06:25Z) are consistent with it but are not
 M1–M3): every statement of the batch now has a sanity theorem through its constant (`OscInt/Front/FamilySanity.lean`,
 `FamilySanity2.lean`); such theorems cannot detect a plant that weakens a hypothesis; answering the pre-proof MAJOR this
 way instead of re-freezing awaits the owner's decision on CONTRIBUTING step 5.
+
+## Batch GD: global decay from a local classification; sharpness; the 2D lattice Laplacian (session 6, 2026-11-08)
+
+Order. As batch 3: the statements below, `OscInt/Statements/Global.lean` (with sanity theorems), sanity theorems through
+the constants with planted controls (`OscInt/Front/GlobalSanity.lean`, outputs under `docs/replay/plants/`), the
+challenge `Challenge/Global.lean` and `comparator-GD.json` are committed and stamped before the blind pre-proof
+reviews; the reports are committed and stamped before any Lean proof of these statements is written.
+Numeric pre-registration that informed the statements (tooling, not evidence): `docs/prereg/2026-11-08-P1-classify.md`,
+result `numerics/results-classify-2026-11-08.txt` (PASS: the lattice Laplacian and six arccos dispersion relations are
+"nondegenerate, fold, or one of four D4 points (±π/2, ±π/2)" on the torus, the cusp control is detected; the diagonal
+limit of the lattice kernel agrees with the constant below to 7.5·10⁻⁷ at n = 2560).
+
+Notation as in batch 3. I(Ψ, L, A, m) = ∫_{ℝ²} e^{im(Ψ(k) + L(k))} A(k) dk. An *amplitude (2, K, M)* is a C² function
+A : ℝ² → ℂ with tsupport A ⊆ K and ‖D^j A(k)‖ ≤ M for j ≤ 2 and all k (Mathlib's `iteratedFDeriv`). A *D4 point* of Ψ
+is a point k₀ with D²Ψ(k₀) = 0 and D³Ψ(k₀)[(x, y)³] = 6(a x³ + b x²y + c xy² + d y³) for some reals a, b, c, d with
+`(Cubic.mk a b c d).discr ≠ 0` (the discriminant of the binary cubic, C5); this is FE-S4.1′L's hypothesis moved from 0
+to k₀. *Nondegenerate or a fold* at k is `FoldOrNondegMatrix Ψ k` (batch 2: det H ≠ 0, or the kernel of H is a line
+spanned by e with D³Ψ(k)[e, e, e] ≠ 0).
+
+**GD-C (global decay, classification at critical points).** For every Ψ : ℝ² → ℝ, compact K, open U ⊇ K, compact set
+K′ of linear terms and finite set D ⊆ U such that Ψ is C⁴ on U, every point of D is a D4 point, and for every L ∈ K′
+every critical point k ∈ K \ D of Ψ + L is nondegenerate or a fold: there is C with |I(Ψ, L, A, m)| ≤ C M m^{−2/3}
+for every amplitude (2, K, M), every L ∈ K′ and every m ≥ 1.
+
+**GD (global decay, all linear terms).** For Ψ, K, U, D as in GD-C such that every point of K \ D is nondegenerate or a
+fold (at every point, not only at critical points): the same bound C M m^{−2/3} for every linear term L. This is the
+form a dispersive estimate needs: sup over x of |∫ e^{i(tω(k) + x·k)} A(k) dk| is the sup over L = x/t.
+
+**GD-F, GD-N.** If every point of K is nondegenerate or a fold: C M m^{−5/6} for every L. If every point of K is
+nondegenerate (det H ≠ 0): C M m^{−1} for every L.
+
+**SH (sharpness lemma).** For I : ℝ → ℂ, σ ∈ ℝ, c ∈ ℂ \ {0} with m^σ I(m) → c as m → ∞: eventually
+|I(m)| ≥ (|c|/2) m^{−σ}, and for no σ′ > σ and no C does |I(m)| ≤ C m^{−σ′} hold eventually. The same for sequences
+I : ℕ → ℂ.
+
+**T1 (unfolding the torus).** There is a C^∞ function η : ℝ² → ℝ with tsupport η ⊆ B̄(0, 4) (max norm) such that
+∫_{[−π, π]²} g = ∫_{ℝ²} η g for every continuous g : ℝ² → ℂ that is 2π-periodic in each variable.
+
+**T6 (dispersive decay of the 2D lattice Laplacian).** With K(t, x) = ∫_{[−π, π]²} e^{i(t(cos k₁ + cos k₂) + x·k)} dk:
+there is C with |K(t, x)| ≤ C t^{−2/3} for all t ≥ 1 and all x ∈ ℤ².
+
+**T6L (its leading term on the diagonal).** (−1)ⁿ n^{2/3} K(n, (n, n)) → Γ(1/3)² 48^{1/6}/√3 as n → ∞, n ∈ ℕ
+(`d4ClosedConstant (−1/48)`, batch 1). With SH this shows that the rate t^{−2/3} in T6 is sharp.
+
+Modelling choices and what is omitted.
+- The rate in GD-C and GD is 2/3 whether or not D is empty; GD-F and GD-N give the better rates when no D4 point
+  (resp. no degenerate point) is present. "The worst type present decides the rate" is the choice of statement.
+- The fold condition is required at every non-D4 point (GD) or at every non-D4 critical point for L ∈ K′ (GD-C). Near
+  a D4 point, the critical points of Ψ + L for L near −DΨ(k₀) are close to k₀; the hypothesis requires them to be
+  folds or nondegenerate (checked by hand for the cubic x³ + y³, CONJECTURED for every homogeneous cubic with
+  nonzero discriminant; for the phases above the numeric check found no exception). Cusps (A₃) and worse are not covered (no local A₃ statement exists yet).
+- D is a `Finset` contained in U; its points need not lie in K.
+- K(t, x) is the kernel of e^{itH} for H = 2cos k₁ + 2cos k₂ in Fourier variables up to the factor (2π)^{−2}, the time
+  scale 2 and the phase e^{−4it} of −Δ = 4 − 2cos k₁ − 2cos k₂; none changes |K| up to constants. The ℓ¹ → ℓ^∞ norm of
+  the propagator is sup_x |K(t, x)|/(2π)² (a consumer example, not a statement).
+- T1 is an existence statement: the weight is not named in the statement (the proof constructs it). Lattice users
+  apply GD to the amplitude η · a for a smooth periodic a.
+- T6L is stated along x = (n, n) at integer times n, where the only critical point is the D4 point (π/2, π/2) with
+  phase value π (hence (−1)ⁿ) and cubic part (κ₁³ + κ₂³)/6, disc = −1/48. An independent route (FOLKLORE, not
+  formalised): K(n, (n, n)) = (2π)²(−1)ⁿ Jₙ(n)² and Jₙ(n) ~ Γ(1/3)/(2^{2/3} 3^{1/6} π n^{1/3}) give the same constant.
+- Not in this batch, with reasons: the D4 statement uniform over a compact family of phases (needs the D4 normal form
+  uniformly in the parameter; new analysis); the 2D stationary-phase leading term (P2; the proof needs a Morse lemma
+  with parameters, not available; draft statement in `docs/design/leading-term.md`); the 1D lattice kernel (T0) and the
+  cone statements (T4/T5′/T6′).
