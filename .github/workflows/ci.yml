@@ -46,13 +46,15 @@ jobs:
 
   # Separate job (lessons 9): an unpublished release must not mask other failures. Red until the tag that README,
   # docs/policy.md and examples/consumer pin exists and docs/release-notes/<tag>.md gives the SHA-256 of
-  # stamps/statements.json and tools/oscint_check.py at that tag.
+  # stamps/statements.json and tools/oscint_check.py at that tag, and HEAD contains the tagged commit.
   release-pin:
     if: ${{ !inputs.mathlib_from_source }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0  # the pinned release commit must be an ancestor of HEAD (check 4)
       - name: Self-test of the check (negative controls)
         run: tools/check_release_pin.sh --self-test
       - name: Every pinned release tag exists and matches its release notes
