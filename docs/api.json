@@ -1103,7 +1103,7 @@
   {
    "label": "T0E",
    "name": "OscInt.Statements.LatticeKernel1ExplicitStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.latticeKernel1Explicit",
    "summary": "Explicit bound for the 1D lattice kernel: `|I(t, ξ)| ≤ 24 · 2^{1/4} t^{−1/2} + 36 · 2^{1/6} t^{−1/3}` for every `t > 0` and every real `ξ`.",
    "file": "OscInt/Statements/LatticeExplicit.lean",
    "commitment": "d087e02b99d4a5de72d9d9fbc2a3dd1cbee49178cdd8458e15189207ebb65a73",
@@ -1123,13 +1123,13 @@
     "S1.2",
     "S1.3"
    ],
-   "snippet": "example : Prop := LatticeKernel1ExplicitStatement",
+   "snippet": "example : LatticeKernel1ExplicitStatement := OscInt.API.latticeKernel1Explicit",
    "status": "see docs/STATUS.md (row T0E)"
   },
   {
    "label": "T6F",
    "name": "OscInt.Statements.LatticeKernelFactorStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.latticeKernelFactor",
    "summary": "The 2D lattice kernel factorises: `K(t, x) = I(t, x₁) I(t, x₂)` for every real `t` and `x ∈ ℤ²`.",
    "file": "OscInt/Statements/LatticeExplicit.lean",
    "commitment": "0f3dd76d127c914be30adbd8db3d8e19f848f2feab05ebb48a663c3c6839b5d5",
@@ -1147,13 +1147,13 @@
     "T0E",
     "T6E"
    ],
-   "snippet": "example : Prop := LatticeKernelFactorStatement",
+   "snippet": "example : LatticeKernelFactorStatement := OscInt.API.latticeKernelFactor",
    "status": "see docs/STATUS.md (row T6F)"
   },
   {
    "label": "T6E",
    "name": "OscInt.Statements.LatticeLaplacianExplicitStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.latticeLaplacianExplicit",
    "summary": "Dispersive decay of the 2D lattice Laplacian with an explicit constant: `|K(t, x)| ≤ (24 · 2^{1/4} + 36 · 2^{1/6})² t^{−2/3}` for `t ≥ 1`, uniformly over `x ∈ ℤ²`.",
    "file": "OscInt/Statements/LatticeExplicit.lean",
    "commitment": "181d42d75a2cf9726e878d35e3ba5bc814e8dd712ae26964a9613b4ec1cd0889",
@@ -1171,7 +1171,7 @@
     "T6F",
     "T0E"
    ],
-   "snippet": "example : Prop := LatticeLaplacianExplicitStatement",
+   "snippet": "example : LatticeLaplacianExplicitStatement := OscInt.API.latticeLaplacianExplicit",
    "status": "see docs/STATUS.md (row T6E)"
   }
  ]

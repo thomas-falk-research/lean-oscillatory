@@ -29,3 +29,22 @@ Blueprint: `Blueprint/LatticeExplicit.lean` (three `…Facts` propositions). Ass
 - **T6E** from T0E and T6F: `norm_mul`; for `t ≥ 1`, `t^{−1/2} ≤ t^{−1/3}` (`Real.rpow_le_rpow_of_exponent_le`), so
   each factor is `≤ (A + B) t^{−1/3}`; `mul_le_mul` with nonnegativity; `(t^{−1/3})² = t^{−2/3}` (`Real.rpow_natCast`,
   `← Real.rpow_mul`).
+
+## Revision after the route referee (`review/2026-11-08-LE-route-referee.md`, at 240455c)
+Verdict: route sound; parts true and derivable from S1.2/S1.3 with the frozen hypotheses; assembly proves exactly the
+frozen statements; every name exists at the pin. No BLOCKER.
+- **M1 (order), agreed.** The lead wrote the proofs of the parts (`OscInt/Front/LatticeExplicitParts.lean`, first
+  written 16:57Z) and the final file while the route referee was running, i.e. *before* its report, contrary to the
+  order of CONTRIBUTING steps 6–7 and lessons 16. The claim "route reviewed before any part was proved" is therefore
+  **not** made for batch LE. What does hold: the statements were frozen and stamped (16:08:50Z) and blind-reviewed with
+  the reviews stamped (16:45:19Z, `stamps/20261108T164514Z-c91a9a8bb0b6`) before any proof of an LE statement existed;
+  the route and the compiled assembly were committed (240455c, 16:55Z) before any part. No finding of the referee
+  changes a part. Lesson recorded in `docs/lessons.md`.
+- **m1 (assembly not in the default build).** Fixed: `OscInt/Front/LatticeExplicitFinal.lean` imports the parts and
+  the assembly and is imported by `OscInt.API`; `make quick` passes with it.
+- **m2 (name checks outside the tree).** Fixed: every name above (and the duality names of
+  `docs/design/vector-amplitudes.md`) is now in `MathlibNames.lean`, which `make lean` compiles.
+- **m3 (T6F regrouping).** Done in the proof as a pointwise identity before `setIntegral_prod_mul`.
+- **n1–n3.** `HasDerivAt.neg ... .const_mul` elaborates to the needed lambda forms here (the parts compile);
+  `rpow_neg` is applied after `show -(1:ℝ)/2 = -(1/2)`; `setIntegral_prod_mul` is applied with explicit
+  `(μ := volume) (ν := volume)` through `refine … .trans`, as suggested.

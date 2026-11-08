@@ -20,6 +20,7 @@ import OscInt.Front.LatticeExplicitSanity
 import OscInt.Front.GlobalNondegLocalSanity
 import OscInt.Front.GlobalFinal
 import OscInt.Front.LatticeFinal
+import OscInt.Front.LatticeExplicitFinal
 
 /-!
 # OscInt public API

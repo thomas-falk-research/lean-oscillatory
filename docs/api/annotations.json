@@ -718,7 +718,7 @@
     "S1.3"
    ],
    "snippet_kind": "type",
-   "snippet": "example : Prop := LatticeKernel1ExplicitStatement"
+   "snippet": "example : LatticeKernel1ExplicitStatement := OscInt.API.latticeKernel1Explicit"
   },
   "T6F": {
    "hypotheses": [
@@ -734,7 +734,7 @@
     "T6E"
    ],
    "snippet_kind": "type",
-   "snippet": "example : Prop := LatticeKernelFactorStatement"
+   "snippet": "example : LatticeKernelFactorStatement := OscInt.API.latticeKernelFactor"
   },
   "T6E": {
    "hypotheses": [
@@ -750,7 +750,7 @@
     "T0E"
    ],
    "snippet_kind": "type",
-   "snippet": "example : Prop := LatticeLaplacianExplicitStatement"
+   "snippet": "example : LatticeLaplacianExplicitStatement := OscInt.API.latticeLaplacianExplicit"
   }
  },
  "helpers": [
