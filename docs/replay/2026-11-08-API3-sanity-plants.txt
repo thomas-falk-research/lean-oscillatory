@@ -1,0 +1,33 @@
+# Negative controls for OscInt/Front/FamilySanity.lean (2026-11-08, lead, before any API3 proof)
+# Each file under the session scratchpad 'plants/' copies one frozen statement body as P<Name> (with or without a plant)
+# and the matching sanity theorem with its hypothesis renamed; compiled with lake env lean -DautoImplicit=false.
+# Lean shows the sanity proof breaks under each plant; that the planted hypothesis is false on these data is the
+# paper argument in the sanity docstrings (VALIDATED for the proof script, CONJECTURED-by-hand for falsity).
+
+ok-foldcrit (FoldCritStatement unplanted, foldCrit_sign_bite): 0 errors (accepted)
+ok-spon (StationaryPhaseOnStatement unplanted, stationaryPhaseOn_kink): 0 errors (accepted)
+neg-p-foldcrit (IsCritical (Ψ σ) p k -> IsCritical (Ψ σ) (-p) k), foldCrit_sign_bite: rejected
+zero-p-foldcrit (p -> 0), foldCrit_fold_bite: rejected
+neg-L-spon (fderiv + L = 0 -> fderiv - L = 0), stationaryPhaseOn_kink: rejected
+everywhere-spon (Hessian condition at every k in K), stationaryPhaseOn_kink: rejected
+
+== neg-p-foldcrit
+neg-p-foldcrit.lean:19:61: error: Application type mismatch: Th
+  hk
+has type
+  IsCritical (signFamily ↑σ) (-p) k
+== zero-p-foldcrit
+zero-p-foldcrit.lean:18:34: error: Type mismatch
+  cubes_fold_at_crit
+has type
+  ∀ p ∈ {(0, -3)},
+== neg-L-spon
+neg-L-spon.lean:20:55: error: Application type mismatch: The ar
+  hc
+has type
+  fderiv ℝ kinkPhase k - L₀ = 0
+== everywhere-spon
+everywhere-spon.lean:20:55: error: Application type mismatch: T
+  hc
+has type
+  (hessianMatrix kinkPhase k).det = 0

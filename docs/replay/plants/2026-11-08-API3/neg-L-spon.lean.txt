@@ -1,0 +1,23 @@
+import OscInt.Front.FamilySanity
+namespace PlantTest
+open OscInt.Statements OscInt.API.ConvertAux OscInt.API.FamilySanity
+def PStationaryPhaseOnStatement : Prop :=
+  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)) (K' : Set ((ℝ × ℝ) →L[ℝ] ℝ)),
+    IsCompact K → IsOpen U → K ⊆ U → IsCompact K' → ContDiffOn ℝ 4 Ψ U →
+    (∀ L ∈ K', ∀ k ∈ K, fderiv ℝ Ψ k - L = 0 → (hessianMatrix Ψ k).det ≠ 0) →
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → L ∈ K' → 1 ≤ m →
+      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) * A k‖ ≤ C * M / m
+
+
+theorem PstationaryPhaseOn_kink (h : PStationaryPhaseOnStatement) : ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M m : ℝ),
+    ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 2 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+    1 ≤ m → ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (kinkPhase k + L₀ k)) * Complex.I) * A k‖ ≤ C * M / m := by
+  obtain ⟨C, hC⟩ := h kinkPhase (Metric.closedBall 0 2) kinkU {L₀} (isCompact_closedBall _ _) kinkU_isOpen
+    closedBall_subset_kinkU isCompact_singleton kinkPhase_contDiffOn
+    (fun L hL k hk hc => by
+      rw [Set.mem_singleton_iff] at hL; subst hL
+      exact kink_det_ne k (closedBall_subset_kinkU hk) hc)
+  exact ⟨C, fun A M m hA hs hM hm => hC A M L₀ m hA hs hM (Set.mem_singleton _) hm⟩
+
+end PlantTest

@@ -1,0 +1,6 @@
+{"challenge_module": "Challenge", "solution_module": "OscInt",
+ "theorem_names": ["OscInt.API.stationaryPhaseFamily", "OscInt.API.foldCrit", "OscInt.API.familyCk_of_uncurry",
+   "OscInt.API.nonStationaryLocal", "OscInt.API.stationaryPhaseLocal", "OscInt.API.foldLocal",
+   "OscInt.API.d4BoundLocal", "OscInt.API.nonStationaryOn", "OscInt.API.stationaryPhaseOn", "OscInt.API.foldOn"],
+ "definition_names": [],
+ "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]}

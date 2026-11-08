@@ -75,6 +75,8 @@ quick: guard statements-check
 entry-point:
 	tools/check_entry_point.sh --self-test && tools/check_entry_point.sh
 	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerFormula.lean
+	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerLocal.lean
+	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerLocalChecks.lean
 
 # stamps/statements.json: the machine-readable list of pinned statements for downstream projects (README).
 statements: tools

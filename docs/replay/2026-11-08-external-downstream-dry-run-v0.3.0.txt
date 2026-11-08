@@ -1,0 +1,75 @@
+# External downstream dry run, session 5 (2026-11-08): fresh Lake project outside the repository, OscInt required by
+# git tag v0.3.0 from GitHub, steps exactly as README 'Depending on OscInt' (lake update oscint; lake exe cache get;
+# lake build; lake build OscInt Blueprint; checker with the --expect-sha256 pin from docs/release-notes/v0.3.0.md).
+# Project files:
+## lakefile.toml
+name = "dryrun"
+defaultTargets = ["Dryrun"]
+
+[[require]]
+name = "oscint"
+git = "https://github.com/thomas-falk-research/lean-oscillatory"
+rev = "v0.3.0"
+
+[[lean_lib]]
+name = "Dryrun"
+## lean-toolchain
+leanprover/lean4:v4.35.0
+## Dryrun.lean
+import OscInt.API
+
+open OscInt.Statements in
+example : D4LimitStatement := OscInt.d4Limit
+
+example : OscInt.Statements.D4LimitClosedFormStatement := OscInt.API.d4LimitClosedForm
+example : OscInt.Statements.FoldFEStatement := OscInt.API.foldFE
+## script
+set -x
+export PATH=$HOME/.elan/bin:$PATH
+cd "$1"
+date -u
+lake update oscint && lake exe cache get > /dev/null && lake build && lake build OscInt Blueprint
+echo "build rc=$?"
+git -C .lake/packages/oscint rev-parse HEAD
+sha256sum .lake/packages/oscint/tools/oscint_check.py .lake/packages/oscint/stamps/statements.json
+python3 .lake/packages/oscint/tools/oscint_check.py --statement OscInt.Statements.D4LimitStatement \
+  --statement OscInt.Statements.FoldFEStatement \
+  --expect-sha256 32eac265a3468d5e5e02526df8bc37db1412c339f5fec62fee166c08490e24c0
+echo "checker rc=$?"
+date -u
+## output (Lake progress lines and cache download lines removed)
++ export PATH=/root/.elan/bin:/nix/var/nix/profiles/default/bin:/root/.local/bin:/root/.cargo/bin:/usr/local/go/bin:/opt/node22/bin:/opt/maven/bin:/opt/gradle/bin:/opt/rbenv/bin:/root/.bun/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
++ PATH=/root/.elan/bin:/nix/var/nix/profiles/default/bin:/root/.local/bin:/root/.cargo/bin:/usr/local/go/bin:/opt/node22/bin:/opt/maven/bin:/opt/gradle/bin:/opt/rbenv/bin:/root/.bun/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
++ cd /tmp/claude-0/-home-user-lean-oscillatory/b3772c09-b8a8-546a-bef0-d6b641743379/scratchpad/dryrun/proj
++ date -u
+Sun Nov  8 00:33:36 UTC 2026
++ lake update oscint
+Current branch: HEAD
+Using cache from origin: (some leanprover-community/mathlib4)
+No files to download
+Completed successfully in 27908 ms!
++ lake exe cache get
++ lake build
+Build completed successfully (9117 jobs).
++ lake build OscInt Blueprint
+Build completed successfully (9122 jobs).
++ echo 'build rc=0'
+build rc=0
++ git -C .lake/packages/oscint rev-parse HEAD
+7098f09f85ff102c359284813f34ee5a6475adb8
++ sha256sum .lake/packages/oscint/tools/oscint_check.py .lake/packages/oscint/stamps/statements.json
+a184f2ec0c8d3893bec491749b198ccd3d80b4ad288045e5ce4f97d85bb0c0db  .lake/packages/oscint/tools/oscint_check.py
+32eac265a3468d5e5e02526df8bc37db1412c339f5fec62fee166c08490e24c0  .lake/packages/oscint/stamps/statements.json
++ python3 .lake/packages/oscint/tools/oscint_check.py --statement OscInt.Statements.D4LimitStatement --statement OscInt.Statements.FoldFEStatement --expect-sha256 32eac265a3468d5e5e02526df8bc37db1412c339f5fec62fee166c08490e24c0
+oscint-check: OscInt statements (27 statements, Lean leanprover/lean4:v4.35.0, Mathlib 56a005855ea1)
+oscint-check: ok: toolchain and Mathlib match; 6 statement file(s) match their stamps
+oscint-check: ok: S4.2 OscInt.d4Limit : OscInt.Statements.D4LimitStatement (axioms ['Classical.choice', 'Quot.sound', 'propext'])
+oscint-check: ok: FE-S3 OscInt.API.foldFE : OscInt.Statements.FoldFEStatement (axioms ['Classical.choice', 'Quot.sound', 'propext'])
+oscint-check: ok: kernel replay (leanchecker) accepted 72 module(s)
+oscint-check: ok: commitment of OscInt.Statements.D4LimitStatement equals its stamp
+oscint-check: ok: commitment of OscInt.Statements.FoldFEStatement equals its stamp
+oscint-check: PASS (0 problem(s))
++ echo 'checker rc=0'
+checker rc=0
++ date -u
+Sun Nov  8 00:51:17 UTC 2026

@@ -5,7 +5,12 @@
 #      docs/release-notes/<tag>.commit (a full 40-hex hash, written in the commit after the release commit);
 #   3. docs/release-notes/<tag>.md has exactly one table row each for stamps/statements.json and
 #      tools/oscint_check.py, giving their SHA-256 AT THAT COMMIT, and every `--expect-sha256 <hex>` in the notes
-#      equals the statements.json row.
+#      equals the statements.json row;
+#   4. the release commit is an ancestor of the checked-out commit (HEAD), so main never pins a release that main
+#      does not contain (on a pull request, HEAD is the merge commit: the tag must be in what main becomes).
+#      Needs full history (CI checks out with fetch-depth 0); a shallow clone fails this check, never skips it.
+#   5. every raw 40-hex commit pin (`rev = "<hash>"`) names a commit contained in HEAD (which implies it exists), so a
+#      commit pin cannot bypass checks 2–4 (adversarial review 2026-11-08, m1).
 # Pins are recognised as `rev = "…"`/`rev = '…'` (any spacing), `@ "…"`, `@ git "…"`, with an optional
 # `refs/tags/` prefix and an optional pre-release suffix; comment lines (`#`, `--`) are ignored; any other
 # `rev =`/`@ git` line that is not a tag or a 40-hex commit is an error, never silently skipped.
@@ -18,6 +23,9 @@
 set -uo pipefail
 
 TAGRE='v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?'
+
+# in_head COMMIT: COMMIT exists and is an ancestor of (or equal to) HEAD of the repository in the current directory.
+in_head() { git merge-base --is-ancestor "$1" HEAD 2>/dev/null; }
 
 # scan FILE: prints one line per pin: "tag <vX.Y.Z>" or "commit <hex>"; prints "bad <line>" for an unrecognised
 # rev/@ git value. Comment lines are skipped.
@@ -69,7 +77,12 @@ check_tag() {
   for e in $(grep -oE -- '--expect-sha256[[:space:]]+[0-9a-f]+' "$nf" | awk '{print $2}'); do
     [ "$e" = "$sj" ] || { echo "FAIL release pin: $nf uses --expect-sha256 $e, not the statements.json row $sj."; rc=1; }
   done
-  [ $rc -eq 0 ] && echo "ok   release pin $tag: tag -> $want (as recorded); notes give the SHA-256 of both pinned files there"
+  if ! "$ANCESTOR" "$want"; then
+    echo "FAIL release pin: the release commit $want of $tag is not contained in the checked-out commit (HEAD)."
+    echo "     Fix: merge the release branch into main before main pins $tag (or fetch full history: fetch-depth 0)."
+    rc=1
+  fi
+  [ $rc -eq 0 ] && echo "ok   release pin $tag: tag -> $want (as recorded, contained in HEAD); notes give the SHA-256 of both pinned files there"
   return $rc
 }
 
@@ -82,6 +95,10 @@ run_checks() {
   if grep -q '^missing ' <<<"$all"; then grep '^missing ' <<<"$all" | sed 's/^/FAIL release pin: /'; rc=1; fi
   if grep -q '^bad ' <<<"$all"; then grep '^bad ' <<<"$all" | sed 's/^bad /FAIL release pin: unrecognised pin: /'; rc=1; fi
   grep -q '^tag ' <<<"$(scan README.md)" || { echo "FAIL release pin: README.md pins no release tag (expected a line rev = \"vX.Y.Z\")."; rc=1; }
+  for c in $(grep '^commit ' <<<"$all" | awk '{print $2}' | sort -u); do
+    if "$ANCESTOR" "$c"; then echo "ok   commit pin $c is contained in HEAD"
+    else echo "FAIL release pin: commit pin $c is not a commit contained in the checked-out commit (HEAD)."; rc=1; fi
+  done
   for t in $(grep '^tag ' <<<"$all" | awk '{print $2}' | sort -u); do
     c=$(awk -v r="refs/tags/$t^{}" '$2==r{print $1}' "$listing")
     [ -n "$c" ] || c=$(awk -v r="refs/tags/$t" '$2==r{print $1}' "$listing")
@@ -96,6 +113,10 @@ if [ "${1:-}" = "--self-test" ]; then
   C1=1111111111111111111111111111111111111111; C2=2222222222222222222222222222222222222222
   fake_show() { case "$1" in "$C1:stamps/statements.json") printf S;; "$C1:tools/oscint_check.py") printf C;;
                                  "$C2:stamps/statements.json") printf X;; "$C2:tools/oscint_check.py") printf C;; *) return 1;; esac; }
+  NOT_IN_HEAD=$T/not-in-head
+  C3=3333333333333333333333333333333333333333
+  fake_anc() { [ ! -e "$NOT_IN_HEAD" ] && [ "$1" != "$C3" ]; }
+  ANCESTOR=fake_anc
   hs=$(printf S | sha256sum | cut -d' ' -f1); hc=$(printf C | sha256sum | cut -d' ' -f1)
   setup() { rm -rf "$T/r"; mkdir -p "$T/r/docs/release-notes" "$T/r/examples/consumer" "$T/r/examples/consumer-release"
     printf 'rev = "v9.9.9"\n' > "$T/r/README.md"; : > "$T/r/docs/policy.md"
@@ -103,7 +124,7 @@ if [ "${1:-}" = "--self-test" ]; then
     printf '| `stamps/statements.json` | `%s` |\n| `tools/oscint_check.py` | `%s` |\n--expect-sha256 %s\n' "$hs" "$hc" "$hs" \
       > "$T/r/docs/release-notes/v9.9.9.md"
     echo "$C1" > "$T/r/docs/release-notes/v9.9.9.commit"
-    printf '%s\trefs/tags/v9.9.9\n' "$C1" > "$T/ls"; }
+    printf '%s\trefs/tags/v9.9.9\n' "$C1" > "$T/ls"; rm -f "$NOT_IN_HEAD"; }
   t() { local want=$1 name=$2; local got out; out=$(cd "$T/r" && run_checks docs/release-notes "$T/ls" fake_show 2>&1); got=$?
         [ "$got" -ne 0 ] && got=1
         if [ "$got" = "$want" ]; then echo "ok   self-test: $name"; else echo "FAIL self-test: $name (rc $got, want $want): $out"; fails=$((fails+1)); fi; }
@@ -132,6 +153,23 @@ if [ "${1:-}" = "--self-test" ]; then
   setup; printf 'require "o" / "oscint" @ git "v9.9.9"\n' > "$T/r/README.md"; t 0 "@ git pin is recognised"
   setup; printf 'rev = "refs/tags/v9.9.9"\n' > "$T/r/README.md"; t 0 "refs/tags/ pin is recognised"
   setup; printf '# rev = "v9.9.8"\nrev = "v9.9.9"\n' > "$T/r/README.md"; t 0 "a comment line naming a missing tag is ignored"
+  setup; touch "$NOT_IN_HEAD"; t 1 "a release commit that HEAD (main) does not contain is rejected"
+  setup; printf 'rev = "%s"\n' "$C3" > "$T/r/examples/consumer-release/lakefile.toml"; t 1 "a raw commit pin not contained in HEAD is rejected"
+  setup; printf 'rev = "%s"\n' "$C1" > "$T/r/examples/consumer-release/lakefile.toml"; t 0 "a raw commit pin contained in HEAD is accepted"
+  # the real ancestry predicate, on a real repository: base -> main; base -> side (unmerged); then merge side
+  G=$T/g; git init -q -b main "$G" && git -C "$G" -c user.name=t -c user.email=t@t commit -q --allow-empty -m base &&
+    git -C "$G" checkout -q -b side && git -C "$G" -c user.name=t -c user.email=t@t commit -q --allow-empty -m side &&
+    git -C "$G" checkout -q main && git -C "$G" -c user.name=t -c user.email=t@t commit -q --allow-empty -m main || {
+      echo "FAIL self-test: could not build the git fixture"; fails=$((fails+1)); }
+  S=$(git -C "$G" rev-parse side)
+  if (cd "$G" && in_head "$S"); then echo "FAIL self-test: real in_head accepted an unmerged commit"; fails=$((fails+1))
+  else echo "ok   self-test: real in_head rejects a commit on an unmerged branch"; fi
+  git -C "$G" -c user.name=t -c user.email=t@t merge -q --no-edit side >/dev/null
+  if (cd "$G" && in_head "$S"); then echo "ok   self-test: real in_head accepts it after the merge"
+  else echo "FAIL self-test: real in_head rejected a merged commit"; fails=$((fails+1)); fi
+  if (cd "$G" && in_head 4444444444444444444444444444444444444444); then
+    echo "FAIL self-test: real in_head accepted a nonexistent commit"; fails=$((fails+1))
+  else echo "ok   self-test: real in_head rejects a nonexistent commit"; fi
   [ $fails -eq 0 ] && { echo "release-pin self-test: PASS"; exit 0; } || { echo "release-pin self-test: FAIL ($fails)"; exit 1; }
 fi
 
@@ -146,4 +184,5 @@ for cf in docs/release-notes/*.commit; do
   git fetch -q --no-tags "$remote" "+refs/tags/$t:refs/release-pin/$t" 2>/dev/null || true
 done
 show() { git show "$1"; }
+ANCESTOR=in_head
 if run_checks docs/release-notes "$listing" show; then echo "release-pin: PASS"; exit 0; else echo "release-pin: FAIL"; exit 1; fi
