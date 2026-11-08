@@ -73,3 +73,28 @@ Imports: `OscInt.Front.Local` (gives `OscInt.API.d4BoundLocal : D4BoundLocalStat
 - `theorem diagPhaseFacts : OscInt.Blueprint.GD.DiagPhaseFacts`: the same derivative computations for
   `φ = −sin κ₁ − sin κ₂ + κ₁ + κ₂`; `Real.cos_pi_div_two_add` (check name; else `Real.cos_add` with `cos (π/2) = 0`,
   `sin (π/2) = 1`); `cubicCoeffs φ = (1/6, 0, 0, 1/6)`; `disc` by `norm_num [disc]`.
+
+## GD-P4 — `OscInt/Front/LatticeLimit.lean`: T6L (launched after GD-P1–P3 and T6 were integrated)
+Imports: `OscInt.Front.LatticeKernel` (brings `OscInt.API.Torus`, `LatticeSymbol`, `GlobalLocal`, `GlobalAssembly`,
+`Local`) and `OscInt.Front.Core` (F2 `OscInt.API.d4LimitClosedForm : D4LimitClosedFormStatement`).
+Prove `theorem latticeLaplacianLimit_proof : OscInt.Statements.LatticeLaplacianLimitStatement` in namespace
+`OscInt.API.LatticeLimitAux` (all helpers there). Route `docs/proof-GD.md` R9:
+1. `OscInt.API.LatticeKernelAux.latticeKernel_eq n (n, n)`: K = ∫ (unfoldWeight k : ℂ) * latticeIntegrand n (n, n) k,
+   and the integrand is `exp(↑(n * (ω k + L₁ k)) * I)` with `L₁ = fst + snd` (as `latticeIntegrand_eq` does for x/t).
+2. F2 on `φ κ = −sin κ₁ − sin κ₂ + κ₁ + κ₂` (`OscInt.API.LatticeSymbol.diagPhaseFacts` gives every hypothesis and
+   `disc (cubicCoeffs φ) = −1/48`) gives `δ > 0`.
+3. `OscInt.API.GlobalLocal.bumpFacts k₀ ρ` with `k₀ = (π/2, π/2)`, `ρ = min δ 1`, gives `χ` (= 1 on `B̄(k₀, ρ/2)`,
+   `tsupport ⊆ B̄(k₀, ρ)`); split `η = χη + (η − χη)` (pattern: `crit_induction` in `OscInt/Front/GlobalAssembly.lean`,
+   with `integrable_integrand`, `cut_split`, `sub_bound`; `mulBoundFacts`).
+4. Remainder: on the compact `K₁ = B̄(0, 4) ∩ B(k₀, ρ/2)ᶜ` the gradient of ω + L₁ never vanishes (`fderiv_latticeSymbol`:
+   it vanishes iff `sin k₁ = sin k₂ = 1`, and in `[−4, 4]` that forces `k = k₀`; `Real.sin_eq_one_iff` or
+   `Real.sin_eq_one_iff_of_lt_of_lt`, check names), so its norm has a positive minimum `c` on `K₁`
+   (`IsCompact.exists_isMinOn`, continuity of `fderiv` from `fderiv_latticeSymbol`; handle `K₁ = ∅`);
+   `OscInt.API.nonStationaryOn 1` gives `‖·‖ ≤ C/n`, and `n^{2/3} · C/n → 0`.
+5. Piece: translate by `k₀` (`MeasureTheory.integral_add_left_eq_self`; GD-P1's `integrand_translate` shows the
+   pattern): ω(k₀ + κ) + L₁(k₀ + κ) = π + φ κ (last conjunct of `diagPhaseFacts`), so the piece is
+   `exp(i n π) ∫ e^{i n φ} B` with `B κ = (χ η)(k₀ + κ)`, `tsupport B ⊆ B̄(0, δ)`, `B 0 = χ k₀ · η k₀ = 1`
+   (`unfoldWeight_pi_div_two`). F2's limit is along real `t`; compose with `tendsto_natCast_atTop_atTop`.
+   `(−1)ⁿ exp(i n π) = 1` (`Complex.exp_pi_mul_I`, `pow`).
+6. Combine the two limits (`Tendsto.add`, `tendsto_const_nhds`, `Tendsto.congr'` with `eventually_ge_atTop`), and
+   match the statement's form `((n : ℝ) ^ ((2 : ℝ) / 3) : ℂ) * (-1) ^ n * latticeKernel n (n, n)`.

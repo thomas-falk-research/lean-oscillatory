@@ -157,38 +157,31 @@ example : FoldOnStatement := OscInt.API.foldOn
 
 /-! ### GD-C: Global decay from the classification at critical points: decay `m^{-2/3}`, uniform over amplitudes supported in `K` and over `L ∈ K'`. -/
 
-/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/
-example (h : GlobalDecayCritStatement) : GlobalDecayCritStatement := h
+example : GlobalDecayCritStatement := OscInt.API.globalDecayCrit
 
 /-! ### GD: Global decay from the pointwise classification: decay `m^{-2/3}`, uniform over amplitudes supported in `K` and over all linear terms `L`. -/
 
-/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/
-example (h : GlobalDecayStatement) : GlobalDecayStatement := h
+example : GlobalDecayStatement := OscInt.API.globalDecay
 
 /-! ### GD-F: Every point of `K` nondegenerate or a fold: decay `m^{-5/6}` over all linear terms. -/
 
-/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/
-example (h : GlobalFoldStatement) : GlobalFoldStatement := h
+example : GlobalFoldStatement := OscInt.API.globalFold
 
 /-! ### GD-N: Every point of `K` nondegenerate: decay `m^{-1}` over all linear terms. -/
 
-/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/
-example (h : GlobalNondegStatement) : GlobalNondegStatement := h
+example : GlobalNondegStatement := OscInt.API.globalNondeg
 
 /-! ### SH: Sharpness: if `m^σ I(m) → c ≠ 0`, then eventually `|I(m)| ≥ (|c|/2) m^{-σ}`, and no bound `|I(m)| ≤ C m^{-σ'}` with `σ' > σ` holds eventually; for functions on `ℝ` and for sequences. -/
 
-/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/
-example (h : SharpnessStatement) : SharpnessStatement := h
+example : SharpnessStatement := OscInt.API.sharpness
 
 /-! ### T1: Unfolding: a smooth weight `η` supported in `closedBall 0 4` (max norm) with `∫_{[−π, π]²} g = ∫_{ℝ²} η g` for every continuous `g` that is `2π`-periodic in each variable. -/
 
-/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/
-example (h : TorusUnfoldStatement) : TorusUnfoldStatement := h
+example : TorusUnfoldStatement := OscInt.API.torusUnfold
 
 /-! ### T6: Dispersive decay of the 2D lattice Laplacian: `|K(t, x)| ≤ C t^{-2/3}` for `t ≥ 1`, uniformly over `x ∈ ℤ²`. -/
 
-/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/
-example (h : LatticeLaplacianDecayStatement) : LatticeLaplacianDecayStatement := h
+example : LatticeLaplacianDecayStatement := OscInt.API.latticeLaplacianDecay
 
 /-! ### T6L: The leading term on the diagonal: `(−1)ⁿ n^{2/3} K(n, (n, n)) → Γ(1/3)² 48^{1/6}/√3` (`= d4ClosedConstant (−1/48)`, the D4 constant of the cubic `(κ₁³ + κ₂³)/6` at `(π/2, π/2)`). -/
 

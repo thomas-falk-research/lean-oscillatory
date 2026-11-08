@@ -587,7 +587,7 @@
     "FE-S3l"
    ],
    "snippet_kind": "type",
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : GlobalDecayCritStatement) : GlobalDecayCritStatement := h"
+   "snippet": "example : GlobalDecayCritStatement := OscInt.API.globalDecayCrit"
   },
   "GD": {
    "hypotheses": [
@@ -606,7 +606,7 @@
     "T6"
    ],
    "snippet_kind": "type",
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : GlobalDecayStatement) : GlobalDecayStatement := h"
+   "snippet": "example : GlobalDecayStatement := OscInt.API.globalDecay"
   },
   "GD-F": {
    "hypotheses": [
@@ -622,7 +622,7 @@
     "FE-S3l"
    ],
    "snippet_kind": "type",
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : GlobalFoldStatement) : GlobalFoldStatement := h"
+   "snippet": "example : GlobalFoldStatement := OscInt.API.globalFold"
   },
   "GD-N": {
    "hypotheses": [
@@ -638,7 +638,7 @@
     "FE-S2.2l"
    ],
    "snippet_kind": "type",
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : GlobalNondegStatement) : GlobalNondegStatement := h"
+   "snippet": "example : GlobalNondegStatement := OscInt.API.globalNondeg"
   },
   "SH": {
    "hypotheses": [
@@ -653,7 +653,7 @@
     "F2"
    ],
    "snippet_kind": "type",
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : SharpnessStatement) : SharpnessStatement := h"
+   "snippet": "example : SharpnessStatement := OscInt.API.sharpness"
   },
   "T1": {
    "hypotheses": [
@@ -668,7 +668,7 @@
     "GD"
    ],
    "snippet_kind": "type",
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : TorusUnfoldStatement) : TorusUnfoldStatement := h"
+   "snippet": "example : TorusUnfoldStatement := OscInt.API.torusUnfold"
   },
   "T6": {
    "hypotheses": [
@@ -684,7 +684,7 @@
     "T1"
    ],
    "snippet_kind": "type",
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : LatticeLaplacianDecayStatement) : LatticeLaplacianDecayStatement := h"
+   "snippet": "example : LatticeLaplacianDecayStatement := OscInt.API.latticeLaplacianDecay"
   },
   "T6L": {
    "hypotheses": [

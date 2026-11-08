@@ -908,7 +908,7 @@
   {
    "label": "GD-C",
    "name": "OscInt.Statements.GlobalDecayCritStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.globalDecayCrit",
    "summary": "Global decay from the classification at critical points: decay `m^{-2/3}`, uniform over amplitudes supported in `K` and over `L ∈ K'`.",
    "file": "OscInt/Statements/Global.lean",
    "commitment": "8135968718f6b9a261141f06d6155953423cd93dd1e4a13e1175304d6795ee7e",
@@ -928,13 +928,13 @@
     "FE-S4.1′L",
     "FE-S3l"
    ],
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : GlobalDecayCritStatement) : GlobalDecayCritStatement := h",
+   "snippet": "example : GlobalDecayCritStatement := OscInt.API.globalDecayCrit",
    "status": "see docs/STATUS.md (row GD-C)"
   },
   {
    "label": "GD",
    "name": "OscInt.Statements.GlobalDecayStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.globalDecay",
    "summary": "Global decay from the pointwise classification: decay `m^{-2/3}`, uniform over amplitudes supported in `K` and over all linear terms `L`.",
    "file": "OscInt/Statements/Global.lean",
    "commitment": "b87a60a72581eec6cedb64ec8a2a8f94322a83fce7e0a9e91b66e1a2d83e7fe2",
@@ -955,13 +955,13 @@
     "GD-N",
     "T6"
    ],
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : GlobalDecayStatement) : GlobalDecayStatement := h",
+   "snippet": "example : GlobalDecayStatement := OscInt.API.globalDecay",
    "status": "see docs/STATUS.md (row GD)"
   },
   {
    "label": "GD-F",
    "name": "OscInt.Statements.GlobalFoldStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.globalFold",
    "summary": "Every point of `K` nondegenerate or a fold: decay `m^{-5/6}` over all linear terms.",
    "file": "OscInt/Statements/Global.lean",
    "commitment": "dc7e03cebd759bf1bfce95671f04833ed6b8498bb3f4ce35ba5e604d3f3a5e08",
@@ -979,13 +979,13 @@
     "GD",
     "FE-S3l"
    ],
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : GlobalFoldStatement) : GlobalFoldStatement := h",
+   "snippet": "example : GlobalFoldStatement := OscInt.API.globalFold",
    "status": "see docs/STATUS.md (row GD-F)"
   },
   {
    "label": "GD-N",
    "name": "OscInt.Statements.GlobalNondegStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.globalNondeg",
    "summary": "Every point of `K` nondegenerate: decay `m^{-1}` over all linear terms.",
    "file": "OscInt/Statements/Global.lean",
    "commitment": "81a7043fa38d91646a25bf72ee2bfee15cd2ec5e4eaa027b9bf6ac52c65cec30",
@@ -1003,13 +1003,13 @@
     "GD",
     "FE-S2.2l"
    ],
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : GlobalNondegStatement) : GlobalNondegStatement := h",
+   "snippet": "example : GlobalNondegStatement := OscInt.API.globalNondeg",
    "status": "see docs/STATUS.md (row GD-N)"
   },
   {
    "label": "SH",
    "name": "OscInt.Statements.SharpnessStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.sharpness",
    "summary": "Sharpness: if `m^σ I(m) → c ≠ 0`, then eventually `|I(m)| ≥ (|c|/2) m^{-σ}`, and no bound `|I(m)| ≤ C m^{-σ'}` with `σ' > σ` holds eventually; for functions on `ℝ` and for sequences.",
    "file": "OscInt/Statements/Global.lean",
    "commitment": "7e2d846d91a10c1089e2be02c5c3a11a3fa3356c92a5d05ac36672dd49fff8f4",
@@ -1026,13 +1026,13 @@
     "T6L",
     "F2"
    ],
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : SharpnessStatement) : SharpnessStatement := h",
+   "snippet": "example : SharpnessStatement := OscInt.API.sharpness",
    "status": "see docs/STATUS.md (row SH)"
   },
   {
    "label": "T1",
    "name": "OscInt.Statements.TorusUnfoldStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.torusUnfold",
    "summary": "Unfolding: a smooth weight `η` supported in `closedBall 0 4` (max norm) with `∫_{[−π, π]²} g = ∫_{ℝ²} η g` for every continuous `g` that is `2π`-periodic in each variable.",
    "file": "OscInt/Statements/Global.lean",
    "commitment": "15f6d28880063e4e7be0ebca30e3f887c84bbdcf87dd13719ddf6ef686eb28f2",
@@ -1049,13 +1049,13 @@
     "T6",
     "GD"
    ],
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : TorusUnfoldStatement) : TorusUnfoldStatement := h",
+   "snippet": "example : TorusUnfoldStatement := OscInt.API.torusUnfold",
    "status": "see docs/STATUS.md (row T1)"
   },
   {
    "label": "T6",
    "name": "OscInt.Statements.LatticeLaplacianDecayStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.latticeLaplacianDecay",
    "summary": "Dispersive decay of the 2D lattice Laplacian: `|K(t, x)| ≤ C t^{-2/3}` for `t ≥ 1`, uniformly over `x ∈ ℤ²`.",
    "file": "OscInt/Statements/Global.lean",
    "commitment": "5e66240de60fe7c659a563e5bae55782c37690afc14c8ec735d5ac60425e5ad0",
@@ -1073,7 +1073,7 @@
     "GD",
     "T1"
    ],
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : LatticeLaplacianDecayStatement) : LatticeLaplacianDecayStatement := h",
+   "snippet": "example : LatticeLaplacianDecayStatement := OscInt.API.latticeLaplacianDecay",
    "status": "see docs/STATUS.md (row T6)"
   },
   {

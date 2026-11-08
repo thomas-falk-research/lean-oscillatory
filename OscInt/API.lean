@@ -9,6 +9,7 @@ import OscInt.Front.FamilySanity2
 import OscInt.Front.FamilyC10
 import OscInt.Front.Local
 import OscInt.Front.GlobalSanity
+import OscInt.Front.GlobalFinal
 
 /-!
 # OscInt public API
