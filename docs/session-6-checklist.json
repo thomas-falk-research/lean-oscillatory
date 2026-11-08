@@ -1,0 +1,43 @@
+{
+ "session": 6,
+ "started": "2026-11-08",
+ "base_commit": "34f8793",
+ "rule": "An item is done only with an evidence path; 'open' items say where they stopped.",
+ "handover_corrections": [
+  "Verified 2026-11-08: origin/main = 34f8793 (merge of PR #5), as the brief says. Tags v0.2.0, v0.3.0 present; no v0.4.0.",
+  "Container: no Lean toolchain; elan's GitHub release asset returned HTTP 504 repeatedly, so the pinned toolchain archive was downloaded directly (sha256 matches toolchain.sha256) and put on PATH without elan. Clone was shallow; unshallowed before any history-reading step (lessons 32).",
+  "Brief item 'Batch API3 ... STATUS rows owner decision pending' holds; but a record cited by review/2026-11-08-API3-answers.md (a 'second part' of the plant record) does not exist (step-5 rule referee, finding 2); corrected by a re-run record and an erratum."
+ ],
+ "items": [
+  {
+   "id": "baseline",
+   "title": "make quick on 34f8793 in a fresh container",
+   "status": "done",
+   "evidence": "docs/replay/2026-11-08-session6-baseline-quick.txt (exit 0, 9m06s; guard 81 files 0 violations; audit 747/747; 37 TYPE-OK; 37 statements; Gamma-free control rejected; entry point 74 names PASS)"
+  },
+  {
+   "id": "P0-step5",
+   "title": "Owner memo on CONTRIBUTING step 5 with exact texts, reviewed by a fresh adversarial referee",
+   "status": "done (owner decision pending)",
+   "evidence": "docs/decisions/2026-11-08-step5-memo.md (rewritten after review); review/2026-11-08-step5-rule-referee.md (ADOPTABLE-WITH-CHANGES, 1 BLOCKER, 7 MAJOR); review/2026-11-08-step5-rule-answers.md; docs/replay/2026-11-08-session6-API3-plants-rerun.txt"
+  },
+  {
+   "id": "P0-v040",
+   "title": "v0.4.0 release notes, CHANGELOG",
+   "status": "prepared; pins recomputed at the end of the session",
+   "evidence": "docs/release-notes/v0.4.0.md"
+  },
+  {
+   "id": "P1-prereg",
+   "title": "Pre-registered numeric classification (arccos family, lattice Laplacian) and lattice-kernel limit",
+   "status": "registered, not yet run",
+   "evidence": "docs/prereg/2026-11-08-P1-classify.md, numerics/src/bin/classify.rs"
+  },
+  {
+   "id": "P1-GD",
+   "title": "Batch GD statements (global decay, sharpness, torus unfolding, lattice Laplacian)",
+   "status": "drafting",
+   "evidence": ""
+  }
+ ]
+}
