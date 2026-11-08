@@ -13,5 +13,6 @@ import Blueprint.D4Limit
 import Blueprint.D4LimitS42
 import Blueprint.D4ClosedForm
 import Blueprint.Global
+import Blueprint.LatticeExplicit
 
 /-! Root of the blueprint library: intermediate propositions (definitions only, no proofs). -/
