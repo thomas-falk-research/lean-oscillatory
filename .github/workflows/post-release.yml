@@ -1,0 +1,124 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: post-release
+
+# After the owner publishes a GitHub release: check that the tag is a commit on main that passed a release-candidate
+# run, that the published assets are the attested ones, build the README's downstream setup against the tag, and
+# open the pull request that records docs/release-notes/<tag>.commit and moves the pins
+# (docs/decisions/2026-11-08-ci-release-review.md).
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to check again, e.g. v0.4.0"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+      attestations: read
+    outputs:
+      tag: ${{ steps.c.outputs.tag }}
+      sha: ${{ steps.c.outputs.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
+          fetch-depth: 0
+      - name: Tag on main, preflight on the tagged commit, a successful release-candidate run for it, attested assets
+        id: c
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          set -euo pipefail
+          sha=$(git rev-parse "$TAG^{commit}")
+          git merge-base --is-ancestor "$sha" origin/main || { echo "::error::$TAG ($sha) is not on main"; exit 1; }
+          tools/release_preflight.sh "${TAG#v}"
+          n=$(gh run list --repo "${{ github.repository }}" --workflow release-candidate.yml --commit "$sha" --status success \
+                --json databaseId --jq length)
+          [ "$n" -gt 0 ] || { echo "::error::no successful release-candidate run for $sha"; exit 1; }
+          mkdir rel && gh release download "$TAG" --repo "${{ github.repository }}" -D rel
+          (cd rel && sha256sum -c SHA256SUMS)
+          cmp rel/statements.json stamps/statements.json && cmp rel/oscint_check.py tools/oscint_check.py
+          for f in rel/statements.json rel/oscint_check.py rel/SHA256SUMS; do
+            gh attestation verify "$f" --repo "${{ github.repository }}"
+          done
+          { echo "tag=$TAG"; echo "sha=$sha"; } >> "$GITHUB_OUTPUT"
+
+  consumer-release:
+    # the README's instructions end to end, against the published tag
+    needs: check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.check.outputs.sha }}
+      - uses: ./.github/actions/setup-lean
+        with:
+          mathlib-cache: "false"
+      - name: Build examples/consumer-release against the tag; the package is the tagged commit; checker PASS
+        working-directory: examples/consumer-release
+        env:
+          TAG: ${{ needs.check.outputs.tag }}
+          SHA: ${{ needs.check.outputs.sha }}
+        run: |
+          set -euo pipefail
+          sed -i -E "s/rev = \"v[0-9]+\.[0-9]+\.[0-9]+\"/rev = \"$TAG\"/" lakefile.toml
+          lake update
+          for _ in 1 2 3; do lake exe cache get && break; sleep 30; done
+          lake build && lake build OscInt Blueprint
+          test "$(git -C .lake/packages/oscint rev-parse HEAD)" = "$SHA"
+          python3 .lake/packages/oscint/tools/oscint_check.py --oscint .lake/packages/oscint \
+            --statement OscInt.Statements.StationaryPhaseStatement --statement OscInt.Statements.FoldFEStatement \
+            --statement OscInt.Statements.LatticeLaplacianDecayStatement \
+            --expect-sha256 "$(sha256sum ../../stamps/statements.json | cut -d' ' -f1)" --commitments
+
+  pins-pr:
+    # needs the repository setting "Allow GitHub Actions to create and approve pull requests"; without it the branch
+    # is still pushed and the step prints the link to open the pull request by hand
+    needs: [check, consumer-release]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write        # pushes the branch release/<tag>-pins only
+      pull-requests: write
+      actions: write         # dispatches ci.yml on that branch (GITHUB_TOKEN events do not trigger pull_request runs)
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+      - name: Record the release commit and move the pins, on a branch with a pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.check.outputs.tag }}
+          SHA: ${{ needs.check.outputs.sha }}
+        run: |
+          set -euo pipefail
+          b="release/$TAG-pins"
+          git switch -c "$b"
+          echo "$SHA" > "docs/release-notes/$TAG.commit"
+          # on every line that pins a tag (`rev = "vX.Y.Z"`), the old tag becomes the new one, comments included
+          sed -i -E "/rev = \"v[0-9]+\.[0-9]+\.[0-9]+\"/ s/v[0-9]+\.[0-9]+\.[0-9]+/$TAG/g" \
+            README.md docs/policy.md examples/consumer-release/lakefile.toml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "Release $TAG: record the release commit $SHA; README and consumer-release pin $TAG"
+          git push -q origin "$b"
+          if ! gh pr create --base main --head "$b" --title "Release $TAG: pins" --body "Written by post-release run ${{ github.run_id }} after the checks of $TAG ($SHA) and the consumer build against the tag passed. CI is dispatched on this branch; merge when it is green."; then
+            echo "::warning::could not open the pull request (repository setting?); open it by hand: https://github.com/${{ github.repository }}/compare/main...$b"
+          fi
+          gh workflow run ci.yml --ref "$b"

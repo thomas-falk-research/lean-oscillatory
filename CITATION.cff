@@ -1,13 +1,25 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: CC-BY-4.0
 cff-version: 1.2.0
 message: "If you use this library, please cite it as below."
 title: "OscInt: uniform oscillatory-integral estimates in Lean 4 and Mathlib"
+abstract: >-
+  A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates in one and two variables:
+  van der Corput's lemma with explicit constants, non-stationary and nondegenerate stationary phase, the uniform
+  fold and D4 (umbilic) estimates with the D4 leading term and its closed-form constant, front ends in Mathlib's
+  idiom, and global decay from a pointwise classification of the phase, with the 2D lattice-Laplacian dispersive
+  estimate as an application. Statements are frozen and timestamped before their proofs and replayed by several
+  independent kernels.
 type: software
 authors:
-  - family-names: "Falk"
-    given-names: "Thomas"
-    name-suffix: "III"
+  - given-names: "Thomas"
+    family-names: "Falk III"
+    email: "research@thomas-falk-research.com"
     orcid: "https://orcid.org/0009-0001-9478-6061"
-license: Apache-2.0
+license:
+  - Apache-2.0
+  - CC-BY-4.0
 repository-code: "https://github.com/thomas-falk-research/lean-oscillatory"
 version: "0.3.0"
 doi: "10.5281/zenodo.24021328"
@@ -16,6 +28,9 @@ identifiers:
   - type: doi
     value: "10.5281/zenodo.24021328"
     description: "All versions (concept DOI)"
+  - type: doi
+    value: "10.5281/zenodo.24045231"
+    description: "Version 0.3.0"
   - type: doi
     value: "10.5281/zenodo.24021329"
     description: "Version 0.2.0"
@@ -26,3 +41,56 @@ keywords:
   - oscillatory integrals
   - stationary phase
   - van der Corput lemma
+  - dispersive estimates
+  - "MSC2020: 42B20 Singular and oscillatory integrals"
+  - "MSC2020: 41A60 Asymptotic approximations, asymptotic expansions"
+  - "MSC2020: 35Q41 Time-dependent Schrödinger equations"
+  - "MSC2020: 68V20 Formalization of mathematics in connection with theorem provers"
+  - "MSC2020: 03B35 Mechanization of proofs and logical operations"
+references:
+  - type: conference-paper
+    title: "The Lean Mathematical Library"
+    authors:
+      - name: "The mathlib Community"
+    collection-title: "Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs"
+    publisher:
+      name: "ACM"
+    year: 2020
+    start: 367
+    end: 381
+    doi: "10.1145/3372885.3373824"
+  - type: conference-paper
+    title: "The Lean 4 Theorem Prover and Programming Language"
+    authors:
+      - given-names: "Leonardo"
+        family-names: "de Moura"
+      - given-names: "Sebastian"
+        family-names: "Ullrich"
+    collection-title: "Lecture Notes in Computer Science"
+    publisher:
+      name: "Springer International Publishing"
+    year: 2021
+    start: 625
+    end: 635
+    doi: "10.1007/978-3-030-79876-5_37"
+  - type: software
+    title: "lean-oscillatory"
+    authors:
+      - given-names: "Joris"
+        family-names: "Roos"
+      - given-names: "Manasa"
+        family-names: "Praveen"
+    repository-code: "https://github.com/roos-j/lean-oscillatory"
+    license: Apache-2.0
+    notes: "OscInt's one-dimensional van der Corput proofs (S1) are derived from this work."
+  - type: book
+    title: "Harmonic Analysis: Real-Variable Methods, Orthogonality, and Oscillatory Integrals"
+    authors:
+      - given-names: "Elias M."
+        family-names: "Stein"
+    publisher:
+      name: "Princeton University Press"
+    year: 1993
+    collection-title: "Princeton Mathematical Series"
+    volume: 43
+    isbn: "0691032165"

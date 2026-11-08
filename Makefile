@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Every target exits non-zero on failure. A target with nothing to check yet writes build/skipped/<target>;
 # verify-all then reports INCOMPLETE, never PASS.
 LAKE ?= lake

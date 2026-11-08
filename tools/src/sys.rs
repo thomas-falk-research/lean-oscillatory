@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! Process helpers. SHA-256 is computed by coreutils `sha256sum`, not reimplemented here.
 
 use std::path::Path;

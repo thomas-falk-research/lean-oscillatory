@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Check, from a downstream Lake project, that the OscInt you depend on is exactly the reviewed one.
 
 Run it from your project's root after `lake build` and `lake build OscInt Blueprint` (the kernel replay needs every

@@ -1,3 +1,13 @@
+/-
+Copyright (c) 2025 Joris Roos. All rights reserved.
+Copyright (c) 2026 Thomas Falk III. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Joris Roos, Manasa Praveen, Thomas Falk III
+Modified 2026 by Thomas Falk III: derived from roos-j/lean-oscillatory and adapted to OscInt's frozen
+statements; the changes are described in this file's module docstring.
+SPDX-License-Identifier: Apache-2.0
+-/
+
 import Blueprint.VanDerCorput
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts

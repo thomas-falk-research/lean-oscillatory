@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# Keeps the SHA-pinned GitHub Actions current (weekly, one grouped pull request). Dependabot rewrites the pinned SHA
+# and the version comment together. tools/ and numerics/ have no crates (docs/dependencies.md); Lean and Mathlib are
+# upgraded by the procedure in docs/policy.md, never by Dependabot.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directories: ["/", "/.github/actions/setup-lean"]
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "ci"

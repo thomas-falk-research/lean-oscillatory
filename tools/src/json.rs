@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! Minimal JSON reader (RFC 8259) for the small records the tools consume. Numbers are kept as their
 //! source text; callers convert.
 

@@ -28,6 +28,8 @@ Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801a
 | S4.4 closed forms of c_C (the brief's Γ(1/3)²/(√3\|Disc\|^{1/6})) | machine-checked as stated (`OscInt.d4ConstantClosedForm`; verify-all PASS). The brief's limit with its constant is S4.2 ∧ S4.4 (`OscInt.d4Limit`, `OscInt.d4ConstantClosedForm`) |
 | F1, F2 front end (`ContDiff` amplitudes; the D4 limit with its closed-form constant as one theorem) | machine-checked as stated (`OscInt.API.ampBoundOfContDiff`, `OscInt.API.d4LimitClosedForm`; bridges drafted before the review, disclosed), see `docs/STATUS.md` |
 | Front-end batch 2: conversions C1–C9, C7′ (`iteratedFDeriv`, Hessian matrices, `Cubic.discr`, kernel/rank fold condition, norms, `HasCompactSupport`) and front ends FE-S2.1, FE-S2.2, FE-S3, FE-S4.1′ (`OscInt.API.*`, `import OscInt.API`) | see `docs/STATUS.md` (post-proof FAITHFUL ×2; final replay record named there) |
+| Front-end batch 3: compact families (S2.2F, S3c, C10), local smoothness (FE-S2.1L/S2.2L/S3L/S4.1′L, single-phase forms) | see `docs/STATUS.md` (owner decision pending on CONTRIBUTING step 5) |
+| Batch GD: global decay from a local classification (GD-C, GD, GD-F, GD-N), sharpness (SH), torus unfolding (T1), 2D lattice-Laplacian dispersive estimate t^{-2/3} and its leading term (T6, T6L) | see `docs/STATUS.md`; example `examples/consumer/ConsumerLattice.lean` |
 
 "As stated" means the hypotheses in `docs/statements.md` (derivatives continuous up to the endpoints, as in the
 source's C^k assumption). Details and evidence: `docs/STATUS.md`.
@@ -159,4 +161,32 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 | `docs/prior_art.md`, `docs/upstream.md` | prior-art gate; Mathlib candidates (no PR without the owner) |
 | `docs/replay/` | committed `verify-all` and replay records |
 
-Code: Apache-2.0 (`LICENSE`). Documentation: CC BY 4.0 (`LICENSE-docs`). Citation: `CITATION.cff`.
+## How to cite
+
+Cite the software through its concept DOI, which always resolves to the latest version
+([10.5281/zenodo.24021328](https://doi.org/10.5281/zenodo.24021328)); to cite the exact version you used, take its
+version DOI from the [Zenodo record](https://doi.org/10.5281/zenodo.24021328) (v0.3.0:
+[10.5281/zenodo.24045231](https://doi.org/10.5281/zenodo.24045231)). GitHub's "Cite this repository" button reads
+`CITATION.cff`, and `codemeta.json` carries the same metadata for software indexes.
+
+```bibtex
+@software{FalkIII_OscInt,
+  author    = {Falk III, Thomas},
+  title     = {{OscInt}: uniform oscillatory-integral estimates in {Lean} 4 and {Mathlib}},
+  publisher = {Zenodo},
+  year      = {2026},
+  doi       = {10.5281/zenodo.24021328},
+  url       = {https://github.com/thomas-falk-research/lean-oscillatory},
+  note      = {ORCID 0009-0001-9478-6061}
+}
+```
+(`@software` is biblatex; with classic BibTeX use `@misc` and the same fields.) If you use the one-dimensional van der
+Corput results, please also cite J. Roos and M. Praveen, [`roos-j/lean-oscillatory`](https://github.com/roos-j/lean-oscillatory),
+from which they are derived.
+
+## Licence
+
+Code, configuration and data: Apache-2.0 (`LICENSE`). Documentation: CC BY 4.0 (`LICENSE-docs`). Per-file
+licensing follows the [REUSE specification 3.3](https://reuse.software/spec-3.3/) (comment headers, `REUSE.toml`,
+`LICENSES/`; checked by `reuse lint` in CI). The one-dimensional van der Corput proofs are derived from
+`roos-j/lean-oscillatory` (Apache-2.0) and keep its copyright notice. Citation metadata: `CITATION.cff`, `codemeta.json`.

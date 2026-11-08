@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! Numeric classification of critical-point types (N, F, D4, X) of 2D phases.
 //! Protocol: docs/prereg/2026-11-08-P1-classify.md (registered before the first run). Tooling, never evidence.
 //! f64, closed-form derivatives; no dependencies.

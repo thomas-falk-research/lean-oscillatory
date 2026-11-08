@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #![forbid(unsafe_code)]
 //! S4.2 constant probes (IEEE-754 binary64, round-to-nearest; tooling, never evidence for a theorem).
 //!

@@ -65,6 +65,10 @@ OscInt's statement files. Procedure:
 5. A scheduled CI job (ROADMAP §3) builds against the newest Mathlib weekly and only warns; it never changes pins.
 
 ## What a downstream project should do
+- The owner creates release tags and GitHub releases (decision 2026-11-08); a tag is created only on a `main` commit
+  that passed a `release-candidate` run (preflight and the full replay on that commit), with the assets that run
+  built and attested; `post-release` checks this after publishing (`docs/decisions/2026-11-08-ci-release-review.md`).
+  Verify an asset with `gh attestation verify <file> --repo thomas-falk-research/lean-oscillatory`.
 - Pin a release tag (in `lakefile.toml`: `rev = "v0.3.0"` under `[[require]] name = "oscint"`, README) and the
   SHA-256 of `stamps/statements.json` from that release's notes (`docs/release-notes/<tag>.md`); against tampering,
   pin the full commit hash recorded in `docs/release-notes/<tag>.commit` instead of the tag name.

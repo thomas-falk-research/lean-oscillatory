@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #![forbid(unsafe_code)]
 //! `stamp create ROOT OUTDIR`: writes `OUTDIR/manifest.txt` (commit, then `<sha256>  <path>` for every file
 //! tracked at HEAD, then the statement commitments from `build/commit/commitments.txt` and the SHA-256 of each

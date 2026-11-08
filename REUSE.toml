@@ -1,0 +1,91 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: CC-BY-4.0
+#
+# REUSE 3.3 licensing information for files that do not carry a comment header (https://reuse.software/spec-3.3/).
+# Source files carry their own headers. Files listed here either cannot carry one (JSON, lock files, toolchain pins
+# read by tools), must not change (frozen statement files, stamps, verbatim reviews and replay records), are
+# generated, or are documentation covered as a whole by LICENSE-docs. The last matching table wins.
+version = 1
+
+# Configuration, data, generated files and records of the software: Apache-2.0 (owner decision 2026-11-08).
+[[annotations]]
+path = [
+  "lake-manifest.json", "lean-toolchain", "toolchain.sha256", "comparator*.json",
+  "tools/Cargo.lock", "numerics/Cargo.lock", "numerics/results-*.txt",
+  "examples/**/lake-manifest.json", "examples/**/lean-toolchain", "examples/api/**",
+  "stamps/pins.txt", "stamps/statements.json", "stamps/*/manifest.txt",
+]
+SPDX-FileCopyrightText = "2026 Thomas Falk III <research@thomas-falk-research.com>"
+SPDX-License-Identifier = "Apache-2.0"
+
+# Frozen challenges: the comparator checks their export's SHA-256 against the stamp, and a header would shift the source
+# positions that Lean records in each `sorry`, changing the export; they carry no comment header.
+[[annotations]]
+path = ["Challenge.lean", "Challenge/*.lean"]
+SPDX-FileCopyrightText = "2026 Thomas Falk III <research@thomas-falk-research.com>"
+SPDX-License-Identifier = "Apache-2.0"
+
+# Frozen statement files: their SHA-256 is pinned (stamps/pins.txt, `make commit`), so they carry no comment header.
+[[annotations]]
+path = "OscInt/Statements/*.lean"
+SPDX-FileCopyrightText = "2026 Thomas Falk III <research@thomas-falk-research.com>"
+SPDX-License-Identifier = "Apache-2.0"
+
+# S1's statement forms follow J. Roos and M. Praveen, roos-j/lean-oscillatory (Apache-2.0).
+[[annotations]]
+path = "OscInt/Statements/VanDerCorput.lean"
+SPDX-FileCopyrightText = ["2025 Joris Roos", "2026 Thomas Falk III <research@thomas-falk-research.com>"]
+SPDX-License-Identifier = "Apache-2.0"
+SPDX-FileComment = "Statement forms and constants follow roos-j/lean-oscillatory; modified 2026 by Thomas Falk III."
+
+# Documentation: CC-BY-4.0 (LICENSE-docs; owner decision 2026-11-08 for the files it did not list).
+[[annotations]]
+path = [
+  "docs/**", "review/**", "README.md", "CHANGELOG.md", "CONTRIBUTING.md", ".github/ISSUE_TEMPLATE/**",
+  "CITATION.cff", ".zenodo.json", "codemeta.json",
+]
+SPDX-FileCopyrightText = "2026 Thomas Falk III <research@thomas-falk-research.com>"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# Inside docs/: generated from code, or copies of Lean code, follow the code (Apache-2.0).
+[[annotations]]
+path = ["docs/api.json", "docs/replay/plants/**"]
+SPDX-FileCopyrightText = "2026 Thomas Falk III <research@thomas-falk-research.com>"
+SPDX-License-Identifier = "Apache-2.0"
+
+# Third-party files redistributed unmodified for verification (owner decision 2026-11-08).
+[[annotations]]
+path = "stamps/roots/digicert-trusted-root-g4.pem"
+SPDX-FileCopyrightText = "DigiCert Inc"
+SPDX-License-Identifier = "LicenseRef-PublicCertificate"
+
+[[annotations]]
+path = "stamps/roots/usertrust-rsa.pem"
+SPDX-FileCopyrightText = "The USERTRUST Network"
+SPDX-License-Identifier = "LicenseRef-PublicCertificate"
+
+[[annotations]]
+path = "stamps/roots/freetsa.pem"
+SPDX-FileCopyrightText = "Free TSA"
+SPDX-License-Identifier = "LicenseRef-PublicCertificate"
+
+[[annotations]]
+path = "stamps/*/digicert.tsr"
+SPDX-FileCopyrightText = "DigiCert, Inc."
+SPDX-License-Identifier = "LicenseRef-PublicCertificate"
+
+[[annotations]]
+path = "stamps/*/sectigo.tsr"
+SPDX-FileCopyrightText = "Sectigo Limited"
+SPDX-License-Identifier = "LicenseRef-PublicCertificate"
+
+[[annotations]]
+path = "stamps/*/freetsa.tsr"
+SPDX-FileCopyrightText = "Free TSA"
+SPDX-License-Identifier = "LicenseRef-PublicCertificate"
+
+[[annotations]]
+path = ["stamps/*/manifest.a.pool.ots", "stamps/*/manifest.b.pool.ots"]
+SPDX-FileCopyrightText = "OpenTimestamps calendar servers a.pool.opentimestamps.org and b.pool.opentimestamps.org"
+SPDX-License-Identifier = "LicenseRef-PublicCertificate"

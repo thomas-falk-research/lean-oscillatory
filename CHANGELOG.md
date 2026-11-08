@@ -37,6 +37,26 @@ stamped at `stamps/20261108T102629Z-8c8d7b090adb`): GD-C `GlobalDecayCritStateme
 - Owner memo on CONTRIBUTING step 5 (`docs/decisions/2026-11-08-step5-memo.md`, refereed); v0.4.0 notes prepared.
 - Records: API3 plant re-run and an erratum in the API3 answers (a cited record part did not exist).
 
+### CI and release (session 6; `docs/decisions/2026-11-08-ci-release-review.md`)
+- One composite action `setup-lean` (pinned toolchain archive, SHA-256 checked on every run, retries, cached; no
+  elan, whose installer fetched an unpinned latest binary and made every push of the session red during a GitHub
+  outage). Workflows by purpose: `ci` (quick, tools, consumer; pull requests and `main`), `verify` (the replay as
+  parallel jobs after one clean build, a comparator matrix, one `verify / verdict` check; non-draft pull requests to
+  `main`, `main`, weekly), `release-candidate` (dispatch; preflight `tools/release_preflight.sh`, full replay on the
+  exact commit, assets with `SHA256SUMS` and a Sigstore attestation, the owner's tag and release commands),
+  `post-release` (on publishing: tag on `main` with a successful candidate run, attested assets, consumer build
+  against the tag, pins pull request), `mathlib-from-source` (dispatch); Dependabot for the pinned actions.
+  The owner creates tags and releases; CI never does.
+
+### Licensing and citation (session 6)
+- REUSE 3.3 compliant (`reuse lint` in `ci / tools`): licence texts in `LICENSES/` (Apache-2.0, CC-BY-4.0,
+  LicenseRef-PublicCertificate for the third-party TSA roots and tokens), comment headers in source files
+  (Mathlib-style for Lean), `REUSE.toml` for frozen, generated, record and documentation files. The van der Corput
+  files derived from roos-j/lean-oscillatory keep Joris Roos's copyright with a modification notice.
+- `CITATION.cff` aligned with ORCID (Thomas Falk III), author email, both licences, the v0.3.0 version DOI, verified
+  references (Mathlib, Lean 4, Roos–Praveen, Stein) and MSC2020 codes; `.zenodo.json` refreshed; `codemeta.json`
+  added; README "How to cite".
+
 ### Statement changes (front-end batch 3, session 5)
 Against v0.3.0: **no existing statement changed** (`make commit`: every commitment equals its pinned stamp,
 `docs/replay/2026-11-08-session5-API3-verify-all.txt`). Added (front-end batch 3, `OscInt/Statements/Family.lean`, stamp

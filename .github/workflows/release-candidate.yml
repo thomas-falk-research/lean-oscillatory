@@ -1,0 +1,115 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: release-candidate
+
+# Prepares a release; never creates a tag or a release (the owner does, decision 2026-11-08 in
+# docs/decisions/2026-11-08-ci-release-review.md). One dispatch on main: preflight (tools/release_preflight.sh), the
+# full replay on that exact commit (verify.yml), the release assets with SHA256SUMS and a Sigstore build-provenance
+# attestation, the release body, and the exact commands to tag and publish in the run summary.
+# post-release.yml then checks what was published.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version without the v, e.g. 0.4.0 (lakefile.toml, CITATION.cff, .zenodo.json, CHANGELOG and docs/release-notes/v<version>.md must already say so)"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-candidate
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      sha: ${{ steps.check.outputs.sha }}
+      tag: ${{ steps.check.outputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: From main, the tag is new, versions, CHANGELOG, notes and pins agree (tools/release_preflight.sh)
+        id: check
+        env:
+          VERSION: ${{ inputs.version }}
+          REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          [ "$REF" = refs/heads/main ] || { echo "::error::dispatch from main, not $REF"; exit 1; }
+          if git ls-remote --exit-code --tags origin "refs/tags/v$VERSION" >/dev/null; then
+            echo "::error::tag v$VERSION already exists"; exit 1; fi
+          tools/release_preflight.sh --self-test
+          tools/release_preflight.sh "$VERSION"
+          { echo "sha=$(git rev-parse HEAD)"; echo "tag=v$VERSION"; } >> "$GITHUB_OUTPUT"
+
+  verify:
+    needs: preflight
+    uses: ./.github/workflows/verify.yml
+    with:
+      ref: ${{ needs.preflight.outputs.sha }}
+
+  candidate:
+    needs: [preflight, verify]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write       # Sigstore signing of the attestation (no tag or release is written)
+      attestations: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.preflight.outputs.sha }}
+      - name: Assets, SHA256SUMS and the release body
+        env:
+          TAG: ${{ needs.preflight.outputs.tag }}
+          SHA: ${{ needs.preflight.outputs.sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist body
+          cp stamps/statements.json tools/oscint_check.py dist/
+          (cd dist && sha256sum statements.json oscint_check.py > SHA256SUMS && cat SHA256SUMS)
+          {
+            echo "Release commit: \`$SHA\` — verified by release-candidate run ${{ github.run_id }} (full replay on this commit)."
+            echo "Assets: \`SHA256SUMS\`; provenance: \`gh attestation verify <asset> --repo ${{ github.repository }}\`."
+            echo
+            sed -n '/^A minor release\|^A patch release\|^A major release/,/^## Publishing/p' "docs/release-notes/$TAG.md" | sed '$d'
+          } > body/notes.md
+      - name: Build provenance attestation of the assets (Sigstore)
+        uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
+        with:
+          subject-path: |
+            dist/statements.json
+            dist/oscint_check.py
+            dist/SHA256SUMS
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-${{ needs.preflight.outputs.tag }}
+          path: |
+            dist
+            body
+          retention-days: 90
+      - name: The owner's commands (also in the run summary)
+        env:
+          TAG: ${{ needs.preflight.outputs.tag }}
+          SHA: ${{ needs.preflight.outputs.sha }}
+        run: |
+          cat <<CMDS | tee -a "$GITHUB_STEP_SUMMARY"
+          ### $TAG is ready: commit \`$SHA\` passed preflight and the full replay
+
+          \`\`\`bash
+          gh run download ${{ github.run_id }} --repo ${{ github.repository }} -n release-$TAG -D release-$TAG
+          git fetch origin && git tag -a $TAG $SHA -m "OscInt $TAG" && git push origin $TAG
+          gh release create $TAG --repo ${{ github.repository }} --verify-tag --title "OscInt $TAG" \\
+            --notes-file release-$TAG/body/notes.md release-$TAG/dist/statements.json \\
+            release-$TAG/dist/oscint_check.py release-$TAG/dist/SHA256SUMS
+          \`\`\`
+          Publishing triggers post-release.yml (checks, consumer build against the tag, pins pull request).
+          CMDS

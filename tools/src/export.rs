@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! Reader for the `leanexport` NDJSON stream (format 3.1.0 as emitted by Lean v4.35.0).
 
 use crate::json::{self, Json};

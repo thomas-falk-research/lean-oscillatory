@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #![forbid(unsafe_code)]
 //! `audit AUDIT_OUTPUT ROOT NAMES_OUT`: checks the stdout of `lake env lean Axioms.lean`.
 //! Every `AUDIT <name> <axioms>` line must list `none` or a subset of {propext, Classical.choice, Quot.sound};

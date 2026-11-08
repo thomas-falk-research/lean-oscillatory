@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #![forbid(unsafe_code)]
 //! Statement matching against the frozen challenge.
 //! One comparator configuration per milestone (`comparator.json`, `comparator-S2S3.json`, ...), each frozen by

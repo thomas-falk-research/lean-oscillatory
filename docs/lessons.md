@@ -286,3 +286,18 @@ before any proof by x³ + y³ (folds on the axes), a translate with its D4 point
 critical-points-only datum; 15/15 plants rejected. Rule (extends lessons 17): for each case split a statement makes
 (point types, exceptional sets, inside/outside K, critical vs pointwise) at least one datum lies in each branch.
 Check: the plant generator `docs/replay/plants/2026-11-08-GD/plants_gd.py.txt` (one plant per branch).
+
+## 39. A comment changed a hash: `sorry` records its source position (2026-11-08)
+Adding licence headers (comments only) to the `Challenge/` files changed all eleven challenge exports, so every
+comparator configuration would have been rejected against its stamp. The challenges are statements with `sorry`
+proofs, and at this Lean version each `sorry` carries its source position; shifting the file by seven lines changes
+the exported term. Found by re-exporting and comparing with the stamped hashes before committing, not by assuming
+"comments are inert". Rule: a file whose build product is hashed by the trust chain (statement files, challenge files)
+is never edited for any reason, comments included; its metadata goes in `REUSE.toml`. Check: `make comparator`
+(export hash against the stamp), and the session re-export comparison recorded with the licensing change.
+
+## 40. Ten red CI runs went unread (2026-11-08)
+Every push of session 6 failed CI at the toolchain install (an unpinned elan download during a GitHub outage); the lead
+noticed only when the owner asked for a CI review. The failures were infrastructure, but a real failure would have gone
+unseen just the same. Rule (lessons 9 again): read the CI result of each push before the next claim. Check: the
+`verify / verdict` and `ci` checks as required status checks under branch protection (owner item).

@@ -1,0 +1,201 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: verify
+
+# The full replay (`make verify-all`), split into parallel jobs over one clean build
+# (docs/decisions/2026-11-08-ci-release-review.md, option B). Evidence of record stays the local `make verify-all`
+# in docs/replay/; this workflow is the independent second machine. A clean build: no build cache is restored here.
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        description: Commit to verify (release-candidate.yml passes the commit the owner will tag)
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ inputs.ref || github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  REF: ${{ inputs.ref || github.sha }}
+
+jobs:
+  build:
+    # draft pull requests get ci.yml only; mark the PR ready (or push to main) to run the replay
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    outputs:
+      configs: ${{ steps.configs.outputs.configs }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.REF }}
+      - uses: ./.github/actions/setup-lean
+      - name: Rust toolchain pinned in tools/rust-toolchain.toml
+        run: cd tools && rustup toolchain install
+      - name: verify-all step `lean` (clean build, axiom audit, statement types, Mathlib names, Gamma-free)
+        run: make tools && tools/target/release/verify_all --only lean
+      - name: Comparator configurations to check (every `challenge:` pin)
+        id: configs
+        run: |
+          configs=$(awk '/^challenge:/ { sub("challenge:", "", $1); printf "%s{\"config\":\"%s\",\"stamp\":\"%s\"}", (n++ ? "," : "["), $1, $2 } END { print "]" }' stamps/pins.txt)
+          echo "$configs" | jq -e 'length > 0'
+          # every comparator configuration in the tree has a pin (a new one cannot be skipped silently)
+          test "$(echo "$configs" | jq length)" -eq "$(find . -maxdepth 1 -name 'comparator*.json' | wc -l)"
+          echo "configs=$configs" >> "$GITHUB_OUTPUT"
+      - name: Share the build tree with the parallel jobs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: build-${{ env.REF }}
+          path: |
+            .lake/build
+            build
+          retention-days: 3
+          include-hidden-files: true
+
+  static:
+    # steps that need no build: toolchain archive identity, tool tests, guard, stamps, statement list
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.REF }}
+          fetch-depth: 0  # stamp-verify needs every stamped commit (lessons 9, 32)
+      - uses: ./.github/actions/setup-lean
+        with:
+          mathlib-cache: "false"
+      - run: cd tools && rustup toolchain install
+      - name: verify-all steps verify-toolchain, tools-test, guard, stamp-verify, statements-check
+        run: |
+          make tools
+          tools/target/release/verify_all --only verify-toolchain --only tools-test --only guard \
+            --only stamp-verify --only statements-check
+
+  replay:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.REF }}
+      - name: System packages (bubblewrap for the sandboxed checkers)
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q bubblewrap
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - uses: ./.github/actions/setup-lean
+      - run: cd tools && rustup toolchain install
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: build-${{ env.REF }}
+      - name: verify-all step lean-replay (per-module leanchecker, export, six export kernels)
+        run: make tools && tools/target/release/verify_all --only lean-replay
+      - name: nanoda built from source at a pinned commit, run on the replay export (docs/decisions/2026-11-06-S4.md)
+        env:
+          NANODA_REPO: https://github.com/ammkrn/nanoda_lib
+          NANODA_COMMIT: 8de7e0c4ed3052745a7f8725164efd9e76d84c56
+          RUST_TOOLCHAIN: 1.97.0
+        run: |
+          set -euo pipefail
+          test -s build/replay/export.ndjson
+          git init -q /tmp/nanoda && cd /tmp/nanoda
+          git fetch -q --depth 1 "$NANODA_REPO" "$NANODA_COMMIT"
+          git checkout -q FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$NANODA_COMMIT"
+          rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal
+          cargo +"$RUST_TOOLCHAIN" build --release --locked --bin nanoda_bin
+          rustc +"$RUST_TOOLCHAIN" -V
+          sha256sum target/release/nanoda_bin
+          cd "$GITHUB_WORKSPACE"
+          printf '{"export_file_path": "%s", "use_stdin": false, "permitted_axioms": ["propext", "Classical.choice", "Quot.sound"], "unpermitted_axiom_hard_error": true, "nat_extension": true, "string_extension": true, "print_success_message": true}\n' \
+            "$PWD/build/replay/export.ndjson" > /tmp/nanoda-src.json
+          set +e; /tmp/nanoda/target/release/nanoda_bin /tmp/nanoda-src.json > /tmp/nanoda-src.out 2>&1; rc=$?; set -e
+          cat /tmp/nanoda-src.out
+          # verdict = the checker's own success line (lessons 2), never the exit status alone
+          test "$rc" -eq 0
+          if grep -qi panic /tmp/nanoda-src.out; then echo 'nanoda (from source) panicked'; exit 1; fi
+          grep -E '^Checked [0-9]+ declarations with no (typechecker )?errors' /tmp/nanoda-src.out | grep -qv skipping
+      - name: Replay summary
+        if: always()
+        run: cat build/replay/summary.txt || true
+
+  commitments:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.REF }}
+      - uses: ./.github/actions/setup-lean
+      - run: cd tools && rustup toolchain install
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: build-${{ env.REF }}
+      - name: verify-all step commit (both commitment producers; every commitment equals its pinned stamp)
+        run: make tools && tools/target/release/verify_all --only commit
+
+  comparator:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.build.outputs.configs) }}
+    name: comparator (${{ matrix.config }})
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.REF }}
+      - name: System packages (bubblewrap for the paranoid comparator)
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q bubblewrap
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+      - uses: ./.github/actions/setup-lean
+      - run: cd tools && rustup toolchain install
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: build-${{ env.REF }}
+      - name: Stamped challenge export, then `lake comparator --paranoid` for this configuration
+        env:
+          CONFIG: ${{ matrix.config }}
+          STAMP: ${{ matrix.stamp }}
+        run: |
+          make tools
+          set +e; tools/target/release/challenge check . "$CONFIG" "$STAMP"; rc=$?; set -e
+          # exit 3: no challenge theorem of this configuration is declared yet (a batch before its proofs; lessons 9)
+          if [ "$rc" -eq 3 ]; then echo "::warning::comparator $CONFIG SKIPPED: nothing to check yet"; exit 0; fi
+          exit "$rc"
+
+  verdict:
+    # one required check for branch protection: every piece of the replay passed
+    needs: [build, static, replay, commitments, comparator]
+    if: ${{ always() && (github.event_name != 'pull_request' || !github.event.pull_request.draft) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Every replay job succeeded
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          echo "$RESULTS" | jq -r 'to_entries[] | "\(.value.result)\t\(.key)"'
+          bad=$(echo "$RESULTS" | jq -r '[to_entries[] | select(.value.result != "success") | .key] | join(" ")')
+          if [ -n "$bad" ]; then echo "verify: FAIL ($bad)"; exit 1; fi
+          echo "verify: PASS (every replay piece succeeded)"

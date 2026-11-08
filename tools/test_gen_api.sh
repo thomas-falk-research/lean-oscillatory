@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # Negative controls for tools/gen_api.py (lessons 18: each check exercised on the path it exists for).
 # Builds a scratch copy of the inputs, plants one defect at a time, and requires --check to FAIL on each,
 # and to PASS on the unplanted copy. No network, no Lean.

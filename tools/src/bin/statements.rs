@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #![forbid(unsafe_code)]
 //! `statements gen ROOT` writes `stamps/statements.json`, the machine-readable list of pinned statements that a
 //! downstream project checks against (`tools/oscint_check.py`, README "Depending on OscInt"). `statements check

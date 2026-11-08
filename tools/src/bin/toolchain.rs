@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #![forbid(unsafe_code)]
 //! `toolchain ROOT`: checks the pins in `ROOT/toolchain.sha256` (`<sha256>  <file>  <url>` lines): downloads
 //! each file to `ROOT/build/toolchain/` unless already present with the pinned hash, checks the hash, then

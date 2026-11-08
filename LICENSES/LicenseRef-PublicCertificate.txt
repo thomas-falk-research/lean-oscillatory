@@ -1,0 +1,16 @@
+LicenseRef-PublicCertificate
+
+This project redistributes, unmodified, public certificates and timestamp tokens issued by third parties, solely so
+that anyone can verify the project's timestamps offline:
+
+- stamps/roots/*.pem: public root certificates of the timestamp authorities (DigiCert Trusted Root G4; USERTrust RSA
+  Certification Authority; Free TSA Root CA), as published by their issuers;
+- stamps/*/*.tsr: RFC 3161 timestamp responses issued by DigiCert, Inc., Sectigo Limited and Free TSA for this
+  project's manifests;
+- stamps/*/*.ots: OpenTimestamps proofs returned by the public calendar servers a.pool.opentimestamps.org and
+  b.pool.opentimestamps.org for this project's manifests.
+
+These files belong to their issuers. This project grants no licence to them and makes no claim to them; they are
+included only as data needed to check the timestamps (for example with `openssl ts -verify` against the pinned
+roots, or the project's `make stamp-verify`). Any rights in them are those of their issuers, under the issuers' own
+terms.

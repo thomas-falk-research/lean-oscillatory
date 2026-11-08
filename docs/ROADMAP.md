@@ -54,7 +54,7 @@ trust chain.
       messages naming the condition that fails rather than an unsolved goal.
 - [ ] **Worked examples that double as non-vacuity checks** *(downstream)*: free Schrödinger decay, Bessel-function
       decay, an Airy-type fold, in `OscInt/Examples/`.
-- [ ] **Sharpness lemma** *(downstream)*: a limit with a nonzero constant gives a matching lower bound on the decay
+- [x] **Sharpness lemma** *(downstream)* (SH `OscInt.API.sharpness`, batch GD; applied to the lattice kernel by T6L, `examples/consumer/ConsumerLattice.lean`; replay `docs/replay/2026-11-08-session6-GD-verify-all.txt`): a limit with a nonzero constant gives a matching lower bound on the decay
       rate (generalising the bite checks of S4.2 + S4.3).
 - [ ] **Vector-valued amplitudes** *(downstream)* in a normed space (e.g. matrices), so spectral projections can be
       used directly instead of entry by entry.
@@ -111,7 +111,7 @@ trust chain.
         and exponential-sum versions of van der Corput;
   - [ ] **from decay to Strichartz** *(downstream)*: an abstract Keel–Tao theorem for continuous and discrete time,
         with the Hardy–Littlewood–Sobolev input;
-  - [ ] decay for lattice Schrödinger operators on ℤ².
+  - [x] decay for lattice Schrödinger operators on ℤ² (T6, T6L: `t^{-2/3}` uniformly in `x`, sharp; `examples/consumer/ConsumerLattice.lean`, ℓ¹ → ℓ^∞; replay `docs/replay/2026-11-08-session6-GD-verify-all.txt`).
 - [ ] Numerics as a product: `numerics/` as a library and CLI with JSON output that checks hypotheses numerically,
       evaluates c_C and tabulates sharp rates for a given phase (tooling, never evidence).
 
@@ -121,14 +121,14 @@ trust chain.
 - [ ] **owner** Mathlib built from source on a second machine (`lake build Mathlib` without the cache, then
       `make commit`), recorded in `docs/toolchain.md`.
 - [ ] Upgrade the OpenTimestamps proofs in `stamps/` from pending to Bitcoin-attested, and verify them.
-- [ ] **owner** Branch protection on `main` requiring CI; Dependabot for the SHA-pinned GitHub Actions.
+- [ ] **owner** Branch protection on `main` requiring CI (checks named in `docs/decisions/2026-11-08-ci-release-review.md` §4). [x] Dependabot for the SHA-pinned GitHub Actions (`.github/dependabot.yml`, session 6).
 - [ ] **First release** (`v0.2.0`; steps 1–4 done, step 5 open), in this order:
   1. [x] author name and ORCID iD in `CITATION.cff` and `.zenodo.json`; ORCID badge in `README.md`;
   2. [x] **owner** repository connected to Zenodo and ORCID (2026-11-06);
   3. [x] **owner** GitHub release `v0.2.0` published (2026-11-06); Zenodo minted 10.5281/zenodo.24021329
      (concept DOI 10.5281/zenodo.24021328);
   4. [x] Zenodo DOI badge in `README.md`; `doi:` and `identifiers:` in `CITATION.cff`;
-  5. archive in Software Heritage; sign release artifacts (Sigstore).
+  5. archive in Software Heritage (owner, "Save code now"); [ ] sign release artifacts (Sigstore build-provenance attestation prepared in `release-candidate.yml`, session 6; not ticked until its first run).
 - [x] **owner** Release v0.3.0: published 2026-11-07 (tag → 7098f09; external dry run
       `docs/replay/2026-11-08-external-downstream-dry-run-v0.3.0.txt`); prepared 2026-11-07 (`docs/release-notes/v0.3.0.md`, CHANGELOG, version 0.3.0 in
       `lakefile.toml`, `CITATION.cff`, `.zenodo.json`); CI job `release-pin` is red until the tag exists.
