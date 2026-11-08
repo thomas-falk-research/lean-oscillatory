@@ -45,6 +45,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.REF }}
+          fetch-depth: 0  # verify_all refuses a shallow clone for any step (lessons 32)
       - uses: ./.github/actions/setup-lean
         with:
           verify-tools: "true"
@@ -78,7 +79,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.REF }}
-          fetch-depth: 0  # stamp-verify needs every stamped commit (lessons 9, 32)
+          fetch-depth: 0  # verify_all refuses a shallow clone for any step; stamp-verify reads stamped commits (lessons 9, 32)
       - uses: ./.github/actions/setup-lean
         with:
           mathlib-cache: "false"
@@ -98,6 +99,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.REF }}
+          fetch-depth: 0  # verify_all refuses a shallow clone for any step (lessons 32)
       - uses: ./.github/actions/setup-lean
         with:
           verify-tools: "true"
@@ -144,6 +146,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.REF }}
+          fetch-depth: 0  # verify_all refuses a shallow clone for any step (lessons 32)
       - uses: ./.github/actions/setup-lean
         with:
           verify-tools: "true"
@@ -167,6 +170,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ env.REF }}
+          fetch-depth: 0  # verify_all refuses a shallow clone for any step (lessons 32)
       - uses: ./.github/actions/setup-lean
         with:
           verify-tools: "true"
