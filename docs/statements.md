@@ -320,3 +320,73 @@ Note on file locations (2026-11-07, after the adversarial review M5 and lessons 
 batches 1 and 2 moved from `OscInt/API/` to `OscInt/Front/`; declaration names are unchanged (namespace
 `OscInt.API`), and `OscInt/API.lean` is now an imports-only entry point. The stamped
 `OscInt/Statements/Convert.lean` still names the old path `OscInt/API/Convert.lean` in its docstring; it cannot change.
+
+## Front end, batch 3: compact families, the classical fold hypothesis, local smoothness (API3; session 5, 2026-11-08)
+
+Order. The statements below, their Lean file `OscInt/Statements/Family.lean` (with sanity theorems), the challenge
+`Challenge/Family.lean` and `comparator-API3.json` are committed and stamped before the blind pre-proof reviews; the
+review reports are committed and stamped (a second stamp) before any Lean proof of these statements is written, in
+the repository or in scratch (lessons 23, 24, 29). The proof route may be drafted during the review window; it is not
+Lean proof code, and it is disclosed if drafted.
+
+Notation as in S2/S3, S4 and batch 2. A *parameter space* is either a compact topological space Λ (internal encoding,
+`FamilyCk`) or a compact set S of a real normed space E (Mathlib idiom). For a family Ψ : E → ℝ² → ℝ, Ψ_σ = Ψ(σ, ·)
+and `Function.uncurry Ψ` is (σ, k) ↦ Ψ_σ(k) on E × ℝ². "C^n on V × U" is `ContDiffOn ℝ n (Function.uncurry Ψ)
+(V ×ˢ U)`. For a function smooth only on an open set U, DΨ(k), H(Ψ, k), D³Ψ(k) are Mathlib's `fderiv`,
+`hessianMatrix` and `iteratedFDeriv` of the function on ℝ², used only at points k of U, where they depend only on the
+values of Ψ near k; values of Ψ outside U are arbitrary (Ψ need not be continuous there).
+
+**S2.2F (nondegenerate stationary phase, compact family).** For every compact topological space Λ, family Ψ with
+`FamilyCk 4 Ψ`, compact K, K′ ⊆ ℝ² such that hessDet Ψ_σ k ≠ 0 whenever σ ∈ Λ, p ∈ K′, k ∈ K and k is a critical point
+of Ψ_σ + p·(·), there is C such that for every amplitude with AmpBound 2 K A M, every σ ∈ Λ, p ∈ K′ and m ≥ 1:
+|I(m(Ψ_σ + p·), A)| ≤ C M m^{−1}. (S2.2 with the family uniformity that S2.1 and S3 already have.)
+
+**S3c (uniform fold estimate, classical hypothesis).** As S3 (compact Λ, `FamilyCk 4`, compact K, K′, rate m^{−5/6}),
+with the hypothesis FoldOrNondeg Ψ_σ k required only when σ ∈ Λ, p ∈ K′, k ∈ K and k is a critical point of
+Ψ_σ + p·(·). S3 requires it at every k ∈ K; at a non-critical point the integrand is non-stationary and nothing is
+needed. This is the classical form (the S3 post-proof referee's note, `docs/STATUS.md`).
+
+**C10 (families in Mathlib's idiom).** For every real normed space E, n ∈ ℕ and Ψ : E → ℝ² → ℝ with
+`ContDiff ℝ n (Function.uncurry Ψ)`: for every S ⊆ E, the family (σ ∈ S) ↦ Ψ_σ satisfies `FamilyCk n` (S with the
+subspace topology).
+
+**FE-S2.1L (non-stationary phase, Mathlib idiom, compact family, local smoothness).** For every real normed space E,
+N ∈ ℕ, Ψ : E → ℝ² → ℝ, compact S ⊆ E, open V ⊇ S, compact K ⊆ ℝ², open U ⊇ K, with Ψ of class C^{N+1} on V × U, and
+c > 0, there is C such that for every amplitude (N, K, M) in Mathlib's idiom, every σ ∈ S, every linear term L with
+c ≤ ‖DΨ_σ(k) + L‖ for all k ∈ K, and every m ≥ 1: |∫ e^{im(Ψ_σ(k) + L(k))} A(k) dk| ≤ C M m^{−N}.
+
+**FE-S2.2L (nondegenerate stationary phase, Mathlib idiom, compact family, local smoothness).** For E, Ψ, S, V, K, U as
+in FE-S2.1L with Ψ of class C⁴ on V × U, and a compact set K′ of linear terms such that det H(Ψ_σ, k) ≠ 0 whenever
+σ ∈ S, L ∈ K′, k ∈ K and DΨ_σ(k) + L = 0, there is C such that for every amplitude (2, K, M) in Mathlib's idiom, every
+σ ∈ S, L ∈ K′ and m ≥ 1: |∫ e^{im(Ψ_σ(k) + L(k))} A(k) dk| ≤ C M m^{−1}.
+
+**FE-S3L (uniform fold estimate, Mathlib idiom, compact family, local smoothness, classical hypothesis).** As
+FE-S2.2L, with FoldOrNondegMatrix Ψ_σ k (batch 2) required whenever σ ∈ S, L ∈ K′, k ∈ K and DΨ_σ(k) + L = 0, and the
+bound C M m^{−5/6}.
+
+**FE-S4.1′L (uniform D4 bound, Mathlib idiom, local smoothness).** For every φ : ℝ² → ℝ, open U ∋ 0 with φ of class
+C⁴ on U, and reals a, b, c, d such that D²φ(0) = 0, D³φ(0)[(x, y), (x, y), (x, y)] = 6(a x³ + b x²y + c xy² + d y³) for
+all x, y, and `(Cubic.mk a b c d).discr ≠ 0`, there are δ > 0 and C such that for every amplitude (2, B̄(0, δ), M) in
+Mathlib's idiom, every linear term L and every t ≥ 1: |∫ e^{i(tφ(κ) + L(κ))} A(κ) dκ| ≤ C M t^{−2/3}.
+
+**FE-S2.1l, FE-S2.2l, FE-S3l (one phase, local smoothness).** FE-S2.1L, FE-S2.2L, FE-S3L for a single phase
+Ψ : ℝ² → ℝ of class C^{N+1} (resp. C⁴) on an open U ⊇ K (`ContDiffOn ℝ n Ψ U`), without a parameter; FE-S3l with the
+classical (critical-points-only) fold hypothesis.
+
+Modelling choices and what is omitted.
+- Families in Mathlib's idiom are indexed by a compact subset of a real normed space and smooth jointly in
+  (σ, k), which is how parameter-dependent phases arise in practice (dispersion relations depending on a velocity, a
+  mass, a direction). A general compact Λ is available through S2.2F and S3c with C10. Joint smoothness is more than
+  `FamilyCk` asks (continuity in σ of the k-derivatives); C10 is the conversion.
+- Local smoothness is in k and in σ (V × U). The amplitude's support lies in K ⊆ U; outside U the phase is arbitrary.
+- FE-S4.1′L is for one phase (no family): a family D4 statement needs the D4 normal form uniformly in the parameter,
+  which is new analysis, not a re-assembly; it is deferred (ROADMAP §2).
+- S2.2F and S3c keep the internal encoding (`FamilyCk`, `hessDet`, `FoldOrNondeg`, `p ∈ K′` vectors) so they can be
+  compared with S2.2 and S3 line by line.
+- Sanity theorems in `OscInt/Statements/Family.lean`: a two-member family of distinct nondegenerate quadratics with a
+  critical point present, and a bite (a degenerate member) for S2.2F; for S3c the bite x³ + y³ on K = B̄(0, 2),
+  K′ = {(−3, −3)}, where the classical hypothesis holds non-vacuously but FoldOrNondeg fails at 0 ∈ K (so S3 does not
+  apply); for C10 a genuinely parameter-dependent family; for local smoothness |k₁|, C⁴ on {k₁ > 0} but not C¹ on ℝ²,
+  and the family σ|k₁| + k₂², C⁴ on ℝ × {k₁ > 0}. Derivative hypotheses of the Mathlib-idiom forms for explicit phases
+  (an arccos-type dispersion relation, a phase singular outside the support) are shown after the proofs, through the
+  bridges and the consumer example, as for batch 2.

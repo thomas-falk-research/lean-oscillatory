@@ -10,8 +10,8 @@
   {
    "id": "baseline",
    "title": "make quick on 6acef2a in a fresh container (toolchain install, Mathlib cache, build, audit)",
-   "status": "in-progress",
-   "evidence": null
+   "status": "done",
+   "evidence": "docs/replay/2026-11-08-session5-baseline-quick.txt (make quick exit 0 on 6acef2a, 10 min 39 s including the Mathlib cache download; guard 0 violations; audit 657/657; 27 statements; entry point PASS). With batch API3 added: make quick exit 0 in 7 min 6 s (guard 75 files 0 violations; audit 676/676; statements INCOMPLETE as expected until the stamp)"
   },
   {
    "id": "P0a",
@@ -40,7 +40,7 @@
   {
    "id": "P1+P2+P3a",
    "title": "Statement batch API3: S2.2F, S3c (classical fold hypothesis), C10, FE-S2.1L, FE-S2.2L, FE-S3L, FE-S4.1'L, FE-S2.1l, FE-S2.2l, FE-S3l",
-   "status": "in-progress (statements drafted; not yet stamped)",
+   "status": "in-progress (statements committed; stamp next)",
    "evidence": "OscInt/Statements/Family.lean, docs/statements.md section 'Front end, batch 3'"
   },
   {
@@ -49,11 +49,41 @@
    "status": "deferred",
    "evidence": "Not a re-assembly: needs the D4 normal form uniformly in the parameter (docs/statements.md, batch 3, modelling choices)"
   },
-  {"id": "P3b", "title": "2D nondegenerate stationary-phase leading term with O(m^-2), numerics pre-registered", "status": "open", "evidence": null},
-  {"id": "P4", "title": "Lattice kernels T0, T1/T2, T6, cones", "status": "open", "evidence": null},
-  {"id": "P5", "title": "Guard policy for a tactic; oscint_hyps", "status": "open", "evidence": null},
-  {"id": "P6", "title": "Constants: model normal forms; certified-numerics path", "status": "open", "evidence": null},
-  {"id": "P7", "title": "Breadth", "status": "open", "evidence": null},
-  {"id": "P8", "title": "Adoption and developer experience", "status": "open", "evidence": null}
+  {
+   "id": "P3b",
+   "title": "2D nondegenerate stationary-phase leading term with O(m^-2), numerics pre-registered",
+   "status": "open",
+   "evidence": null
+  },
+  {
+   "id": "P4",
+   "title": "Lattice kernels T0, T1/T2, T6, cones",
+   "status": "open",
+   "evidence": null
+  },
+  {
+   "id": "P5",
+   "title": "Guard policy for a tactic; oscint_hyps",
+   "status": "open",
+   "evidence": null
+  },
+  {
+   "id": "P6",
+   "title": "Constants: model normal forms; certified-numerics path",
+   "status": "open",
+   "evidence": null
+  },
+  {
+   "id": "P7",
+   "title": "Breadth",
+   "status": "open",
+   "evidence": null
+  },
+  {
+   "id": "P8",
+   "title": "Adoption and developer experience",
+   "status": "open",
+   "evidence": null
+  }
  ]
 }

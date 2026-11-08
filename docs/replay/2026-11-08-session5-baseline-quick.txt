@@ -1,0 +1,69 @@
+# make quick on 6acef2a (main, merge of PR #4) in a fresh session-5 container (4 cores, 15 GB), 2026-11-08
+# command: lake exe cache get && make quick; exit status 0; wall time includes the Mathlib cache download (9031 files)
+# tree: clean except tools/check_release_pin.sh and ci.yml (committed as bb8619f; not Lean inputs)
+
+Current branch: HEAD
+Using cache from origin: (some leanprover-community/mathlib4)
+Attempting to download 9031 file(s) from leanprover-community/mathlib4 cache at https://cache.mathlib.org/mathlib4-master
+Still decompressing downloaded files...
+Decompressed 9031 file(s)
+Already decompressed 9031 file(s)
+cd tools && cargo build --release --locked --quiet
+tools/target/release/guard .
+guard: ok: 74 file(s), 0 violations, 657 theorem declaration(s)
+mkdir -p build/skipped && rm -f build/skipped/statements-check; tools/target/release/statements check . || { [ $? -eq 3 ] && mkdir -p build/skipped && touch build/skipped/statements-check; }
+statements: ok: stamps/statements.json matches pins, manifests and sources (27 statements)
+make --no-print-directory lean
+cd tools && cargo build --release --locked --quiet
+rm -f build/lean.ok
+lake build
+Build completed successfully (9122 jobs).
+mkdir -p build && lake env lean Axioms.lean > build/axioms.out
+tools/target/release/audit build/axioms.out . build/audited.txt
+axiom audit: 657 of 657 theorems clean (permitted: propext, Classical.choice, Quot.sound)
+lake env lean StatementTypes.lean
+TYPE-OK OscInt.vanDerCorput_one : OscInt.Statements.VdC1Statement
+TYPE-OK OscInt.vanDerCorput_two : OscInt.Statements.VdC2Statement
+TYPE-OK OscInt.vanDerCorput_three : OscInt.Statements.VdC3Statement
+TYPE-OK OscInt.nonStationary : OscInt.Statements.NonStationaryStatement
+TYPE-OK OscInt.stationaryPhase : OscInt.Statements.StationaryPhaseStatement
+TYPE-OK OscInt.fold : OscInt.Statements.FoldStatement
+TYPE-OK OscInt.d4Bound : OscInt.Statements.D4BoundStatement
+TYPE-OK OscInt.d4BoundNe : OscInt.Statements.D4BoundNeStatement
+TYPE-OK OscInt.d4ConstantPos : OscInt.Statements.D4ConstantPosStatement
+TYPE-OK OscInt.d4Limit : OscInt.Statements.D4LimitStatement
+TYPE-OK OscInt.d4ConstantClosedForm : OscInt.Statements.D4ConstantClosedFormStatement
+TYPE-OK OscInt.API.ampBoundOfContDiff : OscInt.Statements.AmpBoundOfContDiffStatement
+TYPE-OK OscInt.API.d4LimitClosedForm : OscInt.Statements.D4LimitClosedFormStatement
+TYPE-OK OscInt.API.dd_iteratedFDeriv : OscInt.Statements.DdEqIteratedStatement
+TYPE-OK OscInt.API.ddd_iteratedFDeriv : OscInt.Statements.DddEqIteratedStatement
+TYPE-OK OscInt.API.hessDet_eq_det : OscInt.Statements.HessDetEqDetStatement
+TYPE-OK OscInt.API.cubicCoeffs_eq : OscInt.Statements.CubicCoeffsEqStatement
+TYPE-OK OscInt.API.disc_eq_cubic_discr : OscInt.Statements.DiscEqCubicDiscrStatement
+TYPE-OK OscInt.API.disc_ne_zero_iff_isolated : OscInt.Statements.DiscNeZeroIffIsolatedStatement
+TYPE-OK OscInt.API.foldOrNondeg_iff : OscInt.Statements.FoldOrNondegIffStatement
+TYPE-OK OscInt.API.foldOrNondeg_of_hasFDeriv : OscInt.Statements.FoldOrNondegOfHasFDerivStatement
+TYPE-OK OscInt.API.gradLower_iff : OscInt.Statements.GradLowerIffStatement
+TYPE-OK OscInt.API.ampBound_conv : OscInt.Statements.AmpBoundConvStatement
+TYPE-OK OscInt.API.nonStationaryFE : OscInt.Statements.NonStationaryFEStatement
+TYPE-OK OscInt.API.stationaryPhaseFE : OscInt.Statements.StationaryPhaseFEStatement
+TYPE-OK OscInt.API.foldFE : OscInt.Statements.FoldFEStatement
+TYPE-OK OscInt.API.d4BoundFE : OscInt.Statements.D4BoundFEStatement
+lake env lean MathlibNames.lean > /dev/null
+lake env lean GammaFree.lean
+GAMMA-FREE CONTROL Real.Gamma_pos_of_pos rejected as expected (33 forbidden constant(s))
+GAMMA-FREE CONTROL gammaProofControl rejected as expected (33 forbidden constant(s))
+GAMMA-FREE OK OscInt.Statements.D4ConstantPosStatement (33099 constants in the closure)
+GAMMA-FREE OK OscInt.d4ConstantPos (43612 constants in the closure)
+GAMMA-FREE OK OscInt.d4Limit (53780 constants in the closure)
+GAMMA-FREE OK OscInt.d4BoundNe (51302 constants in the closure)
+touch build/lean.ok
+make --no-print-directory entry-point
+tools/check_entry_point.sh --self-test && tools/check_entry_point.sh
+ok   self-test: nested-module detector flags OscInt.A (has OscInt.A.B) and nothing else
+entry-point self-test: PASS (the planted name is reported, nothing else)
+entry-point: PASS (54 names from stamps/statements.json, all visible under import OscInt.API)
+lake env lean -DautoImplicit=false examples/consumer/ConsumerFormula.lean
+real	10m39.145s
+user	13m37.533s
+sys	2m15.821s
