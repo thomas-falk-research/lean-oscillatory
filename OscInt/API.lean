@@ -17,6 +17,7 @@ import OscInt.Front.FamilyC10
 import OscInt.Front.Local
 import OscInt.Front.GlobalSanity
 import OscInt.Front.LatticeExplicitSanity
+import OscInt.Front.GlobalNondegLocalSanity
 import OscInt.Front.GlobalFinal
 import OscInt.Front.LatticeFinal
 

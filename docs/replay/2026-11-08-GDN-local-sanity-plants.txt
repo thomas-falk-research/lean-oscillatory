@@ -1,0 +1,38 @@
+# Planted controls for GD-N's smoothness hypothesis on a phase C^4 only on U (2026-11-08, review follow-up b2 of review/2026-11-08-GD-post-proof-answers.md)
+# Base commit 96f55a2 plus the new file OscInt/Front/GlobalNondegLocalSanity.lean (GD-N already proved; this is a
+# sanity-layer extension, not a pre-proof control).
+# Generator: docs/replay/plants/2026-11-08-GDN-local/plants_gdn_local.py.txt (method of
+# docs/replay/plants/2026-11-08-GD/plants_gd.py.txt: copies GlobalNondegStatement of OscInt/Statements/Global.lean and
+# the sanity theorem under the prefix P_, applies exactly one textual mutation, compiles with
+# lake env lean -DautoImplicit=false <file>). Sources (.lean.txt) and full compiler output (.out) in that directory.
+# Datum: localPhase = x^2 + 3xy + 5y^2 + |x - 3|, K = closedBall 0 1, U = ball 0 2 (max norm). On U it equals the
+# polynomial x^2 + 3xy + 5y^2 + 3 - x (localPhase_contDiffOn; det H = 11 on U, det_hessian_localPhase); it is not
+# differentiable at (3, 0) (localPhase_not_contDiff : ¬ ContDiff ℝ 1 localPhase; hence localPhase_not_contDiff_four,
+# localPhase_not_contDiffOn_univ: the planted hypotheses are false for this datum).
+# Plants: (a) ContDiffOn ℝ 4 Ψ U ↦ ContDiff ℝ 4 Ψ; (b) K ⊆ U → ContDiffOn ℝ 4 Ψ U ↦ K ⊆ U → ContDiffOn ℝ 4 Ψ Set.univ.
+# Counted rows: against globalNondeg_local; the unplanted copy must be accepted, the planted copy rejected.
+# Info rows (not counted): the same plants against the earlier datum globalNondeg_quad (polynomial, smooth on ℝ^2).
+
+ok-GDN-contDiff-global: accepted (want accepted)
+plant-GDN-contDiff-global: rejected (want rejected)
+    first error: plant-GDN-contDiff-global.lean:21:4: error: Application type mismatch: The argument
+ok-GDN-contDiffOn-univ: accepted (want accepted)
+plant-GDN-contDiffOn-univ: rejected (want rejected)
+    first error: plant-GDN-contDiffOn-univ.lean:21:4: error: Application type mismatch: The argument
+ok-quad-GDN-contDiff-global: accepted (info, earlier datum)
+plant-quad-GDN-contDiff-global: rejected (info, earlier datum)
+    first error: plant-quad-GDN-contDiff-global.lean:21:4: error: Application type mismatch: The argument
+ok-quad-GDN-contDiffOn-univ: accepted (info, earlier datum)
+plant-quad-GDN-contDiffOn-univ: accepted (info, earlier datum)
+
+Location of the first error of each plant (reading of the .out files):
+- GDN-contDiff-global: discharge of the smoothness hypothesis (localPhase_contDiffOn : ContDiffOn ℝ 4 localPhase
+  (ball 0 2) where ContDiff ℝ 4 localPhase is expected). Semantic: no proof exists, ¬ ContDiff ℝ 4 localPhase is proved
+  (localPhase_not_contDiff_four).
+- GDN-contDiffOn-univ: the same argument, where ContDiffOn ℝ 4 localPhase Set.univ is expected. Semantic:
+  localPhase_not_contDiffOn_univ.
+- quad, plant (a): rejected only because the proof term `(… : ContDiff ℝ 4 quadPhase).contDiffOn` no longer has the
+  expected type (brittleness: the hypothesis is true for quadPhase).
+- quad, plant (b): accepted (quadPhase is smooth on ℝ^2). This is the gap b2 recorded; globalNondeg_local closes it.
+Not covered: C^4 ↦ C^5 (still rejected only by brittleness: localPhase is C^∞ on U), and weakening plants (structural
+limit of the conditional form, lessons 33).

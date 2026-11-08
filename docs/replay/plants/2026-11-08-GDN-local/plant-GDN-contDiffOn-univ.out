@@ -1,0 +1,9 @@
+/home/user/lean-oscillatory/.claude/worktrees/agent-a88e24df8839838fa/docs/replay/plants/2026-11-08-GDN-local/plant-GDN-contDiffOn-univ.lean:21:4: error: Application type mismatch: The argument
+  localPhase_contDiffOn
+has type
+  ContDiffOn ℝ 4 localPhase (Metric.ball 0 2)
+but is expected to have type
+  ContDiffOn ℝ 4 localPhase Set.univ
+in the application
+  h localPhase (Metric.closedBall 0 1) (Metric.ball 0 2) (isCompact_closedBall 0 1) Metric.isOpen_ball
+    (Metric.closedBall_subset_ball ?m.126) localPhase_contDiffOn
