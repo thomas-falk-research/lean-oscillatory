@@ -1,0 +1,55 @@
+qwz_decay (protocol docs/prereg/2026-11-08-VV-qwz-decay.md); N = 1024, f64
+== QWZ m=3
+  t =     1: sup_x ||G|| = 2.44166730e1  at |x|inf =    0  t^(5/6) sup = 24.416673  t^(2/3) sup = 24.416673
+  t =   1.5: sup_x ||G|| = 1.16034710e1  at |x|inf =    1  t^(5/6) sup = 16.267868  t^(2/3) sup = 15.204848
+  t =     2: sup_x ||G|| = 1.29709542e1  at |x|inf =    1  t^(5/6) sup = 23.111613  t^(2/3) sup = 20.590106
+  t =     3: sup_x ||G|| = 9.05823437e0  at |x|inf =    2  t^(5/6) sup = 22.627918  t^(2/3) sup = 18.841887
+  t =     4: sup_x ||G|| = 6.90116228e0  at |x|inf =    3  t^(5/6) sup = 21.909825  t^(2/3) sup = 17.389839
+  t =     6: sup_x ||G|| = 5.58470221e0  at |x|inf =    4  t^(5/6) sup = 24.857611  t^(2/3) sup = 18.440280
+  t =     8: sup_x ||G|| = 4.73517864e0  at |x|inf =    6  t^(5/6) sup = 26.786215  t^(2/3) sup = 18.940715
+  t =    11: sup_x ||G|| = 3.47679477e0  at |x|inf =    9  t^(5/6) sup = 25.645212  t^(2/3) sup = 17.196531
+  t =    16: sup_x ||G|| = 2.77401254e0  at |x|inf =   14  t^(5/6) sup = 27.960294  t^(2/3) sup = 17.613882
+  t =    23: sup_x ||G|| = 2.25910464e0  at |x|inf =   20  t^(5/6) sup = 30.811266  t^(2/3) sup = 18.270688
+  t =    32: sup_x ||G|| = 1.76619672e0  at |x|inf =   28  t^(5/6) sup = 31.719821  t^(2/3) sup = 17.802147
+  t =    45: sup_x ||G|| = 1.44326433e0  at |x|inf =   40  t^(5/6) sup = 34.436815  t^(2/3) sup = 18.259444
+  t =    64: sup_x ||G|| = 1.17962209e0  at |x|inf =   57  t^(5/6) sup = 37.747907  t^(2/3) sup = 18.873953
+  accuracy at t = 64: max |G_N - G_2N| = 2.156e-14 (< 1e-8)
+  slope of log sup ||G|| over t in [8, 64] = -0.65396
+  max/min of t^(5/6) sup ||G|| over t in [8, 64] = 1.4719; sup of t^(5/6) sup ||G|| = 37.747907
+== control L: lattice Laplacian
+  t =     1: sup_x ||G|| = 2.31156991e1  at |x|inf =    0  t^(5/6) sup = 23.115699  t^(2/3) sup = 23.115699
+  t =   1.5: sup_x ||G|| = 1.22893608e1  at |x|inf =    1  t^(5/6) sup = 17.229474  t^(2/3) sup = 16.103618
+  t =     2: sup_x ||G|| = 1.31309759e1  at |x|inf =    1  t^(5/6) sup = 23.396739  t^(2/3) sup = 20.844125
+  t =     3: sup_x ||G|| = 9.32814660e0  at |x|inf =    2  t^(5/6) sup = 23.302172  t^(2/3) sup = 19.403327
+  t =     4: sup_x ||G|| = 7.30538236e0  at |x|inf =    3  t^(5/6) sup = 23.193143  t^(2/3) sup = 18.408410
+  t =     6: sup_x ||G|| = 5.17589886e0  at |x|inf =    5  t^(5/6) sup = 23.038020  t^(2/3) sup = 17.090441
+  t =     8: sup_x ||G|| = 4.49886131e0  at |x|inf =    6  t^(5/6) sup = 25.449403  t^(2/3) sup = 17.995445
+  t =    11: sup_x ||G|| = 3.76591416e0  at |x|inf =    9  t^(5/6) sup = 27.777788  t^(2/3) sup = 18.626541
+  t =    16: sup_x ||G|| = 2.93014961e0  at |x|inf =   14  t^(5/6) sup = 29.534057  t^(2/3) sup = 18.605290
+  t =    23: sup_x ||G|| = 2.23901484e0  at |x|inf =   21  t^(5/6) sup = 30.537267  t^(2/3) sup = 18.108210
+  t =    32: sup_x ||G|| = 1.77023589e0  at |x|inf =   29  t^(5/6) sup = 31.792362  t^(2/3) sup = 17.842860
+  t =    45: sup_x ||G|| = 1.44400265e0  at |x|inf =   42  t^(5/6) sup = 34.454431  t^(2/3) sup = 18.268785
+  t =    64: sup_x ||G|| = 1.13219502e0  at |x|inf =   61  t^(5/6) sup = 36.230240  t^(2/3) sup = 18.115120
+  accuracy at t = 64: max |G_N - G_2N| = 1.998e-14 (< 1e-8)
+  slope of log sup ||G|| over t in [8, 64] = -0.67308
+== control S: separable trap
+  t =     1: sup_x ||G|| = 1.90092202e1  at |x|inf =    0  t^(5/6) sup = 19.009220  t^(2/3) sup = 19.009220
+  t =   1.5: sup_x ||G|| = 1.87494199e1  at |x|inf =    0  t^(5/6) sup = 26.286366  t^(2/3) sup = 24.568690
+  t =     2: sup_x ||G|| = 1.79520629e1  at |x|inf =    0  t^(5/6) sup = 31.986940  t^(2/3) sup = 28.497124
+  t =     3: sup_x ||G|| = 1.25326505e1  at |x|inf =    0  t^(5/6) sup = 31.307182  t^(2/3) sup = 26.068963
+  t =     4: sup_x ||G|| = 9.69352499e0  at |x|inf =    0  t^(5/6) sup = 30.775024  t^(2/3) sup = 24.426152
+  t =     6: sup_x ||G|| = 1.07987572e1  at |x|inf =    0  t^(5/6) sup = 48.065465  t^(2/3) sup = 35.656711
+  t =     8: sup_x ||G|| = 1.00220340e1  at |x|inf =    0  t^(5/6) sup = 56.693185  t^(2/3) sup = 40.088136
+  t =    11: sup_x ||G|| = 8.53266741e0  at |x|inf =    0  t^(5/6) sup = 62.937872  t^(2/3) sup = 42.203319
+  t =    16: sup_x ||G|| = 5.88447956e0  at |x|inf =    0  t^(5/6) sup = 59.311837  t^(2/3) sup = 37.364116
+  t =    23: sup_x ||G|| = 6.18498441e0  at |x|inf =    0  t^(5/6) sup = 84.355190  t^(2/3) sup = 50.021552
+  t =    32: sup_x ||G|| = 4.69985593e0  at |x|inf =    0  t^(5/6) sup = 84.406559  t^(2/3) sup = 47.371579
+  t =    45: sup_x ||G|| = 4.81429905e0  at |x|inf =    0  t^(5/6) sup = 114.870936  t^(2/3) sup = 60.908056
+  t =    64: sup_x ||G|| = 4.26957912e0  at |x|inf =    0  t^(5/6) sup = 136.626532  t^(2/3) sup = 68.313266
+  accuracy at t = 64: max |G_N - G_2N| = 5.064e-14 (< 1e-8)
+  slope of log sup ||G|| over t in [8, 64] = -0.40342
+(a) QWZ slope -0.65396 in [-0.92, -0.75]: FAIL
+(b) QWZ profile ratio 1.4719 <= 3: PASS
+control L slope -0.67308 outside [-0.92, -0.75]: distinguished (good)
+control S slope -0.40342 outside [-0.92, -0.75]: distinguished (good)
+OVERALL: NOT PASS (see above)
