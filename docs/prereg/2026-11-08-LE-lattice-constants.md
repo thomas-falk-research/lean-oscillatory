@@ -51,3 +51,14 @@ revised before freezing (the revision cites this record).
 ## Program
 `numerics/src/bin/lattice1.rs` (Rust, no dependencies; `cargo run --release --bin lattice1`), output saved verbatim to
 `numerics/results-lattice1-2026-11-08.txt`.
+
+## Amendment 1 (2026-11-08, after registration d814381, before the program was written or run)
+Found by the lead on re-reading: any tensor-product rule (trapezoid or Gauss–Legendre in each variable) factorises
+algebraically, `Σ_{j,l} f(k₁ⱼ) g(k₂ₗ) = (Σⱼ f)(Σₗ g)`, so criterion (d) computed with the tensor trapezoid would pass
+whatever the integral is: it could not detect a wrong factorisation statement, only a normalisation bug. Replacement
+for the 2D computation in (d) and (c3): a **rank-1 Fibonacci lattice rule** on the torus, `N = F₂₆ = 121393` points
+`kⱼ = 2π(j/N, {j F₂₅/N}) − (π, π)`, `F₂₅ = 75025`, weight `4π²/N`; it is not a product rule. Its error is the sum of the
+integrand's Fourier coefficients on the nonzero dual-lattice points `h₁ + F₂₅h₂ ≡ 0 (mod N)`, whose shortest vectors
+have length about `√N ≈ 350`, far beyond the frequencies `|h| ≲ t + |x| + 40 ≤ 75` that carry non-negligible weight
+for the registered `(t, x)`. The 1D factors on the right of (d) stay Q1. Tolerance unchanged (`1e−9`); everything else
+unchanged.
