@@ -491,3 +491,10 @@ K(−t, x) = conj K(t, −x) and |K(t, x)| ≤ (2π)² for |t| < 1 (consumer not
 coefficients are the Taylor coefficients D³φ(0)/6 (the convention of `cubicCoeffs` and F2). (6) For the arccos
 relations the fold condition along the degenerate curve is numerical only; using GD for them needs a Lean proof of
 the classification, which is open.
+
+Clarification after the GD post-proof and adversarial reviews (2026-11-08; statements unchanged; answers
+`review/2026-11-08-GD-post-proof-answers.md`): (8) The ℓ¹ → ℓ^∞ norm of a convolution operator on ℤ² is the supremum
+of its kernel, so T6 bounds that norm; what is machine-checked in `examples/consumer/ConsumerLattice.lean` is the
+upper bound for finitely supported data and for the propagator defined by its kernel (that this is the solution
+operator of `i∂ₜu = Hu` is the standard Fourier representation, not proved there). (9) T6 and T6L concern the free
+discrete Laplacian; potentials are not covered.

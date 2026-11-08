@@ -610,7 +610,7 @@
   },
   "GD-F": {
    "hypotheses": [
-    "Ψ C⁴ on open U ⊇ K",
+    "Ψ C⁴ on open U ⊇ K, K compact",
     "FoldOrNondegMatrix at every point of K"
    ],
    "conclusion": "bound C M m^{-5/6} for every L",
@@ -626,7 +626,7 @@
   },
   "GD-N": {
    "hypotheses": [
-    "Ψ C⁴ on open U ⊇ K",
+    "Ψ C⁴ on open U ⊇ K, K compact",
     "det hessianMatrix ≠ 0 at every point of K"
    ],
    "conclusion": "bound C M m^{-1} for every L",

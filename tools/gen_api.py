@@ -18,7 +18,7 @@ exist; a proved statement's snippet names its `proved_by` theorem; an unproved s
 statement constant and not a theorem; in --check mode, the committed outputs equal the regenerated ones byte for byte.
 Usage: tools/gen_api.py [--check] [REPO]
 """
-import json, os, sys
+import json, os, re, sys
 
 check = '--check' in sys.argv
 args = [a for a in sys.argv[1:] if a != '--check']
@@ -67,13 +67,13 @@ for s in st['statements']:
         if o not in by_label:
             errors.append(f'{lab}: see_also names unknown label {o!r}')
     snip = a.get('snippet', '')
-    short = (s['proved_by'] or '').split('.')[-1]
     const = s['name'].split('.')[-1]
-    if s['proved_by']:
-        if short not in snip:
-            errors.append(f'{lab}: snippet does not use its proving theorem {s["proved_by"]}')
-    elif const not in snip:
-        errors.append(f'{lab}: unproved statement; its snippet must use the constant {const} (as a hypothesis)')
+    word = lambda n: re.search(r'(?<![\w.])' + re.escape(n) + r'(?![\w])', snip) is not None
+    # whole names, not substrings: `globalDecayCrit` must not satisfy a check for `globalDecay`
+    if not word(const):
+        errors.append(f'{lab}: snippet does not name its statement constant {const}')
+    if s['proved_by'] and not word(s['proved_by']):
+        errors.append(f'{lab}: snippet does not use its proving theorem {s["proved_by"]} (full name)')
     e = {k: s[k] for k in ['label', 'name', 'proved_by', 'summary', 'file', 'commitment', 'stamp']}
     e['lean_statement'] = lean_text(s['file'], const)
     e.update({f: a.get(f) for f in FIELDS if f != 'snippet'})

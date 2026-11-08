@@ -4,14 +4,18 @@
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0001--9478--6061-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0001-9478-6061)
 
 Author: Thomas Falk III ([ORCID 0009-0001-9478-6061](https://orcid.org/0009-0001-9478-6061)). Cite via `CITATION.cff` or the Zenodo record: all versions
-[10.5281/zenodo.24021328](https://doi.org/10.5281/zenodo.24021328), v0.2.0
+[10.5281/zenodo.24021328](https://doi.org/10.5281/zenodo.24021328), v0.3.0
+[10.5281/zenodo.24045231](https://doi.org/10.5281/zenodo.24045231), v0.2.0
 [10.5281/zenodo.24021329](https://doi.org/10.5281/zenodo.24021329).
 
 A Lean 4 + Mathlib library of uniform oscillatory-integral estimates in one and two variables: van der Corput with
 explicit constants (S1), nondegenerate stationary phase uniform in a linear term (S2), the uniform fold
 estimate m^{-5/6} (S3), and the uniform D4 estimate t^{-2/3} (S4.1, S4.1′), the limit t^{2/3}∫e^{itφ}A → c_C A(0) with a Gamma-free c_C (S4.2), c_C > 0 (S4.3) and the
-closed form of c_C (S4.4), and Mathlib-idiom front ends and conversions (F1, F2, C1–C9, C7′, FE-S2.1, FE-S2.2, FE-S3,
-FE-S4.1′); every statement with a row in `docs/STATUS.md` has its status there, derived from evidence files.
+closed form of c_C (S4.4), Mathlib-idiom front ends and conversions (F1, F2, C1–C9, C7′, FE-S2.1, FE-S2.2, FE-S3,
+FE-S4.1′), compact families and local smoothness (front-end batch 3), and global decay from a pointwise classification
+of the phase with the 2D lattice-Laplacian dispersive estimate t^{-2/3} and its sharpness (batch GD); every statement
+with a row in `docs/STATUS.md` has its status there, derived from evidence files. Which theorem to use:
+`docs/which-theorem.md`.
 Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0).
 
 ## Status

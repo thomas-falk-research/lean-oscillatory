@@ -43,15 +43,18 @@ For a reader who saw nothing. Read `docs/lessons.md` first (40 entries); every r
    Software Heritage "Save code now".
 4. Still the owner's: P5 tactic policy (an unaudited `lean_lib` for an `oscint_hyps` tactic, or keep extending
    `OscInt/Front/Poly.lean`), venue and outreach (`docs/outreach.md`: Zulip draft, Reservoir, upstream PRs, preprint
-   outline), branch protection, a human expert review of the statements, Mathlib from source on a second machine, the
-   Zenodo DOI of v0.3.0 in `CITATION.cff`.
+   outline), branch protection, a human expert review of the statements, Mathlib from source on a second machine (the v0.3.0 version DOI is now in `CITATION.cff`).
 
 ## What was done this session (with commits)
 - P0: memo and rule referee (bbafeeb, 3581074); API3 plant re-run and erratum (3581074); v0.4.0 notes prepared.
 - P1 batch GD: classification pre-registered and run (3581074, then PASS: `numerics/results-classify-2026-11-08.txt`);
   statements edf7787, stamp + pins b71615c; pre-proof reviews FAITHFUL and TRUE ×2, sanity extended to 15 plants,
-  reviews stamped 8c8d7b0 → ff79840; proofs 2aae8dd, c62a621 (agents GD-P1–P4, lead's assemblies); replay record and
-  post-proof/adversarial reviews: see `docs/STATUS.md` rows GD-C … T6L.
+  reviews stamped 8c8d7b0 → ff79840; proofs 2aae8dd, c62a621 (agents GD-P1–P4, lead's assemblies); verify-all PASS
+  9/9 on c62a621 (`docs/replay/2026-11-08-session6-GD-verify-all.txt`); post-proof FAITHFUL ×2, scope full, and an
+  adversarial review with no BLOCKER/MAJOR (`review/2026-11-08-GD-*`, answers `review/2026-11-08-GD-post-proof-answers.md`).
+- Review follow-ups not done (tool changes, recorded in the answers): verify every review-stamp directory, not only
+  pinned ones (adversarial a1); `stamp verify` writes `.blob` files into stamp directories (f4); hash-pinned pip
+  installs for `reuse`/`cffconvert` need a lock file (f5); a GD-N sanity datum smooth only on U (b2).
 - P4: API index, generator with self-test, agent evaluation (`docs/replay/2026-11-08-api-eval.md`: 3/3 tasks), docs.
 - P8: `docs/applications.md`, `docs/downstream.md`, `docs/outreach.md` (drafts for the owner).
 

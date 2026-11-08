@@ -1,4 +1,4 @@
-/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/plants-gd/plant-SH-c.lean:23:34: error: Application type mismatch: The argument
+/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/plants-gd2/plant-SH-c.lean:23:34: error: Application type mismatch: The argument
   one_ne_zero
 has type
   1 ≠ 0

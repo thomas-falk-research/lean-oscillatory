@@ -12,10 +12,11 @@ def P_TorusUnfoldStatement : Prop :=
       ∫ k in torusBox, g k = ∫ k : ℝ × ℝ, (η k : ℂ) * g k
 
 theorem P_torusUnfold_moments (h : P_TorusUnfoldStatement) :
-    ∃ η : ℝ × ℝ → ℝ, ∫ k : ℝ × ℝ, (η k : ℂ) * 1 = ((2 * Real.pi) ^ 2 : ℝ) ∧
+    ∃ η : ℝ × ℝ → ℝ, ContDiff ℝ ∞ η ∧ tsupport η ⊆ Metric.closedBall 0 4 ∧
+      ∫ k : ℝ × ℝ, (η k : ℂ) * 1 = ((2 * Real.pi) ^ 2 : ℝ) ∧
       ∫ k : ℝ × ℝ, (η k : ℂ) * Complex.exp (↑(k.1) * Complex.I) = 0 := by
-  obtain ⟨η, -, -, hη⟩ := h
-  refine ⟨η, ?_, ?_⟩
+  obtain ⟨η, hs, hsupp, hη⟩ := h
+  refine ⟨η, hs, hsupp, ?_, ?_⟩
   · rw [← hη (fun _ => 1) continuous_const (fun _ => rfl) (fun _ => rfl), integral_one_torusBox]
   · have h0 := latticeKernel_zero_one
     rw [latticeKernel] at h0

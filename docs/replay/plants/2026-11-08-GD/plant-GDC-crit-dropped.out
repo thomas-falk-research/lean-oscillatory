@@ -1,4 +1,4 @@
-/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/plants-gd/plant-GDC-crit-dropped.lean:26:5: error: Application type mismatch: The argument
+/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/plants-gd2/plant-GDC-crit-dropped.lean:26:5: error: Application type mismatch: The argument
   fun L hL k x x_1 hc => ?m.184
 has type
   (L : ℝ × ℝ →L[ℝ] ℝ) →
@@ -9,7 +9,7 @@ but is expected to have type
   ∀ L ∈ {L₃}, ∀ k ∈ Metric.closedBall 0 2, k ∉ ∅ → FoldOrNondegMatrix hypPhase k
 in the application
   And.intro fun L hL k x x_1 hc => ?m.184
-/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/plants-gd/plant-GDC-crit-dropped.lean:27:63: error: Application type mismatch: The argument
+/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/plants-gd2/plant-GDC-crit-dropped.lean:27:63: error: Application type mismatch: The argument
   hyp_crit_nondeg k ?m.212
 has type
   (hessianMatrix hypPhase k).det ≠ 0

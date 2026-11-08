@@ -7,9 +7,9 @@ in Lean; numerics in `numerics/` are tooling and are never cited as evidence.
 
 ## Lattice and photonic dispersion; discrete Schrödinger and quantum walks
 - **Dispersive decay of the 2D lattice Schrödinger group**, `|K(t, x)| ≤ C t^{-2/3}` uniformly in `x ∈ ℤ²`, sharp on the
-  diagonal: statements T6, T6L (`OscInt/Statements/Global.lean`). *Status: statements frozen and reviewed in session 6;
-  proofs and the consumer example `examples/consumer/ConsumerLattice.lean` are the acceptance of ROADMAP P3 — see
-  `docs/STATUS.md` for whether they exist yet.*
+  diagonal: statements T6, T6L (`OscInt/Statements/Global.lean`), **demonstrated** (proved; `docs/STATUS.md`) with the
+  ℓ¹ → ℓ^∞ estimate for finitely supported data in `examples/consumer/ConsumerLattice.lean` (free discrete Laplacian,
+  `t ≥ 1`; a potential is not covered).
 - **Arccos-type dispersion relations** `arccos(a cos x + b cos y)` (split-step quantum walks, photonic lattices):
   non-stationary decay uniform over a compact set of parameters, **demonstrated** (`examples/consumer/ConsumerLocal.lean`,
   FE-S2.1L). The global `t^{-2/3}` bound for one fixed `(a, b)` follows from GD once the classification (four D4 points

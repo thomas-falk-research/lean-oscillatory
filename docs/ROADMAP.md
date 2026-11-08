@@ -54,7 +54,7 @@ trust chain.
       messages naming the condition that fails rather than an unsolved goal.
 - [ ] **Worked examples that double as non-vacuity checks** *(downstream)*: free Schrödinger decay, Bessel-function
       decay, an Airy-type fold, in `OscInt/Examples/`.
-- [x] **Sharpness lemma** *(downstream)* (SH `OscInt.API.sharpness`, batch GD; applied to the lattice kernel by T6L, `examples/consumer/ConsumerLattice.lean`; replay `docs/replay/2026-11-08-session6-GD-verify-all.txt`): a limit with a nonzero constant gives a matching lower bound on the decay
+- [x] **Sharpness lemma** *(downstream)* (SH `OscInt.API.sharpness`, batch GD; applied, with T6L, to the lattice kernel, `examples/consumer/ConsumerLattice.lean`; replay `docs/replay/2026-11-08-session6-GD-verify-all.txt`): a limit with a nonzero constant gives a matching lower bound on the decay
       rate (generalising the bite checks of S4.2 + S4.3).
 - [ ] **Vector-valued amplitudes** *(downstream)* in a normed space (e.g. matrices), so spectral projections can be
       used directly instead of entry by entry.
@@ -111,7 +111,7 @@ trust chain.
         and exponential-sum versions of van der Corput;
   - [ ] **from decay to Strichartz** *(downstream)*: an abstract Keel–Tao theorem for continuous and discrete time,
         with the Hardy–Littlewood–Sobolev input;
-  - [x] decay for lattice Schrödinger operators on ℤ² (T6, T6L: `t^{-2/3}` uniformly in `x`, sharp; `examples/consumer/ConsumerLattice.lean`, ℓ¹ → ℓ^∞; replay `docs/replay/2026-11-08-session6-GD-verify-all.txt`).
+  - [ ] decay for lattice Schrödinger operators on ℤ²: done for the free discrete Laplacian (T6, T6L: kernel `O(t^{-2/3})` uniformly in `x` for `t ≥ 1`, sharp; ℓ¹ → ℓ^∞ for finitely supported data in `examples/consumer/ConsumerLattice.lean`; replay `docs/replay/2026-11-08-session6-GD-verify-all.txt`); with a potential: open.
 - [ ] Numerics as a product: `numerics/` as a library and CLI with JSON output that checks hypotheses numerically,
       evaluates c_C and tabulates sharp rates for a given phase (tooling, never evidence).
 

@@ -14,7 +14,8 @@ code there cannot rot silently; copy from it. Which theorem fits which phase: `d
 | Hessian matrices and the fold condition of explicit phases (`hessianMatrix`, `FoldOrNondegMatrix`) | `OscInt/Front/ConvertSanity.lean`, `OscInt/Front/GlobalSanity.lean` | C1–C7 |
 | A D4 point (`IsD4Point`) of an explicit cubic | `OscInt/Front/GlobalSanity.lean` (`ell_isD4`) | C1, C2, C5 |
 | Periodic integrals over `[−π, π]²` | `OscInt/Front/GlobalSanity.lean` (`latticeKernel_zero_zero`, `torusUnfold_moments`) | T1 |
-| The 2D lattice Laplacian, `t^{-2/3}` and sharpness | `examples/consumer/ConsumerLattice.lean` (once T6/T6L are proved; `docs/STATUS.md`) | T6, T6L, SH |
+| The 2D lattice Laplacian, `t^{-2/3}` and sharpness | `examples/consumer/ConsumerLattice.lean` | T6, T6L, SH |
+| Every batch-GD theorem applied to concrete data | `examples/consumer/ConsumerGlobalChecks.lean` | GD-C, GD, GD-F, GD-N, SH, T1, T6, T6L |
 
 Recurring steps, in the order they come up:
 1. **Smoothness.** `fun_prop` closes `ContDiff ℝ n` for polynomial and trigonometric formulas; for `ContDiffOn` on an

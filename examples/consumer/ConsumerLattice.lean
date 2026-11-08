@@ -15,7 +15,9 @@ Laplacian up to a constant and a time scale, `docs/statements.md`, batch GD) act
 `f : ℤ² →₀ ℂ` by convolution with the kernel `(2π)^{-2} K(t, ·)`,
   (e^{-itH} f)(x) = (2π)^{-2} Σ_y K(t, x − y) f(y).
 T6 (`OscInt.API.latticeLaplacianDecay`) gives the dispersive estimate
-  ‖e^{-itH} f‖_{ℓ^∞} ≤ C t^{-2/3} ‖f‖_{ℓ¹}   for t ≥ 1,
+  ‖e^{-itH} f‖_{ℓ^∞} ≤ C t^{-2/3} ‖f‖_{ℓ¹}   for t ≥ 1 and finitely supported f,
+for the propagator *defined* by its kernel below (that it is the solution operator of the equation, e.g.
+`propagator 0 f = f`, is not proved here; the kernel is the standard Fourier representation, docs/statements.md);
 and T6L with SH (`OscInt.API.latticeLaplacianLimit`, `OscInt.API.sharpness`) shows that no better power holds.
 -/
 
@@ -46,9 +48,10 @@ theorem dispersive : ∃ C : ℝ, ∀ (t : ℝ) (f : ℤ × ℤ →₀ ℂ) (x :
         mul_le_mul_of_nonneg_left key hpi.le
     _ = ((2 * Real.pi) ^ 2)⁻¹ * C * t ^ (-(2 : ℝ) / 3) * f.sum fun _ a => ‖a‖ := by ring
 
-/-- **Sharpness**: no bound `C t^{-3/4}` on the kernel holds uniformly in `x` (T6L + SH). -/
-theorem not_faster : ¬ ∃ C : ℝ, ∀ (t : ℝ) (x : ℤ × ℤ), 1 ≤ t → ‖latticeKernel t x‖ ≤ C * t ^ (-(3 : ℝ) / 4) :=
-  OscInt.API.GlobalSanity.latticeLaplacian_sharp OscInt.API.sharpness OscInt.API.latticeLaplacianLimit
+/-- **Sharpness**: for no `σ′ > 2/3` does a bound `C t^{-σ′}` on the kernel hold uniformly in `x` (T6L + SH). -/
+theorem not_faster : ∀ σ' > (2 : ℝ) / 3,
+    ¬ ∃ C : ℝ, ∀ (t : ℝ) (x : ℤ × ℤ), 1 ≤ t → ‖latticeKernel t x‖ ≤ C * t ^ (-σ') :=
+  OscInt.API.GlobalSanity.latticeLaplacian_sharp_all OscInt.API.sharpness OscInt.API.latticeLaplacianLimit
 
 /-- **GD on a phase given by a formula with all three point types** in the amplitude's support: `x³ + y³` on
 `B̄(0, 1)` is nondegenerate off the axes, a fold on the axes and a D4 point (hyperbolic umbilic, `discr = −27`) at

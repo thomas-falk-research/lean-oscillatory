@@ -1,4 +1,4 @@
-/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/plants-gd/plant-GD-D4-at-zero.lean:28:56: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/plants-gd2/plant-GD-D4-at-zero.lean:28:56: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
   (1, 1) + (-1, -1)
 in the target expression
   iteratedFDeriv ℝ 2 hypPhase (0 + (-1, -1)) = 0

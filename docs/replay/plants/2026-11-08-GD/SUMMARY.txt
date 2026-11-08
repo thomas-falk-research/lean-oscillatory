@@ -21,7 +21,7 @@ plant-SH-c: rejected (want rejected)
     first error: plant-SH-c.lean:23:34: error: Application type mismatch: The argument
 ok-T1-period: accepted (want accepted)
 plant-T1-period: rejected (want rejected)
-    first error: plant-T1-period.lean:26:4: error: Type mismatch: After simplification, term
+    first error: plant-T1-period.lean:27:4: error: Type mismatch: After simplification, term
 ok-T6-rate: accepted (want accepted)
 plant-T6-rate: rejected (want rejected)
     first error: plant-T6-rate.lean:14:24: error: Type mismatch
@@ -43,3 +43,9 @@ plant-GD-D-in-K: rejected (want rejected)
 ok-GD-D4-at-zero: accepted (want accepted)
 plant-GD-D4-at-zero: rejected (want rejected)
     first error: plant-GD-D4-at-zero.lean:28:56: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+ok-T1-support-400: accepted (want accepted)
+plant-T1-support-400: rejected (want rejected)
+    first error: plant-T1-support-400.lean:19:17: error: Application type mismatch: The argument
+ok-T1-only-continuous: accepted (want accepted)
+plant-T1-only-continuous: rejected (want rejected)
+    first error: plant-T1-only-continuous.lean:19:13: error: Application type mismatch: The argument

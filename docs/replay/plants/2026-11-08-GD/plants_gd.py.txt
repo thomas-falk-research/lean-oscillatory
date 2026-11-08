@@ -57,6 +57,10 @@ PLANTS = [
      ('GlobalDecayStatement', '(↑D : Set (ℝ × ℝ)) ⊆ U', '(↑D : Set (ℝ × ℝ)) ⊆ K')),
     ('GD-D4-at-zero', ['IsD4Point', 'Classified', 'GlobalDecayStatement'], ['hypShift_isD4', 'globalDecay_hypShift'],
      ('IsD4Point', 'iteratedFDeriv ℝ 2 Ψ k₀ = 0', 'iteratedFDeriv ℝ 2 Ψ 0 = 0')),
+    ('T1-support-400', ['TorusUnfoldStatement'], ['torusUnfold_moments'],
+     ('TorusUnfoldStatement', 'tsupport η ⊆ Metric.closedBall 0 4', 'tsupport η ⊆ Metric.closedBall 0 400')),
+    ('T1-only-continuous', ['TorusUnfoldStatement'], ['torusUnfold_moments'],
+     ('TorusUnfoldStatement', 'ContDiff ℝ ∞ η ∧', 'Continuous η ∧')),
 ]
 
 HEADER = """import OscInt.Front.GlobalSanity

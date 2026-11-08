@@ -1,4 +1,4 @@
-/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/plants-gd/plant-GD-rate.lean:20:2: error: Type mismatch
+/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/plants-gd2/plant-GD-rate.lean:20:2: error: Type mismatch
   h ellPhase (Metric.closedBall 0 1) Set.univ {0} (isCompact_closedBall 0 1) isOpen_univ
     (Set.subset_univ (Metric.closedBall 0 1)) (Set.subset_univ ↑{0}) (ContDiff.contDiffOn ellPhase_contDiff)
     ell_classified

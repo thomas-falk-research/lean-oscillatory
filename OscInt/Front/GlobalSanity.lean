@@ -28,6 +28,7 @@ Data (generic where the statement has roles to separate, lessons 17):
 namespace OscInt.API.GlobalSanity
 
 open OscInt.Statements OscInt.D4 OscInt.API.ConvertSanity Filter Topology
+open scoped ContDiff
 
 /-! ## The elliptic umbilic `x³ − 3xy²` -/
 
@@ -417,14 +418,16 @@ theorem latticeKernel_zero_one : latticeKernel 0 (1, 0) = 0 := by
   rw [intervalIntegral.integral_smul, h0, smul_zero]
 
 /-- **T1 through the statement constant.** With `g = 1`: `∫ η = (2π)²`; with `g = e^{ik₁}`: `∫ η e^{ik₁} = 0`.
-Plants detected: the period `2π ↦ π` (then `e^{ik₁}` is not admissible: `e^{i(k₁ + π)} = −e^{ik₁}`, so the discharge of
+The smoothness and support conjuncts are kept in the conclusion (adversarial review b1: weakening them to
+`Continuous η` or to `closedBall 0 400` is then detected). Plants detected: the period `2π ↦ π` (then `e^{ik₁}` is not admissible: `e^{i(k₁ + π)} = −e^{ik₁}`, so the discharge of
 the period hypothesis fails); `torusBox ↦ [0, π]²` is detected by `integral_one_torusBox` only through the constant
 `(2π)²` in the conclusion. Not detected: weakening plants (e.g. `Continuous g` dropped). -/
 theorem torusUnfold_moments (h : TorusUnfoldStatement) :
-    ∃ η : ℝ × ℝ → ℝ, ∫ k : ℝ × ℝ, (η k : ℂ) * 1 = ((2 * Real.pi) ^ 2 : ℝ) ∧
+    ∃ η : ℝ × ℝ → ℝ, ContDiff ℝ ∞ η ∧ tsupport η ⊆ Metric.closedBall 0 4 ∧
+      ∫ k : ℝ × ℝ, (η k : ℂ) * 1 = ((2 * Real.pi) ^ 2 : ℝ) ∧
       ∫ k : ℝ × ℝ, (η k : ℂ) * Complex.exp (↑(k.1) * Complex.I) = 0 := by
-  obtain ⟨η, -, -, hη⟩ := h
-  refine ⟨η, ?_, ?_⟩
+  obtain ⟨η, hs, hsupp, hη⟩ := h
+  refine ⟨η, hs, hsupp, ?_, ?_⟩
   · rw [← hη (fun _ => 1) continuous_const (fun _ => rfl) (fun _ => rfl), integral_one_torusBox]
   · have h0 := latticeKernel_zero_one
     rw [latticeKernel] at h0
@@ -446,7 +449,7 @@ theorem latticeLaplacianDecay_diag (h : LatticeLaplacianDecayStatement) :
 
 theorem d4ClosedConstant_lattice_pos : 0 < d4ClosedConstant (-1 / 48) := by
   unfold d4ClosedConstant
-  rw [if_pos (by norm_num : (-1 / 48 : ℝ) < 0)]
+  rw [ite_eq_left_iff.mpr (fun h => absurd (by norm_num : (-1 / 48 : ℝ) < 0) h)]
   have hg : 0 < Real.Gamma (1 / 3) := Real.Gamma_pos_of_pos (by norm_num)
   positivity
 
@@ -467,5 +470,20 @@ theorem latticeLaplacian_sharp (hS : SharpnessStatement) (hL : LatticeLaplacianL
   rw [norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul]
   have := hC n ((n : ℤ), (n : ℤ)) (by exact_mod_cast hn)
   convert this using 2; norm_num
+
+/-- **T6L and SH through the constants, every faster rate** (adversarial review d1): if the diagonal limit holds, no
+bound `C t^{-σ′}` uniform in `x` holds for any `σ′ > 2/3`. -/
+theorem latticeLaplacian_sharp_all (hS : SharpnessStatement) (hL : LatticeLaplacianLimitStatement) :
+    ∀ σ' > (2 : ℝ) / 3, ¬ ∃ C : ℝ, ∀ (t : ℝ) (x : ℤ × ℤ), 1 ≤ t → ‖latticeKernel t x‖ ≤ C * t ^ (-σ') := by
+  intro σ' hσ ⟨C, hC⟩
+  have hL' : Tendsto (fun n : ℕ => (((n : ℝ) ^ ((2 : ℝ) / 3) : ℝ) : ℂ) *
+      ((-1 : ℂ) ^ n * latticeKernel n ((n : ℤ), (n : ℤ)))) atTop (𝓝 (d4ClosedConstant (-1 / 48) : ℂ)) := by
+    unfold LatticeLaplacianLimitStatement at hL
+    simpa only [mul_assoc] using hL
+  obtain ⟨-, h2⟩ := hS.2 _ _ _ hL' (by exact_mod_cast d4ClosedConstant_lattice_pos.ne')
+  refine h2 σ' hσ ⟨C, ?_⟩
+  filter_upwards [eventually_ge_atTop 1] with n hn
+  rw [norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul]
+  exact hC n ((n : ℤ), (n : ℤ)) (by exact_mod_cast hn)
 
 end OscInt.API.GlobalSanity

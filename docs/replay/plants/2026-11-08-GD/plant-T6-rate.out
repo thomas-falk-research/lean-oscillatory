@@ -1,4 +1,4 @@
-/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/plants-gd/plant-T6-rate.lean:14:24: error: Type mismatch
+/tmp/claude-0/-home-user-lean-oscillatory/09e4b675-9e8c-501f-90e3-32d7c8e65b8e/scratchpad/plants-gd2/plant-T6-rate.lean:14:24: error: Type mismatch
   hC ↑n ?m.43 (cast (Eq.symm (Eq.trans (congrFun' (congrArg LE.le (Eq.symm Nat.cast_one)) ↑n) Nat.cast_le._simp_1)) hn)
 has type
   ‖latticeKernel ↑n ?m.43‖ ≤ C * ↑n ^ (-1 / 2)

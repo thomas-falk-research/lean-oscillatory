@@ -14,9 +14,9 @@ stamped at `stamps/20261108T102629Z-8c8d7b090adb`): GD-C `GlobalDecayCritStateme
 `LatticeLaplacianDecayStatement`, T6L `LatticeLaplacianLimitStatement` (45 statements). Proof status: `docs/STATUS.md`.
 
 ### Batch GD (new)
-- Global decay from a local classification: a phase smooth on an open set whose points in a compact set are
-  nondegenerate, folds, or one of finitely many D4 points gives `m^{-2/3}` (uniformly over a compact set of linear
-  terms, or over all linear terms with the pointwise classification); `m^{-5/6}` and `m^{-1}` over all linear terms
+- Global decay from a local classification: a phase smooth on an open set gives `m^{-2/3}` uniformly over a compact
+  set of linear terms when its critical points for those terms (in a compact set, outside finitely many D4 points) are
+  nondegenerate or folds (GD-C), and over all linear terms when every point outside the D4 points is (GD); `m^{-5/6}` and `m^{-1}` over all linear terms
   without D4 points or without degenerate points.
 - The sharpness lemma (a limit with nonzero constant gives a matching lower bound and excludes faster rates).
 - The torus unfolding weight, the 2D lattice-Laplacian dispersive estimate `t^{-2/3}` uniformly in `x ∈ ℤ²`, and its

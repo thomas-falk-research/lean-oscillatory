@@ -31,8 +31,12 @@ import json, sys; p = sys.argv[1]; a = json.load(open(p)); a['statements']['S1.1
 PY
 expect_fail "snippet that does not use the proving theorem"
 fresh; python3 -I - "$t/r/docs/api/annotations.json" <<'PY'
+import json, sys; p = sys.argv[1]; a = json.load(open(p)); a['statements']['GD']['snippet'] = 'example : GlobalDecayCritStatement := OscInt.API.globalDecayCrit'; json.dump(a, open(p, 'w'))
+PY
+expect_fail "snippet naming a longer constant that contains the right name (substring, adversarial c1)"
+fresh; python3 -I - "$t/r/docs/api/annotations.json" <<'PY'
 import json, sys; p = sys.argv[1]; a = json.load(open(p)); a['statements']['S1.1']['see_also'] = ['NOPE']; json.dump(a, open(p, 'w'))
 PY
 expect_fail "see_also naming an unknown label"
 fresh; sed -i 's/^def TorusUnfoldStatement : Prop :=/def TorusUnfoldStatementX : Prop :=/' "$t/r/OscInt/Statements/Global.lean"; expect_fail "statement definition not found in its file"
-echo "test_gen_api: PASS (6 planted defects detected, clean copy accepted)"
+echo "test_gen_api: PASS (7 planted defects detected, clean copy accepted)"

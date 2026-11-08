@@ -5,12 +5,10 @@ cff-version: 1.2.0
 message: "If you use this library, please cite it as below."
 title: "OscInt: uniform oscillatory-integral estimates in Lean 4 and Mathlib"
 abstract: >-
-  A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates in one and two variables:
-  van der Corput's lemma with explicit constants, non-stationary and nondegenerate stationary phase, the uniform
-  fold and D4 (umbilic) estimates with the D4 leading term and its closed-form constant, front ends in Mathlib's
-  idiom, and global decay from a pointwise classification of the phase, with the 2D lattice-Laplacian dispersive
-  estimate as an application. Statements are frozen and timestamped before their proofs and replayed by several
-  independent kernels.
+  A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates in one and two variables: van
+  der Corput's lemma with explicit constants, non-stationary and nondegenerate stationary phase, the uniform fold
+  and D4 (umbilic) estimates with the D4 leading term and its closed-form constant, and front ends in Mathlib's
+  idiom. Statements are frozen and timestamped before their proofs and replayed by several independent kernels.
 type: software
 authors:
   - given-names: "Thomas"
@@ -66,7 +64,8 @@ references:
         family-names: "de Moura"
       - given-names: "Sebastian"
         family-names: "Ullrich"
-    collection-title: "Lecture Notes in Computer Science"
+    collection-title: "Automated Deduction – CADE 28"
+    notes: "Lecture Notes in Computer Science"
     publisher:
       name: "Springer International Publishing"
     year: 2021

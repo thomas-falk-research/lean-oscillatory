@@ -24,7 +24,7 @@
   {
    "id": "P0-v040",
    "title": "v0.4.0 release notes, CHANGELOG",
-   "status": "prepared; pins recomputed at the end of the session",
+   "status": "prepared; pins checked on the final tree (tools/release_preflight.sh 0.4.0 reports only the owner-set version and CHANGELOG items)",
    "evidence": "docs/release-notes/v0.4.0.md"
   },
   {
@@ -36,8 +36,8 @@
   {
    "id": "P1-GD",
    "title": "Batch GD statements (global decay, sharpness, torus unfolding, lattice Laplacian)",
-   "status": "done (post-proof and adversarial reviews: see docs/STATUS.md)",
-   "evidence": "OscInt/Statements/Global.lean (stamp 20261108T094842Z-edf7787a2845), review/2026-11-08-GD-pre-proof-{A,B}.md + answers (reviews stamp 20261108T102629Z-8c8d7b090adb), plants docs/replay/2026-11-08-GD-sanity-plants.txt (15/15), proofs OscInt/Front/{GlobalLocal,Torus,LatticeSymbol,LatticeLimit,GlobalAssembly,Sharpness,LatticeKernel,GlobalFinal,LatticeFinal}.lean, docs/replay/2026-11-08-session6-GD-verify-all.txt (c62a621 PASS 9/9), examples/consumer/ConsumerLattice.lean"
+   "status": "done",
+   "evidence": "OscInt/Statements/Global.lean (stamp 20261108T094842Z-edf7787a2845), review/2026-11-08-GD-pre-proof-{A,B}.md + answers (reviews stamp 20261108T102629Z-8c8d7b090adb), plants docs/replay/2026-11-08-GD-sanity-plants.txt (15/15), proofs OscInt/Front/{GlobalLocal,Torus,LatticeSymbol,LatticeLimit,GlobalAssembly,Sharpness,LatticeKernel,GlobalFinal,LatticeFinal}.lean, docs/replay/2026-11-08-session6-GD-verify-all.txt (c62a621 PASS 9/9), examples/consumer/ConsumerLattice.lean; post-proof review/2026-11-08-GD-post-proof-{A,B}.md (FAITHFUL x2, full); adversarial review/2026-11-08-GD-adversarial.md (no BLOCKER/MAJOR); answers review/2026-11-08-GD-post-proof-answers.md; make quick docs/replay/2026-11-08-session6-final-quick.txt"
   },
   {
    "id": "P4-api",
