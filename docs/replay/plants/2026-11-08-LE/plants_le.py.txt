@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the batch-LE statements against copies of their sanity theorems.
+
+For each plant: copy the named defs (from OscInt/Statements/LatticeExplicit.lean) and theorems (from
+OscInt/Front/LatticeExplicitSanity.lean) under the prefix P_, apply exactly one textual mutation to one copied def, compile with
+`lake env lean -DautoImplicit=false`. The unplanted copy (no mutation) must compile; the planted copy must fail.
+Usage: plants_le.py REPO OUTDIR
+"""
+import os, re, subprocess, sys
+
+REPO, OUT = sys.argv[1], sys.argv[2]
+os.makedirs(OUT, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/LatticeExplicit.lean')).read().split('\n')
+SAN = open(os.path.join(REPO, 'OscInt/Front/LatticeExplicitSanity.lean')).read().split('\n')
+
+
+def block(lines, kind, name):
+    pat = re.compile(r'^(noncomputable )?' + kind + r' ' + re.escape(name) + r'\b')
+    for i, l in enumerate(lines):
+        if pat.match(l):
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {kind} {name}')
+
+
+PLANTS = [
+    # (id, defs, theorems, (def to mutate, old, new))
+    ('T0E-rate', ['LatticeKernel1ExplicitStatement'], ['latticeKernel1Explicit_eight'],
+     ('LatticeKernel1ExplicitStatement', 't ^ (-(1 : ℝ) / 3)', 't ^ (-(1 : ℝ) / 2)')),
+    ('T0E-int', ['LatticeKernel1ExplicitStatement'], ['latticeKernel1Explicit_eight'],
+     ('LatticeKernel1ExplicitStatement', '∀ t ξ : ℝ, 0 < t →', '∀ (t : ℝ) (ξ : ℤ), 0 < t →')),
+    ('T0E-const', ['LatticeKernel1ExplicitStatement'], ['latticeKernel1Explicit_eight'],
+     ('LatticeKernel1ExplicitStatement', '      24 * (2 : ℝ)', '      25 * (2 : ℝ)')),
+    ('T6F-swap', ['LatticeKernelFactorStatement'], ['latticeKernelFactor_generic'],
+     ('LatticeKernelFactorStatement', 'latticeKernel1 t (x.2 : ℝ)', 'latticeKernel1 t (x.1 : ℝ)')),
+    ('T6E-rate', ['LatticeLaplacianExplicitStatement'], ['latticeLaplacianExplicit_diag'],
+     ('LatticeLaplacianExplicitStatement', 't ^ (-(2 : ℝ) / 3)', 't ^ (-(1 : ℝ) / 2)')),
+    ('T6E-threshold', ['LatticeLaplacianExplicitStatement'], ['latticeLaplacianExplicit_one'],
+     ('LatticeLaplacianExplicitStatement', '1 ≤ t →', '2 ≤ t →')),
+]
+
+HEADER = """import OscInt.Front.LatticeExplicitSanity
+
+namespace OscInt.API.LatticeExplicitSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity
+"""
+
+
+def make(defs, thms, mut, planted):
+    names = defs + thms
+    parts = []
+    for d in defs:
+        t = block(STMT, 'def', d)
+        if planted and d == mut[0]:
+            assert t.count(mut[1]) == 1, (d, mut[1])
+            t = t.replace(mut[1], mut[2])
+        parts.append(t)
+    for th in thms:
+        parts.append(block(SAN, 'theorem', th))
+    text = '\n\n'.join(parts)
+    for n in sorted(names, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r'(?![\w])', 'P_' + n, text)
+    return HEADER + '\n' + text + '\n\nend OscInt.API.LatticeExplicitSanity\n'
+
+
+env = dict(os.environ)
+summary = []
+for pid, defs, thms, mut in PLANTS:
+    for planted in (False, True):
+        tag = ('plant-' if planted else 'ok-') + pid
+        src = os.path.join(OUT, tag + '.lean')
+        open(src, 'w').write(make(defs, thms, mut, planted))
+        r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                           cwd=REPO, capture_output=True, text=True)
+        out = r.stdout + r.stderr
+        open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+        errs = [l for l in out.split('\n') if ': error' in l]
+        verdict = ('accepted' if r.returncode == 0 and not errs else 'rejected')
+        want = 'rejected' if planted else 'accepted'
+        line = f"{tag}: {verdict} (want {want}){'' if verdict == want else '  <-- MISMATCH'}"
+        if errs:
+            line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+        print(line, flush=True)
+        summary.append(line)
+open(os.path.join(OUT, 'SUMMARY.txt'), 'w').write('\n'.join(summary) + '\n')

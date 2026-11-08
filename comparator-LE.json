@@ -1,0 +1,5 @@
+{"challenge_module": "Challenge", "solution_module": "OscInt",
+ "theorem_names": ["OscInt.API.latticeKernel1Explicit", "OscInt.API.latticeKernelFactor",
+   "OscInt.API.latticeLaplacianExplicit"],
+ "definition_names": [],
+ "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]}

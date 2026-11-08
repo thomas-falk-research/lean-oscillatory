@@ -498,3 +498,44 @@ of its kernel, so T6 bounds that norm; what is machine-checked in `examples/cons
 upper bound for finitely supported data and for the propagator defined by its kernel (that this is the solution
 operator of `i∂ₜu = Hu` is the standard Fourier representation, not proved there). (9) T6 and T6L concern the free
 discrete Laplacian; potentials are not covered.
+
+## Batch LE: explicit constants for the 1D and 2D lattice kernels (session 7, 2026-11-08)
+
+Order. As batch GD: the statements below, `OscInt/Statements/LatticeExplicit.lean`, sanity theorems with planted
+controls (`OscInt/Front/LatticeExplicitSanity.lean`), the challenge `Challenge/LatticeExplicit.lean` and
+`comparator-LE.json` are committed and stamped before the blind pre-proof reviews; the reports are committed and
+stamped before any Lean proof of these statements is written. Numeric pre-registration that informed the statements
+(tooling, not evidence): `docs/prereg/2026-11-08-LE-lattice-constants.md` (registered d814381, amendment 1 d26b9a4),
+result `numerics/results-lattice1-2026-11-08.txt` (PASS: the bound holds on the grid with ratio ≤ 0.088; exponent
+−0.334; the largest t^{1/3}|I|/(2π) found is 0.78561 ≤ Landau's 0.7858; the factorisation agrees to 5·10⁻¹³ with a
+non-product quadrature; all three controls fail as required).
+
+Why. T6 has an existential constant. Because the 2D kernel factorises (`docs/prior_art.md`, "Lattice kernels"), an
+explicit constant for the 1D kernel gives one for T6. Downstream asked for explicit constants first (ROADMAP).
+
+Notation. I(t, ξ) = ∫_{−π}^{π} e^{i(t cos k + ξk)} dk for real t, ξ (Lean: the interval integral over [−π, π]).
+K(t, x) is T6's kernel (`latticeKernel`, batch GD, unchanged). A = 24 · 2^{1/4} ≈ 28.541, B = 36 · 2^{1/6} ≈ 40.409.
+
+**T0E (explicit bound for the 1D lattice kernel).** For every t > 0 and every real ξ:
+|I(t, ξ)| ≤ A t^{−1/2} + B t^{−1/3}.
+
+**T6F (the 2D kernel factorises).** For every real t and x ∈ ℤ²: K(t, x) = I(t, x₁) I(t, x₂).
+
+**T6E (explicit constant for T6).** For every t ≥ 1 and x ∈ ℤ²: |K(t, x)| ≤ (A + B)² t^{−2/3}. ((A + B)² ≈ 4754.)
+
+Route (for the reviewers' orientation only; the proofs come after the reviews). T0E: split [−π, π] at ±π/4, ±3π/4. On
+the three pieces where |cos k| ≥ 1/√2 apply S1.2 (`VdC2Statement`, constant 8/√μ) to φ = t cos with μ = t/√2; on
+the two where |sin k| ≥ 1/√2 apply S1.3 (`VdC3Statement`, 18 μ^{−1/3}); amplitude 1, linear term ξ. This gives
+3 · 8 · 2^{1/4} t^{−1/2} + 2 · 18 · 2^{1/6} t^{−1/3}. T6F: Fubini on [−π, π]² and e^{a+b} = e^a e^b. T6E: T6F, T0E
+twice, and t^{−1/2} ≤ t^{−1/3} for t ≥ 1.
+
+Modelling choices and what is omitted.
+1. ξ is real in T0E (stronger than integer ξ, which is all T6F needs); the S1 bounds are uniform in the linear term.
+2. T0E is stated for t > 0: at t = 0 Lean's `Real.rpow` gives 0^{−1/2} = 0 and the bound would be false; t < 0
+   reduces to t > 0 by I(−t, ξ) = conj I(t, −ξ).
+3. The constants are far from sharp: at large t the truth is about 2π · 0.675 t^{−1/3} (Landau's constant 0.7858 is the
+   sup over all t > 0), so B is about 9.5 times too large, and on the registered grid (A + B)² t^{−2/3} exceeds
+   sup_x |K(t, x)| by a factor of at least 200 for t ≥ 1 (criterion (e): ratio 0.0048). Sharper
+   constants are future work; these are the ones the frozen S1 constants give by the route above.
+4. The normalisation (2π)^{−2}, the time scale and the phase e^{−4it} are omitted as in T6.
+5. The Bessel identification I(t, n) = 2π iⁿ Jₙ(t) is not stated (Mathlib has no Bessel functions at the pin).

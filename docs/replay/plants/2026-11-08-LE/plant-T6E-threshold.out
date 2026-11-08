@@ -1,0 +1,8 @@
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-LE/plant-T6E-threshold.lean:14:26: error: Application type mismatch: The argument
+  le_rfl
+has type
+  ?m.84 ≤ ?m.84
+but is expected to have type
+  2 ≤ 1
+in the application
+  h 1 (1, -2) le_rfl
