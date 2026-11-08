@@ -58,7 +58,8 @@ jobs:
       - name: REUSE 3.3 licensing information (reuse lint) and CITATION.cff schema (cffconvert)
         run: |
           python3 -m venv /tmp/meta
-          /tmp/meta/bin/pip install --quiet reuse==6.3.0 cffconvert==2.0.0
+          /tmp/meta/bin/pip install --quiet --require-hashes --no-deps -r tools/requirements-ci-build.txt
+          /tmp/meta/bin/pip install --quiet --require-hashes --no-build-isolation -r tools/requirements-ci.txt
           /tmp/meta/bin/reuse lint
           /tmp/meta/bin/cffconvert --validate -i CITATION.cff
       - name: actionlint (workflow syntax and shellcheck of every run block)
