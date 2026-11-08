@@ -6,6 +6,27 @@ or `proved_by` name. Every release lists its statement changes, even when there 
 
 ## Unreleased
 
+### Statement changes (batch LE, session 7)
+No existing statement changed. Added (`OscInt/Statements/LatticeExplicit.lean`, stamp
+`stamps/20261108T160847Z-4a183530559f`, reviews stamped at `stamps/20261108T164514Z-c91a9a8bb0b6`): T0E
+`LatticeKernel1ExplicitStatement`, T6F `LatticeKernelFactorStatement`, T6E `LatticeLaplacianExplicitStatement`
+(48 statements). Proof status: `docs/STATUS.md`.
+
+### Batch LE and session-7 records
+- Explicit constants: |I(t, ξ)| ≤ 24·2^{1/4} t^{−1/2} + 36·2^{1/6} t^{−1/3} for the 1D lattice kernel (from S1.2, S1.3),
+  the factorisation K(t, x) = I(t, x₁) I(t, x₂), and |K(t, x)| ≤ (A+B)² t^{−2/3} ≈ 4754 t^{−2/3} for t ≥ 1. Honest but
+  weak: they beat the trivial bounds only for t > 518 and t > 1321. Consumer example
+  `examples/consumer/ConsumerLatticeExplicit.lean`.
+- Disclosure: T6 and T6L are classical (the 2D kernel factorises into 1D Bessel kernels; Landau's bound; the
+  Cauchy–Watson asymptotic), `docs/prior_art.md`.
+- `docs/policy.md`: the owner's deferral of a human expert review, with its wording rule, calibration plan and triggers.
+- Batch VV groundwork: design `docs/design/vector-amplitudes.md` (duality route); pre-registered classification
+  (`docs/prereg/2026-11-08-VV-classify.md`): the QWZ band at m = 3 is nondegenerate-or-fold everywhere; m = 1, 0.5 and
+  the triangular lattice have cusps.
+- Tools: `stamp verify-every` verifies every stamp directory (review stamps included) and writes nothing into
+  `stamps/`; CI installs `reuse`/`cffconvert` hash-locked (`tools/requirements-ci*.txt`); a GD-N sanity datum smooth
+  only on U (`OscInt/Front/GlobalNondegLocalSanity.lean`).
+
 ### Statement changes (batch GD, session 6)
 Against v0.3.0 and front-end batch 3: **no existing statement changed** (stamped files unchanged; `make commit` against
 the pinned stamps). Added (`OscInt/Statements/Global.lean`, stamp `stamps/20261108T094842Z-edf7787a2845`, reviews
@@ -20,7 +41,8 @@ stamped at `stamps/20261108T102629Z-8c8d7b090adb`): GD-C `GlobalDecayCritStateme
   without D4 points or without degenerate points.
 - The sharpness lemma (a limit with nonzero constant gives a matching lower bound and excludes faster rates).
 - The torus unfolding weight, the 2D lattice-Laplacian dispersive estimate `t^{-2/3}` uniformly in `x ∈ ℤ²`, and its
-  diagonal leading term with the D4 constant `Γ(1/3)² 48^{1/6}/√3`; consumer example
+  diagonal leading term with the constant `Γ(1/3)² 48^{1/6}/√3` (the D4 constant of the umbilic at (π/2, π/2), and
+  also the classical Cauchy–Watson Bessel constant: the kernel factorises, `docs/prior_art.md`); consumer example
   `examples/consumer/ConsumerLattice.lean` (ℓ¹ → ℓ^∞ estimate, sharpness, GD on x³ + y³).
 - Sanity theorems through all eight constants with 15 planted controls before any proof
   (`docs/replay/2026-11-08-GD-sanity-plants.txt`); numeric pre-registration of the classification and of the

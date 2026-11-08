@@ -13,7 +13,8 @@ explicit constants (S1), nondegenerate stationary phase uniform in a linear term
 estimate m^{-5/6} (S3), and the uniform D4 estimate t^{-2/3} (S4.1, S4.1′), the limit t^{2/3}∫e^{itφ}A → c_C A(0) with a Gamma-free c_C (S4.2), c_C > 0 (S4.3) and the
 closed form of c_C (S4.4), Mathlib-idiom front ends and conversions (F1, F2, C1–C9, C7′, FE-S2.1, FE-S2.2, FE-S3,
 FE-S4.1′), compact families and local smoothness (front-end batch 3), and global decay from a pointwise classification
-of the phase with the 2D lattice-Laplacian dispersive estimate t^{-2/3} and its sharpness (batch GD); every statement
+of the phase with the 2D lattice-Laplacian dispersive estimate t^{-2/3} and its sharpness (batch GD; that example is
+classical and separable, `docs/prior_art.md`), and explicit constants for the 1D and 2D lattice kernels (batch LE); every statement
 with a row in `docs/STATUS.md` has its status there, derived from evidence files. Which theorem to use:
 `docs/which-theorem.md`.
 Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0).
@@ -33,7 +34,8 @@ Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801a
 | F1, F2 front end (`ContDiff` amplitudes; the D4 limit with its closed-form constant as one theorem) | machine-checked as stated (`OscInt.API.ampBoundOfContDiff`, `OscInt.API.d4LimitClosedForm`; bridges drafted before the review, disclosed), see `docs/STATUS.md` |
 | Front-end batch 2: conversions C1–C9, C7′ (`iteratedFDeriv`, Hessian matrices, `Cubic.discr`, kernel/rank fold condition, norms, `HasCompactSupport`) and front ends FE-S2.1, FE-S2.2, FE-S3, FE-S4.1′ (`OscInt.API.*`, `import OscInt.API`) | see `docs/STATUS.md` (post-proof FAITHFUL ×2; final replay record named there) |
 | Front-end batch 3: compact families (S2.2F, S3c, C10), local smoothness (FE-S2.1L/S2.2L/S3L/S4.1′L, single-phase forms) | see `docs/STATUS.md` (owner decision pending on CONTRIBUTING step 5) |
-| Batch GD: global decay from a local classification (GD-C, GD, GD-F, GD-N), sharpness (SH), torus unfolding (T1), 2D lattice-Laplacian dispersive estimate t^{-2/3} and its leading term (T6, T6L) | see `docs/STATUS.md`; example `examples/consumer/ConsumerLattice.lean` |
+| Batch GD: global decay from a local classification (GD-C, GD, GD-F, GD-N), sharpness (SH), torus unfolding (T1), 2D lattice-Laplacian dispersive estimate t^{-2/3} and its leading term (T6, T6L) | see `docs/STATUS.md`; example `examples/consumer/ConsumerLattice.lean`. T6 and T6L are classical (the kernel factorises into 1D Bessel kernels, `docs/prior_art.md`) |
+| Batch LE: explicit constants, T0E (1D kernel), T6F (factorisation), T6E (2D, (A+B)² ≈ 4754); content only for t > 518 / t > 1321 | see `docs/STATUS.md`; example `examples/consumer/ConsumerLatticeExplicit.lean` |
 
 "As stated" means the hypotheses in `docs/statements.md` (derivatives continuous up to the endpoints, as in the
 source's C^k assumption). Details and evidence: `docs/STATUS.md`.

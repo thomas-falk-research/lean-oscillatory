@@ -87,3 +87,4 @@ import Mathlib
 #check @ContinuousLinearMap.integral_comp_comm
 #check @ContinuousLinearMap.iteratedFDeriv_comp_left
 #check @ContinuousLinearMap.norm_compContinuousMultilinearMap_le
+#check @ContinuousLinearMap.norm_restrictScalars

@@ -2,8 +2,8 @@
 
 Lead, 2026-11-08, after the pre-proof reviews were committed and stamped (`stamps/20261108T164514Z-c91a9a8bb0b6`).
 Blueprint: `Blueprint/LatticeExplicit.lean` (three `…Facts` propositions). Assembly: `OscInt/Front/LatticeExplicitAssembly.lean`
-(compiled against the blueprint before any part is proved). Every Mathlib name below was `#check`ed at the pin
-(`/tmp/lead/Names.lean`, output in the commit message of the route).
+(compiled against the blueprint before any part is proved). Every Mathlib name below was `#check`ed at the pin and is
+in `MathlibNames.lean` (compiled by `make lean`; see the revision below).
 
 ## Parts
 - **P-angle** `LEAngleFacts`: `|x| ≤ π/4 → 2^{−1/2} ≤ cos x`. `Real.cos_abs`, `Real.cos_le_cos_of_nonneg_of_le_pi`
@@ -48,3 +48,11 @@ frozen statements; every name exists at the pin. No BLOCKER.
 - **n1–n3.** `HasDerivAt.neg ... .const_mul` elaborates to the needed lambda forms here (the parts compile);
   `rpow_neg` is applied after `show -(1:ℝ)/2 = -(1/2)`; `setIntegral_prod_mul` is applied with explicit
   `(μ := volume) (ν := volume)` through `refine … .trans`, as suggested.
+
+## Answers to the post-proof and adversarial reviews (`review/2026-11-08-LE-post-proof-answers.md`)
+- The order claim is worded "by git order and the lead's session record" (adversarial m5, post-proof B MINOR-3): the
+  RFC 3161 stamps bound when the statements (16:08:50Z) and the reviews (16:45:19Z) existed; that no proof existed
+  before rests on git order, which is self-reported (cherry-picks in this session rewrote committer dates), and on the
+  lead's session record, which the adversarial referee read (first proof text 16:56:37Z).
+- The assembly docstring's "five pieces of length π/2" is inexact (the end pieces have length π/4; adversarial n1).
+  Not edited, so that the replayed Lean sources stay byte-identical to a1d2a64; corrected here.

@@ -17,8 +17,9 @@ Agreed in chat after reconciling the session-6 brief with an external review of 
 1. **Batch LE**: explicit constants for the 1D lattice kernel, pre-registered; by the factorisation
    (`docs/prior_art.md`, "Lattice kernels") they give the 2D constant of T6 as `C₁²`. Landau's constant is the external
    reference; certified numerics (P6) fold in as the independent comparison.
-2. **Batch VV**: vector-valued amplitudes, done only when a non-separable model (two-band, or the scalar triangular
-   lattice) compiles end to end; fallback a finite-dimensional componentwise corollary.
+2. **Batch VV**: vector-valued amplitudes, done only when a non-separable model compiles end to end; fallback a
+   finite-dimensional componentwise corollary. Acceptance model chosen by a pre-registered classification: the QWZ band
+   at m = 3 (folds only, so GD-F, not the D4 branch, is what it tests; the triangular lattice has cusps and is out).
 3. Strichartz estimates, non-endpoint (TT*), planned over 2–3 sessions: blueprint, prior-art sweep, frozen statement first.
 4. The D4 bound uniform over compact families (read Karpushkin and Duistermaat 1974 first), then the arccos family.
 Usability, in order: a reusable `oscint-verify` action and Lake template; doc-gen4 site with `llms.txt` from

@@ -48,7 +48,8 @@ The kernel of T6 (`latticeKernel` in `OscInt/Statements/Global.lean`) integrates
 phase `t(cos k₁ + cos k₂) + x₁k₁ + x₂k₂` is a sum of a `k₁` part and a `k₂` part, so by Fubini
 `K(t, x) = I(t, x₁) · I(t, x₂)` with `I(t, n) = ∫_{−π}^{π} e^{i(t cos k + nk)} dk = 2π iⁿ Jₙ(t)` (Bessel's integral).
 PROVEN on paper (Fubini and the Bessel integral, DLMF 10.9.2); the factorisation is machine-checked by batch LE
-(statement T6F), the Bessel identification is not formalised (Mathlib has no Bessel functions at the pin).
+(statement T6F; proved and replayed on a1d2a64, post-proof reviews `review/2026-11-08-LE-post-proof-{A,B}.md`), the
+Bessel identification is not formalised (Mathlib has no Bessel functions at the pin).
 Consequences:
 - **T6** is equivalent to the classical bound `sup_n |Jₙ(t)| ≤ c t^{−1/3}`. L. J. Landau, *Monotonicity and bounds on
   Bessel functions*, Electron. J. Differ. Equ. Conf. 04 (2000) 147–154, gives the best constant `c ≈ 0.7858` for
@@ -60,6 +61,10 @@ Consequences:
   of the 2D phase), but T6 and T6L **are not evidence that GD reaches non-separable symbols**. That needs a
   non-separable model (session-7 batch VV: a two-band or triangular-lattice symbol).
 - No novelty is claimed for the mathematics of T6, T6L; the claim is "machine-checked", nothing more.
+- Scope (adversarial review m2): every GD demonstration in the repository uses a separable phase (T6; x³ + y³ in the
+  consumer example). The planned non-separable acceptance model of batch VV, the QWZ band at m = 3, has folds only, so
+  it will test GD-F on a non-separable symbol, not the D4 branch (GD-C, GD); no non-separable symbol with D4 points has
+  been classified yet.
 
 ## Consequence
 

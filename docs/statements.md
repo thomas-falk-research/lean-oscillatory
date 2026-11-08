@@ -556,4 +556,7 @@ Clarifications after the pre-proof reviews (`review/2026-11-08-LE-pre-proof-{A,B
 9. **User normalisation** (reviews A and B). For H = 2 cos k₁ + 2 cos k₂ on ℓ²(ℤ²), the kernel of e^{itH} is
    (2π)^{−2} K(2t, x), so ‖e^{itH}‖_{ℓ¹→ℓ^∞} ≤ (2π)^{−2}(A + B)²(2t)^{−2/3} ≈ 75.9 t^{−2/3} for t ≥ 1/2. Negative times
    reduce to positive ones by |K(−t, x)| = |K(t, −x)| (not formalised).
+10. **What the numeric pre-registration could and could not catch** (adversarial review n6). Criterion (a) passed at a
+   ratio of 0.088, so it would have caught a draft constant that is too small by more than a factor of about 11, and no
+   smaller error; the constants are pinned by the proof via the S1 constants, not by the numerics.
 

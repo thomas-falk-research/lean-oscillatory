@@ -48,10 +48,26 @@ requires every row of the trust chain (README) for that statement.
 | T1 torus unfolding weight | `OscInt.API.torusUnfold` | yes, same stamp | same | yes (agent GD-P2) | 7 kernel runs + comparator (`docs/replay/2026-11-08-session6-GD-verify-all.txt`, c62a621, verify-all PASS) | machine-checked as stated (replay of c62a621; the pull request's head is replayed by CI `verify / verdict`) |
 | T6 2D lattice-Laplacian dispersive decay t^{-2/3} | `OscInt.API.latticeLaplacianDecay` | yes, same stamp | same | yes (lead; classification by agent GD-P3) | 7 kernel runs + comparator (`docs/replay/2026-11-08-session6-GD-verify-all.txt`, c62a621, verify-all PASS) | machine-checked as stated (replay of c62a621; the pull request's head is replayed by CI `verify / verdict`) |
 | T6L its diagonal leading term | `OscInt.API.latticeLaplacianLimit` | yes, same stamp | same | yes (agent GD-P4) | 7 kernel runs + comparator (`docs/replay/2026-11-08-session6-GD-verify-all.txt`, c62a621, verify-all PASS) | machine-checked as stated (replay of c62a621; the pull request's head is replayed by CI `verify / verdict`) |
+| T0E explicit 1D lattice-kernel bound (content only for t > 518) | `OscInt.API.latticeKernel1Explicit` | yes, stamp `20261108T160847Z-4a183530559f` (pinned) | pre: FAITHFUL and TRUE ×2 (`review/2026-11-08-LE-pre-proof-{A,B}.md`; reviews stamped `20261108T164514Z-c91a9a8bb0b6`); post: FAITHFUL ×2, scope full (`review/2026-11-08-LE-post-proof-{A,B}.md`); adversarial: no BLOCKER/MAJOR, answered (`review/2026-11-08-LE-post-proof-answers.md`) | yes (lead; from S1.2, S1.3) | 7 kernel runs + comparator (`docs/replay/2026-11-08-session7-LE-verify-all.txt`, a1d2a64, verify-all PASS) | machine-checked as stated (replay of a1d2a64; owner decision pending on a documentation-only MAJOR answered without re-freeze, CONTRIBUTING step 5) |
+| T6F the 2D lattice kernel factorises | `OscInt.API.latticeKernelFactor` | yes, same stamp | same | yes (lead) | 7 kernel runs + comparator (`docs/replay/2026-11-08-session7-LE-verify-all.txt`, a1d2a64, verify-all PASS) | machine-checked as stated (replay of a1d2a64; owner decision pending on a documentation-only MAJOR answered without re-freeze, CONTRIBUTING step 5) |
+| T6E explicit constant for T6, (A+B)² ≈ 4754 (content only for t > 1321) | `OscInt.API.latticeLaplacianExplicit` | yes, same stamp | same | yes (lead) | 7 kernel runs + comparator (`docs/replay/2026-11-08-session7-LE-verify-all.txt`, a1d2a64, verify-all PASS) | machine-checked as stated (replay of a1d2a64; owner decision pending on a documentation-only MAJOR answered without re-freeze, CONTRIBUTING step 5) |
 
 T6, T6L prior art (2026-11-08, session 7): both are classical, because the 2D kernel factorises into two 1D Bessel
 kernels; the rows above are unchanged (the proofs are unaffected), but they claim "machine-checked", not new
 mathematics, and are not evidence for non-separable symbols (`docs/prior_art.md`, "Lattice kernels").
+
+Batch LE (session 7, 2026-11-08). Statements `OscInt/Statements/LatticeExplicit.lean`, stamp
+`stamps/20261108T160847Z-4a183530559f` (RFC 3161 ×3 at 16:08:50Z); numeric pre-registration
+`docs/prereg/2026-11-08-LE-lattice-constants.md` (PASS); blind pre-proof reviews FAITHFUL and TRUE ×2, stamped with the
+answers in `stamps/20261108T164514Z-c91a9a8bb0b6` (16:45:19Z). That no proof existed before then rests on git order and
+the lead's session record (RFC 3161 bounds when the statements and reviews existed, not when proofs did not; adversarial
+review m5). The route referee ran while the parts were being written, so "route reviewed before any part was proved"
+is not claimed (`docs/proof-LE.md`, lessons 42). Proofs: lead (parts from the proved S1.2/S1.3, Fubini for T6F).
+Record `docs/replay/2026-11-08-session7-LE-verify-all.txt` (a1d2a64, verify-all PASS 9/9). Post-proof FAITHFUL ×2;
+adversarial no BLOCKER/MAJOR. The constants are explicit but weak: they beat the trivial bounds only for t > 518 (1D)
+and t > 1321 (2D) (`docs/statements.md`, Batch LE, clarification 6). Process: referee A's pre-proof MAJOR asked for a
+documentation change only and was answered without re-freeze; owner decision pending (CONTRIBUTING step 5). Reviewers
+are AI agents; no human has read these statements (`docs/policy.md`).
 
 Pipeline skeleton (M0): `OscInt.skeleton_two_mul` builds, audits clean (1 of 1) and replays in six kernels
 (`build/replay/summary.txt` from `make lean-replay`; the CI run on each push records it).

@@ -11,11 +11,14 @@ proof:
 
 For `E` a complex Banach space and `A : ℝ² → E`, and `ℓ ∈ E*` with `‖ℓ‖ ≤ 1` and `ℓ(∫ e^{imΦ} A) = ‖∫ e^{imΦ} A‖`
 (Hahn–Banach, Mathlib `exists_dual_vector''`):
-`‖∫ e^{imΦ} A‖ = ℓ(∫ e^{imΦ} A) = ∫ e^{imΦ} (ℓ ∘ A)` (`ContinuousLinearMap.integral_comp_comm`, which needs `A`
-integrable; otherwise the Bochner integral is `0` and the bound is trivial), and `ℓ ∘ A` is a scalar amplitude with
+`‖∫ e^{imΦ} A‖ = ℓ(∫ e^{imΦ} A) = ∫ e^{imΦ} (ℓ ∘ A)` (`ContinuousLinearMap.integral_comp_comm`, which needs `k ↦ e^{imΦ(k)} • A(k)` integrable; under the frozen hypotheses,
+`A` continuous with compact support, it always is, so the junk-value branch (Bochner integral `0`) cannot occur; if it
+did, the bound would still need `C · M · r(m) ≥ 0`, which holds because the scalar statement at `A = 0`, `M = 1` forces
+`C ≥ 0`; adversarial review m6), and `ℓ ∘ A` is a scalar amplitude with
 `tsupport (ℓ ∘ A) ⊆ tsupport A`, `C²`, and `‖D^j(ℓ ∘ A)‖ ≤ ‖ℓ‖ ‖D^j A‖ ≤ M`
 (`ContinuousLinearMap.iteratedFDeriv_comp_left`, `norm_compContinuousMultilinearMap_le`; `ℓ` restricted to `ℝ`-scalars
-for the real derivatives). Every frozen statement of the form "∃ C, ∀ A M …, ‖∫ e^{imΦ} A‖ ≤ C · M · r(m)" with `C`
+for the real derivatives: `(ℓ.restrictScalars ℝ).norm_iteratedFDeriv_comp_left` and
+`ContinuousLinearMap.norm_restrictScalars`, checked to compile by the adversarial referee). Every frozen statement of the form "∃ C, ∀ A M …, ‖∫ e^{imΦ} A‖ ≤ C · M · r(m)" with `C`
 independent of `A` (all of S2.1–S3, FE-*, GD-*, the D4 bounds) therefore transfers to `E`-valued amplitudes with the
 same constant. PLAUSIBLE (paper argument above; the Mathlib names were found by grep at the pin, not yet used).
 
@@ -61,11 +64,14 @@ Banach-valued in 1D, `docs/prior_art.md`). No novelty is claimed here.
 `numerics/results-classify-vv-2026-11-08.txt` (first run, 2.8 s). Derivative self-test ok for every phase (Hessian
 ≤ 2.7e−9, third derivatives ≤ 1.4e−5 relative). Controls discriminate: C is CUSP with its X point at the origin; the
 separable trap S(0.5) is CUSP (3434 X points along its critical curve), not NFD4. Verdicts:
-- Q(1): CUSP (cusps at (−π, 0), (0, −π); a Hessian-zero point at (−π, −π) where also T ≈ 0, not D4);
+- Q(1): CUSP (cusps at (−π, 0), (0, −π); a Hessian-zero point at (−π, −π) where the whole 3-jet vanishes (every third
+  derivative of P carries a sine factor): the band minimum, not D4, with local rate at worst `t^{−1/2}`);
 - Q(0.5): CUSP (8 cusp points, e.g. (−π, ±2π/3));
 - **Q(3): NFD4, with no Hessian-zero point at all**: every point nondegenerate or a fold, `minfold` = 0.158;
 - T (triangular lattice): CUSP (6 cusp points, e.g. (−π/2, −π/2)): the planned scalar fallback is *not* covered by GD.
 Decision (rule fixed in the registration): the acceptance model is **QWZ at m = 3**. Since it has folds only, GD-F
 applies and the expected rate is `t^{−5/6}` uniformly in `x` (CONJECTURED: numerics only; m = 3 is the topologically
 trivial gapped phase, which does not matter for dispersion). The Lean classification of Q(3) (nondegenerate or fold at
-every point of the torus) is the main risk of batch VV.
+every point of the torus) is the main risk of batch VV. Scope (adversarial review m2): Q(3) has folds only, so batch VV
+will exercise GD-F, not the D4 branch (GD-C, GD), on a non-separable symbol; it is the near-separable regime in which
+the `c₁c₂/m` term resolves the umbilics of `c₁ + c₂` into folds.
