@@ -49,3 +49,12 @@ OscInt.Statements.NonStationaryOnStatement stamps/20261108T002603Z-9d03130c8f3a
 OscInt.Statements.StationaryPhaseOnStatement stamps/20261108T002603Z-9d03130c8f3a
 OscInt.Statements.FoldOnStatement stamps/20261108T002603Z-9d03130c8f3a
 challenge:comparator-API3.json stamps/20261108T002603Z-9d03130c8f3a
+OscInt.Statements.GlobalDecayCritStatement stamps/20261108T094842Z-edf7787a2845
+OscInt.Statements.GlobalDecayStatement stamps/20261108T094842Z-edf7787a2845
+OscInt.Statements.GlobalFoldStatement stamps/20261108T094842Z-edf7787a2845
+OscInt.Statements.GlobalNondegStatement stamps/20261108T094842Z-edf7787a2845
+OscInt.Statements.SharpnessStatement stamps/20261108T094842Z-edf7787a2845
+OscInt.Statements.TorusUnfoldStatement stamps/20261108T094842Z-edf7787a2845
+OscInt.Statements.LatticeLaplacianDecayStatement stamps/20261108T094842Z-edf7787a2845
+OscInt.Statements.LatticeLaplacianLimitStatement stamps/20261108T094842Z-edf7787a2845
+challenge:comparator-GD.json stamps/20261108T094842Z-edf7787a2845
