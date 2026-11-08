@@ -29,8 +29,9 @@ For a reader who saw nothing. Read `docs/lessons.md` first (35 entries); every r
   Acceptance of P2 (arccos-type phase via `ContDiffOn` of arccos; a phase singular outside the support):
   `examples/consumer/ConsumerLocal.lean`.
 - P3(b): protocol pre-registered (`docs/prereg/2026-11-08-P3b-leading-term.md`, committed before the run) and program
-  `numerics/src/bin/spleading.rs`; result in `numerics/results-spleading-2026-11-08.txt` if the run is committed (see
-  the session checklist). No Lean statement yet.
+  `numerics/src/bin/spleading.rs`; run after that commit: RESULT PASS (`numerics/results-spleading-2026-11-08.txt`: four
+  cases, leading-term error ≤ 0.16 % at m = 640, remainder slopes −1.93 to −2.00; the control without e^{iπ sgn/4}
+  fails, so the check discriminates). Numerics are tooling, not evidence. No Lean statement yet.
 
 ## Owner decisions (stop and ask)
 - **CONTRIBUTING step 5 after a test-layer MAJOR.** Both API3 pre-proof referees judged every statement faithful but

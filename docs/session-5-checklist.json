@@ -52,8 +52,8 @@
   {
    "id": "P3b",
    "title": "2D nondegenerate stationary-phase leading term with O(m^-2), numerics pre-registered",
-   "status": "protocol pre-registered (docs/prereg/2026-11-08-P3b-leading-term.md, program numerics/src/bin/spleading.rs); run after the commit that registers it; no Lean statement",
-   "evidence": null
+   "status": "numeric check done: RESULT PASS by the pre-registered criteria (C1-C4 pass (i) and (ii), slopes -1.99/-2.00/-1.93/-2.00; control C5 discriminates); Lean statement not started",
+   "evidence": "docs/prereg/2026-11-08-P3b-leading-term.md (committed in ff5b80e before the run); numerics/results-spleading-2026-11-08.txt"
   },
   {
    "id": "P4",
