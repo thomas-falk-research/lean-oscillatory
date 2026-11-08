@@ -560,3 +560,36 @@ Clarifications after the pre-proof reviews (`review/2026-11-08-LE-pre-proof-{A,B
    ratio of 0.088, so it would have caught a draft constant that is too small by more than a factor of about 11, and no
    smaller error; the constants are pinned by the proof via the S1 constants, not by the numerics.
 
+
+## Batch VT: the global decay estimates for vector-valued amplitudes (session 7, 2026-11-08)
+
+Order. As batch LE: statements `OscInt/Statements/Vector.lean`, sanity theorems with planted controls
+(`OscInt/Front/VectorSanity.lean`, `docs/replay/2026-11-08-VT-sanity-plants.txt`), challenge `Challenge/Vector.lean` and
+`comparator-VT.json` are committed and stamped before the blind pre-proof reviews; the reports are committed and
+stamped before any Lean proof. No numeric pre-registration: the batch transfers proved bounds and makes no new
+quantitative claim. Design and route: `docs/design/vector-amplitudes.md` §1 (duality).
+
+Why. Two-band lattice models, spectral projections and matrix symbols have amplitudes with values in matrices or other
+Banach spaces. The acceptance model of the owner's batch VV (a non-separable two-band model) is deferred
+(`docs/design/vector-amplitudes.md` §5: the QWZ m = 3 candidate failed its decay check); this batch is the transfer
+only.
+
+Notation as in batch GD. For a complex Banach space E (a Lean `Type` with `NormedAddCommGroup E`, `NormedSpace ℂ E`,
+`CompleteSpace E`), an *E-valued amplitude (2, K, M)* is A : ℝ² → E of class C² (real derivatives) with tsupport A ⊆ K
+and ‖D^j A(k)‖ ≤ M for j ≤ 2. I(Ψ, L, A, m) = ∫ e^{im(Ψ(k) + L(k))} · A(k) dk (Bochner integral in E, scalar action).
+
+**GD-C-V, GD-V, GD-F-V, GD-N-V.** Exactly GD-C, GD, GD-F, GD-N (same hypotheses on Ψ, K, U, D, K′, same rates
+m^{−2/3}, m^{−2/3}, m^{−5/6}, m^{−1}) for E-valued amplitudes, with one constant C, chosen after the phase data and
+before E, valid for every E: ‖I(Ψ, L, A, m)‖ ≤ C · M · rate(m).
+
+Route (for orientation; proofs after the reviews). For ‖·‖-norming functionals: given the integral v ∈ E, Hahn–Banach
+(`exists_dual_vector''`) gives ℓ ∈ E* with ‖ℓ‖ ≤ 1 and ℓ(v) = ‖v‖; ℓ commutes with the integral
+(`ContinuousLinearMap.integral_comp_comm`, the integrand is continuous with compact support); ℓ ∘ A is a scalar
+amplitude (2, K, M) (`iteratedFDeriv` of a composition with a continuous linear map, operator norm ≤ 1, on ℓ restricted
+to ℝ-scalars); the scalar statement with its constant C gives the bound. So the constant of the scalar statement works
+for every E.
+
+Modelling choices and what is omitted.
+1. E ranges over `Type` (universe 0), not over all universes (the commitment tooling hashes closed constants).
+2. The scalar statements are the case E = ℂ (`•` is `*`); this is checked in the sanity file.
+3. Real-valued amplitudes are covered through E = ℂ; real Banach spaces E are not (complexify).

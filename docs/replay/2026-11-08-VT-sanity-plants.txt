@@ -1,0 +1,27 @@
+# Planted controls for batch VT (2026-11-08, session 7, lead): first run before the VT stamp and before any proof of a VT statement
+# Generator: docs/replay/plants/2026-11-08-VT/plants_vt.py.txt (adapted from the LE generator; one textual mutation per plant;
+# compiled with lake env lean -DautoImplicit=false). Sources (.lean.txt) and compiler output (.out) in that directory.
+# Result: 5 plants rejected as required, at the mutated hypothesis or the conclusion (rate: conclusion; D in K, K' finite,
+# det: hypothesis discharge; Subsingleton E: instance for the matrix datum). The sixth, 'C chosen after E' (a weakening),
+# was registered as a known blind spot (want accepted) and was REJECTED, but only by brittleness: the sanity proofs
+# destructure 'obtain <C, hC>' before applying E, which the planted shape no longer allows. This is not semantic
+# detection; the uniformity of C in E rests on the blind reviews. Six unplanted copies accepted.
+
+ok-GDN-V-rate: accepted (want accepted)
+plant-GDN-V-rate: rejected (want rejected)
+    first error: plant-GDN-V-rate.lean:19:42: error: Type mismatch: After simplification, term
+ok-GD-V-D-in-K: accepted (want accepted)
+plant-GD-V-D-in-K: rejected (want rejected)
+    first error: plant-GD-V-D-in-K.lean:18:40: error: Application type mismatch: The argument
+ok-GDC-V-finite: accepted (want accepted)
+plant-GDC-V-finite: rejected (want rejected)
+    first error: plant-GDC-V-finite.lean:19:47: error: Application type mismatch: The argument
+ok-GDF-V-det: accepted (want accepted)
+plant-GDF-V-det: rejected (want rejected)
+    first error: plant-GDF-V-det.lean:18:41: error: Application type mismatch: The argument
+ok-GDN-V-findim: accepted (want accepted)
+plant-GDN-V-findim: rejected (want rejected)
+    first error: plant-GDN-V-findim.lean:24:27: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+ok-GDN-V-C-after-E-BLINDSPOT: accepted (want accepted)
+plant-GDN-V-C-after-E-BLINDSPOT: rejected (want accepted)  <-- MISMATCH
+    first error: plant-GDN-V-C-after-E-BLINDSPOT.lean:18:9: error: Tactic `rcases` failed: `x✝ : ∀ (E : Type) [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℂ E] [CompleteS

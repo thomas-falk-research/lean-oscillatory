@@ -7,5 +7,6 @@ import Challenge.Convert
 import Challenge.Family
 import Challenge.Global
 import Challenge.LatticeExplicit
+import Challenge.Vector
 
 /-! Root of the frozen challenge library. Never a default target, never imported. -/
