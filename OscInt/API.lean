@@ -10,6 +10,7 @@ import OscInt.Front.FamilyC10
 import OscInt.Front.Local
 import OscInt.Front.GlobalSanity
 import OscInt.Front.GlobalFinal
+import OscInt.Front.LatticeFinal
 
 /-!
 # OscInt public API

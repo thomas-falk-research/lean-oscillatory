@@ -62,3 +62,4 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
 #assert_type_is OscInt.API.sharpness OscInt.Statements.SharpnessStatement
 #assert_type_is OscInt.API.torusUnfold OscInt.Statements.TorusUnfoldStatement
 #assert_type_is OscInt.API.latticeLaplacianDecay OscInt.Statements.LatticeLaplacianDecayStatement
+#assert_type_is OscInt.API.latticeLaplacianLimit OscInt.Statements.LatticeLaplacianLimitStatement

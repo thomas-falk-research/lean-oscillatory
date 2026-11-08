@@ -185,7 +185,6 @@ example : LatticeLaplacianDecayStatement := OscInt.API.latticeLaplacianDecay
 
 /-! ### T6L: The leading term on the diagonal: `(−1)ⁿ n^{2/3} K(n, (n, n)) → Γ(1/3)² 48^{1/6}/√3` (`= d4ClosedConstant (−1/48)`, the D4 constant of the cubic `(κ₁³ + κ₂³)/6` at `(π/2, π/2)`). -/
 
-/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/
-example (h : LatticeLaplacianLimitStatement) : LatticeLaplacianLimitStatement := h
+example : LatticeLaplacianLimitStatement := OscInt.API.latticeLaplacianLimit
 
 end OscIntSnippets

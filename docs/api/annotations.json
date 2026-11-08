@@ -700,7 +700,7 @@
     "F2"
    ],
    "snippet_kind": "type",
-   "snippet": "/-- Not yet proved: use the statement as a hypothesis until `proved_by` is set. -/\nexample (h : LatticeLaplacianLimitStatement) : LatticeLaplacianLimitStatement := h"
+   "snippet": "example : LatticeLaplacianLimitStatement := OscInt.API.latticeLaplacianLimit"
   }
  },
  "helpers": [
