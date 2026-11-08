@@ -45,3 +45,13 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
 #assert_type_is OscInt.API.stationaryPhaseFE OscInt.Statements.StationaryPhaseFEStatement
 #assert_type_is OscInt.API.foldFE OscInt.Statements.FoldFEStatement
 #assert_type_is OscInt.API.d4BoundFE OscInt.Statements.D4BoundFEStatement
+#assert_type_is OscInt.API.stationaryPhaseFamily OscInt.Statements.StationaryPhaseFamilyStatement
+#assert_type_is OscInt.API.foldCrit OscInt.Statements.FoldCritStatement
+#assert_type_is OscInt.API.familyCk_of_uncurry OscInt.Statements.FamilyCkOfUncurryStatement
+#assert_type_is OscInt.API.nonStationaryLocal OscInt.Statements.NonStationaryLocalStatement
+#assert_type_is OscInt.API.stationaryPhaseLocal OscInt.Statements.StationaryPhaseLocalStatement
+#assert_type_is OscInt.API.foldLocal OscInt.Statements.FoldLocalStatement
+#assert_type_is OscInt.API.d4BoundLocal OscInt.Statements.D4BoundLocalStatement
+#assert_type_is OscInt.API.nonStationaryOn OscInt.Statements.NonStationaryOnStatement
+#assert_type_is OscInt.API.stationaryPhaseOn OscInt.Statements.StationaryPhaseOnStatement
+#assert_type_is OscInt.API.foldOn OscInt.Statements.FoldOnStatement
