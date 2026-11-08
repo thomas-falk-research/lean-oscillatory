@@ -4,6 +4,7 @@ import OscInt.Front.ConvertSanity
 import OscInt.Front.Poly
 import OscInt.Front.Sanity
 import OscInt.Front.Examples
+import OscInt.Front.FamilySanity
 
 /-!
 # OscInt public API

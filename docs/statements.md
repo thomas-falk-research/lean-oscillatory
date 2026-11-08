@@ -390,3 +390,18 @@ Modelling choices and what is omitted.
   and the family σ|k₁| + k₂², C⁴ on ℝ × {k₁ > 0}. Derivative hypotheses of the Mathlib-idiom forms for explicit phases
   (an arccos-type dispersion relation, a phase singular outside the support) are shown after the proofs, through the
   bridges and the consumer example, as for batch 2.
+
+Clarification added after the API3 stamp (2026-11-08, from the two blind pre-proof referees, FAITHFUL and TRUE ×2 on
+all ten statements; the stamped text above and `OscInt/Statements/Family.lean` are unchanged; answers in
+`review/2026-11-08-API3-pre-proof-answers.md`): (1) S2.2F does not follow from the frozen S2.2 and S3; it is a
+re-assembly of the proved internal parts (`docs/proof-API3.md`, R1). (2) C10 serves families smooth on all of E × ℝ²;
+the FE-L forms do not use it (they use a cut-off); a `ContDiffOn` form of C10 and a local form for families only
+continuous in σ are candidates for a later batch. (3) The gain of the local forms is in what the user has to prove
+(no hand-made cut-off), not in mathematical reach: batch 2 plus a cut-off covers the same phases. (4) "Matrix
+fold-or-nondegenerate condition" in FE-S3L/FE-S3l is `FoldOrNondegMatrix`, the span form (C7 relates it to the rank
+form). (5) The S3c bite in the stamped file (K′ = {(−3, −3)}) has nondegenerate critical points, so S2.2 already gives
+that bound; the bite that neither S2.2 nor S3 covers is `OscInt.API.FamilySanity.foldCrit_fold_bite` (K′ = {(0, −3)}).
+(6) Lessons 11: the stamped sanity theorems restate the hypotheses; the sanity theorems that exercise the statement
+constants are in `OscInt/Front/FamilySanity.lean` (negative controls `docs/replay/2026-11-08-API3-sanity-plants.txt`).
+(7) Metric balls on ℝ × ℝ are max-norm squares; for a phase smooth on a Euclidean disc use the set
+`{k | k.1 ^ 2 + k.2 ^ 2 < 1}` for U.

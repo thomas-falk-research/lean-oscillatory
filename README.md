@@ -46,9 +46,10 @@ rev = "v0.3.0"   # a release tag (pins and notes: docs/release-notes/v0.3.0.md)
 ```
 
 v0.3.0 is the first release with `OscInt.API`, `stamps/statements.json` and `tools/oscint_check.py` (v0.2.0 has none
-of them). **Status on 2026-11-07: prepared, not yet published by the owner;** until the tag exists, CI job
-`release-pin` is red. The release commit is named in `docs/HANDOFF.md` ("Owner decisions"); once tagged, its full
-hash is in `docs/release-notes/v0.3.0.commit`. A tested project of this shape: `examples/consumer-release/`.
+of them). Published 2026-11-07 (GitHub release `v0.3.0`, tag on the release commit recorded in
+`docs/release-notes/v0.3.0.commit`; CI job `release-pin` checks this, and that `main` contains it). External dry run
+with these exact steps: `docs/replay/2026-11-08-external-downstream-dry-run-v0.3.0.txt` (build and checker PASS).
+A tested project of this shape: `examples/consumer-release/`.
 
 ```bash
 lake update oscint

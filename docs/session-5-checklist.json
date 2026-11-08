@@ -22,8 +22,8 @@
   {
    "id": "P0b",
    "title": "CI fails if README/consumer examples pin a tag that main does not contain",
-   "status": "done-local",
-   "evidence": "tools/check_release_pin.sh check 4 (release commit must be an ancestor of HEAD); self-test case added; real negative control: on a worktree at 3290127 (before 7098f09) the check FAILs with the new message; CI release-pin job now checks out with fetch-depth 0"
+   "status": "done",
+   "evidence": "tools/check_release_pin.sh check 4 (release commit must be an ancestor of HEAD); self-test case added; real negative control: on a worktree at 3290127 (before 7098f09) the check FAILs with the new message; CI release-pin job now checks out with fetch-depth 0; committed bb8619f"
   },
   {
    "id": "P0c",
@@ -34,13 +34,13 @@
   {
    "id": "P0d",
    "title": "External downstream dry run (fresh project, OscInt by git tag v0.3.0)",
-   "status": "open",
-   "evidence": null
+   "status": "done",
+   "evidence": "docs/replay/2026-11-08-external-downstream-dry-run-v0.3.0.txt (fresh project, OscInt by tag v0.3.0 = 7098f09; lake build and lake build OscInt Blueprint rc 0; oscint_check.py PASS: kernel replay 72 modules, commitments recomputed; both pinned SHA-256 match the release notes)"
   },
   {
    "id": "P1+P2+P3a",
    "title": "Statement batch API3: S2.2F, S3c (classical fold hypothesis), C10, FE-S2.1L, FE-S2.2L, FE-S3L, FE-S4.1'L, FE-S2.1l, FE-S2.2l, FE-S3l",
-   "status": "in-progress (statements committed; stamp next)",
+   "status": "in-progress: stamped e42dcd3 (stamps/20261108T002603Z-9d03130c8f3a); pre-proof FAITHFUL+TRUE x2 (review/2026-11-08-API3-pre-proof-{A,B}.md); MAJOR (sanity layer) answered by OscInt/Front/FamilySanity.lean with negative controls; review stamp next, then proofs",
    "evidence": "OscInt/Statements/Family.lean, docs/statements.md section 'Front end, batch 3'"
   },
   {
