@@ -55,3 +55,17 @@ fold, or one of finitely many D4 points. Plan:
 Dispersive estimates for two-band lattice models (graphene: Dirac points, not gapped; gapped Chern-insulator models)
 in the analysis literature; any formalisation of vector-valued oscillatory integrals (roos-j's van der Corput is
 Banach-valued in 1D, `docs/prior_art.md`). No novelty is claimed here.
+
+## 4. Result of the pre-registered classification (2026-11-08)
+`docs/prereg/2026-11-08-VV-classify.md` (registered 226afd6, program 33b0848 committed before its run), output
+`numerics/results-classify-vv-2026-11-08.txt` (first run, 2.8 s). Derivative self-test ok for every phase (Hessian
+≤ 2.7e−9, third derivatives ≤ 1.4e−5 relative). Controls discriminate: C is CUSP with its X point at the origin; the
+separable trap S(0.5) is CUSP (3434 X points along its critical curve), not NFD4. Verdicts:
+- Q(1): CUSP (cusps at (−π, 0), (0, −π); a Hessian-zero point at (−π, −π) where also T ≈ 0, not D4);
+- Q(0.5): CUSP (8 cusp points, e.g. (−π, ±2π/3));
+- **Q(3): NFD4, with no Hessian-zero point at all**: every point nondegenerate or a fold, `minfold` = 0.158;
+- T (triangular lattice): CUSP (6 cusp points, e.g. (−π/2, −π/2)): the planned scalar fallback is *not* covered by GD.
+Decision (rule fixed in the registration): the acceptance model is **QWZ at m = 3**. Since it has folds only, GD-F
+applies and the expected rate is `t^{−5/6}` uniformly in `x` (CONJECTURED: numerics only; m = 3 is the topologically
+trivial gapped phase, which does not matter for dispersion). The Lean classification of Q(3) (nondegenerate or fold at
+every point of the torus) is the main risk of batch VV.
