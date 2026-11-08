@@ -1,0 +1,59 @@
+{
+ "session": 5,
+ "started": "2026-11-07",
+ "base_commit": "6acef2a",
+ "rule": "An item is done only with an evidence path; 'open' items say where they stopped.",
+ "handover_corrections": [
+  "The brief said main = cb39601 with session 4 unmerged. Verified 2026-11-07: origin/main = 6acef2a, the merge of PR #4 (head 61cdede); release v0.3.0 published on GitHub 2026-11-07T22:59:49Z, tag v0.3.0 -> 7098f09 (= docs/release-notes/v0.3.0.commit). P0's merge and publish steps were already done by the owner."
+ ],
+ "items": [
+  {
+   "id": "baseline",
+   "title": "make quick on 6acef2a in a fresh container (toolchain install, Mathlib cache, build, audit)",
+   "status": "in-progress",
+   "evidence": null
+  },
+  {
+   "id": "P0a",
+   "title": "PR to main, CI green, merge, release",
+   "status": "done-by-owner",
+   "evidence": "PR #4 merged as 6acef2a; release v0.3.0 published (GitHub releases API, 2026-11-07T22:59:49Z); tools/check_release_pin.sh against origin: PASS (tag -> 7098f09, recorded)"
+  },
+  {
+   "id": "P0b",
+   "title": "CI fails if README/consumer examples pin a tag that main does not contain",
+   "status": "done-local",
+   "evidence": "tools/check_release_pin.sh check 4 (release commit must be an ancestor of HEAD); self-test case added; real negative control: on a worktree at 3290127 (before 7098f09) the check FAILs with the new message; CI release-pin job now checks out with fetch-depth 0"
+  },
+  {
+   "id": "P0c",
+   "title": "CI check that release notes' SHA-256 pins match the tagged files",
+   "status": "already-present",
+   "evidence": "tools/check_release_pin.sh check 3 (exists since session 4: recomputes SHA-256 of stamps/statements.json and tools/oscint_check.py at the tagged commit and compares with the notes' table rows and every --expect-sha256)"
+  },
+  {
+   "id": "P0d",
+   "title": "External downstream dry run (fresh project, OscInt by git tag v0.3.0)",
+   "status": "open",
+   "evidence": null
+  },
+  {
+   "id": "P1+P2+P3a",
+   "title": "Statement batch API3: S2.2F, S3c (classical fold hypothesis), C10, FE-S2.1L, FE-S2.2L, FE-S3L, FE-S4.1'L, FE-S2.1l, FE-S2.2l, FE-S3l",
+   "status": "in-progress (statements drafted; not yet stamped)",
+   "evidence": "OscInt/Statements/Family.lean, docs/statements.md section 'Front end, batch 3'"
+  },
+  {
+   "id": "P1-D4-family",
+   "title": "S4.1' uniform over a compact family",
+   "status": "deferred",
+   "evidence": "Not a re-assembly: needs the D4 normal form uniformly in the parameter (docs/statements.md, batch 3, modelling choices)"
+  },
+  {"id": "P3b", "title": "2D nondegenerate stationary-phase leading term with O(m^-2), numerics pre-registered", "status": "open", "evidence": null},
+  {"id": "P4", "title": "Lattice kernels T0, T1/T2, T6, cones", "status": "open", "evidence": null},
+  {"id": "P5", "title": "Guard policy for a tactic; oscint_hyps", "status": "open", "evidence": null},
+  {"id": "P6", "title": "Constants: model normal forms; certified-numerics path", "status": "open", "evidence": null},
+  {"id": "P7", "title": "Breadth", "status": "open", "evidence": null},
+  {"id": "P8", "title": "Adoption and developer experience", "status": "open", "evidence": null}
+ ]
+}
