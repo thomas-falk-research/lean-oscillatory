@@ -75,3 +75,22 @@ trivial gapped phase, which does not matter for dispersion). The Lean classifica
 every point of the torus) is the main risk of batch VV. Scope (adversarial review m2): Q(3) has folds only, so batch VV
 will exercise GD-F, not the D4 branch (GD-C, GD), on a non-separable symbol; it is the near-separable regime in which
 the `c₁c₂/m` term resolves the umbilics of `c₁ + c₂` into folds.
+
+## 5. The QWZ m = 3 decay check failed its rate criterion (2026-11-08) — the model choice must be revisited
+`docs/prereg/2026-11-08-VV-qwz-decay.md` (registered badacd3, program committed before its run), output
+`numerics/results-qwz-decay-2026-11-08.txt`: **NOT PASS**. Over t ∈ [8, 64] the kernel decays like t^{−2/3}
+(slope −0.654; t^{2/3} sup_x ‖G‖ flat between 17.2 and 18.9), not t^{−5/6}; the controls were distinguished (lattice
+Laplacian −0.673, separable trap −0.403); accuracy 2e−14.
+Diagnosis (lead, scratch computation after the run, not pre-registered; PLAUSIBLE until checked independently):
+Q(m) for m > 2 is near-separable. On the diagonal k₁ = k₂ = a the Hessian entries H₁₁ and H₁₂ of ω vanish at nearby
+but distinct points (m = 3: a ≈ 1.9045 and 1.9329; there ‖D²ω‖ ≈ 0.0065), and the value of H₁₂ where H₁₁ = 0 tends to
+0 as m grows (0.063 at m = 2.05, 0.0065 at 3, 0.0013 at 4, 3.2e−5 at 8): the D4 points of c₁ + c₂ are split into folds
+with a tiny margin. So the classification "nondegenerate or fold everywhere" can be true while the fold estimate's
+constant is so large that t^{−2/3} is what is seen at every computed time; t^{−5/6} would only appear at very large t.
+Consequences:
+- No t^{−5/6} statement for QWZ is frozen.
+- A t^{−2/3} bound (GD with D = ∅, or GD-F weakened) is consistent with the numerics, but its Lean proof needs the same
+  classification of Q(3) on the whole torus, now known to have near-degenerate points (margins of order 1e−2 in the
+  Hessian), which makes certificates delicate.
+- Q(m) for m > 2 never has an exact D4 point on the diagonal (the gap above stays positive), so QWZ does not give a
+  non-separable test of GD's D4 branch either.
