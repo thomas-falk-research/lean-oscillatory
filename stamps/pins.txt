@@ -58,3 +58,7 @@ OscInt.Statements.TorusUnfoldStatement stamps/20261108T094842Z-edf7787a2845
 OscInt.Statements.LatticeLaplacianDecayStatement stamps/20261108T094842Z-edf7787a2845
 OscInt.Statements.LatticeLaplacianLimitStatement stamps/20261108T094842Z-edf7787a2845
 challenge:comparator-GD.json stamps/20261108T094842Z-edf7787a2845
+OscInt.Statements.LatticeKernel1ExplicitStatement stamps/20261108T160847Z-4a183530559f
+OscInt.Statements.LatticeKernelFactorStatement stamps/20261108T160847Z-4a183530559f
+OscInt.Statements.LatticeLaplacianExplicitStatement stamps/20261108T160847Z-4a183530559f
+challenge:comparator-LE.json stamps/20261108T160847Z-4a183530559f

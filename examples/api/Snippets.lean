@@ -187,4 +187,16 @@ example : LatticeLaplacianDecayStatement := OscInt.API.latticeLaplacianDecay
 
 example : LatticeLaplacianLimitStatement := OscInt.API.latticeLaplacianLimit
 
+/-! ### T0E: Explicit bound for the 1D lattice kernel: `|I(t, ξ)| ≤ 24 · 2^{1/4} t^{−1/2} + 36 · 2^{1/6} t^{−1/3}` for every `t > 0` and every real `ξ`. -/
+
+example : Prop := LatticeKernel1ExplicitStatement
+
+/-! ### T6F: The 2D lattice kernel factorises: `K(t, x) = I(t, x₁) I(t, x₂)` for every real `t` and `x ∈ ℤ²`. -/
+
+example : Prop := LatticeKernelFactorStatement
+
+/-! ### T6E: Dispersive decay of the 2D lattice Laplacian with an explicit constant: `|K(t, x)| ≤ (24 · 2^{1/4} + 36 · 2^{1/6})² t^{−2/3}` for `t ≥ 1`, uniformly over `x ∈ ℤ²`. -/
+
+example : Prop := LatticeLaplacianExplicitStatement
+
 end OscIntSnippets
