@@ -88,3 +88,9 @@ import Mathlib
 #check @ContinuousLinearMap.iteratedFDeriv_comp_left
 #check @ContinuousLinearMap.norm_compContinuousMultilinearMap_le
 #check @ContinuousLinearMap.norm_restrictScalars
+#check @ContinuousLinearMap.norm_iteratedFDeriv_comp_left
+#check @tsupport_comp_subset
+#check @notMem_tsupport_iff_eventuallyEq
+#check @Continuous.integrable_of_hasCompactSupport
+#check @HasCompactSupport.intro
+#check @image_eq_zero_of_notMem_tsupport

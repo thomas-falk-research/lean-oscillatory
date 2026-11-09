@@ -17,3 +17,19 @@ Given `K` compact, `U ⊇ K` open, `θ` continuous on `U`, a bound `B M` for eve
    `‖D^j(ℓ ∘ A)‖ ≤ ‖ℓ.restrictScalars ℝ‖ ‖D^j A‖ ≤ M` (`ContinuousLinearMap.norm_iteratedFDeriv_comp_left`,
    `ContinuousLinearMap.norm_restrictScalars`, `M ≥ 0` from the `j = 0` bound).
 5. `‖v‖ = ‖(‖v‖ : ℂ)‖ = ‖ℓ v‖ ≤ B M` by the scalar bound.
+
+## Revision after the route referee (`review/2026-11-09-VT-route-referee.md`, at 52188e4)
+Verdict: no BLOCKER, no MAJOR; `VecTransferFacts` true (edge cases E = 0, M < 0, K empty, θ off U, B arbitrary checked);
+every name fits in the blueprint's instance context; the assembly proves exactly the frozen statements. This revision
+and the report are committed **before** the part's proof enters the repository (lessons 42; the lead's draft was kept in
+the session scratchpad while the referee ran).
+- **M1 (names not all in `MathlibNames.lean`).** Fixed: `ContinuousLinearMap.norm_iteratedFDeriv_comp_left`,
+  `tsupport_comp_subset`, `notMem_tsupport_iff_eventuallyEq`, `Continuous.integrable_of_hasCompactSupport`,
+  `HasCompactSupport.intro`, `image_eq_zero_of_notMem_tsupport` added.
+- **M2 (assembly not in the default build).** It becomes built and audited when `OscInt/Front/VectorFinal.lean` imports
+  it (with the proofs); until then "compiles" is the lead's and the referee's manual check.
+- **M3 (numeric interface check).** Not applicable: a pure duality transfer has no quantity to measure.
+- **N1–N4.** Step 1 uses `HasCompactSupport.intro` (ℝ² is R1) and pointwise continuity (`continuous_iff_continuousAt`,
+  `ContinuousAt.congr`, `ContinuousOn.continuousAt` with `IsOpen.mem_nhds`); step 4's `M ≥ 0` is not needed but kept in
+  the draft; step 5 by `simp` on `‖(‖v‖ : ℂ)‖`; the delivered constant is `vecTransfer : VecTransferFacts`, a one-line
+  application of the universe-polymorphic `transfer`.
