@@ -55,6 +55,9 @@ requires every row of the trust chain (README) for that statement.
 | GD-V GD, Banach-valued amplitudes | `OscInt.API.globalDecayVec` | yes, same stamp | same | yes (lead; duality from GD) | 7 kernel runs + comparator (`docs/replay/2026-11-09-session7-VT-verify-all.txt`, d261c19, verify-all PASS) | machine-checked as stated (replay of d261c19) |
 | GD-F-V GD-F, Banach-valued amplitudes | `OscInt.API.globalFoldVec` | yes, same stamp | same | yes (lead; duality from GD-F) | 7 kernel runs + comparator (`docs/replay/2026-11-09-session7-VT-verify-all.txt`, d261c19, verify-all PASS) | machine-checked as stated (replay of d261c19) |
 | GD-N-V GD-N, Banach-valued amplitudes | `OscInt.API.globalNondegVec` | yes, same stamp | same | yes (lead; duality from GD-N) | 7 kernel runs + comparator (`docs/replay/2026-11-09-session7-VT-verify-all.txt`, d261c19, verify-all PASS) | machine-checked as stated (replay of d261c19) |
+| S1.k k-th derivative van der Corput, constant 5·2^{k−1} − 2 | none yet (challenge `OscInt.API.vdCk`) | yes, stamp `20261109T201548Z-fcb46d9a6239` (pinned) | pre: FAITHFUL and TRUE ×2 (`review/2026-11-09-A3-pre-proof-{A,B}.md`; answers `review/2026-11-09-A3-pre-proof-answers.md`; reviews stamped `20261109T214121Z-47c1360ccd6f`) | no | — | stated and reviewed, not proved |
+| S5.1 uniform stable-cusp bound t^{−3/4} | none yet (challenge `OscInt.API.cuspBound`) | yes, same stamp | same | no | — | stated and reviewed, not proved |
+| S5.1′ uniform cusp (A3) bound t^{−3/4} | none yet (challenge `OscInt.API.cuspBoundGen`) | yes, same stamp | same | no | — | stated and reviewed, not proved |
 
 T6, T6L prior art (2026-11-08, session 7): both are classical, because the 2D kernel factorises into two 1D Bessel
 kernels; the rows above are unchanged (the proofs are unaffected), but they claim "machine-checked", not new
