@@ -767,7 +767,7 @@
     "GD-C"
    ],
    "snippet_kind": "type",
-   "snippet": "example : Prop := GlobalDecayCritVecStatement"
+   "snippet": "example : GlobalDecayCritVecStatement := OscInt.API.globalDecayCritVec"
   },
   "GD-V": {
    "hypotheses": [
@@ -784,7 +784,7 @@
     "GD"
    ],
    "snippet_kind": "type",
-   "snippet": "example : Prop := GlobalDecayVecStatement"
+   "snippet": "example : GlobalDecayVecStatement := OscInt.API.globalDecayVec"
   },
   "GD-F-V": {
    "hypotheses": [
@@ -800,7 +800,7 @@
     "GD-F"
    ],
    "snippet_kind": "type",
-   "snippet": "example : Prop := GlobalFoldVecStatement"
+   "snippet": "example : GlobalFoldVecStatement := OscInt.API.globalFoldVec"
   },
   "GD-N-V": {
    "hypotheses": [
@@ -816,7 +816,7 @@
     "GD-N"
    ],
    "snippet_kind": "type",
-   "snippet": "example : Prop := GlobalNondegVecStatement"
+   "snippet": "example : GlobalNondegVecStatement := OscInt.API.globalNondegVec"
   }
  },
  "helpers": [

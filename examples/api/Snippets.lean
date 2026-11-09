@@ -201,18 +201,18 @@ example : LatticeLaplacianExplicitStatement := OscInt.API.latticeLaplacianExplic
 
 /-! ### GD-C-V: GD-C for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`. -/
 
-example : Prop := GlobalDecayCritVecStatement
+example : GlobalDecayCritVecStatement := OscInt.API.globalDecayCritVec
 
 /-! ### GD-V: GD for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`. -/
 
-example : Prop := GlobalDecayVecStatement
+example : GlobalDecayVecStatement := OscInt.API.globalDecayVec
 
 /-! ### GD-F-V: GD-F for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`. -/
 
-example : Prop := GlobalFoldVecStatement
+example : GlobalFoldVecStatement := OscInt.API.globalFoldVec
 
 /-! ### GD-N-V: GD-N for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`. -/
 
-example : Prop := GlobalNondegVecStatement
+example : GlobalNondegVecStatement := OscInt.API.globalNondegVec
 
 end OscIntSnippets

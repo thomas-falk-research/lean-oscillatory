@@ -1177,7 +1177,7 @@
   {
    "label": "GD-C-V",
    "name": "OscInt.Statements.GlobalDecayCritVecStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.globalDecayCritVec",
    "summary": "GD-C for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`.",
    "file": "OscInt/Statements/Vector.lean",
    "commitment": "b10f3ac4f4192b9dda8fcb91cf171e191deb773dfd84e7026bf38a66653e0f00",
@@ -1196,13 +1196,13 @@
    "see_also": [
     "GD-C"
    ],
-   "snippet": "example : Prop := GlobalDecayCritVecStatement",
+   "snippet": "example : GlobalDecayCritVecStatement := OscInt.API.globalDecayCritVec",
    "status": "see docs/STATUS.md (row GD-C-V)"
   },
   {
    "label": "GD-V",
    "name": "OscInt.Statements.GlobalDecayVecStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.globalDecayVec",
    "summary": "GD for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`.",
    "file": "OscInt/Statements/Vector.lean",
    "commitment": "15935a570eb2a5e976afb37b7740dbd4fd6905a8723687bab6d45f0453d63757",
@@ -1221,13 +1221,13 @@
    "see_also": [
     "GD"
    ],
-   "snippet": "example : Prop := GlobalDecayVecStatement",
+   "snippet": "example : GlobalDecayVecStatement := OscInt.API.globalDecayVec",
    "status": "see docs/STATUS.md (row GD-V)"
   },
   {
    "label": "GD-F-V",
    "name": "OscInt.Statements.GlobalFoldVecStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.globalFoldVec",
    "summary": "GD-F for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`.",
    "file": "OscInt/Statements/Vector.lean",
    "commitment": "71428213100bfbcdb29b2d20f8234bf3f8f6dfc921472657134966e1bdaeccbb",
@@ -1245,13 +1245,13 @@
    "see_also": [
     "GD-F"
    ],
-   "snippet": "example : Prop := GlobalFoldVecStatement",
+   "snippet": "example : GlobalFoldVecStatement := OscInt.API.globalFoldVec",
    "status": "see docs/STATUS.md (row GD-F-V)"
   },
   {
    "label": "GD-N-V",
    "name": "OscInt.Statements.GlobalNondegVecStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.globalNondegVec",
    "summary": "GD-N for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`.",
    "file": "OscInt/Statements/Vector.lean",
    "commitment": "2dda7e400448a35542f23fab458b6a1bdcfa5ee3ae69d38c9664ed9d02eda0f9",
@@ -1269,7 +1269,7 @@
    "see_also": [
     "GD-N"
    ],
-   "snippet": "example : Prop := GlobalNondegVecStatement",
+   "snippet": "example : GlobalNondegVecStatement := OscInt.API.globalNondegVec",
    "status": "see docs/STATUS.md (row GD-N-V)"
   }
  ]

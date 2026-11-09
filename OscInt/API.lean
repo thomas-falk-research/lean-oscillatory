@@ -22,6 +22,7 @@ import OscInt.Front.VectorSanity
 import OscInt.Front.GlobalFinal
 import OscInt.Front.LatticeFinal
 import OscInt.Front.LatticeExplicitFinal
+import OscInt.Front.VectorFinal
 
 /-!
 # OscInt public API
