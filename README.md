@@ -51,7 +51,7 @@ use the same `lean-toolchain`, `leanprover/lean4:v4.35.0`):
 [[require]]
 name = "oscint"
 git = "https://github.com/thomas-falk-research/lean-oscillatory"
-rev = "v0.3.0"   # a release tag (pins and notes: docs/release-notes/v0.3.0.md)
+rev = "v0.4.0"   # a release tag (pins and notes: docs/release-notes/v0.4.0.md)
 ```
 
 v0.3.0 is the first release with `OscInt.API`, `stamps/statements.json` and `tools/oscint_check.py` (v0.2.0 has none

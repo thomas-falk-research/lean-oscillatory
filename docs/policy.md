@@ -69,7 +69,7 @@ OscInt's statement files. Procedure:
   that passed a `release-candidate` run (preflight and the full replay on that commit), with the assets that run
   built and attested; `post-release` checks this after publishing (`docs/decisions/2026-11-08-ci-release-review.md`).
   Verify an asset with `gh attestation verify <file> --repo thomas-falk-research/lean-oscillatory`.
-- Pin a release tag (in `lakefile.toml`: `rev = "v0.3.0"` under `[[require]] name = "oscint"`, README) and the
+- Pin a release tag (in `lakefile.toml`: `rev = "v0.4.0"` under `[[require]] name = "oscint"`, README) and the
   SHA-256 of `stamps/statements.json` from that release's notes (`docs/release-notes/<tag>.md`); against tampering,
   pin the full commit hash recorded in `docs/release-notes/<tag>.commit` instead of the tag name.
 - Run `python3 .lake/packages/oscint/tools/oscint_check.py --statement <each statement you use> --expect-sha256 <pin>`
