@@ -51,6 +51,10 @@ requires every row of the trust chain (README) for that statement.
 | T0E explicit 1D lattice-kernel bound (content only for t > 518) | `OscInt.API.latticeKernel1Explicit` | yes, stamp `20261108T160847Z-4a183530559f` (pinned) | pre: FAITHFUL and TRUE ×2 (`review/2026-11-08-LE-pre-proof-{A,B}.md`; reviews stamped `20261108T164514Z-c91a9a8bb0b6`); post: FAITHFUL ×2, scope full (`review/2026-11-08-LE-post-proof-{A,B}.md`); adversarial: no BLOCKER/MAJOR, answered (`review/2026-11-08-LE-post-proof-answers.md`) | yes (lead; from S1.2, S1.3) | 7 kernel runs + comparator (`docs/replay/2026-11-08-session7-LE-verify-all.txt`, a1d2a64, verify-all PASS) | machine-checked as stated (replay of a1d2a64; owner decision pending on a documentation-only MAJOR answered without re-freeze, CONTRIBUTING step 5) |
 | T6F the 2D lattice kernel factorises | `OscInt.API.latticeKernelFactor` | yes, same stamp | same | yes (lead) | 7 kernel runs + comparator (`docs/replay/2026-11-08-session7-LE-verify-all.txt`, a1d2a64, verify-all PASS) | machine-checked as stated (replay of a1d2a64; owner decision pending on a documentation-only MAJOR answered without re-freeze, CONTRIBUTING step 5) |
 | T6E explicit constant for T6, (A+B)² ≈ 4754 (content only for t > 1321) | `OscInt.API.latticeLaplacianExplicit` | yes, same stamp | same | yes (lead) | 7 kernel runs + comparator (`docs/replay/2026-11-08-session7-LE-verify-all.txt`, a1d2a64, verify-all PASS) | machine-checked as stated (replay of a1d2a64; owner decision pending on a documentation-only MAJOR answered without re-freeze, CONTRIBUTING step 5) |
+| GD-C-V GD-C, Banach-valued amplitudes | `OscInt.API.globalDecayCritVec` | yes, stamp `20261108T235416Z-961cebc296ef` (pinned) | pre: FAITHFUL and TRUE ×2 (`review/2026-11-08-VT-pre-proof-{A,B}.md`; reviews stamped `20261109T002419Z-45505299011a`); route referee (`review/2026-11-09-VT-route-referee.md`); post: FAITHFUL ×2, scope full (`review/2026-11-09-VT-post-proof-{A,B}.md`); adversarial: no BLOCKER on VT, answered (`review/2026-11-09-VT-post-proof-answers.md`) | yes (lead; duality from GD-C) | 7 kernel runs + comparator (`docs/replay/2026-11-09-session7-VT-verify-all.txt`, d261c19, verify-all PASS) | machine-checked as stated (replay of d261c19) |
+| GD-V GD, Banach-valued amplitudes | `OscInt.API.globalDecayVec` | yes, same stamp | same | yes (lead; duality from GD) | 7 kernel runs + comparator (`docs/replay/2026-11-09-session7-VT-verify-all.txt`, d261c19, verify-all PASS) | machine-checked as stated (replay of d261c19) |
+| GD-F-V GD-F, Banach-valued amplitudes | `OscInt.API.globalFoldVec` | yes, same stamp | same | yes (lead; duality from GD-F) | 7 kernel runs + comparator (`docs/replay/2026-11-09-session7-VT-verify-all.txt`, d261c19, verify-all PASS) | machine-checked as stated (replay of d261c19) |
+| GD-N-V GD-N, Banach-valued amplitudes | `OscInt.API.globalNondegVec` | yes, same stamp | same | yes (lead; duality from GD-N) | 7 kernel runs + comparator (`docs/replay/2026-11-09-session7-VT-verify-all.txt`, d261c19, verify-all PASS) | machine-checked as stated (replay of d261c19) |
 
 T6, T6L prior art (2026-11-08, session 7): both are classical, because the 2D kernel factorises into two 1D Bessel
 kernels; the rows above are unchanged (the proofs are unaffected), but they claim "machine-checked", not new
@@ -68,6 +72,16 @@ adversarial no BLOCKER/MAJOR. The constants are explicit but weak: they beat the
 and t > 1321 (2D) (`docs/statements.md`, Batch LE, clarification 6). Process: referee A's pre-proof MAJOR asked for a
 documentation change only and was answered without re-freeze; owner decision pending (CONTRIBUTING step 5). Reviewers
 are AI agents; no human has read these statements (`docs/policy.md`).
+
+Batch VT (session 7, 2026-11-09). Statements `OscInt/Statements/Vector.lean` (the four global decay estimates for
+amplitudes in any complex Banach space `E : Type`, one constant for every E), stamp `stamps/20261108T235416Z-961cebc296ef`
+(RFC 3161 ×3 at 23:54:21Z); blind pre-proof reviews FAITHFUL and TRUE ×2, stamped with the answers in
+`stamps/20261109T002419Z-45505299011a` (00:24:23Z); route review committed before the part's proof entered the repository
+(commit order; the lead's draft was in the scratchpad meanwhile). Proof: duality from the proved GD statements
+(`OscInt/Front/VectorParts.lean`). Record `docs/replay/2026-11-09-session7-VT-verify-all.txt` (d261c19, PASS 9/9).
+Post-proof FAITHFUL ×2. The owner's acceptance test for VV (a non-separable two-band model compiled end to end) is NOT
+met: the candidate QWZ m = 3 has exact cusp points (erratum, `docs/design/vector-amplitudes.md` §6). Reviewers are AI
+agents; no human has read these statements.
 
 Pipeline skeleton (M0): `OscInt.skeleton_two_mul` builds, audits clean (1 of 1) and replays in six kernels
 (`build/replay/summary.txt` from `make lean-replay`; the CI run on each push records it).

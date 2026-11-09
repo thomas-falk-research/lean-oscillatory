@@ -1,0 +1,25 @@
+import OscInt.Front.VectorSanity
+
+namespace OscInt.API.VectorSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.ConvertSanity
+open scoped ContDiff BoundedContinuousFunction
+
+def P_GlobalFoldVecStatement : Prop :=
+  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)),
+    IsCompact K → IsOpen U → K ⊆ U → ContDiffOn ℝ 4 Ψ U → (∀ k ∈ K, FoldOrNondegMatrix Ψ k) →
+    ∃ C : ℝ, ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+      (A : ℝ × ℝ → E) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →
+      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) • A k‖ ≤ C * M * m ^ (-(5 : ℝ) / 6)
+
+theorem P_globalFold_bounded (h : P_GlobalFoldVecStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → (ℕ →ᵇ ℂ)) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 1 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+      1 ≤ m → ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (foldPhase k + L k)) * Complex.I) • A k‖ ≤
+        C * M * m ^ (-(5 : ℝ) / 6) := by
+  obtain ⟨C, hC⟩ := h foldPhase (Metric.closedBall 0 1) Set.univ (isCompact_closedBall _ _) isOpen_univ
+    (Set.subset_univ _) (by unfold foldPhase; fun_prop) (fun k _ => foldOrNondegMatrix_fold k)
+  exact ⟨C, fun A M L m => hC (ℕ →ᵇ ℂ) A M L m⟩
+
+end OscInt.API.VectorSanity

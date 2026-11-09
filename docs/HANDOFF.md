@@ -1,10 +1,12 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (42 entries); every rule in it is binding.
+For a reader who saw nothing. Read `docs/lessons.md` first (43 entries); every rule in it is binding.
 
-## What exists (session 7, 2026-11-08)
-- Lean v4.35.0, Mathlib `56a0058`. **48 pinned statements, all proved**, each with a row in `docs/STATUS.md`: S1–S4,
-  front-end batches 1–3, batch GD (eight; session 6) and, new this session, **batch LE** (three):
+## What exists (session 7, 2026-11-08/09)
+- Lean v4.35.0, Mathlib `56a0058`. **52 pinned statements, all proved**, each with a row in `docs/STATUS.md`: S1–S4,
+  front-end batches 1–3, batch GD (eight; session 6) and, new this session, **batch VT** (four: GD-C-V, GD-V, GD-F-V,
+  GD-N-V, the global decay estimates for amplitudes in any complex Banach space `E : Type`, one constant for every E;
+  replay `docs/replay/2026-11-09-session7-VT-verify-all.txt`, d261c19, PASS 9/9) and **batch LE** (three):
   - T0E `latticeKernel1Explicit`: |∫_{−π}^{π} e^{i(t cos k + ξk)} dk| ≤ 24·2^{1/4} t^{−1/2} + 36·2^{1/6} t^{−1/3} (t > 0, ξ real);
   - T6F `latticeKernelFactor`: the 2D kernel of T6 is the product of two 1D kernels;
   - T6E `latticeLaplacianExplicit`: |K(t, x)| ≤ (A+B)² t^{−2/3} ≈ 4754 t^{−2/3} for t ≥ 1.
@@ -13,7 +15,7 @@ For a reader who saw nothing. Read `docs/lessons.md` first (42 entries); every r
   Reviews: pre-proof FAITHFUL and TRUE ×2, route referee, post-proof FAITHFUL ×2, adversarial no BLOCKER/MAJOR
   (`review/2026-11-08-LE-*`).
 - Disclosure: T6 and T6L are classical (the kernel factorises into 1D Bessel kernels), `docs/prior_art.md`.
-- Entry point `import OscInt.API` (96 names). Consumer examples compiled by `make quick` now include
+- Entry point `import OscInt.API` (104 names). Consumer examples compiled by `make quick` now include
   `examples/consumer/ConsumerLatticeExplicit.lean`.
 - Tools: `stamp verify-every` verifies every stamp directory and rejects symlinks, stray entries, defective manifests
   (header, full commit that is an ancestor of HEAD, hashed set = `git ls-tree` of the commit) and truncated `.ots`
@@ -34,13 +36,11 @@ For a reader who saw nothing. Read `docs/lessons.md` first (42 entries); every r
 ## Session-7 order (owner, `docs/ROADMAP.md`) and where it stands
 0. Session-6 follow-ups a1, f4, f5, b2: **done**.
 1. Batch LE: **done** (above).
-2. **Batch VV (next)**: vector-valued amplitudes, accepted only when a non-separable model compiles end to end.
-   - Route: duality (Hahn–Banach), no proof port: `docs/design/vector-amplitudes.md` §1 (checked by the adversarial
-     referee in Lean).
-   - Acceptance model, chosen by a pre-registered classification (`docs/prereg/2026-11-08-VV-classify.md`, result
-     `numerics/results-classify-vv-2026-11-08.txt`): the Qi–Wu–Zhang band at m = 3, nondegenerate or fold everywhere
-     (so GD-F, rate t^{−5/6}). QWZ at m = 1, 0.5 and the triangular lattice have cusps.
-   - Main risk: the Lean classification of Q(3) on the whole torus. Not started.
+2. **Batch VV**: the vector-valued transfer is **done** (batch VT). The owner's acceptance test (a non-separable two-band
+   model compiled end to end) is **not met**: the candidate QWZ m = 3 failed its pre-registered decay check (t^{−2/3}
+   observed) and has four exact cusp points, which the grid classifier missed (erratum `docs/design/vector-amplitudes.md`
+   §6, lessons 43). QWZ m = 1, 0.5 and the triangular lattice also have cusps. Next: a model search with symmetry-line
+   checks and a sub-grid cusp control, or a model whose classification can be done exactly; owner's choice.
 3. Strichartz (non-endpoint), then 4. the family D4 bound: not started.
 
 ## Process notes for the next lead

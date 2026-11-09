@@ -12,6 +12,18 @@ No existing statement changed. Added (`OscInt/Statements/LatticeExplicit.lean`, 
 `LatticeKernel1ExplicitStatement`, T6F `LatticeKernelFactorStatement`, T6E `LatticeLaplacianExplicitStatement`
 (48 statements). Proof status: `docs/STATUS.md`.
 
+### Statement changes (batch VT, session 7)
+No existing statement changed. Added (`OscInt/Statements/Vector.lean`, stamp `stamps/20261108T235416Z-961cebc296ef`,
+reviews stamped at `stamps/20261109T002419Z-45505299011a`): GD-C-V `GlobalDecayCritVecStatement`, GD-V
+`GlobalDecayVecStatement`, GD-F-V `GlobalFoldVecStatement`, GD-N-V `GlobalNondegVecStatement` (52 statements).
+
+### Batch VT (new)
+- The global decay estimates GD-C, GD, GD-F, GD-N for amplitudes with values in any complex Banach space `E : Type`
+  (matrices, ℂⁿ, ℓ^∞, operators), with the scalar constant, proved by duality (Hahn–Banach); a universe-polymorphic
+  transfer lemma `OscInt.VectorAux.transfer`. Consumer example `examples/consumer/ConsumerVector.lean`.
+- Not met: the owner's VV acceptance test (a non-separable two-band model end to end). The QWZ m = 3 candidate failed its
+  decay check and has exact cusp points (erratum, `docs/design/vector-amplitudes.md` §6).
+
 ### Batch LE and session-7 records
 - Explicit constants: |I(t, ξ)| ≤ 24·2^{1/4} t^{−1/2} + 36·2^{1/6} t^{−1/3} for the 1D lattice kernel (from S1.2, S1.3),
   the factorisation K(t, x) = I(t, x₁) I(t, x₂), and |K(t, x)| ≤ (A+B)² t^{−2/3} ≈ 4754 t^{−2/3} for t ≥ 1. Honest but
@@ -21,8 +33,9 @@ No existing statement changed. Added (`OscInt/Statements/LatticeExplicit.lean`, 
   Cauchy–Watson asymptotic), `docs/prior_art.md`.
 - `docs/policy.md`: the owner's deferral of a human expert review, with its wording rule, calibration plan and triggers.
 - Batch VV groundwork: design `docs/design/vector-amplitudes.md` (duality route); pre-registered classification
-  (`docs/prereg/2026-11-08-VV-classify.md`): the QWZ band at m = 3 is nondegenerate-or-fold everywhere; m = 1, 0.5 and
-  the triangular lattice have cusps.
+  (`docs/prereg/2026-11-08-VV-classify.md`) reported the QWZ band at m = 3 as nondegenerate-or-fold everywhere; that was a
+  grid artifact (erratum, `docs/design/vector-amplitudes.md` §6: four exact cusp points), and its decay check failed
+  (t^{−2/3} observed). m = 1, 0.5 and the triangular lattice have cusps. No VV acceptance model yet.
 - Tools: `stamp verify-every` verifies every stamp directory (review stamps included) and writes nothing into
   `stamps/`; CI installs `reuse`/`cffconvert` hash-locked (`tools/requirements-ci*.txt`); a GD-N sanity datum smooth
   only on U (`OscInt/Front/GlobalNondegLocalSanity.lean`).

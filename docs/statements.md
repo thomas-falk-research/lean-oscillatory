@@ -608,4 +608,9 @@ Clarifications after the pre-proof reviews (`review/2026-11-08-VT-pre-proof-{A,B
 7. **Universes and real spaces** (A MINOR-1, B NIT-2, NIT-3). `E : Type` only; a universe-polymorphic transfer theorem
    (not a frozen statement) can be added with the proofs. Real Banach spaces are not covered; Mathlib has no convenient
    complexification, so this is a real limitation for users.
-
+8. **Order, precisely** (post-proof A NIT-1). The sanity file the pre-proof referees saw is the one in the statement stamp
+   (`stamps/20261108T235416Z-961cebc296ef`); three theorems were added in answer to them and that version is in the review
+   stamp (`stamps/20261109T002419Z-45505299011a`); more data were added after the post-proof reviews. The route review was
+   committed before the part's proof entered the repository; the lead's draft existed in the session scratchpad meanwhile
+   (lessons 42), so the claim is about commit order, which no third-party timestamp covers (post-proof A MINOR-2,
+   adversarial m4). Proved: `OscInt/Front/VectorFinal.lean`; replay `docs/replay/2026-11-09-session7-VT-verify-all.txt`.

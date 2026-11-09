@@ -1,0 +1,4 @@
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-VT/run3/plant-GDN-V-findim.lean:24:27: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  FiniteDimensional ℂ (ℕ →ᵇ ℂ)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.

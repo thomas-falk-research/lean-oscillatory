@@ -20,7 +20,7 @@ did, the bound would still need `C · M · r(m) ≥ 0`, which holds because the 
 for the real derivatives: `(ℓ.restrictScalars ℝ).norm_iteratedFDeriv_comp_left` and
 `ContinuousLinearMap.norm_restrictScalars`, checked to compile by the adversarial referee). Every frozen statement of the form "∃ C, ∀ A M …, ‖∫ e^{imΦ} A‖ ≤ C · M · r(m)" with `C`
 independent of `A` (all of S2.1–S3, FE-*, GD-*, the D4 bounds) therefore transfers to `E`-valued amplitudes with the
-same constant. PLAUSIBLE (paper argument above; the Mathlib names were found by grep at the pin, not yet used).
+same constant. PROVEN since: batch VT (`OscInt/Front/VectorParts.lean`, `VectorFinal.lean`; replay of d261c19).
 
 Consequences for the batch: the VV statements are new frozen constants (GD-V, GD-F-V, GD-N-V, FE-S4.1′L-V at least),
 each with `E` universally quantified over `[NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]`; the scalar
@@ -94,3 +94,23 @@ Consequences:
   Hessian), which makes certificates delicate.
 - Q(m) for m > 2 never has an exact D4 point on the diagonal (the gap above stays positive), so QWZ does not give a
   non-separable test of GD's D4 branch either.
+
+## 6. ERRATUM (2026-11-09): QWZ m = 3 has exact cusp points; §4's verdict and §5's diagnosis are retracted
+Found by the VT adversarial referee (`review/2026-11-09-VT-adversarial.md`, M1), confirmed by the lead.
+- **Exact argument.** ω is symmetric under k₁ ↔ k₂, so at (a, a): H₁₁ = H₂₂, T₁₁₁ = T₂₂₂, T₁₁₂ = T₁₂₂. Where
+  H₁₁(a) = H₁₂(a), det H = 0 with kernel spanned by (1, −1), and T[v, v, v] = T₁₁₁ − 3T₁₁₂ + 3T₁₂₂ − T₂₂₂ = 0
+  identically: the point is neither a fold nor a D4 point. For m = 3, H₁₁ − H₁₂ changes sign on the diagonal at
+  a = 1.910633 (lead's recomputation: H₁₁ = H₁₂ = 5.0886e−3, det H ≈ 3e−18, T[v, v, v] = 0, T₁₁₁ = 0.94); by evenness in
+  each variable there are four such points (±a, ±a). The referee found the same at m = 2.05, 4, 8 and a linear vanishing of
+  the fold quantity along the degenerate curve (a Whitney cusp, generically A₃, local rate t^{−3/4}).
+- **Why the classifier said NFD4.** Grid spacing 2π/2048 ≈ 3.1e−3; its smallest fold quantity, 0.158, was about 1e−3 from
+  the cusp, and its Newton search only starts below 1e−2 (`numerics/src/bin/classify_vv.rs`). A sub-grid cusp is invisible
+  to it; the P1 cusp control did not test this case. The NFD4 verdict for Q(3) (§4) is a grid artifact.
+- **§5 retracted.** "The classification can be true while t^{−5/6} appears only at very large t" is false: the asymptotic
+  rate is at best t^{−3/4}, and no proved theorem in the repository (GD, GD-F, GD-C) applies to Q(m), m > 2. The lead's
+  diagnosis checked the wrong condition (H₁₂ where H₁₁ = 0, instead of H₁₁ = ±H₁₂).
+- **Also:** criterion (b) of `docs/prereg/2026-11-08-VV-qwz-decay.md` could not discriminate (adversarial m3: for a
+  t^{−2/3} decay the ratio is 8^{1/6} ≈ 1.41, for t^{−1/2} it is 2, both below 3), and there was no positive control
+  decaying like t^{−5/6}.
+- **Consequences.** QWZ (m > 2) is dropped as an acceptance model. No acceptance model for VV exists now. A future search
+  must check symmetry lines and refine near small fold quantities, with a sub-grid positive control (lessons 43).

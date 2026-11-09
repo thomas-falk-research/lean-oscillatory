@@ -23,3 +23,6 @@ example := globalNondeg_uniform_dim globalNondegVec
 example := globalFold_pair globalFoldVec
 example := globalDecay_pair globalDecayVec
 example := globalDecayCrit_pair globalDecayCritVec
+example := globalFold_bounded globalFoldVec
+example := globalDecay_bounded globalDecayVec
+example := globalDecayCrit_bounded globalDecayCritVec

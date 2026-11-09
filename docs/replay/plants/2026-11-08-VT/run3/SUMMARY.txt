@@ -1,0 +1,12 @@
+ok-GDF-V-findim: accepted (want accepted)
+plant-GDF-V-findim: rejected (want rejected)
+    first error: plant-GDF-V-findim.lean:23:27: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+ok-GD-V-findim: accepted (want accepted)
+plant-GD-V-findim: rejected (want rejected)
+    first error: plant-GD-V-findim.lean:23:27: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+ok-GDC-V-findim: accepted (want accepted)
+plant-GDC-V-findim: rejected (want rejected)
+    first error: plant-GDC-V-findim.lean:26:27: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+ok-GDN-V-findim: accepted (want accepted)
+plant-GDN-V-findim: rejected (want rejected)
+    first error: plant-GDN-V-findim.lean:24:27: error(lean.synthInstanceFailed): failed to synthesize instance of type class

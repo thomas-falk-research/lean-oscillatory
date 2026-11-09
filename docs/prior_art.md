@@ -62,9 +62,9 @@ Consequences:
   non-separable model (session-7 batch VV: a two-band or triangular-lattice symbol).
 - No novelty is claimed for the mathematics of T6, T6L; the claim is "machine-checked", nothing more.
 - Scope (adversarial review m2): every GD demonstration in the repository uses a separable phase (T6; x³ + y³ in the
-  consumer example). The planned non-separable acceptance model of batch VV, the QWZ band at m = 3, has folds only, so
-  it will test GD-F on a non-separable symbol, not the D4 branch (GD-C, GD); no non-separable symbol with D4 points has
-  been classified yet.
+  consumer example). The candidate non-separable model of batch VV, the QWZ band at m = 3, turned out to have exact cusp
+  points (`docs/design/vector-amplitudes.md` §6), so no proved theorem applies to it; no non-separable symbol satisfying
+  the GD hypotheses has been found yet.
 
 ## Consequence
 

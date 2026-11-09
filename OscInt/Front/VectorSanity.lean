@@ -16,6 +16,8 @@ Each theorem takes a frozen statement of `OscInt/Statements/Vector.lean` as its 
   its scalar counterpart is detected here.
 * Matrix-valued data: GD-N-V with `E = Fin 2 → Fin 2 → ℂ` (sup norm) on `x² + 3xy + 5y²`, `K = B̄(0, 1)`, `U = B(0, 2)`.
 * GD-F-V and GD-V with `E = ℂ × ℂ` on the fold `x³ + y²` and the elliptic umbilic `x³ − 3xy²` (the data of batch GD).
+* After the pre-proof reviews: GD-N-V on `ℕ →ᵇ ℂ` and with one constant for every `ℂⁿ`; GD-C-V on `ℂ × ℂ`. After the
+  post-proof reviews: GD-C-V, GD-V, GD-F-V on `ℕ →ᵇ ℂ` (adversarial review m1: an added `[FiniteDimensional ℂ E]`).
 Structural limit as before: a plant that weakens a hypothesis, strengthens the conclusion or lets `C` depend on `E`
 (moving `∃ C` after `∀ E`, a weakening) is not detected and rests on the blind reviews.
 -/
@@ -88,9 +90,11 @@ theorem globalNondeg_bounded (h : GlobalNondegVecStatement) :
     (fun k _ => by unfold quadPhase; rw [(hessian_mixed k).2]; norm_num)
   exact ⟨C, fun A M L m => hC (ℕ →ᵇ ℂ) A M L m⟩
 
-/-- **One constant for the whole family `ℂⁿ`, `n ∈ ℕ`** (GD-N-V). A planted statement with `C` chosen after `E` gives a
-constant for each `n` separately, and no maximum over infinitely many; it implies this conclusion only through the
-duality argument, not by instantiation (pre-proof reviews A MINOR-2, B MINOR-2). -/
+/-- **One constant for the whole family `ℂⁿ`, `n ∈ ℕ`** (GD-N-V). This does NOT test the placement of `∃ C` before `∀ E`
+semantically: a statement with `C` chosen after `E`, instantiated once at the `ℓ^∞`-sum of all `ℂⁿ` (each `ℂⁿ` embeds
+isometrically), also gives this conclusion (post-proof review B, MINOR-1; adversarial review M2, both with compiled
+proofs). The two placements are provably equivalent (`docs/statements.md`, Batch VT, clarification 5), so no sanity
+theorem can separate them; the conclusion is kept as a usage example. -/
 theorem globalNondeg_uniform_dim (h : GlobalNondegVecStatement) :
     ∃ C : ℝ, ∀ (n : ℕ) (A : ℝ × ℝ → EuclideanSpace ℂ (Fin n)) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
       ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 1 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
@@ -112,5 +116,36 @@ theorem globalDecayCrit_pair (h : GlobalDecayCritVecStatement) :
     ellPhase_contDiff.contDiffOn
     ⟨fun _ _ k _ hk _ => Or.inl (ell_nondeg k (by simpa using hk)), ell_classified.2⟩
   exact ⟨C, fun A M L m => hC (ℂ × ℂ) A M L m⟩
+
+/-- **GD-F-V, GD-V, GD-C-V on an infinite-dimensional space** (`E = ℕ →ᵇ ℂ`). Plant detected: an added
+`[FiniteDimensional ℂ E]` in each of the three (adversarial review m1). -/
+theorem globalFold_bounded (h : GlobalFoldVecStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → (ℕ →ᵇ ℂ)) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 1 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+      1 ≤ m → ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (foldPhase k + L k)) * Complex.I) • A k‖ ≤
+        C * M * m ^ (-(5 : ℝ) / 6) := by
+  obtain ⟨C, hC⟩ := h foldPhase (Metric.closedBall 0 1) Set.univ (isCompact_closedBall _ _) isOpen_univ
+    (Set.subset_univ _) (by unfold foldPhase; fun_prop) (fun k _ => foldOrNondegMatrix_fold k)
+  exact ⟨C, fun A M L m => hC (ℕ →ᵇ ℂ) A M L m⟩
+
+theorem globalDecay_bounded (h : GlobalDecayVecStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → (ℕ →ᵇ ℂ)) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 1 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+      1 ≤ m → ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (ellPhase k + L k)) * Complex.I) • A k‖ ≤
+        C * M * m ^ (-(2 : ℝ) / 3) := by
+  obtain ⟨C, hC⟩ := h ellPhase (Metric.closedBall 0 1) Set.univ {0} (isCompact_closedBall _ _) isOpen_univ
+    (Set.subset_univ _) (Set.subset_univ _) ellPhase_contDiff.contDiffOn ell_classified
+  exact ⟨C, fun A M L m => hC (ℕ →ᵇ ℂ) A M L m⟩
+
+theorem globalDecayCrit_bounded (h : GlobalDecayCritVecStatement) :
+    ∃ C : ℝ, ∀ (A : ℝ × ℝ → (ℕ →ᵇ ℂ)) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ Metric.closedBall 0 1 → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+      L ∈ ({0, L₁} : Set ((ℝ × ℝ) →L[ℝ] ℝ)) → 1 ≤ m →
+      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (ellPhase k + L k)) * Complex.I) • A k‖ ≤ C * M * m ^ (-(2 : ℝ) / 3) := by
+  obtain ⟨C, hC⟩ := h ellPhase (Metric.closedBall 0 1) Set.univ {0, L₁} {0} (isCompact_closedBall _ _) isOpen_univ
+    (Set.subset_univ _) (Set.subset_univ _) ((Set.finite_singleton _).insert _).isCompact
+    ellPhase_contDiff.contDiffOn
+    ⟨fun _ _ k _ hk _ => Or.inl (ell_nondeg k (by simpa using hk)), ell_classified.2⟩
+  exact ⟨C, fun A M L m => hC (ℕ →ᵇ ℂ) A M L m⟩
 
 end OscInt.API.VectorSanity

@@ -19,7 +19,8 @@ in Lean; numerics in `numerics/` are tooling and are never cited as evidence.
   at `(±π/2, ±π/2)`, folds elsewhere; numerically confirmed, `numerics/results-classify-2026-11-08.txt`) is discharged
   in Lean: **proposed**. Uniformly over `(a, b)`: needs a family D4 statement, **proposed** (open analysis).
 - **Quantum-walk spreading bounds** (ballistic spreading with `t^{-2/3}` decay of return amplitudes): **proposed**; needs
-  vector-valued (matrix) amplitudes for the coin space (ROADMAP P5) and the two-band symbol's classification.
+  vector-valued (matrix) amplitudes for the coin space (done for the global theorems: batch VT) and a classified two-band
+  symbol (none found yet: `docs/design/vector-amplitudes.md` §6).
 
 ## Diffraction and caustics in optics
 - **Fold caustics** (rainbow, Airy-type): the uniform `m^{-5/6}` bound with the classical critical-points-only

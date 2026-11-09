@@ -20,16 +20,16 @@ namespace OscInt.API
 
 open OscInt.Statements OscInt.VectorAux
 
-/-- **GD-C-V** (`GlobalDecayCritVecStatement`): GD-C for amplitudes in any complex Banach space, one constant. -/
+/-- **GD-C-V** (`GlobalDecayCritVecStatement`): GD-C for amplitudes in any complex Banach space `E : Type`, one constant. -/
 theorem globalDecayCritVec : GlobalDecayCritVecStatement := gdcv_of vecTransfer
 
-/-- **GD-V** (`GlobalDecayVecStatement`): GD for amplitudes in any complex Banach space, one constant. -/
+/-- **GD-V** (`GlobalDecayVecStatement`): GD for amplitudes in any complex Banach space `E : Type`, one constant. -/
 theorem globalDecayVec : GlobalDecayVecStatement := gdv_of vecTransfer
 
-/-- **GD-F-V** (`GlobalFoldVecStatement`): GD-F for amplitudes in any complex Banach space, one constant. -/
+/-- **GD-F-V** (`GlobalFoldVecStatement`): GD-F for amplitudes in any complex Banach space `E : Type`, one constant. -/
 theorem globalFoldVec : GlobalFoldVecStatement := gdfv_of vecTransfer
 
-/-- **GD-N-V** (`GlobalNondegVecStatement`): GD-N for amplitudes in any complex Banach space, one constant. -/
+/-- **GD-N-V** (`GlobalNondegVecStatement`): GD-N for amplitudes in any complex Banach space `E : Type`, one constant. -/
 theorem globalNondegVec : GlobalNondegVecStatement := gdnv_of vecTransfer
 
 end OscInt.API

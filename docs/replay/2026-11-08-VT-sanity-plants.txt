@@ -11,9 +11,10 @@
 # one constant for the whole family EuclideanSpace C (Fin n), n in N, and a GD-C-V instance with E = C x C. Plants: the
 # first run's 'findim' was misnamed (it added Subsingleton E; review B NIT-4), now 'subsingleton'; a real FiniteDimensional
 # plant added (review B MINOR-1: accepted by the first sanity file, verified by B), now rejected at the instance for
-# N ->b C; 'C after E' now tested against the uniform-family theorem: the first error is still the destructuring, but a
-# reordered proof cannot succeed either, since one constant for every n does not follow from one constant per n without
-# the duality argument (reviews A MINOR-2, B MINOR-2). 7 plants rejected, 7 controls accepted.
+# N ->b C; 'C after E' now tested against the uniform-family theorem: the first error is still the destructuring.
+# RETRACTED (post-proof review B MINOR-1, adversarial M2, both with compiled proofs): a reordered proof DOES succeed, by one
+# instantiation at the l^inf-sum of all C^n; the rejection is by proof shape only. The two placements are provably equivalent
+# (clarification 5), so no sanity theorem can separate them. 7 plants rejected, 7 controls accepted.
 
 ok-GDN-V-rate: accepted (want accepted)
 plant-GDN-V-rate: rejected (want rejected)
@@ -56,3 +57,20 @@ plant-GDN-V-findim: rejected (want rejected)
 ok-GDN-V-C-after-E: accepted (want accepted)
 plant-GDN-V-C-after-E: rejected (want rejected)
     first error: plant-GDN-V-C-after-E.lean:20:9: error: Tactic `rcases` failed: `x✝ : ∀ (E : Type) [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℂ E] [CompleteSpace E],
+
+# Third run (after the post-proof reviews), outputs in run3/: the FiniteDimensional plant for GD-F-V, GD-V, GD-C-V (adversarial
+# m1: accepted by the second sanity file) and GD-N-V, against the new N ->b C data: 4 rejected, 4 controls accepted.
+# Every verdict here is specific to the proof shapes of the sanity file (adversarial m2): 'rejected' means this file fails to
+# compile, not that no proof of the conclusion exists.
+ok-GDF-V-findim: accepted (want accepted)
+plant-GDF-V-findim: rejected (want rejected)
+    first error: plant-GDF-V-findim.lean:23:27: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+ok-GD-V-findim: accepted (want accepted)
+plant-GD-V-findim: rejected (want rejected)
+    first error: plant-GD-V-findim.lean:23:27: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+ok-GDC-V-findim: accepted (want accepted)
+plant-GDC-V-findim: rejected (want rejected)
+    first error: plant-GDC-V-findim.lean:26:27: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+ok-GDN-V-findim: accepted (want accepted)
+plant-GDN-V-findim: rejected (want rejected)
+    first error: plant-GDN-V-findim.lean:24:27: error(lean.synthInstanceFailed): failed to synthesize instance of type class

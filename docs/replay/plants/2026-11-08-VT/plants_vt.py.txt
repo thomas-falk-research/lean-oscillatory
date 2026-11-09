@@ -26,22 +26,16 @@ def block(lines, kind, name):
 
 
 PLANTS = [
-    # (id, defs, theorems, (def to mutate, old, new[, want]))  -- second run, after the pre-proof reviews
-    ('GDN-V-rate', ['GlobalNondegVecStatement'], ['globalNondeg_of_vec'],
-     ('GlobalNondegVecStatement', '≤ C * M / m', '≤ C * M / m ^ ((1 : ℝ) / 2)')),
-    ('GD-V-D-in-K', ['GlobalDecayVecStatement'], ['globalDecay_of_vec'],
-     ('GlobalDecayVecStatement', '(↑D : Set (ℝ × ℝ)) ⊆ U', '(↑D : Set (ℝ × ℝ)) ⊆ K')),
-    ('GDC-V-finite', ['GlobalDecayCritVecStatement'], ['globalDecayCrit_of_vec', 'globalDecayCrit_pair'],
-     ('GlobalDecayCritVecStatement', 'IsCompact K\' →', 'K\'.Finite →')),
-    ('GDF-V-det', ['GlobalFoldVecStatement'], ['globalFold_of_vec', 'globalFold_pair'],
-     ('GlobalFoldVecStatement', '(∀ k ∈ K, FoldOrNondegMatrix Ψ k)', '(∀ k ∈ K, (hessianMatrix Ψ k).det ≠ 0)')),
-    ('GDN-V-subsingleton', ['GlobalNondegVecStatement'], ['globalNondeg_matrix'],
-     ('GlobalNondegVecStatement', '[CompleteSpace E]', '[CompleteSpace E] [Subsingleton E]')),
+    # third run (after the post-proof reviews): FiniteDimensional for the three other statements (adversarial m1);
+    # 'C after E' recorded as a blind spot: rejection by proof shape only, and a reordered proof succeeds
+    ('GDF-V-findim', ['GlobalFoldVecStatement'], ['globalFold_bounded'],
+     ('GlobalFoldVecStatement', '[CompleteSpace E]', '[CompleteSpace E] [FiniteDimensional ℂ E]')),
+    ('GD-V-findim', ['GlobalDecayVecStatement'], ['globalDecay_bounded'],
+     ('GlobalDecayVecStatement', '[CompleteSpace E]', '[CompleteSpace E] [FiniteDimensional ℂ E]')),
+    ('GDC-V-findim', ['GlobalDecayCritVecStatement'], ['globalDecayCrit_bounded'],
+     ('GlobalDecayCritVecStatement', '[CompleteSpace E]', '[CompleteSpace E] [FiniteDimensional ℂ E]')),
     ('GDN-V-findim', ['GlobalNondegVecStatement'], ['globalNondeg_bounded'],
      ('GlobalNondegVecStatement', '[CompleteSpace E]', '[CompleteSpace E] [FiniteDimensional ℂ E]')),
-    ('GDN-V-C-after-E', ['GlobalNondegVecStatement'], ['globalNondeg_uniform_dim'],
-     ('GlobalNondegVecStatement', '    ∃ C : ℝ, ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]\n      (A',
-      '    ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E], ∃ C : ℝ, ∀\n      (A')),
 ]
 
 HEADER = """import OscInt.Front.VectorSanity
