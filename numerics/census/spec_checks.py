@@ -218,6 +218,34 @@ def main():
     fb = 1 + z1 + z2
     check("M-GRAPHENE", nn_ok and zero_rat(f * fb - (3 + 2 * C1 + 2 * C2 + 2 * (z1 / z2 + z2 / z1) / 2)),
           f"exactly three nearest B sites at squared distance {dist2[0]}; |f|^2 = 3 + 2c1 + 2c2 + 2cos(k1 - k2)")
+    # Castro Neto et al., Rev. Mod. Phys. 81 (2009), eq. (6): f = 2cos(sqrt3 ky a) + 4cos(sqrt3 ky a/2)cos(3 kx a/2),
+    # lattice vectors a1 = (a/2)(3, sqrt3), a2 = (a/2)(3, -sqrt3); claim: f = 2cos(k.a1) + 2cos(k.a2) + 2cos(k.(a1-a2))
+    kx, ky = sp.symbols("kx ky", real=True)
+    a1c, a2c = (sp.Rational(3, 2), sp.sqrt(3) / 2), (sp.Rational(3, 2), -sp.sqrt(3) / 2)  # a = 1
+    dot = lambda v: kx * v[0] + ky * v[1]
+    fcn = 2 * sp.cos(sp.sqrt(3) * ky) + 4 * sp.cos(sp.sqrt(3) * ky / 2) * sp.cos(3 * kx / 2)
+    fours = 2 * sp.cos(dot(a1c)) + 2 * sp.cos(dot(a2c)) + 2 * sp.cos(dot((a1c[0] - a2c[0], a1c[1] - a2c[1])))
+    check("M-GRAPHENE-CN", sp.simplify(sp.expand_trig(sp.expand(fcn - fours))) == 0,
+          "Castro Neto et al. eq. (6) f equals 2cos(k.a1) + 2cos(k.a2) + 2cos(k.(a1-a2)), i.e. "
+          "2c1 + 2c2 + 2cos(k1 - k2) in k_i = k.a_i: E = +-t sqrt(3 + f) at t' = 0 is M05")
+    Dl, tt_, fr, fi = sp.symbols("Delta t f_r f_i", real=True)
+    Hs2 = sp.Matrix([[Dl, tt_ * (fr + sp.I * fi)], [tt_ * (fr - sp.I * fi), -Dl]])
+    ev = Hs2.eigenvals()
+    check("M-hBN", set(sp.simplify(e**2 - (Dl**2 + tt_**2 * (fr**2 + fi**2))) for e in ev) == {0} and len(ev) == 2,
+          "staggered sublattice potential +-Delta: eigenvalues of [[Delta, t f], [t conj f, -Delta]] are "
+          "+-sqrt(Delta^2 + t^2 |f|^2) (M06 with Delta/t = 1/2)")
+    king = 8 - 2 * (C1 + C2) - 2 * ((z1 * z2 + 1 / (z1 * z2)) / 2) - 2 * ((z1 / z2 + z2 / z1) / 2)
+    check("M-KING", zero_rat(king - (8 - 2 * (C1 + C2 + 2 * C1 * C2))),
+          "King's graph symbol 8 - 2cos k1 - 2cos k2 - 2cos(k1+k2) - 2cos(k1-k2) = 8 - 2(c1 + c2 + 2 c1 c2): "
+          "the t-t' family c1 + c2 + 2g c1 c2 at g = 1 (M18)")
+    check("M-FD9-TT", zero_rat(sp.Rational(1, 6) * (20 - 8 * (C1 + C2) - 4 * C1 * C2)
+                               - (sp.Rational(10, 3) - sp.Rational(4, 3) * (C1 + C2 + C1 * C2 / 2))),
+          "the 9-point symbol (1/6)(20 - 8(c1+c2) - 4c1c2) = 10/3 - (4/3)(c1 + c2 + (1/2) c1 c2): the t-t' family at "
+          "g = 1/4 up to an affine map (same point types)")
+    Sq, vq = sp.Symbol("S", positive=True), sp.Symbol("vq", nonnegative=True)
+    check("M-YEE-ARCCOS", sp.simplify(sp.cos(2 * sp.asin(sp.sqrt(vq))) - (1 - 2 * vq)) == 0
+          and zero_rat((1 - 2 * Sq**2 * (2 - C1 - C2) / 2) - (1 - 2 * Sq**2 + Sq**2 * (C1 + C2))),
+          "Yee: cos(Psi) = 1 - 2v = 1 - 2S^2 + S^2 (c1 + c2), i.e. Psi = arccos(1 - 2S^2 + S^2(c1 + c2)) on [0, pi]")
     w1 = sp.Symbol("w1")
     roots = sp.solve(w1**2 + w1 + 1, w1)
     check("M-GRAPHENE-NS", sorted(sp.simplify(sp.arg(rt)) for rt in roots) == [-2 * sp.pi / 3, 2 * sp.pi / 3],
@@ -296,6 +324,21 @@ def main():
           "QWZ m = 3 at (+-a, +-a), a = arccos(-1/3): det H = 0, H != 0, g3 = 0 (both kernel vectors), g4 != 0 (A3); "
           "with v = (1,-1), w = (1,1) at (a,a): H[w,w] = 32/(195 sqrt65), T[v,v,w] = 12 sqrt130/65, "
           "Q[v,v,v,v] = 18/sqrt65, g4 = -5247/sqrt(65)")
+
+    # K-DKG: discrete Klein-Gordon, mass 1 (M17); Cuenin-Ikromov (Nonlinearity 34 (2021), Prop. 9) state A3 exactly at
+    # cos k1 = cos k2 = 0. Re-derived here at the four points (the "exactly" part is the paper's, not checked here).
+    Hd_, Td_, Qd_ = jets(sp.sqrt(5 - 2 * c1 - 2 * c2), K)
+    ok = True
+    for a in (sp.pi / 2, -sp.pi / 2):
+        for b in (sp.pi / 2, -sp.pi / 2):
+            pt = {k1: a, k2: b}
+            Hp, Tp, Qp = at(Hd_, pt), at(Td_, pt), at(Qd_, pt)
+            nonzeroH = not all(is_zero(Hp[i][j]) for i in range(2) for j in range(2))
+            g3a, g3b, g4, _, _ = rank1_invariants(Hp, Tp, Qp)
+            ok = ok and is_zero(Hp[0][0] * Hp[1][1] - Hp[0][1] ** 2) and nonzeroH and is_zero(g3a) and is_zero(g3b) \
+                and not is_zero(g4)
+    check("K-DKG", ok, "M17 sqrt(5 - 2c1 - 2c2) at (+-pi/2, +-pi/2): det H = 0, H != 0, g3 = 0, g4 != 0 (A3), "
+                       "agreeing with Cuenin-Ikromov Prop. 9 at these points")
 
     xx, yy = sp.symbols("x y", real=True)
     V2 = [xx, yy]
