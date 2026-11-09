@@ -6,6 +6,11 @@ or `proved_by` name. Every release lists its statement changes, even when there 
 
 ## v0.4.0 — 2026-11-09
 
+DOI [10.5281/zenodo.24088811](https://doi.org/10.5281/zenodo.24088811) (all versions:
+[10.5281/zenodo.24021328](https://doi.org/10.5281/zenodo.24021328)). Release commit 87a418a, verified by
+`release-candidate` run 42567796580 (full replay); the Zenodo archive embeds that commit and its `stamps/statements.json`
+and `tools/oscint_check.py` match the release pins.
+
 ### Statement changes (batch LE, session 7)
 No existing statement changed. Added (`OscInt/Statements/LatticeExplicit.lean`, stamp
 `stamps/20261108T160847Z-4a183530559f`, reviews stamped at `stamps/20261108T164514Z-c91a9a8bb0b6`): T0E
