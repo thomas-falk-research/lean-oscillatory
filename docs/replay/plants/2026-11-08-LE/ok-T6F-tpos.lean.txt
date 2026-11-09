@@ -1,0 +1,14 @@
+import OscInt.Front.LatticeExplicitSanity
+
+namespace OscInt.API.LatticeExplicitSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity
+
+def P_LatticeKernelFactorStatement : Prop :=
+  ∀ (t : ℝ) (x : ℤ × ℤ), latticeKernel t x = latticeKernel1 t (x.1 : ℝ) * latticeKernel1 t (x.2 : ℝ)
+
+theorem P_latticeKernelFactor_neg (h : P_LatticeKernelFactorStatement) :
+    latticeKernel (-2) (1, -2) = latticeKernel1 (-2) 1 * latticeKernel1 (-2) (-2) := by
+  simpa using h (-2) (1, -2)
+
+end OscInt.API.LatticeExplicitSanity

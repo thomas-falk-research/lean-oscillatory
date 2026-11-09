@@ -1,0 +1,18 @@
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-VT/plant-GDN-V-C-after-E-BLINDSPOT.lean:18:9: error: Tactic `rcases` failed: `x✝ : ∀ (E : Type) [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℂ E] [CompleteSpace E],
+  ∃ C,
+    ∀ (A : ℝ × ℝ → E) (M : ℝ) (L : ℝ × ℝ →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A →
+        tsupport A ⊆ K →
+          (∀ j ≤ 2, ∀ (k : ℝ × ℝ), ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+            1 ≤ m →
+              ‖∫ (k : ℝ × ℝ), Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) • A k‖ ≤
+                C * M / m` is not an inductive datatype
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-VT/plant-GDN-V-C-after-E-BLINDSPOT.lean:25:9: error: Tactic `rcases` failed: `x✝ : ∀ (E : Type) [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℂ E] [CompleteSpace E],
+  ∃ C,
+    ∀ (A : ℝ × ℝ → E) (M : ℝ) (L : ℝ × ℝ →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A →
+        tsupport A ⊆ Metric.closedBall 0 1 →
+          (∀ j ≤ 2, ∀ (k : ℝ × ℝ), ‖iteratedFDeriv ℝ j A k‖ ≤ M) →
+            1 ≤ m →
+              ‖∫ (k : ℝ × ℝ), Complex.exp (↑(m * (quadPhase k + L k)) * Complex.I) • A k‖ ≤
+                C * M / m` is not an inductive datatype

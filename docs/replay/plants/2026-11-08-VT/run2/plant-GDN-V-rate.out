@@ -1,0 +1,6 @@
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-VT/run2/plant-GDN-V-rate.lean:19:42: error: Type mismatch: After simplification, term
+  hC ℂ A M L m hA hs hM hm
+ has type
+  ‖∫ (k : ℝ × ℝ), Complex.exp (↑m * (↑(Ψ k) + ↑(L k)) * Complex.I) * A k‖ ≤ C * M / m ^ 2⁻¹
+but is expected to have type
+  ‖∫ (k : ℝ × ℝ), Complex.exp (↑m * (↑(Ψ k) + ↑(L k)) * Complex.I) * A k‖ ≤ C * M / m

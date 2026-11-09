@@ -701,6 +701,122 @@
    ],
    "snippet_kind": "type",
    "snippet": "example : LatticeLaplacianLimitStatement := OscInt.API.latticeLaplacianLimit"
+  },
+  "T0E": {
+   "hypotheses": [
+    "t > 0",
+    "ξ real (any linear term)"
+   ],
+   "conclusion": "|∫_{−π}^{π} e^{i(t cos k + ξk)} dk| ≤ 24·2^{1/4} t^{-1/2} + 36·2^{1/6} t^{-1/3} (beats the trivial bound 2π only for t > 518)",
+   "rate": "t^{-1/3} (explicit constant)",
+   "uniform_over": "ξ ∈ ℝ, t > 0",
+   "smoothness": "—",
+   "see_also": [
+    "T6F",
+    "T6E",
+    "S1.2",
+    "S1.3"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : LatticeKernel1ExplicitStatement := OscInt.API.latticeKernel1Explicit"
+  },
+  "T6F": {
+   "hypotheses": [
+    "none"
+   ],
+   "conclusion": "latticeKernel t x = latticeKernel1 t x₁ · latticeKernel1 t x₂ (the 2D kernel is a product of 1D kernels)",
+   "rate": "—",
+   "uniform_over": "t ∈ ℝ, x ∈ ℤ²",
+   "smoothness": "—",
+   "see_also": [
+    "T6",
+    "T0E",
+    "T6E"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : LatticeKernelFactorStatement := OscInt.API.latticeKernelFactor"
+  },
+  "T6E": {
+   "hypotheses": [
+    "t ≥ 1"
+   ],
+   "conclusion": "|∫_{[−π,π]²} e^{i(t(cos k₁ + cos k₂) + x·k)} dk| ≤ (24·2^{1/4} + 36·2^{1/6})² t^{-2/3} (constant < 4761; beats the trivial bound 4π² only for t > 1321, docs/statements.md Batch LE, clarification 6)",
+   "rate": "t^{-2/3} (explicit constant)",
+   "uniform_over": "x ∈ ℤ², t ≥ 1",
+   "smoothness": "—",
+   "see_also": [
+    "T6",
+    "T6F",
+    "T0E"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : LatticeLaplacianExplicitStatement := OscInt.API.latticeLaplacianExplicit"
+  },
+  "GD-C-V": {
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact, K′ compact",
+    "D a Finset ⊆ U of D4 points (IsD4Point)",
+    "FoldOrNondegMatrix at every critical point of Ψ + L in K \\ D, L ∈ K′ (ClassifiedCrit)",
+    "E any complex Banach space (E : Type); amplitude A : ℝ² → E"
+   ],
+   "conclusion": "as GD-C with ‖∫ e^{im(Ψ+L)} • A‖ in E; one constant C for every E",
+   "rate": "m^{-2/3}",
+   "uniform_over": "L ∈ K′, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD-C"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : GlobalDecayCritVecStatement := OscInt.API.globalDecayCritVec"
+  },
+  "GD-V": {
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact",
+    "D a Finset ⊆ U of D4 points",
+    "FoldOrNondegMatrix at every point of K \\ D (Classified)",
+    "E any complex Banach space (E : Type); amplitude A : ℝ² → E"
+   ],
+   "conclusion": "as GD with ‖∫ e^{im(Ψ+L)} • A‖ in E; one constant C for every E",
+   "rate": "m^{-2/3}",
+   "uniform_over": "all L, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : GlobalDecayVecStatement := OscInt.API.globalDecayVec"
+  },
+  "GD-F-V": {
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact",
+    "FoldOrNondegMatrix at every point of K",
+    "E any complex Banach space (E : Type); amplitude A : ℝ² → E"
+   ],
+   "conclusion": "as GD-F with ‖∫ e^{im(Ψ+L)} • A‖ in E; one constant C for every E",
+   "rate": "m^{-5/6}",
+   "uniform_over": "all L, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD-F"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : GlobalFoldVecStatement := OscInt.API.globalFoldVec"
+  },
+  "GD-N-V": {
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact",
+    "det hessianMatrix ≠ 0 at every point of K",
+    "E any complex Banach space (E : Type); amplitude A : ℝ² → E"
+   ],
+   "conclusion": "as GD-N with ‖∫ e^{im(Ψ+L)} • A‖ in E; one constant C for every E",
+   "rate": "m^{-1}",
+   "uniform_over": "all L, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD-N"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : GlobalNondegVecStatement := OscInt.API.globalNondegVec"
   }
  },
  "helpers": [

@@ -307,3 +307,12 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     argument dispatch never had; all 11 comparator jobs exited 2 on the usage message (PR #6, run 42485206068).
     actionlint cannot see this. Fixed by adding the dispatch arm; checked by running the job's exact command on
     `comparator-GD.json` (accepted, exit 0) and against a wrong stamp (exit 1).
+42. **Do not write proofs in the working tree while a route referee runs; park them outside the repository.** In batch
+    LE (session 7) the lead wrote the parts' proofs while the route referee was reading, and the referee saw the
+    untracked files (`review/2026-11-08-LE-route-referee.md`, M1). The mathematics was not at risk, but the claim "route
+    reviewed before any part was proved" was lost. Write drafts under the scratchpad until the route review is committed.
+43. **A grid classifier cannot see sub-grid degeneracies; check symmetry lines and refine near small fold quantities.** The
+    batch-VV classification reported QWZ m = 3 as "nondegenerate or fold everywhere" (grid 2π/2048) although the k₁ ↔ k₂
+    symmetry forces exact cusp points on the diagonal wherever H₁₁ = H₁₂ (`docs/design/vector-amplitudes.md` §6). The cusp
+    control was a large one; add a positive control whose cusp lies between grid points, and solve the symmetry-reduced
+    equations exactly before trusting a "folds only" verdict.

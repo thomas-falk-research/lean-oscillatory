@@ -1,0 +1,18 @@
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-VT/run2/plant-GDC-V-finite.lean:19:47: error: Application type mismatch: The argument
+  hK'
+has type
+  IsCompact K'
+but is expected to have type
+  K'.Finite
+in the application
+  h Ψ K U K' D hK hU hKU hDU hK'
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-VT/run2/plant-GDC-V-finite.lean:28:44: error: Application type mismatch: The argument
+  Set.Finite.isCompact (Set.Finite.insert ?m.173 (Set.finite_singleton ?m.171))
+has type
+  IsCompact {?m.173, ?m.171}
+but is expected to have type
+  {0, L₁}.Finite
+in the application
+  h ellPhase (Metric.closedBall 0 1) Set.univ {0, L₁} {0} (isCompact_closedBall 0 1) isOpen_univ
+    (Set.subset_univ (Metric.closedBall 0 1)) (Set.subset_univ ↑{0})
+    (Set.Finite.isCompact (Set.Finite.insert ?m.173 (Set.finite_singleton ?m.171)))

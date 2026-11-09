@@ -1,0 +1,8 @@
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-VT/plant-GDC-V-finite.lean:19:47: error: Application type mismatch: The argument
+  hK'
+has type
+  IsCompact K'
+but is expected to have type
+  K'.Finite
+in the application
+  h Ψ K U K' D hK hU hKU hDU hK'

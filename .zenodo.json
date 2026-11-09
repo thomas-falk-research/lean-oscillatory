@@ -7,7 +7,7 @@
       "orcid": "0009-0001-9478-6061"
     }
   ],
-  "description": "A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates in one and two variables: van der Corput's lemma with explicit constants, non-stationary and nondegenerate stationary phase, the uniform fold and D4 (umbilic) estimates with the D4 leading term and its closed-form constant, and front ends in Mathlib's idiom. Statements are frozen and timestamped before their proofs and replayed by several independent kernels.",
+  "description": "A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates in one and two variables: van der Corput's lemma with explicit constants, non-stationary and nondegenerate stationary phase, the uniform fold and D4 (umbilic) estimates with the D4 leading term and its closed-form constant, front ends in Mathlib's idiom with local smoothness and compact families of phases, global decay from a pointwise classification of the phase (also for amplitudes with values in any complex Banach space), and the dispersive estimate t^{-2/3} for the 2D lattice Laplacian with an explicit constant and its sharpness (a classical, separable example). Statements are frozen and timestamped before their proofs and replayed by several independent kernels; statement fidelity is reviewed by AI referees, not yet by a human expert.",
   "keywords": [
     "Lean 4",
     "Mathlib",
@@ -23,7 +23,7 @@
     "MSC2020: 03B35 Mechanization of proofs and logical operations"
   ],
   "license": "Apache-2.0",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "notes": "Code is licensed under Apache-2.0 (LICENSE); documentation under CC-BY-4.0 (LICENSE-docs); per-file licensing follows the REUSE specification 3.3 (REUSE.toml, LICENSES/). The one-dimensional van der Corput proofs are derived from roos-j/lean-oscillatory by J. Roos and M. Praveen (Apache-2.0).",
   "references": [
     "The mathlib Community (2020). The Lean Mathematical Library. Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs, 367–381. ACM. https://doi.org/10.1145/3372885.3373824",

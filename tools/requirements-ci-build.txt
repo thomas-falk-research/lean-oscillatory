@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Build backend for the CI `reuse lint` / `cffconvert` step, installed first with
+#   pip install --require-hashes --no-deps -r tools/requirements-ci-build.txt
+# so that requirements-ci.txt can then be installed with --no-build-isolation. docopt 0.6.2 (via pykwalify, via
+# cffconvert) is published only as an sdist; with build isolation pip fetches its build backend (setuptools>=40.8.0)
+# without checking any hash, even under --require-hashes. Same pin and hashes as setuptools in requirements-ci.txt.
+setuptools==84.2.1 \
+    --hash=sha256:3ff8b3b5492a0aa66960f4419365a86b84e013070d4313e4d4a6894f5d64d6bc \
+    --hash=sha256:ca140b45d5325a9478f880e351484f62fef15f336462e449ca0c03c873d589c2

@@ -1,0 +1,6 @@
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-LE/plant-T6E-rate.lean:15:14: error: Type mismatch
+  h ↑n ?m.96 (cast (Eq.symm (Eq.trans (congrFun' (congrArg LE.le (Eq.symm Nat.cast_one)) ↑n) Nat.cast_le._simp_1)) hn)
+has type
+  ‖latticeKernel ↑n ?m.96‖ ≤ (24 * 2 ^ (1 / 4) + 36 * 2 ^ (1 / 6)) ^ 2 * ↑n ^ (-1 / 2)
+but is expected to have type
+  ‖latticeKernel ↑n (↑n, ↑n)‖ ≤ (24 * 2 ^ (1 / 4) + 36 * 2 ^ (1 / 6)) ^ 2 * ↑n ^ (-2 / 3)

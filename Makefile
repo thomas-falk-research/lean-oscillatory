@@ -61,7 +61,7 @@ stamp: commit challenge-export
 	$(T)/stamp create . stamps/$(shell date -u +%Y%m%dT%H%M%SZ)-$(shell git rev-parse --short=12 HEAD)
 
 stamp-verify: tools
-	$(UNSKIP); if [ -f stamps/pins.txt ]; then $(T)/stamp verify-pinned .; else echo "stamp-verify: SKIPPED: no pinned stamp yet"; $(SKIP); fi
+	$(UNSKIP); if [ -f stamps/pins.txt ]; then $(T)/stamp verify-every .; else echo "stamp-verify: SKIPPED: no pinned stamp yet"; $(SKIP); fi
 
 # `make verify-all ONLY="lean guard"` runs only those steps (reported as a partial run, never as a full PASS).
 verify-all: tools
@@ -84,6 +84,8 @@ entry-point:
 	$(LAKE) env lean -DautoImplicit=false examples/api/Snippets.lean
 	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerLattice.lean
 	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerGlobalChecks.lean
+	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerLatticeExplicit.lean
+	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerVector.lean
 
 # The API index docs/api.json and examples/api/Snippets.lean, generated from stamps/statements.json and
 # docs/api/annotations.json (`tools/gen_api.py`); `api-check` fails on drift (and is part of `quick`).

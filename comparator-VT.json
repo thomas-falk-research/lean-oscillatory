@@ -1,0 +1,5 @@
+{"challenge_module": "Challenge", "solution_module": "OscInt",
+ "theorem_names": ["OscInt.API.globalDecayCritVec", "OscInt.API.globalDecayVec", "OscInt.API.globalFoldVec",
+   "OscInt.API.globalNondegVec"],
+ "definition_names": [],
+ "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]}

@@ -16,8 +16,13 @@ import OscInt.Front.FamilySanity2
 import OscInt.Front.FamilyC10
 import OscInt.Front.Local
 import OscInt.Front.GlobalSanity
+import OscInt.Front.LatticeExplicitSanity
+import OscInt.Front.GlobalNondegLocalSanity
+import OscInt.Front.VectorSanity
 import OscInt.Front.GlobalFinal
 import OscInt.Front.LatticeFinal
+import OscInt.Front.LatticeExplicitFinal
+import OscInt.Front.VectorFinal
 
 /-!
 # OscInt public API

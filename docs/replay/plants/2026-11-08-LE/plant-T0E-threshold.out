@@ -1,0 +1,3 @@
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-LE/plant-T0E-threshold.lean:15:29: error: unsolved goals
+h : P_LatticeKernel1ExplicitStatement
+⊢ False

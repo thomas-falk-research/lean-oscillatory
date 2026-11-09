@@ -1,0 +1,17 @@
+import OscInt.Front.LatticeExplicitSanity
+
+namespace OscInt.API.LatticeExplicitSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity
+
+def P_LatticeLaplacianExplicitStatement : Prop :=
+  ∀ (t : ℝ) (x : ℤ × ℤ), 1 ≤ t →
+    ‖latticeKernel t x‖ ≤
+      (24 * (2 : ℝ) ^ ((1 : ℝ) / 4) + 36 * (2 : ℝ) ^ ((1 : ℝ) / 6)) ^ 2 * t ^ (-(1 : ℝ) / 2)
+
+theorem P_latticeLaplacianExplicit_diag (h : P_LatticeLaplacianExplicitStatement) :
+    ∀ n : ℕ, 1 ≤ n → ‖latticeKernel n ((n : ℤ), (n : ℤ))‖ ≤
+      (24 * (2 : ℝ) ^ ((1 : ℝ) / 4) + 36 * (2 : ℝ) ^ ((1 : ℝ) / 6)) ^ 2 * (n : ℝ) ^ (-(2 : ℝ) / 3) :=
+  fun n hn => h n _ (by exact_mod_cast hn)
+
+end OscInt.API.LatticeExplicitSanity

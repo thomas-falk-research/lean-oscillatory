@@ -39,6 +39,33 @@ repositories.
 Not checked directly: PFR, sphere-eversion, FLT (their repositories could not be listed from the session; none
 appeared in the cross-repository code searches), Lean Zulip archive.
 
+## Lattice kernels T6, T6L: classical, separable (disclosure added 2026-11-08, session 7)
+
+Found by the lead while preparing session 7; neither the GD pre-proof nor the post-proof referees, nor an external
+review of `main` at 96f55a2, raised it. **Severity MEDIUM (presentation; no proof is affected).**
+
+The kernel of T6 (`latticeKernel` in `OscInt/Statements/Global.lean`) integrates over the square `[−π, π]²` and its
+phase `t(cos k₁ + cos k₂) + x₁k₁ + x₂k₂` is a sum of a `k₁` part and a `k₂` part, so by Fubini
+`K(t, x) = I(t, x₁) · I(t, x₂)` with `I(t, n) = ∫_{−π}^{π} e^{i(t cos k + nk)} dk = 2π iⁿ Jₙ(t)` (Bessel's integral).
+PROVEN on paper (Fubini and the Bessel integral, DLMF 10.9.2); the factorisation is machine-checked by batch LE
+(statement T6F; proved and replayed on a1d2a64, post-proof reviews `review/2026-11-08-LE-post-proof-{A,B}.md`), the
+Bessel identification is not formalised (Mathlib has no Bessel functions at the pin).
+Consequences:
+- **T6** is equivalent to the classical bound `sup_n |Jₙ(t)| ≤ c t^{−1/3}`. L. J. Landau, *Monotonicity and bounds on
+  Bessel functions*, Electron. J. Differ. Equ. Conf. 04 (2000) 147–154, gives the best constant `c ≈ 0.7858` for
+  `|J_ν(x)| ≤ c x^{−1/3}`, `ν ≥ 0`, `x > 0` (cited in Fungrim, https://fungrim.org/entry/7f3485/; the paper itself not
+  read in this session). In our normalisation `|I(t, n)| ≤ 2π · 0.7858 · t^{−1/3} ≈ 4.937 t^{−1/3}`.
+- **T6L** is the classical Cauchy–Watson asymptotic `Jₙ(n) ~ Γ(1/3) / (2^{2/3} 3^{1/6} π) · n^{−1/3}`:
+  `4π² (Γ(1/3) / (2^{2/3} 3^{1/6} π))² = Γ(1/3)² 2^{2/3} 3^{−1/3} = Γ(1/3)² 48^{1/6} / √3`, the frozen constant.
+- The proof in the repository is genuine and does exercise the global theorem (the points `(±π/2, ±π/2)` are D4 points
+  of the 2D phase), but T6 and T6L **are not evidence that GD reaches non-separable symbols**. That needs a
+  non-separable model (session-7 batch VV: a two-band or triangular-lattice symbol).
+- No novelty is claimed for the mathematics of T6, T6L; the claim is "machine-checked", nothing more.
+- Scope (adversarial review m2): every GD demonstration in the repository uses a separable phase (T6; x³ + y³ in the
+  consumer example). The candidate non-separable model of batch VV, the QWZ band at m = 3, turned out to have exact cusp
+  points (`docs/design/vector-amplitudes.md` §6), so no proved theorem applies to it; no non-separable symbol satisfying
+  the GD hypotheses has been found yet.
+
 ## Consequence
 
 S1 must cite roos-j/lean-oscillatory and PR #39406. Building it again from scratch would duplicate open

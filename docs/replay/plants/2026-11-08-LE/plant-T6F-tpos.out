@@ -1,0 +1,6 @@
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-LE/plant-T6F-tpos.lean:12:2: error: Type mismatch: After simplification, term
+  h (-2) (1, -2)
+ has type
+  True
+but is expected to have type
+  latticeKernel (-2) (1, -2) = latticeKernel1 (-2) 1 * latticeKernel1 (-2) (-2)

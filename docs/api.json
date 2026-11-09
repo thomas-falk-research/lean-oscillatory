@@ -1099,6 +1099,178 @@
    ],
    "snippet": "example : LatticeLaplacianLimitStatement := OscInt.API.latticeLaplacianLimit",
    "status": "see docs/STATUS.md (row T6L)"
+  },
+  {
+   "label": "T0E",
+   "name": "OscInt.Statements.LatticeKernel1ExplicitStatement",
+   "proved_by": "OscInt.API.latticeKernel1Explicit",
+   "summary": "Explicit bound for the 1D lattice kernel: `|I(t, ξ)| ≤ 24 · 2^{1/4} t^{−1/2} + 36 · 2^{1/6} t^{−1/3}` for every `t > 0` and every real `ξ`.",
+   "file": "OscInt/Statements/LatticeExplicit.lean",
+   "commitment": "d087e02b99d4a5de72d9d9fbc2a3dd1cbee49178cdd8458e15189207ebb65a73",
+   "stamp": "stamps/20261108T160847Z-4a183530559f",
+   "lean_statement": "def LatticeKernel1ExplicitStatement : Prop :=\n  ∀ t ξ : ℝ, 0 < t →\n    ‖latticeKernel1 t ξ‖ ≤\n      24 * (2 : ℝ) ^ ((1 : ℝ) / 4) * t ^ (-(1 : ℝ) / 2) + 36 * (2 : ℝ) ^ ((1 : ℝ) / 6) * t ^ (-(1 : ℝ) / 3)",
+   "hypotheses": [
+    "t > 0",
+    "ξ real (any linear term)"
+   ],
+   "conclusion": "|∫_{−π}^{π} e^{i(t cos k + ξk)} dk| ≤ 24·2^{1/4} t^{-1/2} + 36·2^{1/6} t^{-1/3} (beats the trivial bound 2π only for t > 518)",
+   "rate": "t^{-1/3} (explicit constant)",
+   "uniform_over": "ξ ∈ ℝ, t > 0",
+   "smoothness": "—",
+   "see_also": [
+    "T6F",
+    "T6E",
+    "S1.2",
+    "S1.3"
+   ],
+   "snippet": "example : LatticeKernel1ExplicitStatement := OscInt.API.latticeKernel1Explicit",
+   "status": "see docs/STATUS.md (row T0E)"
+  },
+  {
+   "label": "T6F",
+   "name": "OscInt.Statements.LatticeKernelFactorStatement",
+   "proved_by": "OscInt.API.latticeKernelFactor",
+   "summary": "The 2D lattice kernel factorises: `K(t, x) = I(t, x₁) I(t, x₂)` for every real `t` and `x ∈ ℤ²`.",
+   "file": "OscInt/Statements/LatticeExplicit.lean",
+   "commitment": "0f3dd76d127c914be30adbd8db3d8e19f848f2feab05ebb48a663c3c6839b5d5",
+   "stamp": "stamps/20261108T160847Z-4a183530559f",
+   "lean_statement": "def LatticeKernelFactorStatement : Prop :=\n  ∀ (t : ℝ) (x : ℤ × ℤ), latticeKernel t x = latticeKernel1 t (x.1 : ℝ) * latticeKernel1 t (x.2 : ℝ)",
+   "hypotheses": [
+    "none"
+   ],
+   "conclusion": "latticeKernel t x = latticeKernel1 t x₁ · latticeKernel1 t x₂ (the 2D kernel is a product of 1D kernels)",
+   "rate": "—",
+   "uniform_over": "t ∈ ℝ, x ∈ ℤ²",
+   "smoothness": "—",
+   "see_also": [
+    "T6",
+    "T0E",
+    "T6E"
+   ],
+   "snippet": "example : LatticeKernelFactorStatement := OscInt.API.latticeKernelFactor",
+   "status": "see docs/STATUS.md (row T6F)"
+  },
+  {
+   "label": "T6E",
+   "name": "OscInt.Statements.LatticeLaplacianExplicitStatement",
+   "proved_by": "OscInt.API.latticeLaplacianExplicit",
+   "summary": "Dispersive decay of the 2D lattice Laplacian with an explicit constant: `|K(t, x)| ≤ (24 · 2^{1/4} + 36 · 2^{1/6})² t^{−2/3}` for `t ≥ 1`, uniformly over `x ∈ ℤ²`.",
+   "file": "OscInt/Statements/LatticeExplicit.lean",
+   "commitment": "181d42d75a2cf9726e878d35e3ba5bc814e8dd712ae26964a9613b4ec1cd0889",
+   "stamp": "stamps/20261108T160847Z-4a183530559f",
+   "lean_statement": "def LatticeLaplacianExplicitStatement : Prop :=\n  ∀ (t : ℝ) (x : ℤ × ℤ), 1 ≤ t →\n    ‖latticeKernel t x‖ ≤\n      (24 * (2 : ℝ) ^ ((1 : ℝ) / 4) + 36 * (2 : ℝ) ^ ((1 : ℝ) / 6)) ^ 2 * t ^ (-(2 : ℝ) / 3)",
+   "hypotheses": [
+    "t ≥ 1"
+   ],
+   "conclusion": "|∫_{[−π,π]²} e^{i(t(cos k₁ + cos k₂) + x·k)} dk| ≤ (24·2^{1/4} + 36·2^{1/6})² t^{-2/3} (constant < 4761; beats the trivial bound 4π² only for t > 1321, docs/statements.md Batch LE, clarification 6)",
+   "rate": "t^{-2/3} (explicit constant)",
+   "uniform_over": "x ∈ ℤ², t ≥ 1",
+   "smoothness": "—",
+   "see_also": [
+    "T6",
+    "T6F",
+    "T0E"
+   ],
+   "snippet": "example : LatticeLaplacianExplicitStatement := OscInt.API.latticeLaplacianExplicit",
+   "status": "see docs/STATUS.md (row T6E)"
+  },
+  {
+   "label": "GD-C-V",
+   "name": "OscInt.Statements.GlobalDecayCritVecStatement",
+   "proved_by": "OscInt.API.globalDecayCritVec",
+   "summary": "GD-C for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`.",
+   "file": "OscInt/Statements/Vector.lean",
+   "commitment": "b10f3ac4f4192b9dda8fcb91cf171e191deb773dfd84e7026bf38a66653e0f00",
+   "stamp": "stamps/20261108T235416Z-961cebc296ef",
+   "lean_statement": "def GlobalDecayCritVecStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)) (K' : Set ((ℝ × ℝ) →L[ℝ] ℝ)) (D : Finset (ℝ × ℝ)),\n    IsCompact K → IsOpen U → K ⊆ U → (↑D : Set (ℝ × ℝ)) ⊆ U → IsCompact K' → ContDiffOn ℝ 4 Ψ U →\n    ClassifiedCrit Ψ K K' D →\n    ∃ C : ℝ, ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]\n      (A : ℝ × ℝ → E) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → L ∈ K' → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) • A k‖ ≤ C * M * m ^ (-(2 : ℝ) / 3)",
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact, K′ compact",
+    "D a Finset ⊆ U of D4 points (IsD4Point)",
+    "FoldOrNondegMatrix at every critical point of Ψ + L in K \\ D, L ∈ K′ (ClassifiedCrit)",
+    "E any complex Banach space (E : Type); amplitude A : ℝ² → E"
+   ],
+   "conclusion": "as GD-C with ‖∫ e^{im(Ψ+L)} • A‖ in E; one constant C for every E",
+   "rate": "m^{-2/3}",
+   "uniform_over": "L ∈ K′, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD-C"
+   ],
+   "snippet": "example : GlobalDecayCritVecStatement := OscInt.API.globalDecayCritVec",
+   "status": "see docs/STATUS.md (row GD-C-V)"
+  },
+  {
+   "label": "GD-V",
+   "name": "OscInt.Statements.GlobalDecayVecStatement",
+   "proved_by": "OscInt.API.globalDecayVec",
+   "summary": "GD for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`.",
+   "file": "OscInt/Statements/Vector.lean",
+   "commitment": "15935a570eb2a5e976afb37b7740dbd4fd6905a8723687bab6d45f0453d63757",
+   "stamp": "stamps/20261108T235416Z-961cebc296ef",
+   "lean_statement": "def GlobalDecayVecStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)) (D : Finset (ℝ × ℝ)),\n    IsCompact K → IsOpen U → K ⊆ U → (↑D : Set (ℝ × ℝ)) ⊆ U → ContDiffOn ℝ 4 Ψ U → Classified Ψ K D →\n    ∃ C : ℝ, ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]\n      (A : ℝ × ℝ → E) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) • A k‖ ≤ C * M * m ^ (-(2 : ℝ) / 3)",
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact",
+    "D a Finset ⊆ U of D4 points",
+    "FoldOrNondegMatrix at every point of K \\ D (Classified)",
+    "E any complex Banach space (E : Type); amplitude A : ℝ² → E"
+   ],
+   "conclusion": "as GD with ‖∫ e^{im(Ψ+L)} • A‖ in E; one constant C for every E",
+   "rate": "m^{-2/3}",
+   "uniform_over": "all L, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD"
+   ],
+   "snippet": "example : GlobalDecayVecStatement := OscInt.API.globalDecayVec",
+   "status": "see docs/STATUS.md (row GD-V)"
+  },
+  {
+   "label": "GD-F-V",
+   "name": "OscInt.Statements.GlobalFoldVecStatement",
+   "proved_by": "OscInt.API.globalFoldVec",
+   "summary": "GD-F for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`.",
+   "file": "OscInt/Statements/Vector.lean",
+   "commitment": "71428213100bfbcdb29b2d20f8234bf3f8f6dfc921472657134966e1bdaeccbb",
+   "stamp": "stamps/20261108T235416Z-961cebc296ef",
+   "lean_statement": "def GlobalFoldVecStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)),\n    IsCompact K → IsOpen U → K ⊆ U → ContDiffOn ℝ 4 Ψ U → (∀ k ∈ K, FoldOrNondegMatrix Ψ k) →\n    ∃ C : ℝ, ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]\n      (A : ℝ × ℝ → E) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) • A k‖ ≤ C * M * m ^ (-(5 : ℝ) / 6)",
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact",
+    "FoldOrNondegMatrix at every point of K",
+    "E any complex Banach space (E : Type); amplitude A : ℝ² → E"
+   ],
+   "conclusion": "as GD-F with ‖∫ e^{im(Ψ+L)} • A‖ in E; one constant C for every E",
+   "rate": "m^{-5/6}",
+   "uniform_over": "all L, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD-F"
+   ],
+   "snippet": "example : GlobalFoldVecStatement := OscInt.API.globalFoldVec",
+   "status": "see docs/STATUS.md (row GD-F-V)"
+  },
+  {
+   "label": "GD-N-V",
+   "name": "OscInt.Statements.GlobalNondegVecStatement",
+   "proved_by": "OscInt.API.globalNondegVec",
+   "summary": "GD-N for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`.",
+   "file": "OscInt/Statements/Vector.lean",
+   "commitment": "2dda7e400448a35542f23fab458b6a1bdcfa5ee3ae69d38c9664ed9d02eda0f9",
+   "stamp": "stamps/20261108T235416Z-961cebc296ef",
+   "lean_statement": "def GlobalNondegVecStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)),\n    IsCompact K → IsOpen U → K ⊆ U → ContDiffOn ℝ 4 Ψ U → (∀ k ∈ K, (hessianMatrix Ψ k).det ≠ 0) →\n    ∃ C : ℝ, ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]\n      (A : ℝ × ℝ → E) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),\n      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →\n      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) • A k‖ ≤ C * M / m",
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact",
+    "det hessianMatrix ≠ 0 at every point of K",
+    "E any complex Banach space (E : Type); amplitude A : ℝ² → E"
+   ],
+   "conclusion": "as GD-N with ‖∫ e^{im(Ψ+L)} • A‖ in E; one constant C for every E",
+   "rate": "m^{-1}",
+   "uniform_over": "all L, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD-N"
+   ],
+   "snippet": "example : GlobalNondegVecStatement := OscInt.API.globalNondegVec",
+   "status": "see docs/STATUS.md (row GD-N-V)"
   }
  ]
 }

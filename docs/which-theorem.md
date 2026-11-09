@@ -56,5 +56,5 @@ internal `FamilyCk`. **Not covered:** a D4 bound uniform over a family (the D4 n
 open, ROADMAP §2), so GD/GD-C are for one phase.
 
 ## 5. Not (yet) covered
-Dimension `n ≥ 3`; vector-valued (matrix) amplitudes; cusps and higher singularities; leading terms of nondegenerate
+Dimension `n ≥ 3`; vector-valued (matrix) amplitudes for the local theorems (the global ones are covered: GD-C-V, GD-V, GD-F-V, GD-N-V); cusps and higher singularities; leading terms of nondegenerate
 stationary phase (draft: `docs/design/leading-term.md`); explicit constants (`docs/constants.md`).

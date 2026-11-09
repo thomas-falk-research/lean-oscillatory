@@ -498,3 +498,119 @@ of its kernel, so T6 bounds that norm; what is machine-checked in `examples/cons
 upper bound for finitely supported data and for the propagator defined by its kernel (that this is the solution
 operator of `i∂ₜu = Hu` is the standard Fourier representation, not proved there). (9) T6 and T6L concern the free
 discrete Laplacian; potentials are not covered.
+
+## Batch LE: explicit constants for the 1D and 2D lattice kernels (session 7, 2026-11-08)
+
+Order. As batch GD: the statements below, `OscInt/Statements/LatticeExplicit.lean`, sanity theorems with planted
+controls (`OscInt/Front/LatticeExplicitSanity.lean`), the challenge `Challenge/LatticeExplicit.lean` and
+`comparator-LE.json` are committed and stamped before the blind pre-proof reviews; the reports are committed and
+stamped before any Lean proof of these statements is written. Numeric pre-registration that informed the statements
+(tooling, not evidence): `docs/prereg/2026-11-08-LE-lattice-constants.md` (registered d814381, amendment 1 d26b9a4),
+result `numerics/results-lattice1-2026-11-08.txt` (PASS: the bound holds on the grid with ratio ≤ 0.088; exponent
+−0.334; the largest t^{1/3}|I|/(2π) found is 0.78561 ≤ Landau's 0.7858; the factorisation agrees to 5·10⁻¹³ with a
+non-product quadrature; all three controls fail as required).
+
+Why. T6 has an existential constant. Because the 2D kernel factorises (`docs/prior_art.md`, "Lattice kernels"), an
+explicit constant for the 1D kernel gives one for T6. Downstream asked for explicit constants first (ROADMAP).
+
+Notation. I(t, ξ) = ∫_{−π}^{π} e^{i(t cos k + ξk)} dk for real t, ξ (Lean: the interval integral over [−π, π]).
+K(t, x) is T6's kernel (`latticeKernel`, batch GD, unchanged). A = 24 · 2^{1/4} ≈ 28.541, B = 36 · 2^{1/6} ≈ 40.409.
+
+**T0E (explicit bound for the 1D lattice kernel).** For every t > 0 and every real ξ:
+|I(t, ξ)| ≤ A t^{−1/2} + B t^{−1/3}.
+
+**T6F (the 2D kernel factorises).** For every real t and x ∈ ℤ²: K(t, x) = I(t, x₁) I(t, x₂).
+
+**T6E (explicit constant for T6).** For every t ≥ 1 and x ∈ ℤ²: |K(t, x)| ≤ (A + B)² t^{−2/3}. ((A + B)² ≈ 4754.)
+
+Route (for the reviewers' orientation only; the proofs come after the reviews). T0E: split [−π, π] at ±π/4, ±3π/4. On
+the three pieces where |cos k| ≥ 1/√2 apply S1.2 (`VdC2Statement`, constant 8/√μ) to φ = t cos with μ = t/√2; on
+the two where |sin k| ≥ 1/√2 apply S1.3 (`VdC3Statement`, 18 μ^{−1/3}); amplitude 1, linear term ξ. This gives
+3 · 8 · 2^{1/4} t^{−1/2} + 2 · 18 · 2^{1/6} t^{−1/3}. T6F: Fubini on [−π, π]² and e^{a+b} = e^a e^b. T6E: T6F, T0E
+twice, and t^{−1/2} ≤ t^{−1/3} for t ≥ 1.
+
+Modelling choices and what is omitted.
+1. ξ is real in T0E (stronger than integer ξ, which is all T6F needs); the S1 bounds are uniform in the linear term.
+2. T0E is stated for t > 0: at t = 0 Lean's `Real.rpow` gives 0^{−1/2} = 0 and the bound would be false; t < 0
+   reduces to t > 0 by I(−t, ξ) = conj I(t, −ξ).
+3. The constants are far from sharp: at large t the truth is about 2π · 0.675 t^{−1/3} (Landau's constant 0.7858 is the
+   sup over all t > 0), so B is about 9.5 times too large, and on the registered grid (A + B)² t^{−2/3} exceeds
+   sup_x |K(t, x)| by a factor of at least 200 for t ≥ 1 (criterion (e): ratio 0.0048). Sharper
+   constants are future work; these are the ones the frozen S1 constants give by the route above.
+4. The normalisation (2π)^{−2}, the time scale and the phase e^{−4it} are omitted as in T6.
+5. The Bessel identification I(t, n) = 2π iⁿ Jₙ(t) is not stated (Mathlib has no Bessel functions at the pin).
+
+Clarifications after the pre-proof reviews (`review/2026-11-08-LE-pre-proof-{A,B}.md`; no statement text changed):
+6. **Where the explicit bounds have content** (review A, MAJOR). The trivial bounds are |I| ≤ 2π and |K| ≤ 4π². T0E's
+   right side falls below 2π only for t > 518.5, and T6E's below 4π² only for t > ((A + B)²/(4π²))^{3/2} ≈ 1321.5.
+   On 1 ≤ t ≤ 1321 T6E says less than |K| ≤ 4π²; use min(4π², (A + B)² t^{−2/3}). The constants are what the frozen
+   S1 constants 8 and 18 give by the route above; sharper ones are future work.
+7. **Landau's constant applies to integer ξ only** (review B, MINOR-1). For non-integer ξ, I(t, ξ) is an Anger-type
+   integral, not 2π i^ξ J_ξ(t), and sup t^{1/3}|I|/(2π) over real ξ exceeds 0.7858: at (t, ξ) = (5.7972479262309164,
+   4.404) it is 0.80366 (review B, two methods; recomputed by the lead with Simpson's rule, N = 200000). The comparison
+   in item 3 ("B about 9.5 times too large") is for integer ξ.
+8. **Better bounds from the same statements** (review A, MINOR). Composing T6F with T0E directly gives
+   |K(t, x)| ≤ (A t^{−1/2} + B t^{−1/3})², better than T6E by up to (A + B)²/B² ≈ 2.9 at large t. T6E with `0 < t` in
+   place of `1 ≤ t` is also true (for t ≤ 1, |K| ≤ 4π² < (A + B)² t^{−2/3}; review B, MINOR-2); a corollary, not a
+   re-freeze.
+9. **User normalisation** (reviews A and B). For H = 2 cos k₁ + 2 cos k₂ on ℓ²(ℤ²), the kernel of e^{itH} is
+   (2π)^{−2} K(2t, x), so ‖e^{itH}‖_{ℓ¹→ℓ^∞} ≤ (2π)^{−2}(A + B)²(2t)^{−2/3} ≈ 75.9 t^{−2/3} for t ≥ 1/2. Negative times
+   reduce to positive ones by |K(−t, x)| = |K(t, −x)| (not formalised).
+10. **What the numeric pre-registration could and could not catch** (adversarial review n6). Criterion (a) passed at a
+   ratio of 0.088, so it would have caught a draft constant that is too small by more than a factor of about 11, and no
+   smaller error; the constants are pinned by the proof via the S1 constants, not by the numerics.
+
+
+## Batch VT: the global decay estimates for vector-valued amplitudes (session 7, 2026-11-08)
+
+Order. As batch LE: statements `OscInt/Statements/Vector.lean`, sanity theorems with planted controls
+(`OscInt/Front/VectorSanity.lean`, `docs/replay/2026-11-08-VT-sanity-plants.txt`), challenge `Challenge/Vector.lean` and
+`comparator-VT.json` are committed and stamped before the blind pre-proof reviews; the reports are committed and
+stamped before any Lean proof. No numeric pre-registration: the batch transfers proved bounds and makes no new
+quantitative claim. Design and route: `docs/design/vector-amplitudes.md` §1 (duality).
+
+Why. Two-band lattice models, spectral projections and matrix symbols have amplitudes with values in matrices or other
+Banach spaces. The acceptance model of the owner's batch VV (a non-separable two-band model) is deferred
+(`docs/design/vector-amplitudes.md` §5: the QWZ m = 3 candidate failed its decay check); this batch is the transfer
+only.
+
+Notation as in batch GD. For a complex Banach space E (a Lean `Type` with `NormedAddCommGroup E`, `NormedSpace ℂ E`,
+`CompleteSpace E`), an *E-valued amplitude (2, K, M)* is A : ℝ² → E of class C² (real derivatives) with tsupport A ⊆ K
+and ‖D^j A(k)‖ ≤ M for j ≤ 2. I(Ψ, L, A, m) = ∫ e^{im(Ψ(k) + L(k))} · A(k) dk (Bochner integral in E, scalar action).
+
+**GD-C-V, GD-V, GD-F-V, GD-N-V.** Exactly GD-C, GD, GD-F, GD-N (same hypotheses on Ψ, K, U, D, K′, same rates
+m^{−2/3}, m^{−2/3}, m^{−5/6}, m^{−1}) for E-valued amplitudes, with one constant C, chosen after the phase data and
+before E, valid for every E: ‖I(Ψ, L, A, m)‖ ≤ C · M · rate(m).
+
+Route (for orientation; proofs after the reviews). For ‖·‖-norming functionals: given the integral v ∈ E, Hahn–Banach
+(`exists_dual_vector''`) gives ℓ ∈ E* with ‖ℓ‖ ≤ 1 and ℓ(v) = ‖v‖; ℓ commutes with the integral
+(`ContinuousLinearMap.integral_comp_comm`, the integrand is continuous with compact support); ℓ ∘ A is a scalar
+amplitude (2, K, M) (`iteratedFDeriv` of a composition with a continuous linear map, operator norm ≤ 1, on ℓ restricted
+to ℝ-scalars); the scalar statement with its constant C gives the bound. So the constant of the scalar statement works
+for every E.
+
+Modelling choices and what is omitted.
+1. E ranges over `Type` (universe 0), not over all universes (the commitment tooling hashes closed constants).
+2. The scalar statements are the case E = ℂ (`•` is `*`); this is checked in the sanity file.
+3. Real-valued amplitudes are covered through E = ℂ; real Banach spaces E are not (complexify).
+
+Clarifications after the pre-proof reviews (`review/2026-11-08-VT-pre-proof-{A,B}.md`; no statement text changed):
+4. **Integrability in the route** (A NIT-1, B §2). With Ψ smooth only on U, the integrand k ↦ e^{im(Ψ+L)(k)} • A(k)
+   is still continuous: at k outside tsupport A it vanishes on a neighbourhood; at k ∈ tsupport A ⊆ K ⊆ U, Ψ is
+   continuous (U open). It has compact support, so it is integrable, and the junk value of the Bochner integral never
+   occurs.
+5. **The vector statements are equivalent to the scalar ones** (A §4, B §2): E = ℂ gives the scalar statement, and the
+   scalar statement gives the vector one with the same constant by duality. One constant for every E costs nothing.
+6. **Matrices** (A MINOR-3, B NIT-1). `Matrix (Fin n) (Fin n) ℂ` has no global norm instance in Mathlib. Use the
+   definitionally equal `Fin n → Fin n → ℂ` (entrywise sup norm), `(Fin n → ℂ) →L[ℂ] (Fin n → ℂ)` (operator norm), or
+   `attribute [local instance] Matrix.linftyOpNormedAddCommGroup Matrix.linftyOpNormedSpace`; all elaborate against the
+   frozen statements (both referees checked). The E-uniform constant lets the user pick any of these norms.
+7. **Universes and real spaces** (A MINOR-1, B NIT-2, NIT-3). `E : Type` only; a universe-polymorphic transfer theorem
+   (not a frozen statement) can be added with the proofs. Real Banach spaces are not covered; Mathlib has no convenient
+   complexification, so this is a real limitation for users.
+8. **Order, precisely** (post-proof A NIT-1). The sanity file the pre-proof referees saw is the one in the statement stamp
+   (`stamps/20261108T235416Z-961cebc296ef`); three theorems were added in answer to them and that version is in the review
+   stamp (`stamps/20261109T002419Z-45505299011a`); more data were added after the post-proof reviews. The route review was
+   committed before the part's proof entered the repository; the lead's draft existed in the session scratchpad meanwhile
+   (lessons 42), so the claim is about commit order, which no third-party timestamp covers (post-proof A MINOR-2,
+   adversarial m4). Proved: `OscInt/Front/VectorFinal.lean`; replay `docs/replay/2026-11-09-session7-VT-verify-all.txt`.

@@ -1,0 +1,9 @@
+/home/user/lean-oscillatory/.claude/worktrees/agent-a88e24df8839838fa/docs/replay/plants/2026-11-08-GDN-local/plant-quad-GDN-contDiff-global.lean:21:4: error: Application type mismatch: The argument
+  ContDiff.contDiffOn ?m.136
+has type
+  ContDiffOn ℝ 4 quadPhase ?m.145
+but is expected to have type
+  ContDiff ℝ 4 quadPhase
+in the application
+  h quadPhase (Metric.closedBall 0 1) (Metric.ball 0 2) (isCompact_closedBall 0 1) Metric.isOpen_ball
+    (Metric.closedBall_subset_ball ?m.126) (ContDiff.contDiffOn ?m.136)

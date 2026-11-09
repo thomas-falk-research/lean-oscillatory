@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the batch-VT statements against copies of their sanity theorems.
+
+For each plant: copy the named defs (from OscInt/Statements/Vector.lean) and theorems (from
+OscInt/Front/VectorSanity.lean) under the prefix P_, apply exactly one textual mutation to one copied def, compile with
+`lake env lean -DautoImplicit=false`. The unplanted copy (no mutation) must compile; the planted copy must fail.
+Usage: plants_vt.py REPO OUTDIR
+"""
+import os, re, subprocess, sys
+
+REPO, OUT = sys.argv[1], sys.argv[2]
+os.makedirs(OUT, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/Vector.lean')).read().split('\n')
+SAN = open(os.path.join(REPO, 'OscInt/Front/VectorSanity.lean')).read().split('\n')
+
+
+def block(lines, kind, name):
+    pat = re.compile(r'^(noncomputable )?' + kind + r' ' + re.escape(name) + r'\b')
+    for i, l in enumerate(lines):
+        if pat.match(l):
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {kind} {name}')
+
+
+PLANTS = [
+    # third run (after the post-proof reviews): FiniteDimensional for the three other statements (adversarial m1);
+    # 'C after E' recorded as a blind spot: rejection by proof shape only, and a reordered proof succeeds
+    ('GDF-V-findim', ['GlobalFoldVecStatement'], ['globalFold_bounded'],
+     ('GlobalFoldVecStatement', '[CompleteSpace E]', '[CompleteSpace E] [FiniteDimensional ℂ E]')),
+    ('GD-V-findim', ['GlobalDecayVecStatement'], ['globalDecay_bounded'],
+     ('GlobalDecayVecStatement', '[CompleteSpace E]', '[CompleteSpace E] [FiniteDimensional ℂ E]')),
+    ('GDC-V-findim', ['GlobalDecayCritVecStatement'], ['globalDecayCrit_bounded'],
+     ('GlobalDecayCritVecStatement', '[CompleteSpace E]', '[CompleteSpace E] [FiniteDimensional ℂ E]')),
+    ('GDN-V-findim', ['GlobalNondegVecStatement'], ['globalNondeg_bounded'],
+     ('GlobalNondegVecStatement', '[CompleteSpace E]', '[CompleteSpace E] [FiniteDimensional ℂ E]')),
+]
+
+HEADER = """import OscInt.Front.VectorSanity
+
+namespace OscInt.API.VectorSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.ConvertSanity
+open scoped ContDiff BoundedContinuousFunction
+"""
+
+
+def make(defs, thms, mut, planted):
+    names = defs + thms
+    parts = []
+    for d in defs:
+        t = block(STMT, 'def', d)
+        if planted and d == mut[0]:
+            assert t.count(mut[1]) == 1, (d, mut[1])
+            t = t.replace(mut[1], mut[2])
+        parts.append(t)
+    for th in thms:
+        parts.append(block(SAN, 'theorem', th))
+    text = '\n\n'.join(parts)
+    for n in sorted(names, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r'(?![\w])', 'P_' + n, text)
+    return HEADER + '\n' + text + '\n\nend OscInt.API.VectorSanity\n'
+
+
+env = dict(os.environ)
+summary = []
+for pid, defs, thms, mut in PLANTS:
+    for planted in (False, True):
+        tag = ('plant-' if planted else 'ok-') + pid
+        src = os.path.join(OUT, tag + '.lean')
+        open(src, 'w').write(make(defs, thms, mut, planted))
+        r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                           cwd=REPO, capture_output=True, text=True)
+        out = r.stdout + r.stderr
+        open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+        errs = [l for l in out.split('\n') if ': error' in l]
+        verdict = ('accepted' if r.returncode == 0 and not errs else 'rejected')
+        want = (mut[3] if len(mut) > 3 else 'rejected') if planted else 'accepted'
+        line = f"{tag}: {verdict} (want {want}){'' if verdict == want else '  <-- MISMATCH'}"
+        if errs:
+            line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+        print(line, flush=True)
+        summary.append(line)
+open(os.path.join(OUT, 'SUMMARY.txt'), 'w').write('\n'.join(summary) + '\n')

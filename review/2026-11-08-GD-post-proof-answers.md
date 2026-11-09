@@ -33,6 +33,10 @@ statements, stamps and the proofs of the final theorems are unchanged by everyth
 - **b2 (C⁴ ↦ C⁵ rejected only by brittleness; `U ↦ univ` in GD-N accepted; no datum smooth only on U).** Agreed, not
   fixed: these are weakening or non-semantic cases the conditional form cannot separate (stated in the sanity file's
   header); a datum smooth only on U for GD-N is a candidate for the next batch's sanity layer.
+  Follow-up (same day): added `globalNondeg_local` (`OscInt/Front/GlobalNondegLocalSanity.lean`), Ψ = x² + 3xy + 5y²
+  + |x − 3|, C⁴ on U = B(0, 2) and not C¹ on ℝ² (`localPhase_not_contDiff`); the plants `ContDiffOn ℝ 4 Ψ U ↦
+  ContDiff ℝ 4 Ψ` and `U ↦ Set.univ` in that hypothesis are now rejected for a semantic reason
+  (`docs/replay/2026-11-08-GDN-local-sanity-plants.txt`). C⁴ ↦ C⁵ remains rejected only by brittleness.
 - **c1 (snippet check was a substring test; annotations unchecked).** The snippet check is now whole-name for the
   statement constant and the proving theorem, with a planted control (`tools/test_gen_api.sh`, 7 plants). The
   hand-written prose (hypotheses, rate, uniformity) is not machine-checkable; `docs/api.json` carries the frozen Lean

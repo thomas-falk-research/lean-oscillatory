@@ -1,0 +1,8 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Direct inputs of the CI `reuse lint` / `cffconvert` step (.github/workflows/ci.yml). The hash-pinned lock is
+# requirements-ci.txt; regenerate it with the command in its header, never edit it by hand.
+reuse==6.3.0
+cffconvert==2.0.0

@@ -1,0 +1,11 @@
+ok-GDN-contDiff-global: accepted (want accepted)
+plant-GDN-contDiff-global: rejected (want rejected)
+    first error: plant-GDN-contDiff-global.lean:21:4: error: Application type mismatch: The argument
+ok-GDN-contDiffOn-univ: accepted (want accepted)
+plant-GDN-contDiffOn-univ: rejected (want rejected)
+    first error: plant-GDN-contDiffOn-univ.lean:21:4: error: Application type mismatch: The argument
+ok-quad-GDN-contDiff-global: accepted (info, earlier datum)
+plant-quad-GDN-contDiff-global: rejected (info, earlier datum)
+    first error: plant-quad-GDN-contDiff-global.lean:21:4: error: Application type mismatch: The argument
+ok-quad-GDN-contDiffOn-univ: accepted (info, earlier datum)
+plant-quad-GDN-contDiffOn-univ: accepted (info, earlier datum)

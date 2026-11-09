@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+"""Planted controls for GD-N's smoothness hypothesis against a phase that is C^4 only on U (review follow-up b2).
+
+Same method as docs/replay/plants/2026-11-08-GD/plants_gd.py.txt: copy `GlobalNondegStatement` (from
+OscInt/Statements/Global.lean) and the sanity theorem `globalNondeg_local` (from
+OscInt/Front/GlobalNondegLocalSanity.lean) under the prefix P_, apply exactly one textual mutation to the copied def,
+compile with `lake env lean -DautoImplicit=false`. The unplanted copy must compile; the planted copy must fail.
+For comparison only (rows marked `info`, not part of the pass/fail criterion), the same two plants are also run
+against the earlier datum `globalNondeg_quad` (a polynomial phase, smooth on all of R^2).
+Usage: plants_gdn_local.py REPO OUTDIR   (needs `lake build OscInt.Front.GlobalNondegLocalSanity` first)
+"""
+import os, re, subprocess, sys
+
+REPO, OUT = sys.argv[1], sys.argv[2]
+os.makedirs(OUT, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/Global.lean')).read().split('\n')
+SAN = {
+    'globalNondeg_local': open(os.path.join(REPO, 'OscInt/Front/GlobalNondegLocalSanity.lean')).read().split('\n'),
+    'globalNondeg_quad': open(os.path.join(REPO, 'OscInt/Front/GlobalSanity.lean')).read().split('\n'),
+}
+
+
+def block(lines, kind, name):
+    pat = re.compile(r'^(noncomputable )?' + kind + r' ' + re.escape(name) + r'\b')
+    for i, l in enumerate(lines):
+        if pat.match(l):
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {kind} {name}')
+
+
+MUT_A = ('GlobalNondegStatement', 'ContDiffOn ℝ 4 Ψ U', 'ContDiff ℝ 4 Ψ')
+MUT_B = ('GlobalNondegStatement', 'K ⊆ U → ContDiffOn ℝ 4 Ψ U', 'K ⊆ U → ContDiffOn ℝ 4 Ψ Set.univ')
+PLANTS = [
+    # (id, defs, theorem, mutation, counted)
+    ('GDN-contDiff-global', ['GlobalNondegStatement'], 'globalNondeg_local', MUT_A, True),
+    ('GDN-contDiffOn-univ', ['GlobalNondegStatement'], 'globalNondeg_local', MUT_B, True),
+    ('quad-GDN-contDiff-global', ['GlobalNondegStatement'], 'globalNondeg_quad', MUT_A, False),
+    ('quad-GDN-contDiffOn-univ', ['GlobalNondegStatement'], 'globalNondeg_quad', MUT_B, False),
+]
+
+HEADER = """import OscInt.Front.GlobalNondegLocalSanity
+
+namespace OscInt.API.GlobalSanity
+
+open OscInt.Statements OscInt.D4 OscInt.API.ConvertSanity Filter Topology
+open scoped ContDiff
+"""
+
+
+def make(defs, thm, mut, planted):
+    names = defs + [thm]
+    parts = []
+    for d in defs:
+        t = block(STMT, 'def', d)
+        if planted and d == mut[0]:
+            assert t.count(mut[1]) == 1, (d, mut[1])
+            t = t.replace(mut[1], mut[2])
+        parts.append(t)
+    parts.append(block(SAN[thm], 'theorem', thm))
+    text = '\n\n'.join(parts)
+    for n in sorted(names, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r'(?![\w])', 'P_' + n, text)
+    return HEADER + '\n' + text + '\n\nend OscInt.API.GlobalSanity\n'
+
+
+summary = []
+for pid, defs, thm, mut, counted in PLANTS:
+    for planted in (False, True):
+        tag = ('plant-' if planted else 'ok-') + pid
+        src = os.path.join(OUT, tag + '.lean')
+        open(src, 'w').write(make(defs, thm, mut, planted))
+        r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                           cwd=REPO, capture_output=True, text=True)
+        out = r.stdout + r.stderr
+        open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+        errs = [l for l in out.split('\n') if ': error' in l]
+        verdict = ('accepted' if r.returncode == 0 and not errs else 'rejected')
+        want = 'rejected' if planted else 'accepted'
+        if counted:
+            line = f"{tag}: {verdict} (want {want}){'' if verdict == want else '  <-- MISMATCH'}"
+        else:
+            line = f"{tag}: {verdict} (info, earlier datum)"
+        if errs:
+            line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+        print(line, flush=True)
+        summary.append(line)
+open(os.path.join(OUT, 'SUMMARY.txt'), 'w').write('\n'.join(summary) + '\n')

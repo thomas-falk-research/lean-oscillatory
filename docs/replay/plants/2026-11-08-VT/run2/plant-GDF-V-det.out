@@ -1,0 +1,14 @@
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-VT/run2/plant-GDF-V-det.lean:18:41: error: Application type mismatch: The argument
+  hcl
+has type
+  ∀ k ∈ K, FoldOrNondegMatrix Ψ k
+but is expected to have type
+  ∀ k ∈ K, (hessianMatrix Ψ k).det ≠ 0
+in the application
+  h Ψ K U hK hU hKU hΨ hcl
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-VT/run2/plant-GDF-V-det.lean:27:68: error: Type mismatch
+  foldOrNondegMatrix_fold k
+has type
+  FoldOrNondegMatrix (fun k => k.1 ^ 3 + k.2 ^ 2) k
+but is expected to have type
+  (hessianMatrix foldPhase k).det ≠ 0
