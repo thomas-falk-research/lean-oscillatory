@@ -11,8 +11,8 @@
     }
   ],
   "codeRepository": "https://github.com/thomas-falk-research/lean-oscillatory",
-  "datePublished": "2026-11-07",
-  "description": "A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates in one and two variables: van der Corput's lemma with explicit constants, non-stationary and nondegenerate stationary phase, the uniform fold and D4 (umbilic) estimates with the D4 leading term and its closed-form constant, and front ends in Mathlib's idiom. Statements are frozen and timestamped before their proofs and replayed by several independent kernels.",
+  "datePublished": "2026-11-09",
+  "description": "A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates in one and two variables: van der Corput's lemma with explicit constants, non-stationary and nondegenerate stationary phase, the uniform fold and D4 (umbilic) estimates with the D4 leading term and its closed-form constant, front ends in Mathlib's idiom with local smoothness and compact families of phases, global decay from a pointwise classification of the phase (also for amplitudes with values in any complex Banach space), and the dispersive estimate t^{-2/3} for the 2D lattice Laplacian with an explicit constant and its sharpness (a classical, separable example). Statements are frozen and timestamped before their proofs and replayed by several independent kernels; statement fidelity is reviewed by AI referees, not yet by a human expert.",
   "identifier": "https://doi.org/10.5281/zenodo.24021328",
   "keywords": [
     "Lean 4",
@@ -34,5 +34,5 @@
   ],
   "name": "OscInt: uniform oscillatory-integral estimates in Lean 4 and Mathlib",
   "url": "https://github.com/thomas-falk-research/lean-oscillatory",
-  "version": "0.3.0"
+  "version": "0.4.0"
 }

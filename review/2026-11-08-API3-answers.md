@@ -99,3 +99,17 @@ route names (S2.1 `OscInt.nonStationary`, the internal S2.2/S3 parts, FE-S4.1′
 - A NIT 6 (record on a638f70): stated; the commits after it change no Lean file in the proof (sanity and examples only;
   `make quick` re-run on the final commit, CI `verify` on the pushed head).
 - A NIT 7: as recorded before (universe 0; C10 not used by the FE-L forms).
+
+## Owner decision (2026-11-09)
+> API3 answered a test-layer MAJOR without a re-freeze, which step 5 does not allow. Against the conditions of the
+> test-layer exception considered on 2026-11-08 (`docs/decisions/2026-11-08-step5-memo.md`): both pre-proof referees
+> judged all ten statements FAITHFUL with no MAJOR against the text, but neither was asked whether the finding was
+> test-layer only, and referee B's proposed fix was bundled `def`s (a re-freeze); conditional sanity theorems covered
+> 5 of 10 constants before the proofs and 10 of 10 after (ff5b80e); planted controls covered 2 of 10 statements before
+> the proofs and 3 of 10 (S3c, FE-S2.2l, S2.2F) by 2026-11-08 (`docs/replay/2026-11-08-session6-API3-plants-rerun.txt`);
+> the list of undetectable plants was written only after the proofs; the adversarial referee judged the departure
+> (M3) and found the coverage incomplete (M1, M2). The hypothesis-weakening plants the referees named (e.g.
+> `V ×ˢ U ↦ S ×ˢ K`, a dropped `p ∈ K′`) rest on the fidelity reviews alone. Ratified by the owner on 2026-11-09 as a
+> one-time waiver; step 5 is unchanged.
+
+(Option (iii) of the memo; CONTRIBUTING step 2 amended the same day.)

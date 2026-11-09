@@ -40,3 +40,9 @@ S1.2/S1.3, Fubini and t^{-1/2} ≤ t^{-1/3} checked step by step. No statement t
 - **NIT-1 (the threshold plant is rejected only through `le_rfl`).** Docstring of `latticeLaplacianExplicit_one` and
   the record say so.
 - **NIT-2.** No action.
+
+## Owner decision (2026-11-09)
+Referee A's documentation-only MAJOR, answered by clarification 6 of `docs/statements.md` (Batch LE) without a re-freeze,
+was ratified by the owner on 2026-11-09 as a one-time waiver of CONTRIBUTING step 5; step 5 now provides for
+documentation-only MAJORs (answered by a dated clarification recorded in the answers file). The three LE STATUS rows
+say so.

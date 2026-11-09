@@ -4,7 +4,7 @@ Versions follow semantic versioning from v0.3.0 (`docs/policy.md`): before 1.0.0
 statements and says so under "Statement changes"; a patch (0.y.Z) changes no statement, commitment, statement file
 or `proved_by` name. Every release lists its statement changes, even when there are none.
 
-## Unreleased
+## v0.4.0 — 2026-11-09
 
 ### Statement changes (batch LE, session 7)
 No existing statement changed. Added (`OscInt/Statements/LatticeExplicit.lean`, stamp

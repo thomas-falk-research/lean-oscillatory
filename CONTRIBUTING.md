@@ -29,8 +29,11 @@ The order matters: the statement is frozen and reviewed before any proof exists,
 2. **Lean statement.** A `def XStatement : Prop` with a docstring starting `**<label>**` (the label and summary go
    into `stamps/statements.json`), a pin `theorem statement_pin_X : XStatement = XStatement := rfl`, sanity
    theorems on generic data (distinct coefficients, distinct sets for distinct roles, lessons 17) and a bite
-   instance where a hypothesis fails and the definitions must say so. Hypotheses are named `def`s shared by the
-   statement and its sanity theorems (lessons 11). `tools/target/release/scaffold <Name> <label>` (once it exists,
+   instance where a hypothesis fails and the definitions must say so. Each hypothesis is either a
+   named `def` shared by the statement and its sanity theorems, with a bite instance proving its negation on data
+   (lessons 11, 17), or tested by a sanity theorem that takes the statement constant as its only hypothesis and
+   discharges it on generic data (lessons 33); in the second form at least one planted copy per statement is run and
+   recorded, with the compiler output, under `docs/replay/plants/` before the stamp (owner decision 2026-11-09). `tools/target/release/scaffold <Name> <label>` (once it exists,
    ROADMAP §4) generates the skeleton; until then copy `OscInt/Statements/D4Limit.lean`.
 3. **Challenge and comparator.** `Challenge/<File>.lean`: the final theorem with a `sorry` proof (never imported).
    A `comparator-<id>.json` naming that theorem. `make challenge-export`.
@@ -39,7 +42,10 @@ The order matters: the statement is frozen and reviewed before any proof exists,
    statements` regenerates `stamps/statements.json`; commit and push.
 5. **Blind review.** Commit the referee prompt under `review/prompts/`, then two fresh-context referees review the
    statement against `docs/statements.md` without seeing any proof. Reports go verbatim under `review/`. A
-   BLOCKER or MAJOR means a new statement (back to 2), never an edit.
+   BLOCKER or MAJOR means a new statement (back to 2), never an edit. A MAJOR whose finding is only against the prose
+   of `docs/statements.md` (not the Lean text, not the sanity layer) is answered by a dated clarification there,
+   recorded in the answers file with the referee's words (owner decision 2026-11-09,
+   `docs/decisions/2026-11-08-step5-memo.md`).
 6. **Route and blueprint.** `docs/proof-<id>.md` (the mathematical route, each step with the Mathlib names it needs,
    each name `#check`ed at the pin, lessons 1); `Blueprint/<File>.lean` (one `def …Facts : Prop` per part); the lead's
    assembly `theorem x_of (h₁ : …Facts) … : XStatement` compiled before any part is proved. Check every interface

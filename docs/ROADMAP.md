@@ -20,7 +20,8 @@ Agreed in chat after reconciling the session-6 brief with an external review of 
 2. **Batch VV**: vector-valued amplitudes, done only when a non-separable model compiles end to end; fallback a
    finite-dimensional componentwise corollary. The vector-valued transfer is done (batch VT). No acceptance model yet: QWZ (m > 2)
    has exact cusp points (erratum, `docs/design/vector-amplitudes.md` §6), QWZ m = 1, 0.5 and the triangular lattice
-   have cusps.
+   have cusps. Next steps (model search done properly, closed-form classification, or Strichartz first):
+   `docs/design/vector-amplitudes.md` §7.
 3. Strichartz estimates, non-endpoint (TT*), planned over 2–3 sessions: blueprint, prior-art sweep, frozen statement first.
 4. The D4 bound uniform over compact families (read Karpushkin and Duistermaat 1974 first), then the arccos family.
 Usability, in order: a reusable `oscint-verify` action and Lake template; doc-gen4 site with `llms.txt` from

@@ -25,11 +25,12 @@ For a reader who saw nothing. Read `docs/lessons.md` first (43 entries); every r
   CI green (`ci` and `verify` both success).
 
 ## Owner decisions (stop and ask)
-1. **CONTRIBUTING step 5**, now with two cases: API3's test-layer MAJOR (memo `docs/decisions/2026-11-08-step5-memo.md`)
-   and LE's documentation-only MAJOR (pre-proof referee A; answered by docs, no re-freeze;
-   `review/2026-11-08-LE-pre-proof-answers.md`). Thirteen STATUS rows say "owner decision pending".
-2. **v0.4.0** (notes `docs/release-notes/v0.4.0.md`, which predate batch LE: decide whether LE goes in, then redo the pins
-   with `tools/release_preflight.sh`).
+1. **CONTRIBUTING step 5: decided 2026-11-09, option (iii).** One-time waivers for API3's test-layer MAJOR and LE's
+   documentation-only MAJOR (recorded in the 13 STATUS rows and the answers files); step 2 amended (conditional sanity
+   theorems with planted copies before the stamp); step 5 gains a clause for documentation-only MAJORs.
+2. **v0.4.0: prepared in this branch** (versions bumped, CHANGELOG section, notes with pins for batches 3, GD, LE and VT;
+   `tools/release_preflight.sh 0.4.0` passes). After the merge: Actions → `release-candidate` on `main`, then the three
+   commands it prints (`docs/release-notes/v0.4.0.md`, "Publishing").
 3. AI-authorship wording (adversarial finding f1 of session 6), branch protection, P5 tactic policy, discoverability.
 4. Human expert review: deferred by the owner under `docs/policy.md` (wording rule, calibration plan, triggers).
 
@@ -40,7 +41,8 @@ For a reader who saw nothing. Read `docs/lessons.md` first (43 entries); every r
    model compiled end to end) is **not met**: the candidate QWZ m = 3 failed its pre-registered decay check (t^{−2/3}
    observed) and has four exact cusp points, which the grid classifier missed (erratum `docs/design/vector-amplitudes.md`
    §6, lessons 43). QWZ m = 1, 0.5 and the triangular lattice also have cusps. Next: a model search with symmetry-line
-   checks and a sub-grid cusp control, or a model whose classification can be done exactly; owner's choice.
+   checks and a sub-grid cusp control (option A), a model whose classification can be done in closed form (option B), or
+   Strichartz first (option C): plans and recommendation in `docs/design/vector-amplitudes.md` §7; owner's choice.
 3. Strichartz (non-endpoint), then 4. the family D4 bound: not started.
 
 ## Process notes for the next lead

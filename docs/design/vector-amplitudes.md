@@ -114,3 +114,45 @@ Found by the VT adversarial referee (`review/2026-11-09-VT-adversarial.md`, M1),
   decaying like t^{−5/6}.
 - **Consequences.** QWZ (m > 2) is dropped as an acceptance model. No acceptance model for VV exists now. A future search
   must check symmetry lines and refine near small fold quantities, with a sub-grid positive control (lessons 43).
+
+## 7. Future work: the next step for VV, or Strichartz (written 2026-11-09, for session 8)
+The vector-valued transfer is done (batch VT). The owner's acceptance test for VV, a non-separable two-band lattice
+model compiled end to end, is open. Three ways on; the owner chooses.
+
+**Option A: a new model search, done properly (estimate: one session to a decision, more to a proof).**
+1. Pre-register before any run. Candidate families: gapped two-band models `H = d(k)·σ` with `ω = |d|` non-separable and
+   *without* the k₁ ↔ k₂ symmetry that forced the QWZ cusps (e.g. anisotropic hoppings `d = (sin k₁, α sin k₂,
+   m + cos k₁ + β cos k₂)` with α ≠ 1 or β ≠ 1), and scalar non-separable symbols (anisotropic triangular lattice
+   `c₁ + c₂ + γ cos(k₁ + k₂)`).
+2. The classifier must not trust a grid (lessons 43):
+   - solve the symmetry-reduced equations exactly first: on every fixed line of a symmetry of ω, the conditions
+     `det H = 0` and `T[v, v, v] = 0` reduce to one-variable equations; bisect them to machine precision;
+   - near every degenerate point with a small fold quantity (say below 0.3 instead of 1e−2), run the Newton cusp search;
+   - adaptive refinement: re-grid at 8× around each local minimum of `|T[v, v, v]|/‖T‖` along the degenerate curve;
+   - **positive control with a sub-grid cusp**: a phase whose cusp lies strictly between grid nodes, by construction
+     (e.g. the P1 control shifted by half a grid step and scaled down), which must be reported CUSP;
+   - the decay check (as `docs/prereg/2026-11-08-VV-qwz-decay.md`) gets a positive control that decays like the
+     predicted rate on the same window, and a criterion that can tell t^{−5/6} from t^{−3/4} and t^{−2/3} (slope intervals
+     separated by more than their bootstrap error; the profile-ratio criterion (b) was not discriminating).
+3. Only a model that passes both the classification and the decay check, with controls discriminating, is frozen.
+
+**Option B: a model whose classification can be done in closed form (estimate: one to two sessions).**
+Choose ω so that `det D²ω` and the fold quantity are trigonometric polynomials whose common zero set can be described
+exactly, and prove "nondegenerate or fold everywhere" in Lean by a certificate: e.g. an identity
+`a(k)·(det D²ω)² + b(k)·(T[w, w, w])² = c(k)` with `a, b ≥ 0` and `c > 0` on the torus, checked by `ring`/`nlinarith`
+after the substitution `cᵢ = cos kᵢ`, `sᵢ = sin kᵢ`, `cᵢ² + sᵢ² = 1`. The search for such an identity (a Positivstellensatz
+certificate) is numerics, pre-registered as tooling; the certificate itself is the evidence. Candidates are the same
+families as option A, filtered by option A's numerics first. Risk: certificates may not exist in low degree; margins
+near-degenerate points make them large.
+
+**Option C: move on to Strichartz (session-7 order item 3; estimate: two to three sessions).**
+Non-endpoint Strichartz estimates for the 2D lattice Schrödinger group from the dispersive bound T6 (or T6E) by the
+TT* argument. Needs: interpolation of `ℓ¹ → ℓ^∞` (T6) with `ℓ² → ℓ²` (unitarity) to `ℓ^{r′} → ℓ^r` (Riesz–Thorin or a
+direct proof for this case), and the 1D Hardy–Littlewood–Sobolev inequality in time; both are PLAUSIBLE gaps in Mathlib
+at the pin (check first; if absent they are upstream contributions in their own right). First session: prior-art sweep
+(Stefanov–Kevrekidis 2005 for ℤ is the expected anticipation of the mathematics; any formalisation), blueprint, frozen
+statement only. Novelty can only be "machine-checked", and only PLAUSIBLE until the sweep is done.
+
+**Recommendation.** C first, if the goal is the next mathematical payoff: it builds on what is proved (T6/T6E) and is
+not blocked by a classification. A next, if the owner's VV acceptance test is the priority: it is cheap to run and its
+failure modes are now known. B only after A has produced a candidate.
