@@ -614,3 +614,94 @@ Clarifications after the pre-proof reviews (`review/2026-11-08-VT-pre-proof-{A,B
    committed before the part's proof entered the repository; the lead's draft existed in the session scratchpad meanwhile
    (lessons 42), so the claim is about commit order, which no third-party timestamp covers (post-proof A MINOR-2,
    adversarial m4). Proved: `OscInt/Front/VectorFinal.lean`; replay `docs/replay/2026-11-09-session7-VT-verify-all.txt`.
+
+## Batch A3: the k-th derivative van der Corput bound and the uniform cusp (A3) bound (session 8, 2026-11-09)
+
+Why (owner decision 2026-11-09, `docs/ROADMAP.md` I3): published classifications show that the discrete Klein–Gordon
+equation, the lattice wave equation, the triangular lattice and the King's graph are each blocked only by A3 (cusp)
+points (`docs/prior_art.md`, "Singularities of lattice dispersion relations"), and QWZ at m = 3 has exact A3 points
+(`docs/design/vector-amplitudes.md` §6). OscInt's global theorems allow nondegenerate points, folds and D4 points
+only. Pre-freeze checks: `numerics/a3/statement_checks.py`, output `numerics/results-a3-statements-2026-11-09.txt`.
+
+### S1.k (k-th derivative, k ≥ 2, uniform in a linear term)
+
+Notation as in S1. A *derivative chain of length k on [a, b]* is a sequence of functions D₀, D₁, …, D_k (only these
+k + 1 are used) such that D_{j+1} is the derivative of D_j on [a, b] in the sense of S1 (D_j continuous on [a, b],
+differentiable on (a, b) with derivative D_{j+1}) for every j < k. Put c_k = 5·2^{k−1} − 2.
+
+**S1.k.** For every k ≥ 2, every derivative chain D₀, …, D_k on [a, b] (a ≤ b), all μ > 0 and p ∈ ℝ, and every ψ
+satisfying the amplitude hypothesis of S1: if |D_k(x)| ≥ μ for all x ∈ (a, b), then, with φ = D₀,
+
+  |∫_a^b e^{i(φ(x) + p x)} ψ(x) dx| ≤ c_k μ^{−1/k} · A(ψ; a, b).
+
+Source: Stein, *Harmonic Analysis* (1993), Ch. VIII §1.2, Proposition 2 (constant c_k = 5·2^{k−1} − 2 for k ≥ 2) and
+its Corollary (amplitude), as for S1. S1.2 and S1.3 are the cases k = 2, 3 with the same constants (c₂ = 8, c₃ = 18;
+check E4); the sanity file derives both from S1.k. The classical proof is an induction on k with
+c_{k+1} = 2c_k + 2 (split (a, b) where |D_k| ≥ δ from an interval of length ≤ 2δ around the zero of the monotone D_k,
+choose δ = μ^{−1/(k+1)}), then integration by parts for the amplitude.
+
+Modelling choices: as S1.2/S1.3 (endpoint continuity of D₀, …, D_{k−1}; ψ′ integrable; the linear term p x is
+arbitrary, and adding it does not change D_k for k ≥ 2). k = 1 is excluded (S1.1 needs monotonicity of φ′). The
+constant is explicit; Lean writes it as `(5 * 2 ^ (k - 1) - 2 : ℝ)` with `k - 1` a natural number (k ≥ 2) and the power
+`μ ^ (-(1 : ℝ) / k)` as `Real.rpow` with μ > 0. Omitted: sharper constants (Stein's c_k is not optimal; exploratory
+values for k = 4, 5 are 2.32 and 2.67 against c₄ = 38, c₅ = 78, `numerics/results-a3-statements-2026-11-09.txt`, N2).
+
+### S5.1 and S5.1′ (uniform cusp bound, decay t^{−3/4})
+
+Notation as in S2/S3 and S4, with derivatives written as the multilinear maps D²φ(k₀), D³φ(k₀), D⁴φ(k₀)
+(`iteratedFDeriv`, as in GD's D4 points). A point k₀ is an **A3 (cusp) point** of a C⁴ phase φ on ℝ² if there are
+v, w ∈ ℝ² with
+  (i) D²φ(k₀)[v, z] = 0 for every z (v is in the kernel of the Hessian),
+  (ii) D²φ(k₀)[w, w] ≠ 0 (the Hessian is not zero, hence of rank one, and v ≠ 0 by (iv)),
+  (iii) D³φ(k₀)[v, v, v] = 0 (not a fold),
+  (iv) g₄ := D²φ(k₀)[w, w] · D⁴φ(k₀)[v, v, v, v] − 3 (D³φ(k₀)[v, v, w])² ≠ 0.
+It is a **stable A3 point** if moreover (v) D³φ(k₀)[v, v, w] ≠ 0.
+
+Meaning. (iv) is h times 24 times the u⁴ coefficient of the reduced function g(u) = φ(k₀ + uv + s(u)w), where s(u)
+solves ∂_s φ = 0 and h = D²φ(k₀)[w, w] (splitting lemma; `numerics/census/spec_checks.py`, check R1). By (i) and (iii),
+replacing w by w + λv changes neither D²φ[w, w] nor D³φ[v, v, w] (check R3), and v is unique up to scale, so (iv) and (v)
+do not depend on the choice of (v, w): the existential form is equivalent to "for every kernel vector v ≠ 0 and every
+w ∉ span v". (iv) is the reduced quartic, not the straight-line quartic D⁴φ[v, v, v, v]: the phase (y + x²/2)² has
+D⁴φ(0)[e₁⁴] = 6 ≠ 0 but g₄ = 0 and a whole curve of degenerate critical points (check E3-trap). (v) is the coupling of the
+kernel and transverse directions; when it holds, the gradient map has a Whitney cusp at k₀ and, after the anisotropic
+rescaling (u, s) ↦ (εu, ε²s), the model h s²/2 + (T/2)u²s + (Q/24)u⁴ has only nondegenerate and fold points away from
+the origin (check E1, g₃ = h²u·g₄ on its degenerate curve); when (v) fails, the model h s²/2 + (Q/24)u⁴ is degenerate
+with g₃ = 0 along a whole line (check E2). Every A3 point known in the corpus is stable: discrete Klein–Gordon (mass 1)
+at (±π/2, ±π/2), D³ω[v, v, w] = −√5/625 with v = (−√5/25, √5/25), w = (1, 0); QWZ (m = 3) at (±a, ±a),
+a = arccos(−1/3), D³ω[v, v, w] = 128√130/53551875 (computed exactly before this freeze; the census, ROADMAP I1, will
+record them).
+
+**S5.1 (uniform stable-cusp bound).** For every C^∞ phase φ on ℝ² for which 0 is a stable A3 point there are δ > 0 and
+C such that for all A, M with amplitude bound (2, B̄(0, δ), M), all y ∈ ℝ² and all t ≥ 1:
+  |∫ e^{i(tφ(κ) + y·κ)} A(κ) dκ| ≤ C M t^{−3/4}.
+
+**S5.1′ (uniform cusp bound).** As S5.1 for every C^∞ phase φ for which 0 is an A3 point (condition (v) dropped).
+S5.1 is the case of S5.1′ with (v); both are frozen, as S4.1 and S4.1′ were, because their proof routes differ.
+
+Sources (records checked against Crossref in the logged sweep `review/2026-11-09-CENSUS-prior-art-sweep.md`; the
+texts were not read by the lead, so the attribution is FOLKLORE until a referee or the lead reads them): uniform
+estimates for simple singularities, J. J. Duistermaat, Comm. Pure Appl. Math. 27 (1974) 207–281,
+DOI 10.1002/cpa.3160270205; the oscillation index of A3 (−3/4 in this normalisation), V. I. Arnol'd, Russian Math.
+Surveys 28 (1973) 19–48, DOI 10.1070/rm1973v028n05abeh001609; the t^{−3/4} rate from A3 points in lattice decay
+estimates, J.-C. Cuenin and I. A. Ikromov, Nonlinearity 34 (2021) 7938–7962 (read in the sweep, arXiv version).
+
+Modelling choices.
+1. At the origin, as S4.1 (a translation moves any point there); no hypothesis ∇φ(0) = 0 (absorbed by the uniformity in
+   y); y is arbitrary and not scaled by t, so tp·κ is the case y = tp.
+2. Phase C^∞ (`ContDiff ℝ ∞`, with `∞` the smooth index, lessons 12). The planned S5.1 route (anisotropic dyadic
+   rescaling ε⁻⁴φ(εu, ε²s) in kernel/transverse coordinates, the compact-family fold bound S3 on annuli, S2.1 for large
+   linear terms, mirroring the proved S4.1′ route) needs a finite order (CONJECTURED: C⁵ suffices for the rescaled family
+   to be FamilyCk 4); the order is not fixed now, so as not to freeze a statement the route cannot reach. Every model in
+   the census corpus is real-analytic away from its non-smooth set. A finite-smoothness or local-smoothness version is a
+   later front end (as FE-S4.1′L was for S4.1′).
+3. Amplitude bound (2, B̄(0, δ), M) as in S4.1 and GD, so that S5.1 and GD combine without a stronger amplitude
+   hypothesis. The S5.1 route needs only C² amplitudes (the rescaled amplitudes A(εu, ε²s) have C² norms ≤ the
+   original for ε ≤ 1). For S5.1′ the planned route (Morse lemma with parameters in the transverse variable, then S1.k
+   with k = 4 in the kernel variable) is PLAUSIBLE with C² amplitudes; the route referee is asked to check this.
+4. The exponent −3/4 cannot be improved in general: for x²y + y² and x⁴ + y² with a Gaussian amplitude,
+   t^{3/4}|I(t, 0)| tends to a nonzero limit (exploratory, `numerics/results-a3-statements-2026-11-09.txt`, N0–N1);
+   the uniform bound over y is consistent with the same numerics (max over nine linear terms bounded, ≈ 5.8 at t = 10⁴).
+
+Omitted (not claimed by S5.1/S5.1′): the leading term (a Pearcey-type constant); sharpness as a theorem; uniformity over
+compact families of phases; the global assembly with finitely many A3 points (the next statement, GD with cusps); any
+statement about A≥4, D≥5 or E/J points.
