@@ -751,6 +751,72 @@
    ],
    "snippet_kind": "type",
    "snippet": "example : LatticeLaplacianExplicitStatement := OscInt.API.latticeLaplacianExplicit"
+  },
+  "GD-C-V": {
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact, K′ compact",
+    "D a Finset ⊆ U of D4 points (IsD4Point)",
+    "FoldOrNondegMatrix at every critical point of Ψ + L in K \\ D, L ∈ K′ (ClassifiedCrit)",
+    "E any complex Banach space (E : Type); amplitude A : ℝ² → E"
+   ],
+   "conclusion": "as GD-C with ‖∫ e^{im(Ψ+L)} • A‖ in E; one constant C for every E",
+   "rate": "m^{-2/3}",
+   "uniform_over": "L ∈ K′, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD-C"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : Prop := GlobalDecayCritVecStatement"
+  },
+  "GD-V": {
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact",
+    "D a Finset ⊆ U of D4 points",
+    "FoldOrNondegMatrix at every point of K \\ D (Classified)",
+    "E any complex Banach space (E : Type); amplitude A : ℝ² → E"
+   ],
+   "conclusion": "as GD with ‖∫ e^{im(Ψ+L)} • A‖ in E; one constant C for every E",
+   "rate": "m^{-2/3}",
+   "uniform_over": "all L, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : Prop := GlobalDecayVecStatement"
+  },
+  "GD-F-V": {
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact",
+    "FoldOrNondegMatrix at every point of K",
+    "E any complex Banach space (E : Type); amplitude A : ℝ² → E"
+   ],
+   "conclusion": "as GD-F with ‖∫ e^{im(Ψ+L)} • A‖ in E; one constant C for every E",
+   "rate": "m^{-5/6}",
+   "uniform_over": "all L, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD-F"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : Prop := GlobalFoldVecStatement"
+  },
+  "GD-N-V": {
+   "hypotheses": [
+    "Ψ C⁴ on open U ⊇ K, K compact",
+    "det hessianMatrix ≠ 0 at every point of K",
+    "E any complex Banach space (E : Type); amplitude A : ℝ² → E"
+   ],
+   "conclusion": "as GD-N with ‖∫ e^{im(Ψ+L)} • A‖ in E; one constant C for every E",
+   "rate": "m^{-1}",
+   "uniform_over": "all L, A, M",
+   "smoothness": "C⁴ on U only",
+   "see_also": [
+    "GD-N"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : Prop := GlobalNondegVecStatement"
   }
  },
  "helpers": [

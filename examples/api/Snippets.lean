@@ -199,4 +199,20 @@ example : LatticeKernelFactorStatement := OscInt.API.latticeKernelFactor
 
 example : LatticeLaplacianExplicitStatement := OscInt.API.latticeLaplacianExplicit
 
+/-! ### GD-C-V: GD-C for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`. -/
+
+example : Prop := GlobalDecayCritVecStatement
+
+/-! ### GD-V: GD for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`. -/
+
+example : Prop := GlobalDecayVecStatement
+
+/-! ### GD-F-V: GD-F for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`. -/
+
+example : Prop := GlobalFoldVecStatement
+
+/-! ### GD-N-V: GD-N for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`. -/
+
+example : Prop := GlobalNondegVecStatement
+
 end OscIntSnippets

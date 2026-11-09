@@ -62,3 +62,8 @@ OscInt.Statements.LatticeKernel1ExplicitStatement stamps/20261108T160847Z-4a1835
 OscInt.Statements.LatticeKernelFactorStatement stamps/20261108T160847Z-4a183530559f
 OscInt.Statements.LatticeLaplacianExplicitStatement stamps/20261108T160847Z-4a183530559f
 challenge:comparator-LE.json stamps/20261108T160847Z-4a183530559f
+OscInt.Statements.GlobalDecayCritVecStatement stamps/20261108T235416Z-961cebc296ef
+OscInt.Statements.GlobalDecayVecStatement stamps/20261108T235416Z-961cebc296ef
+OscInt.Statements.GlobalFoldVecStatement stamps/20261108T235416Z-961cebc296ef
+OscInt.Statements.GlobalNondegVecStatement stamps/20261108T235416Z-961cebc296ef
+challenge:comparator-VT.json stamps/20261108T235416Z-961cebc296ef

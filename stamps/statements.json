@@ -532,17 +532,62 @@
       "commitment": "181d42d75a2cf9726e878d35e3ba5bc814e8dd712ae26964a9613b4ec1cd0889",
       "stamp": "stamps/20261108T160847Z-4a183530559f",
       "stamp_commit": "4a183530559fb4450bea27d8856585e94fa5f627"
+    },
+    {
+      "name": "OscInt.Statements.GlobalDecayCritVecStatement",
+      "label": "GD-C-V",
+      "summary": "GD-C for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Vector.lean",
+      "file_sha256": "784ca9a55318b8a9d212b7b37fe21699fb97c4764a5b7f511454a9edf376c2ba",
+      "commitment": "b10f3ac4f4192b9dda8fcb91cf171e191deb773dfd84e7026bf38a66653e0f00",
+      "stamp": "stamps/20261108T235416Z-961cebc296ef",
+      "stamp_commit": "961cebc296eff7f55dddcecc70ef6d164f8e6de6"
+    },
+    {
+      "name": "OscInt.Statements.GlobalDecayVecStatement",
+      "label": "GD-V",
+      "summary": "GD for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Vector.lean",
+      "file_sha256": "784ca9a55318b8a9d212b7b37fe21699fb97c4764a5b7f511454a9edf376c2ba",
+      "commitment": "15935a570eb2a5e976afb37b7740dbd4fd6905a8723687bab6d45f0453d63757",
+      "stamp": "stamps/20261108T235416Z-961cebc296ef",
+      "stamp_commit": "961cebc296eff7f55dddcecc70ef6d164f8e6de6"
+    },
+    {
+      "name": "OscInt.Statements.GlobalFoldVecStatement",
+      "label": "GD-F-V",
+      "summary": "GD-F for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Vector.lean",
+      "file_sha256": "784ca9a55318b8a9d212b7b37fe21699fb97c4764a5b7f511454a9edf376c2ba",
+      "commitment": "71428213100bfbcdb29b2d20f8234bf3f8f6dfc921472657134966e1bdaeccbb",
+      "stamp": "stamps/20261108T235416Z-961cebc296ef",
+      "stamp_commit": "961cebc296eff7f55dddcecc70ef6d164f8e6de6"
+    },
+    {
+      "name": "OscInt.Statements.GlobalNondegVecStatement",
+      "label": "GD-N-V",
+      "summary": "GD-N for amplitudes with values in any complex Banach space `E` (`E : Type`), with a constant independent of `E`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Vector.lean",
+      "file_sha256": "784ca9a55318b8a9d212b7b37fe21699fb97c4764a5b7f511454a9edf376c2ba",
+      "commitment": "2dda7e400448a35542f23fab458b6a1bdcfa5ee3ae69d38c9664ed9d02eda0f9",
+      "stamp": "stamps/20261108T235416Z-961cebc296ef",
+      "stamp_commit": "961cebc296eff7f55dddcecc70ef6d164f8e6de6"
     }
   ],
   "statement_files": [
-    {"file": "OscInt/Statements/Convert.lean", "sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49", "stamp": "stamps/20261108T160847Z-4a183530559f"},
-    {"file": "OscInt/Statements/D4.lean", "sha256": "6965ce63488b6f81ff5c4685b46e252027423d8a6916ac274ea9dea21d4395c9", "stamp": "stamps/20261108T160847Z-4a183530559f"},
-    {"file": "OscInt/Statements/D4Limit.lean", "sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6", "stamp": "stamps/20261108T160847Z-4a183530559f"},
-    {"file": "OscInt/Statements/Family.lean", "sha256": "da21f86bb3a018dd8bd704404fe8fa185f2bc530f08dc39f036210a7b6702188", "stamp": "stamps/20261108T160847Z-4a183530559f"},
-    {"file": "OscInt/Statements/FrontEnd.lean", "sha256": "4851a9543e712d2a3734b37dbf3cfabbc63fabb0a930a22f96eb3e60e8852ee7", "stamp": "stamps/20261108T160847Z-4a183530559f"},
-    {"file": "OscInt/Statements/Global.lean", "sha256": "edaaf9c6925a69da2b5f66eb06432458d6113532ba970a6bd3a25cdd3418b46d", "stamp": "stamps/20261108T160847Z-4a183530559f"},
-    {"file": "OscInt/Statements/LatticeExplicit.lean", "sha256": "c201633978fb9e6a4019a0988cf682bcd40aef83cabfb082d4dd60eebd64b921", "stamp": "stamps/20261108T160847Z-4a183530559f"},
-    {"file": "OscInt/Statements/StationaryPhase.lean", "sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf", "stamp": "stamps/20261108T160847Z-4a183530559f"},
-    {"file": "OscInt/Statements/VanDerCorput.lean", "sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44", "stamp": "stamps/20261108T160847Z-4a183530559f"}
+    {"file": "OscInt/Statements/Convert.lean", "sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
+    {"file": "OscInt/Statements/D4.lean", "sha256": "6965ce63488b6f81ff5c4685b46e252027423d8a6916ac274ea9dea21d4395c9", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
+    {"file": "OscInt/Statements/D4Limit.lean", "sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
+    {"file": "OscInt/Statements/Family.lean", "sha256": "da21f86bb3a018dd8bd704404fe8fa185f2bc530f08dc39f036210a7b6702188", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
+    {"file": "OscInt/Statements/FrontEnd.lean", "sha256": "4851a9543e712d2a3734b37dbf3cfabbc63fabb0a930a22f96eb3e60e8852ee7", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
+    {"file": "OscInt/Statements/Global.lean", "sha256": "edaaf9c6925a69da2b5f66eb06432458d6113532ba970a6bd3a25cdd3418b46d", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
+    {"file": "OscInt/Statements/LatticeExplicit.lean", "sha256": "c201633978fb9e6a4019a0988cf682bcd40aef83cabfb082d4dd60eebd64b921", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
+    {"file": "OscInt/Statements/StationaryPhase.lean", "sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
+    {"file": "OscInt/Statements/VanDerCorput.lean", "sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
+    {"file": "OscInt/Statements/Vector.lean", "sha256": "784ca9a55318b8a9d212b7b37fe21699fb97c4764a5b7f511454a9edf376c2ba", "stamp": "stamps/20261108T235416Z-961cebc296ef"}
   ]
 }
