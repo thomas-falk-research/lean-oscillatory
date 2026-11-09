@@ -1,0 +1,25 @@
+import OscInt.Front.CuspSanity
+open OscInt.Statements OscInt.API.CuspSanity OscInt.API.Poly Set
+open scoped ContDiff
+
+def PIsStableA3Point (Ψ : ℝ × ℝ → ℝ) (k₀ : ℝ × ℝ) : Prop :=
+  ∃ v w : ℝ × ℝ, (∀ z, iteratedFDeriv ℝ 2 Ψ k₀ ![v, z] = 0) ∧ iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, v] = 0 ∧
+    iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] * iteratedFDeriv ℝ 4 Ψ k₀ ![v, v, v, v] -
+      3 * iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, w] ^ 2 ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ k₀ ![v, w, w] ≠ 0
+-- The planted predicate accepts the non-stable bite: v = e₁, w = e₂, D³[v, w, w] = 2 ≠ 0.
+theorem P_nonvCubic_accepted : PIsStableA3Point (quartic qNonvCubic) 0 := by
+  obtain ⟨v, w, h1, h2, h3, h4⟩ := nonvCubic_isA3
+  have hvww : iteratedFDeriv ℝ 3 (quartic qNonvCubic) 0 ![(1, 0), (0, 1), (0, 1)] = 2 := by
+    have hp := ((quartic_contDiff qNonvCubic).contDiffAt (x := 0)).iteratedFDeriv_comp_perm
+      ![(0, 1), (0, 1), (1, 0)] (finRotate 3).symm
+    rw [← nonvCubic_vww, ← hp]
+    congr 1
+    funext i; fin_cases i <;> rfl
+  refine ⟨(1, 0), (0, 1), fun z => ?_, ?_, ?_, ?_, ?_⟩
+  · rw [quartic_d2_mixed]; simp [part2, qNonvCubic]
+  · rw [quartic_d2]; norm_num [part2, qNonvCubic]
+  · rw [quartic_d3]; norm_num [part3, qNonvCubic]
+  · rw [quartic_d2, quartic_d4, quartic_d3_mixed]; norm_num [part2, part3, part4, qNonvCubic]
+  · rw [hvww]; norm_num

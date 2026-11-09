@@ -1,0 +1,44 @@
+# command: SYMPY_GROUND_TYPES=python python3 -I numerics/census/spec_checks.py (env: numerics/census/requirements.txt)
+# started 2026-11-09T17:52:43Z
+# python 3.13.18 (CPython), sympy 1.14.0, mpmath 1.3.0, SYMPY_GROUND_TYPES=python, ground types in use: python
+# platform Linux-6.18.44-fc-v310-x86_64-with-glibc2.39, machine x86_64
+# git HEAD e43b9aa954fc3ff73838b9428e9b528535c7b9ef, tracked files modified: no
+CHECK R1 PASS splitting lemma: reduced function g(u) = a30 u^3/6 + (a40 - 3 a21^2/h) u^4/24 + O(u^5)
+CHECK R2 PASS H(q,-p) = (0,-det H), H(r,-q) = (det H, 0), (q,-p) x (r,-q) = det H: where det H = 0 both lie in ker H and are parallel; both vanish only if H = 0, so at a rank-1 point g3 = 0 iff T[va,va,va] = T[vb,vb,vb] = 0
+CHECK R3 PASS T[v,v,w+lam v] - T[v,v,w] = lam T[v,v,v]: g4 independent of w when g3 = 0 (H[w+lam v] = H[w])
+CHECK A1[id] PASS (G')^2 = 1; G^(m) = rho_m G' with rho_m rational, m = 2..6
+CHECK A1[sqrt] PASS (G')^2 = 1/(4*x); G^(m) = rho_m G' with rho_m rational, m = 2..6
+CHECK A1[arccos] PASS (G')^2 = -1/(x**2 - 1); G^(m) = rho_m G' with rho_m rational, m = 2..6
+CHECK A1[arcsin] PASS (G')^2 = -1/(x**2 - 1); G^(m) = rho_m G' with rho_m rational, m = 2..6
+CHECK A1[2asin(sqrt)] PASS (G')^2 = -1/(x*(x - 1)); G^(m) = rho_m G' with rho_m rational, m = 2..6
+CHECK M-QWZ PASS |d|^2 for d = (sin k1, sin k2, m + cos k1 + cos k2) equals 2 + m^2 + 2m(c1 + c2) + 2 c1 c2
+CHECK M-QWZ-H2 PASS H(k)^2 = |d(k)|^2 Id, bands +-|d|
+CHECK M-aQWZ PASS |d|^2 for d = (sin k1, (3/5) sin k2, 3 + c1 + c2) equals 34/25 + 9 + 6(c1+c2) + 2c1c2 + (16/25) c2^2
+CHECK M-FD9 PASS 9-point stencil (1/6)[4(N+S+E+W) + (NE+NW+SE+SW) - 20] has symbol (1/6)(8(c1+c2) + 4c1c2 - 20)
+CHECK M-FD9-NS PASS 20 - 8(c1+c2) - 4c1c2 = 12a1 + 12a2 - 4a1a2 (a_i = 1 - c_i in [0,2]) = 4a1 + 12a2 + 4a1(2 - a2) >= 4a1 + 12a2 >= 0, zero only at a1 = a2 = 0, i.e. k = (0,0)
+CHECK M-SQNNN PASS t-t' band -2t(c1+c2) - 4t'c1c2 with t'/t = -3/10 is -2t (c1 + c2 - (3/5) c1 c2)
+CHECK M-GRAPHENE PASS exactly three nearest B sites at squared distance 1/3; |f|^2 = 3 + 2c1 + 2c2 + 2cos(k1 - k2)
+CHECK M-GRAPHENE-CN PASS Castro Neto et al. eq. (6) f equals 2cos(k.a1) + 2cos(k.a2) + 2cos(k.(a1-a2)), i.e. 2c1 + 2c2 + 2cos(k1 - k2) in k_i = k.a_i: E = +-t sqrt(3 + f) at t' = 0 is M05
+CHECK M-hBN PASS staggered sublattice potential +-Delta: eigenvalues of [[Delta, t f], [t conj f, -Delta]] are +-sqrt(Delta^2 + t^2 |f|^2) (M06 with Delta/t = 1/2)
+CHECK M-KING PASS King's graph symbol 8 - 2cos k1 - 2cos k2 - 2cos(k1+k2) - 2cos(k1-k2) = 8 - 2(c1 + c2 + 2 c1 c2): the t-t' family c1 + c2 + 2g c1 c2 at g = 1 (M18)
+CHECK M-FD9-TT PASS the 9-point symbol (1/6)(20 - 8(c1+c2) - 4c1c2) = 10/3 - (4/3)(c1 + c2 + (1/2) c1 c2): the t-t' family at g = 1/4 up to an affine map (same point types)
+CHECK M-YEE-ARCCOS PASS Yee: cos(Psi) = 1 - 2v = 1 - 2S^2 + S^2 (c1 + c2), i.e. Psi = arccos(1 - 2S^2 + S^2(c1 + c2)) on [0, pi]
+CHECK M-GRAPHENE-NS PASS on the unit torus 1 + w1 + w2 = 0 iff w1^2 + w1 + 1 = 0, w2 = conj(w1): Dirac points (k1, k2) = (2pi/3, -2pi/3), (-2pi/3, 2pi/3) (w = e^{-ik})
+CHECK M-GROVER PASS det(L - S(k)G), G = J/2 - I, S = diag(z1, 1/z1, z2, 1/z2): (L-1)(L+1)(L^2 + (c1+c2)L + 1); dispersive bands cos w = -(c1 + c2)/2, flat bands at L = +-1
+CHECK M-YEE PASS sin^2(k/2) = (1 - cos k)/2; Psi = 2 asin(sqrt v), v = S^2 (2 - c1 - c2)/2, solves sin^2(Psi/2) = v
+CHECK G-QWZ1 PASS m = 1: P = 1 + 2(1 + c1)(1 + c2) >= 1
+CHECK G-QWZ3 PASS m = 3: P = 2(3 + c1)(3 + c2) - 7 >= 1
+CHECK G-aQWZ PASS P = sin^2 k1 + (9/25) sin^2 k2 + (3 + c1 + c2)^2 >= 1
+CHECK G-YEE PASS v = S^2 (2 - c1 - c2)/2 in [0, 2S^2] with 2S^2 = 1/2, 49/50 < 1 for S = 1/2, 7/10: branch point only at v = 0, i.e. k = (0,0)
+CHECK G-ARCCOS PASS |c1/2 + 3c2/10| <= 4/5 < 1: arccos analytic
+CHECK K-SQ PASS u = c1 + c2: det H = c1 c2; at (+-pi/2, +-pi/2) H = 0 and the cubic has three distinct roots (D4; at (pi/2, pi/2) C = k1^3 + k2^3, Disc = -27); on k1 = +-pi/2 the kernel is (r,-q) = (-c2, 0) and g3 = -c2^3 sin k1 != 0 for c2 != 0 (fold); the lines k2 = +-pi/2 by the symmetry k1 <-> k2: no A3 point
+CHECK K-QWZ3 PASS QWZ m = 3 at (+-a, +-a), a = arccos(-1/3): det H = 0, H != 0, g3 = 0 (both kernel vectors), g4 != 0 (A3); with v = (1,-1), w = (1,1) at (a,a): H[w,w] = 32/(195 sqrt65), T[v,v,w] = 12 sqrt130/65, Q[v,v,v,v] = 18/sqrt65, g4 = -5247/sqrt(65)
+CHECK K-DKG PASS M17 sqrt(5 - 2c1 - 2c2) at (+-pi/2, +-pi/2): det H = 0, H != 0, g3 = 0, g4 != 0 (A3), agreeing with Cuenin-Ikromov Prop. 9 at these points
+CHECK K1 PASS K1 = X^2 Y + Y^2, (X,Y) = R((x,y) - r), R = [[3/5,-4/5],[4/5,3/5]], r = (1/7,-2/9): at r rank 1, g3 = 0, g4 = -24576/625 != 0 (A3); det H = 0 on r + R^T(tau, tau^2), where T[va^3] = -48*tau*(3*tau + 4)**3/125 and T[vb^3] = 48*tau*(4*tau - 3)**3/125 vanish together only at tau = 0 (at tau = 3/4 the vector (r,-q) is zero, not g3); |H|_F^2 = 4Y^2 + 8X^2 + 4 >= 4 (no rank-0 point)
+CHECK K2 PASS K2 = X^2 Y + Y^4, (X,Y) = (x,y) - (-1/5, 1/3): at r H = 0, cubic (0, 6, 0, 0) has a double root (class D>=5); det H = -4*(225*x**2 + 90*x - 1350*y**3 + 1350*y**2 - 450*y + 59)/225; on X = +-sqrt6 tau^3, Y = tau^2 (shown for +): g3 = -480*tau**8 != 0 for tau != 0 (folds); H = 0 only at r (H11 = 2Y, H12 = 2X)
+CHECK K3 PASS K3 = X^3 + Y^4, (X,Y) = (x,y) - (2/7, -1/11): at r H = 0, cubic (6, 0, 0, 0) triple (class E/J); on Y = 0, X = X0 != 0: rank 1, g3 = 0, g4 = 31104*X0**4 (a non-isolated A3 segment); on X = 0, Y = Y0 != 0: g3 = 10368*Y0**6 (fold)
+CHECK K5 PASS K5 = sqrt((c1+c2)^2 + 1/4): constant 1/2 on k1 + k2 = pi; at (pi/3, 2pi/3) grad = 0, rank 1, g3 = g4 = 0 (non-isolated A>=4 curve); at (0, pi) H = 0 and the cubic is zero (class E/J)
+SUMMARY 35/35
+ALL_CHECKS_PASS
+# exit status 0
+# finished 2026-11-09T17:52:48Z

@@ -316,3 +316,14 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     symmetry forces exact cusp points on the diagonal wherever H₁₁ = H₁₂ (`docs/design/vector-amplitudes.md` §6). The cusp
     control was a large one; add a positive control whose cusp lies between grid points, and solve the symmetry-reduced
     equations exactly before trusting a "folds only" verdict.
+44. **A planted control counts as rejected only if the planted claim is shown false.** In batch A3 the plant "constant
+    10k − 12" (28 at k = 4) failed to compile against `vdCk_chain4` only because the copied proof closed with `exact this`
+    against the bound 38; with `exact this.trans (by norm_num)` it compiled, so the plant was not detected (a smaller
+    constant strengthens the conclusion). Rule: for every rejected plant, give semantic evidence (a compiled witness that
+    the planted predicate holds or fails on the datum, a robust closing that still fails, or an exact computation), and
+    record script-only rejections as not detected. Check: the A3 plant record lists the evidence per line.
+45. **A recording script must not write its own output file in the tree while it records the tree's state.** The census
+    spec-check record first said "tracked files modified: yes" on a clean tree: the shell had truncated the tracked output
+    file before the script ran `git status`. Rule: write the record outside the tree, then copy it in, and check the
+    record's commit and dirty lines before committing it. Check: the commit messages of the A3 and CENSUS records.
+

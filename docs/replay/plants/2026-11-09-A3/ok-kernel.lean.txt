@@ -1,0 +1,23 @@
+import OscInt.Front.CuspSanity
+open OscInt.Statements OscInt.API.CuspSanity OscInt.API.Poly Set
+open scoped ContDiff
+
+def PIsA3Point (Ψ : ℝ × ℝ → ℝ) (k₀ : ℝ × ℝ) : Prop :=
+  ∃ v w : ℝ × ℝ, (∀ z, iteratedFDeriv ℝ 2 Ψ k₀ ![v, z] = 0) ∧ iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, v] = 0 ∧
+    iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] * iteratedFDeriv ℝ 4 Ψ k₀ ![v, v, v, v] -
+      3 * iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, w] ^ 2 ≠ 0
+theorem P_nondegCubic_not : ¬ PIsA3Point (quartic qNondegCubic) 0 := by
+  rintro ⟨v, w, hv, -, -, h4⟩
+  have a := hv (1, 0)
+  have b := hv (0, 1)
+  rw [quartic_d2_mixed] at a b
+  simp only [part2, qNondegCubic, Prod.fst_add, Prod.snd_add] at a b
+  norm_num at a b
+  have hv1 : v.1 = 0 := by nlinarith
+  have hv2 : v.2 = 0 := by nlinarith
+  apply h4
+  rw [quartic_d2, quartic_d4, quartic_d3_mixed]
+  simp only [part2, part3, part4, qNondegCubic, Prod.fst_add, Prod.snd_add, Prod.fst_sub, Prod.snd_sub, hv1, hv2]
+  norm_num
+  ring

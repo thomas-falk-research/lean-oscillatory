@@ -1,0 +1,119 @@
+# Generates the batch-A3 planted copies (lessons 33). Each file copies one frozen definition or statement as P*, with
+# or without one plant, and replays the matching sanity proof from OscInt/Front/CuspSanity.lean against it.
+HDR = """import OscInt.Front.CuspSanity
+open OscInt.Statements OscInt.API.CuspSanity OscInt.API.Poly Set
+open scoped ContDiff
+"""
+ISA3 = """def PIsA3Point (Ψ : ℝ × ℝ → ℝ) (k₀ : ℝ × ℝ) : Prop :=
+  ∃ v w : ℝ × ℝ, {KER}iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, v] = 0 ∧
+    iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] * iteratedFDeriv ℝ 4 Ψ k₀ ![v, v, v, v] -
+      3 * iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, w] ^ 2 ≠ 0
+"""
+KER = "(∀ z, iteratedFDeriv ℝ 2 Ψ k₀ ![v, z] = 0) ∧ "
+BITE_KER = """theorem P_nondegCubic_not : ¬ PIsA3Point (quartic qNondegCubic) 0 := by
+  rintro ⟨v, w, hv, -, -, h4⟩
+  have a := hv (1, 0)
+  have b := hv (0, 1)
+  rw [quartic_d2_mixed] at a b
+  simp only [part2, qNondegCubic, Prod.fst_add, Prod.snd_add] at a b
+  norm_num at a b
+  have hv1 : v.1 = 0 := by nlinarith
+  have hv2 : v.2 = 0 := by nlinarith
+  apply h4
+  rw [quartic_d2, quartic_d4, quartic_d3_mixed]
+  simp only [part2, part3, part4, qNondegCubic, Prod.fst_add, Prod.snd_add, Prod.fst_sub, Prod.snd_sub, hv1, hv2]
+  norm_num
+  ring
+"""
+WITNESS_NOKER = """-- The planted predicate accepts the rank-two datum (v = e₁, w = e₂, reduced quartic −12): the plant is semantic.
+theorem P_nondegCubic_accepted : PIsA3Point (quartic qNondegCubic) 0 := by
+  refine ⟨(1, 0), (0, 1), ?_, ?_, ?_⟩
+  · rw [quartic_d2]; norm_num [part2, qNondegCubic]
+  · rw [quartic_d3]; norm_num [part3, qNondegCubic]
+  · rw [quartic_d2, quartic_d4, quartic_d3_mixed]; norm_num [part2, part3, part4, qNondegCubic]
+"""
+STAB = """def PIsStableA3Point (Ψ : ℝ × ℝ → ℝ) (k₀ : ℝ × ℝ) : Prop :=
+  ∃ v w : ℝ × ℝ, (∀ z, iteratedFDeriv ℝ 2 Ψ {PT} ![v, z] = 0) ∧ iteratedFDeriv ℝ 2 Ψ {PT} ![w, w] ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ {PT} ![v, v, v] = 0 ∧
+    iteratedFDeriv ℝ 2 Ψ {PT} ![w, w] * iteratedFDeriv ℝ 4 Ψ {PT} ![v, v, v, v] -
+      3 * iteratedFDeriv ℝ 3 Ψ {PT} ![v, v, w] ^ 2 ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ {PT} ![{V5}] ≠ 0
+"""
+TRANSLATE = """theorem P_translate {Ψ : ℝ × ℝ → ℝ} (k₀ : ℝ × ℝ) (h : IsStableA3Point Ψ 0) :
+    PIsStableA3Point (fun k => Ψ (k + -k₀)) k₀ := by
+  obtain ⟨v, w, h1, h2, h3, h4, h5⟩ := h
+  have e : k₀ + -k₀ = 0 := by simp
+  refine ⟨v, w, fun z => ?_, ?_, ?_, ?_, ?_⟩ <;>
+    simp only [iteratedFDeriv_comp_add_right, e] <;> first | exact h1 z | exact h2 | exact h3 | exact h4 | exact h5
+
+theorem P_oblShift : PIsStableA3Point (fun k => quartic qObl (k + -(1, 1))) (1, 1) := P_translate (1, 1) obl_isStableA3
+"""
+BITE_V = """theorem P_nonvCubic_not : ¬ PIsStableA3Point (quartic qNonvCubic) 0 := by
+  rintro ⟨v, w, hv, -, -, -, h5⟩
+  have hv2 : v.2 = 0 := kernel_on_axis (by simp [qNonvCubic]) (by simp [qNonvCubic]) (by norm_num [qNonvCubic]) hv
+  apply h5
+  rw [quartic_d3_mixed]
+  simp only [part3, qNonvCubic, Prod.fst_add, Prod.snd_add, Prod.fst_sub, Prod.snd_sub, hv2]
+  norm_num
+  ring
+"""
+AXIS = """def PIsStableA3Point (Ψ : ℝ × ℝ → ℝ) (k₀ : ℝ × ℝ) : Prop :=
+  let v : ℝ × ℝ := (1, 0); let w : ℝ × ℝ := (0, 1)
+  (∀ z, iteratedFDeriv ℝ 2 Ψ k₀ ![v, z] = 0) ∧ iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, v] = 0 ∧
+    iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] * iteratedFDeriv ℝ 4 Ψ k₀ ![v, v, v, v] -
+      3 * iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, w] ^ 2 ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, w] ≠ 0
+"""
+OBL0 = """theorem P_obl : PIsStableA3Point (quartic qObl) 0 := by
+  refine ⟨(1, -1), (0, 1), fun z => ?_, ?_, ?_, ?_, ?_⟩
+  · rw [quartic_d2_mixed]; simp [part2, qObl]; ring
+  · rw [quartic_d2]; norm_num [part2, qObl]
+  · rw [quartic_d3]; norm_num [part3, qObl]
+  · rw [quartic_d2, quartic_d4, quartic_d3_mixed]; norm_num [part2, part3, part4, qObl]
+  · rw [quartic_d3_mixed]; norm_num [part3, qObl]
+"""
+WITNESS_AXIS = """-- The planted predicate rejects the oblique datum: D²[(1,0),(1,0)] = 2 part2(e₁) = 4 ≠ 0.
+theorem P_obl_rejected : ¬ PIsStableA3Point (quartic qObl) 0 := by
+  intro h
+  have := h.1 (1, 0)
+  rw [quartic_d2_mixed] at this
+  norm_num [part2, qObl] at this
+"""
+VDCK = """def PVdCkStatement : Prop :=
+  ∀ (k : ℕ) (D : ℕ → ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), 2 ≤ k → a ≤ b → 0 < μ →
+    {CHAIN} → (∀ x ∈ Ioo a b, μ ≤ |D k x|) → AmplitudeOn ψ ψ' a b →
+    ‖oscInt (fun x => D 0 x + p * x) ψ a b‖ ≤
+      ({CONST}) * μ ^ (-(1 : ℝ) / (k : ℝ)) * ampNorm ψ ψ' a b
+"""
+CHAIN4 = """theorem P_vdCk_chain4 (h : PVdCkStatement) (p : ℝ) :
+    ‖oscInt (fun x => chain4 0 x + p * x) (fun _ => 1) 0 1‖ ≤ 38 := by
+  have := h 4 chain4 (fun _ => 1) (fun _ => 0) 0 1 1 p (by norm_num) (by norm_num) one_pos {CH4ARG}
+    chain4_satisfies.2 (sanity_amplitude_one 0 1).1
+  rw [(sanity_amplitude_one 0 1).2, Real.one_rpow] at this
+  norm_num at this
+  exact this
+"""
+CH_OK = "DerivChain D k a b"
+CH_MIN = "(∀ j < min k 3, HasDerivOn (D j) (D (j + 1)) a b)"
+CONST_OK = "(5 : ℝ) * 2 ^ (k - 1) - 2"
+files = {
+  "ok-kernel": ISA3.replace("{KER}", KER) + BITE_KER,
+  "no-kernel": ISA3.replace("{KER}", "") + BITE_KER.replace("rintro ⟨v, w, hv, -, -, h4⟩", "rintro ⟨v, w, -, -, h4⟩").replace("have a := hv (1, 0)\n  have b := hv (0, 1)", "have a : True := trivial\n  have b : True := trivial") ,
+  "no-kernel-witness": ISA3.replace("{KER}", "") + WITNESS_NOKER,
+  "ok-at-k0": STAB.replace("{PT}", "k₀").replace("{V5}", "v, v, w") + TRANSLATE,
+  "at-zero": STAB.replace("{PT}", "0").replace("{V5}", "v, v, w") + TRANSLATE,
+  "ok-stable": STAB.replace("{PT}", "k₀").replace("{V5}", "v, v, w") + BITE_V,
+  "stable-vww": STAB.replace("{PT}", "k₀").replace("{V5}", "v, w, w") + BITE_V,
+  "ok-exists": STAB.replace("{PT}", "k₀").replace("{V5}", "v, v, w") + OBL0,
+  "axis-fixed": AXIS + OBL0,
+  "axis-fixed-witness": AXIS + WITNESS_AXIS,
+  "ok-vdck": VDCK.replace("{CHAIN}", CH_OK).replace("{CONST}", CONST_OK) + CHAIN4.replace("{CH4ARG}", "chain4_satisfies.1"),
+  "const-larger-at-4": VDCK.replace("{CHAIN}", CH_OK).replace("{CONST}", CONST_OK + " + ((k : ℝ) - 2) * ((k : ℝ) - 3)") + CHAIN4.replace("{CH4ARG}", "chain4_satisfies.1"),
+  "const-smaller-at-4": VDCK.replace("{CHAIN}", CH_OK).replace("{CONST}", "10 * (k : ℝ) - 12") + CHAIN4.replace("{CH4ARG}", "chain4_satisfies.1"),
+  "chain-min3": VDCK.replace("{CHAIN}", CH_MIN).replace("{CONST}", CONST_OK) + CHAIN4.replace("{CH4ARG}", "(fun j hj => chain4_satisfies.1 j (lt_of_lt_of_le hj (min_le_left _ _)))"),
+}
+for name, body in files.items():
+    open(f"{name}.lean", "w").write(HDR + "\n" + body)
+print(" ".join(files))

@@ -1,0 +1,15 @@
+import OscInt.Front.CuspSanity
+open OscInt.Statements OscInt.API.CuspSanity OscInt.API.Poly Set
+open scoped ContDiff
+
+def PIsA3Point (Ψ : ℝ × ℝ → ℝ) (k₀ : ℝ × ℝ) : Prop :=
+  ∃ v w : ℝ × ℝ, iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, v] = 0 ∧
+    iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] * iteratedFDeriv ℝ 4 Ψ k₀ ![v, v, v, v] -
+      3 * iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, w] ^ 2 ≠ 0
+-- The planted predicate accepts the rank-two datum (v = e₁, w = e₂, reduced quartic −12): the plant is semantic.
+theorem P_nondegCubic_accepted : PIsA3Point (quartic qNondegCubic) 0 := by
+  refine ⟨(1, 0), (0, 1), ?_, ?_, ?_⟩
+  · rw [quartic_d2]; norm_num [part2, qNondegCubic]
+  · rw [quartic_d3]; norm_num [part3, qNondegCubic]
+  · rw [quartic_d2, quartic_d4, quartic_d3_mixed]; norm_num [part2, part3, part4, qNondegCubic]

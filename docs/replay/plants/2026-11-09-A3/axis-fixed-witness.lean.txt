@@ -1,0 +1,17 @@
+import OscInt.Front.CuspSanity
+open OscInt.Statements OscInt.API.CuspSanity OscInt.API.Poly Set
+open scoped ContDiff
+
+def PIsStableA3Point (Ψ : ℝ × ℝ → ℝ) (k₀ : ℝ × ℝ) : Prop :=
+  let v : ℝ × ℝ := (1, 0); let w : ℝ × ℝ := (0, 1)
+  (∀ z, iteratedFDeriv ℝ 2 Ψ k₀ ![v, z] = 0) ∧ iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, v] = 0 ∧
+    iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] * iteratedFDeriv ℝ 4 Ψ k₀ ![v, v, v, v] -
+      3 * iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, w] ^ 2 ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, w] ≠ 0
+-- The planted predicate rejects the oblique datum: D²[(1,0),(1,0)] = 2 part2(e₁) = 4 ≠ 0.
+theorem P_obl_rejected : ¬ PIsStableA3Point (quartic qObl) 0 := by
+  intro h
+  have := h.1 (1, 0)
+  rw [quartic_d2_mixed] at this
+  norm_num [part2, qObl] at this

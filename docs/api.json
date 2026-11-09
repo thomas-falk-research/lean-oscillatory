@@ -47,6 +47,10 @@
    "use": "iteratedFDeriv ℝ 3 f k ![a, a, a] = ddd f k a a a"
   },
   {
+   "name": "OscInt.API.CuspSanity.third_polar",
+   "use": "polarisation of D³f(k): D³f(k)[v, v, w] from the diagonal values at v + w, v − w, w (C³ near k)"
+  },
+  {
    "name": "OscInt.API.ampBoundOfContDiff",
    "use": "(F1) a Cⁿ amplitude with tsupport ⊆ K compact has derivative bounds M"
   }
@@ -1271,6 +1275,83 @@
    ],
    "snippet": "example : GlobalNondegVecStatement := OscInt.API.globalNondegVec",
    "status": "see docs/STATUS.md (row GD-N-V)"
+  },
+  {
+   "label": "S1.k",
+   "name": "OscInt.Statements.VdCkStatement",
+   "proved_by": null,
+   "summary": "k-th derivative van der Corput bound with amplitude, `k ≥ 2`, constant `5·2^{k−1} − 2`, uniform in a linear term.",
+   "file": "OscInt/Statements/Cusp.lean",
+   "commitment": "3f6bcd10ddc304463b047a2ff97bea79cca928d63280b315c80a6192657022b3",
+   "stamp": "stamps/20261109T201548Z-fcb46d9a6239",
+   "lean_statement": "def VdCkStatement : Prop :=\n  ∀ (k : ℕ) (D : ℕ → ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), 2 ≤ k → a ≤ b → 0 < μ →\n    DerivChain D k a b → (∀ x ∈ Ioo a b, μ ≤ |D k x|) → AmplitudeOn ψ ψ' a b →\n    ‖oscInt (fun x => D 0 x + p * x) ψ a b‖ ≤\n      ((5 : ℝ) * 2 ^ (k - 1) - 2) * μ ^ (-(1 : ℝ) / (k : ℝ)) * ampNorm ψ ψ' a b",
+   "hypotheses": [
+    "k ≥ 2; D 0, …, D k a derivative chain on [a, b] (DerivChain)",
+    "|D k| ≥ μ > 0 on (a, b)",
+    "amplitude ψ with integrable ψ′",
+    "any linear term p x"
+   ],
+   "conclusion": "|∫_a^b e^{i(D 0 + px)} ψ| ≤ (5·2^{k−1} − 2) μ^{-1/k} (|ψ(b)| + ∫|ψ′|)",
+   "rate": "μ^{-1/k}",
+   "uniform_over": "the linear term p",
+   "smoothness": "D 0 Cᵏ on [a, b] (through the chain)",
+   "see_also": [
+    "S1.2",
+    "S1.3"
+   ],
+   "snippet": "example : VdCkStatement → VdC2Statement := OscInt.API.CuspSanity.vdCk_to_vdC2",
+   "status": "see docs/STATUS.md (row S1.k)"
+  },
+  {
+   "label": "S5.1",
+   "name": "OscInt.Statements.CuspBoundStatement",
+   "proved_by": null,
+   "summary": "Uniform stable-cusp bound: at a stable A3 point, decay `t^{-3/4}`, uniform over every linear term.",
+   "file": "OscInt/Statements/Cusp.lean",
+   "commitment": "58fdc9e1b30433dab199864ae01cb90d2691c03c2cfa9560582f6bd96bb0477a",
+   "stamp": "stamps/20261109T201548Z-fcb46d9a6239",
+   "lean_statement": "def CuspBoundStatement : Prop :=\n  ∀ φ : ℝ × ℝ → ℝ, ContDiff ℝ ∞ φ → IsStableA3Point φ 0 →\n    ∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (y : ℝ × ℝ) (t : ℝ),\n      AmpBound 2 (Metric.closedBall 0 δ) A M → 1 ≤ t →\n        ‖oscInt2 (fun κ => t * φ κ + lin y κ) A‖ ≤ C * M * t ^ (-(3 : ℝ) / 4)",
+   "hypotheses": [
+    "φ C^∞ on ℝ²",
+    "0 is a stable A3 point (IsStableA3Point: rank-one Hessian with kernel v, D³φ(0)[v,v,v] = 0, reduced quartic ≠ 0, D³φ(0)[v,v,w] ≠ 0)",
+    "amplitude bound (2, B̄(0, δ), M)"
+   ],
+   "conclusion": "∃ δ > 0, ∃ C, |∫ e^{i(tφ(κ) + y·κ)} A(κ) dκ| ≤ C M t^{-3/4} for t ≥ 1",
+   "rate": "t^{-3/4}",
+   "uniform_over": "all y ∈ ℝ², A, M",
+   "smoothness": "C^∞ on ℝ²",
+   "see_also": [
+    "S5.1′",
+    "S4.1′",
+    "S3"
+   ],
+   "snippet": "example : CuspBoundGenStatement → CuspBoundStatement := fun h φ hφ h3 => h φ hφ (OscInt.API.CuspSanity.stable_isA3 h3)",
+   "status": "see docs/STATUS.md (row S5.1)"
+  },
+  {
+   "label": "S5.1′",
+   "name": "OscInt.Statements.CuspBoundGenStatement",
+   "proved_by": null,
+   "summary": "Uniform cusp bound: at an A3 point, decay `t^{-3/4}`, uniform over every linear term.",
+   "file": "OscInt/Statements/Cusp.lean",
+   "commitment": "05686ea0396f3ff430c3d6e2b5f177182ae26e377645beb1280298810799783b",
+   "stamp": "stamps/20261109T201548Z-fcb46d9a6239",
+   "lean_statement": "def CuspBoundGenStatement : Prop :=\n  ∀ φ : ℝ × ℝ → ℝ, ContDiff ℝ ∞ φ → IsA3Point φ 0 →\n    ∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (y : ℝ × ℝ) (t : ℝ),\n      AmpBound 2 (Metric.closedBall 0 δ) A M → 1 ≤ t →\n        ‖oscInt2 (fun κ => t * φ κ + lin y κ) A‖ ≤ C * M * t ^ (-(3 : ℝ) / 4)",
+   "hypotheses": [
+    "φ C^∞ on ℝ²",
+    "0 is an A3 point (IsA3Point: rank-one Hessian with kernel v, D³φ(0)[v,v,v] = 0, reduced quartic D²φ[w,w]·D⁴φ[v⁴] − 3(D³φ[v,v,w])² ≠ 0)",
+    "amplitude bound (2, B̄(0, δ), M)"
+   ],
+   "conclusion": "as S5.1",
+   "rate": "t^{-3/4}",
+   "uniform_over": "all y ∈ ℝ², A, M",
+   "smoothness": "C^∞ on ℝ²",
+   "see_also": [
+    "S5.1",
+    "S1.k"
+   ],
+   "snippet": "example (h : CuspBoundGenStatement) := OscInt.API.CuspSanity.cuspBoundGen_nonv h",
+   "status": "see docs/STATUS.md (row S5.1′)"
   }
  ]
 }

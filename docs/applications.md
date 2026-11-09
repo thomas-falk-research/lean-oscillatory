@@ -13,11 +13,17 @@ in Lean; numerics in `numerics/` are tooling and are never cited as evidence.
   The 2D kernel factorises into two 1D Bessel kernels, so T6 and T6L are classical and do not show that the global
   theorems reach non-separable symbols (`docs/prior_art.md`, "Lattice kernels"); a non-separable model is **proposed**
   (session-7 batch VV).
-- **Arccos-type dispersion relations** `arccos(a cos x + b cos y)` (split-step quantum walks, photonic lattices):
-  non-stationary decay uniform over a compact set of parameters, **demonstrated** (`examples/consumer/ConsumerLocal.lean`,
-  FE-S2.1L). The global `t^{-2/3}` bound for one fixed `(a, b)` follows from GD once the classification (four D4 points
-  at `(±π/2, ±π/2)`, folds elsewhere; numerically confirmed, `numerics/results-classify-2026-11-08.txt`) is discharged
-  in Lean: **proposed**. Uniformly over `(a, b)`: needs a family D4 statement, **proposed** (open analysis).
+- **Arccos-type dispersion relations** `arccos(a cos x + b cos y)`, `|a| + |b| < 1`: non-stationary decay uniform over
+  a compact set of parameters, **demonstrated** (`examples/consumer/ConsumerLocal.lean`, FE-S2.1L). Physical models: the
+  2D quantum walks of Watabe, Kobayashi, Katori and Konno (Phys. Rev. A 77, 062331 (2008), eq. (7); the Grover walk at
+  p = 1/2) have `cos ω = −(p cos x + q cos y)` with `p + q = 1`, the boundary case `|a| + |b| = 1`, where the phase is not
+  smooth at two points; and the 2D Yee scheme is `arccos(1 − 2S² + S²(cos x + cos y))` (`docs/prereg/2026-11-09-CENSUS-spec.md`
+  §3). For `|a| + |b| < 1` with no constant term, no physical model has been verified (an earlier version of this entry
+  named split-step walks and photonic lattices without a checked source; logged sweep
+  `review/2026-11-09-CENSUS-prior-art-sweep.md`). The global `t^{-2/3}` bound for one fixed `(a, b)` follows from GD once
+  the classification (four D4 points at `(±π/2, ±π/2)`, folds elsewhere; numerically confirmed by a grid method,
+  `numerics/results-classify-2026-11-08.txt`, which cannot see sub-grid cusps, lessons 43; re-examined by the census,
+  model M11) is discharged in Lean: **proposed**. Uniformly over `(a, b)`: needs a family D4 statement, **proposed** (open analysis).
 - **Quantum-walk spreading bounds** (ballistic spreading with `t^{-2/3}` decay of return amplitudes): **proposed**; needs
   vector-valued (matrix) amplitudes for the coin space (done for the global theorems: batch VT) and a classified two-band
   symbol (none found yet: `docs/design/vector-amplitudes.md` §6).

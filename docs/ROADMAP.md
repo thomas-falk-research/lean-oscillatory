@@ -31,6 +31,60 @@ matrix after the release. Developer experience: `make ci-dry`, the statement-clo
 `Challenge/`, docstrings), elaboration times in CI, an opt-in pre-push hook. Human expert review: deferred under
 `docs/policy.md`.
 
+## Industry programme (owner, 2026-11-09)
+Agreed in chat after an external strategy review of `main` at 87a418a and the lead's answer to it. The owner's goal:
+a library and toolchain for the whole industry, not for any single consumer. Two rules follow. **Which theorems come
+next is decided by evidence across many models** (item I1), not by one model or one user. **The interface is frozen
+only after consumers from different domains have used it** (item I5). Items I1–I3 run in parallel; none waits on
+another. Nothing here is a capability until its evidence exists (`docs/STATUS.md` rule above).
+- [x] **I0 Release reconciliation.** v0.4.0 is published (tag → 87a418a, Zenodo 10.5281/zenodo.24088811). The
+      `post-release` pins pull request (#9, merged as 87051c9) and the DOI record pull request (#10, merged as 621cdbe)
+      are on `main`. #10's `verify` run on its final head (run 42667383698) passed all 17 jobs, but its `verdict`
+      job was never created and the run is marked failed with no failed job (GitHub refused a re-run); the owner merged
+      it on those 17 jobs. The `verify` run on `main` after the merge is the check of the merged tree.
+- [ ] **I1 Singularity census of industry dispersion relations.** Which degenerate points (A3 cusps, A≥4, D4, D≥5, E/J,
+      non-isolated sets, non-smooth points) occur in 18 2D models (nine weighted families, plus one unweighted re-check) across five domains (lattice materials,
+      two-band topological models, quantum walks, numerical schemes, lattice waves), classified exactly by two
+      independent methods with controls. Specification `docs/prereg/2026-11-09-CENSUS-spec.md`; registration draft
+      `docs/prereg/2026-11-09-CENSUS-prereg.md` (registered only after both implementations exist and their development
+      runs are disclosed; no run before). Its pre-fixed decision rule ranks the candidate theorem families by the
+      number of models each one unlocks. It replaces the ad-hoc model search of `docs/design/vector-amplitudes.md`
+      §7 option A as the way to choose the VV acceptance model.
+- [ ] **I2 LeanCert integration experiment** (independent of I1 and I3). Question: can an external proof-producing
+      numerics library discharge OscInt hypotheses for a concrete admissible phase without weakening the trust chain?
+      Pins: LeanCert `44b323a0d6af00211d5013f6e021432db032087c` (HEAD on 2026-11-09; same Lean v4.35.0 and Mathlib
+      `56a0058` as OscInt, VALIDATED from its `lean-toolchain` and `lake-manifest.json`), OscInt v0.4.0 (87a418a).
+      Tests: A, a trigonometric derivative bound on a rational interval; B, a critical-point exclusion on a box, with
+      a deliberately false exclusion that must fail or stay unresolved; C, a cusp-classification component (positive
+      transverse curvature and nonzero reduced quartic on a neighbourhood). Pass means: each result is a Lean theorem
+      checked with LeanCert's `kernel` mode only (`native` and `auto` are recorded as separate, weaker benchmarks); its
+      axioms are within OscInt's audit allowlist; the per-module kernel replay of `verify-all` accepts it; cost (time,
+      memory, proof size) recorded against a hand proof. A separate pre-registration comes before the first run. No
+      copy of LeanCert's engine into OscInt unless a limitation is demonstrated.
+- [ ] **I3 Theorem programme, ordered by I1** (provisional until I1's result): a general k-th-order van der Corput
+      bound (only k = 1, 2, 3 exist: S1.1–S1.3); the local A3 bound `t^{−3/4}` uniform in the linear term (route to be
+      chosen at registration: transverse stationary phase plus fourth-order van der Corput, or a parametric normal
+      form); global assembly with finitely many A3 points; leading terms with remainders (SAR and seismic steps use the
+      leading term); nondegenerate stationary phase in dimension n; non-endpoint Strichartz; the Ikromov–Müller
+      height bound, which covers all finite-type 2D singularities, with the A3 statements shaped to be derivable from
+      it. Every batch statement-first under `CONTRIBUTING.md`.
+- [ ] **I4 A "useful from" standard for every explicit constant.** Each explicit-constant statement in `docs/api.json`
+      gets three fields: the parameter threshold above which it beats the trivial bound (T0E: `t > 518`; T6E:
+      `t > 1321`, both from `docs/HANDOFF.md`), the best known bound for comparison with its citation (Landau's
+      constant for T0E/T6E, `docs/prior_art.md`), and a checked numerical enclosure of the constant. A generator
+      change (`tools/gen_api.py`, `docs/api/annotations.json`), checked by `make api-check`.
+- [ ] **I5 Interface, frozen late.** One language-neutral contract (`docs/api.json` plus a certificate schema carrying
+      exact constants and their enclosures) behind a CLI with JSON output, a Python package and a Rust crate. Version 1
+      of the contract is frozen only after at least two consumers from different domains have used it; a C ABI and
+      further languages come when a consumer asks. Trust boundary, fixed now: only the defined checker
+      (`tools/oscint_check.py` or its successor) may give a result the status CERTIFIED; adapters transport and
+      display evidence and can never confer that status.
+- [ ] **I6 Credibility that adopters check first:** the human expert reading of the statements (owner item, §6; today
+      every fidelity reading is by AI referees), a preprint, the Reservoir listing (§3), the first Mathlib pull request
+      (§3).
+- Input language for I1, I2 and I5: `docs/decisions/2026-11-09-input-language.md` (trigonometric polynomials with
+  rational coefficients under an outer function `G` with `(G′)²` rational).
+
 ## 1. Finish and stabilise the mathematics
 - [x] **S4.4** closed forms of c_C: machine-checked as stated (2026-11-07; `docs/STATUS.md`; verify-all PASS,
       `docs/replay/2026-11-06-S44-verify-all.txt`; post-proof FAITHFUL ×2; adversarial answered).

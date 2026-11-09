@@ -52,9 +52,19 @@ PROVEN on paper (Fubini and the Bessel integral, DLMF 10.9.2); the factorisation
 Bessel identification is not formalised (Mathlib has no Bessel functions at the pin).
 Consequences:
 - **T6** is equivalent to the classical bound `sup_n |Jₙ(t)| ≤ c t^{−1/3}`. L. J. Landau, *Monotonicity and bounds on
-  Bessel functions*, Electron. J. Differ. Equ. Conf. 04 (2000) 147–154, gives the best constant `c ≈ 0.7858` for
-  `|J_ν(x)| ≤ c x^{−1/3}`, `ν ≥ 0`, `x > 0` (cited in Fungrim, https://fungrim.org/entry/7f3485/; the paper itself not
-  read in this session). In our normalisation `|I(t, n)| ≤ 2π · 0.7858 · t^{−1/3} ≈ 4.937 t^{−1/3}`.
+  Bessel functions*, Electron. J. Differ. Equ. Conf. 04 (2000) 147–154, states the best constant `c = 0.7857···` for
+  `|J_ν(x)| ≤ c x^{−1/3}`, `ν ≥ 0`, `x > 0` (its inequality (10); paper read 2026-11-09 from
+  https://ejde.math.txstate.edu/conf-proc/04/l1/landau.pdf; cited in Fungrim, https://fungrim.org/entry/7f3485/). That
+  paper surveys, and cites as its reference [5], the full treatment: L. J. Landau, *Bessel functions: monotonicity and
+  bounds*, J. London Math. Soc. (2) 61 (2000) 197–215, DOI 10.1112/S0024610799008352 (bibliographic record checked
+  against Crossref 2026-11-09; that paper not read). `c = sup_{x>0} x^{1/3} J₀(x)`, attained at the first stationary
+  point `x₀ ≈ 0.7837`: recomputed 2026-11-09 with mpmath at 40 digits (not rigorous) as `c = 0.785746870498513…`,
+  `x₀ = 0.783662818503470…` (the paper's table gives 0.7837). In our normalisation
+  `|I(t, n)| ≤ 2π c t^{−1/3} ≈ 4.937 t^{−1/3}` (an earlier version of this entry rounded c to 0.7858; 0.7857 is correct
+  to four places). The registered LE protocol (`docs/prereg/2026-11-08-LE-lattice-constants.md`), its program
+  (`numerics/src/bin/lattice1.rs`) and the LE reviews keep 0.7858 and are not edited (registered and verbatim
+  records). No verdict depends on the rounding: criterion (c) tested `max t^{1/3}|I|/(2π) ≤ 0.7858 + 1e−4`, a threshold
+  above the true c (by about 1.5e−4) with either value, and the ratios it reports change in the fourth digit.
 - **T6L** is the classical Cauchy–Watson asymptotic `Jₙ(n) ~ Γ(1/3) / (2^{2/3} 3^{1/6} π) · n^{−1/3}`:
   `4π² (Γ(1/3) / (2^{2/3} 3^{1/6} π))² = Γ(1/3)² 2^{2/3} 3^{−1/3} = Γ(1/3)² 48^{1/6} / √3`, the frozen constant.
 - The proof in the repository is genuine and does exercise the global theorem (the points `(±π/2, ±π/2)` are D4 points
@@ -65,6 +75,49 @@ Consequences:
   consumer example). The candidate non-separable model of batch VV, the QWZ band at m = 3, turned out to have exact cusp
   points (`docs/design/vector-amplitudes.md` §6), so no proved theorem applies to it; no non-separable symbol satisfying
   the GD hypotheses has been found yet.
+
+## Singularities of lattice dispersion relations (CENSUS prior art; added 2026-11-09)
+
+Logged sweep: `review/2026-11-09-CENSUS-prior-art-sweep.md` (244 queries, `review/2026-11-09-CENSUS-prior-art-querylog.tsv`;
+the brief is not published). Keys: [CR] record checked against Crossref, [arX] arXiv
+text read, [not read] record only. Per-model classifications of every torus point for the phase `Ψ − ∇Ψ(k₀)·k`, the
+problem of the census (`docs/prereg/2026-11-09-CENSUS-spec.md`), already exist for:
+- the discrete Klein–Gordon equation on ℤ²: J.-C. Cuenin, I. A. Ikromov, *Sharp time decay estimates for the discrete
+  Klein–Gordon equation*, Nonlinearity 34 (2021) 7938–7962, DOI 10.1088/1361-6544/ac2b86, arXiv:2011.12076 [CR][arX]
+  (mass 1; 2D rate |t|^{−3/4}; A_k with k ≤ 3, A3 exactly at cos x₁ = cos x₂ = 0, Prop. 9); V. Borovyk, M. Goldberg,
+  *The Klein–Gordon equation on ℤ² and the quantum harmonic lattice*, J. Math. Pures Appl. 107 (2017) 667–696,
+  DOI 10.1016/j.matpur.2016.10.002, arXiv:1304.6353 [CR][arX] (all masses, anisotropic couplings; folds and cusps only);
+- the lattice wave equation: P. Schultz, *The wave equation on the lattice in two and three dimensions*, Comm. Pure
+  Appl. Math. 51 (1998) 663–695 [CR, not read]; C. Bi, J. Cheng, B. Hua, *The wave equation on lattices and
+  oscillatory integrals*, arXiv:2312.04130 [arX];
+- the triangular lattice: H. Ge, B. Hua, L. Jia, P. Zhou, Calc. Var. PDE 64 (2025) art. 176,
+  DOI 10.1007/s00526-025-03026-1, arXiv:2412.02947 [CR][arX] (A2 or A3 only, Lemma 4.3; rate |t|^{−3/4});
+- the King's graph (t–t′ at t′ = t): Z. Wan, H. Zhang, arXiv:2507.20142 [arX] (A1, A2, A3 only);
+- graphene: Y. Hong, Y. Tadano, C. Yang, Adv. Math. 507 (2026) 111368, DOI 10.1016/j.aim.2026.111368,
+  arXiv:2503.08996 [CR][arX] (degenerate set three curves; global rate 2/3; Dirac cones).
+Related, not the same problem: classifications of the critical points of the band itself (∇ε = 0, higher-order van
+Hove singularities): A. Chandrasekaran, A. Shtyk, J. J. Betouras, C. Chamon, Phys. Rev. Research 2 (2020) 013355,
+DOI 10.1103/physrevresearch.2.013355 [CR][arX]; N. F. Q. Yuan, H. Isobe, L. Fu, Nat. Commun. 10 (2019) 5769,
+DOI 10.1038/s41467-019-13670-9 [CR][arX]. Numerical schemes lose dispersion where the symbol's Hessian degenerates:
+L. I. Ignat, E. Zuazua, SIAM J. Numer. Anal. 47 (2009) 1366–1390, DOI 10.1137/070683787 [CR, abstract]; no
+classification of Yee/FDTD caustics was found. 2D quantum walks: K. Watabe, N. Kobayashi, M. Katori, N. Konno,
+Phys. Rev. A 77 (2008) 062331, DOI 10.1103/physreva.77.062331 [CR][arX] (limit distributions; eq. (7) dispersion);
+Y. Baryshnikov, W. Brady, A. Bressler, R. Pemantle, *Two-dimensional quantum random walk*, J. Stat. Phys. 142 (print
+2011, online 2010) 78–107, DOI 10.1007/s10955-010-0098-2 [CR][arX] (caustic geometry); no 2D quantum-walk ℓ¹ → ℓ^∞ dispersive estimate was found. General theory: V. I. Arnol'd,
+Funct. Anal. Appl. 6 (1972) 254–272, DOI 10.1007/bf01077644 [CR]; A. N. Varchenko, Funct. Anal. Appl. 10 (1976)
+175–196, DOI 10.1007/bf01075524 [CR]; I. A. Ikromov, M. Kempe, D. Müller, Acta Math. 204 (2010) 151–271,
+DOI 10.1007/s11511-010-0047-6 [CR]; I. A. Ikromov, D. Müller, *Fourier Restriction for Hypersurfaces in Three Dimensions
+and Newton Polyhedra*, Princeton UP 2016, DOI 10.1515/9781400881246 [CR] (Crossref and zbMATH differ by a year for the
+two Funct. Anal. Appl. papers; the Crossref year is given). Formalisations: none of 2D degenerate (A2/A3/D4) bounds or
+of singularity classification was found in Mathlib, Isabelle AFP or Coq (code search; 1D Morse stationary phase exists
+in roos-j/lean-spherical).
+
+**What follows.** No census across several models was found, nor a classification for the t–t′ model at general t′/t,
+the 9-point stencil, Yee/FDTD, Qi–Wu–Zhang, gapped graphene or 2D quantum walks: PLAUSIBLE-not-novel (search limits:
+Google Scholar unreachable, Crossref search largely rate-limited, several texts paywalled). For the models above, the
+census re-derives published results and claims no novelty; they serve as external known answers (spec §5). A machine-checked
+A3 (cusp) bound would serve the largest set of already-classified models (discrete Klein–Gordon, triangular lattice,
+King's graph, lattice wave equation).
 
 ## Consequence
 

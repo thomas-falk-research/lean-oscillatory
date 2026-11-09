@@ -1,6 +1,40 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (43 entries); every rule in it is binding.
+For a reader who saw nothing. Read `docs/lessons.md` first (45 entries); every rule in it is binding.
+
+## Session 8 (2026-11-09): what changed, and where to start
+- **v0.4.0 reconciled** (ROADMAP I0): pins PR #9 and DOI PR #10 merged; Zenodo 10.5281/zenodo.24088811 in
+  `CITATION.cff`, README, CHANGELOG. #10's last `verify` run had all 17 jobs green but no `verdict` job (GitHub-side;
+  re-run refused); the owner merged on the 17 jobs (recorded in ROADMAP I0).
+- **Industry programme** (owner direction: a library for the whole industry, not one consumer): ROADMAP section
+  "Industry programme" (I0–I6); input class decided (`docs/decisions/2026-11-09-input-language.md`).
+- **CENSUS** (ROADMAP I1): specification `docs/prereg/2026-11-09-CENSUS-spec.md` and registration
+  `docs/prereg/2026-11-09-CENSUS-prereg.md`, both DRAFT (spec-fidelity referee not yet run; no implementation exists;
+  nothing run). Exact spec checks `numerics/census/spec_checks.py`, 35/35 (`numerics/results-census-spec-2026-11-09.txt`).
+  Prior art (logged sweep `review/2026-11-09-CENSUS-prior-art-sweep.md`; its brief is not recorded, owner decision):
+  per-model classifications exist for discrete Klein–Gordon, lattice wave, triangular lattice, King's graph, graphene
+  (`docs/prior_art.md`, "Singularities of lattice dispersion relations"); they all point to the A3 bound.
+- **Batch A3, statement-first phase complete; nothing proved.** S1.k (k-th derivative van der Corput, constant
+  5·2^{k−1} − 2), S5.1 (stable cusp, t^{−3/4} uniform in the linear term), S5.1′ (any A3 point): `OscInt/Statements/Cusp.lean`,
+  stamp `stamps/20261109T201548Z-fcb46d9a6239` (pinned; `make commit` 55/55), sanity `OscInt/Front/CuspSanity.lean`,
+  plants `docs/replay/2026-11-09-A3-sanity-plants.txt` (run after the stamp: deviation recorded), pre-proof reviews
+  FAITHFUL and TRUE ×2 (`review/2026-11-09-A3-pre-proof-{A,B}.md`, answers, reviews stamped
+  `stamps/20261109T214121Z-47c1360ccd6f`). STATUS rows: "stated and reviewed, not proved".
+- **Corrections made public:** Landau's constant 0.7857 (not 0.7858; `docs/prior_art.md`); the arccos family's
+  quantum-walk/photonic attribution was unverified (`docs/applications.md`).
+- **Next, in order:** (1) `docs/proof-A3.md` route document + route referee before any proof: S1.k by induction from the
+  existing S1 parts (both referees outline it); S5.1 by anisotropic rescaling + S3 on annuli + S2.1 (mirrors S4.1′), or
+  the cheaper route both referees name (1D stationary phase in the transverse variable with parameters, then S1.k at
+  k = 4), which also proves S5.1′; the missing tool is that parametrised 1D stationary-phase lemma. (2) CENSUS
+  spec-fidelity referee (prompt drafted in the session scratchpad, not committed), then implementations A and B.
+  (3) LeanCert experiment (ROADMAP I2), its own pre-registration first. (4) Global assembly with A3 points: a pointwise
+  classification plus compactness, not a finite set (non-stable A3 points form curves; both A3 referees).
+- **Owner items open:** whether referee prompts are recorded (CONTRIBUTING step 5 says yes; the owner chose not to record
+  the CENSUS sweep brief); human or other-family statement review (all reviews so far are same-family AI).
+- **Container notes:** the session container had no Lean: install from `toolchain.sha256` as
+  `.github/actions/setup-lean/action.yml` does (it needs `zstd`; `apt-get install zstd bubblewrap`), then
+  `lake exe cache get`. `make quick` takes ~13 min warm; `make stamp` ~13 min; all five timestamp endpoints were
+  reachable through the proxy.
 
 ## What exists (session 7, 2026-11-08/09)
 - Lean v4.35.0, Mathlib `56a0058`. **52 pinned statements, all proved**, each with a row in `docs/STATUS.md`: S1–S4,
