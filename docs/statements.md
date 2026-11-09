@@ -593,3 +593,19 @@ Modelling choices and what is omitted.
 1. E ranges over `Type` (universe 0), not over all universes (the commitment tooling hashes closed constants).
 2. The scalar statements are the case E = ℂ (`•` is `*`); this is checked in the sanity file.
 3. Real-valued amplitudes are covered through E = ℂ; real Banach spaces E are not (complexify).
+
+Clarifications after the pre-proof reviews (`review/2026-11-08-VT-pre-proof-{A,B}.md`; no statement text changed):
+4. **Integrability in the route** (A NIT-1, B §2). With Ψ smooth only on U, the integrand k ↦ e^{im(Ψ+L)(k)} • A(k)
+   is still continuous: at k outside tsupport A it vanishes on a neighbourhood; at k ∈ tsupport A ⊆ K ⊆ U, Ψ is
+   continuous (U open). It has compact support, so it is integrable, and the junk value of the Bochner integral never
+   occurs.
+5. **The vector statements are equivalent to the scalar ones** (A §4, B §2): E = ℂ gives the scalar statement, and the
+   scalar statement gives the vector one with the same constant by duality. One constant for every E costs nothing.
+6. **Matrices** (A MINOR-3, B NIT-1). `Matrix (Fin n) (Fin n) ℂ` has no global norm instance in Mathlib. Use the
+   definitionally equal `Fin n → Fin n → ℂ` (entrywise sup norm), `(Fin n → ℂ) →L[ℂ] (Fin n → ℂ)` (operator norm), or
+   `attribute [local instance] Matrix.linftyOpNormedAddCommGroup Matrix.linftyOpNormedSpace`; all elaborate against the
+   frozen statements (both referees checked). The E-uniform constant lets the user pick any of these norms.
+7. **Universes and real spaces** (A MINOR-1, B NIT-2, NIT-3). `E : Type` only; a universe-polymorphic transfer theorem
+   (not a frozen statement) can be added with the proofs. Real Banach spaces are not covered; Mathlib has no convenient
+   complexification, so this is a real limitation for users.
+

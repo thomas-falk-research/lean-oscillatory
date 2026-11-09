@@ -1,0 +1,8 @@
+/home/user/lean-oscillatory/docs/replay/plants/2026-11-08-VT/run2/plant-GD-V-D-in-K.lean:18:40: error: Application type mismatch: The argument
+  hDU
+has type
+  ↑D ⊆ U
+but is expected to have type
+  ↑D ⊆ K
+in the application
+  h Ψ K U D hK hU hKU hDU

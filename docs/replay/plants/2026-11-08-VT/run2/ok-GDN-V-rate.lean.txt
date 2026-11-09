@@ -1,0 +1,21 @@
+import OscInt.Front.VectorSanity
+
+namespace OscInt.API.VectorSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.ConvertSanity
+open scoped ContDiff BoundedContinuousFunction
+
+def P_GlobalNondegVecStatement : Prop :=
+  ∀ (Ψ : ℝ × ℝ → ℝ) (K U : Set (ℝ × ℝ)),
+    IsCompact K → IsOpen U → K ⊆ U → ContDiffOn ℝ 4 Ψ U → (∀ k ∈ K, (hessianMatrix Ψ k).det ≠ 0) →
+    ∃ C : ℝ, ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]
+      (A : ℝ × ℝ → E) (M : ℝ) (L : (ℝ × ℝ) →L[ℝ] ℝ) (m : ℝ),
+      ContDiff ℝ 2 A → tsupport A ⊆ K → (∀ j ≤ 2, ∀ k, ‖iteratedFDeriv ℝ j A k‖ ≤ M) → 1 ≤ m →
+      ‖∫ k : ℝ × ℝ, Complex.exp (↑(m * (Ψ k + L k)) * Complex.I) • A k‖ ≤ C * M / m
+
+theorem P_globalNondeg_of_vec (h : P_GlobalNondegVecStatement) : GlobalNondegStatement := by
+  intro Ψ K U hK hU hKU hΨ hcl
+  obtain ⟨C, hC⟩ := h Ψ K U hK hU hKU hΨ hcl
+  exact ⟨C, fun A M L m hA hs hM hm => by simpa [smul_eq_mul] using hC ℂ A M L m hA hs hM hm⟩
+
+end OscInt.API.VectorSanity

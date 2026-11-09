@@ -26,21 +26,22 @@ def block(lines, kind, name):
 
 
 PLANTS = [
-    # (id, defs, theorems, (def to mutate, old, new[, want]))
+    # (id, defs, theorems, (def to mutate, old, new[, want]))  -- second run, after the pre-proof reviews
     ('GDN-V-rate', ['GlobalNondegVecStatement'], ['globalNondeg_of_vec'],
      ('GlobalNondegVecStatement', '≤ C * M / m', '≤ C * M / m ^ ((1 : ℝ) / 2)')),
     ('GD-V-D-in-K', ['GlobalDecayVecStatement'], ['globalDecay_of_vec'],
      ('GlobalDecayVecStatement', '(↑D : Set (ℝ × ℝ)) ⊆ U', '(↑D : Set (ℝ × ℝ)) ⊆ K')),
-    ('GDC-V-finite', ['GlobalDecayCritVecStatement'], ['globalDecayCrit_of_vec'],
+    ('GDC-V-finite', ['GlobalDecayCritVecStatement'], ['globalDecayCrit_of_vec', 'globalDecayCrit_pair'],
      ('GlobalDecayCritVecStatement', 'IsCompact K\' →', 'K\'.Finite →')),
     ('GDF-V-det', ['GlobalFoldVecStatement'], ['globalFold_of_vec', 'globalFold_pair'],
      ('GlobalFoldVecStatement', '(∀ k ∈ K, FoldOrNondegMatrix Ψ k)', '(∀ k ∈ K, (hessianMatrix Ψ k).det ≠ 0)')),
-    ('GDN-V-findim', ['GlobalNondegVecStatement'], ['globalNondeg_matrix'],
+    ('GDN-V-subsingleton', ['GlobalNondegVecStatement'], ['globalNondeg_matrix'],
      ('GlobalNondegVecStatement', '[CompleteSpace E]', '[CompleteSpace E] [Subsingleton E]')),
-    # known blind spot (want accepted): C chosen after E (a weakening)
-    ('GDN-V-C-after-E-BLINDSPOT', ['GlobalNondegVecStatement'], ['globalNondeg_of_vec', 'globalNondeg_matrix'],
+    ('GDN-V-findim', ['GlobalNondegVecStatement'], ['globalNondeg_bounded'],
+     ('GlobalNondegVecStatement', '[CompleteSpace E]', '[CompleteSpace E] [FiniteDimensional ℂ E]')),
+    ('GDN-V-C-after-E', ['GlobalNondegVecStatement'], ['globalNondeg_uniform_dim'],
      ('GlobalNondegVecStatement', '    ∃ C : ℝ, ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E]\n      (A',
-      '    ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E], ∃ C : ℝ, ∀\n      (A', 'accepted')),
+      '    ∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℂ E] [CompleteSpace E], ∃ C : ℝ, ∀\n      (A')),
 ]
 
 HEADER = """import OscInt.Front.VectorSanity
@@ -48,7 +49,7 @@ HEADER = """import OscInt.Front.VectorSanity
 namespace OscInt.API.VectorSanity
 
 open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.ConvertSanity
-open scoped ContDiff
+open scoped ContDiff BoundedContinuousFunction
 """
 
 

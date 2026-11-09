@@ -6,6 +6,14 @@
 # was registered as a known blind spot (want accepted) and was REJECTED, but only by brittleness: the sanity proofs
 # destructure 'obtain <C, hC>' before applying E, which the planted shape no longer allows. This is not semantic
 # detection; the uniformity of C in E rests on the blind reviews. Six unplanted copies accepted.
+# Second run (after the two pre-proof reviews, before any proof), outputs in docs/replay/plants/2026-11-08-VT/run2/ (the
+# first run's files above are kept): sanity file extended with an infinite-dimensional datum (E = N ->b C), a theorem with
+# one constant for the whole family EuclideanSpace C (Fin n), n in N, and a GD-C-V instance with E = C x C. Plants: the
+# first run's 'findim' was misnamed (it added Subsingleton E; review B NIT-4), now 'subsingleton'; a real FiniteDimensional
+# plant added (review B MINOR-1: accepted by the first sanity file, verified by B), now rejected at the instance for
+# N ->b C; 'C after E' now tested against the uniform-family theorem: the first error is still the destructuring, but a
+# reordered proof cannot succeed either, since one constant for every n does not follow from one constant per n without
+# the duality argument (reviews A MINOR-2, B MINOR-2). 7 plants rejected, 7 controls accepted.
 
 ok-GDN-V-rate: accepted (want accepted)
 plant-GDN-V-rate: rejected (want rejected)
@@ -25,3 +33,26 @@ plant-GDN-V-findim: rejected (want rejected)
 ok-GDN-V-C-after-E-BLINDSPOT: accepted (want accepted)
 plant-GDN-V-C-after-E-BLINDSPOT: rejected (want accepted)  <-- MISMATCH
     first error: plant-GDN-V-C-after-E-BLINDSPOT.lean:18:9: error: Tactic `rcases` failed: `x✝ : ∀ (E : Type) [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℂ E] [CompleteS
+
+# Second run summary:
+ok-GDN-V-rate: accepted (want accepted)
+plant-GDN-V-rate: rejected (want rejected)
+    first error: plant-GDN-V-rate.lean:19:42: error: Type mismatch: After simplification, term
+ok-GD-V-D-in-K: accepted (want accepted)
+plant-GD-V-D-in-K: rejected (want rejected)
+    first error: plant-GD-V-D-in-K.lean:18:40: error: Application type mismatch: The argument
+ok-GDC-V-finite: accepted (want accepted)
+plant-GDC-V-finite: rejected (want rejected)
+    first error: plant-GDC-V-finite.lean:19:47: error: Application type mismatch: The argument
+ok-GDF-V-det: accepted (want accepted)
+plant-GDF-V-det: rejected (want rejected)
+    first error: plant-GDF-V-det.lean:18:41: error: Application type mismatch: The argument
+ok-GDN-V-subsingleton: accepted (want accepted)
+plant-GDN-V-subsingleton: rejected (want rejected)
+    first error: plant-GDN-V-subsingleton.lean:24:27: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+ok-GDN-V-findim: accepted (want accepted)
+plant-GDN-V-findim: rejected (want rejected)
+    first error: plant-GDN-V-findim.lean:24:27: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+ok-GDN-V-C-after-E: accepted (want accepted)
+plant-GDN-V-C-after-E: rejected (want rejected)
+    first error: plant-GDN-V-C-after-E.lean:20:9: error: Tactic `rcases` failed: `x✝ : ∀ (E : Type) [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℂ E] [CompleteSpace E],
