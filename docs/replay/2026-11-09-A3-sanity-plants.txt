@@ -1,0 +1,94 @@
+# Planted controls for batch A3 (OscInt/Front/CuspSanity.lean), 2026-11-09, lead, after the stamp
+# (stamps/20261109T201548Z-fcb46d9a6239) and after the blind pre-proof reviews (review/2026-11-09-A3-pre-proof-{A,B}.md),
+# in answer to review A MINOR 3 (no plant record) and to the plants both reviews named. Lessons 33 asks for plants before
+# the stamp; for this batch they were run after it (deviation, recorded here and in the answers file). No proof of a
+# batch-A3 statement exists.
+# Method (as docs/replay/2026-11-08-API3-sanity-plants.txt): each file under docs/replay/plants/2026-11-09-A3/ (generated
+# by gen_plants.py.txt, plus three hand-written variants) copies one frozen definition or statement as P<Name>, with or
+# without one plant, and replays the matching sanity proof from CuspSanity.lean against it; compiled with
+# `lake env lean -DautoImplicit=false` against `import OscInt.Front.CuspSanity` built at the answers commit.
+# A rejection counts as semantic only if the planted claim is shown false: by a compiled witness file, by a robust
+# closing that still fails, or by an exact computation (noted per line). Script-only rejections are not counted.
+#
+# kernel condition (i) dropped from IsA3Point (both reviews, MINOR 1), datum x² + y² + x²y:
+ok-kernel (unplanted, nondegCubic_not_isA3): 0 errors (accepted)
+no-kernel (∀ z, D²[v, z] = 0 removed): rejected; SEMANTIC: no-kernel-witness compiles (0 errors): the planted predicate
+  holds on x² + y² + x²y with v = e₁, w = e₂ (reduced quartic −12), so ¬PIsA3Point is false
+# evaluation point: derivatives taken at 0 instead of k₀ (review B MINOR 3), datum: oblique quartic shifted to (1, 1):
+ok-at-k0 (unplanted, oblShift_isStableA3 via translation): 0 errors (accepted)
+at-zero (k₀ ↦ 0 in IsStableA3Point): rejected; SEMANTIC (exact, SymPy, at-zero-sympy below): the planted predicate
+  evaluates the shifted datum at (−1, −1), where its Hessian [[−18, −28], [−28, −6]] has det −676 ≠ 0 (rank two), so
+  conditions (i)–(ii) cannot hold there
+# stability condition (v): D³[v, v, w] ↦ D³[v, w, w] (review A NIT 5, review B MINOR 2), datum x⁴ + y² + xy²:
+ok-stable (unplanted, nonvCubic_not_isStableA3): 0 errors (accepted)
+stable-vww: rejected; SEMANTIC: stable-vww-witness compiles (0 errors): the planted predicate holds on x⁴ + y² + xy²
+  (v = e₁, w = e₂, D³[v, w, w] = 2), so ¬PIsStableA3Point is false
+# fixed kernel and transverse vectors v = (1, 0), w = (0, 1) instead of ∃ v w (review A MINOR 2, review B MINOR 3):
+ok-exists (unplanted, obl_isStableA3 with v = (1, −1)): 0 errors (accepted)
+axis-fixed: rejected; SEMANTIC: axis-fixed-witness compiles (0 errors): the planted predicate is false on the oblique
+  datum (D²[e₁, e₁] = 4 ≠ 0, so e₁ is not a kernel vector)
+# S1.k beyond k = 2, 3 (review A NIT 6, review B MINOR 4), instance vdCk_chain4 (k = 4, constant 38):
+ok-vdck (unplanted): 0 errors (accepted)
+const-larger-at-4 (constant + (k − 2)(k − 3), 40 at k = 4, unchanged at k = 2, 3): rejected; SEMANTIC:
+  const-larger-at-4-closed (closing `exact this.trans (by norm_num)`) still fails: 40 ≤ 38 is false
+const-smaller-at-4 (constant 10k − 12, 28 at k = 4): the first copy fails only because its closing `exact this` expects
+  38; const-smaller-at-4-closed compiles (0 errors): NOT DETECTED (the plant strengthens the conclusion; structural
+  limit, it rests on the reviews and on the proof itself)
+chain-min3 (DerivChain with ∀ j < min k 3): 0 errors: NOT DETECTED (the plant weakens a hypothesis and makes S1.k false
+  at k = 4, review B's example D₀ = 0; structural limit, it rests on the reviews)
+#
+# Compiler output (errors only; full outputs reproduce with the command above)
+== no-kernel
+no-kernel.lean:14:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (iteratedFDeriv ℝ 2 (quartic ?q) 0) ![?v, ?z]
+in the target expression
+  True
+
+v w : ℝ × ℝ
+== at-zero
+at-zero.lean:16:107: error: Type mismatch
+  h5
+has type
+  (iteratedFDeriv ℝ 3 Ψ 0) ![v, v, w] ≠ 0
+but is expected to have type
+  (iteratedFDeriv ℝ 2 Ψ (0 + -k₀)) ![v, z] = 0
+at-zero.lean:16:107: error: Type mismatch
+  h5
+== stable-vww
+stable-vww.lean:15:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (iteratedFDeriv ℝ 3 (quartic ?q) 0) ![?v, ?v, ?w]
+in the target expression
+  (iteratedFDeriv ℝ 3 (quartic qNonvCubic) 0) ![v, w, w] = 0
+
+v w : ℝ × ℝ
+== axis-fixed
+axis-fixed.lean:13:10: error: Application type mismatch: The argument
+  (1, -1)
+has type
+  ?m.8 × ?m.7
+of sort `Type (max ?u.4 ?u.3)` but is expected to have type
+  ∀ (z : ℝ × ℝ), (iteratedFDeriv ℝ 2 (quartic qObl) 0) ![(1, 0), z] = 0
+--
+axis-fixed.lean:13:19: error: Application type mismatch: The argument
+== const-larger-at-4
+const-larger-at-4.lean:16:2: error: Type mismatch
+  this
+has type
+  ‖oscInt (fun x => chain4 0 x + p * x) (fun x => 1) 0 1‖ ≤ 40
+but is expected to have type
+  ‖oscInt (fun x => chain4 0 x + p * x) (fun x => 1) 0 1‖ ≤ 38
+== const-larger-at-4-closed
+const-larger-at-4-closed.lean:16:20: error: unsolved goals
+h : PVdCkStatement
+p : ℝ
+this : ‖oscInt (fun x => chain4 0 x + p * x) (fun x => 1) 0 1‖ ≤ 40
+⊢ False
+== const-smaller-at-4
+const-smaller-at-4.lean:16:2: error: Type mismatch
+  this
+has type
+  ‖oscInt (fun x => chain4 0 x + p * x) (fun x => 1) 0 1‖ ≤ 28
+but is expected to have type
+  ‖oscInt (fun x => chain4 0 x + p * x) (fun x => 1) 0 1‖ ≤ 38
+== at-zero-sympy
+qObl at (-1,-1): Hessian [[-18, -28], [-28, -6]] det -676

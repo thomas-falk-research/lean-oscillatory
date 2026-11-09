@@ -19,11 +19,18 @@ computed exactly before this file was written (`numerics/a3/statement_checks.py`
   `k = 2, 3` and the power `μ^{−1/k}` are pinned against the stamped statements.
 * `DerivChain`: satisfied by a quartic with distinct coefficients (`k = 4`, `|D₄| = 1`); fails for a wrong derivative.
 * `IsStableA3Point`, `IsA3Point`: satisfied at `0` by `x²y + 2y² + 3x⁴ + 5xy²` (`v = e₁`, `w = e₂`: `D²[w, w] = 4`,
-  `D³[v, v, w] = 2`, `D⁴[v⁴] = 72`, reduced quartic `276`). Bites, each failing the condition it targets:
-  `(y + x²/2)²` (the straight-line quartic `D⁴[v⁴] = 6` is nonzero but the reduced quartic is `0` for every kernel
-  vector), `x³ + y²` (fold: `D³[v³] ≠ 0`), `x³ + y³` (Hessian zero), `x² + y²` (Hessian of rank two). `x⁴ + y²` is an A3
-  point but not a stable one (`D³ = 0`).
-* Non-vacuity through the statement constants: S5.1 applied to the generic datum, S5.1′ to `x⁴ + y²`.
+  `D³[v, v, w] = 2`, `D⁴[v⁴] = 72`, reduced quartic `276`), and, with an oblique kernel `v = (1, −1)` at the translated
+  point `(1, 1)`, by that datum composed with `(x, y) ↦ (x, x + y)` and shifted (`oblShift_isStableA3`). Bites, each
+  failing the condition it targets: `(y + x²/2)²` (iv: the straight-line quartic `D⁴[v⁴] = 6` is nonzero but the reduced
+  quartic is `0` for every kernel vector), `x³ + y²` (iii: fold, `D³[v³] ≠ 0`), `x³ + y³` (ii: Hessian zero),
+  `x² + y² + x²y` (i: rank two; without the kernel condition `v = e₁`, `w = e₂` would pass), `x⁴ + y² + xy²` (v: A3 but
+  not stable, with `D³[v, w, w] = 2 ≠ 0`). `x² + y²` and `x⁴ + y²` are kept; they fail (iv) and (v) only through
+  vanishing derivatives (pre-proof review B, MINOR 1–2).
+* Non-vacuity through the statement constants: S5.1 applied to the generic datum, S5.1′ to `x⁴ + y²`, S1.k at `k = 4`
+  (constant `38`) to `chain4`.
+* Planted copies (definitions and statements with one change each, compiled against these proofs): record
+  `docs/replay/2026-11-09-A3-sanity-plants.txt`, files `docs/replay/plants/2026-11-09-A3/`. Structural limit: a plant
+  that weakens a hypothesis or strengthens a conclusion is not detected by a sanity theorem and rests on the reviews.
 
 Generic helper (proved here, reusable): `third_polar`, `D³f[v, v, w]` from three diagonal values (symmetry of the third
 derivative, `OscInt.API.DerivAux.symm3`).
@@ -132,6 +139,13 @@ def qNonv : Fin 12 → ℝ := ![0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0]
 def qRank0 : Fin 12 → ℝ := ![0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0]
 /-- `x² + y²` (Hessian of rank two). -/
 def qNondeg : Fin 12 → ℝ := ![1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+/-- `x² + y² + x²y` (Hessian of rank two, nonzero cubic part: separates the kernel condition (i)). -/
+def qNondegCubic : Fin 12 → ℝ := ![1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+/-- `x⁴ + y² + xy²` (A3, not stable, with a nonzero third derivative: separates condition (v)). -/
+def qNonvCubic : Fin 12 → ℝ := ![0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0]
+/-- `x²(x + y) + 2(x + y)² + 3x⁴ + 5x(x + y)²`: the generic datum composed with `(x, y) ↦ (x, x + y)`; its kernel at `0`
+is the oblique vector `(1, −1)`. -/
+def qObl : Fin 12 → ℝ := ![2, 4, 2, 6, 11, 5, 0, 3, 0, 0, 0, 0]
 
 /-! ## Satisfiability -/
 
@@ -165,6 +179,41 @@ theorem nonv_isA3 : IsA3Point (quartic qNonv) 0 := by
   · rw [quartic_d2]; norm_num [part2, qNonv]
   · rw [quartic_d3]; norm_num [part3, qNonv]
   · rw [quartic_d2, quartic_d4, quartic_d3_mixed]; norm_num [part2, part3, part4, qNonv]
+
+/-- The oblique datum: a stable A3 point at `0` with `v = (1, −1)`, `w = (0, 1)` (`D²[w, w] = 4`, `D³[v, v, w] = 2`,
+`D⁴[v⁴] = 72`, reduced quartic `276`, the same invariants as the generic datum). -/
+theorem obl_isStableA3 : IsStableA3Point (quartic qObl) 0 := by
+  refine ⟨(1, -1), (0, 1), fun z => ?_, ?_, ?_, ?_, ?_⟩
+  · rw [quartic_d2_mixed]; simp [part2, qObl]; ring
+  · rw [quartic_d2]; norm_num [part2, qObl]
+  · rw [quartic_d3]; norm_num [part3, qObl]
+  · rw [quartic_d2, quartic_d4, quartic_d3_mixed]; norm_num [part2, part3, part4, qObl]
+  · rw [quartic_d3_mixed]; norm_num [part3, qObl]
+
+/-- Translation: a stable A3 point of `Ψ` at `0` is one of `k ↦ Ψ (k − k₀)` at `k₀`. -/
+theorem isStableA3_translate {Ψ : ℝ × ℝ → ℝ} (k₀ : ℝ × ℝ) (h : IsStableA3Point Ψ 0) :
+    IsStableA3Point (fun k => Ψ (k + -k₀)) k₀ := by
+  obtain ⟨v, w, h1, h2, h3, h4, h5⟩ := h
+  have e : k₀ + -k₀ = 0 := by simp
+  refine ⟨v, w, fun z => ?_, ?_, ?_, ?_, ?_⟩ <;>
+    simp only [iteratedFDeriv_comp_add_right, e] <;> first | exact h1 z | exact h2 | exact h3 | exact h4 | exact h5
+
+/-- The oblique datum translated to `k₀ = (1, 1)`: a stable A3 point away from the origin with an oblique kernel
+(the shape of the discrete Klein–Gordon and QWZ points). -/
+theorem oblShift_isStableA3 : IsStableA3Point (fun k => quartic qObl (k + -(1, 1))) (1, 1) :=
+  isStableA3_translate (1, 1) obl_isStableA3
+
+/-- `x⁴ + y² + xy²` is an A3 point (`v = e₁`, `w = e₂`, reduced quartic `48`). -/
+theorem nonvCubic_isA3 : IsA3Point (quartic qNonvCubic) 0 := by
+  refine ⟨(1, 0), (0, 1), fun z => ?_, ?_, ?_, ?_⟩
+  · rw [quartic_d2_mixed]; simp [part2, qNonvCubic]
+  · rw [quartic_d2]; norm_num [part2, qNonvCubic]
+  · rw [quartic_d3]; norm_num [part3, qNonvCubic]
+  · rw [quartic_d2, quartic_d4, quartic_d3_mixed]; norm_num [part2, part3, part4, qNonvCubic]
+
+/-- Its third derivative is not zero: `D³[e₁, e₂, e₂] = 2` (so it separates `D³[v, v, w]` from `D³[v, w, w]`). -/
+theorem nonvCubic_vww : iteratedFDeriv ℝ 3 (quartic qNonvCubic) 0 ![(0, 1), (0, 1), (1, 0)] = 2 := by
+  rw [quartic_d3_mixed]; norm_num [part3, qNonvCubic]
 
 /-! ## Bites -/
 
@@ -226,6 +275,34 @@ theorem nondeg_not_isA3 : ¬ IsA3Point (quartic qNondeg) 0 := by
   rw [quartic_d2, quartic_d4, quartic_d3_mixed]
   simp only [part2, part3, part4, qNondeg, Prod.fst_add, Prod.snd_add, Prod.fst_sub, Prod.snd_sub, hv1, hv2]
   norm_num
+
+/-- **Bite (kernel condition).** `x² + y² + x²y` has a Hessian of rank two at `0`, so condition (i) forces `v = 0` and
+the reduced quartic is `0`; without (i), `v = e₁`, `w = e₂` would give `D³[v³] = 0` and a reduced quartic `−12 ≠ 0`. -/
+theorem nondegCubic_not_isA3 : ¬ IsA3Point (quartic qNondegCubic) 0 := by
+  rintro ⟨v, w, hv, -, -, h4⟩
+  have a := hv (1, 0)
+  have b := hv (0, 1)
+  rw [quartic_d2_mixed] at a b
+  simp only [part2, qNondegCubic, Prod.fst_add, Prod.snd_add] at a b
+  norm_num at a b
+  have hv1 : v.1 = 0 := by nlinarith
+  have hv2 : v.2 = 0 := by nlinarith
+  apply h4
+  rw [quartic_d2, quartic_d4, quartic_d3_mixed]
+  simp only [part2, part3, part4, qNondegCubic, Prod.fst_add, Prod.snd_add, Prod.fst_sub, Prod.snd_sub, hv1, hv2]
+  norm_num
+  ring
+
+/-- **Bite (stability, with a nonzero third derivative).** `x⁴ + y² + xy²` is an A3 point (`nonvCubic_isA3`) with
+`D³[e₁, e₂, e₂] = 2` (`nonvCubic_vww`), but `D³[v, v, w] = 0` for every kernel vector `v`: not stable. -/
+theorem nonvCubic_not_isStableA3 : ¬ IsStableA3Point (quartic qNonvCubic) 0 := by
+  rintro ⟨v, w, hv, -, -, -, h5⟩
+  have hv2 : v.2 = 0 := kernel_on_axis (by simp [qNonvCubic]) (by simp [qNonvCubic]) (by norm_num [qNonvCubic]) hv
+  apply h5
+  rw [quartic_d3_mixed]
+  simp only [part3, qNonvCubic, Prod.fst_add, Prod.snd_add, Prod.fst_sub, Prod.snd_sub, hv2]
+  norm_num
+  ring
 
 /-- **Bite (not stable).** `x⁴ + y²` is an A3 point (`nonv_isA3`) but not a stable one: its third derivative at `0`
 vanishes, so `D³[v, v, w] = 0` for all `v w`. -/
@@ -306,6 +383,15 @@ theorem vdCk_to_vdC3 (h : VdCkStatement) : VdC3Statement := by
     · simpa [D] using h3
   have := h 3 D ψ ψ' a b μ p (by norm_num) hab hμ hc (by simpa [D] using hlow) hψ
   norm_num [D] at this ⊢
+  exact this
+
+/-- **S1.k at `k = 4`** (constant `38`, power `μ^{−1/4}` at `μ = 1`), through the statement constant, on `chain4`. -/
+theorem vdCk_chain4 (h : VdCkStatement) (p : ℝ) :
+    ‖oscInt (fun x => chain4 0 x + p * x) (fun _ => 1) 0 1‖ ≤ 38 := by
+  have := h 4 chain4 (fun _ => 1) (fun _ => 0) 0 1 1 p (by norm_num) (by norm_num) one_pos chain4_satisfies.1
+    chain4_satisfies.2 (sanity_amplitude_one 0 1).1
+  rw [(sanity_amplitude_one 0 1).2, Real.one_rpow] at this
+  norm_num at this
   exact this
 
 /-! ## Non-vacuity through the statement constants -/

@@ -1,0 +1,18 @@
+import OscInt.Front.CuspSanity
+open OscInt.Statements OscInt.API.CuspSanity OscInt.API.Poly Set
+open scoped ContDiff
+
+def PIsStableA3Point (Ψ : ℝ × ℝ → ℝ) (k₀ : ℝ × ℝ) : Prop :=
+  ∃ v w : ℝ × ℝ, (∀ z, iteratedFDeriv ℝ 2 Ψ k₀ ![v, z] = 0) ∧ iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, v] = 0 ∧
+    iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] * iteratedFDeriv ℝ 4 Ψ k₀ ![v, v, v, v] -
+      3 * iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, w] ^ 2 ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, w] ≠ 0
+theorem P_translate {Ψ : ℝ × ℝ → ℝ} (k₀ : ℝ × ℝ) (h : IsStableA3Point Ψ 0) :
+    PIsStableA3Point (fun k => Ψ (k + -k₀)) k₀ := by
+  obtain ⟨v, w, h1, h2, h3, h4, h5⟩ := h
+  have e : k₀ + -k₀ = 0 := by simp
+  refine ⟨v, w, fun z => ?_, ?_, ?_, ?_, ?_⟩ <;>
+    simp only [iteratedFDeriv_comp_add_right, e] <;> first | exact h1 z | exact h2 | exact h3 | exact h4 | exact h5
+
+theorem P_oblShift : PIsStableA3Point (fun k => quartic qObl (k + -(1, 1))) (1, 1) := P_translate (1, 1) obl_isStableA3

@@ -1,0 +1,16 @@
+import OscInt.Front.CuspSanity
+open OscInt.Statements OscInt.API.CuspSanity OscInt.API.Poly Set
+open scoped ContDiff
+
+def PVdCkStatement : Prop :=
+  ∀ (k : ℕ) (D : ℕ → ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), 2 ≤ k → a ≤ b → 0 < μ →
+    DerivChain D k a b → (∀ x ∈ Ioo a b, μ ≤ |D k x|) → AmplitudeOn ψ ψ' a b →
+    ‖oscInt (fun x => D 0 x + p * x) ψ a b‖ ≤
+      ((5 : ℝ) * 2 ^ (k - 1) - 2 + ((k : ℝ) - 2) * ((k : ℝ) - 3)) * μ ^ (-(1 : ℝ) / (k : ℝ)) * ampNorm ψ ψ' a b
+theorem P_vdCk_chain4 (h : PVdCkStatement) (p : ℝ) :
+    ‖oscInt (fun x => chain4 0 x + p * x) (fun _ => 1) 0 1‖ ≤ 38 := by
+  have := h 4 chain4 (fun _ => 1) (fun _ => 0) 0 1 1 p (by norm_num) (by norm_num) one_pos chain4_satisfies.1
+    chain4_satisfies.2 (sanity_amplitude_one 0 1).1
+  rw [(sanity_amplitude_one 0 1).2, Real.one_rpow] at this
+  norm_num at this
+  exact this.trans (by norm_num)

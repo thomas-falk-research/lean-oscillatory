@@ -705,3 +705,24 @@ Modelling choices.
 Omitted (not claimed by S5.1/S5.1′): the leading term (a Pearcey-type constant); sharpness as a theorem; uniformity over
 compact families of phases; the global assembly with finitely many A3 points (the next statement, GD with cusps); any
 statement about A≥4, D≥5 or E/J points.
+
+Clarifications after the pre-proof reviews (2026-11-09; `review/2026-11-09-A3-pre-proof-{A,B}.md`, answers
+`review/2026-11-09-A3-pre-proof-answers.md`; no statement text changed, the stamp `stamps/20261109T201548Z-fcb46d9a6239`
+stands):
+1. **S1.k proof sketch, corrected** (A NIT 7). With radius r = μ^{−1/(k+1)} around the zero of the monotone D_k, the
+   threshold on the far pieces is |D_k| ≥ μr = μ^{k/(k+1)}, and the induction step gives 2c_k μ^{−1/(k+1)} + 2r =
+   (2c_k + 2) μ^{−1/(k+1)}. (The sketch above wrote "where |D_k| ≥ δ … choose δ = μ^{−1/(k+1)}", mixing threshold and
+   radius; the recursion c_{k+1} = 2c_k + 2 is unaffected.)
+2. **Smoothness** (A NIT 8, B NIT 1). Modelling choice 2's "CONJECTURED: C⁵ suffices for the rescaled family to be
+   FamilyCk 4" is superseded: both referees argue that C⁴ suffices (the weighted Taylor remainder satisfies
+   ε⁻⁴ ∂^α[R(εu, ε²s)] → 0 uniformly on compact sets for |α| ≤ 4); not yet checked by the lead or a route referee. The
+   frozen statements keep C^∞.
+3. **The vectors behind the quoted values** (B NIT 2). QWZ (m = 3) at (a, a): the value 128√130/53551875 is for
+   v = (8√65/12675)·(1, −1) (the kernel vector (q, −p) of the Hessian) and w = (1, 0); with v = (1, −1), w = (1, 0):
+   D³ω[v, v, w] = 6√130/65 and g₄ = −13992/4225 (review B, exact). Discrete Klein–Gordon at (π/2, π/2) with v = (1, −1),
+   w = (1, 0): D²ω[w, w] = −√5/25, D³ω[v, v, w] = −√5/5, g₄ = −3/5 (both reviews, exact); the value −√5/625 above is for
+   v = (−√5/25, √5/25). Both reviews checked all four points of each model.
+4. **Route note for S5.1′** (B NIT 3). One-dimensional stationary phase in the transverse variable with parameters
+   (u, y₂/t) and a C² remainder, then S1.k with k = 4 in the kernel variable, suffices; no Morse lemma with parameters is
+   needed, and the route does not use condition (v), so it would prove S5.1 as well. Which route is used is decided in
+   the route document, before any proof.

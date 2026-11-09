@@ -1,0 +1,17 @@
+import OscInt.Front.CuspSanity
+open OscInt.Statements OscInt.API.CuspSanity OscInt.API.Poly Set
+open scoped ContDiff
+
+def PIsStableA3Point (Ψ : ℝ × ℝ → ℝ) (k₀ : ℝ × ℝ) : Prop :=
+  ∃ v w : ℝ × ℝ, (∀ z, iteratedFDeriv ℝ 2 Ψ k₀ ![v, z] = 0) ∧ iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, v] = 0 ∧
+    iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] * iteratedFDeriv ℝ 4 Ψ k₀ ![v, v, v, v] -
+      3 * iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, w] ^ 2 ≠ 0 ∧
+    iteratedFDeriv ℝ 3 Ψ k₀ ![v, v, w] ≠ 0
+theorem P_obl : PIsStableA3Point (quartic qObl) 0 := by
+  refine ⟨(1, -1), (0, 1), fun z => ?_, ?_, ?_, ?_, ?_⟩
+  · rw [quartic_d2_mixed]; simp [part2, qObl]; ring
+  · rw [quartic_d2]; norm_num [part2, qObl]
+  · rw [quartic_d3]; norm_num [part3, qObl]
+  · rw [quartic_d2, quartic_d4, quartic_d3_mixed]; norm_num [part2, part3, part4, qObl]
+  · rw [quartic_d3_mixed]; norm_num [part3, qObl]
