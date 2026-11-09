@@ -41,15 +41,20 @@ Runs on corpus models or controls before this registration, all with their outpu
 - Exact facts established before this registration (`numerics/census/spec_checks.py`): M01's complete classification
   (four D4 points, folds, no A3; check K-SQ); four A3 points of M08 at `(±arccos(−1/3), ±arccos(−1/3))` (K-QWZ3, first
   found by the VT adversarial referee); the expected outcomes of K1, K2, K3, K5; the NS sets of all corpus models.
+- Published classifications read before registration (the logged sweep `review/2026-11-09-CENSUS-prior-art-sweep.md`):
+  M17 (Cuenin–Ikromov; Borovyk–Goldberg), M03 (Ge–Hua–Jia–Zhou), M18 (Wan–Zhang); decay-rate papers for M05
+  (Hong–Tadano–Yang) and M16 (Schultz; Bi–Cheng–Hua). The corpus was revised after the sweep and before freezing
+  (spec §8): M18 added, M11's weight set to 0.
 - During the development of `spec_checks.py`, its first run failed three of its own checks (a sign error in R2; K1 and
   K3 decided "g3 = 0" from a zero kernel vector); fixed before commit, recorded in spec §8.
 - Development runs of A, B and the acceptance script: (at registration; every rung, including expected failures, run
   once with a small budget, outputs listed here).
 
-Expected outcomes, stated by the lead before any census run (CONJECTURED; not criteria): M01 GD-covered (exact);
-M03, M07, M08 have A3 points; M05, M10, M13, M14, M15, M16 are not GD-covered whatever else holds (NS nonempty,
-exact); no prediction for M02, M04, M06, M09, M11, M12, M17. Expected ranking: F-A3 or F-NS first. The implementers
-are not told these expectations.
+Expected outcomes, stated by the lead before any census run (CONJECTURED unless marked; not criteria): M01 GD-covered
+(exact); M08 has A3 points (exact); M17 has A3 points exactly at `(±π/2, ±π/2)` and M03, M18 have only A2/A3
+degenerate points (literature, spec §5); M07 has A3 points (grid verdict CUSP); M05, M10, M13, M14, M15, M16 are not
+GD-covered whatever else holds (NS nonempty, exact); no prediction for M02, M04, M06, M09, M11, M12. Expected ranking:
+F-A3 first, F-NS second. The implementers are not told these expectations.
 
 ## 2. What the registered run does
 
@@ -58,7 +63,7 @@ committed with the registration (`numerics/census/run_census.sh`): stops at the 
 outputs aside, refuses a dirty tree, prints `STEP_OK`/`STEP_FAIL` per step and `WRAPPER_EXIT rc=… complete=…`. Steps:
 1. `spec_checks.py` (must print `ALL_CHECKS_PASS`);
 2. the acceptance negative-control suite (every control must FAIL);
-3. implementation A on M01–M17 and K1, K2, K3, K5 → `numerics/census/out/a.json`;
+3. implementation A on M01–M18 and K1, K2, K3, K5 → `numerics/census/out/a.json`;
 4. implementation B on the same → `numerics/census/out/b.json`;
 5. the spec-only evaluator on A's reported points and on seeded points (§3, C5) → `numerics/census/out/eval.json`;
 6. `accept.py` on the three outputs → `numerics/census/out/verdict.txt` and `numerics/census/out/ranking.json`.
@@ -76,7 +81,9 @@ outputs aside, refuses a dirty tree, prints `STEP_OK`/`STEP_FAIL` per step and `
   lies in a closed B box labelled EXCLUDED; membership is decided from A's exact description, refining its isolating
   box until it lies inside one B box or inside the interior of a union of B boxes. (c) Each A3-PROVEN box of B contains
   exactly one isolated point of A, of type A3, and no other isolated point or sample point of A.
-- **C4 (known answer).** A reports the four A3 points of K-QWZ3, each enclosing `(±a, ±a)` exactly as spec §5.
+- **C4 (known answers).** (a) A reports the four A3 points of K-QWZ3, each enclosing `(±a, ±a)` exactly as spec §5,
+  and the four A3 points of K-DKG at `(±π/2, ±π/2)`. (b) Literature (spec §5, X-DKG, X-TRI, X-KING): A's classification
+  of M17, M03 and M18 agrees with the published statement.
 - **C5 (soundness spot checks, spec-only evaluator).** (a) At every isolated point A reports (its exact location
   evaluated at 50 digits), `|det H|`, `|T[v_a³]|`, `|T[v_b³]|` (scaled by `1 + ‖H‖² + ‖T‖³` at the point) are below
   1e−40, and the type-deciding quantity (`g4` for A3, `Disc` for D4) has absolute value above 1e−20. (b) At 1000 points
@@ -102,7 +109,11 @@ outputs aside, refuses a dirty tree, prints `STEP_OK`/`STEP_FAIL` per step and `
   those covered by GD ∪ {recommended F}. The owner decides; recommendation and decision are recorded in
   `docs/ROADMAP.md` (I3).
 - **C0 or C1 fails** → no result; the cause is found and the run repeated under §5.
-- **C2 or C4 fails** → NOT DISCRIMINATING: no claim for any model; investigate; any fix is a new registration.
+- **C2 or C4(a) fails** → NOT DISCRIMINATING: no claim for any model; investigate; any fix is a new registration.
+- **C4(b) fails for a model** (A and B agree with each other but not with the published statement) → no claim for
+  that model; the disagreement is investigated at the level of the exact points (which point, which type) and reported
+  either as an error in the implementations (then a fix and a new registration) or as a documented disagreement with
+  the paper, sent to the owner before any public statement.
 - **C3(b) or C3(c) fails for a model** → soundness conflict between A and B: no claim for that model; investigated and
   reported; the other models keep their verdicts only if the conflict is shown to be local (by the results referee).
 - **C5 fails** → no claim for the affected model; investigate.

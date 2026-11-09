@@ -40,7 +40,7 @@ another. Nothing here is a capability until its evidence exists (`docs/STATUS.md
 - [ ] **I0 Release reconciliation.** v0.4.0 is published (tag → 87a418a, Zenodo 10.5281/zenodo.24088811). Open: the
       `post-release` pins pull request and the DOI record pull request, both merged with green CI.
 - [ ] **I1 Singularity census of industry dispersion relations.** Which degenerate points (A3 cusps, A≥4, D4, D≥5, E/J,
-      non-isolated sets, non-smooth points) occur in 17 standard 2D models (ten families) across five domains (lattice materials,
+      non-isolated sets, non-smooth points) occur in 18 2D models (nine weighted families, plus one unweighted re-check) across five domains (lattice materials,
       two-band topological models, quantum walks, numerical schemes, lattice waves), classified exactly by two
       independent methods with controls. Specification `docs/prereg/2026-11-09-CENSUS-spec.md`; registration draft
       `docs/prereg/2026-11-09-CENSUS-prereg.md` (registered only after both implementations exist and their development

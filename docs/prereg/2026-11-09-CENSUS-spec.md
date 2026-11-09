@@ -76,31 +76,37 @@ physical definition by `numerics/census/spec_checks.py` (check names in the tabl
 through the upper band `ω`; `−ω` has the same types. Weights: each **family** has total weight 1, shared equally by its
 members, so parameter instances cannot inflate a family (§4.3).
 
-| ID | Family (domain) | Phase Ψ on T² | NS(Ψ) | Check | Source of the model |
+| ID | Family (domain) | Phase Ψ on T² | NS(Ψ) | Check | Source of the model (verification key below) |
 |---|---|---|---|---|---|
-| M01 | square (L) | `c₁ + c₂` | ∅ | K-SQ | (sweep) |
-| M02 | square (L) | `c₁ + c₂ − (3/5)c₁c₂` (t–t′ model, t′/t = −3/10) | ∅ | M-SQNNN | (sweep) |
-| M03 | triangular (L) | `c₁ + c₂ + cos(k₁ + k₂)` | ∅ | — | (sweep) |
-| M04 | triangular (L) | `c₁ + c₂ + (1/2)cos(k₁ + k₂)` | ∅ | — | (sweep) |
-| M05 | honeycomb (L) | `√(3 + 2c₁ + 2c₂ + 2cos(k₁ − k₂))` (graphene, reciprocal-lattice coordinates) | `{(2π/3, −2π/3), (−2π/3, 2π/3)}` | M-GRAPHENE, M-GRAPHENE-NS | (sweep) |
-| M06 | honeycomb (L) | `√(1/4 + 3 + 2c₁ + 2c₂ + 2cos(k₁ − k₂))` (staggered potential Δ = 1/2, units of t) | ∅ | M-GRAPHENE | (sweep) |
-| M07 | QWZ (T) | `√(3 + 2(c₁ + c₂) + 2c₁c₂)` (m = 1) | ∅ (P ≥ 1) | M-QWZ, G-QWZ1 | (sweep) |
-| M08 | QWZ (T) | `√(11 + 6(c₁ + c₂) + 2c₁c₂)` (m = 3) | ∅ (P ≥ 1) | M-QWZ, G-QWZ3 | (sweep) |
-| M09 | QWZ (T) | `√(sin²k₁ + (9/25) sin²k₂ + (3 + c₁ + c₂)²)` (d₂ scaled by α = 3/5, m = 3) | ∅ (P ≥ 1) | M-aQWZ, G-aQWZ | (sweep) |
-| M10 | Grover walk (W) | `arccos(−(c₁ + c₂)/2)` (dispersive bands; flat bands ±1 reported FLAT) | `{(0, 0), (π, π)}` | M-GROVER | (sweep) |
-| M11 | arccos walk (W) | `arccos(c₁/2 + 3c₂/10)` | ∅ | G-ARCCOS | (sweep) |
-| M12 | FD9 Schrödinger (N) | `(1/6)(20 − 8(c₁ + c₂) − 4c₁c₂)` (9-point Laplacian, h = 1) | ∅ | M-FD9 | (sweep) |
-| M13 | Yee FDTD (N) | `2 arcsin(√(S²(2 − c₁ − c₂)/2))`, S = 1/2 (Δx = Δy, S = cΔt/Δx) | `{(0, 0)}` | M-YEE, G-YEE | (sweep) |
-| M14 | Yee FDTD (N) | as M13 with S = 7/10 (2S² = 49/50 < 1, below the 2D stability limit 1/√2) | `{(0, 0)}` | M-YEE, G-YEE | (sweep) |
-| M15 | FD9 wave (N) | `√((1/6)(20 − 8(c₁ + c₂) − 4c₁c₂))` | `{(0, 0)}` | M-FD9 | (sweep) |
-| M16 | lattice KG / wave (P) | `√(4 − 2c₁ − 2c₂)` (discrete wave equation, monatomic square mass–spring lattice) | `{(0, 0)}` | — | (sweep) |
-| M17 | lattice KG / wave (P) | `√(5 − 2c₁ − 2c₂)` (discrete Klein–Gordon, mass 1) | ∅ | — | (sweep) |
+| M01 | square (L) | `c₁ + c₂` | ∅ | K-SQ | discrete Laplacian symbol: Stefanov–Kevrekidis 2005 [CR][arX] |
+| M02 | square (L) | `c₁ + c₂ − (3/5)c₁c₂` (t–t′ model, t′/t = −3/10) | ∅ | M-SQNNN | t–t′ band −2t(cos kₓ + cos k_y) − 4t′cos kₓ cos k_y (+ const.): Irkhin–Katanin–Katsnelson 2002, eq. (2) [CR] (sign of t′ varies between papers) |
+| M18 | square (L) | `c₁ + c₂ + 2c₁c₂` (t–t′ at t′ = t: King's graph) | ∅ | M-KING | King's-graph symbol: Wan–Zhang, arXiv:2507.20142 [arX] |
+| M03 | triangular (L) | `c₁ + c₂ + cos(k₁ + k₂)` | ∅ | — | triangular lattice as a Cayley graph of ℤ²: Ge–Hua–Jia–Zhou 2025, eq. (1.5) [CR][arX] |
+| M04 | triangular (L) | `c₁ + c₂ + (1/2)cos(k₁ + k₂)` | ∅ | — | anisotropic deformation of M03 (no source; mathematical family member) |
+| M05 | honeycomb (L) | `√(3 + 2c₁ + 2c₂ + 2cos(k₁ − k₂))` (graphene, reciprocal-lattice coordinates) | `{(2π/3, −2π/3), (−2π/3, 2π/3)}` | M-GRAPHENE, M-GRAPHENE-CN, M-GRAPHENE-NS | Castro Neto et al. 2009, eq. (6) at t′ = 0 [CR] |
+| M06 | honeycomb (L) | `√(1/4 + 3 + 2c₁ + 2c₂ + 2cos(k₁ − k₂))` (staggered potential Δ = t/2) | ∅ | M-GRAPHENE, M-hBN | own derivation from the 2 × 2 Hamiltonian with sublattice potential ±Δ (check M-hBN); physical model Semenoff 1984 [CR, abstract only] |
+| M07 | QWZ (T) | `√(3 + 2(c₁ + c₂) + 2c₁c₂)` (m = 1) | ∅ (P ≥ 1) | M-QWZ, G-QWZ1 | Asbóth–Oroszlány–Pályi 2016, eq. (6.1) [CR]; original model Qi–Wu–Zhang 2006 [CR][arX] (same `|d|` up to a scale and a k-independent term, see the sweep) |
+| M08 | QWZ (T) | `√(11 + 6(c₁ + c₂) + 2c₁c₂)` (m = 3) | ∅ (P ≥ 1) | M-QWZ, G-QWZ3 | as M07 |
+| M09 | QWZ (T) | `√(sin²k₁ + (9/25) sin²k₂ + (3 + c₁ + c₂)²)` (d₂ scaled by α = 3/5, m = 3) | ∅ (P ≥ 1) | M-aQWZ, G-aQWZ | anisotropic deformation of M08 (no source; mathematical family member) |
+| M10 | Grover walk (W) | `arccos(−(c₁ + c₂)/2)` (dispersive bands; flat bands ±1 reported FLAT) | `{(0, 0), (π, π)}` | M-GROVER | Watabe–Kobayashi–Katori–Konno 2008, eq. (7) at p = 1/2 [CR][arX] |
+| M11 | arccos (none) | `arccos(c₁/2 + 3c₂/10)` | ∅ | G-ARCCOS | **no verified physical model** (the verified walk family of Watabe et al. has a + b = 1); kept to re-examine the P1 grid verdict; **weight 0** |
+| M12 | FD9 Schrödinger (N) | `(1/6)(20 − 8(c₁ + c₂) − 4c₁c₂)` (9-point Laplacian, h = 1) | ∅ | M-FD9, M-FD9-TT | 9-point stencil: Ji–Tabrizi–Karma 2022, eq. (25) [CR][arX]; up to an affine map the t–t′ family at t′/t = 1/4 |
+| M13 | Yee FDTD (N) | `2 arcsin(√(S²(2 − c₁ − c₂)/2))` = `arccos(1 − 2S² + S²(c₁ + c₂))`, S = 1/2 (Δx = Δy, S = cΔt/Δx) | `{(0, 0)}` | M-YEE, M-YEE-ARCCOS, G-YEE | 3D Yee relation in Cheng et al., arXiv:2001.10721, eqs. (2)–(3), and Blinne et al. 2018 [CR], reduced to 2D (own step); Taflove–Hagness not read |
+| M14 | Yee FDTD (N) | as M13 with S = 7/10 (2S² = 49/50 < 1, below the 2D limit 1/√2) | `{(0, 0)}` | M-YEE, G-YEE | as M13 |
+| M15 | FD9 wave (N) | `√((1/6)(20 − 8(c₁ + c₂) − 4c₁c₂))` | `{(0, 0)}` | M-FD9, M-FD9-NS | semi-discrete wave equation with the stencil of M12 (own construction) |
+| M16 | lattice KG / wave (P) | `√(4 − 2c₁ − 2c₂)` (discrete wave equation, monatomic square mass–spring lattice) | `{(0, 0)}` | — | Bi–Cheng–Hua, arXiv:2312.04130 [arX]; Schultz 1998 [CR, not read] |
+| M17 | lattice KG / wave (P) | `√(5 − 2c₁ − 2c₂)` (discrete Klein–Gordon, mass 1) | ∅ | K-DKG | Cuenin–Ikromov 2021 [CR][arX]; Borovyk–Goldberg 2017 (λ₁ = λ₂ = 1) [CR][arX] |
+
+Verification key: [CR] bibliographic record checked against Crossref, [arX] arXiv text read, [CR, not read] record
+only; all on 2026-11-09 in the logged sweep `review/2026-11-09-CENSUS-prior-art-sweep.md` (full references there and in
+`docs/prior_art.md`, "Singularities of lattice dispersion relations").
 
 Domains: L lattice materials, T two-band topological models, W discrete-time quantum walks, N numerical schemes,
-P lattice waves and phonons. Families and weights: square {M01, M02}, triangular {M03, M04}, honeycomb {M05, M06},
-QWZ {M07, M08, M09}, Grover {M10}, arccos walk {M11}, FD9 Schrödinger {M12}, Yee {M13, M14}, FD9 wave {M15},
-lattice KG / wave {M16, M17}: ten families. Not in the corpus, because it is an affine image of M01 with identical
-types: the 5-point finite-difference Schrödinger symbol `4 − 2c₁ − 2c₂`. The NS sets in the table follow from: M05,
+P lattice waves and phonons. Families and weights: square {M01, M02, M18}, triangular {M03, M04}, honeycomb
+{M05, M06}, QWZ {M07, M08, M09}, Grover {M10}, FD9 Schrödinger {M12}, Yee {M13, M14}, FD9 wave {M15}, lattice KG / wave
+{M16, M17}: nine families of weight 1; M11 is classified and reported but has weight 0 and no domain. Not in the corpus,
+because it is an affine image of M01 with identical types: the 5-point finite-difference Schrödinger symbol
+`4 − 2c₁ − 2c₂`. The NS sets in the table follow from: M05,
 `|1 + e^{−ik₁} + e^{−ik₂}| = 0` (check M-GRAPHENE-NS); M10, `|c₁ + c₂| = 2`; M13–M16, `u = 0` only at `cᵢ = 1`
 (each term `1 − cᵢ ≥ 0`; for M12 and M15, with `aᵢ = 1 − cᵢ ∈ [0, 2]`,
 `20 − 8(c₁ + c₂) − 4c₁c₂ = 12a₁ + 12a₂ − 4a₁a₂ ≥ 4a₁ + 12a₂`, zero only at (0, 0), check M-FD9-NS; for M13–M14 also
@@ -141,6 +147,16 @@ All exact; checks in `numerics/census/spec_checks.py`. Controls K1–K3 are poly
 | K2 | `X²Y + Y⁴`, `(X, Y) = (x, y) − (−1/5, 1/3)`, on B | `Σ ∩ B = {(−1/5, 1/3)}`, type D≥5 | K2 |
 | K3 | `X³ + Y⁴`, `(X, Y) = (x, y) − (2/7, −1/11)`, on B | `(2/7, −1/11)` of type E/J; the segment `{y = −1/11} ∩ B` minus that point of type A3 + NI; no other point of `Σ` | K3 |
 | K5 | `√((c₁ + c₂)² + 1/4)` on T² (separable trap) | the two lines `k₁ ± k₂ = π` (mod 2π): A≥4 + NI, except their crossing points `(0, π)` and `(π, 0)`, of type E/J + NI | K5 |
+
+**External known answers (published classifications; read in the sweep, arXiv versions).** These are expectations
+from the literature, not exact facts established here; a disagreement is handled by the registration (§4 there).
+- X-DKG (M17): A3 exactly at the four points with `cos k₁ = cos k₂ = 0`, no A≥4 (Cuenin–Ikromov 2021, Prop. 9); the
+  four points re-derived as A3 by check K-DKG. Borovyk–Goldberg 2017: only folds and cusps for every mass.
+- X-TRI (M03): every degenerate point is A2 or A3; no A≥4 (Ge–Hua–Jia–Zhou 2025, Lemma 4.3).
+- X-KING (M18): every point is A1, A2 or A3 (Wan–Zhang, arXiv:2507.20142).
+- Graphene (M05, Hong–Tadano–Yang 2026) and the lattice wave equation (M16, Schultz 1998; Bi–Cheng–Hua) are prior art
+  for the decay rates; the sweep did not extract a complete point classification from them, so they are not known
+  answers here.
 
 K2 note: on `B` the degenerate curve is `X² = 6Y³` (`det H = 24Y³ − 4X²` in (X, Y)); it is a fold curve away from the
 origin (`T[v_a,v_a,v_a] = −480τ⁸` on `X = √6 τ³, Y = τ²`). K3 note: its other degenerate line `{x = 2/7}` is a fold line.
@@ -201,8 +217,27 @@ B: at most 2²⁴ boxes per model and minimum box width 2⁻⁴⁰; exceeding gi
 - M01 at `(π/2, π/2)`: `H = 0`, `C(κ) = κ₁³ + κ₂³`, `Disc = −27`.
 - K1 at r: `g4 = −24576/625` with `v` from the kernel formula (exact, check K1).
 
+## 7a. Prior art and what the census can add
+
+Per-model classifications of every torus point, for this exact problem (the critical points of `Ψ − ∇Ψ(k₀)·k`),
+already exist for discrete Klein–Gordon (all masses), the lattice wave equation, the triangular lattice, the King's
+graph and graphene (references in the table of §3 and in `docs/prior_art.md`). The logged sweep found no census across
+several models and none for the t–t′ model at general t′/t, the 9-point stencil, Yee/FDTD, Qi–Wu–Zhang, gapped graphene
+or 2D quantum walks: PLAUSIBLE-not-novel for those (search limits in the sweep: Google Scholar unreachable, Crossref
+search largely rate-limited). The census is a decision instrument for OscInt and an exact, two-method re-derivation;
+it claims no novelty for the models with published classifications.
+
+**Out of scope of this census (stated so nobody infers coverage):** classification uniformly over parameter intervals
+(the t–t′ family over t′/t, the Yee family over S, the arccos family over (a, b)); this needs a parametric method
+(e.g. cylindrical algebraic decomposition) and is a candidate follow-up registration.
+
 ## 8. Changes before registration
 - 2026-11-09 — draft. During the development of `numerics/census/spec_checks.py` (before this file was committed), the
   check script decided "g3 = 0" from one kernel vector on two controls and failed (K1 at τ = 3/4, K3 on `x = 2/7`),
   because that vector was the zero vector there; the rule of §2.3 (both contractions) was written into this
   specification because of it. The script's first run is not committed; its fixed version is.
+- 2026-11-09 — after the logged prior-art sweep (before freezing): sources filled in for every model; M18 (King's
+  graph) added to the square family as an external known answer; M11 given weight 0 (no verified physical model; the
+  repository's `docs/applications.md` attribution of this family to split-step walks is unverified); external known
+  answers X-DKG, X-TRI, X-KING added to §5; checks M-GRAPHENE-CN, M-hBN, M-KING, M-FD9-TT, M-YEE-ARCCOS and K-DKG added
+  to `numerics/census/spec_checks.py`; §7a added.

@@ -34,9 +34,9 @@ polynomial equation in `(cos kᵢ, sin kᵢ)` with rational coefficients, and, a
 
 | Domain | Models in the class (examples) |
 |---|---|
-| Lattice materials, tight binding | square lattice (with next-nearest neighbours), triangular lattice, graphene (in reciprocal-lattice coordinates, where the coefficients are rational), gapped graphene / hBN |
+| Lattice materials, tight binding | square lattice (with next-nearest neighbours; the King's graph), triangular lattice, graphene (in reciprocal-lattice coordinates, where the coefficients are rational), gapped graphene / hBN |
 | Two-band topological models | Qi–Wu–Zhang and anisotropic variants: `ω = √|d(k)|²` with `d` trigonometric |
-| Discrete-time quantum walks | Grover walk on ℤ² (`cos ω = −(cos k₁ + cos k₂)/2`), `arccos` families |
+| Discrete-time quantum walks | Grover walk on ℤ² (`cos ω = −(cos k₁ + cos k₂)/2`) and the walks of Watabe et al. (`cos ω = −(p cos k₁ + q cos k₂)`, p + q = 1) |
 | Numerical schemes | 5- and 9-point finite-difference Schrödinger and wave symbols; the 2D Yee/FDTD dispersion relation `ω Δt = 2 arcsin(S √((2 − cos k₁ − cos k₂)/2))` |
 | Lattice waves and phonons | discrete wave equation (`√(4 − 2cos k₁ − 2cos k₂)`), discrete Klein–Gordon |
 
