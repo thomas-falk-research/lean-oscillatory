@@ -576,18 +576,52 @@
       "commitment": "2dda7e400448a35542f23fab458b6a1bdcfa5ee3ae69d38c9664ed9d02eda0f9",
       "stamp": "stamps/20261108T235416Z-961cebc296ef",
       "stamp_commit": "961cebc296eff7f55dddcecc70ef6d164f8e6de6"
+    },
+    {
+      "name": "OscInt.Statements.VdCkStatement",
+      "label": "S1.k",
+      "summary": "k-th derivative van der Corput bound with amplitude, `k ≥ 2`, constant `5·2^{k−1} − 2`, uniform in a linear term.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Cusp.lean",
+      "file_sha256": "00b8af6ca8da0d9325a455cb65c028b1aa07ae2f270a387a60d1d90e7508431f",
+      "commitment": "3f6bcd10ddc304463b047a2ff97bea79cca928d63280b315c80a6192657022b3",
+      "stamp": "stamps/20261109T201548Z-fcb46d9a6239",
+      "stamp_commit": "fcb46d9a62397c0faf46fc049ab9825b6cf93c84"
+    },
+    {
+      "name": "OscInt.Statements.CuspBoundStatement",
+      "label": "S5.1",
+      "summary": "Uniform stable-cusp bound: at a stable A3 point, decay `t^{-3/4}`, uniform over every linear term.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Cusp.lean",
+      "file_sha256": "00b8af6ca8da0d9325a455cb65c028b1aa07ae2f270a387a60d1d90e7508431f",
+      "commitment": "58fdc9e1b30433dab199864ae01cb90d2691c03c2cfa9560582f6bd96bb0477a",
+      "stamp": "stamps/20261109T201548Z-fcb46d9a6239",
+      "stamp_commit": "fcb46d9a62397c0faf46fc049ab9825b6cf93c84"
+    },
+    {
+      "name": "OscInt.Statements.CuspBoundGenStatement",
+      "label": "S5.1′",
+      "summary": "Uniform cusp bound: at an A3 point, decay `t^{-3/4}`, uniform over every linear term.",
+      "proved_by": null,
+      "file": "OscInt/Statements/Cusp.lean",
+      "file_sha256": "00b8af6ca8da0d9325a455cb65c028b1aa07ae2f270a387a60d1d90e7508431f",
+      "commitment": "05686ea0396f3ff430c3d6e2b5f177182ae26e377645beb1280298810799783b",
+      "stamp": "stamps/20261109T201548Z-fcb46d9a6239",
+      "stamp_commit": "fcb46d9a62397c0faf46fc049ab9825b6cf93c84"
     }
   ],
   "statement_files": [
-    {"file": "OscInt/Statements/Convert.lean", "sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
-    {"file": "OscInt/Statements/D4.lean", "sha256": "6965ce63488b6f81ff5c4685b46e252027423d8a6916ac274ea9dea21d4395c9", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
-    {"file": "OscInt/Statements/D4Limit.lean", "sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
-    {"file": "OscInt/Statements/Family.lean", "sha256": "da21f86bb3a018dd8bd704404fe8fa185f2bc530f08dc39f036210a7b6702188", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
-    {"file": "OscInt/Statements/FrontEnd.lean", "sha256": "4851a9543e712d2a3734b37dbf3cfabbc63fabb0a930a22f96eb3e60e8852ee7", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
-    {"file": "OscInt/Statements/Global.lean", "sha256": "edaaf9c6925a69da2b5f66eb06432458d6113532ba970a6bd3a25cdd3418b46d", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
-    {"file": "OscInt/Statements/LatticeExplicit.lean", "sha256": "c201633978fb9e6a4019a0988cf682bcd40aef83cabfb082d4dd60eebd64b921", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
-    {"file": "OscInt/Statements/StationaryPhase.lean", "sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
-    {"file": "OscInt/Statements/VanDerCorput.lean", "sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44", "stamp": "stamps/20261108T235416Z-961cebc296ef"},
-    {"file": "OscInt/Statements/Vector.lean", "sha256": "784ca9a55318b8a9d212b7b37fe21699fb97c4764a5b7f511454a9edf376c2ba", "stamp": "stamps/20261108T235416Z-961cebc296ef"}
+    {"file": "OscInt/Statements/Convert.lean", "sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49", "stamp": "stamps/20261109T201548Z-fcb46d9a6239"},
+    {"file": "OscInt/Statements/Cusp.lean", "sha256": "00b8af6ca8da0d9325a455cb65c028b1aa07ae2f270a387a60d1d90e7508431f", "stamp": "stamps/20261109T201548Z-fcb46d9a6239"},
+    {"file": "OscInt/Statements/D4.lean", "sha256": "6965ce63488b6f81ff5c4685b46e252027423d8a6916ac274ea9dea21d4395c9", "stamp": "stamps/20261109T201548Z-fcb46d9a6239"},
+    {"file": "OscInt/Statements/D4Limit.lean", "sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6", "stamp": "stamps/20261109T201548Z-fcb46d9a6239"},
+    {"file": "OscInt/Statements/Family.lean", "sha256": "da21f86bb3a018dd8bd704404fe8fa185f2bc530f08dc39f036210a7b6702188", "stamp": "stamps/20261109T201548Z-fcb46d9a6239"},
+    {"file": "OscInt/Statements/FrontEnd.lean", "sha256": "4851a9543e712d2a3734b37dbf3cfabbc63fabb0a930a22f96eb3e60e8852ee7", "stamp": "stamps/20261109T201548Z-fcb46d9a6239"},
+    {"file": "OscInt/Statements/Global.lean", "sha256": "edaaf9c6925a69da2b5f66eb06432458d6113532ba970a6bd3a25cdd3418b46d", "stamp": "stamps/20261109T201548Z-fcb46d9a6239"},
+    {"file": "OscInt/Statements/LatticeExplicit.lean", "sha256": "c201633978fb9e6a4019a0988cf682bcd40aef83cabfb082d4dd60eebd64b921", "stamp": "stamps/20261109T201548Z-fcb46d9a6239"},
+    {"file": "OscInt/Statements/StationaryPhase.lean", "sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf", "stamp": "stamps/20261109T201548Z-fcb46d9a6239"},
+    {"file": "OscInt/Statements/VanDerCorput.lean", "sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44", "stamp": "stamps/20261109T201548Z-fcb46d9a6239"},
+    {"file": "OscInt/Statements/Vector.lean", "sha256": "784ca9a55318b8a9d212b7b37fe21699fb97c4764a5b7f511454a9edf376c2ba", "stamp": "stamps/20261109T201548Z-fcb46d9a6239"}
   ]
 }
