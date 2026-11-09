@@ -52,9 +52,19 @@ PROVEN on paper (Fubini and the Bessel integral, DLMF 10.9.2); the factorisation
 Bessel identification is not formalised (Mathlib has no Bessel functions at the pin).
 Consequences:
 - **T6** is equivalent to the classical bound `sup_n |Jₙ(t)| ≤ c t^{−1/3}`. L. J. Landau, *Monotonicity and bounds on
-  Bessel functions*, Electron. J. Differ. Equ. Conf. 04 (2000) 147–154, gives the best constant `c ≈ 0.7858` for
-  `|J_ν(x)| ≤ c x^{−1/3}`, `ν ≥ 0`, `x > 0` (cited in Fungrim, https://fungrim.org/entry/7f3485/; the paper itself not
-  read in this session). In our normalisation `|I(t, n)| ≤ 2π · 0.7858 · t^{−1/3} ≈ 4.937 t^{−1/3}`.
+  Bessel functions*, Electron. J. Differ. Equ. Conf. 04 (2000) 147–154, states the best constant `c = 0.7857···` for
+  `|J_ν(x)| ≤ c x^{−1/3}`, `ν ≥ 0`, `x > 0` (its inequality (10); paper read 2026-11-09 from
+  https://ejde.math.txstate.edu/conf-proc/04/l1/landau.pdf; cited in Fungrim, https://fungrim.org/entry/7f3485/). That
+  paper surveys, and cites as its reference [5], the full treatment: L. J. Landau, *Bessel functions: monotonicity and
+  bounds*, J. London Math. Soc. (2) 61 (2000) 197–215, DOI 10.1112/S0024610799008352 (bibliographic record checked
+  against Crossref 2026-11-09; that paper not read). `c = sup_{x>0} x^{1/3} J₀(x)`, attained at the first stationary
+  point `x₀ ≈ 0.7837`: recomputed 2026-11-09 with mpmath at 40 digits (not rigorous) as `c = 0.785746870498513…`,
+  `x₀ = 0.783662818503470…` (the paper's table gives 0.7837). In our normalisation
+  `|I(t, n)| ≤ 2π c t^{−1/3} ≈ 4.937 t^{−1/3}` (an earlier version of this entry rounded c to 0.7858; 0.7857 is correct
+  to four places). The registered LE protocol (`docs/prereg/2026-11-08-LE-lattice-constants.md`), its program
+  (`numerics/src/bin/lattice1.rs`) and the LE reviews keep 0.7858 and are not edited (registered and verbatim
+  records). No verdict depends on the rounding: criterion (c) tested `max t^{1/3}|I|/(2π) ≤ 0.7858 + 1e−4`, a threshold
+  above the true c (by about 1.5e−4) with either value, and the ratios it reports change in the fourth digit.
 - **T6L** is the classical Cauchy–Watson asymptotic `Jₙ(n) ~ Γ(1/3) / (2^{2/3} 3^{1/6} π) · n^{−1/3}`:
   `4π² (Γ(1/3) / (2^{2/3} 3^{1/6} π))² = Γ(1/3)² 2^{2/3} 3^{−1/3} = Γ(1/3)² 48^{1/6} / √3`, the frozen constant.
 - The proof in the repository is genuine and does exercise the global theorem (the points `(±π/2, ±π/2)` are D4 points
