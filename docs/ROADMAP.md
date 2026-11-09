@@ -37,8 +37,11 @@ a library and toolchain for the whole industry, not for any single consumer. Two
 next is decided by evidence across many models** (item I1), not by one model or one user. **The interface is frozen
 only after consumers from different domains have used it** (item I5). Items I1–I3 run in parallel; none waits on
 another. Nothing here is a capability until its evidence exists (`docs/STATUS.md` rule above).
-- [ ] **I0 Release reconciliation.** v0.4.0 is published (tag → 87a418a, Zenodo 10.5281/zenodo.24088811). Open: the
-      `post-release` pins pull request and the DOI record pull request, both merged with green CI.
+- [x] **I0 Release reconciliation.** v0.4.0 is published (tag → 87a418a, Zenodo 10.5281/zenodo.24088811). The
+      `post-release` pins pull request (#9, merged as 87051c9) and the DOI record pull request (#10, merged as 621cdbe)
+      are on `main`. #10's `verify` run on its final head (run 42667383698) passed all 17 jobs, but its `verdict`
+      job was never created and the run is marked failed with no failed job (GitHub refused a re-run); the owner merged
+      it on those 17 jobs. The `verify` run on `main` after the merge is the check of the merged tree.
 - [ ] **I1 Singularity census of industry dispersion relations.** Which degenerate points (A3 cusps, A≥4, D4, D≥5, E/J,
       non-isolated sets, non-smooth points) occur in 18 2D models (nine weighted families, plus one unweighted re-check) across five domains (lattice materials,
       two-band topological models, quantum walks, numerical schemes, lattice waves), classified exactly by two
