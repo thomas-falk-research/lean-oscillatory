@@ -1,5 +1,9 @@
 # Status
 
+> **Review paths (2026-11-10).** Many rows cite verbatim referee reports under `review/`. Those reports were removed
+> from the current tree under the owner's privacy rule (`docs/lessons.md` 46; `review/README.md`). Each cited path can be
+> read with `git show 58a86d0:<path>`, and the lead's answers files under `review/` still state every finding.
+
 One line per statement. A status is derived from evidence files, never typed as a claim; "machine-checked as stated"
 requires every row of the trust chain (README) for that statement.
 
