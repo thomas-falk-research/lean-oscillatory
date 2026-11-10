@@ -726,3 +726,57 @@ stands):
    (u, y₂/t) and a C² remainder, then S1.k with k = 4 in the kernel variable, suffices; no Morse lemma with parameters is
    needed, and the route does not use condition (v), so it would prove S5.1 as well. Which route is used is decided in
    the route document, before any proof.
+
+## Batch LE2: the cube-root bound for the 1D lattice kernel, and its 2D corollary (session 10, 2026-11-10)
+
+Order. As batch LE: the statements below, `OscInt/Statements/LatticeCubeRoot.lean`, sanity theorems with planted
+controls (`OscInt/Front/LatticeCubeRootSanity.lean`), the challenge `Challenge/LatticeCubeRoot.lean` and
+`comparator-LE2.json` are committed and stamped before the blind pre-proof reviews; the reviews are answered and the
+route is reviewed before any Lean proof of these statements is written. Owner decision (2026-11-10, session 10): start
+this batch in the session that checked the bound.
+
+Why. T0E's constants make it beat the trivial bound |I| ≤ 2π only for t > 518.5 (batch LE, clarification 6); ROADMAP
+I4 asks for a "useful from" threshold for each explicit constant. An external reviewer submitted (2026-11-10) a hand
+proof of a bound with one term and a constant within a factor 2 of the best possible; the lead re-derived it line by line
+(`review/2026-11-10-external-followup-answers.md`). It is useful from t ≈ 3.70. The frozen LE files are not edited.
+
+Notation. I(t, ξ) = ∫_{−π}^{π} e^{i(t cos k + ξk)} dk (`latticeKernel1`, batch LE, unchanged) and K(t, x) T6's kernel
+(`latticeKernel`, batch GD, unchanged). C* = 8(1 + √7)/3 ≈ 9.72200.
+
+**T0E′ (cube-root bound for the 1D lattice kernel).** For every t > 0 and every real ξ: |I(t, ξ)| ≤ C* t^{−1/3}.
+
+**T6E′ (explicit constant for T6, cube-root form).** For every t > 0 and x ∈ ℤ²: |K(t, x)| ≤ C*² t^{−2/3}.
+(C*² = (512 + 128√7)/9 ≈ 94.517.)
+
+Route (for the reviewers' orientation only; no proof exists when this is frozen). T6E′ is T6F and T0E′ applied twice.
+T0E′: by I(t, −ξ) = I(t, ξ) (substitute k ↦ −k) take ξ ≥ 0, and put v = ξ/t, g = t(v − sin k) (the derivative of the
+phase).
+1. Integration by parts on the sets where |g| ≥ tδ, with the boundary terms at ±π kept: they combine into
+   2e^{−it} sin(πξ)/(tv), of size ≤ 2/(tv). The rest of [−π, π] is bounded by its length. This gives a "band" bound
+   |I| ≤ 2(arcsin(v + δ) − arcsin(v − δ)) + 8/(tδ) − 4/(t(1 − v²)) [+ 2/(tv) if v > δ], valid for −1 < v − δ and
+   v + δ < 1, and a "cap" bound |I| ≤ 2 arccos(v − δ) + 4/(tδ) − 2/(t(1 + v)) [+ 2/(tv) if v > δ].
+2. t ≥ 8, τ = t^{−1/3}: cap with δ = 2τ² for v ≥ 1 − 2τ² (≤ 2π + 8/3); band with δ = (3/2)τ² for 1/2 ≤ v < 1 − 2τ²
+   (the bound decreases in Δ = (1 − v)/τ² and equals C* at Δ = 2: the extremal case) and for 0 ≤ v ≤ 1/2 (≤ 277/30).
+3. 3 ≤ t ≤ 8, δ = 1/2: cap or band; each bound is A + B/t, and t^{1/3}(A + B/t) is largest at t = 3 or t = 8, where
+   rational arithmetic gives < 97/10 < C*. 4. 0 < t ≤ 3: |I| ≤ 2π and 2π·3^{1/3} < 97/10.
+No Bessel function and no S1 statement is used.
+
+Modelling choices and what is omitted.
+1. ξ is real (as T0E). For non-integer ξ the integral is an Anger-type function, not a Bessel function; the end-point
+   terms at ±π are the reason the proof needs the 2/(tv) terms.
+2. t > 0 for both (at t = 0 Lean's `Real.rpow` gives 0^{−1/3} = 0 and both bounds are false); t < 0 reduces to t > 0
+   by I(−t, ξ) = conj I(t, −ξ). T6E′ holds for every t > 0, not only t ≥ 1 (unlike T6E): each factor obeys T0E′.
+3. **How good the constant is.** C* is within a factor 2 of the best constant C_opt = sup over t > 0 and real ξ of
+   t^{1/3}|I(t, ξ)|: C_opt ≥ (4/5)^{1/3}|I(4/5, 0)| > 4.93 (an elementary Taylor bound, exact rational arithmetic), and
+   the LE review B point (t, ξ) = (5.7972…, 4.404) gives C_opt ≥ 2π·0.80366 ≈ 5.0495 (floating point). For integer ξ
+   the best constant is Landau's, 2π·0.7857… ≈ 4.937 (`docs/prior_art.md`). So C* overshoots by a factor about 1.93–1.97.
+4. **Where the bounds have content.** C* t^{−1/3} < 2π exactly when t > (C*/(2π))³ ≈ 3.7045; C*² t^{−2/3} < 4π² for the
+   same t. Compared with batch LE: C* < B = 36·2^{1/6} ≈ 40.41 (T0E's t^{−1/3} coefficient alone), and
+   C*² ≈ 94.517 is about 50.3 times smaller than T6E's (A + B)² ≈ 4754.
+5. T0E′ is stronger than T0E for every t > 0 (C* < B, and T0E has a further positive term), so T0E becomes a corollary;
+   T6E′ is stronger than T6E for t ≥ 1. Neither frozen statement is edited or withdrawn.
+6. The normalisation (2π)^{−1} (per factor), the time scale and the phases are omitted as in T0E and T6.
+7. AI-use disclosure (as for S5.1′, `docs/prior_art.md`): the constant and the hand proof come from the external
+   reviewer's submission of 2026-11-10 (OpenAI ChatGPT 6, version as given by the owner); not authorship or credit.
+   The ingredients (integration by parts with end-point terms, arcsine band lengths, convexity) are elementary and
+   classical; the constant was not found in the reviewer's logged search, which is the entire novelty claim.

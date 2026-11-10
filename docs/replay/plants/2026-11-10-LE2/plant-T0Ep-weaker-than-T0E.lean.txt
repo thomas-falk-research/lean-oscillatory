@@ -1,0 +1,22 @@
+import OscInt.Front.LatticeCubeRootSanity
+
+namespace OscInt.API.LatticeCubeRootSanity
+
+open OscInt.Statements OscInt.API.LatticeExplicitSanity
+
+def P_LatticeKernel1CubeRootStatement : Prop :=
+  ∀ t ξ : ℝ, 0 < t →
+    ‖latticeKernel1 t ξ‖ ≤ 41 * t ^ (-(1 : ℝ) / 3)
+
+theorem P_latticeKernel1Explicit_of_cubeRoot (h : P_LatticeKernel1CubeRootStatement) :
+    LatticeKernel1ExplicitStatement := by
+  intro t ξ ht
+  have h1 := h t ξ ht
+  have hc := cubeRootConst_bounds
+  have hb : 1.1224 < (2 : ℝ) ^ ((1 : ℝ) / 6) :=
+    gt_of_pow_eq (by positivity) two_rpow_sixth_pow (by norm_num)
+  have hp : 0 ≤ t ^ (-(1 : ℝ) / 3) := Real.rpow_nonneg ht.le _
+  have hq : 0 ≤ 24 * (2 : ℝ) ^ ((1 : ℝ) / 4) * t ^ (-(1 : ℝ) / 2) := by positivity
+  nlinarith
+
+end OscInt.API.LatticeCubeRootSanity

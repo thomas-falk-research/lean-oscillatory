@@ -1,0 +1,8 @@
+/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/plants/out/plant-T0Ep-rate.lean:14:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  8 ^ (-1 / 3)
+in the target expression
+  ‖latticeKernel1 8 (1 / 2)‖ ≤ 8 * (1 + √7) / 3 * 8 ^ (-1 / 4)
+
+h : P_LatticeKernel1CubeRootStatement
+this : ‖latticeKernel1 8 (1 / 2)‖ ≤ 8 * (1 + √7) / 3 * 8 ^ (-1 / 4)
+⊢ ‖latticeKernel1 8 (1 / 2)‖ ≤ 4 * (1 + √7) / 3
