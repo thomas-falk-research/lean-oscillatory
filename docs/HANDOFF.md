@@ -48,8 +48,9 @@ For a reader who saw nothing. Read `docs/lessons.md` first (46 entries); every r
 - `main` CI on 58a86d0: `ci` and `verify` both success.
 - Next, in order:
   1. `docs/proof-A3.md` along the S5.1′ route, the route referee, then the parts and the replay.
-  2. CENSUS: `numerics/census/validate_pool.py`, then the held-out pool (spec §3 rule) sealed with the owner, then
-     implementations A and B and their development runs, then the pre-registration referee and registration.
+  2. CENSUS: implementations A and B and their development runs, then the pre-registration referee and registration
+     (drand round named then). Done: `numerics/census/validate_pool.py`; the held-out pool (14 models, 60 sources)
+     sealed and in the owner's custody, commitment in the registration's §1.
   3. The LeanCert experiment (I2).
   4. I3a, then I3b.
 

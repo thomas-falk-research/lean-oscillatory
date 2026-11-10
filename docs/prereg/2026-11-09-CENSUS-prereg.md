@@ -47,9 +47,24 @@ Runs on corpus models or controls before this registration, all with their outpu
   found by the VT adversarial referee); four stable A3 points of the QWZ family at each m ∈ {201/100, 5/2, 4, 10}
   with closed-form `g4` (K-QWZm, added 2026-11-10 from the external dossier, answers `review/2026-11-10-external-dossier-answers.md`,
   A1, owner decision); the expected outcomes of K1, K2, K3, K5; the NS sets of all corpus models.
-- Held-out set H (spec §3): selector the lead (owner decision 2026-11-10, with the mitigations of spec §3); pool
-  commitment `SHA-256 = (at registration)`; draw procedure and drand round (at registration). H does not exist until
-  that round, so nobody can have seen it before registration.
+- Held-out set H (spec §3): selector the lead (owner decision 2026-11-10, with the mitigations of spec §3). The pool
+  was assembled on 2026-11-10 by an agent acting for the lead, under the frozen inclusion rule, after the spec was
+  frozen and before any implementation existed: 14 models from 60 examined sources (the 60-source stop was reached). It was checked by `numerics/census/validate_pool.py`
+  (`VALID`), sealed with a 16-byte salt from the operating system's random source, and handed to the owner the same
+  day; no copy is kept in the repository or in the session container. **Pool commitment
+  `SHA-256(salt ‖ JCS(sealed file)) = 3183b6023831f6be6b6030f280cc10e1a8015e6113e9c19e9f69063ef0e572b6`**, recomputed
+  independently of the validator before sealing. drand round: (at registration). H does not exist until that round,
+  so nobody can have seen it before registration.
+  - Interpretations of the inclusion rule the selector applied, disclosed now and binding at the reveal: admissibility
+    is judged on the coefficients of u, so a parameter written irrationally in a source (an angle or a square root) is
+    accepted when u has rational coefficients; an additive constant in the dispersion relation is the β of the affine
+    map and is dropped; a source that prints several two-dimensional relations contributes its first; ranges and
+    inequalities, and statements about a one-dimensional case, are not parameter values; magnon (spin-wave)
+    dispersions of lattice materials are domain L; two peer-reviewed proceedings papers without a DOI or arXiv
+    identifier are cited by full reference.
+  - Disclosure: the lead's brief to the agent added a family-level exclusion that the frozen rule does not contain;
+    the agent applied the frozen rule, which governs. Under that rule, some pool models are further members of corpus
+    families at other parameter values, which are not affine images of corpus models.
 - Published classifications read before registration (the logged sweep of 2026-11-09, readable with
   `git show 58a86d0:review/2026-11-09-CENSUS-prior-art-sweep.md`; removed from the tree under lessons 46):
   M17 (Cuenin–Ikromov; Borovyk–Goldberg), M03 (Ge–Hua–Jia–Zhou), M18 (Wan–Zhang); decay-rate papers for M05
