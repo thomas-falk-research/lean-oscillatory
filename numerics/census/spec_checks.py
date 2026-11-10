@@ -92,15 +92,14 @@ def cubic_root_structure(coeffs):
     k = sp.Symbol("_k")
     if all(is_zero(x) for x in coeffs):
         return "zero"
-    # dehomogenise in a direction that is not a root: use k2 = 1 if d or c or b or a gives degree 3, else swap
+    # dehomogenise at k2 = 1 (k = k1/k2): finite roots from p, and a root at infinity (k2 = 0) of multiplicity
+    # 3 - deg p. Fixed 2026-11-10 (spec referee): the earlier version returned "double" for cubics with roots at
+    # both 0 and infinity, e.g. k1 k2 (k1 + k2), which has three distinct roots.
     p = sp.Poly(a * k**3 + b * k**2 + c * k + d, k)
-    if p.degree() < 3:  # a root at infinity (k2 = 0): swap roles
-        p = sp.Poly(d * k**3 + c * k**2 + b * k + a, k)
-    if p.degree() < 3:  # roots at both 0 and infinity: count directly
-        return "double" if p.degree() >= 1 else "triple"
-    sqf = sp.sqf_list(p)[1]
-    mult = sorted(m for _, m in sqf for _ in range(sp.Poly(_, k).degree()))
-    return {(1, 1, 1): "distinct", (1, 2): "double", (3,): "triple"}[tuple(mult)]
+    mult = [m for f, m in sp.sqf_list(p)[1] for _ in range(sp.Poly(f, k).degree())]
+    if p.degree() < 3:
+        mult.append(3 - p.degree())
+    return {(1, 1, 1): "distinct", (1, 2): "double", (3,): "triple"}[tuple(sorted(mult))]
 
 
 def env_record():
@@ -161,6 +160,12 @@ def main():
     diffT = sp.expand(contract(Tsym, (1, 0), (1, 0), (lam, 1)) - contract(Tsym, (1, 0), (1, 0), (0, 1)))
     check("R3", sp.expand(diffT - lam * Tsym[0][0][0]) == 0,
           "T[v,v,w+lam v] - T[v,v,w] = lam T[v,v,v]: g4 independent of w when g3 = 0 (H[w+lam v] = H[w])")
+    # coefficients (a, b, c, d) of a k1^3 + b k1^2 k2 + c k1 k2^2 + d k2^3
+    cases = {(0, 1, 1, 0): "distinct", (0, 1, 0, 0): "double", (0, 0, 1, 0): "double", (1, 0, 0, 0): "triple",
+             (0, 0, 0, 1): "triple", (1, 0, 0, 1): "distinct", (1, 0, -3, 0): "distinct", (0, 0, 0, 0): "zero"}
+    got = {cf: cubic_root_structure(cf) for cf in cases}
+    check("R4", got == cases, "binary-cubic classifier on cubics with roots at 0 and infinity: " +
+          ", ".join(f"{cf}->{got[cf]}" for cf in cases))
 
     # ---------------- Section 1: admissible outer functions ----------------
     x = sp.Symbol("x")
@@ -323,7 +328,7 @@ def main():
     check("K-QWZ3", ok and is_zero(g4n + sp.Rational(5247) / sp.sqrt(65)),
           "QWZ m = 3 at (+-a, +-a), a = arccos(-1/3): det H = 0, H != 0, g3 = 0 (both kernel vectors), g4 != 0 (A3); "
           "with v = (1,-1), w = (1,1) at (a,a): H[w,w] = 32/(195 sqrt65), T[v,v,w] = 12 sqrt130/65, "
-          "Q[v,v,v,v] = 18/sqrt65, g4 = -5247/sqrt(65)")
+          "Q[v,v,v,v] = 18/sqrt65, g4 = -5247/sqrt(65), normalised g4/|v|^4 = -5247/(4 sqrt65) (|v|^2 = 2)")
 
     # K-QWZm (added 2026-11-10, before registration; spec section 8): the QWZ family at rational masses m > 2, one close
     # to 2. Closed forms from the external dossier (A1, C2; review/2026-11-10-external-dossier-answers.md), re-derived for symbolic m in
@@ -353,7 +358,8 @@ def main():
             and is_zero(tvvw - 2 * mq * sp.sqrt(mq**2 - 1) / sp.sqrt(Dm)) \
             and is_zero(g4n + 3 * mq * (mq**6 - 2 * mq**4 + 2 * mq**2 - 2) / sp.sqrt(Dm)) \
             and is_zero(grad1 + (mq**2 - 1) ** sp.Rational(3, 2) / (mq * sp.sqrt(Dm)))
-        vals.append(f"m={mq}: g4={sp.N(g4n, 10)}, T[v,v,w]={sp.N(tvvw, 10)}, d1Psi={sp.N(grad1, 10)}")
+        vals.append(f"m={mq}: g4={sp.N(g4n, 10)}, g4/|v|^4={sp.N(g4n / 4, 10)}, T[v,v,w]={sp.N(tvvw, 10)}, "
+                    f"d1Psi={sp.N(grad1, 10)}")
     check("K-QWZm", ok,
           "QWZ sqrt(m^2 + 2 + 2m(c1+c2) + 2c1c2), m in {201/100, 5/2, 4, 10}: at each of (+-a_m, +-a_m), "
           "a_m = arccos(-1/m): det H = 0, H != 0, g3 = 0 (both kernel vectors), g4 != 0 (A3) and T[v,v,w] != 0 (stable); "
@@ -389,7 +395,8 @@ def main():
     phi1 = sp.expand(XY[0] ** 2 * XY[1] + XY[1] ** 2)
     H1, T1, Q1 = poly_control(phi1)
     Hp, Tp, Qp = at(H1, {xx: rr[0], yy: rr[1]}), at(T1, {xx: rr[0], yy: rr[1]}), at(Q1, {xx: rr[0], yy: rr[1]})
-    g3a, g3b, g4, _, _ = rank1_invariants(Hp, Tp, Qp)
+    g3a, g3b, g4, v1k, _ = rank1_invariants(Hp, Tp, Qp)
+    g4hat_K1 = sp.simplify(g4 / (v1k[0] ** 2 + v1k[1] ** 2) ** 2)
     tau = sp.Symbol("tau", real=True)
     ptc = rr + Rm.T * sp.Matrix([tau, tau**2])
     Hc, Tc = at(H1, {xx: ptc[0], yy: ptc[1]}), at(T1, {xx: ptc[0], yy: ptc[1]})
@@ -405,7 +412,7 @@ def main():
           and detc == 0 and [d[tau] for d in common if d[tau].is_real] == [0]
           and sp.simplify(frob_rot - (4 * XYs[1] ** 2 + 8 * XYs[0] ** 2 + 4)) == 0,
           f"K1 = X^2 Y + Y^2, (X,Y) = R((x,y) - r), R = [[3/5,-4/5],[4/5,3/5]], r = (1/7,-2/9): at r rank 1, g3 = 0, "
-          f"g4 = {sp.simplify(g4)} != 0 (A3); det H = 0 on r + R^T(tau, tau^2), where T[va^3] = {g3c_a} and "
+          f"g4 = {sp.simplify(g4)} != 0 (A3), normalised g4/|v|^4 = {g4hat_K1}; det H = 0 on r + R^T(tau, tau^2), where T[va^3] = {g3c_a} and "
           f"T[vb^3] = {g3c} vanish together only at tau = 0 (at tau = 3/4 the vector (r,-q) is zero, not g3); "
           f"|H|_F^2 = 4Y^2 + 8X^2 + 4 >= 4 (no rank-0 point)")
 
@@ -444,7 +451,7 @@ def main():
     g3f = sp.simplify(contract(Tf, vbf, vbf, vbf))
     check("K3", all(is_zero(Hp[i][j]) for i in range(2) for j in range(2)) and cubic_root_structure(co) == "triple"
           and sp.simplify(g3l_a) == 0 and sp.simplify(g3l_b) == 0 and sp.simplify(g4l) != 0 and sp.simplify(g3f) != 0,
-          f"K3 = X^3 + Y^4, (X,Y) = (x,y) - (2/7, -1/11): at r H = 0, cubic {co} triple (class E/J); on Y = 0, X = X0 != 0: "
+          f"K3 = X^3 + Y^4, (X,Y) = (x,y) - (2/7, -1/11): at r H = 0, cubic {co} triple (class E/J; the point lies on the segment below, so E/J + NI); on Y = 0, X = X0 != 0: "
           f"rank 1, g3 = 0, g4 = {sp.simplify(g4l)} (a non-isolated A3 segment); on X = 0, Y = Y0 != 0: g3 = {g3f} (fold)")
 
     # K5: separable trap sqrt((c1+c2)^2 + 1/4)
@@ -463,7 +470,75 @@ def main():
           and is_zero(g4) and const_line == sp.Rational(1, 2)
           and all(is_zero(H0[i][j]) for i in range(2) for j in range(2)) and cubic_root_structure(co0) == "zero",
           "K5 = sqrt((c1+c2)^2 + 1/4): constant 1/2 on k1 + k2 = pi; at (pi/3, 2pi/3) grad = 0, rank 1, g3 = g4 = 0 "
-          "(non-isolated A>=4 curve); at (0, pi) H = 0 and the cubic is zero (class E/J)")
+          "(non-isolated A>=4 curve); at (0, pi) H = 0 and the cubic is zero (class X)")
+
+    # M07-LINES (added 2026-11-10 after the spec referee; informational, spec §7): QWZ m = 1 has
+    # u = 3 + 2(c1 + c2) + 2 c1 c2 = 1 + 2(1 + c1)(1 + c2), so Psi = sqrt(u) is 1 on k1 = pi and on k2 = pi.
+    u7 = 3 + 2 * (c1 + c2) + 2 * c1 * c2
+    H7, T7, Q7 = jets(sp.sqrt(u7), K)
+    Y0 = sp.Symbol("Y0", real=True)
+    ptl = {k1: sp.pi, k2: Y0}
+    Hl, Tl, Ql = at(H7, ptl), at(T7, ptl), at(Q7, ptl)
+    # symbolic point: rank1_invariants' exact zero test needs constants, so the invariants are formed directly here
+    val, vbl = kernels(Hl)
+    g3l_a = sp.simplify(contract(Tl, val, val, val))
+    g3l_b = sp.simplify(contract(Tl, vbl, vbl, vbl))
+    vl, wl = (0, 1), (1, 0)  # spans ker H = ker diag(1 + cos Y0, 0); H[w, w] = 1 + cos Y0 != 0 for Y0 != pi
+    g4l = sp.simplify(contract(Ql, vl, vl, vl, vl) - 3 * contract(Tl, vl, vl, wl) ** 2 / contract(Hl, wl, wl))
+    ptc = {k1: sp.pi, k2: sp.pi}
+    Hc, Tc = at(H7, ptc), at(T7, ptc)
+    _, coc = disc_cubic(Tc)
+    check("M07-LINES", is_zero(sp.expand(u7 - 1 - 2 * (1 + c1) * (1 + c2)))
+          and sp.simplify(Hl[0][0] - (1 + sp.cos(Y0))) == 0 and Hl[0][1] == 0 and Hl[1][1] == 0
+          and g3l_a == 0 and g3l_b == 0 and g4l == 0
+          and all(is_zero(Hc[i][j]) for i in range(2) for j in range(2)) and cubic_root_structure(coc) == "zero",
+          "M07 (QWZ m = 1): u = 1 + 2(1 + c1)(1 + c2), so Psi = 1 on k1 = pi and on k2 = pi; on k1 = pi, k2 = Y0: "
+          f"H = diag(1 + cos Y0, 0), kernel vectors {val}, {vbl}, g3 = 0 (both), g4 = 0 with v = {vl}: rank 1 and A>=4 for Y0 != pi; at (pi, pi) "
+          "H = 0 and the cubic is zero (class X); by the symmetry k1 <-> k2 the same on k2 = pi")
+
+    # CORPUS: numerics/census/corpus.json, the machine-readable corpus an implementation reads (spec §3, added
+    # 2026-11-10 after the spec referee), against an independent transcription of the spec's tables in trigonometric
+    # form: G(u(k)) must equal the table's phase identically (u compared as an expression in cos/sin of k1, k2).
+    import json
+    cj = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "corpus.json"), encoding="utf-8"))
+    xb, yb = sp.symbols("x y", real=True)
+    trig = {"c1": c1, "s1": s1, "c2": c2, "s2": s2}
+    ck = lambda a, b: sp.cos(a * k1 + b * k2)  # noqa: E731
+    R_ = sp.Rational
+    table = {  # (G, u as in the spec tables, written with cos/sin of k1, k2 or with x, y)
+        "M01": ("id", c1 + c2), "M02": ("id", c1 + c2 - R_(3, 5) * c1 * c2), "M18": ("id", c1 + c2 + 2 * c1 * c2),
+        "M03": ("id", c1 + c2 + ck(1, 1)), "M04": ("id", c1 + c2 + ck(1, 1) / 2),
+        "M05": ("sqrt", 3 + 2 * c1 + 2 * c2 + 2 * ck(1, -1)),
+        "M06": ("sqrt", R_(1, 4) + 3 + 2 * c1 + 2 * c2 + 2 * ck(1, -1)),
+        "M07": ("sqrt", 3 + 2 * (c1 + c2) + 2 * c1 * c2), "M08": ("sqrt", 11 + 6 * (c1 + c2) + 2 * c1 * c2),
+        "M09": ("sqrt", s1**2 + R_(9, 25) * s2**2 + (3 + c1 + c2) ** 2),
+        "M10": ("arccos", -(c1 + c2) / 2), "M11": ("arccos", c1 / 2 + R_(3, 10) * c2),
+        "M12": ("id", R_(1, 6) * (20 - 8 * (c1 + c2) - 4 * c1 * c2)),
+        "M13": ("2arcsin_sqrt", R_(1, 4) * (2 - c1 - c2) / 2), "M14": ("2arcsin_sqrt", R_(49, 100) * (2 - c1 - c2) / 2),
+        "M15": ("sqrt", R_(1, 6) * (20 - 8 * (c1 + c2) - 4 * c1 * c2)),
+        "M16": ("sqrt", 4 - 2 * c1 - 2 * c2), "M17": ("sqrt", 5 - 2 * c1 - 2 * c2),
+        "K5": ("sqrt", (c1 + c2) ** 2 + R_(1, 4)),
+    }
+    for mq, tag in ((R_(201, 100), "201/100"), (R_(5, 2), "5/2"), (sp.Integer(4), "4"), (sp.Integer(10), "10")):
+        table[f"K-QWZm[{tag}]"] = ("sqrt", mq**2 + 2 + 2 * mq * (c1 + c2) + 2 * c1 * c2)
+    Rm1 = sp.Matrix([[R_(3, 5), -R_(4, 5)], [R_(4, 5), R_(3, 5)]])
+    XY1 = Rm1 * (sp.Matrix([xb, yb]) - sp.Matrix([R_(1, 7), -R_(2, 9)]))
+    table["K1"] = ("id", XY1[0] ** 2 * XY1[1] + XY1[1] ** 2)
+    table["K2"] = ("id", (xb + R_(1, 5)) ** 2 * (yb - R_(1, 3)) + (yb - R_(1, 3)) ** 4)
+    table["K3"] = ("id", (xb - R_(2, 7)) ** 3 + (yb + R_(1, 11)) ** 4)
+    bad, seen = [], set()
+    for rec in cj["models"]:
+        seen.add(rec["id"])
+        env = trig if rec["domain_type"] == "torus" else {"x": xb, "y": yb}
+        u_rec = sp.sympify(rec["u"].replace("^", "**"), locals=env)
+        G_tab, u_tab = table[rec["id"]]
+        diff = sp.simplify(sp.expand(sp.expand_trig(u_rec - u_tab)))
+        if rec["G"] != G_tab or diff != 0:
+            bad.append(f"{rec['id']}: G {rec['G']} vs {G_tab}, u difference {diff}")
+    missing = sorted(set(table) - seen)
+    check("CORPUS", not bad and not missing,
+          f"numerics/census/corpus.json: {len(cj['models'])} records match the spec tables (G and u identically)"
+          + (f"; mismatches {bad}" if bad else "") + (f"; missing {missing}" if missing else ""))
 
     n_ok = sum(RESULTS)
     print(f"SUMMARY {n_ok}/{len(RESULTS)}")

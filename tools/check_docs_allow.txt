@@ -6,6 +6,7 @@
 # One path per line, then the reason. Remove a line when the path is created or the citation is dropped.
 numerics/census/impl_a              # CENSUS implementation A, written after registration (draft prereg §1)
 numerics/census/impl_b              # CENSUS implementation B, same
+numerics/census/impl_b/enclose.py   # its enclosure interface (spec §6), same
 numerics/census/accept.py           # CENSUS acceptance script, same
 numerics/census/accept_controls     # its negative-control suite, same
 numerics/census/evaluator.py        # spec-only evaluator, same

@@ -12,8 +12,10 @@ Statement changes: three new statements, frozen and reviewed, **not proved**: S1
 
 - Batch A3 statement-first phase: sanity data and planted controls, two blind pre-proof reviews (FAITHFUL, TRUE),
   reviews stamped (`stamps/20261109T214121Z-47c1360ccd6f`).
-- CENSUS (ROADMAP I1): specification and registration, both DRAFT; exact spec checks 36/36
-  (`numerics/results-census-spec-2026-11-10.txt`); control K-QWZm and a sealed held-out set added before registration.
+- CENSUS (ROADMAP I1): specification and registration, both DRAFT; exact spec checks 39/39
+  (`numerics/results-census-spec-2026-11-10.txt`); control K-QWZm and a sealed held-out set added before registration;
+  revised after the spec-fidelity referee (`review/2026-11-10-CENSUS-spec-answers.md`), with the machine-readable corpus
+  `numerics/census/corpus.json`.
 - External reviews, answered item by item with independent checks (the reviews themselves are not recorded, owner
   privacy rule; answers `review/2026-11-10-external-*-answers.md`); `docs/prior_art.md` marks S1.k anticipated.
 - ROADMAP: industry programme (I0–I7), dimension-generic track (I3a, I3b), gated candidate list.

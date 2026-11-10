@@ -15,7 +15,7 @@ stamp. A path under `review/` cited elsewhere in the repository that no longer e
 `git show 58a86d0:<path>`. New reviews follow CONTRIBUTING step 5: no prompts, no verbatim reports, findings in the
 lead's words in an answers file.
 
-**Naming.** `<date>-<batch>-<kind>-answers.md`, where kind is `pre-proof`, `post-proof` or `route`; adversarial-review
+**Naming.** `<date>-<batch>-<kind>-answers.md`, where kind is `pre-proof`, `post-proof`, `route` or `spec` (specification fidelity); adversarial-review
 answers use plain `-answers`. External reviews are `<date>-external-<topic>-answers.md`.
 
 ## Answers
@@ -40,6 +40,8 @@ answers use plain `-answers`. External reviews are `<date>-external-<topic>-answ
 - `2026-11-08-step5-rule-answers.md`
 - `2026-11-09-A3-pre-proof-answers.md`
 - `2026-11-09-VT-post-proof-answers.md`
+- `2026-11-10-A3-route-answers.md`
+- `2026-11-10-CENSUS-spec-answers.md`
 - `2026-11-10-external-audit-answers.md`
 - `2026-11-10-external-dossier-answers.md`
 - `2026-11-10-external-results-answers.md`

@@ -12,7 +12,7 @@ version = 1
 [[annotations]]
 path = [
   "lake-manifest.json", "lean-toolchain", "toolchain.sha256", "comparator*.json",
-  "tools/Cargo.lock", "numerics/Cargo.lock", "numerics/results-*.txt",
+  "tools/Cargo.lock", "numerics/Cargo.lock", "numerics/results-*.txt", "numerics/census/corpus.json",
   "examples/**/lake-manifest.json", "examples/**/lean-toolchain", "examples/api/**",
   "stamps/pins.txt", "stamps/statements.json", "stamps/*/manifest.txt",
 ]

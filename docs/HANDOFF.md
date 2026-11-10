@@ -20,8 +20,15 @@ For a reader who saw nothing. Read `docs/lessons.md` first (46 entries); every r
   - ROADMAP I3a and I3b: the dimension-generic track. I3b states its hypothesis intrinsically (corank 2, nondegenerate
     cubic on the Hessian's kernel), with a counterexample phase as a bite datum. I3a must fix its input derivative
     budget, with a C²-only counterexample as a bite datum.
-  - CENSUS (draft): control K-QWZm (the QWZ family at four masses; spec checks 36/36,
-    `numerics/results-census-spec-2026-11-10.txt`), and a sealed held-out set H (selector not yet named).
+  - CENSUS (draft): control K-QWZm (the QWZ family at four masses), and a sealed held-out set H selected by the lead
+    with three mitigations (sealed pool, drand-seeded draw, owner custody).
+- **CENSUS spec-fidelity referee (2026-11-10):** one BLOCKER (B's NS-ADJACENT label), nine MAJOR, all repaired before
+  freezing; answers `review/2026-11-10-CENSUS-spec-answers.md`, changes in spec §8. Main changes: the normalised cusp
+  invariant `ĝ4 = g4/|v|⁴`; a new type X (zero cubic); one-dimensional components with special points; the
+  machine-readable corpus `numerics/census/corpus.json`; B's label order and budget-exhaustion rule; the held-out
+  inclusion rule and draw encoding. Exact checks 39/39 (`numerics/results-census-spec-2026-11-10.txt`). A new exact
+  fact: QWZ m = 1 (M07) has lines of A≥4 points, so it is not GD-covered (check M07-LINES). A second fresh referee checks
+  the repairs before the spec is frozen.
   - ROADMAP I7: the Fourier-grid certificate, outside the core, with a stop rule.
   - ROADMAP "Candidates (not commitments)": four promotion gates.
   - ROADMAP "Standing: repository hygiene": first pass done.
@@ -39,7 +46,8 @@ For a reader who saw nothing. Read `docs/lessons.md` first (46 entries); every r
 - `main` CI on 58a86d0: `ci` and `verify` both success.
 - Next, in order:
   1. `docs/proof-A3.md` along the S5.1′ route, the route referee, then the parts and the replay.
-  2. The CENSUS spec-fidelity referee, the held-out pool and draw set-up, then implementations A and B.
+  2. The CENSUS repair re-check (second referee), freezing, the held-out pool and draw set-up, then implementations A
+     and B.
   3. The LeanCert experiment (I2).
   4. I3a, then I3b.
 

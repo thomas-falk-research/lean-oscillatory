@@ -18,4 +18,5 @@ Earlier numeric checks were not pre-registered as such: `numerics/results-2026-1
 `docs/progress.md`) and `numerics/results-d4const-2026-11-06.txt` (D4 closed forms, `docs/decisions/2026-11-06-S4.md`).
 Symbolic checks of a specification (not tests of a hypothesis) are recorded with the specification they support:
 `numerics/census/spec_checks.py` → `numerics/results-census-spec-2026-11-09.txt`, superseded on 2026-11-10 by
-`numerics/results-census-spec-2026-11-10.txt` after control K-QWZm was added before registration (CENSUS).
+`numerics/results-census-spec-2026-11-10.txt` after control K-QWZm was added before registration, and regenerated after
+the spec referee's repairs (39/39; checks R4, CORPUS and M07-LINES added) (CENSUS).

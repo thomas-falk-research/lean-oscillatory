@@ -12,15 +12,17 @@ ASSUMED(L4: Lean discharge of each cited model's classification, through ROADMAP
 
 - Spec: `docs/prereg/2026-11-09-CENSUS-spec.md`, frozen at commit (at registration), before either implementation
   existed. Symbolic checks of the spec: `numerics/census/spec_checks.py`, output
-  `numerics/results-census-spec-2026-11-10.txt` (36/36 PASS at the commit recorded in that file; it supersedes
-  `numerics/results-census-spec-2026-11-09.txt`, 35/35, which this line had cited as 29/29 until 2026-11-10).
+  `numerics/results-census-spec-2026-11-10.txt` (39/39 PASS at the commit recorded in that file, after the spec
+  referee's repairs; its earlier version, 36/36, and `numerics/results-census-spec-2026-11-09.txt`, 35/35, are
+  superseded). Input: `numerics/census/corpus.json` (spec §3).
 - Implementations: A = `numerics/census/impl_a/` (exact algebra, spec §6), B = `numerics/census/impl_b/` (interval
   branch and bound, spec §6), written by different agents; B from the spec alone. Authors (person or model): (at
   registration).
 - Acceptance script: `numerics/census/accept.py`, with its negative-control suite `numerics/census/accept_controls/`
   (crafted outputs that must each FAIL: a missing field; `"complete"` absent; `"certified"`-style flags as strings; a
   box with an inverted interval; non-ASCII digits; a top-level list; an A3 point of A inside an EXCLUDED box of B; an
-  A3-PROVEN box with no A point; a box set that leaves a gap in the torus; a spec hash mismatch; a wrong git commit).
+  A3-PROVEN box with no A point; a box set that leaves a gap in B's root box; an NS-ADJACENT box wider than 2⁻¹²; an
+  A component without special points or typed samples; a spec hash mismatch; a wrong git commit).
 - Spec-only evaluator for soundness checks: `numerics/census/evaluator.py`, mpmath at 50 digits, written from the spec
   alone by an agent that has not read A or B, before reading them.
 - Environment: Python lock with hashes for A, B and the acceptance script; solver and interval-library versions
@@ -47,18 +49,26 @@ Runs on corpus models or controls before this registration, all with their outpu
 - Held-out set H (spec §3): selector the lead (owner decision 2026-11-10, with the mitigations of spec §3); pool
   commitment `SHA-256 = (at registration)`; draw procedure and drand round (at registration). H does not exist until
   that round, so nobody can have seen it before registration.
-- Published classifications read before registration (the logged sweep `review/2026-11-09-CENSUS-prior-art-sweep.md`):
+- Published classifications read before registration (the logged sweep of 2026-11-09, readable with
+  `git show 58a86d0:review/2026-11-09-CENSUS-prior-art-sweep.md`; removed from the tree under lessons 46):
   M17 (Cuenin–Ikromov; Borovyk–Goldberg), M03 (Ge–Hua–Jia–Zhou), M18 (Wan–Zhang); decay-rate papers for M05
   (Hong–Tadano–Yang) and M16 (Schultz; Bi–Cheng–Hua). The corpus was revised after the sweep and before freezing
   (spec §8): M18 added, M11's weight set to 0.
 - During the development of `spec_checks.py`, its first run failed three of its own checks (a sign error in R2; K1 and
   K3 decided "g3 = 0" from a zero kernel vector); fixed before commit, recorded in spec §8.
+- The spec-fidelity referee (2026-11-10, answers `review/2026-11-10-CENSUS-spec-answers.md`) ran its own scripts,
+  not committed: exact eliminations for K5 and the QWZ values, and coarse grid scans (hints, not proofs) of M03, M07,
+  M17 and M18. What they showed is summarised in the answers file; the M07 finding is now an exact fact (check
+  M07-LINES, spec §7).
 - Development runs of A, B and the acceptance script: (at registration; every rung, including expected failures, run
   once with a small budget, outputs listed here).
 
 Expected outcomes, stated by the lead before any census run (CONJECTURED unless marked; not criteria): M01 GD-covered
 (exact); M08 has A3 points (exact); M17 has A3 points exactly at `(±π/2, ±π/2)` and M03, M18 have only A2/A3
-degenerate points (literature, spec §5); M07 has A3 points (grid verdict CUSP); M05, M10, M13, M14, M15, M16 are not
+degenerate points (literature, spec §5); M07 is not GD-covered, because the lines `k₁ = π` and `k₂ = π` form a
+component of Σ of type A≥4 + NI with an X point at `(π, π)` (exact, check M07-LINES; this replaces, on 2026-11-10 before
+registration, the earlier expectation "M07 has A3 points" from the grid verdict CUSP, which nothing exact supports);
+M05, M10, M13, M14, M15, M16 are not
 GD-covered whatever else holds (NS nonempty, exact); no prediction for M02, M04, M06, M09, M11, M12. Expected ranking:
 F-A3 first, F-NS second. The implementers are not told these expectations.
 
@@ -69,42 +79,49 @@ committed with the registration (`numerics/census/run_census.sh`): stops at the 
 outputs aside, refuses a dirty tree, prints `STEP_OK`/`STEP_FAIL` per step and `WRAPPER_EXIT rc=… complete=…`. Steps:
 1. `spec_checks.py` (must print `ALL_CHECKS_PASS`);
 2. the acceptance negative-control suite (every control must FAIL);
-3. implementation A on M01–M18 and K1, K2, K3, K5 → `numerics/census/out/a.json`;
+3. implementation A on every record of `numerics/census/corpus.json`: M01–M18, K1, K2, K3, K5, `K-QWZm[201/100]`,
+   `K-QWZm[5/2]`, `K-QWZm[4]` and `K-QWZm[10]` → `numerics/census/out/a.json`;
 4. implementation B on the same → `numerics/census/out/b.json`;
 5. the spec-only evaluator on A's reported points and on seeded points (§3, C5) → `numerics/census/out/eval.json`;
 6. `accept.py` on the three outputs → `numerics/census/out/verdict.txt` and `numerics/census/out/ranking.json`.
 7. after the outputs of steps 1–6 are committed: the held-out reveal (spec §3; hash checked against the value in §1
-   above), then A and B on H, unchanged, → `numerics/census/out/heldout_a.json`, `heldout_b.json`, and `accept.py` on them
+   above), then, from a clean checkout of the registered commit with the pool and H outside the tree (their SHA-256
+   recorded in the verdict), A and B on H, unchanged, → `numerics/census/out/heldout_a.json`, `heldout_b.json`, and `accept.py` on them
    (the per-model criteria C1, C3 and C5, then C7) → `numerics/census/out/heldout_verdict.txt`.
 
 ## 3. Criteria (all must hold for PASS; checked by `accept.py`, which recomputes every verdict from the outputs)
 
 - **C0 (acceptance controls).** Every crafted output in `accept_controls/` produces FAIL with a reason.
 - **C1 (provenance and completeness).** Each output has `complete: true`, `spec_sha256` equal to the SHA-256 of the
-  spec at the frozen commit, `git_commit` equal to the registered commit, `dirty: false`.
-- **C2 (controls).** A reproduces spec §5 exactly for K-SQ, K1, K2, K3, K5 (types, locations within the enclosure
-  width of spec §4.1, and nothing else in Σ). B: for K1 exactly one A3-PROVEN box, containing r; for K-SQ, K2, K3, K5
+  spec at the registered commit, `git_commit` equal to the registered commit, `dirty: false`.
+- **C2 (controls).** A reproduces spec §5 exactly for K-SQ, K1, K2, K3, K5 (types; for K3 and K5 one component each,
+  with the special points and types of spec §5; locations within the enclosure width of spec §4.1; nothing else in Σ). B: for K1 exactly one A3-PROVEN box, containing r; for K-SQ, K2, K3, K5
   no A3-PROVEN box; every A-object of each control lies in a B box labelled UNRESOLVED or A3-PROVEN (never EXCLUDED).
-- **C3 (cross-agreement, every model and control).** (a) B's boxes cover the domain exactly (checked in exact dyadic
-  arithmetic). (b) No isolated point of A, and none of the exact sample points A gives for each component (spec §4.1),
-  lies in a closed B box labelled EXCLUDED; membership is decided from A's exact description, refining its isolating
+- **C3 (cross-agreement, every model and control).** (a) B's boxes cover its root box (spec §6: `[−4, 4]²` on T²,
+  `[−1, 1]²` for K1–K3) exactly (checked in exact dyadic arithmetic). (b) No isolated point of A, and none of the exact sample points A gives for each component (spec §4.1),
+  lies in a closed B box labelled EXCLUDED (on T², every lift of the point to the root box is tested); membership is decided from A's exact description, refining its isolating
   box until it lies inside one B box or inside the interior of a union of B boxes. (c) Each A3-PROVEN box of B contains
   exactly one isolated point of A, of type A3, and no other isolated point or sample point of A.
 - **C4 (known answers).** (a) A reports the four A3 points of K-QWZ3, each enclosing `(±a, ±a)` exactly as spec §5,
   the four A3 points of K-DKG at `(±π/2, ±π/2)`, and, at each mass of K-QWZm, four A3 points enclosing
-  `(±a_m, ±a_m)` exactly, with C5's evaluated `g4` within 1e−20 relative of the closed form of spec §7. Other points
+  `(±a_m, ±a_m)` exactly, with C5's evaluated `ĝ4` (spec §2.3) within 1e−20 relative of the closed form of spec §7. Other points
   A reports for K-QWZm are not a failure (the control asserts nothing about them). (b) Literature (spec §5, X-DKG, X-TRI, X-KING): A's classification
   of M17, M03 and M18 agrees with the published statement.
 - **C5 (soundness spot checks, spec-only evaluator).** (a) At every isolated point A reports (its exact location
-  evaluated at 50 digits), `|det H|`, `|T[v_a³]|`, `|T[v_b³]|` (scaled by `1 + ‖H‖² + ‖T‖³` at the point) are below
-  1e−40, and the type-deciding quantity (`g4` for A3, `Disc` for D4) has absolute value above 1e−20. (b) At 1000 points
-  per model from the linear congruential generator of `docs/prereg/2026-11-08-VV-classify.md` with seed 20261109, every
-  B box containing the point has enclosures of `det H`, `T[v_a³]`, `T[v_b³]` that contain the evaluator's 50-digit values
-  (allowance 1e−30).
+  evaluated at 50 digits), with `h = 1 + ‖H‖` and `τ = 1 + ‖T‖` (‖·‖ the largest absolute value of an entry):
+  `|det H| ≤ 1e−40·h²` and `|T[v_a³]|, |T[v_b³]| ≤ 1e−40·τ·h³`; and the scale-free type-deciding quantity (`ĝ4` for
+  A3, `D̂` for D4, spec §2.3–2.4) has absolute value above 1e−20. (b) 1000 points per model from the linear congruential
+  generator of `docs/prereg/2026-11-08-VV-classify.md` (same recurrence) with `x₀ = 20261109`: point j (j = 0, …, 999)
+  takes its first coordinate from `x_{2j+1}` and its second from `x_{2j+2}`, each mapped as
+  `−π + 2π·(x >> 11)/2⁵³` on T² and `−1 + 2·(x >> 11)/2⁵³` on the box. For every closed B box containing the point
+  whose enclosure of `u` lies in `J`, B's enclosure interface (spec §6) gives enclosures of `det H`, `T[v_a³]`,
+  `T[v_b³]` that contain the evaluator's 50-digit values (allowance 1e−30 absolute).
 - **C7 (held-out generalisation; one fixed check, the rest descriptive).**
-  - On the models of H that pass C3, compute `N_H(F)` (spec §4.3, every model weight 1) for every F of §4.
-  - The fixed check: the family recommended from the corpus has the largest `N_H` (ties allowed).
-  - With 4–6 models this is a sanity check, not a statistical test, and it is reported as such.
+  - On the models of H that pass C3 and C5, compute `N_H(F)` (spec §4.3, every model weight 1) for every F of §4.
+  - The fixed check: the family recommended from the corpus has the largest `N_H` among single families (ties
+    allowed); if a pair was recommended, the pair has the largest `N_H` among pairs.
+  - C7 is evaluated only if at least 3 models of H remain; otherwise it is reported as "not evaluated".
+  - With at most 5 models this is a sanity check, not a statistical test, and it is reported as such.
   - A failure of C7 does not change the corpus verdicts or the recommendation. It is reported with the recommendation
     as "the ranking did not generalise to H", and the owner decides.
 - **C6 (descriptive, not a criterion).** Per model: the objects found, which implementation decided each, budgets
@@ -114,15 +131,16 @@ outputs aside, refuses a dirty tree, prints `STEP_OK`/`STEP_FAIL` per step and `
 
 - **PASS** → per model M (A `DONE`):
   - "the classification of Σ(Ψ_M) and NS(Ψ_M) reported by A: PROVEN (computer-assisted; single implementation A)";
-  - if every B box is EXCLUDED, A3-PROVEN or NS-ADJACENT, or contains an A-object: "outside the reported objects and the
-    radius-2⁻¹⁰ neighbourhoods of NS points, every point is A1 or A2, and the A3 points in A3-PROVEN boxes are exactly
-    A's: PROVEN (computer-assisted; two independent implementations)", subject to the common-mode rule of spec §6;
+  - with U the union of B's NS, NS-ADJACENT and UNRESOLVED boxes (listed, with its area): "every point of T² ∖ NS with a
+    lift in B's root box outside U is A1 or A2 except the A3 points in B's A3-PROVEN boxes, which are exactly A's points there: PROVEN
+    (computer-assisted; two independent implementations)", subject to the common-mode rule of spec §6;
   - types of rank-0, A≥4 and non-isolated objects, and A3 points B did not prove: "certified by A only (not claimed
     as two-implementation under this registration)".
-- **Ranking and recommendation (fixed now).** From A's classification of the models that pass C3: `N(F)` and `D(F)`
-  of spec §4.3 for F ∈ {F-A3, F-NS, F-NI, F-D5, F-A4, F-E}. The lead recommends to the owner the F with the largest
+- **Ranking and recommendation (fixed now).** From A's classification of the models that pass C3, C5 and, where it
+  applies, C4(b): `N(F)` and `D(F)` of spec §4.3 for F ∈ {F-A3, F-NS, F-NI, F-D5, F-A4, F-E, F-X}. The lead recommends to the owner the F with the largest
   N(F); ties broken by larger D(F), then by the order just listed. If every single N(F) is 0, the pair with the largest
-  N is recommended. VV acceptance candidates: the non-separable models of domains L and T that are GD-covered; if none,
+  N is recommended (ties broken by larger D, then by the list position of the pair's earlier member, then of its later
+  member, earlier first). VV acceptance candidates: the non-separable models of domains L and T that are GD-covered; if none,
   those covered by GD ∪ {recommended F}. The owner decides; recommendation and decision are recorded in
   `docs/ROADMAP.md` (I3).
 - **C0 or C1 fails** → no result; the cause is found and the run repeated under §5.
@@ -135,7 +153,8 @@ outputs aside, refuses a dirty tree, prints `STEP_OK`/`STEP_FAIL` per step and `
   reported; the other models keep their verdicts only if the conflict is shown to be local (by the results referee).
 - **C5 fails** → no claim for the affected model; investigate.
 - **A `BUDGET_EXHAUSTED` on a model** → the model is UNRESOLVED and excluded from N(F) (reported with its weight); B
-  `BUDGET_EXHAUSTED` only → A's result stands as "certified by A only".
+  `BUDGET_EXHAUSTED` only → B's unprocessed boxes are UNRESOLVED (spec §6), so they are part of U above; A's result
+  stands, and the two-implementation statement is made outside U as usual.
 
 ## 5. Failure rule
 

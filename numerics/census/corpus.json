@@ -1,0 +1,32 @@
+{
+  "format": "OscInt CENSUS corpus v1 (docs/prereg/2026-11-09-CENSUS-spec.md §1, §3, §5)",
+  "grammar": "u is a polynomial with rational coefficients, written with integers, a/b, + - * ^ and parentheses, in the variables c1 s1 c2 s2 (cos k1, sin k1, cos k2, sin k2; domain 'torus', T^2 = (-pi, pi]^2) or x y (domain 'box', B = [-1, 1]^2). The phase is G(u) with G in {id, sqrt, arccos, arcsin, 2arcsin_sqrt} on its open interval J (spec §1). NS is not listed: each implementation computes it as {u not in J}.",
+  "models": [
+    {"id": "M01", "kind": "corpus", "family": "square", "domain": "L", "weight": "1/3", "domain_type": "torus", "G": "id", "u": "c1 + c2"},
+    {"id": "M02", "kind": "corpus", "family": "square", "domain": "L", "weight": "1/3", "domain_type": "torus", "G": "id", "u": "c1 + c2 - 3/5*c1*c2"},
+    {"id": "M18", "kind": "corpus", "family": "square", "domain": "L", "weight": "1/3", "domain_type": "torus", "G": "id", "u": "c1 + c2 + 2*c1*c2"},
+    {"id": "M03", "kind": "corpus", "family": "triangular", "domain": "L", "weight": "1/2", "domain_type": "torus", "G": "id", "u": "c1 + c2 + c1*c2 - s1*s2"},
+    {"id": "M04", "kind": "corpus", "family": "triangular", "domain": "L", "weight": "1/2", "domain_type": "torus", "G": "id", "u": "c1 + c2 + 1/2*(c1*c2 - s1*s2)"},
+    {"id": "M05", "kind": "corpus", "family": "honeycomb", "domain": "L", "weight": "1/2", "domain_type": "torus", "G": "sqrt", "u": "3 + 2*c1 + 2*c2 + 2*(c1*c2 + s1*s2)"},
+    {"id": "M06", "kind": "corpus", "family": "honeycomb", "domain": "L", "weight": "1/2", "domain_type": "torus", "G": "sqrt", "u": "1/4 + 3 + 2*c1 + 2*c2 + 2*(c1*c2 + s1*s2)"},
+    {"id": "M07", "kind": "corpus", "family": "QWZ", "domain": "T", "weight": "1/3", "domain_type": "torus", "G": "sqrt", "u": "3 + 2*(c1 + c2) + 2*c1*c2"},
+    {"id": "M08", "kind": "corpus", "family": "QWZ", "domain": "T", "weight": "1/3", "domain_type": "torus", "G": "sqrt", "u": "11 + 6*(c1 + c2) + 2*c1*c2"},
+    {"id": "M09", "kind": "corpus", "family": "QWZ", "domain": "T", "weight": "1/3", "domain_type": "torus", "G": "sqrt", "u": "s1^2 + 9/25*s2^2 + (3 + c1 + c2)^2"},
+    {"id": "M10", "kind": "corpus", "family": "Grover", "domain": "W", "weight": "1", "domain_type": "torus", "G": "arccos", "u": "-(c1 + c2)/2", "note": "dispersive band; the flat bands +1 and -1 are reported FLAT"},
+    {"id": "M11", "kind": "corpus", "family": "arccos", "domain": null, "weight": "0", "domain_type": "torus", "G": "arccos", "u": "1/2*c1 + 3/10*c2"},
+    {"id": "M12", "kind": "corpus", "family": "FD9 Schrodinger", "domain": "N", "weight": "1", "domain_type": "torus", "G": "id", "u": "1/6*(20 - 8*(c1 + c2) - 4*c1*c2)"},
+    {"id": "M13", "kind": "corpus", "family": "Yee", "domain": "N", "weight": "1/2", "domain_type": "torus", "G": "2arcsin_sqrt", "u": "1/8*(2 - c1 - c2)"},
+    {"id": "M14", "kind": "corpus", "family": "Yee", "domain": "N", "weight": "1/2", "domain_type": "torus", "G": "2arcsin_sqrt", "u": "49/200*(2 - c1 - c2)"},
+    {"id": "M15", "kind": "corpus", "family": "FD9 wave", "domain": "N", "weight": "1", "domain_type": "torus", "G": "sqrt", "u": "1/6*(20 - 8*(c1 + c2) - 4*c1*c2)"},
+    {"id": "M16", "kind": "corpus", "family": "lattice KG / wave", "domain": "P", "weight": "1/2", "domain_type": "torus", "G": "sqrt", "u": "4 - 2*c1 - 2*c2"},
+    {"id": "M17", "kind": "corpus", "family": "lattice KG / wave", "domain": "P", "weight": "1/2", "domain_type": "torus", "G": "sqrt", "u": "5 - 2*c1 - 2*c2"},
+    {"id": "K-QWZm[201/100]", "kind": "control", "family": null, "domain": null, "weight": "0", "domain_type": "torus", "G": "sqrt", "u": "(201/100)^2 + 2 + 2*201/100*(c1 + c2) + 2*c1*c2"},
+    {"id": "K-QWZm[5/2]", "kind": "control", "family": null, "domain": null, "weight": "0", "domain_type": "torus", "G": "sqrt", "u": "(5/2)^2 + 2 + 2*5/2*(c1 + c2) + 2*c1*c2"},
+    {"id": "K-QWZm[4]", "kind": "control", "family": null, "domain": null, "weight": "0", "domain_type": "torus", "G": "sqrt", "u": "4^2 + 2 + 2*4*(c1 + c2) + 2*c1*c2"},
+    {"id": "K-QWZm[10]", "kind": "control", "family": null, "domain": null, "weight": "0", "domain_type": "torus", "G": "sqrt", "u": "10^2 + 2 + 2*10*(c1 + c2) + 2*c1*c2"},
+    {"id": "K1", "kind": "control", "family": null, "domain": null, "weight": "0", "domain_type": "box", "G": "id", "u": "(3/5*(x - 1/7) - 4/5*(y + 2/9))^2*(4/5*(x - 1/7) + 3/5*(y + 2/9)) + (4/5*(x - 1/7) + 3/5*(y + 2/9))^2"},
+    {"id": "K2", "kind": "control", "family": null, "domain": null, "weight": "0", "domain_type": "box", "G": "id", "u": "(x + 1/5)^2*(y - 1/3) + (y - 1/3)^4"},
+    {"id": "K3", "kind": "control", "family": null, "domain": null, "weight": "0", "domain_type": "box", "G": "id", "u": "(x - 2/7)^3 + (y + 1/11)^4"},
+    {"id": "K5", "kind": "control", "family": null, "domain": null, "weight": "0", "domain_type": "torus", "G": "sqrt", "u": "(c1 + c2)^2 + 1/4"}
+  ]
+}
