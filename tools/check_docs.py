@@ -145,6 +145,12 @@ def check_privacy(tracked):
     return bad
 
 
+def in_history(repo, p):
+    """Some commit reachable from any ref touches p. --full-history: without it, git log prunes a side branch whose
+    merge leaves the tree unchanged, so a file added and removed there is missed (seen in CI on 2026-11-10)."""
+    return bool(git(repo, "log", "--all", "--full-history", "--format=%H", "-1", "--", p).strip())
+
+
 def run(repo):
     tracked = tracked_files(repo)
     md = [f for f in tracked if f.endswith(".md") and not f.startswith("review/calibration/")]
@@ -153,15 +159,19 @@ def run(repo):
     if os.path.exists(allow_file):
         allow = {ln.split("#")[0].strip() for ln in open(allow_file, encoding="utf-8")} - {""}
 
-    def in_history(p):
-        return bool(git(repo, "log", "--all", "--format=%H", "-1", "--", p).strip())
+    # The paths check accepts paths found in history. In a shallow clone (CI's default checkout is depth 1) a path that
+    # exists only before the shallow boundary is reported missing, so say so up front.
+    if git(repo, "rev-parse", "--is-shallow-repository").strip() == "true":
+        print("docs-check: note: shallow clone; a cited path that exists only in history older than the clone is "
+              "reported missing (git fetch --unshallow, or actions/checkout with fetch-depth: 0)")
+
 
     statements = json.load(open(os.path.join(repo, "stamps/statements.json")))["statements"]
     status_text = open(os.path.join(repo, "docs/STATUS.md"), encoding="utf-8").read()
     texts = {f: open(os.path.join(repo, f), encoding="utf-8").read() for f in md
              if f == "README.md" or (f.startswith("docs/") and not f.startswith("docs/release-notes/"))}
     results = {
-        "paths": check_paths(repo, md, tracked, allow, in_history),
+        "paths": check_paths(repo, md, tracked, allow, lambda p: in_history(repo, p)),
         "tables": check_tables(repo, md),
         "status": check_status(statements, status_text),
         "pins": check_pins(texts),
@@ -190,6 +200,24 @@ def self_test():
         results.append(("paths accepts a path found in history",
                         not check_paths(d, ["docs/a.md"], tracked, set(), lambda p: True)))
         results.append(("tables flags a code-span pipe", len(check_tables(d, ["docs/a.md"])) == 1))
+    with tempfile.TemporaryDirectory() as d:
+        # a file added and removed on a side branch merged with no net change: history simplification hides it
+        env = dict(os.environ, GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@t", GIT_COMMITTER_NAME="t",
+                   GIT_COMMITTER_EMAIL="t@t", GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM="1")
+        sh = lambda *a: subprocess.run(["git", "-C", d, *a], env=env, check=True, capture_output=True)  # noqa: E731
+        sh("init", "-q", "-b", "main")
+        sh("commit", "-q", "--allow-empty", "-m", "a")
+        sh("checkout", "-q", "-b", "side")
+        open(os.path.join(d, "gone.md"), "w").write("x\n")
+        sh("add", "gone.md")
+        sh("commit", "-q", "-m", "add")
+        sh("rm", "-q", "gone.md")
+        sh("commit", "-q", "-m", "remove")
+        sh("checkout", "-q", "main")
+        sh("commit", "-q", "--allow-empty", "-m", "b")
+        sh("merge", "-q", "--no-ff", "-m", "merge", "side")
+        sh("branch", "-q", "-D", "side")
+        results.append(("paths finds a file that lived only on a merged side branch", in_history(d, "gone.md")))
     st = [{"label": "S9", "proved_by": None}, {"label": "S8", "proved_by": "OscInt.x"}]
     status = "| S9 | x | machine-checked |\n| S8 | x | stated |\n| S7 | x | stated |\n"
     results.append(("status flags proved/row mismatches and an orphan row", len(check_status(st, status)) == 3))

@@ -27,6 +27,8 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0  # docs-check accepts cited paths found in history (tools/check_docs.py)
       - uses: ./.github/actions/setup-lean
       - name: Rust toolchain pinned in tools/rust-toolchain.toml
         run: cd tools && rustup toolchain install
