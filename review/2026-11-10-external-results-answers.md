@@ -147,5 +147,7 @@ So no remainder bound C‖A‖_{C²} t^{−2} can hold.
 2. **Owner: I3 ordering.** I3a was put first on the premise that S5.1′ needed it, and that premise no longer holds.
    Recommendation: formalise A3 first by the route above, and keep I3a for the dimension track (I3b) and the leading
    terms. The dimension track still needs I3a.
-3. **Owner: credit.** The proof route comes from an external reviewer. `docs/prior_art.md` and the eventual
-   STATUS row should credit it, as S1 credits Roos–Praveen.
+3. **Disclosure (owner decision 2026-11-10).** Publishing practice (COPE, ICMJE) is to disclose AI assistance, naming the
+   tool and version, and never to list an AI tool as an author or credit it. So the S5.1′ route is recorded as an
+   AI-use disclosure in `docs/prior_art.md`: OpenAI ChatGPT 6, version as given by the owner. The eventual STATUS row
+   and proof files will carry the same disclosure.

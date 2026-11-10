@@ -44,8 +44,9 @@ Runs on corpus models or controls before this registration, all with their outpu
   found by the VT adversarial referee); four stable A3 points of the QWZ family at each m ∈ {201/100, 5/2, 4, 10}
   with closed-form `g4` (K-QWZm, added 2026-11-10 from the external dossier, answers `review/2026-11-10-external-dossier-answers.md`,
   A1, owner decision); the expected outcomes of K1, K2, K3, K5; the NS sets of all corpus models.
-- Held-out set H (spec §3): sealed by its selector; commitment `SHA-256 = (at registration)`; selector (at
-  registration). The lead has not seen H.
+- Held-out set H (spec §3): selector the lead (owner decision 2026-11-10, with the mitigations of spec §3); pool
+  commitment `SHA-256 = (at registration)`; draw procedure and drand round (at registration). H does not exist until
+  that round, so nobody can have seen it before registration.
 - Published classifications read before registration (the logged sweep `review/2026-11-09-CENSUS-prior-art-sweep.md`):
   M17 (Cuenin–Ikromov; Borovyk–Goldberg), M03 (Ge–Hua–Jia–Zhou), M18 (Wan–Zhang); decay-rate papers for M05
   (Hong–Tadano–Yang) and M16 (Schultz; Bi–Cheng–Hua). The corpus was revised after the sweep and before freezing

@@ -27,14 +27,21 @@ For a reader who saw nothing. Read `docs/lessons.md` first (46 entries); every r
   - ROADMAP "Standing: repository hygiene": first pass done.
 - **Disclosure fixes:** `docs/prior_art.md` marks S1.k ANTICIPATED (Roos–Praveen `…_order_ge_two`, Mathlib PR #39406,
   open); ROADMAP I3's Ikromov–Müller wording is weakened.
+- **Owner decisions later the same day:**
+  - A3 formalisation comes before I3a (ROADMAP I3).
+  - The S5.1′ route carries an AI-use disclosure naming the tool (OpenAI ChatGPT 6), in `docs/prior_art.md`. This
+    follows publishing practice (COPE, ICMJE): disclosure, not authorship or credit.
+  - The lead selects the CENSUS held-out set, with mitigations (spec §3): a sealed pool of at least 12, a draw seeded
+    by drand, and owner custody of the salt, pool and H. To do before any implementation is commissioned.
 - **Owner items open:**
-  - the I3 ordering (recommendation: A3 formalisation before I3a);
-  - credit for the S5.1′ route;
-  - the CENSUS held-out selector;
   - the earlier records of prompts and AI reviews on `main` (`review/prompts/`, verbatim referee reports, query logs),
     which the privacy rule now covers. Removing them from `main`'s history would invalidate every stamp. Owner to decide.
 - `main` CI on 58a86d0: `ci` and `verify` both success.
-- Next, in order: as in session 8 (below), except that item (1) follows the S5.1′ route above.
+- Next, in order:
+  1. `docs/proof-A3.md` along the S5.1′ route, the route referee, then the parts and the replay.
+  2. The CENSUS spec-fidelity referee, the held-out pool and draw set-up, then implementations A and B.
+  3. The LeanCert experiment (I2).
+  4. I3a, then I3b.
 
 ## Session 8 (2026-11-09): what changed, and where to start
 - **v0.4.0 reconciled** (ROADMAP I0): pins PR #9 and DOI PR #10 merged; Zenodo 10.5281/zenodo.24088811 in

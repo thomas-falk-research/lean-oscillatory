@@ -104,16 +104,32 @@ only; all on 2026-11-09 in the logged sweep `review/2026-11-09-CENSUS-prior-art-
 **Held-out set H (sealed; added 2026-11-10, before registration).** The corpus above was chosen by the project. To
 test whether a ranking computed on it generalises, a set H of 4–6 further models is fixed before the run, and used
 only after the corpus results are committed.
-- *Who chooses.* A selector who is neither the lead nor an implementation author: the owner, an external person, or a
-  model of another family (its prompt is not recorded, owner privacy rule, `docs/lessons.md` 46).
-- *Constraints.* H's models are admissible (§1); none is a corpus model or an affine image of one; together they come
-  from at least three of the five domains; each has a published source. The selector writes H as JSON, a list of
+- *Who chooses (owner decision 2026-11-10): the lead.* This is weaker than an outside selector: the lead knows the
+  registration's expected ranking (§1 there) and could, even unintentionally, pick models that confirm it. Three
+  mitigations, fixed now:
+  1. *A pool, not a choice.* Before any implementation exists, the lead assembles a pool of at least 12 models that
+     meet the constraints below, by one inclusion rule stated with the pool. The pool is sealed (below), and its
+     commitment is entered in the registration.
+  2. *A draw nobody chooses.* H is the 5 models drawn from the pool by a deterministic procedure seeded with a public
+     drand mainnet round. The round number is fixed in the registration, and lies after the registration commit's
+     timestamp. The round's randomness is verified against drand's public key at the reveal.
+  3. *Custody.* The salt, the pool and H are handed to the owner, not kept in the repository or in a session
+     container. Implementers never see the pool or H before the reveal.
+- *Constraints.* The pool's models are admissible (§1); none is a corpus model or an affine image of one; together
+  they come from at least four of the five domains; each has a published source. The pool is written as JSON, a list of
   `{id, phase, domain, source}`.
-- *Sealing.* The selector publishes only `SHA-256(salt ‖ canonical JSON)`, with a random salt of at least 128 bits.
-  That hash is entered in the registration before it is registered. Lead and implementers never see H before the
-  reveal.
-- *Reveal.* After step 6 of the registered run is committed, the selector publishes the salt and the list; a hash
-  mismatch voids H.
+- *Draw procedure (fixed now).*
+  1. Rank the pool by `SHA-256(randomness ‖ id)`, ascending, where `randomness` is the hex randomness of the fixed drand
+     round.
+  2. H is the first 5.
+  3. If H covers fewer than three domains, replace H's lowest-ranked members, one at a time, by the highest-ranked pool
+     model of a domain H lacks, until three are covered.
+- *Sealing.* The selector publishes only `SHA-256(salt ‖ canonical JSON)` of the pool, with a random salt of at least
+  128 bits. That hash is entered in the registration before it is registered. H itself is not committed: it does not
+  exist until the drand round, and it is a fixed function of the pool, the round and the draw procedure. Implementers
+  never see the pool or H before the reveal.
+- *Reveal.* After step 6 of the registered run is committed, the selector publishes the salt, the pool and the draw
+  procedure, and recomputes H from the verified drand round. A pool hash mismatch, or an unverifiable round, voids H.
 - *Run.* H is classified by the registered code, unchanged. A model of H outside the input class, or one that cannot
   be parsed, is reported as a selector error and dropped from H.
 
@@ -274,3 +290,5 @@ it claims no novelty for the models with published classifications.
   they are the only degenerate points.
 - 2026-11-10 — before registration, owner decision (after the external audit, `review/2026-11-10-external-audit-answers.md`,
   memo Gate 3): the sealed held-out set H added to §3. The corpus, the controls and every definition are unchanged.
+- 2026-11-10 — before registration, owner decision: the lead selects the held-out set H, with the three
+  mitigations of §3 (sealed pool, drand-seeded draw, owner custody). The weaker independence is disclosed there.

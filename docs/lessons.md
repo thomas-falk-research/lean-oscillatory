@@ -332,8 +332,9 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     are sensitive fingerprints that can identify people, so they count as personal data. Rule: record external reviews
     and referee reports only as the lead's answers, in the lead's own words. Paraphrase rather than quote; a short
     quotation of a paper title, of Mathlib, or of the repository's own text is fine. Never commit a prompt, the owner's
-    or a referee's. Do not name an external reviewer's tool or vendor. The lead's commit attribution trailer is
-    unchanged; it was already on 158 commits of `main`. The branch history of session 9 was rebuilt without those
+    or a referee's. Name an external tool only in an AI-use disclosure (tool and version, as COPE and ICMJE ask), never as an author
+    or credit, and only where its output enters the work (as for the S5.1′ route, 2026-11-10). The lead's commit attribution trailer is unchanged; it was already on 158 commits of
+    `main`. The branch history of session 9 was rebuilt without those
     files. Earlier prompts and verbatim reports on `main` are an open owner item: removing them from `main`'s history
     would invalidate every stamp. Check: none automatic yet; a candidate `make quick` check for `review/prompts/`
     additions and for transcript markers is in ROADMAP "Standing: repository hygiene".

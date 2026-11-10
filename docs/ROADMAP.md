@@ -69,9 +69,13 @@ another. Nothing here is a capability until its evidence exists (`docs/STATUS.md
       height bound, which covers broad classes of finite-type 2D singularities (exact hypotheses not yet read; the external
       audit reports an exception involving an unbounded principal Newton face, CITED-UNREAD,
       `review/2026-11-10-external-audit-answers.md`), with the A3 statements shaped to be derivable from it. Every batch statement-first under `CONTRIBUTING.md`.
-      **Owner decision 2026-11-10 (dimension-generic track, inside I3):** I3a comes first in I3, then I3b. Background:
-      `review/2026-11-10-external-dossier-answers.md` and the lead's answer on dimension in chat; summary in
-      `docs/HANDOFF.md`, session 9.
+      **Owner decisions 2026-11-10 (order inside I3):**
+      1. The A3 formalisation comes first: S5.1′, then S5.1 by weakening, along the reviewed hand proof
+         (`review/2026-11-10-external-results-answers.md`).
+      2. Then I3a.
+      3. Then I3b (the dimension-generic track).
+      This revises the morning's order, which put I3a first. Background:
+      `review/2026-11-10-external-dossier-answers.md` and `docs/HANDOFF.md`, session 9.
   - [ ] **I3a Parametrised transverse stationary phase, transverse dimension n.**
     - *The lemma.* Take a phase `F(s, u) + y·(s, u)` with `s ∈ ℝⁿ` and `u ∈ ℝ^r`, whose s-Hessian is invertible on
       the amplitude's support. The lemma says the s-integral equals its stationary-phase leading term plus a remainder
@@ -87,7 +91,7 @@ another. Nothing here is a capability until its evidence exists (`docs/STATUS.md
       - The proof was checked by the lead and by a fresh-context referee: no FATAL or MAJOR finding
         (`review/2026-11-10-external-results-answers.md`).
       - The lemma still gives nondegenerate stationary phase in dimension n (`r = 0`) and the coupled lift I3b.
-      - Whether I3a should still come first is an open owner item (`docs/HANDOFF.md`, session 9).
+      - Hence the owner's revised order (above): A3 formalisation first, then I3a.
     - *Input derivative budget (2026-11-10).* A remainder `O(t^{−n/2−1})` cannot be controlled by C² amplitude bounds
       alone. For n = 2, an explicit family with uniform C² norm and zero leading term has integral exactly
       `π t^{−2} log(t/2)` (`review/2026-11-10-external-results-answers.md`, Result 2; check Q1). That family is a required
