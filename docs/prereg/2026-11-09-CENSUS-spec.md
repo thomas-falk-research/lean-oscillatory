@@ -1,9 +1,10 @@
 # Specification: singularity census of 2D dispersion relations (CENSUS)
 
-Status: DRAFT, 2026-11-09 (session 8), revised 2026-11-10 after the spec-fidelity referee (findings and what was done
+Status: FROZEN 2026-11-10 by the commit that sets this word (recorded in `docs/prereg/LEDGER.md`). Drafted 2026-11-09
+(session 8), revised 2026-11-10 after the spec-fidelity referee (findings and what was done
 in `review/2026-11-10-CENSUS-spec-answers.md`, in the lead's words, lessons 46; changes in §8). Because that referee
-reported a blocker, a second fresh referee checks the repairs before the file is frozen by a commit, which happens before
-either implementation exists. Changes after freezing
+reported a blocker, a second fresh referee checked the repairs (no blocker; its findings are repaired, same answers file,
+second part). The file is frozen by a commit before either implementation exists. Changes after freezing
 and before registration are listed in §8, and both implementations are re-checked against them; none are allowed after
 registration (`docs/prereg/2026-11-09-CENSUS-prereg.md`). An implementer reads only this file and the files it names.
 
@@ -54,7 +55,9 @@ parallel, and they vanish together only if `H = 0` (`H v_a = (0, −det H)`, `H 
   (check R3), scales as `|v|⁴` under `v ↦ λv`, and is 24 times the u⁴ coefficient of the function obtained by
   eliminating the transverse variable (splitting lemma; check R1: `g(u) = T[v,v,v] u³/6 + g4 u⁴/24 + O(u⁵)`).
   Because `g4` depends on the length of `v`, every reported value and every threshold uses the **normalised invariant
-  `ĝ4 = g4/|v|⁴`** (Euclidean norm), which is the same for `v_a`, `v_b` and any other nonzero kernel vector. (At K1,
+  `ĝ4 = g4/|v|⁴`** (Euclidean norm), which is the same for `v_a`, `v_b` and any other nonzero kernel vector. Where a
+  fixed choice is needed (B's enclosures), `v = v_a` if `v_a ≠ 0` and `v = v_b` otherwise, and `w = (−v₂, v₁)`.
+  `ĝ4` is invariant under rescaling `v` but scales like Ψ (`Ψ ↦ αΨ` gives `ĝ4 ↦ αĝ4`). (At K1,
   `g4` is −24576/625 with `v_a`, −7776/625 with `v_b`, and `ĝ4 = −6`.)
   **A3** (cusp) iff `ĝ4 ≠ 0`; **A≥4** iff `ĝ4 = 0`.
 
@@ -66,6 +69,7 @@ parallel, and they vanish together only if `H = 0` (`H v_a = (0, −det H)`, `H 
   D_k, k ≥ 5 (and of non-isolated D∞ points);
 - **E/J** iff `C ≠ 0` is the cube of a linear form — the 3-jet class of E6, E7, E8, J10 and the deeper E and J series;
 - **X** iff `C = 0` (`H = 0` and `T = 0`) — the zero 3-jet: X9 and every deeper class with zero 3-jet.
+`C` (nonzero) is a cube iff its Hessian covariant vanishes: `b² − 3ac = bc − 9ad = c² − 3bd = 0`.
 These are 3-jet classes; the census does not determine k in D_k or the subclass of E/J or X. `Disc` is homogeneous of
 degree 4 in `(a, b, c, d)`; thresholds use the scale-free `D̂ = Disc / max(|a|, |b|, |c|, |d|)⁴`.
 
@@ -76,9 +80,11 @@ each a point, a curve or a two-dimensional set; it is reported that way. A point
 component of positive dimension has type **NI** in addition to its pointwise type. NI says only that the point lies on
 a positive-dimensional component of Σ; it does not say that `k₀` is a non-isolated critical point of `φ_{k₀}` (each
 point of K3's A3 segment is an isolated critical point). On a component of dimension 1 the type is constant on each
-open arc between finitely many **special points** (crossings, ends, and the points where the type changes); the
-component is reported with the types that occur on it, its special points with their types, and sample points with
-their types (§4.1). A component of dimension 2 is reported with the types that occur on it.
+open arc between finitely many **special points**: crossings, ends, and the points where the type changes. Only points
+of Σ count, and only ends inside the domain: an end on the boundary of the box B (controls K1–K3) is not a special
+point, and a curve of Σ running into NS has no end there (its limit point is in NS, not in Σ, and is reported with
+NS). A component may have no special points (a closed curve of constant type). The component is reported with the
+types that occur on it, its special points with their types, and sample points with their types (§4.1). A component of dimension 2 is reported with the types that occur on it.
 
 **2.6 Flat bands.** A band that is constant on `T²` is reported as FLAT and not classified. (The corpus records
 single dispersive bands; M10's flat bands ±1 are named in its record and not classified.)
@@ -133,29 +139,38 @@ only after the corpus results are committed.
   2. *A draw nobody chooses.* H is the 5 models drawn from the pool by the deterministic procedure below, seeded with
      one round of drand's default mainnet chain (chain hash
      `8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce`, 30-second rounds). The registration names the
-     round number; its time is at least 48 hours after the registration commit is pushed. The registration commit is
-     stamped (RFC 3161 and OpenTimestamps, as `make stamp` does) before that time; if no stamp predates the round's
-     time, H is void. At the reveal, the round's signature is verified against the chain's public key, and its
+     round number. The registration commit is stamped (RFC 3161 and OpenTimestamps, as `make stamp` does), and the round's
+     time must be at least 48 hours after the RFC 3161 time of that stamp; otherwise H is void. At the reveal, the round's signature is verified against the chain's public key, and its
      randomness is recomputed as SHA-256 of the signature.
   3. *Custody.* The salt, the pool and H are handed to the owner, not kept in the repository or in a session
      container. Implementers never see the pool or H before the reveal.
 - *Inclusion rule (fixed now, before the pool is assembled).*
   1. Sources: peer-reviewed papers or arXiv preprints, whose text the selector has read, that print the dispersion
      relation of a two-dimensional model in one of the five domains.
-  2. Parameters: the first numerical parameter values the source prints for that relation, as exact rationals; where
-     it prints none, every free parameter is 1, and if that makes the phase constant or inadmissible, 1/2.
+  2. Parameters: the first numerical values the source gives for that relation's parameters, in the order they appear
+     (body text, tables and captions alike), as exact rationals; where it gives none, every free parameter is 1, then
+     1/2 if that makes the phase constant or inadmissible; if both fail, the source contributes no model. Coordinates:
+     for a lattice with primitive vectors a₁, a₂, the phase is written in `kᵢ = k·aᵢ` (2π-periodic in each); a relation
+     that cannot be written so with rational coefficients is not admissible. Band: the highest dispersive band (for a
+     ± pair, the + band), as in the corpus. Domain: W if it is a discrete-time quantum walk; else N if it is the symbol
+     of a numerical scheme; else T if the source calls the model topological; else P if it is a phonon, lattice-wave or
+     Klein–Gordon relation; else L.
   3. The phase so obtained must be admissible (§1) and not constant. Excluded: corpus models, controls, and images of
      either under `k ↦ Ak + b` (A ∈ GL₂(ℤ), b ∈ T²) combined with `Ψ ↦ αΨ + β` (α ≠ 0); of two pool candidates
      related this way, only the first found enters.
-  4. Quota: at most one model per source and at most three per domain, taken in the order the sources are found. The
-     selector stops when every domain has three or the search is exhausted. If the pool has fewer than 12 models or
-     covers fewer than four domains, the held-out step is abandoned and reported as such in the registration.
-  5. Record: each pool entry gives the source (DOI or arXiv identifier, equation number) and the parameter values. The
-     search queries are not recorded (lessons 46). The order in which sources are found remains the selector's
-     choice; the sealed pool and the random draw are what limit it.
-- *Pool format.* A JSON array, sorted by `id`, of objects `{id, domain, source, parameters, G, u, domain_type}`, with
-  `G`, `u` and `domain_type` in the grammar of `numerics/census/corpus.json`. Every entry is checked against that
-  grammar and against admissibility by a script before sealing, so that no entry can fail to parse later.
+  4. Quota: at most one model per source and at most three per domain, taken in the order the sources are examined.
+     The selector stops when every domain has three or after 60 sources have been examined, whichever is first. If the
+     pool has fewer than 12 models or covers fewer than four domains, the held-out step is abandoned and reported as
+     such in the registration.
+  5. Record: each pool entry gives the source (DOI or arXiv identifier, equation number) and the parameter values;
+     the sealed record also lists every examined source with the rule that excluded it. The search queries are not
+     recorded (lessons 46). The order in which sources are examined remains the selector's choice; the sealed pool and
+     the random draw are what limit it.
+- *Pool format.* A JSON array, sorted by `id` (unique), of objects `{id, domain, source, parameters, G, u,
+  domain_type}`, all values strings (rationals written `p/q`, so that RFC 8785 never rounds a number), with `G`, `u`
+  and `domain_type` in the grammar of `numerics/census/corpus.json`. Every entry is checked against that grammar and
+  against admissibility by `numerics/census/validate_pool.py`, committed before the pool is sealed, so that no entry
+  can fail to parse later.
 - *Draw procedure (fixed now).*
   1. For each pool entry, its key is `SHA-256(R ‖ 0x00 ‖ UTF-8(id))`, where `R` is the 32 raw bytes of the round's
      randomness (hex-decoded) and `‖` is byte concatenation. The original rank of an entry is its position when the
@@ -168,8 +183,10 @@ only after the corpus results are committed.
   later as hex). That hash is entered in the registration before it is registered. H itself is not committed: it does not
   exist until the drand round, and it is a fixed function of the pool, the round and the draw procedure. Implementers
   never see the pool or H before the reveal.
-- *Reveal.* After step 6 of the registered run is committed, the selector publishes the salt, the pool and the draw
-  procedure, and recomputes H from the verified drand round. A pool hash mismatch, or an unverifiable round, voids H.
+- *Reveal.* After step 6 of the registered run is committed, the owner publishes the salt and the pool from the
+  custody copy (not the selector), and H is recomputed from the verified drand round. A pool hash mismatch, or an
+  unverifiable round, voids H; a voided H is a reported outcome (registration C7, "voided", with its cause), never
+  an omitted one.
 - *Run.* H is classified by the registered code, unchanged, from a clean checkout of the registered commit; the pool
   and H stay outside the tree, and the SHA-256 of their files is recorded with the result. A model of H that the
   implementations reject anyway is reported as a selector error and dropped from H; the C7 check (registration §3)
@@ -205,7 +222,9 @@ and GD-N have further hypotheses, so for them the predicate is necessary, not su
 (finitely many A3 points allowed), **F-A4** (finitely many A≥4 points), **F-D5** (finitely many D≥5 points), **F-E**
 (finitely many E/J points), **F-X** (finitely many X points), **F-NI** (positive-dimensional components allowed), **F-NS**
 (a nonempty finite NS set allowed). A model is covered by GD ∪ S, for a set S of families, if every object it has
-outside GD's hypothesis belongs to a family in S. This is a necessary condition for a decay theorem of the GD form, not
+outside GD's hypothesis belongs to a family in S. Objects are counted this way: every point on a positive-dimensional
+component of Σ, special points included, is covered by F-NI alone; F-A3, F-A4, F-D5, F-E and F-X count only isolated
+points of Σ; F-NS counts NS. (So M07, if its only Σ is the component of §7, is covered by GD ∪ {F-NI}.) This is a necessary condition for a decay theorem of the GD form, not
 a sufficient one (uniformity in the linear term, amplitude conditions and global assembly are separate theorems).
 
 **4.3 Unlock score.** For a family F: `N(F)` = the total weight (§3) of the corpus models covered by GD ∪ {F} and not
@@ -219,7 +238,7 @@ All exact; checks in `numerics/census/spec_checks.py`. Controls K1–K3 are poly
 
 | ID | Phase | Expected (exact) | Check |
 |---|---|---|---|
-| K-SQ | M01 | `Σ` = the four D4 points `(±π/2, ±π/2)`; no A3, A≥4, D≥5, E/J, NI; fold set nonempty | K-SQ |
+| K-SQ | M01 | `Σ` = the four D4 points `(±π/2, ±π/2)`; no A3, A≥4, D≥5, E/J, X, NI; fold set nonempty | K-SQ |
 | K-QWZ3 | M08 | `Σ` contains the four A3 points `(±a, ±a)`, `a = arccos(−1/3)` (more points may exist; the census decides) | K-QWZ3 |
 | K-QWZm | `√(m² + 2 + 2m(c₁ + c₂) + 2c₁c₂)` for each m ∈ {201/100, 5/2, 4, 10} (control, weight 0, not in the corpus; IDs `K-QWZm[201/100]`, `K-QWZm[5/2]`, `K-QWZm[4]`, `K-QWZm[10]`) | at each m, `Σ` contains the four A3 points `(±a_m, ±a_m)`, `a_m = arccos(−1/m)`, all stable (`T[v, v, w] ≠ 0`), with `ĝ4` as in §7 (more points may exist; the census decides, and this control asserts nothing about them) | K-QWZm |
 | K1 | `X²Y + Y²`, `(X, Y) = R((x, y) − r)`, `R = [[3/5, −4/5], [4/5, 3/5]]`, `r = (1/7, −2/9)`, on B | `Σ ∩ B = {r}`, type A3; no rank-0 point | K1 |
@@ -261,7 +280,9 @@ elementary functions are rigorous (e.g. Arb, MPFI, IntervalArithmetic.jl with co
 closed-form derivatives of §1 (Faà di Bruno) or interval Taylor arithmetic. The root box is the dyadic square
 `[−4, 4]²` for phases on T² (it contains a fundamental domain; a point of T² may lie in several boxes, which is
 harmless) and `[−1, 1]²` for K1–K3. Boxes are processed breadth-first (a first-in, first-out queue; a box is split into
-four equal children, queued lower `k₁` half first, then lower `k₂` half). Each box gets the first label whose test it
+four equal children, queued in the order (lower `k₁`, lower `k₂`), (upper `k₁`, lower `k₂`), (lower `k₁`, upper `k₂`),
+(upper `k₁`, upper `k₂`)). A box is processed when it is taken from the queue and tested, whether it is then labelled
+or split; the budget counts processed boxes. Each box gets the first label whose test it
 passes, in this order:
 1. NS: the enclosure of `u` on the box is disjoint from `J` (every point of the box is in NS);
 2. NS-ADJACENT: the enclosure of `u` is not contained in `J`, and the box has width at most 2⁻¹² (a wider box with this
@@ -280,7 +301,8 @@ UNRESOLVED boxes, and a model with a component of Σ will normally exhaust B's b
 neighbourhood of NS.
 - *Enclosure interface.* B provides `numerics/census/impl_b/enclose.py MODEL_ID BOX`, which prints as JSON the
   enclosures of `u`, `det H`, `T[v_a,v_a,v_a]`, `T[v_b,v_b,v_b]`, `|v_a|²`, `|v_b|²` and `ĝ4` on `BOX` (decimal-string
-  endpoints, rounded outward), computed by the same code that labels boxes. The spec-only evaluator uses it for
+  endpoints, rounded outward), computed by the same code that labels boxes; `ĝ4` with the fixed `v` and `w` of §2.3,
+  as the function `Q[v⁴]/|v|⁴ − 3 T[v,v,w]²/(|v|⁴ H[w,w])` (defined where its denominators are nonzero). The spec-only evaluator uses it for
   registration C5(b).
 
 **Independence.** A and B are written by different agents (or people), B from this specification alone without
@@ -292,13 +314,15 @@ claims.
 **Output schema (JSON, one file per implementation).** Top level: `spec_sha256` (of this file at the registered
 commit), `git_commit`, `dirty` (bool), `versions` (object), `platform` (string), `models` (object keyed by the IDs of
 `numerics/census/corpus.json`), and `complete: true` written last. Per model: `flat` (bool); `ns_points` (list of
-`{box, exact}`); `ns_components` (list of `{dim, boxes, exact}`); `points` (list of `{type, box, exact}` with `type`
+`{box, exact}`); `ns_components` (list of `{dim, boxes, exact, samples}`, `samples` at least 16 exact points from A); `points` (list of `{type, box, exact}` with `type`
 in `A3, A4+, D4, D5+, EJ, X`); `components` (list of `{dim, types, special_points, samples, boxes, exact}`, where
 `special_points` and `samples` are lists of `{type, box, exact}`); `fold_set_empty` (bool); B only: `ns_boxes`,
 `ns_adjacent_boxes`, `excluded_boxes`, `a3_boxes`, `unresolved` (lists of boxes, dyadic endpoints as exact decimal
 strings); `budget_used` (integers); `status` (`DONE` or `BUDGET_EXHAUSTED` with a reason). `exact` is required from A
-and absent from B; A's components carry `special_points` and at least 16 `samples`, B's components are empty (B reports
-them as UNRESOLVED boxes). Boxes are `[[lo1, hi1], [lo2, hi2]]` with decimal strings, lower ends rounded down and upper
+and absent from B; A's components carry `special_points` (possibly empty) and at least 16 `samples`. Fields that
+interval branch and bound cannot decide are `null` in B's output: `flat`, `ns_points`, `ns_components`, `points`,
+`components` and `fold_set_empty` (B's evidence is its labelled boxes). B's box lists are long (up to about 2²⁴ per
+model); the file may be stored gzip-compressed as `b.json.gz`. Boxes are `[[lo1, hi1], [lo2, hi2]]` with decimal strings, lower ends rounded down and upper
 ends rounded up.
 
 **Budgets (deterministic, never wall clock).** A: per model, a cap on the total degree of the polynomial systems it may
@@ -326,8 +350,9 @@ the unprocessed boxes labelled UNRESOLVED (above).
 - K1 at r: `g4 = −24576/625` with `v = v_a`, and `ĝ4 = −6` (exact, check K1).
 - M07 (QWZ m = 1; informational, check M07-LINES): `u = 1 + 2(1 + c₁)(1 + c₂)`, so `Ψ ≡ 1` on the lines `k₁ = π`
   and `k₂ = π`. On `k₁ = π`, `k₂ ≠ π`: `H = diag(1 + c₂, 0)`, `T[v, v, v] = 0` and `ĝ4 = 0` (type A≥4); at `(π, π)`:
-  `H = 0`, `T = 0` (type X). The two lines are therefore one component of Σ, of type A≥4 + NI with the special point
-  `(π, π)` of type X. Whether M07 has other points of Σ is for the census to decide.
+  `H = 0`, `T = 0` (type X). The two lines therefore lie in one component of Σ, of type A≥4 + NI, with `(π, π)` of type X. The second spec
+  referee's exact elimination (not committed; disclosed in the registration's §1) found no other point of Σ for M07;
+  the census decides.
 
 ## 7a. Prior art and what the census can add
 
@@ -379,3 +404,10 @@ it claims no novelty for the models with published classifications.
   - §7: `ĝ4` values for M08, K-QWZm and K1; the M07 lines (check M07-LINES). `numerics/census/spec_checks.py`: the
     binary-cubic classifier fixed for cubics with roots at both 0 and infinity (no earlier check was affected; check
     R4), checks CORPUS and M07-LINES added. No implementation exists; nothing has been run under the registration.
+- 2026-11-10 — after the second spec referee (no blocker; answers, second part, in the same file), before freezing:
+  special points and A's NS objects added to the cross-checks (registration C3, C5); "ends" defined (not on ∂B, none
+  at NS); B's undecidable fields `null`; coverage of components fixed (F-NI alone); `ĝ4`'s scaling stated and the C5(a)
+  threshold made relative; C5(a) checks every type; lifts in C3(c); the held-out inclusion rule made mechanical (60
+  sources, parameters, coordinates, band, domain order, `validate_pool.py`), pool values as strings, the owner reveals,
+  a voided H is reported, the 48-hour rule tied to the stamp; B's child order, "processed", fixed `v` and `w`,
+  compressed output; K-SQ lists X; the M07 component wording; CORPUS checks every field.

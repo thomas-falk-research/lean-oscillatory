@@ -10,6 +10,7 @@ numerics/census/impl_b/enclose.py   # its enclosure interface (spec §6), same
 numerics/census/accept.py           # CENSUS acceptance script, same
 numerics/census/accept_controls     # its negative-control suite, same
 numerics/census/evaluator.py        # spec-only evaluator, same
+numerics/census/validate_pool.py    # held-out pool validator, committed before the pool is sealed (spec §3)
 numerics/census/run_census.sh       # generated run wrapper, committed with the registration
 numerics/census/out/a.json          # registered-run output (prereg §2)
 numerics/census/out/b.json          # same

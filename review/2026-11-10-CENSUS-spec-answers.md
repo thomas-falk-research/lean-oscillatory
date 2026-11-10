@@ -61,3 +61,39 @@ Its grid scans, which are hints and not proofs: four candidate cells for M17 nea
 The literature statements (it had no web access), the drand verification mechanics, whether the GD theorems are
 proved in Lean, the complete Σ set of any corpus model beyond its grid scans, and the full held-out protocol against
 the computation-of-record procedure.
+
+## Second part: the referee of the repairs (2026-11-10)
+
+Subject: the same files at 2e288c1, after the repairs above. A second fresh-context referee, read-only, with its own
+code. Its prompt and report are not recorded (lessons 46).
+
+**Verdict:** no BLOCKER; four MAJOR, seven MINOR, six NIT, all accepted and repaired before freezing (spec §8, third
+2026-11-10 entry).
+
+What it confirmed with its own code:
+- the blocker's repair: no test order, root box, processing rule or budget rule lets the two-implementation statement
+  cover a point that no B test examined, including points of T² with several lifts;
+- `ĝ4` is the same for both kernel vectors and four choices of `w` (25 digits) at every K-QWZm and M08 point, and every
+  §7 value;
+- `corpus.json`, with its own parser and transcription;
+- exact eliminations: Σ of M07 is exactly the lines `k₁ = π` and `k₂ = π`, and Σ of K5 is exactly `c₁ + c₂ = 0`;
+- the held-out replacement step ends after at most one iteration (200 000 simulated pools).
+
+| Finding | Severity | Answer |
+|---|---|---|
+| The special points introduced by the first repair, and A's NS points, were tied to no cross-check: a spurious special point inside an EXCLUDED box of B would fail no criterion. | MAJOR | Accepted. C3(b), C3(c) and C5(a) now cover special points and sample points; A's NS points and NS-component samples may not lie in a box whose enclosure of `u` lies in `J`. NS components now carry samples in the schema. |
+| §2.5 listed "ends" among special points, so K3's segment ends on the box boundary would be special points and contradict the K3 expectation, failing C2. | MAJOR | Accepted. Ends on ∂B are not special points; a Σ curve has no end at NS. A component may have no special points. |
+| B's schema required fields that interval branch and bound cannot decide (`flat`, NS points, fold set empty). | MAJOR | Accepted. Those fields are `null` for B. |
+| Coverage of a component containing an X point was ambiguous between F-NI and F-X, which could flip the recommendation via M07. | MAJOR | Accepted. Every point on a positive-dimensional component, special points included, is covered by F-NI alone; the other point families count isolated points only. |
+| `ĝ4` scales like Ψ, so an absolute threshold is not scale-free. | MINOR | Accepted; the C5(a) bound for A3 is relative (`σ = ‖Q‖ + T[v,v,w]²/\|H[w,w]\|`), and the spec states the scaling. |
+| C5(a) checked only A3 and D4 and not the rank. | MINOR | Accepted; one condition set per type, including the binary cubic's Hessian covariant for E/J (verified by the lead: it vanishes exactly for a cube). |
+| C3(c) and the §4 wording had no lift rule. | MINOR | Accepted; both speak of lifts; U's area is reported within `[−π, π]²`. |
+| The acceptance control rejected a component without special points, which can be legitimate. | MINOR | Accepted; the field must be present and may be empty. |
+| The inclusion rule was not mechanical (which parameter values, a failing fallback, domain assignment, when to stop, coordinates, band, an unnamed validator). | MINOR | Accepted; all fixed in spec §3 (60 examined sources, a domain order, `numerics/census/validate_pool.py`). |
+| The selector could void H after seeing it by mishandling the reveal. | MINOR | Accepted; the owner reveals from custody, and a voided H is a reported outcome. |
+| CORPUS checked only `G` and `u`, and the M07 component claim went beyond its check. | MINOR | Accepted. CORPUS checks every field, unique ids and family totals (a planted wrong weight makes it fail); the M07 wording says the lines lie in one component, and the referee's elimination is disclosed. |
+| B's `ĝ4` enclosure undefined off Σ; child order and "processed" ambiguous; output size; JCS rounds numbers; K-SQ omitted X and C4(a) used control names as IDs; the 48-hour rule not verifiable. | NIT | Accepted; fixed `v` and `w`, explicit child order and budget count, gzip allowed, pool values as strings with unique ids, K-SQ lists X, C4(a) names M08 and M17, and the 48 hours run from the RFC 3161 stamp time. |
+
+What it did not check: the literature statements, the drand chain hash against the network, complete Σ sets beyond M07
+and K5, whether Krawczyk tests succeed at the corpus's A3 points, A's charts, the Lean predicates, and whether the GD
+theorems hold.

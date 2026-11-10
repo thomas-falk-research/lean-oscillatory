@@ -27,8 +27,10 @@ For a reader who saw nothing. Read `docs/lessons.md` first (46 entries); every r
   invariant `ĝ4 = g4/|v|⁴`; a new type X (zero cubic); one-dimensional components with special points; the
   machine-readable corpus `numerics/census/corpus.json`; B's label order and budget-exhaustion rule; the held-out
   inclusion rule and draw encoding. Exact checks 39/39 (`numerics/results-census-spec-2026-11-10.txt`). A new exact
-  fact: QWZ m = 1 (M07) has lines of A≥4 points, so it is not GD-covered (check M07-LINES). A second fresh referee checks
-  the repairs before the spec is frozen.
+  fact: QWZ m = 1 (M07) has lines of A≥4 points, so it is not GD-covered (check M07-LINES). A second fresh referee
+  checked the repairs (no BLOCKER; four MAJOR on the wiring around them, repaired: special points cross-checked, B's
+  undecidable fields `null`, components counted under F-NI alone, a mechanical held-out inclusion rule). The spec is
+  **FROZEN** (commit in `docs/prereg/LEDGER.md`); the registration is still DRAFT.
   - ROADMAP I7: the Fourier-grid certificate, outside the core, with a stop rule.
   - ROADMAP "Candidates (not commitments)": four promotion gates.
   - ROADMAP "Standing: repository hygiene": first pass done.
@@ -46,8 +48,8 @@ For a reader who saw nothing. Read `docs/lessons.md` first (46 entries); every r
 - `main` CI on 58a86d0: `ci` and `verify` both success.
 - Next, in order:
   1. `docs/proof-A3.md` along the S5.1′ route, the route referee, then the parts and the replay.
-  2. The CENSUS repair re-check (second referee), freezing, the held-out pool and draw set-up, then implementations A
-     and B.
+  2. CENSUS: `numerics/census/validate_pool.py`, then the held-out pool (spec §3 rule) sealed with the owner, then
+     implementations A and B and their development runs, then the pre-registration referee and registration.
   3. The LeanCert experiment (I2).
   4. I3a, then I3b.
 

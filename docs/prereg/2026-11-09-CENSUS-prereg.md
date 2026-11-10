@@ -22,7 +22,8 @@ ASSUMED(L4: Lean discharge of each cited model's classification, through ROADMAP
   (crafted outputs that must each FAIL: a missing field; `"complete"` absent; `"certified"`-style flags as strings; a
   box with an inverted interval; non-ASCII digits; a top-level list; an A3 point of A inside an EXCLUDED box of B; an
   A3-PROVEN box with no A point; a box set that leaves a gap in B's root box; an NS-ADJACENT box wider than 2⁻¹²; an
-  A component without special points or typed samples; a spec hash mismatch; a wrong git commit).
+  A component without the `special_points` field (an empty list is valid), or with a sample without a type; an X
+  special point of A inside an EXCLUDED box of B; a B output whose `points` is not `null`; a spec hash mismatch; a wrong git commit).
 - Spec-only evaluator for soundness checks: `numerics/census/evaluator.py`, mpmath at 50 digits, written from the spec
   alone by an agent that has not read A or B, before reading them.
 - Environment: Python lock with hashes for A, B and the acceptance script; solver and interval-library versions
@@ -60,12 +61,16 @@ Runs on corpus models or controls before this registration, all with their outpu
   not committed: exact eliminations for K5 and the QWZ values, and coarse grid scans (hints, not proofs) of M03, M07,
   M17 and M18. What they showed is summarised in the answers file; the M07 finding is now an exact fact (check
   M07-LINES, spec §7).
+- The second spec referee (2026-11-10, same answers file, second part) ran its own scripts, not committed: an exact
+  elimination for M07 (Σ is exactly the lines `k₁ = π` and `k₂ = π`) and for K5 (Σ is exactly `c₁ + c₂ = 0`); 60-digit
+  evaluations of `ĝ4` at M08, K-QWZm, K1, M17 and M03 (`ĝ4 ≈ 1.677` at M17's `(π/2, π/2)` and `−0.75` at M03's); a
+  check of `numerics/census/corpus.json` with its own parser; and a simulation of the held-out replacement step.
 - Development runs of A, B and the acceptance script: (at registration; every rung, including expected failures, run
   once with a small budget, outputs listed here).
 
 Expected outcomes, stated by the lead before any census run (CONJECTURED unless marked; not criteria): M01 GD-covered
 (exact); M08 has A3 points (exact); M17 has A3 points exactly at `(±π/2, ±π/2)` and M03, M18 have only A2/A3
-degenerate points (literature, spec §5); M07 is not GD-covered, because the lines `k₁ = π` and `k₂ = π` form a
+degenerate points (literature, spec §5); M07 is not GD-covered, because the lines `k₁ = π` and `k₂ = π` lie in a
 component of Σ of type A≥4 + NI with an X point at `(π, π)` (exact, check M07-LINES; this replaces, on 2026-11-10 before
 registration, the earlier expectation "M07 has A3 points" from the grid verdict CUSP, which nothing exact supports);
 M05, M10, M13, M14, M15, M16 are not
@@ -97,20 +102,32 @@ outputs aside, refuses a dirty tree, prints `STEP_OK`/`STEP_FAIL` per step and `
 - **C2 (controls).** A reproduces spec §5 exactly for K-SQ, K1, K2, K3, K5 (types; for K3 and K5 one component each,
   with the special points and types of spec §5; locations within the enclosure width of spec §4.1; nothing else in Σ). B: for K1 exactly one A3-PROVEN box, containing r; for K-SQ, K2, K3, K5
   no A3-PROVEN box; every A-object of each control lies in a B box labelled UNRESOLVED or A3-PROVEN (never EXCLUDED).
-- **C3 (cross-agreement, every model and control).** (a) B's boxes cover its root box (spec §6: `[−4, 4]²` on T²,
-  `[−1, 1]²` for K1–K3) exactly (checked in exact dyadic arithmetic). (b) No isolated point of A, and none of the exact sample points A gives for each component (spec §4.1),
-  lies in a closed B box labelled EXCLUDED (on T², every lift of the point to the root box is tested); membership is decided from A's exact description, refining its isolating
-  box until it lies inside one B box or inside the interior of a union of B boxes. (c) Each A3-PROVEN box of B contains
-  exactly one isolated point of A, of type A3, and no other isolated point or sample point of A.
-- **C4 (known answers).** (a) A reports the four A3 points of K-QWZ3, each enclosing `(±a, ±a)` exactly as spec §5,
-  the four A3 points of K-DKG at `(±π/2, ±π/2)`, and, at each mass of K-QWZm, four A3 points enclosing
+- **C3 (cross-agreement, every model and control).** Membership below is decided from A's exact description, refining
+  its isolating box until it lies inside one B box or inside the interior of a union of B boxes; on T², every lift of
+  the point to B's root box is tested.
+  - (a) B's boxes cover its root box (spec §6: `[−4, 4]²` on T², `[−1, 1]²` for K1–K3) exactly (checked in exact dyadic
+    arithmetic).
+  - (b) No isolated point, special point or sample point of A (spec §4.1) has a lift in a closed B box labelled
+    EXCLUDED. No NS point of A, and no sample point of an NS component of A, has a lift in a closed B box labelled
+    EXCLUDED or A3-PROVEN (both labels require the enclosure of `u` to lie in `J`).
+  - (c) Each A3-PROVEN box of B contains exactly one lift of an isolated point of A, of type A3, and no lift of any other
+    isolated, special or sample point of A.
+- **C4 (known answers).** (a) A reports for M08 (control K-QWZ3) the four A3 points, each enclosing `(±a, ±a)` exactly as spec §5,
+  for M17 (K-DKG) the four A3 points at `(±π/2, ±π/2)`, and, at each mass of K-QWZm, four A3 points enclosing
   `(±a_m, ±a_m)` exactly, with C5's evaluated `ĝ4` (spec §2.3) within 1e−20 relative of the closed form of spec §7. Other points
   A reports for K-QWZm are not a failure (the control asserts nothing about them). (b) Literature (spec §5, X-DKG, X-TRI, X-KING): A's classification
   of M17, M03 and M18 agrees with the published statement.
-- **C5 (soundness spot checks, spec-only evaluator).** (a) At every isolated point A reports (its exact location
-  evaluated at 50 digits), with `h = 1 + ‖H‖` and `τ = 1 + ‖T‖` (‖·‖ the largest absolute value of an entry):
-  `|det H| ≤ 1e−40·h²` and `|T[v_a³]|, |T[v_b³]| ≤ 1e−40·τ·h³`; and the scale-free type-deciding quantity (`ĝ4` for
-  A3, `D̂` for D4, spec §2.3–2.4) has absolute value above 1e−20. (b) 1000 points per model from the linear congruential
+- **C5 (soundness spot checks, spec-only evaluator).** (a) At every isolated point, special point and sample point A
+  reports (its exact location evaluated at 50 digits), with ‖·‖ the largest absolute value of an entry, `h = ‖H‖`,
+  `τ = ‖T‖`, `q = ‖Q‖`, the cubic's coefficients `(a, b, c, d)` of spec §2.4 with `μ = max(|a|, |b|, |c|, |d|)` and
+  `κ = max(|b² − 3ac|, |bc − 9ad|, |c² − 3bd|)` (the Hessian covariant), and, at rank 1, `v` a unit kernel vector,
+  `w = (−v₂, v₁)` and `σ = q + T[v,v,w]²/|H[w,w]|`:
+  - every point: `|det H| ≤ 1e−40·(1 + h)²` and `|T[v_a³]|, |T[v_b³]| ≤ 1e−40·(1 + τ)(1 + h)³`;
+  - A3: `h > 1e−20·(1 + τ)` and `|ĝ4| > 1e−20·σ` (relative, because `ĝ4` scales like Ψ, spec §2.3);
+  - A≥4: `h > 1e−20·(1 + τ)` and `|ĝ4| ≤ 1e−40·(1 + σ)`;
+  - D4, D≥5, E/J, X (rank 0): `h ≤ 1e−40·(1 + τ)`; D4: `|D̂| > 1e−20`; D≥5: `|D̂| ≤ 1e−40` and `κ > 1e−20·μ²`;
+    E/J: `κ ≤ 1e−40·(1 + μ)²` and `μ > 1e−20`; X: `μ ≤ 1e−40`.
+  (b) 1000 points per model from the linear congruential
   generator of `docs/prereg/2026-11-08-VV-classify.md` (same recurrence) with `x₀ = 20261109`: point j (j = 0, …, 999)
   takes its first coordinate from `x_{2j+1}` and its second from `x_{2j+2}`, each mapped as
   `−π + 2π·(x >> 11)/2⁵³` on T² and `−1 + 2·(x >> 11)/2⁵³` on the box. For every closed B box containing the point
@@ -120,7 +137,8 @@ outputs aside, refuses a dirty tree, prints `STEP_OK`/`STEP_FAIL` per step and `
   - On the models of H that pass C3 and C5, compute `N_H(F)` (spec §4.3, every model weight 1) for every F of §4.
   - The fixed check: the family recommended from the corpus has the largest `N_H` among single families (ties
     allowed); if a pair was recommended, the pair has the largest `N_H` among pairs.
-  - C7 is evaluated only if at least 3 models of H remain; otherwise it is reported as "not evaluated".
+  - C7 is evaluated only if at least 3 models of H remain; otherwise it is reported as "not evaluated". A voided H
+    (spec §3, reveal) is reported as "voided" with its cause.
   - With at most 5 models this is a sanity check, not a statistical test, and it is reported as such.
   - A failure of C7 does not change the corpus verdicts or the recommendation. It is reported with the recommendation
     as "the ranking did not generalise to H", and the owner decides.
@@ -131,8 +149,8 @@ outputs aside, refuses a dirty tree, prints `STEP_OK`/`STEP_FAIL` per step and `
 
 - **PASS** → per model M (A `DONE`):
   - "the classification of Σ(Ψ_M) and NS(Ψ_M) reported by A: PROVEN (computer-assisted; single implementation A)";
-  - with U the union of B's NS, NS-ADJACENT and UNRESOLVED boxes (listed, with its area): "every point of T² ∖ NS with a
-    lift in B's root box outside U is A1 or A2 except the A3 points in B's A3-PROVEN boxes, which are exactly A's points there: PROVEN
+  - with U the union of B's NS, NS-ADJACENT and UNRESOLVED boxes (listed, with the area of U ∩ [−π, π]²): "every point of T² ∖ NS with a
+    lift in B's root box outside U is A1 or A2 except the A3 points in B's A3-PROVEN boxes, which are exactly the lifts of A's isolated points there: PROVEN
     (computer-assisted; two independent implementations)", subject to the common-mode rule of spec §6;
   - types of rank-0, A≥4 and non-isolated objects, and A3 points B did not prove: "certified by A only (not claimed
     as two-implementation under this registration)".

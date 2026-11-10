@@ -526,9 +526,27 @@ def main():
     table["K1"] = ("id", XY1[0] ** 2 * XY1[1] + XY1[1] ** 2)
     table["K2"] = ("id", (xb + R_(1, 5)) ** 2 * (yb - R_(1, 3)) + (yb - R_(1, 3)) ** 4)
     table["K3"] = ("id", (xb - R_(2, 7)) ** 3 + (yb + R_(1, 11)) ** 4)
+    # metadata (spec §3 "Families and weights", §5): id -> (kind, family, domain, weight, domain_type)
+    fams = {"square": (["M01", "M02", "M18"], "L"), "triangular": (["M03", "M04"], "L"),
+            "honeycomb": (["M05", "M06"], "L"), "QWZ": (["M07", "M08", "M09"], "T"), "Grover": (["M10"], "W"),
+            "FD9 Schrodinger": (["M12"], "N"), "Yee": (["M13", "M14"], "N"), "FD9 wave": (["M15"], "N"),
+            "lattice KG / wave": (["M16", "M17"], "P")}
+    meta = {m: ("corpus", f, dom, sp.Rational(1, len(ms)), "torus") for f, (ms, dom) in fams.items() for m in ms}
+    meta["M11"] = ("corpus", "arccos", None, sp.Integer(0), "torus")
+    for cid in [k for k in table if not k.startswith("M")]:
+        meta[cid] = ("control", None, None, sp.Integer(0), "box" if cid in ("K1", "K2", "K3") else "torus")
+    fam_total = {}
     bad, seen = [], set()
+    ids = [rec["id"] for rec in cj["models"]]
+    if len(ids) != len(set(ids)):
+        bad.append("duplicate ids")
     for rec in cj["models"]:
         seen.add(rec["id"])
+        got = (rec["kind"], rec["family"], rec["domain"], sp.Rational(rec["weight"]), rec["domain_type"])
+        if got != meta[rec["id"]]:
+            bad.append(f"{rec['id']}: metadata {got} vs {meta[rec['id']]}")
+        if rec["kind"] == "corpus" and rec["family"] is not None and got[3] != 0:
+            fam_total[rec["family"]] = fam_total.get(rec["family"], 0) + got[3]
         env = trig if rec["domain_type"] == "torus" else {"x": xb, "y": yb}
         u_rec = sp.sympify(rec["u"].replace("^", "**"), locals=env)
         G_tab, u_tab = table[rec["id"]]
@@ -536,8 +554,11 @@ def main():
         if rec["G"] != G_tab or diff != 0:
             bad.append(f"{rec['id']}: G {rec['G']} vs {G_tab}, u difference {diff}")
     missing = sorted(set(table) - seen)
+    if any(t != 1 for t in fam_total.values()) or len(fam_total) != 9:
+        bad.append(f"family weights {fam_total}")
     check("CORPUS", not bad and not missing,
-          f"numerics/census/corpus.json: {len(cj['models'])} records match the spec tables (G and u identically)"
+          f"numerics/census/corpus.json: {len(cj['models'])} records match the spec tables (G and u identically; kind, "
+          f"family, domain, weight and domain_type; unique ids; nine families of total weight 1)"
           + (f"; mismatches {bad}" if bad else "") + (f"; missing {missing}" if missing else ""))
 
     n_ok = sum(RESULTS)
