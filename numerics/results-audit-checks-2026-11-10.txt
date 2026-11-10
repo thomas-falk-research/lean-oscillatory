@@ -1,0 +1,10 @@
+# command: SYMPY_GROUND_TYPES=python python3 -I numerics/review/audit_checks.py (env: numerics/census/requirements.txt)
+# started 2026-11-10T10:40:38Z
+# git HEAD 34346289b6a7367b50e4808d1a68d5ce1e1dfac6, tracked files modified: no; record written outside the tree and copied in (lessons 45)
+CHECK A1 PASS full Hessian at 0 = [[0, 0, 1], [0, 0, 0], [1, 0, 1]], rank 2, kernel [[0, 1, 0]]; restriction to z = 0 has Hessian 0: the 3D point has corank 1, not 2
+CHECK A2 PASS reduced phase g = (x - 1/2)(x + 3y^2)^2, Hessian at 0 = [[-1, 0], [0, 0]] (rank 1, not D4), critical on x = -3y^2
+CHECK A3 PASS positive control Phi_+: corank 2, cubic on kernel a**3 - 3*a*b**2, discriminant 108; reduced phase cubic x**3 - 3*x*y**2 (D4). Audit phase: corank 1 (rejected)
+CHECK A4 PASS with s(u) = O(|u|^2) from F_s = 0, the cubic part of the reduced phase is exactly D^3F(0) on ker H (u-cubic terms); mixed terms s*u^2 enter only at order 4
+OVERALL PASS 4/4
+# exit status 0
+# finished 2026-11-10T10:40:39Z

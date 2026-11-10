@@ -1,6 +1,57 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (45 entries); every rule in it is binding.
+For a reader who saw nothing. Read `docs/lessons.md` first (46 entries); every rule in it is binding.
+
+## Session 9 (2026-11-10): external reviews checked; a hand proof of S5.1′; nothing proved in Lean, nothing frozen
+- **Privacy rule (owner, 2026-11-10; lessons 46).** No chat transcripts, prompts (the owner's, reviewers' or
+  referees'), or verbatim AI-conversation text in the repository or its history. External reviews are recorded only as
+  the lead's answers, in the lead's own words, with independent checks.
+- **External reviews (2026-11-10), several rounds from one external reviewer.** Answers: `review/2026-11-10-external-dossier-answers.md`,
+  `…-external-audit-answers.md`, `…-external-results-answers.md`. Checks, all passing: `numerics/review/dossier_checks.py`
+  (27/27), `audit_checks.py` (4/4), `cusp_proof_checks.py` (7/7).
+- **A complete hand proof of frozen S5.1′ (hence S5.1)**, with C² amplitudes, uniform in the linear term. It was
+  checked by the lead and by a fresh-context referee (no FATAL or MAJOR finding), and is re-derived in the lead's words
+  in `review/2026-11-10-external-results-answers.md`.
+  - Route: the exact dephased transverse integral (already proved, L6 core, j = 2, 3) plus a fourth-order van der
+    Corput estimate derived from S1.3. **I3a is not needed for S5.1′.**
+  - Next for A3: `docs/proof-A3.md` along that route, with parts P-V4, P-core4, P-jet4 (a C⁴ implicit curve on a
+    neighbourhood), P-far and assembly; then the route referee. Nothing is proved until replayed.
+- **Owner decisions (2026-11-10):**
+  - ROADMAP I3a and I3b: the dimension-generic track. I3b states its hypothesis intrinsically (corank 2, nondegenerate
+    cubic on the Hessian's kernel), with a counterexample phase as a bite datum. I3a must fix its input derivative
+    budget, with a C²-only counterexample as a bite datum.
+  - CENSUS (draft): control K-QWZm (the QWZ family at four masses), and a sealed held-out set H selected by the lead
+    with three mitigations (sealed pool, drand-seeded draw, owner custody).
+- **CENSUS spec-fidelity referee (2026-11-10):** one BLOCKER (B's NS-ADJACENT label), nine MAJOR, all repaired before
+  freezing; answers `review/2026-11-10-CENSUS-spec-answers.md`, changes in spec §8. Main changes: the normalised cusp
+  invariant `ĝ4 = g4/|v|⁴`; a new type X (zero cubic); one-dimensional components with special points; the
+  machine-readable corpus `numerics/census/corpus.json`; B's label order and budget-exhaustion rule; the held-out
+  inclusion rule and draw encoding. Exact checks 39/39 (`numerics/results-census-spec-2026-11-10.txt`). A new exact
+  fact: QWZ m = 1 (M07) has lines of A≥4 points, so it is not GD-covered (check M07-LINES). A second fresh referee
+  checked the repairs (no BLOCKER; four MAJOR on the wiring around them, repaired: special points cross-checked, B's
+  undecidable fields `null`, components counted under F-NI alone, a mechanical held-out inclusion rule). The spec is
+  **FROZEN** (commit in `docs/prereg/LEDGER.md`); the registration is still DRAFT.
+  - ROADMAP I7: the Fourier-grid certificate, outside the core, with a stop rule.
+  - ROADMAP "Candidates (not commitments)": four promotion gates.
+  - ROADMAP "Standing: repository hygiene": first pass done.
+- **Disclosure fixes:** `docs/prior_art.md` marks S1.k ANTICIPATED (Roos–Praveen `…_order_ge_two`, Mathlib PR #39406,
+  open); ROADMAP I3's Ikromov–Müller wording is weakened.
+- **Owner decisions later the same day:**
+  - A3 formalisation comes before I3a (ROADMAP I3).
+  - The S5.1′ route carries an AI-use disclosure naming the tool (OpenAI ChatGPT 6), in `docs/prior_art.md`. This
+    follows publishing practice (COPE, ICMJE): disclosure, not authorship or credit.
+  - The lead selects the CENSUS held-out set, with mitigations (spec §3): a sealed pool of at least 12, a draw seeded
+    by drand, and owner custody of the salt, pool and H. To do before any implementation is commissioned.
+- **Owner items open:**
+  - the earlier records of prompts and AI reviews on `main` (`review/prompts/`, verbatim referee reports, query logs),
+    which the privacy rule now covers. Removing them from `main`'s history would invalidate every stamp. Owner to decide.
+- `main` CI on 58a86d0: `ci` and `verify` both success.
+- Next, in order:
+  1. `docs/proof-A3.md` along the S5.1′ route, the route referee, then the parts and the replay.
+  2. CENSUS: `numerics/census/validate_pool.py`, then the held-out pool (spec §3 rule) sealed with the owner, then
+     implementations A and B and their development runs, then the pre-registration referee and registration.
+  3. The LeanCert experiment (I2).
+  4. I3a, then I3b.
 
 ## Session 8 (2026-11-09): what changed, and where to start
 - **v0.4.0 reconciled** (ROADMAP I0): pins PR #9 and DOI PR #10 merged; Zenodo 10.5281/zenodo.24088811 in
@@ -36,7 +87,9 @@ For a reader who saw nothing. Read `docs/lessons.md` first (45 entries); every r
   `lake exe cache get`. `make quick` takes ~13 min warm; `make stamp` ~13 min; all five timestamp endpoints were
   reachable through the proxy.
 
-## What exists (session 7, 2026-11-08/09)
+## What existed at the end of session 7 (2026-11-08/09; historical)
+Since then batch A3 has added three pinned statements that are stated and reviewed but **not proved** (S1.k, S5.1,
+S5.1′): 55 pinned, 52 proved (`docs/STATUS.md`). Branch names, commits and counts below are as of session 7.
 - Lean v4.35.0, Mathlib `56a0058`. **52 pinned statements, all proved**, each with a row in `docs/STATUS.md`: S1–S4,
   front-end batches 1–3, batch GD (eight; session 6) and, new this session, **batch VT** (four: GD-C-V, GD-V, GD-F-V,
   GD-N-V, the global decay estimates for amplitudes in any complex Banach space `E : Type`, one constant for every E;

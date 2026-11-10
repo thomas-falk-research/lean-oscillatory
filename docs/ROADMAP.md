@@ -66,8 +66,59 @@ another. Nothing here is a capability until its evidence exists (`docs/STATUS.md
       chosen at registration: transverse stationary phase plus fourth-order van der Corput, or a parametric normal
       form); global assembly with finitely many A3 points; leading terms with remainders (SAR and seismic steps use the
       leading term); nondegenerate stationary phase in dimension n; non-endpoint Strichartz; the Ikromov–Müller
-      height bound, which covers all finite-type 2D singularities, with the A3 statements shaped to be derivable from
-      it. Every batch statement-first under `CONTRIBUTING.md`.
+      height bound, which covers broad classes of finite-type 2D singularities (exact hypotheses not yet read; the external
+      audit reports an exception involving an unbounded principal Newton face, CITED-UNREAD,
+      `review/2026-11-10-external-audit-answers.md`), with the A3 statements shaped to be derivable from it. Every batch statement-first under `CONTRIBUTING.md`.
+      **Owner decisions 2026-11-10 (order inside I3):**
+      1. The A3 formalisation comes first: S5.1′, then S5.1 by weakening, along the reviewed hand proof
+         (`review/2026-11-10-external-results-answers.md`).
+      2. Then I3a.
+      3. Then I3b (the dimension-generic track).
+      This revises the morning's order, which put I3a first. Background:
+      `review/2026-11-10-external-dossier-answers.md` and `docs/HANDOFF.md`, session 9.
+  - [ ] **I3a Parametrised transverse stationary phase, transverse dimension n.**
+    - *The lemma.* Take a phase `F(s, u) + y·(s, u)` with `s ∈ ℝⁿ` and `u ∈ ℝ^r`, whose s-Hessian is invertible on
+      the amplitude's support. The lemma says the s-integral equals its stationary-phase leading term plus a remainder
+      `O(t^{−n/2−1})`, uniformly in the linear term `y`. The leading term is `e^{itF̃(u, y)}` times an amplitude in
+      `u` with tracked C² bounds.
+    - *Why an expansion, not a bound.* The reduced u-integral must keep its oscillation, so it can be bounded by S1.k
+      or by a 2D bound.
+    - *Why first (as decided 2026-11-10), and what changed the same day.* The decision assumed S5.1′ needed this lemma
+      with `n = r = 1`. The external results of 2026-11-10 show it does not.
+      - A hand proof of S5.1′ (hence S5.1) uses the *exact* dephased transverse integral, which is already proved
+        infrastructure in `OscInt/StationaryPhase/Core.lean`, with one derivative and no expansion. It then applies a
+        fourth-order van der Corput estimate derived from S1.3.
+      - The proof was checked by the lead and by a fresh-context referee: no FATAL or MAJOR finding
+        (`review/2026-11-10-external-results-answers.md`).
+      - The lemma still gives nondegenerate stationary phase in dimension n (`r = 0`) and the coupled lift I3b.
+      - Hence the owner's revised order (above): A3 formalisation first, then I3a.
+    - *Input derivative budget (2026-11-10).* A remainder `O(t^{−n/2−1})` cannot be controlled by C² amplitude bounds
+      alone. For n = 2, an explicit family with uniform C² norm and zero leading term has integral exactly
+      `π t^{−2} log(t/2)` (`review/2026-11-10-external-results-answers.md`, Result 2; check Q1). That family is a required
+      bite datum. The statement must fix the input budget and distinguish four things: the input amplitude norm, the C²
+      control of the reduced amplitude, a scalar remainder, and a remainder in a parameter-derivative norm.
+    - *The hard part.* After elimination the reduced phase depends on `y` non-linearly. Every 2D bound it feeds must
+      therefore be uniform over the resulting family of phases, not only over linear terms. S2.2F covers this for
+      nondegenerate points only.
+    - *Before the statement.* A prior-art sweep for existing formalisations. The relevant Mathlib names are not yet
+      `#check`ed at the pin (lessons 1, 19). The mathematics is classical: stationary phase with parameters, Hörmander
+      vol. I §7.7, cited from memory and not yet read. The claim can only be "machine-checked".
+  - [ ] **I3b Dimension lift (acceptance test of the track; after I3a).**
+    - *The theorem.* A Lean theorem for every `d ≥ 2`: at a point whose full Hessian has corank exactly 2 and whose
+      third derivative, restricted to the Hessian's kernel, is a nondegenerate binary cubic, the integral decays like
+      `t^{−2/3−(d−2)/2}` uniformly in the linear term. This is equivalent to "the transversely reduced phase is D4".
+    - *Hypothesis on the reduced phase (2026-11-10).* A D4 restriction to a coordinate plane, together with nondegenerate
+      remaining directions, is **not** enough. The external audit's phase `(z + x)²/2 + (x − 1/2)(x + 3y²)²` has both,
+      yet its Hessian has corank 1 and it has a curve of critical points with decay `t^{−1}`, not `t^{−7/6}`
+      (`review/2026-11-10-external-audit-answers.md`; `numerics/review/audit_checks.py` A1–A4). That phase is a required bite
+      datum for the statement, and `(z + xy)²/2 + x³ − 3xy² + zx²` is a coupled positive control.
+    - *Shape.* 5D and 6D come out as instances of `d`, not as new proofs. These are new statements on
+      `EuclideanSpace ℝ (Fin d)`, with bridges to the frozen 2D statements, which are never edited.
+    - *Optional early demonstration.* The fully separable corollaries: S4.1 times S1.2 in each extra direction, and the
+      d-dimensional lattice kernel by T0E applied factor by factor (constant about `69^d`). They are described as
+      Fubini corollaries, not as new capability.
+    - *Not in scope.* Classification of singularities in d dimensions; critical manifolds (Morse–Bott) until a
+      consumer needs them; infinite dimension.
 - [ ] **I4 A "useful from" standard for every explicit constant.** Each explicit-constant statement in `docs/api.json`
       gets three fields: the parameter threshold above which it beats the trivial bound (T0E: `t > 518`; T6E:
       `t > 1321`, both from `docs/HANDOFF.md`), the best known bound for comparison with its citation (Landau's
@@ -82,8 +133,102 @@ another. Nothing here is a capability until its evidence exists (`docs/STATUS.md
 - [ ] **I6 Credibility that adopters check first:** the human expert reading of the statements (owner item, §6; today
       every fidelity reading is by AI referees), a preprint, the Reservoir listing (§3), the first Mathlib pull request
       (§3).
+- [ ] **I7 Fourier-grid certificate, proof of value (owner decision 2026-11-10; outside the core; after I1, I2 and the
+      A3 work, never ahead of them).**
+  - *Question.* Can OscInt deliver, for one matrix-valued periodic model, a guarantee that engineering software does
+    not already give conveniently? The guarantee is a grid size N with a proved bound on the error of the sampled
+    Fourier kernel.
+  - *Mathematics.* Classical, from the external dossier (`review/2026-11-10-external-dossier-answers.md`, C5–C7, and
+    its corrigendum):
+    - analytic-symbol locality: Combes–Thomas by a contour shift, with `‖Im H(k + iθ)‖` bounded through the exact
+      identity `‖b·σ‖ = |b|`;
+    - the signed alias identity of the `−π` grid: `(−1)^{N(ℓ₁+ℓ₂)}` for odd N;
+    - the alias bound.
+  - *Deliverable.* One model (QWZ, any real m), in an optional package outside `OscInt/`. It contains:
+    - a statement-first, reviewed and kernel-checked theorem;
+    - an independently checked numerical enclosure of the error bound at stated (t, N, R);
+    - a negative control: the unsigned identity, or the wrong parity, must fail.
+  - *Stop rule, fixed now.* It enters the programme only if the same certificate is reused in a second, unrelated
+    model or domain. Otherwise the record is kept and the work stops. No analytic-symbol API is frozen and no wrappers
+    are built before that.
+  - *Shared primitive (design note, not a claim).* On a translation-invariant lattice, conjugation by `e^{η·x}` has
+    symbol `Ĥ(k + iη)`, so C5 and the graph bound D1 are one mechanism (`review/2026-11-10-external-dossier-answers.md`, follow-up round).
 - Input language for I1, I2 and I5: `docs/decisions/2026-11-09-input-language.md` (trigonometric polynomials with
   rational coefficients under an outer function `G` with `(G′)²` rational).
+
+## Candidates (not commitments; owner decision 2026-11-10)
+Proposals from reviews, chats and sessions that are not yet on this roadmap. A candidate is not a plan, and nothing
+here is worked on. It moves to the roadmap only when it passes all four gates:
+1. **Need.** It unblocks an item already on the roadmap, or the CENSUS ranking (I1) selects its theorem family, or a
+   named consumer asks for it.
+2. **Precision.** An informal statement with explicit hypotheses exists, and its checkable parts have been
+   independently re-derived.
+3. **Prior art.** A logged search has been run, and the novelty wording is fixed (usually "machine-checked").
+4. **Owner decision,** recorded with its date in the item that replaces the row.
+
+After I1's result, every row is re-ranked or dropped.
+
+Promotions so far (for comparison):
+- I3a passed gate 1 because S5.1′ needs it.
+- I7 passed on the owner's decision and its engineering value alone. Its stop rule stands in for gate 1.
+
+| Candidate | Source | Evidence so far | Waiting on |
+|---|---|---|---|
+| Reduced fourth-jet lemma `g'''' = Q − 3vᵀH⁻¹v` with r transverse variables | dossier A2 | re-derived for r = 2 (`numerics/review/dossier_checks.py` X2); classical splitting lemma | gate 1: the A3 route document (`docs/proof-A3.md`) decides whether S5.1′ uses it; else it folds into I3a |
+| Gaussian and Schur lifts (exact reduction of Gaussian-structured higher-dimensional integrals to 2D) | dossier B1, B2 | identity checked (X8); classical | gate 1: subsumed by I3b's optional separable corollaries unless a consumer needs the Gaussian form |
+| Weighted locality on finite block graphs, weak-link weights, truncation, Riesz projectors | dossier D1–D5 | bounds reproduced (F4–F6x); classical (Combes–Thomas) | gate 1: no roadmap item or consumer needs them; outside OscInt's subject (oscillatory-integral decay) |
+| Composition of error certificates (`‖∏T − ∏T̃‖ ≤ Σ‖T_j − T̃_j‖` for contractions) | dossier E1 | elementary; not checked here | gate 1: I5's certificate schema, once two consumers exist |
+| Finite-type fallback: on compact K ⊂ ℝ^d, if at every point some directional derivative of order 2…N has size ≥ δ, then the integral is ≤ C‖a‖_{C¹} t^{−1/N}, uniformly in the linear term | external audit §3/§4 | classical (Stein 1993, Ch. VIII §2, cited from memory); its 1D ingredient is S1.k, so it follows from S1.k with Fubini and a partition, with constants exponential in d | gate 1: would give a weak baseline bound for CENSUS models outside the catalogue; decided by I1's result; prior art to compare: Greenblatt, Rev. Mat. Iberoam. 41 (2025), uniform in linear perturbations (abstract read) |
+| Newton-polyhedron (Varchenko-type) bounds built on the formalized Hironaka resolution (resolutionorg/hironaka v1.0.0, 2026-10-06; char 0, algebraic and real/complex-analytic; project claims no `sorry`, only the three standard axioms; not verified here) | external audit §4, memo §7 | existence of resolution is not an effective bound; the 2D route (Ikromov–Müller, Greenblatt) uses explicit Newton-polygon coordinates instead; Lean toolchain compatibility not checked | gates 1 and 3: only if I1 selects finite-type families beyond A3/D4; then a toolchain and axiom audit of the dependency |
+| Matrix-valued propagators through gap closings (band crossings) | external audit §3 table, memo §6 F | research direction, no statement; the vector-valued transfer (batch VT) assumes a fixed phase | gates 1 and 2: no consumer or roadmap item needs it yet; no precise statement |
+
+## Standing: repository hygiene (owner directive 2026-11-10; lowest priority, ongoing)
+Goal: reference-grade, consistent, current documentation and metadata, with drift caught by checks rather than by
+people. Frozen and verbatim files are never edited (lessons 39; `review/` records): a finding in them is answered by
+an allowlist, `REUSE.toml` or a new file. First audit: 2026-11-10, read-only, by a fresh agent. Its findings were
+verified by the lead before any fix.
+- [x] First pass (2026-11-10):
+  - a dangling path in `docs/which-theorem.md`;
+  - stale state in `docs/HANDOFF.md` and `docs/STATUS.md`;
+  - `docs/downstream.md` pinned to v0.4.0;
+  - the A3 row in the README status table;
+  - a CHANGELOG "Unreleased" section;
+  - code-span pipes escaped in the user-facing tables (15 rows).
+- [x] Second pass (2026-11-10):
+  - `tools/check_docs.py` (`make docs-check`, part of `make quick`) checks five things, each with a negative control
+    in `--self-test`:
+    - backticked repository paths exist, in the tree or in history; planned paths are in
+      `tools/check_docs_allow.txt` with reasons;
+    - Markdown table cell counts;
+    - `docs/STATUS.md` agrees with `stamps/statements.json`;
+    - every `rev = "v…"` pin in `docs/` matches the README;
+    - privacy (lessons 46): no files under `review/prompts/`, and only answers and README directly in `review/`.
+  - `make stamp-preflight` refuses a dirty tree before `make stamp` starts (lessons 25).
+  - `docs/README.md`: a documentation index with a glossary of labels.
+  - CONTRIBUTING: the verify-all duration (about two hours), and `codemeta.json` in the release bump list.
+  - Lessons 25 and 26 closed (Cubic names in `MathlibNames.lean`).
+  - `.zenodo.json`: `language`, and `related_identifiers` (isDerivedFrom roos-j/lean-oscillatory). The field names
+    were checked against third-party copies of Zenodo's schema, not the official documentation; confirm at the next
+    release deposit.
+  - `codemeta.json`: `programmingLanguage`, `softwareRequirements`, `issueTracker`, `readme`, `relatedLink` and
+    `developmentStatus`.
+- [ ] **Still to do:**
+  - a metadata check: version, title, keywords and concept DOI identical across `CITATION.cff`, `.zenodo.json`,
+    `codemeta.json` and `lakefile.toml`;
+  - a lessons-format check (entries 41–46 use a different heading form from 1–40);
+  - link the glossary from the README's first screen;
+  - the README Documents table completed against `docs/README.md`;
+  - README wording: `numerics/` also holds exact checks that the records cite; `tools/` is not std-only Rust;
+  - `docs/progress.md` entries for sessions 4–9 (CONTRIBUTING step 11);
+  - the BibTeX suffix form and `version`;
+  - whether a licence *list* in `CITATION.cff` / codemeta reads as OR (check the CFF 1.2.0 specification first).
+- [ ] **Owner:**
+  - Software Heritage archive and SWHID badge (open since v0.2.0, §3);
+  - Reservoir listing;
+  - CODEOWNERS and branch protection on `OscInt/Statements/`, `Challenge/`, `stamps/` and `review/`;
+  - `SECURITY.md` for trust-chain bypass reports (lessons 22);
+  - a pull-request template with the lessons-35/40 checklist;
+  - an opt-in pre-push hook.
 
 ## 1. Finish and stabilise the mathematics
 - [x] **S4.4** closed forms of c_C: machine-checked as stated (2026-11-07; `docs/STATUS.md`; verify-all PASS,
@@ -128,7 +273,7 @@ trust chain.
       `FoldOrNondeg`, `GradLower` and `AmpBound` for concrete polynomial phases and standard bumps, with failure
       messages naming the condition that fails rather than an unsolved goal.
 - [ ] **Worked examples that double as non-vacuity checks** *(downstream)*: free Schrödinger decay, Bessel-function
-      decay, an Airy-type fold, in `OscInt/Examples/`.
+      decay, an Airy-type fold, in `examples/` (planned).
 - [x] **Sharpness lemma** *(downstream)* (SH `OscInt.API.sharpness`, batch GD; applied, with T6L, to the lattice kernel, `examples/consumer/ConsumerLattice.lean`; replay `docs/replay/2026-11-08-session6-GD-verify-all.txt`): a limit with a nonzero constant gives a matching lower bound on the decay
       rate (generalising the bite checks of S4.2 + S4.3).
 - [ ] **Vector-valued amplitudes** *(downstream)* in a normed space (e.g. matrices), so spectral projections can be

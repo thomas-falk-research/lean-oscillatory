@@ -177,13 +177,14 @@ Check: none automatic (referee scratch is outside the tree); the prompt template
 An untracked referee prompt made `make stamp` fail at its last step, after nine minutes of commitments and exports,
 so the whole target ran twice. Rule: park every new file in the scratchpad before `make stamp` (as for referee runs,
 lessons 16), and commit the prompt after the stamp. Check: `stamp create` already refuses (correct); a preflight
-`git status --porcelain` in the `stamp` target would fail in seconds instead of minutes (not yet added).
+`git status --porcelain` in the `stamp` target would fail in seconds instead of minutes (added 2026-11-10:
+`make stamp-preflight`, the first prerequisite of `stamp`, with its negative control recorded in the commit message).
 
 ## 26. Mathlib renamed `Cubic.disc` to `Cubic.discr` (2026-11-07)
 The plan for C5 named `Cubic.disc` from memory; `#check` at the pin found only `Cubic.discr` (and
 `discr_eq_prod_three_roots`, `discr_ne_zero_iff_roots_nodup`). Caught before the statement was written (lessons 1
 working as intended). Rule unchanged: `#check` before writing a statement; the new names are now used by a frozen
-statement, so `MathlibNames.lean` should list them (not yet added).
+statement, so `MathlibNames.lean` should list them (added 2026-11-10).
 
 ## 27. The guard matches theorem names by their last component (2026-11-07)
 A challenge theorem `OscInt.API.dd_eq_iteratedFDeriv` was flagged because an internal lemma
@@ -326,4 +327,15 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     spec-check record first said "tracked files modified: yes" on a clean tree: the shell had truncated the tracked output
     file before the script ran `git status`. Rule: write the record outside the tree, then copy it in, and check the
     record's commit and dirty lines before committing it. Check: the commit messages of the A3 and CENSUS records.
-
+46. **No chats, prompts or verbatim AI-conversation text in the repository or its history (owner rule, 2026-11-10).**
+    Session 9 recorded external review chats and a reviewer's packet verbatim, and a referee prompt, following the old
+    CONTRIBUTING step 5. The owner had already declined to record a sweep brief. Custom prompts and conversation text
+    are sensitive fingerprints that can identify people, so they count as personal data. Rule: record external reviews
+    and referee reports only as the lead's answers, in the lead's own words. Paraphrase rather than quote; a short
+    quotation of a paper title, of Mathlib, or of the repository's own text is fine. Never commit a prompt, the owner's
+    or a referee's. Name an external tool only in an AI-use disclosure (tool and version, as COPE and ICMJE ask), never as an author
+    or credit, and only where its output enters the work (as for the S5.1′ route, 2026-11-10). The lead's commit attribution trailer is unchanged; it was already on 158 commits of
+    `main`. The branch history of session 9 was rebuilt without those
+    files. Earlier prompts and verbatim reports on `main` are an open owner item: removing them from `main`'s history
+    would invalidate every stamp. Check: none automatic yet; a candidate `make quick` check for `review/prompts/`
+    additions and for transcript markers is in ROADMAP "Standing: repository hygiene".

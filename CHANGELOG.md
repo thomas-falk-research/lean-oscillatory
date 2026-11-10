@@ -4,6 +4,22 @@ Versions follow semantic versioning from v0.3.0 (`docs/policy.md`): before 1.0.0
 statements and says so under "Statement changes"; a patch (0.y.Z) changes no statement, commitment, statement file
 or `proved_by` name. Every release lists its statement changes, even when there are none.
 
+## Unreleased
+
+Statement changes: three new statements, frozen and reviewed, **not proved**: S1.k (`VdCkStatement`), S5.1
+(`CuspBoundStatement`) and S5.1′ (`CuspBoundGenStatement`) in `OscInt/Statements/Cusp.lean`, stamp
+`stamps/20261109T201548Z-fcb46d9a6239`. No existing statement, commitment or `proved_by` name changed.
+
+- Batch A3 statement-first phase: sanity data and planted controls, two blind pre-proof reviews (FAITHFUL, TRUE),
+  reviews stamped (`stamps/20261109T214121Z-47c1360ccd6f`).
+- CENSUS (ROADMAP I1): specification and registration, both DRAFT; exact spec checks 39/39
+  (`numerics/results-census-spec-2026-11-10.txt`); control K-QWZm and a sealed held-out set added before registration;
+  revised after the spec-fidelity referee (`review/2026-11-10-CENSUS-spec-answers.md`), with the machine-readable corpus
+  `numerics/census/corpus.json`.
+- External reviews, answered item by item with independent checks (the reviews themselves are not recorded, owner
+  privacy rule; answers `review/2026-11-10-external-*-answers.md`); `docs/prior_art.md` marks S1.k anticipated.
+- ROADMAP: industry programme (I0–I7), dimension-generic track (I3a, I3b), gated candidate list.
+
 ## v0.4.0 — 2026-11-09
 
 DOI [10.5281/zenodo.24088811](https://doi.org/10.5281/zenodo.24088811) (all versions:

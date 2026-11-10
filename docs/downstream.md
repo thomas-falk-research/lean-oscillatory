@@ -9,7 +9,7 @@ statements. Policy background: `docs/policy.md`. What the checker does not cover
 [[require]]
 name = "oscint"
 git = "https://github.com/thomas-falk-research/lean-oscillatory"
-rev = "v0.3.0"   # or the full commit hash from docs/release-notes/v0.3.0.commit (against a moved tag)
+rev = "v0.4.0"   # or the full commit hash from docs/release-notes/v0.4.0.commit (against a moved tag)
 ```
 Use OscInt's `lean-toolchain` (`leanprover/lean4:v4.35.0`); Mathlib comes with OscInt at the revision it was checked
 with. Then `lake update oscint && lake exe cache get && lake build`.

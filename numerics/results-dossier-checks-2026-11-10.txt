@@ -1,0 +1,34 @@
+# command: SYMPY_GROUND_TYPES=python python3 -I numerics/review/dossier_checks.py (env: numerics/census/requirements.txt; plus numpy 2.5.3, scipy 1.18.1)
+# started 2026-11-10T10:40:38Z
+# git HEAD 34346289b6a7367b50e4808d1a68d5ce1e1dfac6, tracked files modified: no; record written outside the tree and copied in (lessons 45)
+CHECK X1a PASS P(a,a) = D_m/m^2, got m**2 - 2 + 2/m**2
+CHECK X1b PASS omega_su = 0, omega_uu = 0, omega_uuu = 0
+CHECK X1c PASS omega_ss = 4(m^2-1)/(m D^(3/2)), omega_suu = 2m sqrt(m^2-1)/sqrt(D), omega_uuuu = 6m/sqrt(D) (dossier A1.3)
+CHECK X1d PASS Gamma_m = -3*m*(m**6 - 2*m**4 + 2*m**2 - 2)/sqrt(m**4 - 2*m**2 + 2) (dossier A1.4)
+CHECK X1e PASS p(z) = z^3-2z^2+2z-2: p' has discriminant -8 and positive leading coefficient, p(4) = 38, so p > 0 on z > 4
+CHECK X1f PASS g4 (Lean IsA3Point quantity) = omega_ss * Gamma_m; at m = 3: g4 = -55968/4225
+CHECK X1g PASS m = 3 agrees with CENSUS spec section 7 (omega_ss, omega_suu, omega_uuuu, Gamma) = [32*sqrt(65)/12675, 12*sqrt(130)/65, 18*sqrt(65)/65, -5247*sqrt(65)/65]; note g4 at m=3 = -55968/4225 = -13.2468639053
+CHECK X1h PASS Lean form H[w,w]Q - 3T^2 = -55968/4225 (m=3) equals omega_ss * (spec g4 = Gamma); same sign and nonvanishing; anyone comparing numbers across the two must rescale by H[w,w]
+CHECK X1i PASS on the diagonal P_uu = -4*(m*cos(b) + 1): omega_uu = 0 iff cos b = -1/m, i.e. b = +-a_m (and the four points (+-a,+-a) by evenness)
+CHECK X1j PASS d omega/dk1 at (a,a) = -v_m, v_m = (m^2-1)^(3/2)/(m sqrt D); m^2 D - (m^2-1)^3 = m^4 - m^2 + 1 > 0 so 0 < v_m < 1 (C2.4)
+CHECK X2 PASS r = 2, generic symbolic jet including s^2 u, s u^3, s^3 terms: g''''(0) = Q - 3 v^T H^-1 v (dossier A2; r=2 symbolic, not all r)
+CHECK X3 PASS F = (s + u^2/2)^2/2: raw quartic 3, reduced phase 0, H[w,w]Q - 3T^2 = 1*3 - 3*1 = 0 (not IsA3Point)
+CHECK X4 PASS v = 0 gives Q[v^4] = T[v,v,w] = 0, so the invariant is 0 (v != 0 is forced); w -> w + c v leaves it unchanged
+CHECK X5 PASS squares identity and dP/dk1 = -2 sin k1 (m + cos k2): |d omega/dk_j| <= 1 wherever omega > 0, any real m (C2)
+CHECK X6 PASS Im H_m(k+i theta) = b.sigma with |b|^2 = sh1^2 + sh2^2 + 2 sin k1 sin k2 sh1 sh2 <= (|sh1|+|sh2|)^2, mass-free; the dossier's term-by-term triangle inequality (C5.3) only gives 2(|sh1|+|sh2|): the conclusion holds, the stated reason does not reach it
+CHECK X7 PASS ||P+ - P0||^2 = |n - e_z|^2/4 = (1 - a/omega)/2; omega - a = r^2/(omega + a) (C3.2-3)
+CHECK X8 PASS Schur completion identity residual 0 on R18 data (B2)
+CHECK F1 PASS C3/C4 (m,t,sampled C3,bound C3,sampled C4,bound C4): (2.5,1,0.8002,2,0.7365,2); (3,5,1.564,2,0.7709,2); (10,20,1.682,2,0.2046,0.6963); (30,20,0.6518,0.7648,0.04725,0.09858); (100,100,0.9579,1.035,0.01438,0.03489); (100,400,2,2,0.03257,0.09628)
+CHECK F2 PASS C5: max ||K(t,x)|| / exp(-F_t(|x1|)-F_t(|x2|)) over |x|_inf <= 60 where the bound > 1e-12, N = 512: m=3,t=5: 0.195; m=2,t=5: 0.2006; m=3,t=20: 0.08729 (m = 2 is gapless: the bound is mass-free)
+CHECK F3 PASS C6: bound 8.4751320538e-09 (dossier 8.4751320538e-9); observed max ||K_65 - K_512|| over |x|<=20, m=3, t=20: 2.4368e-13 (dossier 2.4317e-13)
+CHECK F3b PASS alias sign, N = 5, m = 3, t = 3, x = (-1,0), grid k_j = -pi + 2 pi j/N: |K_5 - sum (-1)^(N(l1+l2)) K(x+Nl)| = 1.23e-15, |K_5 - unsigned sum| = 0.120. The dossier's unsigned identity (C6) holds on the grid starting at 0 (or for even N); on the -pi grid with odd N the terms carry (-1)^(N l). The norm bound is unaffected
+CHECK F4 PASS D3: eta = 1.773400522, beta = 3.978103256, ordinary 2.4996343804e-04, tailored 4.6795942307e-06 (dossier values reproduced); max row sum 3.146603 <= 2J sinh eta = 3.146603; sampled |U_13,3| = 5.6809e-07 (dossier 5.680852681e-7; agreement depends on the chain construction, which the dossier does not fully specify)
+CHECK F5 PASS D4 own instance (seed 20261111, onsite U(-0.7,0.7), R = 9): error 4.3400e-05 <= bound 2.5731e-04
+CHECK F6 PASS QWZ m = 1 positive band on a 1201^2 grid: min 1.000000000000, max 3.000000000000 (exact: P - 1 = (1 + c1 + c2)^2 + s1^2 + s2^2 - 1 >= 0 needs proof; grid only)
+CHECK F6x PASS exact: P_1 - 1 = 2(1 + cos k1)(1 + cos k2) >= 0, so omega >= 1 for m = 1 (D5's clearance delta = 1/2 holds)
+CHECK F7 PASS |psi(1) - psi(1.001)| / 0.001 at g = 100, t = 1: 199.8686933 (dossier 199.8686933)
+CHECK F8 PASS (A+B)^2 = 4754.047960596477752; c = sup x^(1/3) J_0 = 0.7857468704985129 at x0 = 0.78366281850347; ratio (A+B)^2/(2 pi c)^2 = 195.046652939 (0.7857 < c: a truncation, never an upper bound)
+RUNTIME python 3.13.18 sympy 1.14.0 mpmath 1.3.0 numpy 2.5.3 scipy 1.18.1 platform Linux-6.18.44-fc-v338-x86_64-with-glibc2.39 commit 34346289b6a7367b50e4808d1a68d5ce1e1dfac6
+OVERALL PASS 27/27
+# exit status 0
+# finished 2026-11-10T10:43:51Z

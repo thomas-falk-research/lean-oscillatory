@@ -38,6 +38,7 @@ Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801a
 | Batch GD: global decay from a local classification (GD-C, GD, GD-F, GD-N), sharpness (SH), torus unfolding (T1), 2D lattice-Laplacian dispersive estimate t^{-2/3} and its leading term (T6, T6L) | see `docs/STATUS.md`; example `examples/consumer/ConsumerLattice.lean`. T6 and T6L are classical (the kernel factorises into 1D Bessel kernels, `docs/prior_art.md`) |
 | Batch VT: GD-C-V, GD-V, GD-F-V, GD-N-V, the global decay estimates for amplitudes in any complex Banach space (matrices, ℂⁿ, bounded sequences), one constant for every E | see `docs/STATUS.md`; example `examples/consumer/ConsumerVector.lean` |
 | Batch LE: explicit constants, T0E (1D kernel), T6F (factorisation), T6E (2D, (A+B)² ≈ 4754); content only for t > 518 / t > 1321 | see `docs/STATUS.md`; example `examples/consumer/ConsumerLatticeExplicit.lean` |
+| Batch A3: S1.k (k-th derivative van der Corput, constant 5·2^{k−1} − 2), S5.1 (stable cusp, t^{−3/4} uniform in the linear term), S5.1′ (any A3 point) | **stated, frozen and reviewed; not proved** (`OscInt/Statements/Cusp.lean`, `docs/STATUS.md`). S1.k is anticipated by Roos–Praveen (`docs/prior_art.md`) |
 
 "As stated" means the hypotheses in `docs/statements.md` (derivatives continuous up to the endpoints, as in the
 source's C^k assumption). Details and evidence: `docs/STATUS.md`.

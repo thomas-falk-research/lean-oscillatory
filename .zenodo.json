@@ -23,7 +23,16 @@
     "MSC2020: 03B35 Mechanization of proofs and logical operations"
   ],
   "license": "Apache-2.0",
+  "language": "eng",
   "version": "0.4.0",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/roos-j/lean-oscillatory",
+      "relation": "isDerivedFrom",
+      "scheme": "url",
+      "resource_type": "software"
+    }
+  ],
   "notes": "Code is licensed under Apache-2.0 (LICENSE); documentation under CC-BY-4.0 (LICENSE-docs); per-file licensing follows the REUSE specification 3.3 (REUSE.toml, LICENSES/). The one-dimensional van der Corput proofs are derived from roos-j/lean-oscillatory by J. Roos and M. Praveen (Apache-2.0).",
   "references": [
     "The mathlib Community (2020). The Lean Mathematical Library. Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs, 367–381. ACM. https://doi.org/10.1145/3372885.3373824",
