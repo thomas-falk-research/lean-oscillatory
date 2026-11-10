@@ -94,3 +94,13 @@ import Mathlib
 #check @Continuous.integrable_of_hasCompactSupport
 #check @HasCompactSupport.intro
 #check @image_eq_zero_of_notMem_tsupport
+
+-- Batch A3 route (docs/proof-A3.md), checked at the pin 2026-11-10.
+#check @ContinuousLinearMap.iteratedFDeriv_comp_right
+#check @LinearMap.equivOfDetNeZero
+#check @LinearEquiv.toContinuousLinearEquiv
+#check @hasDerivWithinAt_forall_lt_or_forall_gt_of_forall_ne
+#check @Convex.mul_sub_le_image_sub_of_le_deriv
+#check @intervalIntegral.integral_mul_deriv_eq_deriv_mul
+#check @MeasureTheory.integral_prod
+#check @iteratedFDeriv_succ_apply_left

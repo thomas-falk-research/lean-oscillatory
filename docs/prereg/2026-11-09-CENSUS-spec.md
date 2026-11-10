@@ -1,7 +1,7 @@
 # Specification: singularity census of 2D dispersion relations (CENSUS)
 
 Status: DRAFT, 2026-11-09 (session 8). It is frozen by a commit after the spec-fidelity referee (`assets` of the
-computation-of-record protocol; report under `review/`) and before either implementation exists. Changes after freezing
+computation-of-record protocol; findings in the lead's words in an answers file under `review/`, lessons 46) and before either implementation exists. Changes after freezing
 and before registration are listed in §8, and both implementations are re-checked against them; none are allowed after
 registration (`docs/prereg/2026-11-09-CENSUS-prereg.md`). An implementer reads only this file and the files it names.
 
