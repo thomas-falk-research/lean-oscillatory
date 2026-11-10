@@ -1,0 +1,54 @@
+# command: SYMPY_GROUND_TYPES=python python3 -I numerics/review/followup_checks.py (env: numerics/census/requirements.txt: sympy 1.14.0, mpmath 1.3.0; Python 3.13.18)
+# started 2026-11-10T23:23:04Z
+# git HEAD bc58c8c395ed5f2bc0f053b2b3b04fe7ba342344, tracked files modified: no; record written outside the tree and copied in (lessons 45)
+CHECK R1a-sqrt7 PASS sqrt7 in (2.6457513110645905, 2.6457513110645906)
+CHECK R1a-C PASS C* in (9.7220034961722, 9.7220034961722)
+CHECK R1a-97/10 PASS sqrt7 > 211/80 so C* > 97/10
+CHECK R1a-pi PASS Machin enclosure of pi
+CHECK R1a-threshold PASS (C*/2pi)^3 in (3.704483917358, 3.704483917358)
+CHECK R1b-cap PASS 2pi + 2 + 2/3 < 9
+CHECK R1b-F2 PASS F(2) + 16/3 + 1 = C*
+CHECK R1b-Fdecr PASS rationalisation lower bound and F' <= 0 at sample Delta (50 digits)
+CHECK R1b-sin67 PASS sin(6/7) >= 258/343 > 3/4
+CHECK R1b-sin1110 PASS sin(11/10) >= 5269/6000 > 7/8
+CHECK R1b-H1 PASS H1 <= 191/21
+CHECK R1b-H2 PASS H2 <= 277/30
+CHECK R1b-pi2 PASS 6/7 and 11/10 lie in [0, pi/2]
+CHECK R1b-H1end PASS H1(1/2) = 4 arcsin(3/4) + 17/3
+CHECK R1c-cbrt3 PASS 3^(1/3) < 13/9, pi < 22/7
+CHECK R1c-cap PASS pi + 32/(3t): 5486/567, 188/21
+CHECK R1c-sin13 PASS arcsin(1/4) <= 1/3
+CHECK R1c-mid PASS pi + 2/3 + 20/(3t): 4940/567, 65/7
+CHECK R1c-tail PASS tails 20/(3t) and 12/t
+CHECK R1c-low PASS band 50/21 + 12/t: 1742/189, 163/21
+CHECK R1d-small PASS 2pi 3^(1/3) < 572/63
+CHECK R1e-subst PASS 1 - s^2 = z tau^2 (2 - z tau^2)
+CHECK R1e-98 PASS lower bound 9/8
+CHECK R1e-coef PASS 2 * (8/9)^(1/2) * 2 = 8 sqrt2/3
+CHECK R1f-3b PASS (3b)
+CHECK R1f-3c PASS (3c)
+CHECK R1f-5 PASS (5) tail -4/(t(1-v^2))
+CHECK R1f-endpts PASS combined endpoint term (exponential form)
+CHECK R1f-cap21 PASS cap term at tau = 1/2 is 2pi
+CHECK R1g-witness PASS 1 - z + z^2/4 - z^3/36 at z = 4/25
+CHECK R1g-moments PASS cos^4, cos^6 moments
+CHECK R1g-factor2 PASS C* < 2q, q = 4.933615100558
+CHECK Q1-B PASS B = C0(-cos k I + 3Q)
+CHECK Q1-Q2 PASS Q^2 = I, Q Hermitian
+CHECK Q1-ode PASS -i dE/dz = B E, E(0) = I: E = exp(izB)
+CHECK Q1-sign-control PASS exp(-izB) rejected
+CHECK Q1-Qpm PASS Q = e^{ik}Q+ + e^{-ik}Q-
+CHECK Q1-W PASS W*(aQ+ + bQ-)W = [[0,b],[a,0]]
+CHECK Q1-flat PASS flat-band control B = 2C0 Q
+CHECK Q2-519 PASS b_LE(519) < 0.999714
+CHECK Q2-518 PASS b_LE(518) > 1.000079
+CHECK Q2-cycle PASS U = I on the 4-cycle at tau = 2 kappa t = 200 pi
+CHECK Q3-escape PASS d = 2(L+1) - |m+n| for all L <= 5
+FLOAT tau=4: probability bounds T0E 1  T0E' 0.95012  Landau 0.245015
+FLOAT tau=100: probability bounds T0E 1  T0E' 0.111127  Landau 0.0286571
+FLOAT tau=1000: probability bounds T0E 0.619004  T0E' 0.0239415  Landau 0.00617398
+FLOAT tau=10000: probability bounds T0E 0.118292  T0E' 0.00515805  Landau 0.00133014
+FLOAT T0E' amplitude coefficient C*/(2pi) = 1.547304913; Landau/that = 0.50782
+RESULT 43/43 PASS
+# exit status 0
+# finished 2026-11-10T23:23:06Z
