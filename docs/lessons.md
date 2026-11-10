@@ -177,13 +177,14 @@ Check: none automatic (referee scratch is outside the tree); the prompt template
 An untracked referee prompt made `make stamp` fail at its last step, after nine minutes of commitments and exports,
 so the whole target ran twice. Rule: park every new file in the scratchpad before `make stamp` (as for referee runs,
 lessons 16), and commit the prompt after the stamp. Check: `stamp create` already refuses (correct); a preflight
-`git status --porcelain` in the `stamp` target would fail in seconds instead of minutes (not yet added).
+`git status --porcelain` in the `stamp` target would fail in seconds instead of minutes (added 2026-11-10:
+`make stamp-preflight`, the first prerequisite of `stamp`, with its negative control recorded in the commit message).
 
 ## 26. Mathlib renamed `Cubic.disc` to `Cubic.discr` (2026-11-07)
 The plan for C5 named `Cubic.disc` from memory; `#check` at the pin found only `Cubic.discr` (and
 `discr_eq_prod_three_roots`, `discr_ne_zero_iff_roots_nodup`). Caught before the statement was written (lessons 1
 working as intended). Rule unchanged: `#check` before writing a statement; the new names are now used by a frozen
-statement, so `MathlibNames.lean` should list them (not yet added).
+statement, so `MathlibNames.lean` should list them (added 2026-11-10).
 
 ## 27. The guard matches theorem names by their last component (2026-11-07)
 A challenge theorem `OscInt.API.dd_eq_iteratedFDeriv` was flagged because an internal lemma

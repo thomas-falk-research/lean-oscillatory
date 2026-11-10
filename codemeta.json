@@ -33,6 +33,17 @@
     "https://spdx.org/licenses/CC-BY-4.0"
   ],
   "name": "OscInt: uniform oscillatory-integral estimates in Lean 4 and Mathlib",
+  "programmingLanguage": "Lean 4",
+  "readme": "https://github.com/thomas-falk-research/lean-oscillatory/blob/main/README.md",
+  "relatedLink": [
+    "https://github.com/roos-j/lean-oscillatory"
+  ],
+  "softwareRequirements": [
+    "Lean 4 v4.35.0",
+    "Mathlib 56a005855ea17e0b0958f73ec801ae140b0a1679"
+  ],
   "url": "https://github.com/thomas-falk-research/lean-oscillatory",
-  "version": "0.4.0"
+  "version": "0.4.0",
+  "developmentStatus": "active",
+  "issueTracker": "https://github.com/thomas-falk-research/lean-oscillatory/issues"
 }

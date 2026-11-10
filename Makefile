@@ -11,7 +11,7 @@ SKIP = mkdir -p $(B)/skipped && touch $(B)/skipped/$@
 UNSKIP = mkdir -p $(B)/skipped && rm -f $(B)/skipped/$@
 LATEST_STAMP = $(lastword $(sort $(wildcard stamps/2*/)))
 
-.PHONY: api api-check challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics \
+.PHONY: api api-check docs-check stamp-preflight challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics \
 	quick statements statements-check release-pin entry-point
 
 tools:
@@ -57,7 +57,11 @@ comparator: $(B)/lean.ok tools
 challenge-export: tools
 	$(T)/challenge export-all .
 
-stamp: commit challenge-export
+# Refuse a dirty tree before minutes of commitments and exports, not after them (lessons 25).
+stamp-preflight:
+	@test -z "$$(git status --porcelain)" || { echo "stamp: refusing a dirty tree; park new files outside the tree (lessons 25):"; git status --porcelain; exit 1; }
+
+stamp: stamp-preflight commit challenge-export
 	$(T)/stamp create . stamps/$(shell date -u +%Y%m%dT%H%M%SZ)-$(shell git rev-parse --short=12 HEAD)
 
 stamp-verify: tools
@@ -68,9 +72,9 @@ verify-all: tools
 	$(T)/verify_all $(foreach s,$(ONLY),--only $(s))
 
 # The fast local loop and the pull-request CI job: build, guard, axiom audit, statement types, Mathlib names,
-# Gamma-free check, statement list. Minutes with a warm cache; `verify-all` adds the kernel replay, commitments,
-# comparator and stamps (about an hour).
-quick: guard statements-check api-check
+# Gamma-free check, statement list, documentation checks. Minutes with a warm cache; `verify-all` adds the kernel
+# replay, commitments, comparator and stamps (about two hours on a 4-core machine).
+quick: guard statements-check api-check docs-check
 	$(MAKE) --no-print-directory lean
 	$(MAKE) --no-print-directory entry-point
 
@@ -94,6 +98,11 @@ api:
 
 api-check:
 	tools/test_gen_api.sh && python3 -I tools/gen_api.py --check .
+
+# Documentation consistency: paths, tables, STATUS vs statements.json, release pins, privacy (tools/check_docs.py,
+# ROADMAP "Standing: repository hygiene"); each check has a negative control in --self-test.
+docs-check:
+	python3 -I tools/check_docs.py --self-test && python3 -I tools/check_docs.py .
 
 # stamps/statements.json: the machine-readable list of pinned statements for downstream projects (README).
 statements: tools

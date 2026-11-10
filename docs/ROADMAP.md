@@ -194,38 +194,34 @@ verified by the lead before any fix.
   - the A3 row in the README status table;
   - a CHANGELOG "Unreleased" section;
   - code-span pipes escaped in the user-facing tables (15 rows).
-- [ ] **Checks for `make quick`** (seconds, no network). Prototypes are in the audit's scratch scripts; each needs a
-      negative control (lessons 18) and becomes a tool change under the usual review:
-  - backticked repository paths exist at the commit that cites them, with an allowlist for planned paths and records
-    (lessons 36);
-  - `docs/STATUS.md` rows agree with `stamps/statements.json`;
-  - Markdown table cell counts, outside records;
-  - version, title, keywords and concept DOI identical across `CITATION.cff`, `.zenodo.json`, `codemeta.json` and
-    `lakefile.toml`;
-  - every `rev = "v…"` in `docs/` names the README's release (`docs/downstream.md` is not covered by
-    `check_release_pin.sh` today);
-  - verbatim `review/` records are unchanged since they were added, except allowlisted headers;
-  - `docs/lessons.md` entries have a heading, a date and a "Check:" line (entries 41–45 do not);
-  - a `git status` preflight in `make stamp` (lessons 25);
-  - privacy (lessons 46): no new files under `review/prompts/`, and no transcript or vendor markers in `review/`.
-- [ ] **Documentation:**
-  - a `docs/README.md` index;
-  - a glossary of labels (S1–S5, C1–C10, FE-*, GD, LE, VT, A3) linked from the README's first screen;
-  - the README Documents table completed;
+- [x] Second pass (2026-11-10):
+  - `tools/check_docs.py` (`make docs-check`, part of `make quick`) checks five things, each with a negative control
+    in `--self-test`:
+    - backticked repository paths exist, in the tree or in history; planned paths are in
+      `tools/check_docs_allow.txt` with reasons;
+    - Markdown table cell counts;
+    - `docs/STATUS.md` agrees with `stamps/statements.json`;
+    - every `rev = "v…"` pin in `docs/` matches the README;
+    - privacy (lessons 46): no files under `review/prompts/`, and only answers and README directly in `review/`.
+  - `make stamp-preflight` refuses a dirty tree before `make stamp` starts (lessons 25).
+  - `docs/README.md`: a documentation index with a glossary of labels.
+  - CONTRIBUTING: the verify-all duration (about two hours), and `codemeta.json` in the release bump list.
+  - Lessons 25 and 26 closed (Cubic names in `MathlibNames.lean`).
+  - `.zenodo.json`: `language`, and `related_identifiers` (isDerivedFrom roos-j/lean-oscillatory). The field names
+    were checked against third-party copies of Zenodo's schema, not the official documentation; confirm at the next
+    release deposit.
+  - `codemeta.json`: `programmingLanguage`, `softwareRequirements`, `issueTracker`, `readme`, `relatedLink` and
+    `developmentStatus`.
+- [ ] **Still to do:**
+  - a metadata check: version, title, keywords and concept DOI identical across `CITATION.cff`, `.zenodo.json`,
+    `codemeta.json` and `lakefile.toml`;
+  - a lessons-format check (entries 41–46 use a different heading form from 1–40);
+  - link the glossary from the README's first screen;
+  - the README Documents table completed against `docs/README.md`;
   - README wording: `numerics/` also holds exact checks that the records cite; `tools/` is not std-only Rust;
-  - `review/README.md` index brought up to date, with a naming convention for new files (one name per
-    document kind);
   - `docs/progress.md` entries for sessions 4–9 (CONTRIBUTING step 11);
-  - the verify-all duration made consistent (CONTRIBUTING and Makefile say about an hour; the records say about 2 h);
-  - `codemeta.json` added to CONTRIBUTING's release bump list;
-  - lessons 25 and 26 closed.
-- [ ] **Research metadata:**
-  - `.zenodo.json` `related_identifiers` (isDerivedFrom roos-j/lean-oscillatory; references) and `language`;
-  - `codemeta.json` fields `programmingLanguage`, `softwareRequirements`, `issueTracker`, `isBasedOn` and
-    `developmentStatus`;
-  - BibTeX suffix form and `version`;
-  - whether a licence *list* in `CITATION.cff` / codemeta reads as OR: check the CFF 1.2.0 specification before
-    changing it.
+  - the BibTeX suffix form and `version`;
+  - whether a licence *list* in `CITATION.cff` / codemeta reads as OR (check the CFF 1.2.0 specification first).
 - [ ] **Owner:**
   - Software Heritage archive and SWHID badge (open since v0.2.0, §3);
   - Reservoir listing;
@@ -277,7 +273,7 @@ trust chain.
       `FoldOrNondeg`, `GradLower` and `AmpBound` for concrete polynomial phases and standard bumps, with failure
       messages naming the condition that fails rather than an unsolved goal.
 - [ ] **Worked examples that double as non-vacuity checks** *(downstream)*: free Schrödinger decay, Bessel-function
-      decay, an Airy-type fold, in `OscInt/Examples/`.
+      decay, an Airy-type fold, in `examples/` (planned).
 - [x] **Sharpness lemma** *(downstream)* (SH `OscInt.API.sharpness`, batch GD; applied, with T6L, to the lattice kernel, `examples/consumer/ConsumerLattice.lean`; replay `docs/replay/2026-11-08-session6-GD-verify-all.txt`): a limit with a nonzero constant gives a matching lower bound on the decay
       rate (generalising the bite checks of S4.2 + S4.3).
 - [ ] **Vector-valued amplitudes** *(downstream)* in a normed space (e.g. matrices), so spectral projections can be

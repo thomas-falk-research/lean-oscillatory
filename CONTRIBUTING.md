@@ -7,7 +7,7 @@ nothing else. Every contribution keeps that chain intact. Read `docs/lessons.md`
 ```bash
 lake exe cache get          # once: Mathlib binaries
 make quick                  # build, guard, axiom audit, statement types, Gamma-free check (minutes)
-make verify-all             # the full replay (about an hour); CI runs it on main and weekly
+make verify-all             # the full replay (about two hours on 4 cores); CI runs it on main and weekly
 make verify-all ONLY=guard  # one step of verify-all, with the same pass/skip rules
 ```
 Use `nice -n 10 lake env lean -DautoImplicit=false <file>` to iterate on one file (`lake env lean` does not apply
@@ -72,7 +72,7 @@ and `make quick` fails (found 2026-11-07; the strict count is the safety net, le
 
 ## Commits and releases
 Commit messages say what changed and what evidence was run. Releases follow `docs/policy.md`. Prepare a release
-in a pull request: bump `lakefile.toml`, `CITATION.cff` and `.zenodo.json` together, add the CHANGELOG section
+in a pull request: bump `lakefile.toml`, `CITATION.cff`, `.zenodo.json` and `codemeta.json` together, add the CHANGELOG section
 `## vX.Y.Z`, and write `docs/release-notes/vX.Y.Z.md` with the SHA-256 rows of `stamps/statements.json` and
 `tools/oscint_check.py` (`tools/release_preflight.sh X.Y.Z` checks all of this locally and prints the exact rows).
 After it merges, the owner dispatches `release-candidate` on `main` with the version (Actions → release-candidate →

@@ -104,3 +104,6 @@ import Mathlib
 #check @intervalIntegral.integral_mul_deriv_eq_deriv_mul
 #check @MeasureTheory.integral_prod
 #check @iteratedFDeriv_succ_apply_left
+#check @Cubic.discr
+#check @Cubic.discr_eq_prod_three_roots
+#check @Cubic.discr_ne_zero_iff_roots_nodup

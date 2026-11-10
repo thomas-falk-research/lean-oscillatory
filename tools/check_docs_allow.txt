@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Repository paths cited in Markdown that do not exist yet, on purpose (tools/check_docs.py, check `paths`).
+# One path per line, then the reason. Remove a line when the path is created or the citation is dropped.
+numerics/census/impl_a              # CENSUS implementation A, written after registration (draft prereg §1)
+numerics/census/impl_b              # CENSUS implementation B, same
+numerics/census/accept.py           # CENSUS acceptance script, same
+numerics/census/accept_controls     # its negative-control suite, same
+numerics/census/evaluator.py        # spec-only evaluator, same
+numerics/census/run_census.sh       # generated run wrapper, committed with the registration
+numerics/census/out/a.json          # registered-run output (prereg §2)
+numerics/census/out/b.json          # same
+numerics/census/out/eval.json       # same
+numerics/census/out/verdict.txt     # same
+numerics/census/out/ranking.json    # same
+numerics/census/out/heldout_a.json  # held-out run output (prereg §2, step 7)
+numerics/census/out/heldout_verdict.txt  # same
+review/census-falsification         # post-run falsification pass (prereg §6)
+OscInt/Cusp/Final.lean              # batch A3 final theorems (docs/proof-A3.md), after the parts are proved
