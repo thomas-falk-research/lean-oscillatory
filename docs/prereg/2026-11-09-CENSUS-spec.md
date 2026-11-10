@@ -85,7 +85,7 @@ members, so parameter instances cannot inflate a family (§4.3).
 | M04 | triangular (L) | `c₁ + c₂ + (1/2)cos(k₁ + k₂)` | ∅ | — | anisotropic deformation of M03 (no source; mathematical family member) |
 | M05 | honeycomb (L) | `√(3 + 2c₁ + 2c₂ + 2cos(k₁ − k₂))` (graphene, reciprocal-lattice coordinates) | `{(2π/3, −2π/3), (−2π/3, 2π/3)}` | M-GRAPHENE, M-GRAPHENE-CN, M-GRAPHENE-NS | Castro Neto et al. 2009, eq. (6) at t′ = 0 [CR] |
 | M06 | honeycomb (L) | `√(1/4 + 3 + 2c₁ + 2c₂ + 2cos(k₁ − k₂))` (staggered potential Δ = t/2) | ∅ | M-GRAPHENE, M-hBN | own derivation from the 2 × 2 Hamiltonian with sublattice potential ±Δ (check M-hBN); physical model Semenoff 1984 [CR, abstract only] |
-| M07 | QWZ (T) | `√(3 + 2(c₁ + c₂) + 2c₁c₂)` (m = 1) | ∅ (P ≥ 1) | M-QWZ, G-QWZ1 | Asbóth–Oroszlány–Pályi 2016, eq. (6.1) [CR]; original model Qi–Wu–Zhang 2006 [CR][arX] (same `|d|` up to a scale and a k-independent term, see the sweep) |
+| M07 | QWZ (T) | `√(3 + 2(c₁ + c₂) + 2c₁c₂)` (m = 1) | ∅ (P ≥ 1) | M-QWZ, G-QWZ1 | Asbóth–Oroszlány–Pályi 2016, eq. (6.1) [CR]; original model Qi–Wu–Zhang 2006 [CR][arX] (same `\|d\|` up to a scale and a k-independent term, see the sweep) |
 | M08 | QWZ (T) | `√(11 + 6(c₁ + c₂) + 2c₁c₂)` (m = 3) | ∅ (P ≥ 1) | M-QWZ, G-QWZ3 | as M07 |
 | M09 | QWZ (T) | `√(sin²k₁ + (9/25) sin²k₂ + (3 + c₁ + c₂)²)` (d₂ scaled by α = 3/5, m = 3) | ∅ (P ≥ 1) | M-aQWZ, G-aQWZ | anisotropic deformation of M08 (no source; mathematical family member) |
 | M10 | Grover walk (W) | `arccos(−(c₁ + c₂)/2)` (dispersive bands; flat bands ±1 reported FLAT) | `{(0, 0), (π, π)}` | M-GROVER | Watabe–Kobayashi–Katori–Konno 2008, eq. (7) at p = 1/2 [CR][arX] |
@@ -100,6 +100,22 @@ members, so parameter instances cannot inflate a family (§4.3).
 Verification key: [CR] bibliographic record checked against Crossref, [arX] arXiv text read, [CR, not read] record
 only; all on 2026-11-09 in the logged sweep `review/2026-11-09-CENSUS-prior-art-sweep.md` (full references there and in
 `docs/prior_art.md`, "Singularities of lattice dispersion relations").
+
+**Held-out set H (sealed; added 2026-11-10, before registration).** The corpus above was chosen by the project. To
+test whether a ranking computed on it generalises, a set H of 4–6 further models is fixed before the run, and used
+only after the corpus results are committed.
+- *Who chooses.* A selector who is neither the lead nor an implementation author: the owner, an external person, or a
+  model of another family (its prompt is not recorded, owner privacy rule, `docs/lessons.md` 46).
+- *Constraints.* H's models are admissible (§1); none is a corpus model or an affine image of one; together they come
+  from at least three of the five domains; each has a published source. The selector writes H as JSON, a list of
+  `{id, phase, domain, source}`.
+- *Sealing.* The selector publishes only `SHA-256(salt ‖ canonical JSON)`, with a random salt of at least 128 bits.
+  That hash is entered in the registration before it is registered. Lead and implementers never see H before the
+  reveal.
+- *Reveal.* After step 6 of the registered run is committed, the selector publishes the salt and the list; a hash
+  mismatch voids H.
+- *Run.* H is classified by the registered code, unchanged. A model of H outside the input class, or one that cannot
+  be parsed, is reported as a selector error and dropped from H.
 
 Domains: L lattice materials, T two-band topological models, W discrete-time quantum walks, N numerical schemes,
 P lattice waves and phonons. Families and weights: square {M01, M02, M18}, triangular {M03, M04}, honeycomb
@@ -143,6 +159,7 @@ All exact; checks in `numerics/census/spec_checks.py`. Controls K1–K3 are poly
 |---|---|---|---|
 | K-SQ | M01 | `Σ` = the four D4 points `(±π/2, ±π/2)`; no A3, A≥4, D≥5, E/J, NI; fold set nonempty | K-SQ |
 | K-QWZ3 | M08 | `Σ` contains the four A3 points `(±a, ±a)`, `a = arccos(−1/3)` (more points may exist; the census decides) | K-QWZ3 |
+| K-QWZm | `√(m² + 2 + 2m(c₁ + c₂) + 2c₁c₂)` for each m ∈ {201/100, 5/2, 4, 10} (control, weight 0, not in the corpus) | at each m, `Σ` contains the four A3 points `(±a_m, ±a_m)`, `a_m = arccos(−1/m)`, all stable (`T[v, v, w] ≠ 0`), with `g4` as in §7 (more points may exist; the census decides, and this control asserts nothing about them) | K-QWZm |
 | K1 | `X²Y + Y²`, `(X, Y) = R((x, y) − r)`, `R = [[3/5, −4/5], [4/5, 3/5]]`, `r = (1/7, −2/9)`, on B | `Σ ∩ B = {r}`, type A3; no rank-0 point | K1 |
 | K2 | `X²Y + Y⁴`, `(X, Y) = (x, y) − (−1/5, 1/3)`, on B | `Σ ∩ B = {(−1/5, 1/3)}`, type D≥5 | K2 |
 | K3 | `X³ + Y⁴`, `(X, Y) = (x, y) − (2/7, −1/11)`, on B | `(2/7, −1/11)` of type E/J; the segment `{y = −1/11} ∩ B` minus that point of type A3 + NI; no other point of `Σ` | K3 |
@@ -214,6 +231,15 @@ B: at most 2²⁴ boxes per model and minimum box width 2⁻⁴⁰; exceeding gi
   `H[w, w] = ω_ss = 32/(195√65) ≈ 0.0203544180`, `T[v, v, w] = ω_suu = 12√130/65 ≈ 2.1049392463`,
   `Q[v, v, v, v] = ω_uuuu = 18/√65 ≈ 2.2326252226`, and `g4 = −5247/√65 ≈ −650.810252390` (exact values, check
   K-QWZ3).
+- K-QWZm, every m > 2 (exact, symbolic m: `numerics/review/dossier_checks.py` X1; at the four masses: check K-QWZm):
+  `D = m⁴ − 2m² + 2`; at `(a_m, a_m)` with `v = (1, −1)`, `w = (1, 1)`: `H[w, w] = 4(m² − 1)/(m D^{3/2})`,
+  `T[v, v, w] = 2m√(m² − 1)/√D`, `Q[v, v, v, v] = 6m/√D`, `g4 = −3m(m⁶ − 2m⁴ + 2m² − 2)/√D < 0` (`m⁶ − 2m⁴ + 2m² − 2 > 0`
+  for m > 2), and `∇Ψ = −v_m(1, 1)`, `v_m = (m² − 1)^{3/2}/(m√D) ∈ (0, 1)`. By evenness, `∇Ψ(±a_m, ±a_m) = (∓v_m, ∓v_m)`.
+  In this specification's convention (§2: observation direction `x/t = −∇Ψ(k₀)`) the cusp rays are therefore
+  `x/t = (±v_m, ±v_m)`, with the same signs as the point. The dossier's convention (`e^{i(x·k − tω)}`, `x/t = ∇ω`)
+  has the opposite sign; an implementation compares against the convention of §2. Decimals (not rigorous; check
+  K-QWZm output): `g4 ≈ −74.198, −247.71, −2884.8, −297014.5` and `v_m ≈ 0.82402, 0.90033, 0.96610, 0.99494` for
+  m = 201/100, 5/2, 4, 10. At m = 201/100, `a_m ≈ 2.09153` lies within 3e−3 of 2π/3 and `H[w, w] ≈ 0.18457`.
 - M01 at `(π/2, π/2)`: `H = 0`, `C(κ) = κ₁³ + κ₂³`, `Disc = −27`.
 - K1 at r: `g4 = −24576/625` with `v` from the kernel formula (exact, check K1).
 
@@ -241,3 +267,10 @@ it claims no novelty for the models with published classifications.
   repository's `docs/applications.md` attribution of this family to split-step walks is unverified); external known
   answers X-DKG, X-TRI, X-KING added to §5; checks M-GRAPHENE-CN, M-hBN, M-KING, M-FD9-TT, M-YEE-ARCCOS and K-DKG added
   to `numerics/census/spec_checks.py`; §7a added.
+- 2026-11-10 — before registration, owner decision (after the external dossier, A1, and its
+  answers file): control K-QWZm added to §5 (the QWZ family at m ∈ {201/100, 5/2, 4, 10}, four stable A3 points each,
+  closed-form `g4`), its reference values to §7, and check K-QWZm to `numerics/census/spec_checks.py`. Nothing had been
+  run under the registration; no implementation exists. The control asserts only the four points per mass, not that
+  they are the only degenerate points.
+- 2026-11-10 — before registration, owner decision (after the external audit, `review/2026-11-10-external-audit-answers.md`,
+  memo Gate 3): the sealed held-out set H added to §3. The corpus, the controls and every definition are unchanged.

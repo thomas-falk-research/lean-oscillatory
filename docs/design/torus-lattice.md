@@ -208,8 +208,8 @@ critical point is X" is the same as "every point of the torus is X". This is why
 
 | Class | Hypothesis | σ | Statement | Satisfiable by a periodic θ? |
 |---|---|---|---|---|
-| nonstationary | `‖x/t‖ ≥ G + 1` | any N (in `|x|^{-N}`) | T3 | always |
-| nondegenerate, cone | critical points of `θ + v·` nondegenerate for `v ∈ V` | 1 | T4 | yes: lattice Laplacian, `V = closedBall 0 1` (max norm) (PROVEN: a critical point has `2|sin kᵢ| = |vᵢ| ≤ 1`, so `cos kᵢ ≠ 0`, Hessian `diag(−2cos k₁, −2cos k₂)` invertible) |
+| nonstationary | `‖x/t‖ ≥ G + 1` | any N (in `\|x\|^{-N}`) | T3 | always |
+| nondegenerate, cone | critical points of `θ + v·` nondegenerate for `v ∈ V` | 1 | T4 | yes: lattice Laplacian, `V = closedBall 0 1` (max norm) (PROVEN: a critical point has `2\|sin kᵢ\| = \|vᵢ\| ≤ 1`, so `cos kᵢ ≠ 0`, Hessian `diag(−2cos k₁, −2cos k₂)` invertible) |
 | nondegenerate, global | `hessDet θ ≠ 0` everywhere | 1 | — | **never** (T7, PROVEN below) |
 | fold, cone | fold-or-nondeg at critical points, `v ∈ V` | 5/6 | T5′ | yes whenever `V` avoids the velocities of D4/cusp points, e.g. lattice Laplacian with `V` a small ball around `(2, 0)` (PLAUSIBLE; not checked by hand) |
 | fold, global | fold-or-nondeg everywhere | 5/6 | T5 | **CONJECTURED never** (numerics below); do not freeze T5 without a sanity example |
@@ -287,7 +287,7 @@ Checked at the pin with `#check` in `checks.lean`/`checks2.lean` (`lake env lean
 | `AddCircle`, `AddCircle.intervalIntegral_preimage` | `(t) (f : AddCircle T → E) : ∫ a in t..t+T, f ↑a = ∫ b, f b` | front end |
 | `AddCircle.integral_preimage` | same with `Set.Ioc t (t + T)` | front end |
 | `UnitAddTorus` | `abbrev UnitAddTorus d := d → UnitAddCircle` | front end |
-| `UnitAddTorus.integral_preimage` | `∫ x, f x = ∫ x in {x | ∀ i, x i ∈ Ioc (a i) (a i + 1)}, f (fun i => ↑(x i))` | front end bridge |
+| `UnitAddTorus.integral_preimage` | `∫ x, f x = ∫ x in {x \| ∀ i, x i ∈ Ioc (a i) (a i + 1)}, f (fun i => ↑(x i))` | front end bridge |
 | `UnitAddTorus.mFourierCoeff`, `UnitAddTorus.mFourier` | `(f : UnitAddTorus d → E) (n : d → ℤ) : E` | front end |
 | `fourierCoeffOn` | `a < b → (ℝ → E) → ℤ → E` | 1D front end for T0 |
 | `Real.smoothTransition`, `.zero_of_nonpos`, `.one_of_one_le`, `.contDiff` | `x ≤ 0 → … = 0`; `1 ≤ x → … = 1`; `ContDiff ℝ ↑n` for `n : ℕ∞` | the cutoff ψ of T1 |
@@ -403,8 +403,8 @@ the sweep listed** (PLAUSIBLE-not-novel: the sweep can miss Zulip threads, priva
 | Item | URL | What it has | Relation | Read |
 |---|---|---|---|---|
 | Mathlib at the pin | local | no oscillatory integral estimates; `Complex.besselJ` by the hypergeometric series, Bessel's integral listed as TODO; `UnitAddTorus.mFourierCoeff`; Riemann–Lebesgue (`tendsto_integral_exp_inner_smul_cocompact`) | infrastructure only | R (grep) |
-| bjbraams/lean-DLMF `DLMF/Bessel/BesselIntegral.lean` (HEAD `06ad2e43`) | https://github.com/bjbraams/lean-DLMF | Jacobi–Anger expansion, `besselJ_int_eq_integral_exp`: `J_n(z) = (2π)^{-1} ∫₀^{2π} e^{i(z sin θ − nθ)} dθ` — i.e. the 1D lattice kernel of `θ = sin` is a Bessel function; `DLMF/Bessel/LargeOrder.lean`: large-order limits for fixed argument; no `sorry` in the files read | PARTIAL (the exact kernel identity for the lattice Laplacian; no uniform `|J_n(x)| ≲ x^{-1/3}` bound found) | R |
-| TauCetiProject/TauCeti `TauCeti/Analysis/PDE/Schrodinger/Dispersive.lean` | https://github.com/TauCetiProject/TauCeti | continuum Schrödinger on a finite-dimensional inner product space: explicit kernel and `‖S(t)f‖_∞ ≤ (4π|t|)^{-n/2} ‖f‖₁`, via complex Gaussians | ADJACENT (continuum, explicit kernel, no oscillatory-integral estimate) | R |
+| bjbraams/lean-DLMF `DLMF/Bessel/BesselIntegral.lean` (HEAD `06ad2e43`) | https://github.com/bjbraams/lean-DLMF | Jacobi–Anger expansion, `besselJ_int_eq_integral_exp`: `J_n(z) = (2π)^{-1} ∫₀^{2π} e^{i(z sin θ − nθ)} dθ` — i.e. the 1D lattice kernel of `θ = sin` is a Bessel function; `DLMF/Bessel/LargeOrder.lean`: large-order limits for fixed argument; no `sorry` in the files read | PARTIAL (the exact kernel identity for the lattice Laplacian; no uniform `\|J_n(x)\| ≲ x^{-1/3}` bound found) | R |
+| TauCetiProject/TauCeti `TauCeti/Analysis/PDE/Schrodinger/Dispersive.lean` | https://github.com/TauCetiProject/TauCeti | continuum Schrödinger on a finite-dimensional inner product space: explicit kernel and `‖S(t)f‖_∞ ≤ (4π\|t\|)^{-n/2} ‖f‖₁`, via complex Gaussians | ADJACENT (continuum, explicit kernel, no oscillatory-integral estimate) | R |
 | TomasOrtega/Sidon `Sidon/NumberTheory/RiemannGaussian/FiniteKuzminLandau.lean`, `DiscreteSecondDerivativeTest.lean` | https://github.com/TomasOrtega/Sidon | Kusmin–Landau first-derivative test for exponential sums `‖Σ e(φ(n))‖ ≤ 2π/η`; a discrete second-derivative test | PARTIAL for "van der Corput for exponential sums" (ROADMAP §5); unrelated to torus integrals | R |
 | teorth/expdb `Expdb/ExponentialSums/FixedExponentialSum.lean` | https://github.com/teorth/expdb | definitions and trivial bounds for exponential sums | ADJACENT | R |
 | roos-j/lean-oscillatory, Mathlib PR #39406; roos-j/lean-variationalsw, lean-spherical, lean-dfr; bjbraams/lean-DLMF stationary phase; fpvandoorn/carleson | see `docs/prior_art.md` | 1D van der Corput; ℝⁿ non-stationary phase; 1D stationary phase | as in the existing gate (S1 ANTICIPATED, S2 PARTIAL); none treats periodic/lattice kernels | from gate |
@@ -417,14 +417,14 @@ the sweep listed** (PLAUSIBLE-not-novel: the sweep can miss Zulip threads, priva
 
 | Source | Claim used here | Checked against |
 |---|---|---|
-| A. Stefanov, P. G. Kevrekidis, *Asymptotic behaviour of small solutions for the discrete nonlinear Schrödinger and Klein–Gordon equations*, Nonlinearity 18(4) (2005) 1841–1857, doi:10.1088/0951-7715/18/4/022, arXiv:nlin/0409009 | `‖U(t)f‖_{ℓ^∞} ≤ C (1+|t|)^{-d/3} ‖f‖_{ℓ¹}` for the discrete Schrödinger and Klein–Gordon propagators on ℤ^d; d = 1: t^{-1/3}, d = 2: t^{-2/3} (the latter by the product structure) | arXiv abstract page (read); journal data from the reference list of Bi–Cheng–Hua (read). Note: the user's phrasing "t^{-1/3}/t^{-2/3} in 1D/2D" agrees with d/3; for **Klein–Gordon** the d/3 rate is **not** sharp (Cuenin–Ikromov) |
-| J.-C. Cuenin, I. A. Ikromov, *Sharp time decay estimates for the discrete Klein–Gordon equation*, Nonlinearity 34 (2021) 7938–7962, doi:10.1088/1361-6544/ac2b86, arXiv:2011.12076 | discrete KG on ℤ^d: `|t|^{-3/4}` (d = 2), `|t|^{-7/6}` (d = 3), `|t|^{-3/2} log|t|` (d = 4), faster than conjectured by Kevrekidis–Stefanov | arXiv abstract (read) |
-| P. Schultz, *The wave equation on the lattice in two and three dimensions*, Comm. Pure Appl. Math. 51(6) (1998) 663–695 | 2D lattice wave equation decays like `|t|^{-3/4}`, 3D like `|t|^{-7/6}` | **not re-checked against the original**; bibliographic data and the rates read in Bi–Cheng–Hua arXiv:2312.04130v3 (HTML, read). A web-search summary attributed `|t|^{-2/3}` (d = 2) to Schultz in arXiv:2406.00949; that page was not read, discrepancy unresolved |
-| C. Bi, J. Cheng, B. Hua, *The wave equation on lattices and oscillatory integrals*, arXiv:2312.04130 | sharp dispersive estimates for the wave equation on ℤ⁴ (`|t|^{-3/2} log|t|`), Newton-polyhedron interpretation for d = 2, 3, 4; uses singularity theory (A_k, D4⁻) | arXiv abstract and HTML (read, through the fetch tool's summary) |
+| A. Stefanov, P. G. Kevrekidis, *Asymptotic behaviour of small solutions for the discrete nonlinear Schrödinger and Klein–Gordon equations*, Nonlinearity 18(4) (2005) 1841–1857, doi:10.1088/0951-7715/18/4/022, arXiv:nlin/0409009 | `‖U(t)f‖_{ℓ^∞} ≤ C (1+\|t\|)^{-d/3} ‖f‖_{ℓ¹}` for the discrete Schrödinger and Klein–Gordon propagators on ℤ^d; d = 1: t^{-1/3}, d = 2: t^{-2/3} (the latter by the product structure) | arXiv abstract page (read); journal data from the reference list of Bi–Cheng–Hua (read). Note: the user's phrasing "t^{-1/3}/t^{-2/3} in 1D/2D" agrees with d/3; for **Klein–Gordon** the d/3 rate is **not** sharp (Cuenin–Ikromov) |
+| J.-C. Cuenin, I. A. Ikromov, *Sharp time decay estimates for the discrete Klein–Gordon equation*, Nonlinearity 34 (2021) 7938–7962, doi:10.1088/1361-6544/ac2b86, arXiv:2011.12076 | discrete KG on ℤ^d: `\|t\|^{-3/4}` (d = 2), `\|t\|^{-7/6}` (d = 3), `\|t\|^{-3/2} log\|t\|` (d = 4), faster than conjectured by Kevrekidis–Stefanov | arXiv abstract (read) |
+| P. Schultz, *The wave equation on the lattice in two and three dimensions*, Comm. Pure Appl. Math. 51(6) (1998) 663–695 | 2D lattice wave equation decays like `\|t\|^{-3/4}`, 3D like `\|t\|^{-7/6}` | **not re-checked against the original**; bibliographic data and the rates read in Bi–Cheng–Hua arXiv:2312.04130v3 (HTML, read). A web-search summary attributed `\|t\|^{-2/3}` (d = 2) to Schultz in arXiv:2406.00949; that page was not read, discrepancy unresolved |
+| C. Bi, J. Cheng, B. Hua, *The wave equation on lattices and oscillatory integrals*, arXiv:2312.04130 | sharp dispersive estimates for the wave equation on ℤ⁴ (`\|t\|^{-3/2} log\|t\|`), Newton-polyhedron interpretation for d = 2, 3, 4; uses singularity theory (A_k, D4⁻) | arXiv abstract and HTML (read, through the fetch tool's summary) |
 | I. Borovyk, M. Goldberg, *The Klein–Gordon equation on ℤ² and the quantum harmonic lattice*, J. Math. Pures Appl. (9) 107(6) (2017) 667–696 | 2D discrete KG decay | reference list of Bi–Cheng–Hua only; content **not re-checked** |
-| M. Maeda, H. Sasaki, E. Segawa, A. Suzuki, K. Suzuki, *Dispersive estimates for quantum walks on 1D lattice*, J. Math. Soc. Japan 74(1) (2022) 217–246(?), arXiv:1808.05714 | `‖U^t P_c u₀‖_{ℓ^∞} ≲ (1+|t|)^{-1/3} ‖u₀‖_{ℓ¹}` for 1D quantum walks with position-dependent coin | arXiv abstract (read); journal volume/issue from the J-STAGE search result; page range **not re-checked** |
+| M. Maeda, H. Sasaki, E. Segawa, A. Suzuki, K. Suzuki, *Dispersive estimates for quantum walks on 1D lattice*, J. Math. Soc. Japan 74(1) (2022) 217–246(?), arXiv:1808.05714 | `‖U^t P_c u₀‖_{ℓ^∞} ≲ (1+\|t\|)^{-1/3} ‖u₀‖_{ℓ¹}` for 1D quantum walks with position-dependent coin | arXiv abstract (read); journal volume/issue from the J-STAGE search result; page range **not re-checked** |
 | A. N. Varchenko, *Newton polyhedra and estimates of oscillatory integrals*, Funct. Anal. Appl. 10 (1976) | oscillation indices (1 for A1, 5/6 for A2, 3/4 for A3, 2/3 for D4 in two variables) | reference list of Bi–Cheng–Hua (bibliographic only); the index values are standard (Arnold–Gusein-Zade–Varchenko), **not re-checked** here |
-| L. J. Landau, *Bessel functions: monotonicity and bounds*, J. London Math. Soc. (2000) | `sup_ν |J_ν(x)| ≤ b x^{-1/3}`, `b ≈ 0.6749` | **not re-checked** (quoted from memory; the numerics above are consistent) |
+| L. J. Landau, *Bessel functions: monotonicity and bounds*, J. London Math. Soc. (2000) | `sup_ν \|J_ν(x)\| ≤ b x^{-1/3}`, `b ≈ 0.6749` | **not re-checked** (quoted from memory; the numerics above are consistent) |
 
 Consequences for scope (PLAUSIBLE): the library's singularity menu (A1, A2, D4) covers the 2D lattice
 **Schrödinger** kernel (T6, sharp) and quantum-walk bands whose dispersion relations have only A1/A2/D4 points; it
@@ -446,7 +446,7 @@ TomasOrtega/Sidon.
 | T7: a periodic C³ phase has `hessDet = 0` somewhere | PROVEN (paper) |
 | Lattice Laplacian: every point nondegenerate / fold / D4⁺ (`disc = −1/3`) | PROVEN (hand computation) |
 | Lattice Laplacian with `V = closedBall 0 1`: T4 hypothesis | PROVEN (hand computation) |
-| `sup_x |K_t(x)|` for the lattice Laplacian decays exactly like `t^{-2/3}` | VALIDATED (numerics; classical via Bessel) |
+| `sup_x \|K_t(x)\|` for the lattice Laplacian decays exactly like `t^{-2/3}` | VALIDATED (numerics; classical via Bessel) |
 | Routes for T0, T3, T4, T5′, T6′, T6 from S1/S2.1/S2.2/S3/S4.1′ | PLAUSIBLE |
 | Openness of `FoldOrNondeg` (G7) | PLAUSIBLE |
 | T5 (global folds) is vacuous for periodic phases | CONJECTURED (numerics) / OPEN |

@@ -12,7 +12,8 @@ ASSUMED(L4: Lean discharge of each cited model's classification, through ROADMAP
 
 - Spec: `docs/prereg/2026-11-09-CENSUS-spec.md`, frozen at commit (at registration), before either implementation
   existed. Symbolic checks of the spec: `numerics/census/spec_checks.py`, output
-  `numerics/results-census-spec-2026-11-09.txt` (29/29 PASS at the commit recorded in that file).
+  `numerics/results-census-spec-2026-11-10.txt` (36/36 PASS at the commit recorded in that file; it supersedes
+  `numerics/results-census-spec-2026-11-09.txt`, 35/35, which this line had cited as 29/29 until 2026-11-10).
 - Implementations: A = `numerics/census/impl_a/` (exact algebra, spec §6), B = `numerics/census/impl_b/` (interval
   branch and bound, spec §6), written by different agents; B from the spec alone. Authors (person or model): (at
   registration).
@@ -40,7 +41,11 @@ Runs on corpus models or controls before this registration, all with their outpu
 - VV-qwz-decay (`numerics/results-qwz-decay-2026-11-08.txt`): M08 kernel decay check NOT PASS.
 - Exact facts established before this registration (`numerics/census/spec_checks.py`): M01's complete classification
   (four D4 points, folds, no A3; check K-SQ); four A3 points of M08 at `(±arccos(−1/3), ±arccos(−1/3))` (K-QWZ3, first
-  found by the VT adversarial referee); the expected outcomes of K1, K2, K3, K5; the NS sets of all corpus models.
+  found by the VT adversarial referee); four stable A3 points of the QWZ family at each m ∈ {201/100, 5/2, 4, 10}
+  with closed-form `g4` (K-QWZm, added 2026-11-10 from the external dossier, answers `review/2026-11-10-external-dossier-answers.md`,
+  A1, owner decision); the expected outcomes of K1, K2, K3, K5; the NS sets of all corpus models.
+- Held-out set H (spec §3): sealed by its selector; commitment `SHA-256 = (at registration)`; selector (at
+  registration). The lead has not seen H.
 - Published classifications read before registration (the logged sweep `review/2026-11-09-CENSUS-prior-art-sweep.md`):
   M17 (Cuenin–Ikromov; Borovyk–Goldberg), M03 (Ge–Hua–Jia–Zhou), M18 (Wan–Zhang); decay-rate papers for M05
   (Hong–Tadano–Yang) and M16 (Schultz; Bi–Cheng–Hua). The corpus was revised after the sweep and before freezing
@@ -67,6 +72,9 @@ outputs aside, refuses a dirty tree, prints `STEP_OK`/`STEP_FAIL` per step and `
 4. implementation B on the same → `numerics/census/out/b.json`;
 5. the spec-only evaluator on A's reported points and on seeded points (§3, C5) → `numerics/census/out/eval.json`;
 6. `accept.py` on the three outputs → `numerics/census/out/verdict.txt` and `numerics/census/out/ranking.json`.
+7. after the outputs of steps 1–6 are committed: the held-out reveal (spec §3; hash checked against the value in §1
+   above), then A and B on H, unchanged, → `numerics/census/out/heldout_a.json`, `heldout_b.json`, and `accept.py` on them
+   (the per-model criteria C1, C3 and C5, then C7) → `numerics/census/out/heldout_verdict.txt`.
 
 ## 3. Criteria (all must hold for PASS; checked by `accept.py`, which recomputes every verdict from the outputs)
 
@@ -82,7 +90,9 @@ outputs aside, refuses a dirty tree, prints `STEP_OK`/`STEP_FAIL` per step and `
   box until it lies inside one B box or inside the interior of a union of B boxes. (c) Each A3-PROVEN box of B contains
   exactly one isolated point of A, of type A3, and no other isolated point or sample point of A.
 - **C4 (known answers).** (a) A reports the four A3 points of K-QWZ3, each enclosing `(±a, ±a)` exactly as spec §5,
-  and the four A3 points of K-DKG at `(±π/2, ±π/2)`. (b) Literature (spec §5, X-DKG, X-TRI, X-KING): A's classification
+  the four A3 points of K-DKG at `(±π/2, ±π/2)`, and, at each mass of K-QWZm, four A3 points enclosing
+  `(±a_m, ±a_m)` exactly, with C5's evaluated `g4` within 1e−20 relative of the closed form of spec §7. Other points
+  A reports for K-QWZm are not a failure (the control asserts nothing about them). (b) Literature (spec §5, X-DKG, X-TRI, X-KING): A's classification
   of M17, M03 and M18 agrees with the published statement.
 - **C5 (soundness spot checks, spec-only evaluator).** (a) At every isolated point A reports (its exact location
   evaluated at 50 digits), `|det H|`, `|T[v_a³]|`, `|T[v_b³]|` (scaled by `1 + ‖H‖² + ‖T‖³` at the point) are below
@@ -90,6 +100,12 @@ outputs aside, refuses a dirty tree, prints `STEP_OK`/`STEP_FAIL` per step and `
   per model from the linear congruential generator of `docs/prereg/2026-11-08-VV-classify.md` with seed 20261109, every
   B box containing the point has enclosures of `det H`, `T[v_a³]`, `T[v_b³]` that contain the evaluator's 50-digit values
   (allowance 1e−30).
+- **C7 (held-out generalisation; one fixed check, the rest descriptive).**
+  - On the models of H that pass C3, compute `N_H(F)` (spec §4.3, every model weight 1) for every F of §4.
+  - The fixed check: the family recommended from the corpus has the largest `N_H` (ties allowed).
+  - With 4–6 models this is a sanity check, not a statistical test, and it is reported as such.
+  - A failure of C7 does not change the corpus verdicts or the recommendation. It is reported with the recommendation
+    as "the ranking did not generalise to H", and the owner decides.
 - **C6 (descriptive, not a criterion).** Per model: the objects found, which implementation decided each, budgets
   used, and B's UNRESOLVED boxes that contain no A-object (B's weakness, not a contradiction).
 

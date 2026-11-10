@@ -2,7 +2,7 @@
 
 A decision tree for a user with a concrete oscillatory integral. Every name below is a theorem whose type is a frozen
 statement (`stamps/statements.json`, `docs/STATUS.md` for its status); `import OscInt.API` exposes all of them. The
-copy-paste recipes are in `docs/cookbook.md`; the machine-readable index is `stamps/api.json`.
+copy-paste recipes are in `docs/cookbook.md`; the machine-readable index is `docs/api.json`.
 
 Conventions used by every two-dimensional front end: points of the plane are `ℝ × ℝ` with Mathlib's **max norm**
 (`‖(x, y)‖ = max |x| |y|`, so `Metric.closedBall 0 r` is a square); the integral is written out,
@@ -38,7 +38,7 @@ Then pick by what you need:
 | finitely many D4 points `D`, everything else nondegenerate or fold at critical points for `L ∈ K′` | `L ∈ K′` | `globalDecayCrit` (GD-C) | `m^{-2/3}` |
 | finitely many D4 points `D`, every other point of `K` nondegenerate or fold | **all** `L` | `globalDecay` (GD) | `m^{-2/3}` |
 | one D4 point, amplitude in a small ball around it | all `L` | `d4BoundLocal` (FE-S4.1′L), `d4BoundFE` (Ψ smooth on ℝ²) | `t^{-2/3}` |
-| a D4 point, exact asymptotics | — | `d4LimitClosedForm` (F2): `t^{2/3} I(t) → c_C A(0)`, `c_C = Γ(1/3)²/(√3 |Disc|^{1/6})` or `Γ(1/3)²/Disc^{1/6}` | — |
+| a D4 point, exact asymptotics | — | `d4LimitClosedForm` (F2): `t^{2/3} I(t) → c_C A(0)`, `c_C = Γ(1/3)²/(√3 \|Disc\|^{1/6})` or `Γ(1/3)²/Disc^{1/6}` | — |
 | a limit `m^σ I(m) → c ≠ 0` | a matching lower bound | `sharpness` (SH) | — |
 
 "All `L`" matters for dispersive estimates: `sup_x |∫ e^{i(tω(k) + x·k)} A(k) dk|` is the sup over `L = x/t`.

@@ -17,4 +17,5 @@ for a Lean theorem (README).
 Earlier numeric checks were not pre-registered as such: `numerics/results-2026-11-05.txt` (S1 constants, `make numerics`,
 `docs/progress.md`) and `numerics/results-d4const-2026-11-06.txt` (D4 closed forms, `docs/decisions/2026-11-06-S4.md`).
 Symbolic checks of a specification (not tests of a hypothesis) are recorded with the specification they support:
-`numerics/census/spec_checks.py` → `numerics/results-census-spec-2026-11-09.txt` (CENSUS).
+`numerics/census/spec_checks.py` → `numerics/results-census-spec-2026-11-09.txt`, superseded on 2026-11-10 by
+`numerics/results-census-spec-2026-11-10.txt` after control K-QWZm was added before registration (CENSUS).

@@ -325,6 +325,42 @@ def main():
           "with v = (1,-1), w = (1,1) at (a,a): H[w,w] = 32/(195 sqrt65), T[v,v,w] = 12 sqrt130/65, "
           "Q[v,v,v,v] = 18/sqrt65, g4 = -5247/sqrt(65)")
 
+    # K-QWZm (added 2026-11-10, before registration; spec section 8): the QWZ family at rational masses m > 2, one close
+    # to 2. Closed forms from the external dossier (A1, C2; review/2026-11-10-external-dossier-answers.md), re-derived for symbolic m in
+    # numerics/review/dossier_checks.py (X1); here exactly at each mass the census will run.
+    ok, vals = True, []
+    for mq in (sp.Rational(201, 100), sp.Rational(5, 2), sp.Integer(4), sp.Integer(10)):
+        Pm = mq**2 + 2 + 2 * mq * (c1 + c2) + 2 * c1 * c2
+        Hm_, Tm_, Qm_ = jets(sp.sqrt(Pm), K)
+        am = sp.acos(-1 / mq)
+        Dm = mq**4 - 2 * mq**2 + 2
+        for sa in (1, -1):
+            for sb in (1, -1):
+                pt = {k1: sa * am, k2: sb * am}
+                Hp, Tp, Qp = at(Hm_, pt), at(Tm_, pt), at(Qm_, pt)
+                detp = Hp[0][0] * Hp[1][1] - Hp[0][1] ** 2
+                nonzeroH = not all(is_zero(Hp[i][j]) for i in range(2) for j in range(2))
+                g3a, g3b, g4, v, w = rank1_invariants(Hp, Tp, Qp)
+                ok = ok and is_zero(detp) and nonzeroH and is_zero(g3a) and is_zero(g3b) and not is_zero(g4) \
+                    and not is_zero(contract(Tp, v, v, w))
+        pt = {k1: am, k2: am}
+        Hp, Tp, Qp = at(Hm_, pt), at(Tm_, pt), at(Qm_, pt)
+        hww = contract(Hp, (1, 1), (1, 1))
+        tvvw = contract(Tp, (1, -1), (1, -1), (1, 1))
+        g4n = contract(Qp, (1, -1), (1, -1), (1, -1), (1, -1)) - 3 * tvvw**2 / hww
+        grad1 = sp.simplify(sp.diff(sp.sqrt(Pm), k1).subs(pt))
+        ok = ok and is_zero(hww - 4 * (mq**2 - 1) / (mq * Dm ** sp.Rational(3, 2))) \
+            and is_zero(tvvw - 2 * mq * sp.sqrt(mq**2 - 1) / sp.sqrt(Dm)) \
+            and is_zero(g4n + 3 * mq * (mq**6 - 2 * mq**4 + 2 * mq**2 - 2) / sp.sqrt(Dm)) \
+            and is_zero(grad1 + (mq**2 - 1) ** sp.Rational(3, 2) / (mq * sp.sqrt(Dm)))
+        vals.append(f"m={mq}: g4={sp.N(g4n, 10)}, T[v,v,w]={sp.N(tvvw, 10)}, d1Psi={sp.N(grad1, 10)}")
+    check("K-QWZm", ok,
+          "QWZ sqrt(m^2 + 2 + 2m(c1+c2) + 2c1c2), m in {201/100, 5/2, 4, 10}: at each of (+-a_m, +-a_m), "
+          "a_m = arccos(-1/m): det H = 0, H != 0, g3 = 0 (both kernel vectors), g4 != 0 (A3) and T[v,v,w] != 0 (stable); "
+          "at (a_m, a_m) with v = (1,-1), w = (1,1): H[w,w] = 4(m^2-1)/(m D^(3/2)), T[v,v,w] = 2m sqrt(m^2-1)/sqrt(D), "
+          "g4 = -3m(m^6-2m^4+2m^2-2)/sqrt(D), dPsi/dk1 = dPsi/dk2 = -(m^2-1)^(3/2)/(m sqrt(D)), D = m^4-2m^2+2; "
+          + "; ".join(vals))
+
     # K-DKG: discrete Klein-Gordon, mass 1 (M17); Cuenin-Ikromov (Nonlinearity 34 (2021), Prop. 9) state A3 exactly at
     # cos k1 = cos k2 = 0. Re-derived here at the four points (the "exactly" part is the paper's, not checked here).
     Hd_, Td_, Qd_ = jets(sp.sqrt(5 - 2 * c1 - 2 * c2), K)

@@ -129,7 +129,7 @@ and S4.3 (`OscInt.d4ConstantPos`) are machine-checked as stated: record `docs/re
 (a71b318: per-configuration lines "comparator-S41w/S42/S43.json accepted against stamps/20261106T081634Z-e2d7771c358e",
 six kernels, axiom audit 458/458; the overall result is INCOMPLETE only because S4.4 has no proof), CI run
 42200801140 green on a71b318 (including nanoda built from source). The brief's S4 limit with its constant
-Γ(1/3)²/(√3|Disc|^{1/6}) is S4.2 ∧ S4.4 (Disc < 0 clause); S4.4 is not proved, so that form is open; "c_C ≠ 0" is
+Γ(1/3)²/(√3|Disc|^{1/6}) is S4.2 ∧ S4.4 (Disc < 0 clause); S4.4 is not proved, so that form is open (superseded: S4.4 was proved later, see the S4.4 row); "c_C ≠ 0" is
 S4.3 (proved, Gamma-free by name). Reviews: `review/2026-11-06-S4b-pre-proof-{A,B}.md`,
 `review/2026-11-06-S43-proof-route.md`, `review/2026-11-06-S42-proof-route.md`, `review/2026-11-06-S4b-post-proof-{A,B}.md`,
 `review/2026-11-06-S4b-adversarial.md`; answers in `review/2026-11-06-S4b-pre-proof-answers.md` and

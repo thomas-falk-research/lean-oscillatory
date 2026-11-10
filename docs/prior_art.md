@@ -10,6 +10,7 @@ repositories.
 | Target | Verdict | Basis |
 |---|---|---|
 | S1 1D van der Corput, constants 3, 8, 18, amplitude | **ANTICIPATED** (not merged in Mathlib) | roos-j/lean-oscillatory, Mathlib PR #39406 |
+| S1.k k-th derivative van der Corput, k ≥ 2, constant 5·2^{k−1} − 2, amplitude (batch A3, frozen 2026-11-09, not proved) | **ANTICIPATED** (not merged in Mathlib) | roos-j/lean-oscillatory `norm_integral_exp_mul_I_le_of_order_ge_two` at `cf564e0` (Sources below), under stronger regularity (`ContDiffOn ℝ k φ`, ψ `ContDiffOn ℝ 1`) than S1.k's derivative chain. Row added 2026-11-10: the external audit (`review/2026-11-10-external-audit.md`) pointed out that this table omitted S1.k, although the source row below has listed the theorem since 2026-11-05. A proof of S1.k can claim only a machine-checked port under weaker regularity |
 | S2 2D nondegenerate stationary phase, uniform in p | PARTIAL | non-stationary O(μ^{-N}) in ℝⁿ and O(λ^{-n/2}) for *definite* Hessians, existential constants (roos-j/lean-variationalsw); no indefinite case |
 | S3 uniform fold, m^{-5/6} | not found | only a 1D cubic-point limit (lean-DLMF) |
 | S4 D4 umbilic, t^{-2/3}, constant Γ(1/3)²/(√3·\|Disc\|^{1/6}) (and, found here, Γ(1/3)²/Disc^{1/6} for the elliptic umbilic; PLAUSIBLE known, no novelty claimed) | not found | lean-DLMF defines umbilic canonical integrals on complex contours; their link to real integrals is `sorry` there |

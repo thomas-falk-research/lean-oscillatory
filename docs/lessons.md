@@ -326,4 +326,14 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     spec-check record first said "tracked files modified: yes" on a clean tree: the shell had truncated the tracked output
     file before the script ran `git status`. Rule: write the record outside the tree, then copy it in, and check the
     record's commit and dirty lines before committing it. Check: the commit messages of the A3 and CENSUS records.
-
+46. **No chats, prompts or verbatim AI-conversation text in the repository or its history (owner rule, 2026-11-10).**
+    Session 9 recorded external review chats and a reviewer's packet verbatim, and a referee prompt, following the old
+    CONTRIBUTING step 5. The owner had already declined to record a sweep brief. Custom prompts and conversation text
+    are sensitive fingerprints that can identify people, so they count as personal data. Rule: record external reviews
+    and referee reports only as the lead's answers, in the lead's own words. Paraphrase rather than quote; a short
+    quotation of a paper title, of Mathlib, or of the repository's own text is fine. Never commit a prompt, the owner's
+    or a referee's. Do not name an external reviewer's tool or vendor. The lead's commit attribution trailer is
+    unchanged; it was already on 158 commits of `main`. The branch history of session 9 was rebuilt without those
+    files. Earlier prompts and verbatim reports on `main` are an open owner item: removing them from `main`'s history
+    would invalidate every stamp. Check: none automatic yet; a candidate `make quick` check for `review/prompts/`
+    additions and for transcript markers is in ROADMAP "Standing: repository hygiene".

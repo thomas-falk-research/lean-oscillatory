@@ -1,6 +1,40 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (45 entries); every rule in it is binding.
+For a reader who saw nothing. Read `docs/lessons.md` first (46 entries); every rule in it is binding.
+
+## Session 9 (2026-11-10): external reviews checked; a hand proof of S5.1′; nothing proved in Lean, nothing frozen
+- **Privacy rule (owner, 2026-11-10; lessons 46).** No chat transcripts, prompts (the owner's, reviewers' or
+  referees'), or verbatim AI-conversation text in the repository or its history. External reviews are recorded only as
+  the lead's answers, in the lead's own words, with independent checks.
+- **External reviews (2026-11-10), several rounds from one external reviewer.** Answers: `review/2026-11-10-external-dossier-answers.md`,
+  `…-external-audit-answers.md`, `…-external-results-answers.md`. Checks, all passing: `numerics/review/dossier_checks.py`
+  (27/27), `audit_checks.py` (4/4), `cusp_proof_checks.py` (7/7).
+- **A complete hand proof of frozen S5.1′ (hence S5.1)**, with C² amplitudes, uniform in the linear term. It was
+  checked by the lead and by a fresh-context referee (no FATAL or MAJOR finding), and is re-derived in the lead's words
+  in `review/2026-11-10-external-results-answers.md`.
+  - Route: the exact dephased transverse integral (already proved, L6 core, j = 2, 3) plus a fourth-order van der
+    Corput estimate derived from S1.3. **I3a is not needed for S5.1′.**
+  - Next for A3: `docs/proof-A3.md` along that route, with parts P-V4, P-core4, P-jet4 (a C⁴ implicit curve on a
+    neighbourhood), P-far and assembly; then the route referee. Nothing is proved until replayed.
+- **Owner decisions (2026-11-10):**
+  - ROADMAP I3a and I3b: the dimension-generic track. I3b states its hypothesis intrinsically (corank 2, nondegenerate
+    cubic on the Hessian's kernel), with a counterexample phase as a bite datum. I3a must fix its input derivative
+    budget, with a C²-only counterexample as a bite datum.
+  - CENSUS (draft): control K-QWZm (the QWZ family at four masses; spec checks 36/36,
+    `numerics/results-census-spec-2026-11-10.txt`), and a sealed held-out set H (selector not yet named).
+  - ROADMAP I7: the Fourier-grid certificate, outside the core, with a stop rule.
+  - ROADMAP "Candidates (not commitments)": four promotion gates.
+  - ROADMAP "Standing: repository hygiene": first pass done.
+- **Disclosure fixes:** `docs/prior_art.md` marks S1.k ANTICIPATED (Roos–Praveen `…_order_ge_two`, Mathlib PR #39406,
+  open); ROADMAP I3's Ikromov–Müller wording is weakened.
+- **Owner items open:**
+  - the I3 ordering (recommendation: A3 formalisation before I3a);
+  - credit for the S5.1′ route;
+  - the CENSUS held-out selector;
+  - the earlier records of prompts and AI reviews on `main` (`review/prompts/`, verbatim referee reports, query logs),
+    which the privacy rule now covers. Removing them from `main`'s history would invalidate every stamp. Owner to decide.
+- `main` CI on 58a86d0: `ci` and `verify` both success.
+- Next, in order: as in session 8 (below), except that item (1) follows the S5.1′ route above.
 
 ## Session 8 (2026-11-09): what changed, and where to start
 - **v0.4.0 reconciled** (ROADMAP I0): pins PR #9 and DOI PR #10 merged; Zenodo 10.5281/zenodo.24088811 in
@@ -36,7 +70,9 @@ For a reader who saw nothing. Read `docs/lessons.md` first (45 entries); every r
   `lake exe cache get`. `make quick` takes ~13 min warm; `make stamp` ~13 min; all five timestamp endpoints were
   reachable through the proxy.
 
-## What exists (session 7, 2026-11-08/09)
+## What existed at the end of session 7 (2026-11-08/09; historical)
+Since then batch A3 has added three pinned statements that are stated and reviewed but **not proved** (S1.k, S5.1,
+S5.1′): 55 pinned, 52 proved (`docs/STATUS.md`). Branch names, commits and counts below are as of session 7.
 - Lean v4.35.0, Mathlib `56a0058`. **52 pinned statements, all proved**, each with a row in `docs/STATUS.md`: S1–S4,
   front-end batches 1–3, batch GD (eight; session 6) and, new this session, **batch VT** (four: GD-C-V, GD-V, GD-F-V,
   GD-N-V, the global decay estimates for amplitudes in any complex Banach space `E : Type`, one constant for every E;

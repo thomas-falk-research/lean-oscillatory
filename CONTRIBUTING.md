@@ -40,11 +40,13 @@ The order matters: the statement is frozen and reviewed before any proof exists,
 4. **Freeze.** Commit; `make commit` (both commitment producers must agree); `make stamp` (RFC 3161 ×3,
    OpenTimestamps ×2); add the pin lines to `stamps/pins.txt` (statement and `challenge:` lines); `make
    statements` regenerates `stamps/statements.json`; commit and push.
-5. **Blind review.** Commit the referee prompt under `review/prompts/`, then two fresh-context referees review the
-   statement against `docs/statements.md` without seeing any proof. Reports go verbatim under `review/`. A
+5. **Blind review.** Two fresh-context referees review the statement against `docs/statements.md` without seeing any
+   proof. Prompts are not committed, and reports are not reproduced verbatim (owner privacy rule 2026-11-10, lessons
+   46). The answers file under `review/` records each finding in the lead's words, with its severity and the evidence
+   it cites. A
    BLOCKER or MAJOR means a new statement (back to 2), never an edit. A MAJOR whose finding is only against the prose
    of `docs/statements.md` (not the Lean text, not the sanity layer) is answered by a dated clarification there,
-   recorded in the answers file with the referee's words (owner decision 2026-11-09,
+   recorded in the answers file with the referee's finding stated in the lead's words (owner decision 2026-11-09,
    `docs/decisions/2026-11-08-step5-memo.md`).
 6. **Route and blueprint.** `docs/proof-<id>.md` (the mathematical route, each step with the Mathlib names it needs,
    each name `#check`ed at the pin, lessons 1); `Blueprint/<File>.lean` (one `def …Facts : Prop` per part); the lead's
