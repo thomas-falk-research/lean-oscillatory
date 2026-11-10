@@ -154,3 +154,34 @@ P1 must come before P2. P3, P4 and P5 are independent of each other and of P1/P2
   `core_reduction` directly. The inner integral `innerF` is literally unchanged.
 - **Amplitude regularity.** Everything uses `AmpBound 2` or `AmpBound 1`, as the frozen statements require.
   Nothing needs C³.
+
+## Revision after the route referee (2026-11-10)
+
+A fresh-context route referee read this document, `Blueprint/Cusp.lean` and `OscInt/Cusp/Assembly.lean` at db4cc7d.
+Findings and answers: `review/2026-11-10-A3-route-answers.md`. No part is false, and the assembly proves both frozen
+statements. The following replaces the corresponding text above.
+
+- **P3, the formula and continuity of G4 (MAJOR, accepted).** Defining `G4 := fderiv (G3 Q) k (1, Y1 Q k)` is the
+  right value, but its joint continuity in `(τ, k)` does not follow from `FamilyCk 4` by composition. Use the explicit
+  route instead, extending the existing G2 → G3 pattern one order:
+  1. Prove `hasDerivAt_ddd_graph`, from `contDiff_ddd (n := 1)`, like `hasDerivAt_dd_graph`.
+  2. Prove `SliceHyps.hasDerivAt_Y2` along the graph.
+  3. Define `G4 Q k` as the derivative that these give for `t ↦ G3 Q (t, ys t)`. It is written with a fourth
+     directional derivative `dddd`, the `fderiv` of `ddd`.
+  4. Continuity at `(τ₀, 0)` comes from `hQ.2 4` via `iteratedFDeriv_succ_apply_left`.
+  5. The value at the normal point follows by `simp` with `Y1 = 0` and `dd (1,0) (0,1) = 0`.
+- **P2, where `g` is C⁴ (MINOR).** `CoreHyps` gives `∂_yQ(x, ys x) = 0` only on `Icc (−a) a`. So `g′ = ∂_xQ(·, ys ·)`
+  holds, and `g` is C⁴, on `Ioo (−a) a`, not on `Ioo (−2a) (2a)`. That suffices: `g‴` is continuous on `Icc`, since `g`
+  is C³ on the larger interval. Get the fourth step from `iteratedDeriv_succ'` and `Filter.EventuallyEq.iteratedDeriv_eq`,
+  then `hasDerivAt_iteratedDeriv_of_contDiffOn` for `x ↦ pd e₁ Q (x, ys x)` with `n = 3`, `i = 2`.
+- **P2, the outer linear term (MINOR).** In `oscInt2_eq_iterated`, `γ` is the outer phase, not the curve. Apply it to
+  `Q′ = Q + p·x` with `γ(x) = Q(x, clamp a ys x) + p·x`, then rewrite the inner phase back to `innerF` with `ring`
+  under the binder.
+- **P4, the inner interval (MINOR).** `oscInt2_eq_iterated` integrates over `[−2b, 2b]`, but `|∂_yΦ| ≥ c` holds only on
+  `[−b, b]`. Cut the inner integral to `[−b, b]` first (A vanishes outside), or use `MeasureTheory.integral_prod`
+  directly.
+- **P5, symmetry (MINOR).** The `∂²_x∂_y` entry of `NormalPoint4` gives `D³φ[w, v, v]`, while `IsA3Point` has
+  `D³φ[v, v, w]`. Mathlib's `ContDiffAt.iteratedFDeriv_comp_perm` needs `ContDiffAt 𝕜 ⊤`, which is analytic here
+  (lessons 12), so it cannot be used. Permute with `dd_comm` instead: once on `y ↦ fderiv f y u` for the inner pair, and
+  once pointwise inside `ddd` for the outer pair.
+- **P1's place (NIT).** `VdC4Facts` is internal to P2. It is not a hypothesis of `cuspBoundGen_of`.
