@@ -166,8 +166,10 @@ only after the corpus results are committed.
      the sealed record also lists every examined source with the rule that excluded it. The search queries are not
      recorded (lessons 46). The order in which sources are examined remains the selector's choice; the sealed pool and
      the random draw are what limit it.
-- *Pool format.* A JSON array, sorted by `id` (unique), of objects `{id, domain, source, parameters, G, u,
-  domain_type}`, all values strings (rationals written `p/q`, so that RFC 8785 never rounds a number), with `G`, `u`
+- *Pool format.* The sealed file is a JSON object `{pool, examined}`: `pool` is an array, sorted by `id` (unique), of
+  objects `{id, domain, source, parameters, G, u, domain_type}`; `examined` lists every examined source as
+  `{source, outcome}` (outcome: the pool id it contributed, or the excluding rule). All values are strings of printable
+  ASCII (rationals written `p/q`, so that RFC 8785 never rounds a number), with `G`, `u`
   and `domain_type` in the grammar of `numerics/census/corpus.json`. Every entry is checked against that grammar and
   against admissibility by `numerics/census/validate_pool.py`, committed before the pool is sealed, so that no entry
   can fail to parse later.
@@ -178,7 +180,7 @@ only after the corpus results are committed.
   2. H is the 5 entries of original rank 1 to 5.
   3. While H covers fewer than three domains: among H's members whose domain has at least two members in H, remove the
      one with the largest original rank; add the pool entry with the smallest original rank whose domain H lacks.
-- *Sealing.* The selector publishes only `SHA-256(salt ‖ JCS(pool))`, where `JCS` is the JSON Canonicalization Scheme
+- *Sealing.* The selector publishes only `SHA-256(salt ‖ JCS(sealed file))`, where `JCS` is the JSON Canonicalization Scheme
   (RFC 8785) as UTF-8 bytes and `salt` is 16 bytes from the operating system's cryptographic random source (published
   later as hex). That hash is entered in the registration before it is registered. H itself is not committed: it does not
   exist until the drand round, and it is a fixed function of the pool, the round and the draw procedure. Implementers
@@ -411,3 +413,7 @@ it claims no novelty for the models with published classifications.
   sources, parameters, coordinates, band, domain order, `validate_pool.py`), pool values as strings, the owner reveals,
   a voided H is reported, the 48-hour rule tied to the stamp; B's child order, "processed", fixed `v` and `w`,
   compressed output; K-SQ lists X; the M07 component wording; CORPUS checks every field.
+- 2026-11-10 — after freezing, before registration (no implementation exists): the sealed held-out file is an object
+  `{pool, examined}`, so that the list of examined sources, which the inclusion rule requires, is under the same
+  commitment as the pool; values are printable ASCII. `numerics/census/validate_pool.py` (validation, commitment, draw,
+  self-test with planted defects) committed before the pool exists.
