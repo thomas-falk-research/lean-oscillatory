@@ -10,8 +10,8 @@ Verification-ladder rung of every census result: L3 (computer-assisted, tools no
 statement "model M is covered by an OscInt theorem": L4 (the classification discharged in Lean).
 ASSUMED(L4: Lean discharge of each cited model's classification, through ROADMAP I2 or exact certificates; lead).
 
-- Spec: `docs/prereg/2026-11-09-CENSUS-spec.md`, frozen at commit (at registration), before either implementation
-  existed. Symbolic checks of the spec: `numerics/census/spec_checks.py`, output
+- Spec: `docs/prereg/2026-11-09-CENSUS-spec.md`, frozen at commit 61d227c (2026-11-10), before either implementation
+  existed; later changes, if any, are listed in its §8. Symbolic checks of the spec: `numerics/census/spec_checks.py`, output
   `numerics/results-census-spec-2026-11-10.txt` (39/39 PASS at the commit recorded in that file, after the spec
   referee's repairs; its earlier version, 36/36, and `numerics/results-census-spec-2026-11-09.txt`, 35/35, are
   superseded). Input: `numerics/census/corpus.json` (spec §3).

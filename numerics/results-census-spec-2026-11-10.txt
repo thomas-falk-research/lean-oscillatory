@@ -1,9 +1,9 @@
 # command: SYMPY_GROUND_TYPES=python python3 -I numerics/census/spec_checks.py (env: numerics/census/requirements.txt)
-# started 2026-11-10T12:25:53Z
-# git HEAD 5b8c9a5476274edd9b889c40a17c5ee4ef675c3c, tracked files modified: no; record written outside the tree and copied in (lessons 45)
+# started 2026-11-10T13:05:04Z
+# git HEAD 61d227c46ef54415c8806f1b46931943639703ff, tracked files modified: no; record written outside the tree and copied in (lessons 45)
 # python 3.13.18 (CPython), sympy 1.14.0, mpmath 1.3.0, SYMPY_GROUND_TYPES=python, ground types in use: python
 # platform Linux-6.18.44-fc-v338-x86_64-with-glibc2.39, machine x86_64
-# git HEAD 5b8c9a5476274edd9b889c40a17c5ee4ef675c3c, tracked files modified: no
+# git HEAD 61d227c46ef54415c8806f1b46931943639703ff, tracked files modified: no
 CHECK R1 PASS splitting lemma: reduced function g(u) = a30 u^3/6 + (a40 - 3 a21^2/h) u^4/24 + O(u^5)
 CHECK R2 PASS H(q,-p) = (0,-det H), H(r,-q) = (det H, 0), (q,-p) x (r,-q) = det H: where det H = 0 both lie in ker H and are parallel; both vanish only if H = 0, so at a rank-1 point g3 = 0 iff T[va,va,va] = T[vb,vb,vb] = 0
 CHECK R3 PASS T[v,v,w+lam v] - T[v,v,w] = lam T[v,v,v]: g4 independent of w when g3 = 0 (H[w+lam v] = H[w])
@@ -42,8 +42,8 @@ CHECK K2 PASS K2 = X^2 Y + Y^4, (X,Y) = (x,y) - (-1/5, 1/3): at r H = 0, cubic (
 CHECK K3 PASS K3 = X^3 + Y^4, (X,Y) = (x,y) - (2/7, -1/11): at r H = 0, cubic (6, 0, 0, 0) triple (class E/J; the point lies on the segment below, so E/J + NI); on Y = 0, X = X0 != 0: rank 1, g3 = 0, g4 = 31104*X0**4 (a non-isolated A3 segment); on X = 0, Y = Y0 != 0: g3 = 10368*Y0**6 (fold)
 CHECK K5 PASS K5 = sqrt((c1+c2)^2 + 1/4): constant 1/2 on k1 + k2 = pi; at (pi/3, 2pi/3) grad = 0, rank 1, g3 = g4 = 0 (non-isolated A>=4 curve); at (0, pi) H = 0 and the cubic is zero (class X)
 CHECK M07-LINES PASS M07 (QWZ m = 1): u = 1 + 2(1 + c1)(1 + c2), so Psi = 1 on k1 = pi and on k2 = pi; on k1 = pi, k2 = Y0: H = diag(1 + cos Y0, 0), kernel vectors (0, -cos(Y0) - 1), (0, 0), g3 = 0 (both), g4 = 0 with v = (0, 1): rank 1 and A>=4 for Y0 != pi; at (pi, pi) H = 0 and the cubic is zero (class X); by the symmetry k1 <-> k2 the same on k2 = pi
-CHECK CORPUS PASS numerics/census/corpus.json: 26 records match the spec tables (G and u identically)
+CHECK CORPUS PASS numerics/census/corpus.json: 26 records match the spec tables (G and u identically; kind, family, domain, weight and domain_type; unique ids; nine families of total weight 1)
 SUMMARY 39/39
 ALL_CHECKS_PASS
 # exit status 0
-# finished 2026-11-10T12:26:01Z
+# finished 2026-11-10T13:05:11Z
