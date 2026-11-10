@@ -1,12 +1,13 @@
 # command: SYMPY_GROUND_TYPES=python python3 -I numerics/census/spec_checks.py (env: numerics/census/requirements.txt)
-# started 2026-11-10T10:40:38Z
-# git HEAD 34346289b6a7367b50e4808d1a68d5ce1e1dfac6, tracked files modified: no; record written outside the tree and copied in (lessons 45)
+# started 2026-11-10T12:25:53Z
+# git HEAD 5b8c9a5476274edd9b889c40a17c5ee4ef675c3c, tracked files modified: no; record written outside the tree and copied in (lessons 45)
 # python 3.13.18 (CPython), sympy 1.14.0, mpmath 1.3.0, SYMPY_GROUND_TYPES=python, ground types in use: python
 # platform Linux-6.18.44-fc-v338-x86_64-with-glibc2.39, machine x86_64
-# git HEAD 34346289b6a7367b50e4808d1a68d5ce1e1dfac6, tracked files modified: no
+# git HEAD 5b8c9a5476274edd9b889c40a17c5ee4ef675c3c, tracked files modified: no
 CHECK R1 PASS splitting lemma: reduced function g(u) = a30 u^3/6 + (a40 - 3 a21^2/h) u^4/24 + O(u^5)
 CHECK R2 PASS H(q,-p) = (0,-det H), H(r,-q) = (det H, 0), (q,-p) x (r,-q) = det H: where det H = 0 both lie in ker H and are parallel; both vanish only if H = 0, so at a rank-1 point g3 = 0 iff T[va,va,va] = T[vb,vb,vb] = 0
 CHECK R3 PASS T[v,v,w+lam v] - T[v,v,w] = lam T[v,v,v]: g4 independent of w when g3 = 0 (H[w+lam v] = H[w])
+CHECK R4 PASS binary-cubic classifier on cubics with roots at 0 and infinity: (0, 1, 1, 0)->distinct, (0, 1, 0, 0)->double, (0, 0, 1, 0)->double, (1, 0, 0, 0)->triple, (0, 0, 0, 1)->triple, (1, 0, 0, 1)->distinct, (1, 0, -3, 0)->distinct, (0, 0, 0, 0)->zero
 CHECK A1[id] PASS (G')^2 = 1; G^(m) = rho_m G' with rho_m rational, m = 2..6
 CHECK A1[sqrt] PASS (G')^2 = 1/(4*x); G^(m) = rho_m G' with rho_m rational, m = 2..6
 CHECK A1[arccos] PASS (G')^2 = -1/(x**2 - 1); G^(m) = rho_m G' with rho_m rational, m = 2..6
@@ -33,14 +34,16 @@ CHECK G-aQWZ PASS P = sin^2 k1 + (9/25) sin^2 k2 + (3 + c1 + c2)^2 >= 1
 CHECK G-YEE PASS v = S^2 (2 - c1 - c2)/2 in [0, 2S^2] with 2S^2 = 1/2, 49/50 < 1 for S = 1/2, 7/10: branch point only at v = 0, i.e. k = (0,0)
 CHECK G-ARCCOS PASS |c1/2 + 3c2/10| <= 4/5 < 1: arccos analytic
 CHECK K-SQ PASS u = c1 + c2: det H = c1 c2; at (+-pi/2, +-pi/2) H = 0 and the cubic has three distinct roots (D4; at (pi/2, pi/2) C = k1^3 + k2^3, Disc = -27); on k1 = +-pi/2 the kernel is (r,-q) = (-c2, 0) and g3 = -c2^3 sin k1 != 0 for c2 != 0 (fold); the lines k2 = +-pi/2 by the symmetry k1 <-> k2: no A3 point
-CHECK K-QWZ3 PASS QWZ m = 3 at (+-a, +-a), a = arccos(-1/3): det H = 0, H != 0, g3 = 0 (both kernel vectors), g4 != 0 (A3); with v = (1,-1), w = (1,1) at (a,a): H[w,w] = 32/(195 sqrt65), T[v,v,w] = 12 sqrt130/65, Q[v,v,v,v] = 18/sqrt65, g4 = -5247/sqrt(65)
-CHECK K-QWZm PASS QWZ sqrt(m^2 + 2 + 2m(c1+c2) + 2c1c2), m in {201/100, 5/2, 4, 10}: at each of (+-a_m, +-a_m), a_m = arccos(-1/m): det H = 0, H != 0, g3 = 0 (both kernel vectors), g4 != 0 (A3) and T[v,v,w] != 0 (stable); at (a_m, a_m) with v = (1,-1), w = (1,1): H[w,w] = 4(m^2-1)/(m D^(3/2)), T[v,v,w] = 2m sqrt(m^2-1)/sqrt(D), g4 = -3m(m^6-2m^4+2m^2-2)/sqrt(D), dPsi/dk1 = dPsi/dk2 = -(m^2-1)^(3/2)/(m sqrt(D)), D = m^4-2m^2+2; m=201/100: g4=-74.19783026, T[v,v,w]=2.190146631, d1Psi=-0.8240222732; m=5/2: g4=-247.7115800, T[v,v,w]=2.143638495, d1Psi=-0.9003281677; m=4: g4=-2884.796448, T[v,v,w]=2.061016160, d1Psi=-0.9661013249; m=10: g4=-297014.5451, T[v,v,w]=2.009973094, d1Psi=-0.9949366815
+CHECK K-QWZ3 PASS QWZ m = 3 at (+-a, +-a), a = arccos(-1/3): det H = 0, H != 0, g3 = 0 (both kernel vectors), g4 != 0 (A3); with v = (1,-1), w = (1,1) at (a,a): H[w,w] = 32/(195 sqrt65), T[v,v,w] = 12 sqrt130/65, Q[v,v,v,v] = 18/sqrt65, g4 = -5247/sqrt(65), normalised g4/|v|^4 = -5247/(4 sqrt65) (|v|^2 = 2)
+CHECK K-QWZm PASS QWZ sqrt(m^2 + 2 + 2m(c1+c2) + 2c1c2), m in {201/100, 5/2, 4, 10}: at each of (+-a_m, +-a_m), a_m = arccos(-1/m): det H = 0, H != 0, g3 = 0 (both kernel vectors), g4 != 0 (A3) and T[v,v,w] != 0 (stable); at (a_m, a_m) with v = (1,-1), w = (1,1): H[w,w] = 4(m^2-1)/(m D^(3/2)), T[v,v,w] = 2m sqrt(m^2-1)/sqrt(D), g4 = -3m(m^6-2m^4+2m^2-2)/sqrt(D), dPsi/dk1 = dPsi/dk2 = -(m^2-1)^(3/2)/(m sqrt(D)), D = m^4-2m^2+2; m=201/100: g4=-74.19783026, g4/|v|^4=-18.54945757, T[v,v,w]=2.190146631, d1Psi=-0.8240222732; m=5/2: g4=-247.7115800, g4/|v|^4=-61.92789500, T[v,v,w]=2.143638495, d1Psi=-0.9003281677; m=4: g4=-2884.796448, g4/|v|^4=-721.1991121, T[v,v,w]=2.061016160, d1Psi=-0.9661013249; m=10: g4=-297014.5451, g4/|v|^4=-74253.63627, T[v,v,w]=2.009973094, d1Psi=-0.9949366815
 CHECK K-DKG PASS M17 sqrt(5 - 2c1 - 2c2) at (+-pi/2, +-pi/2): det H = 0, H != 0, g3 = 0, g4 != 0 (A3), agreeing with Cuenin-Ikromov Prop. 9 at these points
-CHECK K1 PASS K1 = X^2 Y + Y^2, (X,Y) = R((x,y) - r), R = [[3/5,-4/5],[4/5,3/5]], r = (1/7,-2/9): at r rank 1, g3 = 0, g4 = -24576/625 != 0 (A3); det H = 0 on r + R^T(tau, tau^2), where T[va^3] = -48*tau*(3*tau + 4)**3/125 and T[vb^3] = 48*tau*(4*tau - 3)**3/125 vanish together only at tau = 0 (at tau = 3/4 the vector (r,-q) is zero, not g3); |H|_F^2 = 4Y^2 + 8X^2 + 4 >= 4 (no rank-0 point)
+CHECK K1 PASS K1 = X^2 Y + Y^2, (X,Y) = R((x,y) - r), R = [[3/5,-4/5],[4/5,3/5]], r = (1/7,-2/9): at r rank 1, g3 = 0, g4 = -24576/625 != 0 (A3), normalised g4/|v|^4 = -6; det H = 0 on r + R^T(tau, tau^2), where T[va^3] = -48*tau*(3*tau + 4)**3/125 and T[vb^3] = 48*tau*(4*tau - 3)**3/125 vanish together only at tau = 0 (at tau = 3/4 the vector (r,-q) is zero, not g3); |H|_F^2 = 4Y^2 + 8X^2 + 4 >= 4 (no rank-0 point)
 CHECK K2 PASS K2 = X^2 Y + Y^4, (X,Y) = (x,y) - (-1/5, 1/3): at r H = 0, cubic (0, 6, 0, 0) has a double root (class D>=5); det H = -4*(225*x**2 + 90*x - 1350*y**3 + 1350*y**2 - 450*y + 59)/225; on X = +-sqrt6 tau^3, Y = tau^2 (shown for +): g3 = -480*tau**8 != 0 for tau != 0 (folds); H = 0 only at r (H11 = 2Y, H12 = 2X)
-CHECK K3 PASS K3 = X^3 + Y^4, (X,Y) = (x,y) - (2/7, -1/11): at r H = 0, cubic (6, 0, 0, 0) triple (class E/J); on Y = 0, X = X0 != 0: rank 1, g3 = 0, g4 = 31104*X0**4 (a non-isolated A3 segment); on X = 0, Y = Y0 != 0: g3 = 10368*Y0**6 (fold)
-CHECK K5 PASS K5 = sqrt((c1+c2)^2 + 1/4): constant 1/2 on k1 + k2 = pi; at (pi/3, 2pi/3) grad = 0, rank 1, g3 = g4 = 0 (non-isolated A>=4 curve); at (0, pi) H = 0 and the cubic is zero (class E/J)
-SUMMARY 36/36
+CHECK K3 PASS K3 = X^3 + Y^4, (X,Y) = (x,y) - (2/7, -1/11): at r H = 0, cubic (6, 0, 0, 0) triple (class E/J; the point lies on the segment below, so E/J + NI); on Y = 0, X = X0 != 0: rank 1, g3 = 0, g4 = 31104*X0**4 (a non-isolated A3 segment); on X = 0, Y = Y0 != 0: g3 = 10368*Y0**6 (fold)
+CHECK K5 PASS K5 = sqrt((c1+c2)^2 + 1/4): constant 1/2 on k1 + k2 = pi; at (pi/3, 2pi/3) grad = 0, rank 1, g3 = g4 = 0 (non-isolated A>=4 curve); at (0, pi) H = 0 and the cubic is zero (class X)
+CHECK M07-LINES PASS M07 (QWZ m = 1): u = 1 + 2(1 + c1)(1 + c2), so Psi = 1 on k1 = pi and on k2 = pi; on k1 = pi, k2 = Y0: H = diag(1 + cos Y0, 0), kernel vectors (0, -cos(Y0) - 1), (0, 0), g3 = 0 (both), g4 = 0 with v = (0, 1): rank 1 and A>=4 for Y0 != pi; at (pi, pi) H = 0 and the cubic is zero (class X); by the symmetry k1 <-> k2 the same on k2 = pi
+CHECK CORPUS PASS numerics/census/corpus.json: 26 records match the spec tables (G and u identically)
+SUMMARY 39/39
 ALL_CHECKS_PASS
 # exit status 0
-# finished 2026-11-10T10:40:45Z
+# finished 2026-11-10T12:26:01Z
