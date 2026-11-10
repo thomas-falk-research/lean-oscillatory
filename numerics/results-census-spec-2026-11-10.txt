@@ -1,8 +1,9 @@
 # command: SYMPY_GROUND_TYPES=python python3 -I numerics/census/spec_checks.py (env: numerics/census/requirements.txt)
-# started 2026-11-10T07:43:17Z
+# started 2026-11-10T10:40:38Z
+# git HEAD 34346289b6a7367b50e4808d1a68d5ce1e1dfac6, tracked files modified: no; record written outside the tree and copied in (lessons 45)
 # python 3.13.18 (CPython), sympy 1.14.0, mpmath 1.3.0, SYMPY_GROUND_TYPES=python, ground types in use: python
 # platform Linux-6.18.44-fc-v338-x86_64-with-glibc2.39, machine x86_64
-# git HEAD ef1067bc4298ce04529087cd873382522a25a8d4, tracked files modified: no
+# git HEAD 34346289b6a7367b50e4808d1a68d5ce1e1dfac6, tracked files modified: no
 CHECK R1 PASS splitting lemma: reduced function g(u) = a30 u^3/6 + (a40 - 3 a21^2/h) u^4/24 + O(u^5)
 CHECK R2 PASS H(q,-p) = (0,-det H), H(r,-q) = (det H, 0), (q,-p) x (r,-q) = det H: where det H = 0 both lie in ker H and are parallel; both vanish only if H = 0, so at a rank-1 point g3 = 0 iff T[va,va,va] = T[vb,vb,vb] = 0
 CHECK R3 PASS T[v,v,w+lam v] - T[v,v,w] = lam T[v,v,v]: g4 independent of w when g3 = 0 (H[w+lam v] = H[w])
@@ -42,4 +43,4 @@ CHECK K5 PASS K5 = sqrt((c1+c2)^2 + 1/4): constant 1/2 on k1 + k2 = pi; at (pi/3
 SUMMARY 36/36
 ALL_CHECKS_PASS
 # exit status 0
-# finished 2026-11-10T07:43:23Z
+# finished 2026-11-10T10:40:45Z

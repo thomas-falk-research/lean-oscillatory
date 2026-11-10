@@ -1,5 +1,6 @@
 # command: SYMPY_GROUND_TYPES=python python3 -I numerics/review/cusp_proof_checks.py (env: numerics/census/requirements.txt)
-# run 2026-11-10T10:24:32Z, git HEAD 89280d395792d55995f722322844c883aeae93af; the script reads nothing from the tree. Uncommitted record and documentation edits existed during the run; record written outside the tree, copied in (lessons 45)
+# started 2026-11-10T10:40:38Z
+# git HEAD 34346289b6a7367b50e4808d1a68d5ce1e1dfac6, tracked files modified: no; record written outside the tree and copied in (lessons 45)
 CHECK P1 PASS d^3/du^3 F_u(u,h(u)) = the proof's seven-term g_uuuu formula
 CHECK P2 PASS h_u(0) = 0, h_uu(0) = -T/h0, g_uuuu(0) = Q - 3T^2/h0 (generic quartic jet incl. s^3, u s^2, u^3 s, u^2 s^2, s^4)
 CHECK P3 PASS (K/H)'' = K''/H - 2K'H'/H^2 - KH''/H^2 + 2K H'^2/H^3; with |K^(j)| <= D/(j+1), |H| >= mu: U = rho**3/2 + 11*rho**2/6 + 7*rho/3 + 1
@@ -9,3 +10,4 @@ CHECK Q1 PASS z = tq and z = 2q preserve dq/q; plateau [2/t, 1/2] gives log(t/4)
 CHECK Q2 PASS FLOAT sampled sup of 2|h'| + 4q|h''| (bounds the Euclidean Hessian norm of A_t): t=4: 42.21, t=64: 42.21, t=1024: 42.21, t=65536: 42.21 (proof's bound 16048)
 OVERALL PASS 7/7
 # exit status 0
+# finished 2026-11-10T10:40:39Z
