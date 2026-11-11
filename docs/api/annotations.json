@@ -885,8 +885,8 @@
     "T6E′",
     "T6F"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example : LatticeKernel1CubeRootStatement → LatticeKernel1ExplicitStatement := OscInt.API.LatticeCubeRootSanity.latticeKernel1Explicit_of_cubeRoot"
+   "snippet_kind": "type",
+   "snippet": "example : LatticeKernel1CubeRootStatement := OscInt.API.latticeKernel1CubeRoot"
   },
   "T6E′": {
    "hypotheses": [
@@ -901,8 +901,8 @@
     "T6F",
     "T0E′"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example : LatticeLaplacianCubeRootStatement → LatticeLaplacianExplicitStatement := OscInt.API.LatticeCubeRootSanity.latticeLaplacianExplicit_of_cubeRoot"
+   "snippet_kind": "type",
+   "snippet": "example : LatticeLaplacianCubeRootStatement := OscInt.API.latticeLaplacianCubeRoot"
   }
  },
  "helpers": [

@@ -111,3 +111,20 @@ finding, six MINOR, one NIT; the lead's answers:
   `numerics/results-le2-interface-checks-2026-11-11.txt`): Band, Cap and Whole against `|I(t, tv)|` at 7500 seeded points
   (no violation; tightest Whole, margin 0.005), P-var to 3e−12, the regime-3–8 band piece, and the exact steps above.
 - **NIT, noted:** `BandLowFacts` omits `−1 < v − δ`, which follows from its hypotheses.
+
+## The parts as proved (2026-11-11)
+Proof agents wrote the parts in scratch after the route referee was answered (41d91b2 and its revision); the lead
+integrated each (`lake build`, guard, `#print axioms`: propext, Classical.choice, Quot.sound; per-module `leanchecker`).
+- P-ibp, P-var, P-sym: `OscInt/Front/LatticeCubeRootIbp.lean`, as routed (P-var's negative branch via `Real.cos_neg`).
+- P-band, P-cap, P-whole: `OscInt/Front/LatticeCubeRootPieces.lean`, as routed, with the shared pieces proved once.
+- P-r38: `OscInt/Front/LatticeCubeRootRegime38.lean`, with the referee's split at `v = 1/8` and the end-point argument by
+  convexity of `As + Bs^{−2}` in `s = t^{1/3}`.
+- P-r8: `OscInt/Front/LatticeCubeRootRegime8.lean`. **One deviation, in the sub-case `δ ≤ v ≤ 1/2`:** no convexity in
+  `v`. Instead, arcsine is convex on `[0, 1]` (from `strictConcaveOn_sin_Icc`), so its window increments are monotone
+  (`ConvexOn.secant_mono`): `arcsin(v + δ) − arcsin(v − δ) ≤ Q(δ)`; and `Q(d) ≤ (673/250) d` for `0 < d ≤ 3/8` from the
+  chord on `[1/2, 7/8]` (`arcsin(7/8) ≤ 11/10`, `arcsin(1/2) = π/6`) and the tangent at `1/2`
+  (`ConvexOn.slope_le_of_hasDerivAt`). Total `≤ (8.076τ − 4τ² + 20/3)τ ≤ 9.7047τ < C*τ`: this sub-case is now the
+  tightest margin of the proof (≈ 0.017), uniform in `τ ∈ (0, 1/2]`. The `v ≤ δ` sub-case drops the negative term
+  (`≤ (184/21)τ`). The other sub-cases are as routed; the extremal one gives exactly `C*τ`.
+- Final: `OscInt/Front/LatticeCubeRootFinal.lean` (`OscInt.API.latticeKernel1CubeRoot`, `latticeLaplacianCubeRoot`),
+  types asserted in `StatementTypes.lean`.
