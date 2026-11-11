@@ -62,8 +62,8 @@ requires every row of the trust chain (README) for that statement.
 | S1.k k-th derivative van der Corput, constant 5·2^{k−1} − 2 | none yet (challenge `OscInt.API.vdCk`) | yes, stamp `20261109T201548Z-fcb46d9a6239` (pinned) | pre: FAITHFUL and TRUE ×2 (`review/2026-11-09-A3-pre-proof-{A,B}.md`; answers `review/2026-11-09-A3-pre-proof-answers.md`; reviews stamped `20261109T214121Z-47c1360ccd6f`) | no | — | stated and reviewed, not proved |
 | S5.1 uniform stable-cusp bound t^{−3/4} | none yet (challenge `OscInt.API.cuspBound`) | yes, same stamp | same | no | — | stated and reviewed, not proved |
 | S5.1′ uniform cusp (A3) bound t^{−3/4} | none yet (challenge `OscInt.API.cuspBoundGen`) | yes, same stamp | same | no | — | stated and reviewed, not proved |
-| T0E′ cube-root bound for the 1D lattice kernel, 8(1 + √7)/3 · t^{−1/3} (content for t > 3.70; implies T0E) | none yet (challenge `OscInt.API.latticeKernel1CubeRoot`) | yes, stamp `20261110T234417Z-0532b1cf8880` (pinned) | pre: not yet | no | — | stated, not reviewed, not proved |
-| T6E′ cube-root constant for T6, (8(1 + √7)/3)² ≈ 94.52, t > 0 | none yet (challenge `OscInt.API.latticeLaplacianCubeRoot`) | yes, same stamp | not yet | no | — | stated, not reviewed, not proved |
+| T0E′ cube-root bound for the 1D lattice kernel, 8(1 + √7)/3 · t^{−1/3} (content for t > 3.70; implies T0E) | none yet (challenge `OscInt.API.latticeKernel1CubeRoot`) | yes, stamp `20261110T234417Z-0532b1cf8880` (pinned) | pre: FAITHFUL and TRUE ×2 (answers `review/2026-11-10-LE2-pre-proof-answers.md`; reviews answered and stamped `20261111T005634Z-bf8af89bc235`) | no | — | stated and reviewed, not proved |
+| T6E′ cube-root constant for T6, (8(1 + √7)/3)² ≈ 94.52, t > 0 | none yet (challenge `OscInt.API.latticeLaplacianCubeRoot`) | yes, same stamp | same | no | — | stated and reviewed, not proved |
 
 T6, T6L prior art (2026-11-08, session 7): both are classical, because the 2D kernel factorises into two 1D Bessel
 kernels; the rows above are unchanged (the proofs are unaffected), but they claim "machine-checked", not new
