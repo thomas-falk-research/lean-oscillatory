@@ -77,3 +77,37 @@ Every bound is proved for `ξ = t·v` with `v ≥ 0`; symmetry gives `ξ < 0`.
   `2π ≤ 2π·3^{1/3}·t^{−1/3} < C* t^{−1/3}` (`3^{1/3} < 13/9`, `π < 22/7`).
 - **T6E′** from T6F (`OscInt.API.latticeKernelFactor`, proved) and T0E′: `norm_mul`, `mul_le_mul`, and
   `(t^{−1/3})² = t^{−2/3}` (`Real.rpow_natCast`, `← Real.rpow_mul`).
+
+## Revision after the route referee (2026-11-11, at 41d91b2)
+A fresh-context route referee read the route, the blueprint and the compiled assembly before any part was written. Its
+verdict: all ten `…Facts` are true exactly as stated; Band, Cap and Whole follow from P-ibp and P-var with the stated
+splits (it re-derived each piece and checked every sub-interval against the branch of P-var it uses); the assembly
+proves exactly the frozen statements (a renamed copy compiles; axioms propext, Classical.choice, Quot.sound). One MAJOR
+finding, six MINOR, one NIT; the lead's answers:
+- **MAJOR, agreed: P-r38's band piece needs monotonicity in v as written.** For `0 ≤ v ≤ 1/4`, `δ = 1/2`, the term
+  `arcsin(1/2 − v)` is worst at `v = 0` (`π/6`), so taking each summand at its own worst `v` gives `≈ 9.726 > C*` at
+  `t = 3`; the value `50/21` assumed `v ↦ arcsin(v + δ) − arcsin(v − δ)` increasing. Pre-proof referee A had said this
+  (finding 5) and the lead's answer was wrong; corrected in `review/2026-11-10-LE2-pre-proof-answers.md`. **Fix:** split at
+  `v = 1/8`. On `[0, 1/8]`: `2(arcsin(5/8) + arcsin(1/2)) + 12/t` with `arcsin(5/8) ≤ 17/25` (`Real.sin_ge_sub_cube`) and
+  `arcsin(1/2) = π/6 < 11/21`; on `[1/8, 1/4]`: `2(arcsin(3/4) + arcsin(3/8)) + 12/t` with `arcsin(3/8) ≤ 2/5`. End values
+  `43732/4725, 4103/525, 988/105, 281/35`, all `< 97/10` (`numerics/review/le2_interface_checks.py` E1, exact). No
+  derivative is needed.
+- **MINOR, agreed: P-r8 for `0 ≤ v ≤ δ`.** By the chord bound (P-arc 1, `b = 3/4`) on each summand,
+  `2(arcsin(v + δ) + arcsin(δ − v))/τ ≤ (8/7)·2·(2δ)/τ = (48/7)τ`; with `−4τ²/(1 − v²) ≤ −4τ²` the total is
+  `≤ (48/7)τ + 16/3 − 4τ²`, increasing in `τ ≤ 1/2`, so `≤ 24/7 + 13/3 = 163/21 < 97/10`. No convexity there.
+- **MINOR, agreed: the cap step for `v ≥ 1 − 2τ²`.** `π − 2 arcsin(v − δ) ≤ 4 arcsin(√2 τ)` when `v − δ ≥ 1 − 4τ²`: with
+  `u = arcsin(√2 τ) ∈ [0, π/4]`, `sin(π/2 − 2u) = cos 2u = 1 − 4τ²` (`Real.cos_two_mul` or `Real.cos_sq'`,
+  `Real.sin_pi_div_two_sub`), then `Real.le_arcsin_iff_sin_le`; and `arcsin(√2τ) ≤ πτ/2` by the chord with
+  `b = √2/2`. Names added to `MathlibNames.lean`.
+- **MINOR, adopted: P-arc 5 without derivatives.** With `S(Δ) = √(Δ + 3/2) + √(Δ − 3/2)`, the first term of `F` is
+  `8√2/S(Δ)`; `S(Δ)²/Δ = 2 + 2√(1 − 9/(4Δ²)) ≥ S(2)²/2` for `Δ ≥ 2`; with `x = √(2/Δ) ∈ (0, 1]` and
+  `A = (8/3)(√7 − 1) = 8√2/S(2)`, `F(Δ) ≤ Ax − x² ≤ A − 1` since `(1 − x)(A − 1 − x) ≥ 0` (`A ≥ 2`).
+- **MINOR, adopted: P-arc 4 on `[0, 1)` only.** Every use has its lower argument `≥ 0`, so `h′(s) = s(1 − s²)^{−3/2}` is
+  needed only on `[0, 1)`, where it is a product of nonnegative increasing factors. The referee checked that convexity in
+  `v` cannot be avoided cheaply for `v ∈ [δ, 1/2]`, `t ≥ 8` (one first-derivative bound gives `10.32 > 97/10`).
+- **MINOR, adopted: shared pieces.** The positive pieces `[−π − p, p]` (Band/Cap low), `[−π, p]` and `[π − p, π]`
+  (Band/Cap high) and the length pieces are each proved once as a lemma and reused.
+- **MINOR, done: interface numerics.** `numerics/review/le2_interface_checks.py` (record
+  `numerics/results-le2-interface-checks-2026-11-11.txt`): Band, Cap and Whole against `|I(t, tv)|` at 7500 seeded points
+  (no violation; tightest Whole, margin 0.005), P-var to 3e−12, the regime-3–8 band piece, and the exact steps above.
+- **NIT, noted:** `BandLowFacts` omits `−1 < v − δ`, which follows from its hypotheses.

@@ -74,3 +74,15 @@ This agrees with the lead's own scan (max 5.0495 at (5.786, 4.40)).
 - The exact derivation of 277/30. The lead's R1b checks it.
 - Stamps and hashes. The lead ran `stamp verify` on the LE2 stamp: 774 file hashes match commit 0532b1c, and the three
   RFC 3161 tokens are OK.
+
+## Correction (2026-11-11, after the route referee)
+
+The lead's answer to finding 5 was **wrong**. Referee A was right that step 3 needs monotonicity in v for the band piece
+(0 ≤ v ≤ 1/4, δ = 1/2).
+- The term arcsin(1/2 − v) is worst at v = 0, where it equals π/6.
+- Taking each summand at its own worst v gives about 9.726 at t = 3. That is above C*.
+- The value 50/21 assumed the band length is increasing in v.
+
+The route referee found the same; `docs/proof-LE2.md` ("Revision after the route referee") splits that sub-range at
+v = 1/8. The new end values are exact and below 97/10. No statement is affected: the gap was in the route's bookkeeping,
+not in T0E′.

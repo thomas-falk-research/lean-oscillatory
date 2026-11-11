@@ -155,3 +155,11 @@ import Mathlib
 #check @Real.cos_neg
 #check @Real.rpow_le_rpow_of_nonpos
 #check @Real.lt_sqrt
+#check @Real.cos_two_mul
+#check @Real.cos_sq'
+#check @Real.sin_pi_div_two_sub
+#check @HasDerivAt.sqrt
+#check @HasDerivAt.deriv
+#check @ConvexOn.add
+#check @Real.sqrt_mul
+#check @Real.sin_pi_div_six
