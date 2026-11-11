@@ -1,6 +1,6 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (46 entries); every rule in it is binding.
+For a reader who saw nothing. Read `docs/lessons.md` first (47 entries); every rule in it is binding.
 
 ## Session 9 (2026-11-10): external reviews checked; a hand proof of S5.1′; nothing proved in Lean, nothing frozen
 - **Privacy rule (owner, 2026-11-10; lessons 46).** No chat transcripts, prompts (the owner's, reviewers' or

@@ -124,6 +124,8 @@ another. Nothing here is a capability until its evidence exists (`docs/STATUS.md
       `t > 1321`, both from `docs/HANDOFF.md`), the best known bound for comparison with its citation (Landau's
       constant for T0E/T6E, `docs/prior_art.md`), and a checked numerical enclosure of the constant. A generator
       change (`tools/gen_api.py`, `docs/api/annotations.json`), checked by `make api-check`.
+  - *2026-11-10/11:* batch LE2 (T0E′, T6E′; frozen and reviewed, being proved) replaces the T0E/T6E thresholds 518 and
+    1321 by 3.70 for both, with a constant within a factor 2 of the best (`docs/statements.md`, Batch LE2).
 - [ ] **I5 Interface, frozen late.** One language-neutral contract (`docs/api.json` plus a certificate schema carrying
       exact constants and their enclosures) behind a CLI with JSON output, a Python package and a Rust crate. Version 1
       of the contract is frozen only after at least two consumers from different domains have used it; a C ABI and

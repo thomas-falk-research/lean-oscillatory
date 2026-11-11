@@ -339,3 +339,10 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     files. Earlier prompts and verbatim reports on `main` are an open owner item: removing them from `main`'s history
     would invalidate every stamp. Check: none automatic yet; a candidate `make quick` check for `review/prompts/`
     additions and for transcript markers is in ROADMAP "Standing: repository hygiene".
+47. **Sanity data for an explicit bound must lie where the bound beats the trivial one.** The first LE2 sanity layer
+    tested T0E′ and T6E′ at t = 1/8, where 2C* > 2π and 4C*² > 4π²: the conclusions followed from |I| ≤ 2π alone, so the
+    threshold plants were rejected at instance level only, and T6E′ had no bite (both blind pre-proof referees, MINOR).
+    Fixed before any proof: data at t = (31/20)³ just above the usefulness threshold, with a compiled `thr_nontrivial`,
+    and three T6E′ bites through the proved T6F. Rule: for a statement with an explicit constant, at least one sanity
+    datum lies in the non-trivial regime (proved there), and every strengthening plant that is false gets a compiled
+    witness or is recorded NOT DETECTED. Check: `thr_nontrivial` in `OscInt/Front/LatticeCubeRootSanity.lean`.
