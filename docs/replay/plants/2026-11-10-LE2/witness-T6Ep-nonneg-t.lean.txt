@@ -1,0 +1,14 @@
+import OscInt.Front.LatticeCubeRootSanity
+
+namespace OscInt.API.LatticeCubeRootSanity
+
+open OscInt.Statements OscInt.API.LatticeExplicitSanity
+
+def P_LatticeLaplacianCubeRootStatement : Prop :=
+  ∀ (t : ℝ) (x : ℤ × ℤ), 0 ≤ t →
+    ‖latticeKernel t x‖ ≤ (8 * (1 + Real.sqrt 7) / 3) ^ 2 * t ^ (-(2 : ℝ) / 3)
+
+theorem witness_not_LatticeLaplacianCubeRootStatement : ¬ P_LatticeLaplacianCubeRootStatement :=
+  fun h => laplacianCubeRoot_false_at_zero (h 0 (0, 0) le_rfl)
+
+end OscInt.API.LatticeCubeRootSanity

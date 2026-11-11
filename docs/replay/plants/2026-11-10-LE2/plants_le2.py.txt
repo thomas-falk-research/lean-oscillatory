@@ -55,6 +55,22 @@ PLANTS = [
      ('t ^ (-(2 : ℝ) / 3)', 't ^ (-(1 : ℝ) / 2)'), 'rejected', None),
     ('T6Ep-const', T6, ['latticeLaplacianCubeRoot_diag'],
      ('(8 * (1 + Real.sqrt 7) / 3) ^ 2 * t', '(8 * (1 + Real.sqrt 7) / 3) ^ 3 * t'), 'rejected', None),
+    # second run, after the blind pre-proof reviews (A and B): data in the non-trivial regime, T6E' bites, faster rate
+    ('T0Ep-threshold-thr', T0, ['latticeKernel1CubeRoot_thr'],
+     ('∀ t ξ : ℝ, 0 < t →', '∀ t ξ : ℝ, 4 ≤ t →'), 'rejected', None),
+    ('T6Ep-threshold-thr', T6, ['latticeLaplacianCubeRoot_thr'],
+     ('∀ (t : ℝ) (x : ℤ × ℤ), 0 < t →', '∀ (t : ℝ) (x : ℤ × ℤ), 4 ≤ t →'), 'rejected', None),
+    ('T6Ep-unsquared', T6, ['latticeLaplacianCubeRoot_diag'],
+     ('(8 * (1 + Real.sqrt 7) / 3) ^ 2 * t', '(8 * (1 + Real.sqrt 7) / 3) * t'), None,
+     'fun h => laplacianCubeRoot_unsquared_false (h 1 (0, 0) one_pos)'),
+    ('T6Ep-quarter', T6, ['latticeLaplacianCubeRoot_diag'],
+     ('(8 * (1 + Real.sqrt 7) / 3) ^ 2 * t', '(4 * (1 + Real.sqrt 7) / 3) ^ 2 * t'), None,
+     'fun h => laplacianCubeRoot_half_const_false (h (343 / 512) (0, 0) (by norm_num))'),
+    ('T6Ep-nonneg-t', T6, ['latticeLaplacianCubeRoot_diag'],
+     ('∀ (t : ℝ) (x : ℤ × ℤ), 0 < t →', '∀ (t : ℝ) (x : ℤ × ℤ), 0 ≤ t →'), None,
+     'fun h => laplacianCubeRoot_false_at_zero (h 0 (0, 0) le_rfl)'),
+    ('T0Ep-rate-faster-NOTDETECTED', T0, ['latticeKernel1CubeRoot_eight', 'latticeKernel1CubeRoot_eighth', 'latticeKernel1CubeRoot_thr'],
+     ('t ^ (-(1 : ℝ) / 3)', 't ^ (-(1 : ℝ) / 2)'), None, None),
 ]
 
 HEADER = """import OscInt.Front.LatticeCubeRootSanity
@@ -93,7 +109,10 @@ def run(tag, text):
 
 
 summary = []
+ONLY = sys.argv[3:] 
 for pid, d, thms, mut, want, witness in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
     jobs = [('ok-' + pid, make(d, thms, mut, False), 'accepted'),
             ('plant-' + pid, make(d, thms, mut, True), want)]
     if witness:

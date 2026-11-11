@@ -7,6 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 
 import OscInt.Statements.LatticeCubeRoot
 import OscInt.Front.LatticeExplicitSanity
+import OscInt.Front.LatticeExplicitFinal
 
 /-! # Sanity theorems through the batch-LE2 statement constants
 
@@ -25,6 +26,13 @@ Data (generic where the statement has roles to separate, lessons 17 and 38):
 * Bites (unconditional): at `t = 0` the bound of T0E′ is false (so `0 < t` is needed), and
   `‖I(t, 0)‖ ≥ 2π − πt²/2` for every `t`, so at `t = (7/8)³` the bound with half the constant, `4(1 + √7)/3`, is
   false: the constant of T0E′ cannot be halved.
+
+Added after the blind pre-proof reviews (`review/2026-11-10-LE2-pre-proof-answers.md`; the statements are unchanged):
+* T0E′ and T6E′ at `t = (31/20)³ ≈ 3.724` (`t^{−1/3} = 20/31`), just above the useful-from threshold `≈ 3.7045`, where
+  the conclusions are below the trivial bounds `2π` and `4π²` (at `t = 1/8` they are not; reviews A and B).
+* T6E′ bites through the proved T6F (`K(t, 0) = I(t, 0)²`): at `t = 0` the bound is false; at `t = 1` the bound with
+  the unsquared constant `8(1 + √7)/3` is false; at `t = (7/8)³` the bound with `(4(1 + √7)/3)²` is false (reviews A
+  and B: T6E′ had no bite of its own).
 -/
 
 namespace OscInt.API.LatticeCubeRootSanity
@@ -171,5 +179,70 @@ theorem cubeRoot_half_const_false :
   have hs := sqrt_seven_bounds
   have hpi := Real.pi_gt_d4
   exact not_le.mpr (by nlinarith)
+
+/-- `((31/20)³)^{−1/3} = 20/31` and `((31/20)³)^{−2/3} = 400/961`. -/
+theorem thr_rpow : (29791 / 8000 : ℝ) ^ (-(1 : ℝ) / 3) = 20 / 31 ∧
+    (29791 / 8000 : ℝ) ^ (-(2 : ℝ) / 3) = 400 / 961 := by
+  have h : (29791 / 8000 : ℝ) = (31 / 20) ^ (3 : ℝ) := by norm_num
+  constructor <;> rw [h, ← Real.rpow_mul (by norm_num)] <;> norm_num
+
+/-- **T0E′ through the statement constant** at `t = (31/20)³`, just above the useful-from threshold, `ξ = 1/2`. The
+conclusion `8(1 + √7)/3 · 20/31 < 6.273 < 2π` does not follow from the trivial bound. Plant detected: a threshold
+`4 ≤ t` (instance level: the datum violates it). -/
+theorem latticeKernel1CubeRoot_thr (h : LatticeKernel1CubeRootStatement) :
+    ‖latticeKernel1 (29791 / 8000) (1 / 2)‖ ≤ 8 * (1 + Real.sqrt 7) / 3 * (20 / 31) := by
+  have := h (29791 / 8000) (1 / 2) (by norm_num)
+  rwa [thr_rpow.1] at this
+
+/-- **T6E′ through the statement constant** at `t = (31/20)³`, `x = (1, −2)`: `C*² · 400/961 < 39.35 < 4π²`. Plant
+detected: a threshold `1 ≤ t` (instance level). -/
+theorem latticeLaplacianCubeRoot_thr (h : LatticeLaplacianCubeRootStatement) :
+    ‖latticeKernel (29791 / 8000) (1, -2)‖ ≤ (8 * (1 + Real.sqrt 7) / 3) ^ 2 * (400 / 961) := by
+  have := h (29791 / 8000) (1, -2) (by norm_num)
+  rwa [thr_rpow.2] at this
+
+/-- The size of the right sides at `t = (31/20)³`: both are below the trivial bounds `2π` and `4π²`. -/
+theorem thr_nontrivial : 8 * (1 + Real.sqrt 7) / 3 * (20 / 31) < 2 * Real.pi ∧
+    (8 * (1 + Real.sqrt 7) / 3) ^ 2 * (400 / 961) < 4 * Real.pi ^ 2 := by
+  have hc := cubeRootConst_bounds
+  have hpi := Real.pi_gt_d4
+  constructor <;> nlinarith
+
+/-- `K(t, 0) = I(t, 0)²`, from the proved T6F. -/
+theorem latticeKernel_origin (t : ℝ) : ‖latticeKernel t (0, 0)‖ = ‖latticeKernel1 t 0‖ ^ 2 := by
+  rw [OscInt.API.latticeKernelFactor t (0, 0)]
+  simp [sq]
+
+/-- **Bite: `0 < t` is needed in T6E′.** At `t = 0`, `‖K(0, 0)‖ = 4π² > 0 = C*² · 0^{−2/3}`. -/
+theorem laplacianCubeRoot_false_at_zero :
+    ¬ ‖latticeKernel 0 (0, 0)‖ ≤ (8 * (1 + Real.sqrt 7) / 3) ^ 2 * (0 : ℝ) ^ (-(2 : ℝ) / 3) := by
+  rw [latticeKernel_origin, latticeKernel1_zero_zero, Real.zero_rpow (by norm_num), mul_zero, Complex.norm_real,
+    Real.norm_eq_abs, abs_of_pos (by positivity)]
+  exact not_le.mpr (by positivity)
+
+/-- **Bite: T6E′'s constant must be squared.** At `t = 1`, `‖K(1, 0)‖ ≥ (3π/2)² > 22 > 8(1 + √7)/3`. -/
+theorem laplacianCubeRoot_unsquared_false :
+    ¬ ‖latticeKernel 1 (0, 0)‖ ≤ 8 * (1 + Real.sqrt 7) / 3 * (1 : ℝ) ^ (-(2 : ℝ) / 3) := by
+  rw [latticeKernel_origin, Real.one_rpow, mul_one]
+  have hl := latticeKernel1_zero_freq_lower 1
+  have hc := cubeRootConst_bounds
+  have hpi := Real.pi_gt_d4
+  have h0 : 0 ≤ 2 * Real.pi - Real.pi * 1 ^ 2 / 2 := by nlinarith
+  exact not_le.mpr (by nlinarith [mul_le_mul hl hl h0 (norm_nonneg _)])
+
+/-- **Bite: T6E′'s constant cannot be quartered.** At `t = (7/8)³`, `‖K(t, 0)‖ ≥ 5.578² > 31.1 > 30.87 >
+(4(1 + √7)/3)² · 64/49`. -/
+theorem laplacianCubeRoot_half_const_false :
+    ¬ ‖latticeKernel (343 / 512) (0, 0)‖ ≤
+        (4 * (1 + Real.sqrt 7) / 3) ^ 2 * (343 / 512 : ℝ) ^ (-(2 : ℝ) / 3) := by
+  have h23 : (343 / 512 : ℝ) ^ (-(2 : ℝ) / 3) = 64 / 49 := by
+    rw [show (343 / 512 : ℝ) = (7 / 8) ^ (3 : ℝ) by norm_num, ← Real.rpow_mul (by norm_num)]
+    norm_num
+  rw [latticeKernel_origin, h23]
+  have hl := latticeKernel1_zero_freq_lower (343 / 512)
+  have hs := sqrt_seven_bounds
+  have hpi := Real.pi_gt_d4
+  have h0 : (5.578 : ℝ) ≤ ‖latticeKernel1 (343 / 512) 0‖ := by nlinarith
+  exact not_le.mpr (by nlinarith [mul_le_mul h0 h0 (by norm_num) (norm_nonneg _)])
 
 end OscInt.API.LatticeCubeRootSanity

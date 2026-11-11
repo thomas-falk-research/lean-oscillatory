@@ -780,3 +780,19 @@ Modelling choices and what is omitted.
    reviewer's submission of 2026-11-10 (OpenAI ChatGPT 6, version as given by the owner); not authorship or credit.
    The ingredients (integration by parts with end-point terms, arcsine band lengths, convexity) are elementary and
    classical; the constant was not found in the reviewer's logged search, which is the entire novelty claim.
+
+Clarifications after the pre-proof reviews (2026-11-10; answers `review/2026-11-10-LE2-pre-proof-answers.md`; both
+referees FAITHFUL and TRUE for T0E′ and T6E′, no BLOCKER or MAJOR; no statement text changed, the stamp
+`stamps/20261110T234417Z-0532b1cf8880` stands):
+1. **Which step is tight** (A and B, NIT). In the route above, C* arises in the regime 1/2 ≤ v < 1 − 2τ², t ≥ 8, only
+   after the relaxation (1 + s)^{−1/2} ≤ 2√2/3 on the band; the exact band expression there peaks near 8.76. The
+   tightest step of the route is 3 ≤ t ≤ 8 at t = 3, v ↓ 1/2 (cap bound with the 2/(tv) term): 3^{1/3}(π + 32/9) ≈ 9.659,
+   checked against 97/10 exactly (`numerics/review/followup_checks.py`, R1c-cap). The same route would give a constant
+   near 9.66; C* is the frozen one.
+2. **Ranges of the route's bounds** (A, NIT). The band bound needs −1 < v − δ and v + δ < 1. The cap bound needs
+   −1 < v − δ < 1; when v − δ ≥ 1 (so v > 1) the whole interval has g > 0, and the bound
+   |I| ≤ 2/(t(v − 1)) + 2/(tv(v + 1)) replaces it.
+3. **Sanity data** (A and B, MINOR). At t = 1/8 the sanity conclusions follow from the trivial bounds; data at
+   t = (31/20)³ ≈ 3.724, just above the usefulness threshold, and three T6E′ bites were added to
+   `OscInt/Front/LatticeCubeRootSanity.lean` (plant record, second run). The faster rate t^{−1/2} in T0E′ is false but
+   not detected by the sanity layer; it rests on the reviews and on the proof.

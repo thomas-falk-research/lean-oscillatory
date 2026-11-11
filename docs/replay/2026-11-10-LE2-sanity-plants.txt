@@ -65,3 +65,53 @@ plant-T6Ep-const: rejected (want rejected)
 # T6Ep-const ((...)^2 -> (...)^3): C*^3/4 > C*^2/4 since C* > 1.
 # Structural limit (as batch LE): a plant that weakens a hypothesis or strengthens a conclusion in a way the closed data
 # cannot refute is not detected by this layer; it rests on the blind reviews and on the proof.
+#
+# Second run, 2026-11-11T00:33:13Z, after the blind pre-proof reviews (review/2026-11-10-LE2-pre-proof-answers.md), before
+# any proof of an LE2 statement, on top of git HEAD 90e6ac8ad09b510c7267a003dbd3ce797a190ecc with the extended sanity file (statements unchanged).
+# Command: plants_le2.py REPO OUTDIR <plant ids> (the six plants below). Summary: SUMMARY-second-run.txt.
+ok-T0Ep-threshold-thr: accepted (want accepted)
+plant-T0Ep-threshold-thr: rejected (want rejected)
+    first error: plant-T0Ep-threshold-thr.lean:13:36: error: unsolved goals
+ok-T6Ep-threshold-thr: accepted (want accepted)
+plant-T6Ep-threshold-thr: rejected (want rejected)
+    first error: plant-T6Ep-threshold-thr.lean:13:36: error: unsolved goals
+ok-T6Ep-unsquared: accepted (want accepted)
+plant-T6Ep-unsquared: rejected (recorded)
+    first error: plant-T6Ep-unsquared.lean:16:2: error: linarith failed to find a contradiction
+witness-T6Ep-unsquared: accepted (want accepted)
+ok-T6Ep-quarter: accepted (want accepted)
+plant-T6Ep-quarter: rejected (recorded)
+    first error: plant-T6Ep-quarter.lean:16:2: error: linarith failed to find a contradiction
+witness-T6Ep-quarter: accepted (want accepted)
+ok-T6Ep-nonneg-t: accepted (want accepted)
+plant-T6Ep-nonneg-t: accepted (recorded)
+witness-T6Ep-nonneg-t: accepted (want accepted)
+ok-T0Ep-rate-faster-NOTDETECTED: accepted (want accepted)
+plant-T0Ep-rate-faster-NOTDETECTED: rejected (recorded)
+    first error: plant-T0Ep-rate-faster-NOTDETECTED.lean:14:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+#
+# Evidence, second run:
+# T0Ep-threshold-thr, T6Ep-threshold-thr (0 < t -> 4 <= t), datum t = (31/20)^3 ~ 3.724: instance level (the datum violates
+#   the planted threshold); unlike t = 1/8, the sanity conclusions there are below the trivial bounds 2pi and 4pi^2
+#   (thr_nontrivial, compiled), so they do not hold for a trivial reason.
+# T6Ep-unsquared (C*^2 -> C*, strengthens; false): witness-T6Ep-unsquared compiles (laplacianCubeRoot_unsquared_false at t = 1).
+# T6Ep-quarter (C*^2 -> (C*/2)^2, strengthens; false): witness-T6Ep-quarter compiles (laplacianCubeRoot_half_const_false at
+#   t = (7/8)^3).
+# T6Ep-nonneg-t (0 < t -> 0 <= t, false at t = 0): accepted by the sanity theorems; witness-T6Ep-nonneg-t compiles
+#   (laplacianCubeRoot_false_at_zero).
+# T0Ep-rate-faster-NOTDETECTED (t^(-1/3) -> t^(-1/2), strengthens; false, e.g. |I(1000, xi)| ~ 0.4246 > C* 1000^(-1/2)
+#   ~ 0.307 near the caustic, floating point, both reviews): the script rejection is only a failed rewrite; robust
+#   closings compile (review A), and no witness exists (it needs a large-t lower bound). NOT DETECTED: rests on the
+#   reviews and on the proof.
+#
+# Corrections to the first run's evidence wording (reviews A and B; no plant outcome changes):
+# - T0Ep-threshold and T6Ep-threshold at t = 1/8 are rejected at instance level only: at t = 1/8 the sanity conclusions
+#   follow from the trivial bounds (2 C* > 2pi, 4 C*^2 > 4pi^2). The second run's data at (31/20)^3 replace them as the
+#   meaningful threshold controls.
+# - T0Ep-xi-nonneg (0 <= xi added) is equivalent to T0E' by I(t, -xi) = I(t, xi); its rejection is syntactic. The sign of
+#   xi is not a feature a plant can change in substance.
+# - Hence "nine rejected with semantic evidence" in the header overstates: the weakening plants (rate slower, constant
+#   larger, int, weaker-than-T0E, T6 rate, T6 const) are rejected with the exact semantic evidence listed; the threshold
+#   and sign plants are instance-level or syntactic; the five strengthening plants that are false (T0E' half constant,
+#   T0E' 0 <= t, T6E' unsquared, T6E' quarter, T6E' 0 <= t) are refuted by compiled witnesses; the faster rate is not
+#   detected.
