@@ -19,7 +19,11 @@ the lead's words, with the evidence the lead produced. Written by the session-10
   Lean proof. Nothing is proved in Lean yet.
 - **Both application studies are correct.** They are careful about scope. Neither shows a device-level, simulation or
   control benefit, and neither claims one. Their main quantitative weakness was T0E's constant, which Result 1 removes.
-- Result 2 and the cubic-ray theorem: see their own section below.
+- **Result 2 (QWZ, m = 2, localized t^{−4/5}) and the cubic-ray theorem (next term t^{−4/3}) survive an independent
+  check.** A fresh-context checker re-derived the jets, the constants and the projector expansions with its own code,
+  and confirmed them by direct quadrature of the full 2×2 kernel. It found no FATAL or MAJOR issue. Both are hand proofs
+  with existential constants. They need band-crossing (conical) infrastructure that OscInt does not have. By owner
+  decision they are **candidate evidence**, not frozen statements.
 
 ## Evidence the lead produced
 
@@ -98,6 +102,59 @@ and C* = 8(1 + √7)/3 ≈ 9.72200.
 - The reviewer's failed triangular extension (a stationary-phase chart amplitude R^{−1/4} with no uniform C² bound at
   R = 0): **correct as a negative statement**, not a counterexample to anything. It is recorded for ROADMAP I1/I3, not
   acted on.
+
+## Result 2 and the cubic-ray theorem: QWZ at the critical mass
+
+**Claims, in the lead's words.**
+- *Setting.* H(p) = −sin p₁ σ₁ − sin p₂ σ₂ + (2 − cos p₁ − cos p₂) σ₃ is QWZ at m = 2, translated to its gap-closing
+  point. K_A(t, x) = ∫ e^{ix·p} e^{−itH(p)} A(p) dp, with A a scalar C² amplitude supported in a small disc.
+- *(a) All-position bound.* sup_x ‖K_A(t, x)‖ ≤ C‖A‖_{C²} t^{−4/5} for t ≥ 1.
+- *(b) Sharpness.* Along the eight rays θ = π/8 + jπ/4, t^{4/5}K_A → 𝒞 A(0) P₀, where
+  𝒞 = (2√(2π)/5)·64^{3/10}·Γ(3/10)·cos(π/10) ≈ 9.93366 and P₀ = (I − cos(π/8)σ₁ − sin(π/8)σ₂)/2.
+  - The two bands do not cancel there.
+  - The reduced phase on the special ray is −r⁵/64, because the angular critical point moves with r. Holding the angle
+    fixed gives −r⁵/576, which is wrong.
+- *(c) The cancelling rays.* On rays with cos 4θ ≤ −δ the two bands' t^{−1} terms cancel. The next term is
+  −iL_θ D t^{−4/3}, and D is never zero when A(0) ≠ 0: ‖D‖ ≥ |A(0)|/4. The σ₃ part comes from the first derivatives
+  of the band projectors, which have opposite signs on the two bands.
+
+**Independent check (fresh-context checker, its own scripts; summarised by the lead).**
+- *Jets, EXACT.* All the jets above, and the γ coefficient of the uniform argument, were checked symbolically for all
+  θ and V. The fixed-angle coefficient was rejected.
+- *The constant of (b), EXACT.* 𝒞 was re-derived from first principles: angular stationary phase plus the radial Gamma
+  moment, with both band phases.
+- *The ray limit (b), FLOAT.* Direct full-matrix quadrature was cross-checked against a Cartesian method (to 1e−13)
+  and against 1.5× refinement (≤ 7.4e−16).
+  - ‖t^{4/5}K − 𝒞P₀‖ falls from 0.089 at t = 4000 to 0.040 at t = 32000.
+  - Extrapolation matches 𝒞P₀ to about 1e−3, also for a non-radial amplitude.
+  - Each band separately tends to its predicted half.
+- *The next term (c), EXACT and FLOAT.*
+  - EXACT: the projector expansions, the remainder constant 58/63, the Gamma moments, and the leading coefficient
+    (−5.77108i on the diagonal).
+  - FLOAT: the diagonal limit matches to 9.5e−4. The derivative term (affine amplitude) matches to 2.1e−3. A generic
+    direction θ = 0.65 with an offset ζ ≠ 0 matches to 2.6e−2, against coefficients of size about 6.6.
+- *The supremum over x in (a), FLOAT.* A scan of t^{4/5} sup_x ‖K‖ levels off near 21 for t from 2000 to 8000, about
+  2.15𝒞. This is consistent with the theorem, and the claim is not quantitative.
+
+**Findings (all MINOR; none affects the statements).**
+- On the special ray the t^{−1} term cancels for every amplitude. The remainder in (b) is observed as about t^{−6/5},
+  so the stated O(t^{−1}) holds but is not sharp.
+- In (c) the observed remainder is about t^{−5/3} against the stated O(t^{−3/2}).
+- The hand bound γ ≤ −43/5760 is valid but loose: the exact maximum is −77/10240.
+
+**Not checked.** The explicit constants of the uniform argument beyond spot checks; the existence of the support
+radius ρ₀ (not certified by anyone); the Lean-facing claims.
+
+**Bins.**
+- (a)–(c): **result (hand proof), candidate evidence.** They are recorded under the ROADMAP candidate "matrix-valued
+  propagators through gap closings". They meet its gate 2 (a precise statement, independently re-derived) and add a
+  logged search for gate 3.
+  - Bite data for any future statement: the moving-angle negative control (−1/576); the special-ray coefficient 𝒞;
+    the cancelling-ray σ₃ coefficient.
+  - Gate 1 (a consumer or the CENSUS ranking) and gate 4 (the owner) are open. The owner decided on 2026-11-10 not to
+    freeze them now.
+- The reviewer's crossover-profile conjecture (mass m ↓ 2 jointly with t): **CONJECTURED**, recorded, not acted on.
+- The seven-mass exact cusp exclusion: finite-mass evidence only, as the reviewer says.
 
 ## The quantum-photonics application study
 

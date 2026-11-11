@@ -227,4 +227,12 @@ example : CuspBoundGenStatement → CuspBoundStatement := fun h φ hφ h3 => h �
 
 example (h : CuspBoundGenStatement) := OscInt.API.CuspSanity.cuspBoundGen_nonv h
 
+/-! ### T0E′: Cube-root bound for the 1D lattice kernel: `|I(t, ξ)| ≤ 8(1 + √7)/3 · t^{−1/3}` for every `t > 0` and every real `ξ`. -/
+
+example : LatticeKernel1CubeRootStatement → LatticeKernel1ExplicitStatement := OscInt.API.LatticeCubeRootSanity.latticeKernel1Explicit_of_cubeRoot
+
+/-! ### T6E′: Dispersive decay of the 2D lattice Laplacian with the cube-root constant: `|K(t, x)| ≤ (8(1 + √7)/3)² t^{−2/3}` for every `t > 0`, uniformly over `x ∈ ℤ²`. -/
+
+example : LatticeLaplacianCubeRootStatement → LatticeLaplacianExplicitStatement := OscInt.API.LatticeCubeRootSanity.latticeLaplacianExplicit_of_cubeRoot
+
 end OscIntSnippets
