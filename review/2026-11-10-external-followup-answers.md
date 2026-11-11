@@ -13,10 +13,13 @@ the lead's words, with the evidence the lead produced. Written by the session-10
 
 ## Verdict
 
-- **Result 1 is correct and is the most useful item.** The lead re-derived it line by line; no gap was found. It makes
+- **Result 1 is correct and is the most useful item.** The lead re-derived it line by line and found no gap on
+  2026-11-10. **Correction (2026-11-11):** one step was unjustified as written (below, "Correction after the route
+  referee"); the claim stands. It makes
   the explicit lattice bounds useful from t ≈ 3.70 instead of t > 518 (1D) and t > 1321 (2D). By owner decision of
   2026-11-10 it becomes batch LE2 (statements T0E′ and T6E′, `docs/statements.md`), frozen and reviewed before any
-  Lean proof. Nothing is proved in Lean yet.
+  Lean proof. Nothing was proved in Lean when this file was first written (2026-11-10); batch LE2 was proved in Lean at
+  48e7f24 (2026-11-11), see `docs/STATUS.md`.
 - **Both application studies are correct.** They are careful about scope. Neither shows a device-level, simulation or
   control benefit, and neither claims one. Their main quantitative weakness was T0E's constant, which Result 1 removes.
 - **Result 2 (QWZ, m = 2, localized t^{−4/5}) and the cubic-ray theorem (next term t^{−4/3}) survive an independent
@@ -89,11 +92,18 @@ and C* = 8(1 + √7)/3 ≈ 9.72200.
 - The regimes cover every v ≥ 0 for each t > 0. Every use of the band bound has −1 < v − δ and v + δ < 1. Every use of
   the cap bound has v − δ < 1, or the whole-interval branch.
 
+**Correction after the route referee (2026-11-11).** In the step 3 ≤ t ≤ 8, 0 ≤ v ≤ 1/4 (band, δ = 1/2), the bound
+50/21 + 12/t takes the band length at v = 1/4. That needs the band length to be increasing in v. It is (for v ≥ 0 its
+derivative 2(h(v + 1/2) − h(v − 1/2)) is ≥ 0), but neither the reviewer's text nor the lead's re-derivation said so; the
+lead's "no gap" was wrong to that extent. The Lean proof avoids the step by splitting at v = 1/8
+(`docs/proof-LE2.md`, revision).
+
 **How good the constant is.**
 - C* > 97/10 (check R1a-97/10).
 - The best constant C_opt satisfies C_opt > 4.9336 (the reviewer's Taylor witness at t = 4/5; check R1g, exact).
 - C_opt ≥ 2π·0.80366 ≈ 5.0495 (floating point; batch LE review B, at (5.797…, 4.404)).
-- So C* is about 1.93 times too large at most. For integer ξ, Landau's constant 2π·0.7857 ≈ 4.937 is better and is
+- So C*/C_opt ≤ 1.9706 rigorously (from C_opt > 4.9336; the rational arithmetic is exact, the sign of the
+  alternating-series remainder is a hand step), and C*/C_opt ≈ 1.925 numerically (floating point). For integer ξ, Landau's constant 2π·0.7857 ≈ 4.937 is better and is
   sharp.
 
 **Bins.**

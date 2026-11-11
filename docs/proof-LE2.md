@@ -60,11 +60,12 @@ Every bound is proved for `ξ = t·v` with `v ≥ 0`; symmetry gives `ξ < 0`.
   5. The decreasing function of regime 2.2: for `Δ ≥ 2`,
      `(8√2/3)(√(Δ + 3/2) − √(Δ − 3/2)) − 2/Δ ≤ (8/3)(√7 − 1) − 1` (`antitoneOn_of_deriv_nonpos` on `[2, ∞)`, the
      rationalisation bound of the derivative).
-- **P-r8** `Regime8Facts`: `8 ≤ t`, `0 ≤ v` ⇒ `‖I(t, tv)‖ ≤ C* t^{−1/3}`. With `τ = t^{−1/3}` (`t τ³ = 1`, `τ ≤ 1/2`):
+- **P-r8** `Regime8Facts` (as first routed; the proof as written differs in sub-case `δ ≤ v ≤ 1/2`, see "The parts as
+  proved" below): `8 ≤ t`, `0 ≤ v` ⇒ `‖I(t, tv)‖ ≤ C* t^{−1/3}`. With `τ = t^{−1/3}` (`t τ³ = 1`, `τ ≤ 1/2`):
   `v ≥ 1 − 2τ²` by P-cap (`δ = 2τ²`, or P-cap whole when `v − δ ≥ 1`) and P-arc 1–2 (`arcsin(√2τ) ≤ πτ/2`);
   `1/2 ≤ v < 1 − 2τ²` by P-band high (`δ = (3/2)τ²`), P-arc 3 and P-arc 5 (the extremal regime, equality at `Δ = 2`);
   `0 ≤ v ≤ 1/2` by P-band (both forms, `δ = (3/2)τ²`), P-arc 1, 2 and 4 (`max(191/21, 277/30) < 97/10 < C*`).
-- **P-r38** `Regime38Facts`: `3 ≤ t ≤ 8`, `0 ≤ v`, `δ = 1/2`: P-cap high or whole (`v ≥ 1/2`: `π + 32/(3t)`), P-cap low
+- **P-r38** `Regime38Facts` (the band piece `v ≤ 1/4` below is superseded by the split at `v = 1/8`, see the revision): `3 ≤ t ≤ 8`, `0 ≤ v`, `δ = 1/2`: P-cap high or whole (`v ≥ 1/2`: `π + 32/(3t)`), P-cap low
   (`1/4 ≤ v ≤ 1/2`: `π + 2/3 + 20/(3t)`), P-band low (`v ≤ 1/4`: `50/21 + 12/t`), each term of each bound taken at its own
   worst `v` in the sub-range (no joint monotonicity in `v` is needed; pre-proof review A, finding 5). This is the
   tightest step of the route (`t = 3`, `v ↓ 1/2`: `3^{1/3}(π + 32/9) ≈ 9.659 < 97/10`; pre-proof answers, finding 4); with `s = t^{1/3} ∈ [3^{1/3}, 2]`, `As + Bs^{−2}` is convex (`convexOn_zpow`), so its
@@ -123,8 +124,10 @@ integrated each (`lake build`, guard, `#print axioms`: propext, Classical.choice
   `v`. Instead, arcsine is convex on `[0, 1]` (from `strictConcaveOn_sin_Icc`), so its window increments are monotone
   (`ConvexOn.secant_mono`): `arcsin(v + δ) − arcsin(v − δ) ≤ Q(δ)`; and `Q(d) ≤ (673/250) d` for `0 < d ≤ 3/8` from the
   chord on `[1/2, 7/8]` (`arcsin(7/8) ≤ 11/10`, `arcsin(1/2) = π/6`) and the tangent at `1/2`
-  (`ConvexOn.slope_le_of_hasDerivAt`). Total `≤ (8.076τ − 4τ² + 20/3)τ ≤ 9.7047τ < C*τ`: this sub-case is now the
-  tightest margin of the proof (≈ 0.017), uniform in `τ ∈ (0, 1/2]`. The `v ≤ δ` sub-case drops the negative term
+  (`ConvexOn.slope_le_of_hasDerivAt`). Total `≤ (8.076τ − 4τ² + 20/3)τ ≤ 9.7047τ < C*τ`, uniform in `τ ∈ (0, 1/2]`: after the extremal sub-case (which
+  is exactly `C*τ` by construction) this is the smallest margin of the proof (≈ 0.017), and it exceeds `97/10`, so the
+  `0 ≤ v ≤ 1/2` regime is now bounded by `C*`, not by `97/10`. The window constant `673/250` is `1.5e−4` above the derived
+  value `(8/3)(11/10 − π/6) + 1/0.866 ≈ 2.691846` (with `π > 3.1415`); it holds exactly (post-proof review B, MINOR 1). The `v ≤ δ` sub-case drops the negative term
   (`≤ (184/21)τ`). The other sub-cases are as routed; the extremal one gives exactly `C*τ`.
 - Final: `OscInt/Front/LatticeCubeRootFinal.lean` (`OscInt.API.latticeKernel1CubeRoot`, `latticeLaplacianCubeRoot`),
   types asserted in `StatementTypes.lean`.

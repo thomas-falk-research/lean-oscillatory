@@ -13,14 +13,17 @@ import OscInt.API
 Only `import OscInt.API` and Mathlib. Answers the external application study of 2026-11-10
 (`review/2026-11-10-external-followup-answers.md`, "The quantum-photonics application study").
 
-Model (paper, not formalised here): a lossless, homogeneous, one-dimensional photonic lattice with hopping `κ > 0`
-(for example the synthetic orbital-angular-momentum lattice). Its one-photon transition amplitude over `n` sites after
-time `t` is a unit-modulus phase times `U(s, n) = (2π)⁻¹ ∫_{−π}^{π} e^{i(s cos k + nk)} dk` with `s = 2κt`. This
+Model (paper, not formalised here): a lossless, homogeneous, one-dimensional photonic lattice with hopping amplitude
+`−κ`, `κ > 0` (the negative-hopping convention of the published synthetic orbital-angular-momentum lattice; there the
+evolution is per cavity round trip, and the continuous-time model is an approximation). Its one-photon transition
+amplitude over `n` sites after time `t` is a unit-modulus phase times `U(s, n) = (2π)⁻¹ ∫_{−π}^{π} e^{i(s cos k + nk)} dk`
+with `s = 2κt` (with positive hopping it is a phase times `U(−s, n) = conj U(s, −n)`, which has the same norm). This
 file proves, from the frozen and proved T0E (`OscInt.API.latticeKernel1Explicit`):
 * `‖U(s, n)‖ ≤ b(s) := (24 · 2^{1/4} s^{−1/2} + 36 · 2^{1/6} s^{−1/3}) / (2π)` for `s > 0`, every real `n`;
 * `‖U(s, n)‖ ≤ 1` for every `s` (the trivial bound), so every single-site transition probability is at most
   `min(1, b(s))²`;
-* `b(s) < 1` for every `s ≥ 519` (so the comment "t > 518" in batch LE is right to the integer).
+* `b(s) < 1` for every `s ≥ 519` (sufficient; that `b(518) > 1`, so the crossing lies between, is a rational computation
+  in `numerics/review/followup_checks.py` Q2, not proved here; for real `s` the crossing is near 518.525).
 What it does not give: anything about loss, input/output coupling, finite chains, control or fidelity; the identification
 of `U` with the physical amplitude is the paper step above.
 -/

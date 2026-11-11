@@ -748,7 +748,7 @@ Notation. I(t, ξ) = ∫_{−π}^{π} e^{i(t cos k + ξk)} dk (`latticeKernel1`,
 **T6E′ (explicit constant for T6, cube-root form).** For every t > 0 and x ∈ ℤ²: |K(t, x)| ≤ C*² t^{−2/3}.
 (C*² = (512 + 128√7)/9 ≈ 94.517.)
 
-Route (for the reviewers' orientation only; no proof exists when this is frozen). T6E′ is T6F and T0E′ applied twice.
+Route (for the reviewers' orientation only; no Lean proof exists when this is frozen; the external reviewer's hand proof does, re-derived by the lead in `review/2026-11-10-external-followup-answers.md`). T6E′ is T6F and T0E′ applied twice.
 T0E′: by I(t, −ξ) = I(t, ξ) (substitute k ↦ −k) take ξ ≥ 0, and put v = ξ/t, g = t(v − sin k) (the derivative of the
 phase).
 1. Integration by parts on the sets where |g| ≥ tδ, with the boundary terms at ±π kept: they combine into
@@ -769,7 +769,8 @@ Modelling choices and what is omitted.
 3. **How good the constant is.** C* is within a factor 2 of the best constant C_opt = sup over t > 0 and real ξ of
    t^{1/3}|I(t, ξ)|: C_opt ≥ (4/5)^{1/3}|I(4/5, 0)| > 4.93 (an elementary Taylor bound, exact rational arithmetic), and
    the LE review B point (t, ξ) = (5.7972…, 4.404) gives C_opt ≥ 2π·0.80366 ≈ 5.0495 (floating point). For integer ξ
-   the best constant is Landau's, 2π·0.7857… ≈ 4.937 (`docs/prior_art.md`). So C* overshoots by a factor about 1.93–1.97.
+   the best constant is Landau's, 2π·0.7857… ≈ 4.937 (`docs/prior_art.md`). So C*/C_opt ≤ 1.9706 rigorously and ≈ 1.925 numerically (the overshoot over Landau's
+   integer-ξ constant is ≈ 1.969).
 4. **Where the bounds have content.** C* t^{−1/3} < 2π exactly when t > (C*/(2π))³ ≈ 3.7045; C*² t^{−2/3} < 4π² for the
    same t. Compared with batch LE: C* < B = 36·2^{1/6} ≈ 40.41 (T0E's t^{−1/3} coefficient alone), and
    C*² ≈ 94.517 is about 50.3 times smaller than T6E's (A + B)² ≈ 4754.
@@ -796,3 +797,7 @@ referees FAITHFUL and TRUE for T0E′ and T6E′, no BLOCKER or MAJOR; no statem
    t = (31/20)³ ≈ 3.724, just above the usefulness threshold, and three T6E′ bites were added to
    `OscInt/Front/LatticeCubeRootSanity.lean` (plant record, second run). The faster rate t^{−1/2} in T0E′ is false but
    not detected by the sanity layer; it rests on the reviews and on the proof.
+4. **The proof as written** (2026-11-11, post-proof reviews A and B). The Lean proof (`docs/proof-LE2.md`, "The parts as
+   proved") bounds the sub-case t ≥ 8, δ ≤ v ≤ 1/2 by 9.7047·t^{−1/3}, not by 277/30: after the extremal sub-case this
+   is now the smallest margin of the proof (≈ 0.017), so clarification 1's "tightest step" (t = 3, 9.659) describes the
+   route sketch above, not the proof.

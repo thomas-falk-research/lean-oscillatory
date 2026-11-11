@@ -1,8 +1,9 @@
 # Answers to the blind pre-proof reviews of batch LE2 (T0E′, T6E′)
 
 Two fresh-context referees, A and B, reviewed the frozen statements at 18d22ec (stamp
-`stamps/20261110T234417Z-0532b1cf8880`) against `docs/statements.md`, Batch LE2. Neither saw a proof: none exists, and
-both were told not to read the external material or `review/2026-11-10-external-followup-answers.md`. Their prompts
+`stamps/20261110T234417Z-0532b1cf8880`) against `docs/statements.md`, Batch LE2. Neither saw a Lean proof (none existed). A hand proof did exist (the external reviewer's, re-derived by the lead); both
+were told not to read it (the external material or `review/2026-11-10-external-followup-answers.md`), but they saw the
+route sketch in `docs/statements.md`, and referee A hand-checked its first step (adversarial review, 2026-11-11). Their prompts
 and reports are not recorded (owner privacy rule, lessons 46). Each finding is restated below in the lead's words, with
 its severity and the lead's answer. Written by the session-10 lead.
 
@@ -81,7 +82,10 @@ The lead's answer to finding 5 was **wrong**. Referee A was right that step 3 ne
 (0 ≤ v ≤ 1/4, δ = 1/2).
 - The term arcsin(1/2 − v) is worst at v = 0, where it equals π/6.
 - Taking each summand at its own worst v gives about 9.726 at t = 3. That is above C*.
-- The value 50/21 assumed the band length is increasing in v.
+- The value 50/21 assumed the band length is increasing in v. That assumption is **true** (for v ≥ 0, the derivative
+  of the band length is 2(h(v + 1/2) − h(v − 1/2)) ≥ 0, since h(s) = (1 − s²)^{−1/2} is even and increasing in |s|; the
+  true maximum of t^{1/3}·(band bound) over v ∈ [0, 1/4] at t = 3 is about 8.82; adversarial review, 2026-11-11), but
+  neither the reviewer's text nor the route justified it.
 
 The route referee found the same; `docs/proof-LE2.md` ("Revision after the route referee") splits that sub-range at
 v = 1/8. The new end values are exact and below 97/10. No statement is affected: the gap was in the route's bookkeeping,

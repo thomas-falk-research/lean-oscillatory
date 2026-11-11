@@ -163,3 +163,6 @@ import Mathlib
 #check @ConvexOn.add
 #check @Real.sqrt_mul
 #check @Real.sin_pi_div_six
+#check @ConvexOn.slope_le_of_hasDerivAt
+#check @antitoneOn_of_hasDerivWithinAt_nonpos
+#check @convexOn_id

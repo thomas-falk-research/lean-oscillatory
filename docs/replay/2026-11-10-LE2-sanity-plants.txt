@@ -115,3 +115,13 @@ plant-T0Ep-rate-faster-NOTDETECTED: rejected (recorded)
 #   and sign plants are instance-level or syntactic; the five strengthening plants that are false (T0E' half constant,
 #   T0E' 0 <= t, T6E' unsquared, T6E' quarter, T6E' 0 <= t) are refuted by compiled witnesses; the faster rate is not
 #   detected.
+#
+# Corrections after the adversarial review (2026-11-11):
+# - T0Ep-int (xi real -> xi integer) is instance-level like the threshold plants (the datum xi = 1/2 is not an integer),
+#   not "exact semantic evidence". The plants with semantic evidence (exact computation showing the planted instance does
+#   not give the conclusion) are: rate slower, constant larger, weaker-than-T0E, T6 rate, T6 const.
+# - The sanity file each run compiled against was in the working tree, uncommitted at run time. Its SHA-256 as committed
+#   right after each run: first run (committed in bc58c8c) ed37b6583d73c739f4f05e943ce9da99d086c33facf09ee3c98a83050711bdb3,
+#   second run (committed in bf8af89) 7c4e3d556487334a43001ed3ccb9db12743c217f2fc9035539ae67e73485aa44. That the runs used
+#   exactly these bytes rests on the lead's session record (no edit between run and commit); the run itself did not hash
+#   the file.
