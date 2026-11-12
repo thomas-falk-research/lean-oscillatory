@@ -166,3 +166,14 @@ import Mathlib
 #check @ConvexOn.slope_le_of_hasDerivAt
 #check @antitoneOn_of_hasDerivWithinAt_nonpos
 #check @convexOn_id
+
+-- Batch HC route (docs/proof-HC.md), checked at the pin 2026-11-12.
+#check @MeasureTheory.volume_pi
+#check @MeasureTheory.Measure.restrict_pi_pi
+#check @MeasureTheory.integral_fintype_prod_eq_prod
+#check @MeasureTheory.integral_Icc_eq_integral_Ioc
+#check @intervalIntegral.integral_of_le
+#check @Complex.exp_sum
+#check @Finset.prod_le_prod₀
+#check @norm_prod
+#check @Finset.prod_const
