@@ -1,6 +1,31 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (47 entries); every rule in it is binding.
+For a reader who saw nothing. Read `docs/lessons.md` first (48 entries); every rule in it is binding.
+
+## Session 10, continued (2026-11-12): batch HC proved end to end; plasma consumers; DNLS scoped
+- **Owner request 2026-11-12:** bets 1 and 3, then scope bet 2.
+- **Batch HC (bet 1): TdF and TdE′, machine-checked as stated.**
+  - TdF: the d-dimensional hypercubic kernel K_d(t, x) = ∫_{[−π,π]^d} e^{i(t Σ cos k_j + x·k)} dk factorises into 1D
+    kernels. TdE′: |K_d(t, x)| ≤ (8(1 + √7)/3)^d t^{−d/3} for every d, t > 0 and x ∈ ℤ^d.
+  - Records:
+    - statements: `OscInt/Statements/Hypercubic.lean`, stamp `20261112T120616Z-c56beb57ff8c`;
+    - pre-proof reviews: FAITHFUL and TRUE ×2, review stamp `20261112T123958Z-8e4f8c5cbcaf`;
+    - route: `docs/proof-HC.md`, refereed (no BLOCKER or MAJOR);
+    - part and assembly: `OscInt/Front/Hypercubic{Fubini,Assembly,Final}.lean` (Mathlib's finite-product Fubini);
+    - replay: `docs/replay/2026-11-12-session10-HC-verify-all.txt` on 5a5f714. Every step passes; the comparator is INCOMPLETE only because comparator-A3 has no
+      solution yet;
+    - post-proof reviews: FAITHFUL ×2. The adversarial review's two MAJORs (the DNLS scoping condition; evidence for the
+      referee windows) are answered in `review/2026-11-12-HC-post-proof-answers.md`.
+  - Prior art: the rate and the factorisation are anticipated (Stefanov–Kevrekidis 2005); the constant is new only
+    through T0E′ (`docs/prior_art.md`).
+- **Plasma consumers (bet 3):** `examples/consumer/ConsumerColdPlasma.lean` (cold-plasma transverse waves, τ^{−1} via
+  GD-N) and `examples/consumer/ConsumerPhaseMixing.lean` (phase mixing of free streaming, via FE-S2.1). Linear,
+  idealised models; the physics reductions are paper steps.
+- **DNLS scoping (bet 2):** `docs/design/dnls-scoping.md`, corrected after the adversarial review: decay of small
+  solutions whenever (d/3)(2p − 1) > 1, in every dimension. Next step is a route document for ℓ² well-posedness and the
+  kernel-to-group identification, with every Mathlib name checked (the go/no-go).
+- **Lessons:** 48 (provenance facts are captured when they happen).
+- **No CI ran:** the branch has no pull request; the local replays are the evidence.
 
 ## Session 10 (2026-11-10/11): batch LE2 proved end to end; external follow-up answered
 - **External follow-up (2026-11-10), four packets from the same reviewer**, answered in

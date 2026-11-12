@@ -16,7 +16,7 @@ E1 exact rational steps added after the route referee (docs/proof-LE2.md, revisi
    t >= 8, v <= delta bound (48/7) tau + 16/3 - 4 tau^2 <= 163/21 (the referee's cruder (72/7) tau gives 199/21; both
    < 97/10) at tau = 1/2.
 Exit status 0 iff every bound holds with margin >= 0 on every sample. Seed 20261111.
-Usage: python3 -I numerics/review/le2_interface_checks.py (numpy 2.3.5)
+Usage: python3 -I numerics/review/le2_interface_checks.py (numpy; version of the 2026-11-11 record unknown, see review/2026-11-12-HC-post-proof-answers.md)
 """
 import sys
 import numpy as np

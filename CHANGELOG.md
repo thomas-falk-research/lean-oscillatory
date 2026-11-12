@@ -15,6 +15,19 @@ Statement changes (batch LE2, session 10): two new statements, frozen, reviewed 
 `OscInt.API.latticeLaplacianCubeRoot`) in `OscInt/Statements/LatticeCubeRoot.lean`, stamp
 `stamps/20261110T234417Z-0532b1cf8880`. They imply the frozen T0E and T6E, which are unchanged.
 
+Statement changes (batch HC, session 10): two new statements, frozen, reviewed and **proved**: TdF
+(`HypercubicKernelFactorStatement`, `OscInt.API.hypercubicKernelFactor`) and TdE′ (`HypercubicCubeRootStatement`,
+`OscInt.API.hypercubicCubeRoot`) in `OscInt/Statements/Hypercubic.lean`, stamp `stamps/20261112T120616Z-c56beb57ff8c`.
+No existing statement changed.
+
+- Batch HC: the hypercubic lattice kernel on ℤ^d factorises, and `|K_d(t, x)| ≤ (8(1 + √7)/3)^d t^{−d/3}` for every
+  `d`, `t > 0` and `x`; statement-first, blind-reviewed, routed and refereed, proved in Lean, replayed
+  (`docs/replay/2026-11-12-session10-HC-verify-all.txt`); post-proof answers `review/2026-11-12-HC-post-proof-answers.md`.
+- Consumer examples `examples/consumer/ConsumerColdPlasma.lean` (cold-plasma transverse waves, `τ^{−1}` uniformly in the
+  observation point) and `examples/consumer/ConsumerPhaseMixing.lean` (phase mixing of free streaming).
+- Scoping `docs/design/dnls-scoping.md`: small-data decay for the discrete NLS from TdE′ (not a commitment).
+- Numerical interface check `numerics/review/hc_interface_checks.py` (record
+  `numerics/results-hc-interface-checks-2026-11-12.txt`).
 - Batch LE2: the cube-root bound `|∫_{−π}^{π} e^{i(t cos k + ξk)} dk| ≤ 8(1 + √7)/3 · t^{−1/3}` for every `t > 0` and real
   `ξ`, and its 2D form; useful from `t ≈ 3.70` instead of 518 and 1321. From an external reviewer's hand proof
   (AI-use disclosure in `docs/prior_art.md`), re-derived, blind-reviewed, routed and refereed, proved in Lean, replayed

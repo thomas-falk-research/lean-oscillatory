@@ -925,7 +925,7 @@
     "t > 0",
     "d ∈ ℕ, x ∈ ℤ^d"
    ],
-   "conclusion": "|K_d(t, x)| ≤ (8(1+√7)/3)^d t^{-d/3} (the hypercubic lattice kernel in every dimension; beats the trivial (2π)^d for t > 3.70)",
+   "conclusion": "|K_d(t, x)| ≤ (8(1+√7)/3)^d t^{-d/3} (the hypercubic lattice kernel in every dimension; for every d ≥ 1 beats the trivial (2π)^d for t > 3.70)",
    "rate": "t^{-d/3} (explicit constant)",
    "uniform_over": "x ∈ ℤ^d, t > 0",
    "smoothness": "—",

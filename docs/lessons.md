@@ -346,3 +346,12 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     and three T6E′ bites through the proved T6F. Rule: for a statement with an explicit constant, at least one sanity
     datum lies in the non-trivial regime (proved there), and every strengthening plant that is false gets a compiled
     witness or is recorded NOT DETECTED. Check: `thr_nontrivial` in `OscInt/Front/LatticeCubeRootSanity.lean`.
+48. **Provenance facts in a record are captured when they happen, not reconstructed or copied.** Two session-10 cases.
+    The HC adversarial referee could not confirm from the repository that the pre-proof and route referees had finished
+    before the next commits: no answers file gave their launch commit or run time, and the lead had to recover them
+    from the session record (one value in the first draft, 228 s, was wrong; the record says 239 s). And the LE2
+    numerics record said "numpy 2.3.5", copied from the script's docstring, while this container runs 2.5.3. Rule:
+    every answers file gives, per referee, the commit it was launched at, its launch and finish times and its run time,
+    taken from the session record at the time; every numerics record prints the interpreter and package versions from
+    the running process. Check: the table in `review/2026-11-12-HC-post-proof-answers.md` (finding 2); the RUNTIME line
+    of `numerics/review/hc_interface_checks.py`.

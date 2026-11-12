@@ -32,15 +32,15 @@ in Lean; numerics in `numerics/` are tooling and are never cited as evidence.
 ## Plasma physics (linear pieces only)
 - **Cold-plasma transverse waves**: a wave packet of the electromagnetic branch ω = (ω_p² + c²|k|²)^{1/2} of a linear,
   cold, collisionless electron plasma (fixed ions, no background field, E along z) decays like `τ^{−1}` at every
-  observation point, uniformly in the point: **demonstrated** (`examples/consumer/ConsumerColdPlasma.lean`, GD-N with the
+  observation point, uniformly in the point, for one frequency branch (`e^{−iτω}`) and a fixed amplitude: **demonstrated** (`examples/consumer/ConsumerColdPlasma.lean`, GD-N with the
   phase `−(1 + κ₁² + κ₂²)^{1/2}`, Hessian determinant `(1 + |κ|²)^{−2}` computed in Lean; the physics reduction is a paper
   step, `review/2026-11-10-external-followup-answers.md`). No damping, nonlinear, kinetic, control or explicit-constant
   claim.
 - **Phase mixing of free streaming** (the linear core of Landau damping), two-dimensional velocity: each density Fourier
-  mode decays faster than any power of `t`, uniformly over smooth compactly supported velocity profiles and wave vectors
+  mode decays faster than any power of `t`, uniformly over velocity profiles supported in a fixed compact set with a fixed `C^N` budget, and wave vectors
   bounded away from 0: **demonstrated** (`examples/consumer/ConsumerPhaseMixing.lean`, FE-S2.1). Self-consistent fields
   (Vlasov–Poisson), Landau damping rates and three-dimensional velocities are **proposed** (ROADMAP I3).
-- **Gyroaverage**: `|J₀(z)| ≤ 1.547 z^{−1/3}` for every `z > 0` follows from T0E′ (`latticeKernel1 z 0 = 2π J₀(z)`, the
+- **Gyroaverage**: `|J₀(z)| ≤ 1.548 z^{−1/3}` for every `z > 0` follows from T0E′ (`latticeKernel1 z 0 = 2π J₀(z)`, the
   Bessel identification not formalised); valid but weaker than the classical `(2/(πz))^{1/2}`; no consumer yet.
 
 ## Diffraction and caustics in optics
