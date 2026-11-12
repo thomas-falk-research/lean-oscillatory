@@ -24,6 +24,8 @@ file proves, from the frozen and proved T0E (`OscInt.API.latticeKernel1Explicit`
   `min(1, b(s))²`;
 * `b(s) < 1` for every `s ≥ 519` (sufficient; that `b(518) > 1`, so the crossing lies between, is a rational computation
   in `numerics/review/followup_checks.py` Q2, not proved here; for real `s` the crossing is near 518.525).
+With T0E′ (batch LE2, `OscInt.API.latticeKernel1CubeRoot`): `‖U(s, n)‖ ≤ 8(1 + √7)/(6π) · s^{−1/3}` for `s > 0`, which
+is below 1 for every `s ≥ 4` (`amp_cubeRoot_lt_one`), against `s ≥ 519` for T0E.
 What it does not give: anything about loss, input/output coupling, finite chains, control or fidelity; the identification
 of `U` with the physical amplitude is the paper step above.
 -/
@@ -95,5 +97,24 @@ theorem envelope_lt_one {s : ℝ} (hs : 519 ≤ s) : envelope s < 1 := by
   unfold envelope
   rw [div_lt_one (by positivity)]
   nlinarith [mul_le_mul ha.le h1.le hp1 (by norm_num), mul_le_mul hb.le h2.le hp2 (by norm_num)]
+
+/-- **The cube-root envelope**, from T0E′: `‖U(s, n)‖ ≤ 8(1 + √7)/3 · s^{−1/3} / (2π)` for `s > 0`. -/
+theorem amp_le_cubeRoot (s n : ℝ) (hs : 0 < s) :
+    ‖amp s n‖ ≤ 8 * (1 + Real.sqrt 7) / 3 * s ^ (-(1 : ℝ) / 3) / (2 * Real.pi) := by
+  rw [norm_amp]
+  exact div_le_div_of_nonneg_right (latticeKernel1CubeRoot s n hs) (by positivity)
+
+/-- **The usefulness threshold with T0E′**: the cube-root envelope is below 1 for every `s ≥ 4`. -/
+theorem amp_cubeRoot_lt_one {s : ℝ} (hs : 4 ≤ s) :
+    8 * (1 + Real.sqrt 7) / 3 * s ^ (-(1 : ℝ) / 3) / (2 * Real.pi) < 1 := by
+  have h4 : s ^ (-(1 : ℝ) / 3) ≤ (4 : ℝ) ^ (-(1 : ℝ) / 3) := Real.rpow_le_rpow_of_nonpos (by norm_num) hs (by norm_num)
+  have hc : ((4 : ℝ) ^ (-(1 : ℝ) / 3)) ^ 3 = 1 / 4 := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul (by norm_num)]; norm_num [Real.rpow_neg_one]
+  have h63 : (4 : ℝ) ^ (-(1 : ℝ) / 3) < 0.63 := lt_of_pow_eq (by norm_num) hc (by norm_num)
+  have hsq : Real.sqrt 7 < 2.6458 := by rw [Real.sqrt_lt' (by norm_num)]; norm_num
+  have hpi := Real.pi_gt_d4
+  have hp : 0 ≤ s ^ (-(1 : ℝ) / 3) := Real.rpow_nonneg (by linarith) _
+  rw [div_lt_one (by positivity)]
+  nlinarith [Real.sqrt_nonneg 7]
 
 end ConsumerPhotonLattice

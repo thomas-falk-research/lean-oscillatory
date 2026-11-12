@@ -2,6 +2,46 @@
 
 For a reader who saw nothing. Read `docs/lessons.md` first (47 entries); every rule in it is binding.
 
+## Session 10 (2026-11-10/11): batch LE2 proved end to end; external follow-up answered
+- **External follow-up (2026-11-10), four packets from the same reviewer**, answered in
+  `review/2026-11-10-external-followup-answers.md`, the lead's words only (lessons 46).
+  - Packets: a cube-root cosine bound (Result 1); QWZ at the critical mass m = 2 (Result 2 and an audit with a further
+    t^{−4/3} theorem); a photonic application study; a plasma application study.
+  - All four are correct.
+  - The QWZ results and the plasma study were checked by fresh-context checkers with their own code. The QWZ results
+    stay candidate evidence (owner decision); see ROADMAP "Candidates".
+  - Lead's checks: `numerics/review/followup_checks.py` (43/43 exact).
+- **Batch LE2 (owner decision 2026-11-10): T0E′ and T6E′, machine-checked as stated.**
+  - Statements: `|I(t, ξ)| ≤ 8(1 + √7)/3 · t^{−1/3}` for t > 0 and real ξ, and the 2D form with the constant squared.
+    They are useful from t ≈ 3.70, against 518 and 1321 for T0E and T6E.
+  - Records:
+    - statements: `OscInt/Statements/LatticeCubeRoot.lean`, stamp `20261110T234417Z-0532b1cf8880`;
+    - pre-proof reviews: FAITHFUL and TRUE ×2, review stamp `20261111T005634Z-bf8af89bc235`;
+    - route: `docs/proof-LE2.md`. The route referee's one MAJOR (an unjustified monotonicity step) is fixed by a split
+      at v = 1/8;
+    - parts: `OscInt/Front/LatticeCubeRoot*.lean`, by proof agents after the route review;
+    - replay: `docs/replay/2026-11-11-session10-LE2-verify-all.txt` on 68aec60. Every step passes; the comparator is
+      INCOMPLETE only because comparator-A3 has no solution yet;
+    - post-proof reviews: FAITHFUL ×2. The adversarial review's three MAJORs were documentation, answered in
+      `review/2026-11-11-LE2-post-proof-answers.md`.
+  - The constant is within a factor 1.9706 of the best: rigorous by hand. The Lean bite proves the best constant
+    exceeds C*/2.
+  - AI-use disclosure: `docs/prior_art.md`.
+- **Consumer** `examples/consumer/ConsumerPhotonLattice.lean`: single-photon probabilities on a cosine-band lattice,
+  nontrivial from 2κt ≥ 519 with T0E and from 2κt ≥ 4 with T0E′.
+- **Lessons:** 47 (sanity data in the non-trivial regime of an explicit bound). The adversarial review also found two
+  commits made while referees read the tree (lessons 16): disclosed, not repeated.
+- **No CI ran:** the branch has no pull request. The local replay is the evidence. The owner opens a pull request when
+  wanted.
+- **Owner items open (new):** whether the packet SHA-256 prefixes in the follow-up answers stay (they identify unpublished
+  packets). Earlier owner items are unchanged.
+- **Next, in order:**
+  1. As before: `docs/proof-A3.md` parts and replay (A3 route reviewed at b719ba4).
+  2. CENSUS held-out pool.
+  3. LeanCert (I2).
+  4. I3a, I3b.
+  5. Optional: a cold-plasma GD-N consumer (`review/2026-11-10-external-followup-answers.md`; mind the max-norm hazard).
+
 ## Session 9 (2026-11-10): external reviews checked; a hand proof of S5.1′; nothing proved in Lean, nothing frozen
 - **Privacy rule (owner, 2026-11-10; lessons 46).** No chat transcripts, prompts (the owner's, reviewers' or
   referees'), or verbatim AI-conversation text in the repository or its history. External reviews are recorded only as

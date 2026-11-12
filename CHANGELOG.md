@@ -10,6 +10,19 @@ Statement changes: three new statements, frozen and reviewed, **not proved**: S1
 (`CuspBoundStatement`) and S5.1′ (`CuspBoundGenStatement`) in `OscInt/Statements/Cusp.lean`, stamp
 `stamps/20261109T201548Z-fcb46d9a6239`. No existing statement, commitment or `proved_by` name changed.
 
+Statement changes (batch LE2, session 10): two new statements, frozen, reviewed and **proved**: T0E′
+(`LatticeKernel1CubeRootStatement`, `OscInt.API.latticeKernel1CubeRoot`) and T6E′ (`LatticeLaplacianCubeRootStatement`,
+`OscInt.API.latticeLaplacianCubeRoot`) in `OscInt/Statements/LatticeCubeRoot.lean`, stamp
+`stamps/20261110T234417Z-0532b1cf8880`. They imply the frozen T0E and T6E, which are unchanged.
+
+- Batch LE2: the cube-root bound `|∫_{−π}^{π} e^{i(t cos k + ξk)} dk| ≤ 8(1 + √7)/3 · t^{−1/3}` for every `t > 0` and real
+  `ξ`, and its 2D form; useful from `t ≈ 3.70` instead of 518 and 1321. From an external reviewer's hand proof
+  (AI-use disclosure in `docs/prior_art.md`), re-derived, blind-reviewed, routed and refereed, proved in Lean, replayed
+  (`docs/replay/2026-11-11-session10-LE2-verify-all.txt`).
+- Answers to the external follow-up submissions (`review/2026-11-10-external-followup-answers.md`): the cube-root bound,
+  the QWZ critical-mass results (candidate evidence), and the photonic and plasma application studies.
+- Consumer example `examples/consumer/ConsumerPhotonLattice.lean`: single-photon transition probabilities on a
+  cosine-band lattice, nontrivial from `2κt ≥ 4` with T0E′.
 - Batch A3 statement-first phase: sanity data and planted controls, two blind pre-proof reviews (FAITHFUL, TRUE),
   reviews stamped (`stamps/20261109T214121Z-47c1360ccd6f`).
 - CENSUS (ROADMAP I1): specification and registration, both DRAFT; exact spec checks 39/39
