@@ -1,0 +1,14 @@
+import OscInt.Front.HypercubicSanity
+
+namespace OscInt.API.HypercubicSanity
+
+open OscInt.Statements OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+
+def P_HypercubicKernelFactorStatement : Prop :=
+  ∀ (d : ℕ) (t : ℝ) (x : Fin d → ℤ), hypercubicKernel d t x = ∏ j, latticeKernel1 (2 * t) (x j : ℝ)
+
+theorem P_hypercubicFactor_two (h : P_HypercubicKernelFactorStatement) :
+    hypercubicKernel 2 3 ![1, -2] = latticeKernel1 3 1 * latticeKernel1 3 (-2) := by
+  simpa [Fin.prod_univ_two] using h 2 3 ![1, -2]
+
+end OscInt.API.HypercubicSanity

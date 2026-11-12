@@ -21,6 +21,7 @@ import OscInt.Front.GlobalNondegLocalSanity
 import OscInt.Front.VectorSanity
 import OscInt.Front.CuspSanity
 import OscInt.Front.LatticeCubeRootSanity
+import OscInt.Front.HypercubicSanity
 import OscInt.Front.GlobalFinal
 import OscInt.Front.LatticeFinal
 import OscInt.Front.LatticeExplicitFinal

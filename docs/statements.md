@@ -801,3 +801,41 @@ referees FAITHFUL and TRUE for T0E′ and T6E′, no BLOCKER or MAJOR; no statem
    proved") bounds the sub-case t ≥ 8, δ ≤ v ≤ 1/2 by 9.7047·t^{−1/3}, not by 277/30: after the extremal sub-case this
    is now the smallest margin of the proof (≈ 0.017), so clarification 1's "tightest step" (t = 3, 9.659) describes the
    route sketch above, not the proof.
+
+## Batch HC: the hypercubic lattice kernel in every dimension (session 10, 2026-11-12)
+
+Order. As batches LE and LE2: statements, `OscInt/Statements/Hypercubic.lean`, sanity theorems with planted controls
+(`OscInt/Front/HypercubicSanity.lean`), challenge `Challenge/Hypercubic.lean` and `comparator-HC.json`, frozen and
+stamped before the blind pre-proof reviews; no Lean proof of these statements exists before the reviews are answered.
+Owner decision (2026-11-12, session 10): "bet 1", the separable corollary that ROADMAP I3b lists as an optional early
+demonstration, now with the T0E′ constant.
+
+Why. T0E′ is a 1D estimate; by Fubini the kernel of the free lattice Schrödinger group on ℤ^d factorises into d 1D
+kernels, so T0E′ gives an explicit, machine-checkable dispersive bound in every dimension d: three-dimensional crystals
+and cubic optical lattices (d = 3), and every d ≥ 4 as a mathematical family. Classical and separable: no claim beyond a
+machine-checked corollary with an explicit constant (`docs/prior_art.md`, "Lattice kernels").
+
+Notation. For d ∈ ℕ, t ∈ ℝ and x ∈ ℤ^d,
+K_d(t, x) = ∫_{[−π, π]^d} e^{i(t Σ_j cos k_j + Σ_j x_j k_j)} dk (Lebesgue measure on ℝ^d, Lean: `Fin d → ℝ` with its
+product measure, the box `Set.univ.pi (fun _ => Icc (−π) π)`). I(t, ξ) is `latticeKernel1` (batch LE).
+C* = 8(1 + √7)/3 as in batch LE2.
+
+**TdF (the d-dimensional kernel factorises).** For every d, real t and x ∈ ℤ^d: K_d(t, x) = ∏_{j<d} I(t, x_j).
+
+**TdE′ (explicit decay in every dimension).** For every d, every t > 0 and x ∈ ℤ^d: |K_d(t, x)| ≤ C*^d t^{−d/3}.
+
+Route (orientation only). TdF: the integrand is ∏_j e^{i(t cos k_j + x_j k_j)} (`Complex.exp` of a sum is a product),
+the restricted product measure of a box is the product of restricted measures, and the integral of a product of
+one-variable functions over `Fin d → ℝ` is the product of integrals (`MeasureTheory.integral_fintype_prod_eq_prod`).
+TdE′: TdF, `norm_prod`, T0E′ on each factor, and (t^{−1/3})^d = t^{−d/3}.
+
+Modelling choices and what is omitted.
+1. x ∈ ℤ^d (lattice sites), as T6; the factorisation and the bound also hold for real x, not stated.
+2. d = 0 is included: K_0 = 1 (the integral over the one-point space) and both sides of TdE′ equal 1.
+3. t > 0 in TdE′ (rpow at 0, as T0E′). The rate t^{−d/3} is the sharp rate for the hypercubic lattice (caustic
+   directions, from the 1D rate t^{−1/3}); sharpness is not stated.
+4. The constant C*^d grows exponentially in d; the bound beats the trivial |K_d| ≤ (2π)^d for t > (C*/(2π))³ ≈ 3.70 in
+   every dimension. For d = 2 it is T6E′ (on `Fin 2 → ℝ` instead of ℝ × ℝ; the identification is not stated).
+5. Normalisation (2π)^{−d}, time scale and phases omitted, as T6. A user's e^{itH} with H = Σ_j 2 cos k_j has kernel
+   (2π)^{−d} K_d(2t, x).
+6. AI-use disclosure: TdE′ inherits T0E′'s (`docs/prior_art.md`); the batch itself was proposed by the lead.

@@ -1,0 +1,7 @@
+/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/plants/out_hc/plant-TdE-const-larger.lean:17:2: error: linarith failed to find a contradiction
+h : P_HypercubicCubeRootStatement
+this : ‖hypercubicKernel 3 8 ![1, 0, -3]‖ ≤ (8 * (1 + √7) / 3) ^ (3 + 1) * (1 / 8)
+h8 : 8 ^ (-↑3 / 3) = 1 / 8
+a✝ : (8 * (1 + √7) / 3) ^ 3 / 8 < ‖hypercubicKernel 3 8 ![1, 0, -3]‖
+⊢ False
+failed

@@ -1,0 +1,46 @@
+# Planted controls for batch HC (OscInt/Front/HypercubicSanity.lean), session-10 lead, 2026-11-12T11:45:54Z: run before the
+# HC stamp and before any Lean proof of an HC statement (lessons 33). Generator: docs/replay/plants/2026-11-12-HC/plants_hc.py.txt
+# (as batch LE2's: one textual mutation of a copied statement def, compiled with `lake env lean -DautoImplicit=false` against
+# `import OscInt.Front.HypercubicSanity` built from the working tree on top of git HEAD 3a5d2f4d0725768e64614ce37b62ef9f9c9869b3; sanity file
+# SHA-256 at run time b9cf6ff0a60051c36796bd0c7947894023466151a02159fc2bcfdc51401b606f).
+# Classification (lessons 44, LE2 corrections): SEMANTIC (exact computation that the planted instance does not give the
+# conclusion), INSTANCE (the datum violates a planted hypothesis), WITNESS (a compiled theorem refutes the planted statement,
+# here possibly conditional on the reviewed statement TdF), NOT DETECTED.
+#
+ok-TdE-rate: accepted (want accepted)
+plant-TdE-rate: rejected (want rejected)
+    first error: plant-TdE-rate.lean:16:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+ok-TdE-const-larger: accepted (want accepted)
+plant-TdE-const-larger: rejected (want rejected)
+    first error: plant-TdE-const-larger.lean:17:2: error: linarith failed to find a contradiction
+ok-TdE-threshold-thr: accepted (want accepted)
+plant-TdE-threshold-thr: rejected (want rejected)
+    first error: plant-TdE-threshold-thr.lean:13:42: error: unsolved goals
+ok-TdE-nonneg-t: accepted (want accepted)
+plant-TdE-nonneg-t: accepted (recorded)
+witness-TdE-nonneg-t: accepted (want accepted)
+ok-TdE-half-const: accepted (want accepted)
+plant-TdE-half-const: rejected (recorded)
+    first error: plant-TdE-half-const.lean:17:2: error: linarith failed to find a contradiction
+witness-TdE-half-const: accepted (want accepted)
+ok-TdF-time: accepted (want accepted)
+plant-TdF-time: rejected (want rejected)
+    first error: plant-TdF-time.lean:12:2: error: Type mismatch: After simplification, term
+ok-TdF-tpos: accepted (want accepted)
+plant-TdF-tpos: rejected (want rejected)
+    first error: plant-TdF-tpos.lean:13:2: error: Type mismatch: After simplification, term
+#
+# Evidence:
+# TdE-rate (t^(-d/3) -> t^(-1/3)), datum d = 3, t = 8: SEMANTIC: the planted instance gives C*^3 8^(-1/3) = C*^3/2 > C*^3/8.
+# TdE-const-larger (C*^d -> C*^(d+1)), datum d = 3: SEMANTIC: C*^4/8 > C*^3/8 since C* > 1.
+# TdE-threshold-thr (0 < t -> 4 <= t), datum t = (31/20)^3: INSTANCE; the datum is in the non-trivial regime
+#   (hc_thr_nontrivial, compiled), so the conclusion does not follow from the trivial bound.
+# TdE-nonneg-t (0 < t -> 0 <= t, strengthens, false): WITNESS witness-TdE-nonneg-t compiles (hypercubicCubeRoot_false_at_zero,
+#   unconditional: K_1(0, 0) = 2pi).
+# TdE-half-const (C*^d -> (C*/2)^d, strengthens, false): WITNESS witness-TdE-half-const compiles, CONDITIONAL on TdF
+#   (HypercubicKernelFactorStatement -> not P): at d = 1, K_1 = I(t, 0) and cubeRoot_half_const_false applies at t = (7/8)^3.
+# TdF-time (I(t, .) -> I(2t, .)): the sanity conclusion does not follow from the planted instance (syntactic/instance level;
+#   no witness that the planted statement is false).
+# TdF-tpos (0 < t added): INSTANCE: the datum t = -2 violates it.
+# NOT DETECTED by this layer (rests on the reviews and the proof): a faster rate (as T0E'), and changes that keep d = 1, 2, 3
+#   instances true.

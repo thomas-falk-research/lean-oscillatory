@@ -1,0 +1,6 @@
+/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/plants/out_hc/plant-TdF-time.lean:12:2: error: Type mismatch: After simplification, term
+  h 2 3 ![1, -2]
+ has type
+  hypercubicKernel 2 3 ![1, -2] = latticeKernel1 (2 * 3) 1 * latticeKernel1 (2 * 3) (-2)
+but is expected to have type
+  hypercubicKernel 2 3 ![1, -2] = latticeKernel1 3 1 * latticeKernel1 3 (-2)

@@ -117,6 +117,8 @@ another. Nothing here is a capability until its evidence exists (`docs/STATUS.md
     - *Optional early demonstration.* The fully separable corollaries: S4.1 times S1.2 in each extra direction, and the
       d-dimensional lattice kernel by T0E applied factor by factor (constant about `69^d`). They are described as
       Fubini corollaries, not as new capability.
+      *Owner decision 2026-11-12:* the lattice-kernel corollary is promoted as batch HC (TdF, TdE′), with the T0E′
+      constant `(8(1 + √7)/3)^d ≈ 9.72^d` instead of `69^d` (`docs/statements.md`, Batch HC).
     - *Not in scope.* Classification of singularities in d dimensions; critical manifolds (Morse–Bott) until a
       consumer needs them; infinite dimension.
 - [ ] **I4 A "useful from" standard for every explicit constant.** Each explicit-constant statement in `docs/api.json`
