@@ -17,6 +17,7 @@ import Blueprint.Global
 import Blueprint.LatticeExplicit
 import Blueprint.LatticeCubeRoot
 import Blueprint.Hypercubic
+import Blueprint.LatticeGroup
 import Blueprint.Vector
 
 /-! Root of the blueprint library: intermediate propositions (definitions only, no proofs). -/

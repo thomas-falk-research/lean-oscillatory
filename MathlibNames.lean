@@ -183,3 +183,21 @@ import Mathlib
 #check @Finset.mul_sum
 #check @Finset.sum_add_distrib
 #check @Finset.sum_mul
+
+-- Batch LS route (docs/proof-LS.md), checked at the pin before the parts.
+#check @NormedSpace.exp
+#check @hasDerivAt_exp_smul_const
+#check @NormedSpace.exp_series_hasSum_exp'
+#check @Commute.exp_left
+#check @ODE_solution_unique_univ
+#check @lp.ext
+#check @lp.norm_apply_le_norm
+#check @lp.single
+#check @lp.evalCLM
+#check @lp.norm_rpow_eq_tsum
+#check @memℓp_gen_iff
+#check @Equiv.summable_iff
+#check @Summable.tsum_comm'
+#check @summable_prod_of_nonneg
+#check @MeasureTheory.hasSum_integral_of_dominated_convergence
+#check @NormedAlgebra.complexToReal

@@ -1,0 +1,10 @@
+# command: python3 -I numerics/review/ls_interface_checks.py, run as <venv>/bin/python -I <scratch>/ls_interface_checks.py from the repository root (versions: RUNTIME line, read at run time)
+# started 2026-11-12T23:02:55Z, finished 2026-11-12T23:02:55Z (UTC)
+# git HEAD 93a8a8d0f26ddd8961728a55a0e7a71da39a18ef, tracked files modified: yes (the LS route files being added in the same commit; the script reads none of them); script sha256 67f8ee80b833b467e3479993c868b8c4a6154a4b46ca546548459379aeabf5a8 (identical to the copy run); record written outside the tree and copied in (lessons 45). A first run used a fixed 1e-12 tolerance in I3 and failed at 6.1e-12 (double-precision cancellation in the alternating series); the tolerance is now 1e-15 e^{4d|t|}.
+I1 d=1: sum |L_n| <= (4d)^n for n <= 10 (exact integers): PASS; sum |L_10| = 1048576 vs 1048576
+I1 d=2: sum |L_n| <= (4d)^n for n <= 10 (exact integers): PASS; sum |L_10| = 1073741824 vs 1073741824
+I2 Fourier representation of L_n: max error 9.1e-12 PASS
+I3 kernel series sum_n (it)^n/n! L_n(z) = G_d(t, z): max error / (1e-15 e^(4d|t|)) = 0.05 (< 1) PASS
+RUNTIME python 3.13.18 numpy 2.3.5 scipy 1.17.0
+RESULT PASS
+# exit status 0
