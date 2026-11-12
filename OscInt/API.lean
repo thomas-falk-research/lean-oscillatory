@@ -22,12 +22,12 @@ import OscInt.Front.VectorSanity
 import OscInt.Front.CuspSanity
 import OscInt.Front.LatticeCubeRootSanity
 import OscInt.Front.HypercubicSanity
-import OscInt.Front.HypercubicAssembly
 import OscInt.Front.GlobalFinal
 import OscInt.Front.LatticeFinal
 import OscInt.Front.LatticeExplicitFinal
 import OscInt.Front.VectorFinal
 import OscInt.Front.LatticeCubeRootFinal
+import OscInt.Front.HypercubicFinal
 
 /-!
 # OscInt public API

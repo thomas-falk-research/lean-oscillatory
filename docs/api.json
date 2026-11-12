@@ -1405,7 +1405,7 @@
   {
    "label": "TdF",
    "name": "OscInt.Statements.HypercubicKernelFactorStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.hypercubicKernelFactor",
    "summary": "The `d`-dimensional hypercubic kernel factorises: `K_d(t, x) = ∏_j I(t, x_j)` for every `d`, every real `t` and `x ∈ ℤ^d`.",
    "file": "OscInt/Statements/Hypercubic.lean",
    "commitment": "0765daa7d9602edf9d0c5fecf31dfe6b94a9e6d32e4729f5e82f7893b005139c",
@@ -1423,13 +1423,13 @@
     "T6F",
     "T0E′"
    ],
-   "snippet": "example : HypercubicKernelFactorStatement → hypercubicKernel 2 3 ![1, -2] = latticeKernel1 3 1 * latticeKernel1 3 (-2) := OscInt.API.HypercubicSanity.hypercubicFactor_two",
+   "snippet": "example : HypercubicKernelFactorStatement := OscInt.API.hypercubicKernelFactor",
    "status": "see docs/STATUS.md (row TdF)"
   },
   {
    "label": "TdE′",
    "name": "OscInt.Statements.HypercubicCubeRootStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.hypercubicCubeRoot",
    "summary": "Dispersive decay of the free lattice Schrödinger group on `ℤ^d` with an explicit constant: `|K_d(t, x)| ≤ (8(1 + √7)/3)^d t^{−d/3}` for every `d`, every `t > 0` and `x ∈ ℤ^d`.",
    "file": "OscInt/Statements/Hypercubic.lean",
    "commitment": "49c21c2863204f6f9bcdc05bfa145817081a923e6f7983485eab0b3d21fb2615",
@@ -1448,7 +1448,7 @@
     "T0E′",
     "T6E′"
    ],
-   "snippet": "example : HypercubicCubeRootStatement → ‖hypercubicKernel 3 8 ![1, 0, -3]‖ ≤ (8 * (1 + Real.sqrt 7) / 3) ^ 3 / 8 := OscInt.API.HypercubicSanity.hypercubicCubeRoot_three",
+   "snippet": "example : HypercubicCubeRootStatement := OscInt.API.hypercubicCubeRoot",
    "status": "see docs/STATUS.md (row TdE′)"
   }
  ]

@@ -33,3 +33,9 @@ box shape for `Measure.restrict_pi_pi`, the σ-finite instances, `d = 0`) checke
   integrability hypothesis); kept (harmless, the blueprint is not changed).
 - **NIT, done:** the assembly's names (`Finset.prod_le_prod₀`, `Finset.card_univ`, `Fintype.card_fin`, `mul_pow`,
   `Finset.mul_sum`, `Finset.sum_add_distrib`, `Finset.sum_mul`) are now `#check`ed in `MathlibNames.lean`.
+
+## The part as proved (2026-11-12)
+P-fubini (`OscInt/Front/HypercubicFubini.lean`, lead, after the route referee was answered at 85d1748): `rw` with
+`hypercubeBox`, `MeasureTheory.volume_pi`, `Measure.restrict_pi_pi`, `integral_fintype_prod_eq_prod`, then each factor
+by `intervalIntegral.integral_of_le` and `integral_Icc_eq_integral_Ioc`, exactly as routed. Final theorems:
+`OscInt/Front/HypercubicFinal.lean`.

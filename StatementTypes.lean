@@ -79,3 +79,5 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
 #assert_type_is OscInt.API.globalNondegVec OscInt.Statements.GlobalNondegVecStatement
 #assert_type_is OscInt.API.latticeKernel1CubeRoot OscInt.Statements.LatticeKernel1CubeRootStatement
 #assert_type_is OscInt.API.latticeLaplacianCubeRoot OscInt.Statements.LatticeLaplacianCubeRootStatement
+#assert_type_is OscInt.API.hypercubicKernelFactor OscInt.Statements.HypercubicKernelFactorStatement
+#assert_type_is OscInt.API.hypercubicCubeRoot OscInt.Statements.HypercubicCubeRootStatement
