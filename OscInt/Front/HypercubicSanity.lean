@@ -22,6 +22,13 @@ Data:
   (`(1/8)^{−1/3} = 2`; a threshold on `t` added is detected), and at `d = 3`, `t = (31/20)³`, just above the usefulness
   threshold, where the conclusion is below the trivial bound `(2π)³` (`hc_thr_nontrivial`).
 * Bite: at `t = 0` the bound of TdE′ is false for `d = 1` (`0 < t` is needed).
+
+Added after the blind pre-proof reviews (`review/2026-11-12-HC-pre-proof-answers.md`; statements unchanged):
+* TdE′ at `d = 2`, `t = 8` (`8^{−2/3} = 1/4`): a datum with `3 ∤ d`, so a rate with natural-number division
+  `t^{−⌊d/3⌋}` or a constant copied from `d = 3` is rejected semantically (reviews A and B).
+* TdE′ at `d = 1`, `t = (31/20)³`, in the non-trivial regime, and at `d = 0` through the statement constant.
+* What this layer cannot see: mutations of `hypercubicKernel`'s phase (sign of `I`, `cos ↦ sin`, a time scale); they make
+  TdF false and are caught by its proof, not here (review B, finding 1).
 -/
 
 namespace OscInt.API.HypercubicSanity
@@ -51,8 +58,8 @@ theorem hypercubicKernel_dim_zero (t : ℝ) (x : Fin 0 → ℤ) : hypercubicKern
   rw [this, hypercubicKernel_zero_zero]
   simp
 
-/-- **TdF through the statement constant** at `d = 2`, `t = 3`, `x = (1, −2)`. Plants detected: a coordinate used
-twice, a changed time in a factor. -/
+/-- **TdF through the statement constant** at `d = 2`, `t = 3`, `x = (1, −2)`: distinct coordinates (a plant that
+uses one coordinate twice was not run; a changed time in a factor is not detected semantically, plant record). -/
 theorem hypercubicFactor_two (h : HypercubicKernelFactorStatement) :
     hypercubicKernel 2 3 ![1, -2] = latticeKernel1 3 1 * latticeKernel1 3 (-2) := by
   simpa [Fin.prod_univ_two] using h 2 3 ![1, -2]
@@ -73,8 +80,8 @@ theorem hypercubicCubeRoot_three (h : HypercubicCubeRootStatement) :
   rw [h8] at this
   linarith
 
-/-- **TdE′ through the statement constant** at `d = 1`, `t = 1/8`: `(1/8)^{−1/3} = 2`. Plant detected: a threshold on
-`t` added. -/
+/-- **TdE′ through the statement constant** at `d = 1`, `t = 1/8`: `(1/8)^{−1/3} = 2`. Its conclusion also follows from
+the trivial bound (review B), so it is not a fidelity test; the threshold plants run against `hypercubicCubeRoot_thr`. -/
 theorem hypercubicCubeRoot_eighth (h : HypercubicCubeRootStatement) :
     ‖hypercubicKernel 1 (1 / 8) ![2]‖ ≤ 8 * (1 + Real.sqrt 7) / 3 * 2 := by
   have := h 1 (1 / 8) ![2] (by norm_num)
@@ -102,5 +109,25 @@ theorem hypercubicCubeRoot_false_at_zero :
   rw [hypercubicKernel_zero_zero, Real.zero_rpow (by norm_num), mul_zero, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (by positivity)]
   exact not_le.mpr (by positivity)
+
+/-- **TdE′ through the statement constant** at `d = 2`, `t = 8`: `8^{−2/3} = 1/4`. Plants detected semantically: the
+rate with natural-number division (`t^{−⌊2/3⌋} = 1`), a constant copied from `d = 3` (`C*³/4 > C*²/4`). -/
+theorem hypercubicCubeRoot_two (h : HypercubicCubeRootStatement) :
+    ‖hypercubicKernel 2 8 ![1, -2]‖ ≤ (8 * (1 + Real.sqrt 7) / 3) ^ 2 / 4 := by
+  have := h 2 8 ![1, -2] (by norm_num)
+  rw [show (-((2 : ℕ) : ℝ) / 3) = -(2 : ℝ) / 3 by norm_num, eight_rpow_neg_two_thirds] at this
+  linarith
+
+/-- **TdE′ through the statement constant** at `d = 1`, `t = (31/20)³` (non-trivial regime: `C* · 20/31 < 2π`). -/
+theorem hypercubicCubeRoot_one_thr (h : HypercubicCubeRootStatement) :
+    ‖hypercubicKernel 1 (29791 / 8000) ![1]‖ ≤ 8 * (1 + Real.sqrt 7) / 3 * (20 / 31) := by
+  have := h 1 (29791 / 8000) ![1] (by norm_num)
+  rw [show (-((1 : ℕ) : ℝ) / 3) = -(1 : ℝ) / 3 by norm_num, thr_rpow.1, pow_one] at this
+  exact this
+
+/-- **TdE′ through the statement constant** at `d = 0`: `‖K_0‖ ≤ 1`. -/
+theorem hypercubicCubeRoot_zero (h : HypercubicCubeRootStatement) (t : ℝ) (ht : 0 < t) :
+    ‖hypercubicKernel 0 t ![]‖ ≤ 1 := by
+  simpa using h 0 t ![] ht
 
 end OscInt.API.HypercubicSanity

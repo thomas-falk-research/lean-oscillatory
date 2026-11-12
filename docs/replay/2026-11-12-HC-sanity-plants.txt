@@ -44,3 +44,25 @@ plant-TdF-tpos: rejected (want rejected)
 # TdF-tpos (0 < t added): INSTANCE: the datum t = -2 violates it.
 # NOT DETECTED by this layer (rests on the reviews and the proof): a faster rate (as T0E'), and changes that keep d = 1, 2, 3
 #   instances true.
+#
+# Second run, 2026-11-12T12:20:50Z, after the blind pre-proof reviews (review/2026-11-12-HC-pre-proof-answers.md), before any
+# Lean proof of an HC statement, on top of git HEAD 80a8f50e4b49eed47d145c2e1ccbcb5f9cdda242, sanity file SHA-256 9331853647dcd6375f9cb6aaee054a116e449dd3be8b475699c3679f79d0cfad
+# (uncommitted at run time; committed in the next commit). Generator docstring corrected (it named the LE2 files).
+ok-TdE-rate-natdiv: accepted (want accepted)
+plant-TdE-rate-natdiv: rejected (want rejected)
+    first error: plant-TdE-rate-natdiv.lean:14:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+ok-TdE-const-copied-d3: accepted (want accepted)
+plant-TdE-const-copied-d3: rejected (want rejected)
+    first error: plant-TdE-const-copied-d3.lean:15:2: error: linarith failed to find a contradiction
+# Evidence, second run:
+# TdE-rate-natdiv (t^(-d/3) -> t^(-floor(d/3))), datum d = 2, t = 8: SEMANTIC: the planted instance gives C*^2 8^0 = C*^2 > C*^2/4.
+# TdE-const-copied-d3 (C*^d -> C*^3), datum d = 2: SEMANTIC: C*^3/4 > C*^2/4 since C* > 1.
+#
+# Corrections after the blind pre-proof reviews:
+# - TdF-time (first run) is NOT DETECTED semantically: its rejection is script-only (no hypothesis violated, no witness).
+# - Mutations of the kernel definition hypercubicKernel (sign of I, cos -> sin, a time scale t -> 2t, other boxes) are not
+#   seen by this layer (review B compiled such copies against the sanity theorems): NOT DETECTED here. Those that change
+#   the kernel make TdF false and are caught by its proof; box changes that agree almost everywhere for integer x are
+#   harmless.
+# - The first run's docstrings claimed "a coordinate used twice" and the threshold at t = 1/8 as detected; neither plant
+#   was run there. The docstrings are corrected in the sanity file.

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Generate and compile planted copies of the batch-HC statements against copies of their sanity theorems.
 
-As docs/replay/plants/2026-11-08-LE/plants_le.py.txt: for each plant, copy the named def (from
-OscInt/Statements/LatticeCubeRoot.lean) and sanity theorems (from OscInt/Front/LatticeCubeRootSanity.lean) under the
+As the batch-LE2 generator: for each plant, copy the named def (from
+OscInt/Statements/Hypercubic.lean) and sanity theorems (from OscInt/Front/HypercubicSanity.lean) under the
 prefix P_, apply exactly one textual mutation to the copied def, compile with `lake env lean -DautoImplicit=false`.
 The unplanted copy must compile. Witness files (lessons 44): for plants that strengthen the statement, a file proving
 the negation of the planted statement from the unconditional bites of the sanity file; it must compile.
-Usage: plants_le2.py REPO OUTDIR
+Usage: plants_hc.py REPO OUTDIR [plant ids]
 """
 import os, re, subprocess, sys
 
@@ -51,6 +51,11 @@ PLANTS = [
     ('TdF-tpos', TF, ['hypercubicFactor_neg'],
      ('∀ (d : ℕ) (t : ℝ) (x : Fin d → ℤ), hypercubicKernel', '∀ (d : ℕ) (t : ℝ) (x : Fin d → ℤ), 0 < t → hypercubicKernel'),
      'rejected', None),
+    # second run, after the blind pre-proof reviews (A finding 1, B finding 2)
+    ('TdE-rate-natdiv', TE, ['hypercubicCubeRoot_two'],
+     ('t ^ (-(d : ℝ) / 3)', 't ^ (-((d / 3 : ℕ) : ℝ))'), 'rejected', None),
+    ('TdE-const-copied-d3', TE, ['hypercubicCubeRoot_two'],
+     ('(8 * (1 + Real.sqrt 7) / 3) ^ d', '(8 * (1 + Real.sqrt 7) / 3) ^ 3'), 'rejected', None),
 ]
 
 HEADER = """import OscInt.Front.HypercubicSanity

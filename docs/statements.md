@@ -839,3 +839,9 @@ Modelling choices and what is omitted.
 5. Normalisation (2π)^{−d}, time scale and phases omitted, as T6. A user's e^{itH} with H = Σ_j 2 cos k_j has kernel
    (2π)^{−d} K_d(2t, x).
 6. AI-use disclosure: TdE′ inherits T0E′'s (`docs/prior_art.md`); the batch itself was proposed by the lead.
+
+Clarifications after the pre-proof reviews (2026-11-12; answers `review/2026-11-12-HC-pre-proof-answers.md`; TdF, TdE′
+FAITHFUL and TRUE ×2, no BLOCKER or MAJOR; the stamp `stamps/20261112T120616Z-c56beb57ff8c` stands):
+1. "Beats the trivial bound in every dimension" means every d ≥ 1; at d = 0 both sides are 1.
+2. Sanity data with 3 ∤ d (d = 2), in the non-trivial regime (d = 1, 3) and at d = 0 were added; mutations of the
+   kernel definition are not seen by the sanity layer and are caught by the TdF proof (plant record).
