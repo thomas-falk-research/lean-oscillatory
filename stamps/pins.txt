@@ -77,3 +77,8 @@ challenge:comparator-LE2.json stamps/20261110T234417Z-0532b1cf8880
 OscInt.Statements.HypercubicKernelFactorStatement stamps/20261112T120616Z-c56beb57ff8c
 OscInt.Statements.HypercubicCubeRootStatement stamps/20261112T120616Z-c56beb57ff8c
 challenge:comparator-HC.json stamps/20261112T120616Z-c56beb57ff8c
+OscInt.Statements.LatticeSchrodingerExistsStatement stamps/20261112T215742Z-d18e0780abdb
+OscInt.Statements.LatticeSchrodingerKernelStatement stamps/20261112T215742Z-d18e0780abdb
+OscInt.Statements.LatticeSchrodingerDispersiveStatement stamps/20261112T215742Z-d18e0780abdb
+OscInt.Statements.LatticeSchrodingerDecayStatement stamps/20261112T215742Z-d18e0780abdb
+challenge:comparator-LS.json stamps/20261112T215742Z-d18e0780abdb

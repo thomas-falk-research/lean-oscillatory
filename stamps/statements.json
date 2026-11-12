@@ -653,21 +653,66 @@
       "commitment": "49c21c2863204f6f9bcdc05bfa145817081a923e6f7983485eab0b3d21fb2615",
       "stamp": "stamps/20261112T120616Z-c56beb57ff8c",
       "stamp_commit": "c56beb57ff8c0d42c5b661220d17ff3c8e23032b"
+    },
+    {
+      "name": "OscInt.Statements.LatticeSchrodingerExistsStatement",
+      "label": "LS-E",
+      "summary": "Every datum `f ∈ ℓ²(ℤ^d)` has a solution of `i u′ + Δu = 0` with `u(0) = f`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/LatticeGroup.lean",
+      "file_sha256": "52b68ca110e1ba886e8a56ec57d697d64a418c587a89e38888d2728f0efb03a1",
+      "commitment": "51cf04edc5883d7c778394fbe09e8f393930ad5d1d1fd843eeb67e9f8350cae7",
+      "stamp": "stamps/20261112T215742Z-d18e0780abdb",
+      "stamp_commit": "d18e0780abdba5a93ed86de2cd92b398aa23b3f3"
+    },
+    {
+      "name": "OscInt.Statements.LatticeSchrodingerKernelStatement",
+      "label": "LS-K",
+      "summary": "Every solution is the kernel convolution of its datum: for every real `t` and site `x`, the series `Σ_y G_d(t, x − y) f(y)` converges absolutely and equals `u(t, x)`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/LatticeGroup.lean",
+      "file_sha256": "52b68ca110e1ba886e8a56ec57d697d64a418c587a89e38888d2728f0efb03a1",
+      "commitment": "50d7897f580873dbcb4d0f12300bdbf599aec479b485825991431f5bb33b620a",
+      "stamp": "stamps/20261112T215742Z-d18e0780abdb",
+      "stamp_commit": "d18e0780abdba5a93ed86de2cd92b398aa23b3f3"
+    },
+    {
+      "name": "OscInt.Statements.LatticeSchrodingerDispersiveStatement",
+      "label": "LS-D",
+      "summary": "Dispersive estimate with an explicit constant: for a solution with `ℓ¹` datum and `t ≠ 0`, `|u(t, x)| ≤ min{1, (C*/(2π))^d (2|t|)^{−d/3}} ‖f‖_1`, `C* = 8(1 + √7)/3`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/LatticeGroup.lean",
+      "file_sha256": "52b68ca110e1ba886e8a56ec57d697d64a418c587a89e38888d2728f0efb03a1",
+      "commitment": "c7b1f69b1f2313318626f3e728eb6554636424a47f551286041ba8eb297b16ef",
+      "stamp": "stamps/20261112T215742Z-d18e0780abdb",
+      "stamp_commit": "d18e0780abdba5a93ed86de2cd92b398aa23b3f3"
+    },
+    {
+      "name": "OscInt.Statements.LatticeSchrodingerDecayStatement",
+      "label": "LS-D′",
+      "summary": "Decay at every time: for a solution with `ℓ¹` datum and every real `t`, `|u(t, x)| ≤ (1 + τ)^{d/3} (1 + |t|)^{−d/3} ‖f‖_1`, `τ = (C*/(2π))³/2`, `C* = 8(1 + √7)/3`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/LatticeGroup.lean",
+      "file_sha256": "52b68ca110e1ba886e8a56ec57d697d64a418c587a89e38888d2728f0efb03a1",
+      "commitment": "e2cc325b9ee301afff29a4cc8800bb574c5af34f39d1a7966fcc7d31670a7532",
+      "stamp": "stamps/20261112T215742Z-d18e0780abdb",
+      "stamp_commit": "d18e0780abdba5a93ed86de2cd92b398aa23b3f3"
     }
   ],
   "statement_files": [
-    {"file": "OscInt/Statements/Convert.lean", "sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49", "stamp": "stamps/20261112T120616Z-c56beb57ff8c"},
-    {"file": "OscInt/Statements/Cusp.lean", "sha256": "00b8af6ca8da0d9325a455cb65c028b1aa07ae2f270a387a60d1d90e7508431f", "stamp": "stamps/20261112T120616Z-c56beb57ff8c"},
-    {"file": "OscInt/Statements/D4.lean", "sha256": "6965ce63488b6f81ff5c4685b46e252027423d8a6916ac274ea9dea21d4395c9", "stamp": "stamps/20261112T120616Z-c56beb57ff8c"},
-    {"file": "OscInt/Statements/D4Limit.lean", "sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6", "stamp": "stamps/20261112T120616Z-c56beb57ff8c"},
-    {"file": "OscInt/Statements/Family.lean", "sha256": "da21f86bb3a018dd8bd704404fe8fa185f2bc530f08dc39f036210a7b6702188", "stamp": "stamps/20261112T120616Z-c56beb57ff8c"},
-    {"file": "OscInt/Statements/FrontEnd.lean", "sha256": "4851a9543e712d2a3734b37dbf3cfabbc63fabb0a930a22f96eb3e60e8852ee7", "stamp": "stamps/20261112T120616Z-c56beb57ff8c"},
-    {"file": "OscInt/Statements/Global.lean", "sha256": "edaaf9c6925a69da2b5f66eb06432458d6113532ba970a6bd3a25cdd3418b46d", "stamp": "stamps/20261112T120616Z-c56beb57ff8c"},
-    {"file": "OscInt/Statements/Hypercubic.lean", "sha256": "6be879b554d1237c9f74e21544aa0dacd0539cc8a5bc7725f55cf38d3dba6f69", "stamp": "stamps/20261112T120616Z-c56beb57ff8c"},
-    {"file": "OscInt/Statements/LatticeCubeRoot.lean", "sha256": "fa0858fed52d7baaab78cea7c7246038a2a047da0ea9e4db0fedc824724be2d0", "stamp": "stamps/20261112T120616Z-c56beb57ff8c"},
-    {"file": "OscInt/Statements/LatticeExplicit.lean", "sha256": "c201633978fb9e6a4019a0988cf682bcd40aef83cabfb082d4dd60eebd64b921", "stamp": "stamps/20261112T120616Z-c56beb57ff8c"},
-    {"file": "OscInt/Statements/StationaryPhase.lean", "sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf", "stamp": "stamps/20261112T120616Z-c56beb57ff8c"},
-    {"file": "OscInt/Statements/VanDerCorput.lean", "sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44", "stamp": "stamps/20261112T120616Z-c56beb57ff8c"},
-    {"file": "OscInt/Statements/Vector.lean", "sha256": "784ca9a55318b8a9d212b7b37fe21699fb97c4764a5b7f511454a9edf376c2ba", "stamp": "stamps/20261112T120616Z-c56beb57ff8c"}
+    {"file": "OscInt/Statements/Convert.lean", "sha256": "23f5b2dd7694890c205ea609766a4db8b435623bbcc22f237f335ccc2619ff49", "stamp": "stamps/20261112T215742Z-d18e0780abdb"},
+    {"file": "OscInt/Statements/Cusp.lean", "sha256": "00b8af6ca8da0d9325a455cb65c028b1aa07ae2f270a387a60d1d90e7508431f", "stamp": "stamps/20261112T215742Z-d18e0780abdb"},
+    {"file": "OscInt/Statements/D4.lean", "sha256": "6965ce63488b6f81ff5c4685b46e252027423d8a6916ac274ea9dea21d4395c9", "stamp": "stamps/20261112T215742Z-d18e0780abdb"},
+    {"file": "OscInt/Statements/D4Limit.lean", "sha256": "722952f593d5f8920ca1d1960d89635553cd96669edf27777516446051c30cd6", "stamp": "stamps/20261112T215742Z-d18e0780abdb"},
+    {"file": "OscInt/Statements/Family.lean", "sha256": "da21f86bb3a018dd8bd704404fe8fa185f2bc530f08dc39f036210a7b6702188", "stamp": "stamps/20261112T215742Z-d18e0780abdb"},
+    {"file": "OscInt/Statements/FrontEnd.lean", "sha256": "4851a9543e712d2a3734b37dbf3cfabbc63fabb0a930a22f96eb3e60e8852ee7", "stamp": "stamps/20261112T215742Z-d18e0780abdb"},
+    {"file": "OscInt/Statements/Global.lean", "sha256": "edaaf9c6925a69da2b5f66eb06432458d6113532ba970a6bd3a25cdd3418b46d", "stamp": "stamps/20261112T215742Z-d18e0780abdb"},
+    {"file": "OscInt/Statements/Hypercubic.lean", "sha256": "6be879b554d1237c9f74e21544aa0dacd0539cc8a5bc7725f55cf38d3dba6f69", "stamp": "stamps/20261112T215742Z-d18e0780abdb"},
+    {"file": "OscInt/Statements/LatticeCubeRoot.lean", "sha256": "fa0858fed52d7baaab78cea7c7246038a2a047da0ea9e4db0fedc824724be2d0", "stamp": "stamps/20261112T215742Z-d18e0780abdb"},
+    {"file": "OscInt/Statements/LatticeExplicit.lean", "sha256": "c201633978fb9e6a4019a0988cf682bcd40aef83cabfb082d4dd60eebd64b921", "stamp": "stamps/20261112T215742Z-d18e0780abdb"},
+    {"file": "OscInt/Statements/LatticeGroup.lean", "sha256": "52b68ca110e1ba886e8a56ec57d697d64a418c587a89e38888d2728f0efb03a1", "stamp": "stamps/20261112T215742Z-d18e0780abdb"},
+    {"file": "OscInt/Statements/StationaryPhase.lean", "sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf", "stamp": "stamps/20261112T215742Z-d18e0780abdb"},
+    {"file": "OscInt/Statements/VanDerCorput.lean", "sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44", "stamp": "stamps/20261112T215742Z-d18e0780abdb"},
+    {"file": "OscInt/Statements/Vector.lean", "sha256": "784ca9a55318b8a9d212b7b37fe21699fb97c4764a5b7f511454a9edf376c2ba", "stamp": "stamps/20261112T215742Z-d18e0780abdb"}
   ]
 }

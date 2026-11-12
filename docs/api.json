@@ -1450,6 +1450,107 @@
    ],
    "snippet": "example : HypercubicCubeRootStatement := OscInt.API.hypercubicCubeRoot",
    "status": "see docs/STATUS.md (row TdE′)"
+  },
+  {
+   "label": "LS-E",
+   "name": "OscInt.Statements.LatticeSchrodingerExistsStatement",
+   "proved_by": null,
+   "summary": "Every datum `f ∈ ℓ²(ℤ^d)` has a solution of `i u′ + Δu = 0` with `u(0) = f`.",
+   "file": "OscInt/Statements/LatticeGroup.lean",
+   "commitment": "51cf04edc5883d7c778394fbe09e8f393930ad5d1d1fd843eeb67e9f8350cae7",
+   "stamp": "stamps/20261112T215742Z-d18e0780abdb",
+   "lean_statement": "def LatticeSchrodingerExistsStatement : Prop :=\n  ∀ (d : ℕ) (f : LatticeL2 d), ∃ u : ℝ → LatticeL2 d, IsLatticeSchrodingerSolution d f u",
+   "hypotheses": [
+    "d ∈ ℕ",
+    "f ∈ ℓ²(ℤ^d)"
+   ],
+   "conclusion": "there is a strong ℓ² solution u of i u′ + Δu = 0 with u(0) = f (Δ the nearest-neighbour Laplacian)",
+   "rate": "—",
+   "uniform_over": "d, f",
+   "smoothness": "—",
+   "see_also": [
+    "LS-K",
+    "LS-D",
+    "LS-D′",
+    "TdE′"
+   ],
+   "snippet": "example : LatticeSchrodingerExistsStatement → LatticeSchrodingerKernelStatement → ∀ x : Fin 1 → ℤ, schrodingerKernel 1 0 x = if x = 0 then 1 else 0 := fun hE hK x => OscInt.API.LatticeGroupSanity.kernel_zero_time hE hK 1 x",
+   "status": "see docs/STATUS.md (row LS-E)"
+  },
+  {
+   "label": "LS-K",
+   "name": "OscInt.Statements.LatticeSchrodingerKernelStatement",
+   "proved_by": null,
+   "summary": "Every solution is the kernel convolution of its datum: for every real `t` and site `x`, the series `Σ_y G_d(t, x − y) f(y)` converges absolutely and equals `u(t, x)`.",
+   "file": "OscInt/Statements/LatticeGroup.lean",
+   "commitment": "50d7897f580873dbcb4d0f12300bdbf599aec479b485825991431f5bb33b620a",
+   "stamp": "stamps/20261112T215742Z-d18e0780abdb",
+   "lean_statement": "def LatticeSchrodingerKernelStatement : Prop :=\n  ∀ (d : ℕ) (f : LatticeL2 d) (u : ℝ → LatticeL2 d), IsLatticeSchrodingerSolution d f u →\n    ∀ (t : ℝ) (x : Fin d → ℤ),\n      Summable (fun y : Fin d → ℤ => ‖schrodingerKernel d t (x - y) * f y‖) ∧\n        u t x = ∑' y : Fin d → ℤ, schrodingerKernel d t (x - y) * f y",
+   "hypotheses": [
+    "u a strong ℓ² solution of i u′ + Δu = 0 with u(0) = f ∈ ℓ²(ℤ^d)"
+   ],
+   "conclusion": "u(t, x) = Σ_y (2π)^{−d} e^{−2idt} K_d(2t, x − y) f(y), absolutely convergent, for every real t and site x (so the solution is unique)",
+   "rate": "—",
+   "uniform_over": "d, t, x",
+   "smoothness": "—",
+   "see_also": [
+    "LS-E",
+    "LS-D",
+    "TdF",
+    "TdE′"
+   ],
+   "snippet": "example : LatticeSchrodingerExistsStatement → LatticeSchrodingerKernelStatement → ∀ (d : ℕ) (x : Fin d → ℤ), schrodingerKernel d 0 x = if x = 0 then 1 else 0 := OscInt.API.LatticeGroupSanity.kernel_zero_time",
+   "status": "see docs/STATUS.md (row LS-K)"
+  },
+  {
+   "label": "LS-D",
+   "name": "OscInt.Statements.LatticeSchrodingerDispersiveStatement",
+   "proved_by": null,
+   "summary": "Dispersive estimate with an explicit constant: for a solution with `ℓ¹` datum and `t ≠ 0`, `|u(t, x)| ≤ min{1, (C*/(2π))^d (2|t|)^{−d/3}} ‖f‖_1`, `C* = 8(1 + √7)/3`.",
+   "file": "OscInt/Statements/LatticeGroup.lean",
+   "commitment": "c7b1f69b1f2313318626f3e728eb6554636424a47f551286041ba8eb297b16ef",
+   "stamp": "stamps/20261112T215742Z-d18e0780abdb",
+   "lean_statement": "def LatticeSchrodingerDispersiveStatement : Prop :=\n  ∀ (d : ℕ) (f : LatticeL2 d) (u : ℝ → LatticeL2 d), IsLatticeSchrodingerSolution d f u →\n    Summable (fun y : Fin d → ℤ => ‖f y‖) →\n    ∀ (t : ℝ) (x : Fin d → ℤ), t ≠ 0 →\n      ‖u t x‖ ≤ min 1 ((8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi)) ^ d * (2 * |t|) ^ (-(d : ℝ) / 3)) *\n        ∑' y : Fin d → ℤ, ‖f y‖",
+   "hypotheses": [
+    "u a strong ℓ² solution with datum f",
+    "Σ_y |f(y)| < ∞",
+    "t ≠ 0"
+   ],
+   "conclusion": "|u(t, x)| ≤ min{1, (C*/(2π))^d (2|t|)^{−d/3}} ‖f‖_1, C* = 8(1+√7)/3 (the decaying part beats 1 for |t| > 1.853)",
+   "rate": "|t|^{-d/3} (explicit constant)",
+   "uniform_over": "x ∈ ℤ^d, t ≠ 0, ℓ¹ data",
+   "smoothness": "—",
+   "see_also": [
+    "LS-K",
+    "LS-D′",
+    "TdE′"
+   ],
+   "snippet": "example : LatticeSchrodingerExistsStatement → LatticeSchrodingerDispersiveStatement → ∃ u : ℝ → LatticeL2 1, IsLatticeSchrodingerSolution 1 (OscInt.API.LatticeGroupSanity.delta0 1) u ∧ ‖u 4 0‖ ≤ 8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi) / 2 := OscInt.API.LatticeGroupSanity.dispersive_one",
+   "status": "see docs/STATUS.md (row LS-D)"
+  },
+  {
+   "label": "LS-D′",
+   "name": "OscInt.Statements.LatticeSchrodingerDecayStatement",
+   "proved_by": null,
+   "summary": "Decay at every time: for a solution with `ℓ¹` datum and every real `t`, `|u(t, x)| ≤ (1 + τ)^{d/3} (1 + |t|)^{−d/3} ‖f‖_1`, `τ = (C*/(2π))³/2`, `C* = 8(1 + √7)/3`.",
+   "file": "OscInt/Statements/LatticeGroup.lean",
+   "commitment": "e2cc325b9ee301afff29a4cc8800bb574c5af34f39d1a7966fcc7d31670a7532",
+   "stamp": "stamps/20261112T215742Z-d18e0780abdb",
+   "lean_statement": "def LatticeSchrodingerDecayStatement : Prop :=\n  ∀ (d : ℕ) (f : LatticeL2 d) (u : ℝ → LatticeL2 d), IsLatticeSchrodingerSolution d f u →\n    Summable (fun y : Fin d → ℤ => ‖f y‖) →\n    ∀ (t : ℝ) (x : Fin d → ℤ),\n      ‖u t x‖ ≤ (1 + (8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi)) ^ 3 / 2) ^ ((d : ℝ) / 3) *\n        (1 + |t|) ^ (-(d : ℝ) / 3) * ∑' y : Fin d → ℤ, ‖f y‖",
+   "hypotheses": [
+    "u a strong ℓ² solution with datum f",
+    "Σ_y |f(y)| < ∞"
+   ],
+   "conclusion": "|u(t, x)| ≤ (1 + τ)^{d/3} (1 + |t|)^{−d/3} ‖f‖_1 for every real t, τ = (C*/(2π))³/2 ≈ 1.852",
+   "rate": "(1+|t|)^{-d/3} (explicit constant)",
+   "uniform_over": "x ∈ ℤ^d, t ∈ ℝ, ℓ¹ data",
+   "smoothness": "—",
+   "see_also": [
+    "LS-D",
+    "LS-K"
+   ],
+   "snippet": "example : LatticeSchrodingerExistsStatement → LatticeSchrodingerDecayStatement → ∃ u : ℝ → LatticeL2 1, IsLatticeSchrodingerSolution 1 (OscInt.API.LatticeGroupSanity.delta0 1) u ∧ ‖u 7 0‖ ≤ (1 + (8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi)) ^ 3 / 2) ^ ((1 : ℝ) / 3) / 2 := OscInt.API.LatticeGroupSanity.decay_seven",
+   "status": "see docs/STATUS.md (row LS-D′)"
   }
  ]
 }

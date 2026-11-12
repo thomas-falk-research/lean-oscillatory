@@ -243,4 +243,20 @@ example : HypercubicKernelFactorStatement := OscInt.API.hypercubicKernelFactor
 
 example : HypercubicCubeRootStatement := OscInt.API.hypercubicCubeRoot
 
+/-! ### LS-E: Every datum `f ∈ ℓ²(ℤ^d)` has a solution of `i u′ + Δu = 0` with `u(0) = f`. -/
+
+example : LatticeSchrodingerExistsStatement → LatticeSchrodingerKernelStatement → ∀ x : Fin 1 → ℤ, schrodingerKernel 1 0 x = if x = 0 then 1 else 0 := fun hE hK x => OscInt.API.LatticeGroupSanity.kernel_zero_time hE hK 1 x
+
+/-! ### LS-K: Every solution is the kernel convolution of its datum: for every real `t` and site `x`, the series `Σ_y G_d(t, x − y) f(y)` converges absolutely and equals `u(t, x)`. -/
+
+example : LatticeSchrodingerExistsStatement → LatticeSchrodingerKernelStatement → ∀ (d : ℕ) (x : Fin d → ℤ), schrodingerKernel d 0 x = if x = 0 then 1 else 0 := OscInt.API.LatticeGroupSanity.kernel_zero_time
+
+/-! ### LS-D: Dispersive estimate with an explicit constant: for a solution with `ℓ¹` datum and `t ≠ 0`, `|u(t, x)| ≤ min{1, (C*/(2π))^d (2|t|)^{−d/3}} ‖f‖_1`, `C* = 8(1 + √7)/3`. -/
+
+example : LatticeSchrodingerExistsStatement → LatticeSchrodingerDispersiveStatement → ∃ u : ℝ → LatticeL2 1, IsLatticeSchrodingerSolution 1 (OscInt.API.LatticeGroupSanity.delta0 1) u ∧ ‖u 4 0‖ ≤ 8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi) / 2 := OscInt.API.LatticeGroupSanity.dispersive_one
+
+/-! ### LS-D′: Decay at every time: for a solution with `ℓ¹` datum and every real `t`, `|u(t, x)| ≤ (1 + τ)^{d/3} (1 + |t|)^{−d/3} ‖f‖_1`, `τ = (C*/(2π))³/2`, `C* = 8(1 + √7)/3`. -/
+
+example : LatticeSchrodingerExistsStatement → LatticeSchrodingerDecayStatement → ∃ u : ℝ → LatticeL2 1, IsLatticeSchrodingerSolution 1 (OscInt.API.LatticeGroupSanity.delta0 1) u ∧ ‖u 7 0‖ ≤ (1 + (8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi)) ^ 3 / 2) ^ ((1 : ℝ) / 3) / 2 := OscInt.API.LatticeGroupSanity.decay_seven
+
 end OscIntSnippets
