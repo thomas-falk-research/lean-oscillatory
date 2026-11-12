@@ -24,6 +24,9 @@ For a reader who saw nothing. Read `docs/lessons.md` first (48 entries); every r
 - **DNLS scoping (bet 2):** `docs/design/dnls-scoping.md`, corrected after the adversarial review: decay of small
   solutions whenever (d/3)(2p − 1) > 1, in every dimension. Next step is a route document for ℓ² well-posedness and the
   kernel-to-group identification, with every Mathlib name checked (the go/no-go).
+- **External R2 packet (discrete Klein–Gordon kernel):** TRUE by the lead's checks and a fresh-context referee, not
+  machine-checked; a ROADMAP candidate awaiting the owner (`review/2026-11-12-R2-KG-answers.md`). If promoted, the LE2
+  scalar layer generalises mechanically; the new Lean work is the KG level-set geometry, the pieces and m → 0.
 - **Lessons:** 48 (provenance facts are captured when they happen).
 - **No CI ran:** the branch has no pull request; the local replays are the evidence.
 
