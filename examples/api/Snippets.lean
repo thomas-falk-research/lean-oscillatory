@@ -235,4 +235,12 @@ example : LatticeKernel1CubeRootStatement := OscInt.API.latticeKernel1CubeRoot
 
 example : LatticeLaplacianCubeRootStatement := OscInt.API.latticeLaplacianCubeRoot
 
+/-! ### TdF: The `d`-dimensional hypercubic kernel factorises: `K_d(t, x) = ∏_j I(t, x_j)` for every `d`, every real `t` and `x ∈ ℤ^d`. -/
+
+example : HypercubicKernelFactorStatement → hypercubicKernel 2 3 ![1, -2] = latticeKernel1 3 1 * latticeKernel1 3 (-2) := OscInt.API.HypercubicSanity.hypercubicFactor_two
+
+/-! ### TdE′: Dispersive decay of the free lattice Schrödinger group on `ℤ^d` with an explicit constant: `|K_d(t, x)| ≤ (8(1 + √7)/3)^d t^{−d/3}` for every `d`, every `t > 0` and `x ∈ ℤ^d`. -/
+
+example : HypercubicCubeRootStatement → ‖hypercubicKernel 3 8 ![1, 0, -3]‖ ≤ (8 * (1 + Real.sqrt 7) / 3) ^ 3 / 8 := OscInt.API.HypercubicSanity.hypercubicCubeRoot_three
+
 end OscIntSnippets

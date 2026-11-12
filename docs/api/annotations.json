@@ -903,6 +903,39 @@
    ],
    "snippet_kind": "type",
    "snippet": "example : LatticeLaplacianCubeRootStatement := OscInt.API.latticeLaplacianCubeRoot"
+  },
+  "TdF": {
+   "hypotheses": [
+    "none (every d ∈ ℕ, real t, x ∈ ℤ^d)"
+   ],
+   "conclusion": "∫_{[−π,π]^d} e^{i(t Σ cos k_j + x·k)} dk = ∏_j ∫_{−π}^{π} e^{i(t cos k + x_j k)} dk",
+   "rate": "—",
+   "uniform_over": "d, t, x",
+   "smoothness": "—",
+   "see_also": [
+    "TdE′",
+    "T6F",
+    "T0E′"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example : HypercubicKernelFactorStatement → hypercubicKernel 2 3 ![1, -2] = latticeKernel1 3 1 * latticeKernel1 3 (-2) := OscInt.API.HypercubicSanity.hypercubicFactor_two"
+  },
+  "TdE′": {
+   "hypotheses": [
+    "t > 0",
+    "d ∈ ℕ, x ∈ ℤ^d"
+   ],
+   "conclusion": "|K_d(t, x)| ≤ (8(1+√7)/3)^d t^{-d/3} (the hypercubic lattice kernel in every dimension; beats the trivial (2π)^d for t > 3.70)",
+   "rate": "t^{-d/3} (explicit constant)",
+   "uniform_over": "x ∈ ℤ^d, t > 0",
+   "smoothness": "—",
+   "see_also": [
+    "TdF",
+    "T0E′",
+    "T6E′"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example : HypercubicCubeRootStatement → ‖hypercubicKernel 3 8 ![1, 0, -3]‖ ≤ (8 * (1 + Real.sqrt 7) / 3) ^ 3 / 8 := OscInt.API.HypercubicSanity.hypercubicCubeRoot_three"
   }
  },
  "helpers": [

@@ -1401,6 +1401,55 @@
    ],
    "snippet": "example : LatticeLaplacianCubeRootStatement := OscInt.API.latticeLaplacianCubeRoot",
    "status": "see docs/STATUS.md (row T6E′)"
+  },
+  {
+   "label": "TdF",
+   "name": "OscInt.Statements.HypercubicKernelFactorStatement",
+   "proved_by": null,
+   "summary": "The `d`-dimensional hypercubic kernel factorises: `K_d(t, x) = ∏_j I(t, x_j)` for every `d`, every real `t` and `x ∈ ℤ^d`.",
+   "file": "OscInt/Statements/Hypercubic.lean",
+   "commitment": "0765daa7d9602edf9d0c5fecf31dfe6b94a9e6d32e4729f5e82f7893b005139c",
+   "stamp": "stamps/20261112T120616Z-c56beb57ff8c",
+   "lean_statement": "def HypercubicKernelFactorStatement : Prop :=\n  ∀ (d : ℕ) (t : ℝ) (x : Fin d → ℤ), hypercubicKernel d t x = ∏ j, latticeKernel1 t (x j : ℝ)",
+   "hypotheses": [
+    "none (every d ∈ ℕ, real t, x ∈ ℤ^d)"
+   ],
+   "conclusion": "∫_{[−π,π]^d} e^{i(t Σ cos k_j + x·k)} dk = ∏_j ∫_{−π}^{π} e^{i(t cos k + x_j k)} dk",
+   "rate": "—",
+   "uniform_over": "d, t, x",
+   "smoothness": "—",
+   "see_also": [
+    "TdE′",
+    "T6F",
+    "T0E′"
+   ],
+   "snippet": "example : HypercubicKernelFactorStatement → hypercubicKernel 2 3 ![1, -2] = latticeKernel1 3 1 * latticeKernel1 3 (-2) := OscInt.API.HypercubicSanity.hypercubicFactor_two",
+   "status": "see docs/STATUS.md (row TdF)"
+  },
+  {
+   "label": "TdE′",
+   "name": "OscInt.Statements.HypercubicCubeRootStatement",
+   "proved_by": null,
+   "summary": "Dispersive decay of the free lattice Schrödinger group on `ℤ^d` with an explicit constant: `|K_d(t, x)| ≤ (8(1 + √7)/3)^d t^{−d/3}` for every `d`, every `t > 0` and `x ∈ ℤ^d`.",
+   "file": "OscInt/Statements/Hypercubic.lean",
+   "commitment": "49c21c2863204f6f9bcdc05bfa145817081a923e6f7983485eab0b3d21fb2615",
+   "stamp": "stamps/20261112T120616Z-c56beb57ff8c",
+   "lean_statement": "def HypercubicCubeRootStatement : Prop :=\n  ∀ (d : ℕ) (t : ℝ) (x : Fin d → ℤ), 0 < t →\n    ‖hypercubicKernel d t x‖ ≤ (8 * (1 + Real.sqrt 7) / 3) ^ d * t ^ (-(d : ℝ) / 3)",
+   "hypotheses": [
+    "t > 0",
+    "d ∈ ℕ, x ∈ ℤ^d"
+   ],
+   "conclusion": "|K_d(t, x)| ≤ (8(1+√7)/3)^d t^{-d/3} (the hypercubic lattice kernel in every dimension; beats the trivial (2π)^d for t > 3.70)",
+   "rate": "t^{-d/3} (explicit constant)",
+   "uniform_over": "x ∈ ℤ^d, t > 0",
+   "smoothness": "—",
+   "see_also": [
+    "TdF",
+    "T0E′",
+    "T6E′"
+   ],
+   "snippet": "example : HypercubicCubeRootStatement → ‖hypercubicKernel 3 8 ![1, 0, -3]‖ ≤ (8 * (1 + Real.sqrt 7) / 3) ^ 3 / 8 := OscInt.API.HypercubicSanity.hypercubicCubeRoot_three",
+   "status": "see docs/STATUS.md (row TdE′)"
   }
  ]
 }

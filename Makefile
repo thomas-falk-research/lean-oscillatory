@@ -91,6 +91,8 @@ entry-point:
 	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerLatticeExplicit.lean
 	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerVector.lean
 	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerPhotonLattice.lean
+	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerColdPlasma.lean
+	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerPhaseMixing.lean
 
 # The API index docs/api.json and examples/api/Snippets.lean, generated from stamps/statements.json and
 # docs/api/annotations.json (`tools/gen_api.py`); `api-check` fails on drift (and is part of `quick`).

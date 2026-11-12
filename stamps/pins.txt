@@ -74,3 +74,6 @@ challenge:comparator-A3.json stamps/20261109T201548Z-fcb46d9a6239
 OscInt.Statements.LatticeKernel1CubeRootStatement stamps/20261110T234417Z-0532b1cf8880
 OscInt.Statements.LatticeLaplacianCubeRootStatement stamps/20261110T234417Z-0532b1cf8880
 challenge:comparator-LE2.json stamps/20261110T234417Z-0532b1cf8880
+OscInt.Statements.HypercubicKernelFactorStatement stamps/20261112T120616Z-c56beb57ff8c
+OscInt.Statements.HypercubicCubeRootStatement stamps/20261112T120616Z-c56beb57ff8c
+challenge:comparator-HC.json stamps/20261112T120616Z-c56beb57ff8c
