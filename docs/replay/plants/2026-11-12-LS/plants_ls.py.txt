@@ -60,6 +60,20 @@ PLANTS = [
       '  exact decay_false_without_one u hu (h 1 _ u hu (delta0_summable 1) 0 0)')),
     ('Dp-rate', TDp, ['decay_seven'],
      ('(1 + |t|) ^ (-(d : ℝ) / 3)', '(1 + |t|) ^ (-(d : ℝ) / 2)'), 'rejected', None),
+    # second run, after the blind pre-proof reviews (B finding 1)
+    ('K-plus', TK, ['kernel_zero_time_shift'],
+     ("u t x = ∑' y : Fin d → ℤ, schrodingerKernel d t (x - y) * f y",
+      "u t x = ∑' y : Fin d → ℤ, schrodingerKernel d t (x + y) * f y"), None,
+     ('LatticeSchrodingerExistsStatement → ¬ P_LatticeSchrodingerKernelStatement',
+      'by\n  intro hE h\n  obtain ⟨u, hu⟩ := hE 1 (delta0 1)\n  obtain ⟨v, hv⟩ := hE 1 (deltaAt 1 (latticeUnit 1 0))\n'
+      '  have h0 := (h 1 _ u hu 0 (latticeUnit 1 0 + latticeUnit 1 0)).2\n'
+      '  have h1 := (h 1 _ v hv 0 (latticeUnit 1 0)).2\n'
+      '  rw [hu.1, tsum_eq_single 0 (fun y hy => by simp [delta0_apply, hy])] at h0\n'
+      '  rw [hv.1, tsum_eq_single (latticeUnit 1 0) (fun y hy => by simp [deltaAt_apply, hy])] at h1\n'
+      '  have hne : latticeUnit 1 0 + latticeUnit 1 0 ≠ 0 := by\n'
+      '    intro hz; have := congrFun hz 0; simp [latticeUnit] at this\n'
+      '  simp only [delta0_apply, hne, ite_false, add_zero, deltaAt_apply, ite_true, mul_one] at h0 h1\n'
+      '  rw [← h1] at h0\n  norm_num at h0')),
 ]
 
 HEADER = """import OscInt.Front.LatticeGroupSanity

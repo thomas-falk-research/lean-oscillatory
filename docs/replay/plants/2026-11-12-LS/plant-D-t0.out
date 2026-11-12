@@ -1,4 +1,4 @@
-/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/ls/plants/plant-D-t0.lean:19:12: error: Function expected at
+/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/ls/plants2/plant-D-t0.lean:19:12: error: Function expected at
   hD 1 (delta0 1) u hu (delta0_summable 1) 4 0
 but this term has type
   ‖↑(u 4) 0‖ ≤
@@ -6,7 +6,7 @@ but this term has type
 
 Note: Expected a function because this term is being applied to the argument
   (by norm_num)
-/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/ls/plants/plant-D-t0.lean:16:65: error: unsolved goals
+/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/ls/plants2/plant-D-t0.lean:16:65: error: unsolved goals
 hE : LatticeSchrodingerExistsStatement
 hD : P_LatticeSchrodingerDispersiveStatement
 u : ℝ → ↥(LatticeL2 1)

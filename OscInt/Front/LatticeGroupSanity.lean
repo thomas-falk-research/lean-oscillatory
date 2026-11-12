@@ -25,7 +25,16 @@ Data:
   the `1 +` in `(1 + |t|)` is false at `t = 0`.
 * What this layer cannot see: the gauge `e^{−2idt}`, the factor 2 in `K_d(2t, ·)` and the sign of `i` in the equation
   are invisible at `t = 0` and are not tested semantically; a mutation of them makes LS-K false and is caught by its
-  proof, not here.
+  proof, not here. The sign of `i` is also invisible to LS-D and LS-D′, since `|conj G| = |G|`.
+
+Added after the blind pre-proof reviews (`review/2026-11-12-LS-pre-proof-answers.md`; statements unchanged):
+* Bite: the constant curve `δ₀` is not a solution (`const_not_solution`), so the derivative clause and the diagonal
+  term `−2g(x)` of the Laplacian are not vacuous (review A, finding 2).
+* LS-K with LS-E: `t ↦ G_1(t, x)` has derivative `iΔδ₀(x)` at `t = 0`, which is `−2i` at `x = 0` and `i` at `x = e₁`
+  (`kernel_deriv_zero_origin`, `kernel_deriv_zero_e1`). This is what the frozen statements say about the time
+  dependence; that the kernel as defined has these derivatives is part of the proof of LS-K (review A, finding 2).
+* LS-K with LS-E on the datum `δ_{e₁}` (`kernel_zero_time_shift`), which detects `x + y` in place of `x − y` (review B,
+  finding 1); LS-D at `d = 0` (`dispersive_dim_zero`, review A, finding 4).
 -/
 
 namespace OscInt.API.LatticeGroupSanity
@@ -84,7 +93,7 @@ theorem eight_rpow_neg_two_thirds' : (8 : ℝ) ^ (-(2 : ℝ) / 3) = 1 / 4 := by
   rw [show (8 : ℝ) = 2 ^ (3 : ℝ) by norm_num, ← Real.rpow_mul (by norm_num)]
   norm_num [Real.rpow_neg, Real.rpow_two]
 
-/-- **LS-D with LS-E** at `d = 1`, `t = 4`, `x = 0`: `|u(4, 0)| ≤ min{1, (C*/(2π))/2}`. -/
+/-- **LS-D with LS-E** at `d = 1`, `t = 4`, `x = 0`: `|u(4, 0)| ≤ (C*/(2π))/2` (the `min` with 1 dropped). -/
 theorem dispersive_one (hE : LatticeSchrodingerExistsStatement) (hD : LatticeSchrodingerDispersiveStatement) :
     ∃ u : ℝ → LatticeL2 1, IsLatticeSchrodingerSolution 1 (delta0 1) u ∧
       ‖u 4 0‖ ≤ 8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi) / 2 := by
@@ -173,5 +182,100 @@ theorem decay_zero_three (hE : LatticeSchrodingerExistsStatement) (hD' : Lattice
   have h := hD' 3 _ u hu (delta0_summable 3) 0 0
   rw [hu.1, delta0_tsum, delta0_apply, abs_zero, add_zero, Real.one_rpow, mul_one, mul_one] at h
   simpa using h
+
+/-- The datum `δ_z ∈ ℓ²(ℤ^d)`. -/
+noncomputable def deltaAt (d : ℕ) (z : Fin d → ℤ) : LatticeL2 d := lp.single 2 z 1
+
+theorem deltaAt_apply (d : ℕ) (z y : Fin d → ℤ) : (deltaAt d z : (Fin d → ℤ) → ℂ) y = if y = z then 1 else 0 := by
+  simp [deltaAt, Pi.single_apply]
+
+theorem latticeUnit_ne_zero : latticeUnit 1 0 ≠ 0 := by
+  intro h
+  have := congrFun h 0
+  simp [latticeUnit] at this
+
+/-- `Δδ₀(0) = −2` in `d = 1`. -/
+theorem lap_delta0_origin : latticeLaplacian 1 (fun y => (delta0 1 : (Fin 1 → ℤ) → ℂ) y) 0 = -2 := by
+  have h1 : (0 : Fin 1 → ℤ) + latticeUnit 1 0 ≠ 0 := by rw [zero_add]; exact latticeUnit_ne_zero
+  have h2 : (0 : Fin 1 → ℤ) - latticeUnit 1 0 ≠ 0 := by
+    rw [zero_sub]; exact neg_ne_zero.mpr latticeUnit_ne_zero
+  simp only [latticeLaplacian, Fin.sum_univ_one, delta0_apply, h1, h2, ite_false, ite_true]
+  norm_num
+
+/-- `Δδ₀(e₁) = 1` in `d = 1`. -/
+theorem lap_delta0_e1 : latticeLaplacian 1 (fun y => (delta0 1 : (Fin 1 → ℤ) → ℂ) y) (latticeUnit 1 0) = 1 := by
+  have h1 : latticeUnit 1 0 + latticeUnit 1 0 ≠ 0 := by
+    intro h
+    have := congrFun h 0
+    simp [latticeUnit] at this
+  simp only [latticeLaplacian, Fin.sum_univ_one, delta0_apply, h1, sub_self, latticeUnit_ne_zero, ite_false, ite_true]
+  norm_num
+
+/-- **Bite: the derivative clause is not vacuous.** The constant curve `δ₀` is not a solution in `d = 1`: its
+derivative is `0`, but `iΔδ₀(0) = −2i`. -/
+theorem const_not_solution : ¬ IsLatticeSchrodingerSolution 1 (delta0 1) (fun _ => delta0 1) := by
+  rintro ⟨-, h⟩
+  obtain ⟨w, hw, hwx⟩ := h 0
+  have h0 : w = 0 := (hasDerivAt_const (0 : ℝ) (delta0 1)).unique hw |>.symm
+  have hx := hwx 0
+  rw [h0, lap_delta0_origin] at hx
+  simp at hx
+
+/-- With LS-E and LS-K, the solution with datum `δ₀` is `t ↦ G_1(t, ·)` coordinatewise. -/
+theorem kernel_eq_solution (hE : LatticeSchrodingerExistsStatement) (hK : LatticeSchrodingerKernelStatement) :
+    ∃ u : ℝ → LatticeL2 1, IsLatticeSchrodingerSolution 1 (delta0 1) u ∧
+      ∀ (t : ℝ) (x : Fin 1 → ℤ), schrodingerKernel 1 t x = u t x := by
+  obtain ⟨u, hu⟩ := hE 1 (delta0 1)
+  refine ⟨u, hu, fun t x => ?_⟩
+  have h := (hK 1 _ u hu t x).2
+  rw [tsum_eq_single 0 (fun y hy => by simp [delta0_apply, hy])] at h
+  simpa [delta0_apply] using h.symm
+
+/-- **LS-K with LS-E**: `t ↦ G_1(t, x)` has derivative `iΔδ₀(x)` at `t = 0`. -/
+theorem kernel_deriv_zero (hE : LatticeSchrodingerExistsStatement) (hK : LatticeSchrodingerKernelStatement)
+    (x : Fin 1 → ℤ) :
+    HasDerivAt (fun t => schrodingerKernel 1 t x)
+      (Complex.I * latticeLaplacian 1 (fun y => (delta0 1 : (Fin 1 → ℤ) → ℂ) y) x) 0 := by
+  obtain ⟨u, hu, hG⟩ := kernel_eq_solution hE hK
+  obtain ⟨w, hw, hwx⟩ := hu.2 0
+  have hev := (lp.evalCLM ℝ (fun _ : Fin 1 → ℤ => ℂ) 2 x).hasFDerivAt.comp_hasDerivAt (0 : ℝ) hw
+  have hfun : (fun t => schrodingerKernel 1 t x) = (lp.evalCLM ℝ (fun _ : Fin 1 → ℤ => ℂ) 2 x) ∘ u := by
+    funext t; rw [Function.comp_apply, hG t x]; rfl
+  rw [hfun]
+  convert hev using 1
+  change _ = (w : (Fin 1 → ℤ) → ℂ) x
+  rw [hwx x, hu.1]
+
+/-- **LS-K with LS-E**: `∂ₜG_1(0, 0) = −2i`. -/
+theorem kernel_deriv_zero_origin (hE : LatticeSchrodingerExistsStatement) (hK : LatticeSchrodingerKernelStatement) :
+    HasDerivAt (fun t => schrodingerKernel 1 t 0) (-2 * Complex.I) 0 := by
+  have h := kernel_deriv_zero hE hK 0
+  rw [lap_delta0_origin] at h
+  convert h using 1; ring
+
+/-- **LS-K with LS-E**: `∂ₜG_1(0, e₁) = i` (a factor 2 dropped in `K_d(2t, ·)` would give `i/2`). -/
+theorem kernel_deriv_zero_e1 (hE : LatticeSchrodingerExistsStatement) (hK : LatticeSchrodingerKernelStatement) :
+    HasDerivAt (fun t => schrodingerKernel 1 t (latticeUnit 1 0)) Complex.I 0 := by
+  have h := kernel_deriv_zero hE hK (latticeUnit 1 0)
+  rw [lap_delta0_e1, mul_one] at h
+  exact h
+
+/-- **LS-K with LS-E on the datum `δ_{e₁}`**: `G_1(0, x − e₁) = δ_{e₁}(x)`. -/
+theorem kernel_zero_time_shift (hE : LatticeSchrodingerExistsStatement) (hK : LatticeSchrodingerKernelStatement)
+    (x : Fin 1 → ℤ) :
+    schrodingerKernel 1 0 (x - latticeUnit 1 0) = if x = latticeUnit 1 0 then 1 else 0 := by
+  obtain ⟨u, hu⟩ := hE 1 (deltaAt 1 (latticeUnit 1 0))
+  have h := (hK 1 _ u hu 0 x).2
+  rw [hu.1, tsum_eq_single (latticeUnit 1 0) (fun y hy => by simp [deltaAt_apply, hy])] at h
+  simpa [deltaAt_apply] using h.symm
+
+/-- **LS-D with LS-E at `d = 0`**: `|u(1, 0)| ≤ 1`. -/
+theorem dispersive_dim_zero (hE : LatticeSchrodingerExistsStatement) (hD : LatticeSchrodingerDispersiveStatement) :
+    ∃ u : ℝ → LatticeL2 0, IsLatticeSchrodingerSolution 0 (delta0 0) u ∧ ‖u 1 0‖ ≤ 1 := by
+  obtain ⟨u, hu⟩ := hE 0 (delta0 0)
+  refine ⟨u, hu, ?_⟩
+  have h := hD 0 _ u hu (delta0_summable 0) 1 0 one_ne_zero
+  rw [delta0_tsum, mul_one] at h
+  exact h.trans (min_le_left _ _)
 
 end OscInt.API.LatticeGroupSanity

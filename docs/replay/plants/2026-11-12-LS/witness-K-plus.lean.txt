@@ -1,0 +1,28 @@
+import OscInt.Front.LatticeGroupSanity
+
+namespace OscInt.API.LatticeGroupSanity
+
+open OscInt.Statements OscInt.API.HypercubicSanity
+
+def P_LatticeSchrodingerKernelStatement : Prop :=
+  ∀ (d : ℕ) (f : LatticeL2 d) (u : ℝ → LatticeL2 d), IsLatticeSchrodingerSolution d f u →
+    ∀ (t : ℝ) (x : Fin d → ℤ),
+      Summable (fun y : Fin d → ℤ => ‖schrodingerKernel d t (x - y) * f y‖) ∧
+        u t x = ∑' y : Fin d → ℤ, schrodingerKernel d t (x + y) * f y
+
+theorem witness_not_LatticeSchrodingerKernelStatement : LatticeSchrodingerExistsStatement → ¬ P_LatticeSchrodingerKernelStatement :=
+  by
+  intro hE h
+  obtain ⟨u, hu⟩ := hE 1 (delta0 1)
+  obtain ⟨v, hv⟩ := hE 1 (deltaAt 1 (latticeUnit 1 0))
+  have h0 := (h 1 _ u hu 0 (latticeUnit 1 0 + latticeUnit 1 0)).2
+  have h1 := (h 1 _ v hv 0 (latticeUnit 1 0)).2
+  rw [hu.1, tsum_eq_single 0 (fun y hy => by simp [delta0_apply, hy])] at h0
+  rw [hv.1, tsum_eq_single (latticeUnit 1 0) (fun y hy => by simp [deltaAt_apply, hy])] at h1
+  have hne : latticeUnit 1 0 + latticeUnit 1 0 ≠ 0 := by
+    intro hz; have := congrFun hz 0; simp [latticeUnit] at this
+  simp only [delta0_apply, hne, ite_false, add_zero, deltaAt_apply, ite_true, mul_one] at h0 h1
+  rw [← h1] at h0
+  norm_num at h0
+
+end OscInt.API.LatticeGroupSanity

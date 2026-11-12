@@ -899,3 +899,11 @@ Modelling choices and what is omitted.
    nonlinear terms; these belong to the discrete NLS candidate.
 7. AI-use disclosure: the hand proof that suggested the batch is from the external reviewer's packet produced with an
    OpenAI model (`review/2026-11-12-DNLS-packet-answers.md`); the statements, sanity layer and plants are the lead's.
+
+Clarifications after the pre-proof reviews (2026-11-12; answers `review/2026-11-12-LS-pre-proof-answers.md`; LS-E, LS-K,
+LS-D, LS-D′ FAITHFUL and TRUE ×2, no BLOCKER or MAJOR; the stamp `stamps/20261112T215742Z-d18e0780abdb` stands):
+1. LS-D′, like LS-D, beats the trivial |u(t, x)| ≤ ‖f‖₁ only for |t| > τ ≈ 1.852, and its constant (1 + τ)^{d/3} grows
+   with d. The per-dimension factor C*/(2π) = 1.547 is about 1.97 times Landau's sharp 0.786.
+2. The sanity layer now also pins the derivative clause and the diagonal term of Δ (a bite), states the derivative of
+   t ↦ G_1(t, x) at t = 0 implied by LS-E and LS-K, and detects x + y in place of x − y. Mutations of the gauge, the
+   factor 2 and the sign of i are not refuted by the sanity layer; LS-K's proof fixes them.

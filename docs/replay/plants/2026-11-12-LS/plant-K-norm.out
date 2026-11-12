@@ -1,4 +1,4 @@
-/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/ls/plants/plant-K-norm.lean:18:2: error: Type mismatch: After simplification, term
+/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/ls/plants2/plant-K-norm.lean:18:2: error: Type mismatch: After simplification, term
   Eq.symm h
  has type
   2 * schrodingerKernel d 0 x = if x = 0 then 1 else 0

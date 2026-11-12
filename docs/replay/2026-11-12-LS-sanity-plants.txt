@@ -47,3 +47,41 @@ witness-Dp-one: accepted (want accepted)
 ok-Dp-rate: accepted (want accepted)
 plant-Dp-rate: rejected (want rejected)
     first error: plant-Dp-rate.lean:21:4: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+
+# Second run (after the blind pre-proof reviews; review/2026-11-12-LS-pre-proof-answers.md), 2026-11-12T22:20:35Z to 2026-11-12T22:21:29Z,
+# on git HEAD f59bd86540b80cc8829759f9f2989bfd8fd0abac plus the extended sanity file. SHA-256 at run time:
+#   4827d096054915e7768966098ccdb9da071ff8276067c42a54826e93c887afa4  OscInt/Front/LatticeGroupSanity.lean
+#   52b68ca110e1ba886e8a56ec57d697d64a418c587a89e38888d2728f0efb03a1  OscInt/Statements/LatticeGroup.lean
+#   d1527535cb44962ab5368ce4161f1104e6c52c5ff3a06761dd529f359f44a999  <scratch>/plants_ls.py
+# New plant K-plus (x + y in place of x − y): INSTANCE + WITNESS (LS-E → ¬ planted LS-K, from the data δ₀ and δ_{e₁}).
+# The witnesses of K-norm, D-t0 and Dp-one were re-run against the extended sanity file and still compile.
+#
+ok-K-norm: accepted (want accepted)
+plant-K-norm: rejected (recorded)
+    first error: plant-K-norm.lean:18:2: error: Type mismatch: After simplification, term
+witness-K-norm: accepted (want accepted)
+ok-D-t0: accepted (want accepted)
+plant-D-t0: rejected (recorded)
+    first error: plant-D-t0.lean:19:12: error: Function expected at
+witness-D-t0: accepted (want accepted)
+ok-Dp-one: accepted (want accepted)
+plant-Dp-one: rejected (recorded)
+    first error: plant-Dp-one.lean:20:28: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-Dp-one: accepted (want accepted)
+ok-K-plus: accepted (want accepted)
+plant-K-plus: rejected (recorded)
+    first error: plant-K-plus.lean:19:2: error: Type mismatch: After simplification, term
+witness-K-plus: accepted (want accepted)
+#
+# Corrections after the blind pre-proof reviews (review A, finding 1; lessons 44 and 47):
+#   D-rate, D-const-half and Dp-rate STRENGTHEN the bound. Their "rejected" outcomes above are script-only (a rewrite
+#   or a closing step failed); the planted conclusion still holds on the datum, so they are NOT DETECTED, as the batch-HC
+#   record classifies a faster rate. All three planted statements are false (referee A's computations, FLOAT):
+#     D-rate: at t = 200, max_x |G_1(t, x)| = 0.0918 > 0.0774 (the planted bound);
+#     Dp-rate: at t = 1000, 0.0536 > 0.0448;
+#     D-const-half: sup over integers n and s > 0 of s^{1/3}|J_n(s)| is 0.78575 (Landau's constant) > C*/(4π) = 0.77365,
+#     so at t ≈ 0.392, x = 0, datum δ₀ the planted bound 0.839 is below the true value 0.852 (margin about 1.6%).
+#   D-rate-natdiv weakens the bound at d = 2 (exponent 0) and is genuinely detected (INSTANCE).
+#   Not planted: mutations of latticeLaplacian (dropping −2g(x), a wrong neighbour, Δ = 0); the new bite
+#   const_not_solution excludes Δ = 0 and a vacuous derivative clause, and the derivative theorems kernel_deriv_zero_*
+#   record what the statements imply at t = 0.

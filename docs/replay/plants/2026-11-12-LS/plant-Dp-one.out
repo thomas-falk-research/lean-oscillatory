@@ -1,4 +1,4 @@
-/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/ls/plants/plant-Dp-one.lean:20:28: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/ls/plants2/plant-Dp-one.lean:20:28: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
   1 + |7|
 in the target expression
   ‖↑(u 7) 0‖ ≤ (1 + (8 * (1 + √7) / 3 / (2 * Real.pi)) ^ 3 / 2) ^ (↑1 / 3) * |7| ^ (-↑1 / 3)
