@@ -1,0 +1,20 @@
+import OscInt.Front.LatticeGroupSanity
+
+namespace OscInt.API.LatticeGroupSanity
+
+open OscInt.Statements OscInt.API.HypercubicSanity
+
+def P_LatticeSchrodingerDecayStatement : Prop :=
+  ∀ (d : ℕ) (f : LatticeL2 d) (u : ℝ → LatticeL2 d), IsLatticeSchrodingerSolution d f u →
+    Summable (fun y : Fin d → ℤ => ‖f y‖) →
+    ∀ (t : ℝ) (x : Fin d → ℤ),
+      ‖u t x‖ ≤ (1 + (8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi)) ^ 3 / 2) ^ ((d : ℝ) / 3) *
+        |t| ^ (-(d : ℝ) / 3) * ∑' y : Fin d → ℤ, ‖f y‖
+
+theorem witness_not_LatticeSchrodingerDecayStatement : LatticeSchrodingerExistsStatement → ¬ P_LatticeSchrodingerDecayStatement :=
+  by
+  intro hE h
+  obtain ⟨u, hu⟩ := hE 1 (delta0 1)
+  exact decay_false_without_one u hu (h 1 _ u hu (delta0_summable 1) 0 0)
+
+end OscInt.API.LatticeGroupSanity

@@ -1,0 +1,13 @@
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/ls/plants/plant-D-const-half.lean:22:53: error: unsolved goals
+hE : LatticeSchrodingerExistsStatement
+hD : P_LatticeSchrodingerDispersiveStatement
+u : ℝ → ↥(LatticeL2 1)
+hu : IsLatticeSchrodingerSolution 1 (delta0 1) u
+h : ‖↑(u 4) 0‖ ≤ min 1 (8 * (1 + √7) / 3 / (4 * Real.pi) * (1 / 2))
+⊢ √7 * Real.pi⁻¹ * (1 / 3) + Real.pi⁻¹ * (1 / 3) = √7 * Real.pi⁻¹ * (2 / 3) + Real.pi⁻¹ * (2 / 3)

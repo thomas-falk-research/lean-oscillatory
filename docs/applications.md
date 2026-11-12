@@ -40,6 +40,12 @@ in Lean; numerics in `numerics/` are tooling and are never cited as evidence.
   mode decays faster than any power of `t`, uniformly over velocity profiles supported in a fixed compact set with a fixed `C^N` budget, and wave vectors
   bounded away from 0: **demonstrated** (`examples/consumer/ConsumerPhaseMixing.lean`, FE-S2.1). Self-consistent fields
   (Vlasov–Poisson), Landau damping rates and three-dimensional velocities are **proposed** (ROADMAP I3).
+- **Whistler waves at the inflection of the parallel branch** `ω ∝ k²/(1 + k²)` (cold plasma, frozen background): a
+  packet band-limited to `ck/ω_pe ∈ [1/2, 2/3]`, which contains the inflection `1/√3`, satisfies
+  `‖E(τ, ζ)‖ ≤ 18 (43740 τ/28561)^{−1/3} (|A(2/3)| + ∫|A′|)` uniformly in the position `ζ`: **demonstrated**
+  (`examples/consumer/ConsumerWhistler.lean`, S1.3; the third-derivative bound is proved there). An explicit, valid
+  bound, not a sharp one (with `A = 1` it beats the trivial bound only for `τ ≳ 8.2·10⁵`). Source: Track C, item C1, of
+  `review/2026-11-12-DNLS-packet-answers.md`.
 - **Gyroaverage**: `|J₀(z)| ≤ 1.548 z^{−1/3}` for every `z > 0` follows from T0E′ (`latticeKernel1 z 0 = 2π J₀(z)`, the
   Bessel identification not formalised); valid but weaker than the classical `(2/(πz))^{1/2}`; no consumer yet.
 

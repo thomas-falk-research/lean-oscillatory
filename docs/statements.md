@@ -845,3 +845,57 @@ FAITHFUL and TRUE ×2, no BLOCKER or MAJOR; the stamp `stamps/20261112T120616Z-c
 1. "Beats the trivial bound in every dimension" means every d ≥ 1; at d = 0 both sides are 1.
 2. Sanity data with 3 ∤ d (d = 2), in the non-trivial regime (d = 1, 3) and at d = 0 were added; mutations of the
    kernel definition are not seen by the sanity layer and are caught by the TdF proof (plant record).
+
+## Batch LS: the free lattice Schrödinger group on ℤ^d (session 10, 2026-11-12)
+
+Order. As batches LE2 and HC: statements, `OscInt/Statements/LatticeGroup.lean`, sanity theorems with planted controls
+(`OscInt/Front/LatticeGroupSanity.lean`, record `docs/replay/2026-11-12-LS-sanity-plants.txt`), challenge
+`Challenge/LatticeGroup.lean` and `comparator-LS.json`, frozen and stamped before the blind pre-proof reviews; no Lean proof
+of these statements exists before the reviews are answered. Owner decision (2026-11-12, session 10): "B1", from the
+external research packet answered in `review/2026-11-12-DNLS-packet-answers.md` (its hand proof B1; the packet's Lean
+statements were not used: they do not parse, and these are written fresh).
+
+Why. TdE′ bounds the kernel K_d; batch LS turns it into a statement about the evolution itself. It is the shared
+dependency of the discrete NLS candidate (ROADMAP "Candidates"), optical-lattice hopping and numerical dispersion
+(Track C items C3 and C7 of that packet). Classical mathematics; the kernel formula is in Stefanov–Kevrekidis (arXiv
+nlin/0409009v1, eq. (6)). The novelty claim, if proved, is "machine-checked, with an explicit constant".
+
+Notation. ℓ²(ℤ^d) is `lp (fun _ : Fin d → ℤ => ℂ) 2` (Lean name `LatticeL2 d`). For g : ℤ^d → ℂ,
+(Δg)(x) = Σ_{j<d} (g(x + e_j) + g(x − e_j) − 2g(x)), e_j = `Pi.single j 1` (Lean `latticeLaplacian`). A **solution with
+datum f** is u : ℝ → ℓ²(ℤ^d) with u(0) = f such that, at every real t, u is differentiable in the ℓ² norm with
+derivative w(t) ∈ ℓ², and w(t)(x) = i (Δu(t))(x) for every site x (Lean `IsLatticeSchrodingerSolution`); that is,
+i u′ + Δu = 0. G_d(t, z) = (2π)^{−d} e^{−2idt} K_d(2t, z) (Lean `schrodingerKernel`), with K_d of batch HC.
+C* = 8(1 + √7)/3 and τ = (C*/(2π))³/2 ≈ 1.852.
+
+**LS-E (existence).** For every d and f ∈ ℓ²(ℤ^d) there is a solution with datum f.
+
+**LS-K (kernel).** For every d, every f ∈ ℓ²(ℤ^d), every solution u with datum f, every real t and x ∈ ℤ^d: the series
+Σ_y G_d(t, x − y) f(y) converges absolutely and u(t)(x) = Σ_y G_d(t, x − y) f(y). (In particular the solution is unique.)
+
+**LS-D (dispersive estimate).** For every d, every f with Σ_y |f(y)| < ∞, every solution u with datum f, every t ≠ 0 and
+x: |u(t)(x)| ≤ min{1, (C*/(2π))^d (2|t|)^{−d/3}} Σ_y |f(y)|.
+
+**LS-D′ (decay at every time).** Same hypotheses, every real t: |u(t)(x)| ≤ (1 + τ)^{d/3} (1 + |t|)^{−d/3} Σ_y |f(y)|.
+
+Route (orientation only; the route document comes after the reviews). LS-K: the kernel convolution is a solution
+(∂_t G_d = iΔ_z G_d by differentiating under the integral, since Δ_z e^{iz·k} = (2Σ_j cos k_j − 2d) e^{iz·k}; G_d(t, ·) is
+in ℓ¹, so convolution maps ℓ² to ℓ² boundedly) and solutions of the linear equation are unique (Δ is a bounded operator
+on ℓ², norm ≤ 4d; Gronwall or Mathlib's ODE uniqueness). LS-E: the kernel convolution, or `NormedSpace.exp` of iΔ.
+LS-D: LS-K, TdE′ at 2|t| (negative t by conjugation, K_d(−s, x) = conj K_d(s, −x)), |K_d| ≤ (2π)^d, and the triangle
+inequality. LS-D′: LS-D, since (C*/(2π))^d 2^{−d/3} = τ^{d/3} and min{1, (τ/|t|)^{d/3}} ≤ ((1 + τ)/(1 + |t|))^{d/3}, with
+t = 0 from u(0) = f.
+
+Modelling choices and what is omitted.
+1. Solutions are characterised by the equation, not by an operator exponential, so "the solution of i u′ + Δu = 0 is
+   the kernel convolution" is the literal claim and no operator is constructed in the frozen file. Differentiability in
+   the ℓ² norm at every real time (a strong solution) is required; weaker notions are not covered.
+2. The sign convention: i u′ + Δu = 0, i.e. u′ = iΔu, so u(t) = e^{itΔ} f. With the opposite sign the kernel is the
+   complex conjugate; not stated.
+3. d = 0 is included (one site, Δ = 0, u constant, G_0 = 1); LS-D and LS-D′ then read |f| ≤ |f|.
+4. LS-D and LS-D′ take ℓ¹ data (Σ_y |f(y)| < ∞, which implies f ∈ ℓ², as `lp` already requires). The bound
+   min{1, ·} is stated with its trivial part; the decaying part beats 1 exactly when |t| > τ.
+5. LS-D excludes t = 0 (Lean's 0^{−d/3} = 0 would make the bound false there; bite in the sanity file).
+6. Omitted: mass conservation (unitarity), the group law, ℓ^p bounds for other p, Strichartz estimates, potentials and
+   nonlinear terms; these belong to the discrete NLS candidate.
+7. AI-use disclosure: the hand proof that suggested the batch is from the external reviewer's packet produced with an
+   OpenAI model (`review/2026-11-12-DNLS-packet-answers.md`); the statements, sanity layer and plants are the lead's.

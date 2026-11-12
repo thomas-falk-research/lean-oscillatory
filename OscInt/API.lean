@@ -22,6 +22,7 @@ import OscInt.Front.VectorSanity
 import OscInt.Front.CuspSanity
 import OscInt.Front.LatticeCubeRootSanity
 import OscInt.Front.HypercubicSanity
+import OscInt.Front.LatticeGroupSanity
 import OscInt.Front.GlobalFinal
 import OscInt.Front.LatticeFinal
 import OscInt.Front.LatticeExplicitFinal
