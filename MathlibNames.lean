@@ -177,3 +177,9 @@ import Mathlib
 #check @Finset.prod_le_prod₀
 #check @norm_prod
 #check @Finset.prod_const
+#check @Finset.card_univ
+#check @Fintype.card_fin
+#check @mul_pow
+#check @Finset.mul_sum
+#check @Finset.sum_add_distrib
+#check @Finset.sum_mul

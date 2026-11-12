@@ -21,3 +21,15 @@ is proved. Every Mathlib name below is `#check`ed in `MathlibNames.lean`.
 - **TdE′** from TdF and the proved T0E′ (`OscInt.API.latticeKernel1CubeRoot`): `norm_prod`, `Finset.prod_le_prod`
   (factors nonnegative), `Finset.prod_const`, `Finset.card_fin`, and `(t^{−1/3})^d = t^{−d/3}` (`← Real.rpow_natCast`,
   `← Real.rpow_mul`).
+
+## Revision after the route referee (2026-11-12, at 11652d7)
+Verdict: route sound. `HCFubiniFacts` is true for every `d` (including `0`: the box is `univ` and the volume a Dirac
+mass), and the assembly proves exactly the frozen statements (a scratch theorem from `HCFubiniFacts` to both compiles,
+axioms propext, Classical.choice, Quot.sound). Every watch item (the set integral as a restricted integral by `rfl`, the
+box shape for `Measure.restrict_pi_pi`, the σ-finite instances, `d = 0`) checked by compilation.
+- **MINOR, adopted:** `Set.pi_univ_Icc` is a simp lemma that turns the box into a function-space `Icc`, after which
+  `Measure.restrict_pi_pi` no longer matches: unfold `hypercubeBox` with `rw`, never with `simp`.
+- **NIT, noted:** the continuity hypothesis of `HCFubiniFacts` is not needed (`integral_fintype_prod_eq_prod` has no
+  integrability hypothesis); kept (harmless, the blueprint is not changed).
+- **NIT, done:** the assembly's names (`Finset.prod_le_prod₀`, `Finset.card_univ`, `Fintype.card_fin`, `mul_pow`,
+  `Finset.mul_sum`, `Finset.sum_add_distrib`, `Finset.sum_mul`) are now `#check`ed in `MathlibNames.lean`.
