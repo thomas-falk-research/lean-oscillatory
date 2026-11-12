@@ -20,6 +20,10 @@ Statement changes (batch HC, session 10): two new statements, frozen, reviewed a
 `OscInt.API.hypercubicCubeRoot`) in `OscInt/Statements/Hypercubic.lean`, stamp `stamps/20261112T120616Z-c56beb57ff8c`.
 No existing statement changed.
 
+- Answers to the external research packet on lattice NLS and domain connections
+  (`review/2026-11-12-DNLS-packet-answers.md`): kernel-to-group identification, global ℓ² dynamics and explicit
+  small-data decay checked (hand proofs, not machine-checked); lead's checks `numerics/review/dnls_checks.py` (record
+  `numerics/results-dnls-checks-2026-11-12.txt`).
 - Answers to the external R2 packet (`review/2026-11-12-R2-KG-answers.md`): an explicit cube-root bound for the 1D
   discrete Klein–Gordon kernel at every mass, checked (TRUE, not machine-checked) and recorded as a ROADMAP candidate;
   lead's checks `numerics/review/kg_checks.py` (record `numerics/results-kg-checks-2026-11-12.txt`). Addendum after an
