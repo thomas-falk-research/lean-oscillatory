@@ -22,7 +22,9 @@ No existing statement changed.
 
 - Answers to the external R2 packet (`review/2026-11-12-R2-KG-answers.md`): an explicit cube-root bound for the 1D
   discrete Klein–Gordon kernel at every mass, checked (TRUE, not machine-checked) and recorded as a ROADMAP candidate;
-  lead's checks `numerics/review/kg_checks.py` (record `numerics/results-kg-checks-2026-11-12.txt`).
+  lead's checks `numerics/review/kg_checks.py` (record `numerics/results-kg-checks-2026-11-12.txt`). Addendum after an
+  external audit: C* is within a factor below 1.9 of the best universal mass-normalised coefficient (exact check
+  `numerics/review/kg_factor_check.py`, record `numerics/results-kg-factor-check-2026-11-12.txt`).
 - Batch HC: the hypercubic lattice kernel on ℤ^d factorises, and `|K_d(t, x)| ≤ (8(1 + √7)/3)^d t^{−d/3}` for every
   `d`, `t > 0` and `x`; statement-first, blind-reviewed, routed and refereed, proved in Lean, replayed
   (`docs/replay/2026-11-12-session10-HC-verify-all.txt`); post-proof answers `review/2026-11-12-HC-post-proof-answers.md`.

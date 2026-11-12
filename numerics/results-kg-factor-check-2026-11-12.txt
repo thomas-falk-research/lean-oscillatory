@@ -1,0 +1,18 @@
+# command: python3 -I numerics/review/kg_factor_check.py, run as <venv>/bin/python -I <scratch>/kg_factor_check.py from the repository root (versions: RUNTIME line, read at run time)
+# started 2026-11-12T17:56:52Z
+# git HEAD edc251ca5d803c961e81a33ed85ef4377116f49d, tracked files modified: no; script sha256 d046c8c3d4651a7e97f7486f49e6a05474edf88003b7821e296860bcd709e4a8 (identical to the copy run); record written outside the tree and copied in (lessons 45)
+F1 int omega_0 = 8: PASS
+F1 int omega_0^2 = 4 pi: PASS
+F1 int (omega_0 - 5/4)^2 = 57 pi/8 - 20: PASS
+F1 2 pi - (49/128)(...) = 245/32 - 745 pi/1024: PASS
+F2 245/32 - 745(22/7)/1024 = 19245/3584: PASS
+F2 (239/250)^3 < 7/8: PASS
+F2 (239/250)(19245/3584) > 513/100: PASS
+F2 sqrt 7 < 53/20 and 8(1 + 53/20)/3 = 146/15: PASS
+F2 (146/15)/(513/100) = 2920/1539 < 19/10: PASS
+F3 |J_0(7/8, 0)| = 5.413941810217 (doubling change 3.2e-14) > 19245/3584 = 5.369699; (7/8)^(1/3)|J_0| = 5.178249 > 5.13: PASS
+Control t = 2: the cosine-moment lower bound gives 1.5155 against |J_0(2, 0)| = 2.6356 (the method is only informative for small t)
+RUNTIME python 3.13.18 numpy 2.3.5 sympy 1.14.0
+RESULT PASS
+# exit status 0
+# finished 2026-11-12T17:56:52Z

@@ -16,7 +16,9 @@ so a_m is the maximum group velocity (a_0 = 1, a_m ≈ 1/m for large m), and C* 
 
 1. **Main bound.** For every m ≥ 0, real t ≠ 0 and real ξ: |J_m(t, ξ)| ≤ min{2π, C* (a_m |t|)^{−1/3}}.
 2. **Uniform in the mass.** Fix m₀ > 0. For every m ∈ [0, m₀]: |J_m(t, ξ)| ≤ C* a_{m₀}^{−1/3} |t|^{−1/3}. This beats
-   the trivial 2π exactly for |t| > (C*/(2π))³ / a_{m₀} ≈ 3.704 / a_{m₀}, for example |t| > 5.99 when m₀ = 1.
+   the trivial 2π exactly for |t| > γ/a_{m₀}, γ = (C*/(2π))³ = 3.70448…; |t| ≥ 3.705/a_{m₀} suffices, and for m₀ = 1
+   the threshold is 5.99398…, so |t| ≥ 6 suffices. (Corrected in the addendum: the first version gave the
+   downward-rounded "3.704/a_{m₀}" and "|t| > 5.99", which are approximations, not sufficient conditions.)
 3. **The mass factor is necessary.** At t = 1/(2a_m), |J_m(t, 0)| ≥ 7π/4. So the best constant C_opt(m) in
    |J_m| ≤ C_opt(m) |t|^{−1/3} satisfies 4.3636 a_m^{−1/3} ≤ C_opt(m) ≤ 9.7220 a_m^{−1/3}. No single constant works for
    all masses.
@@ -58,8 +60,9 @@ The norm of the kernel appears there only as an opaque real number (checked by t
 of the proof is already machine-checked for the cosine kernel, and a mechanical generalisation covers the KG kernel.
 
 **How sharp the constant is.** The empirical best constant is about 5.18 a_m^{−1/3} at m = 0, falling to about 5.05
-for large m, close to the cosine kernel's 5.05 (FLOAT; lead and referee agree). So C* is within a factor of about 1.9 of
-the truth.
+for large m, close to the cosine kernel's 5.05 (FLOAT; lead and referee agree). For the universal mass-normalised
+coefficient, C* is within a factor strictly below 1.9 of the optimum (PROVEN-BY-HAND, exact arithmetic checked; see the
+addendum).
 
 ## What the lead checked
 
@@ -84,7 +87,8 @@ the truth.
   level-set roots. Also ω′′′(arccos q) = −a (FLOAT, 40 digits).
 - **K2 (FLOAT):** the level-set length equals 2 arccos r, at three masses and five levels; the tolerance is 1e−4
   and the largest observed deviation 3e−6.
-- **K3 (FLOAT):** max of (a_m|t|)^{1/3}|J_m|/C* = 0.5326, at m = 0, T ≈ 0.95, ξ = 0.
+- **K3 (FLOAT):** max of (a_m|t|)^{1/3}|J_m|/C* = 0.5326, at m = 0, T ≈ 0.95, ξ = 0. This ratio is taken against
+  the decaying term C*(a_m|t|)^{−1/3}, not against min{2π, ·} (against the minimum it tends to 1 as t → 0 at ξ = 0).
   - Masses: 0, 1e−6, 0.01, 0.1, 0.5, 1, 2, 5, 20.
   - Times: 45 normalised times from 0.1 to 2000.
   - Velocities: 522 values of v = ξ/T in [0, 1.6], refined at the caustic.
@@ -170,3 +174,37 @@ would be:
    - the limit m → 0 and the assembly.
 
 The new parts are of the same size as the LE2 pieces file.
+
+## Addendum (2026-11-12, after an external audit of edc251c)
+
+The owner relayed an external auditor's reading of edc251c (the same reviewer service; not recorded, lessons 46). The
+auditor agreed with the verdict and the findings. It said a revised packet would carry a new version and hash; the
+archive reviewed here stays the reviewed object. It added three points, each checked by the lead.
+
+1. **A rigorous factor below 1.9 (adopted).** Define K(m) = sup over t > 0 and real ξ of (a_m t)^{1/3}|J_m(t, ξ)|, and
+   K_univ = sup over m ≥ 0 of K(m).
+   - K_univ is the best universal coefficient in front of (a_m|t|)^{−1/3}, and the main bound gives K_univ ≤ C*.
+   - **Witness.** Take m = 0, t = 7/8, ξ = 0 and the centre b = 5/4. With ω₀ = 2|sin(k/2)|:
+     - the moments are ∫ω₀ = 8, ∫ω₀² = 4π, so ∫(ω₀ − 5/4)² = 57π/8 − 20;
+     - by |J| ≥ Re(e^{−itb}J) and cos u ≥ 1 − u²/2, valid for all real u,
+       |J₀(7/8, 0)| ≥ 2π − (49/128)(57π/8 − 20) = 245/32 − 745π/1024 > 19245/3584, using π < 22/7.
+   - **The chain.** With (239/250)³ < 7/8, this gives K_univ > (239/250)(19245/3584) > 5.13. With √7 < 53/20,
+     C* < 146/15, so C*/K_univ < 2920/1539 < 1.9.
+   - **Checks.** `numerics/review/kg_factor_check.py` checks the three moments symbolically and the rational chain
+     exactly (record `numerics/results-kg-factor-check-2026-11-12.txt`, RESULT PASS). Numerically,
+     (7/8)^{1/3}|J₀(7/8, 0)| = 5.17825, essentially the sweep's maximum 5.1781.
+   - **Scope.** This bounds the universal mass-normalised coefficient only. It is not a factor-1.9 statement for the
+     optimum at each fixed mass, nor for the unweighted constant on an interval [0, m₀]; the per-mass lower bound 7π/4
+     still serves that purpose.
+   - **Comparison.** For the cosine kernel, the rigorous ratio recorded for LE2 is 1.9706
+     (`review/2026-11-11-LE2-post-proof-answers.md`).
+2. **Threshold wording (corrected above).** "3.704/a_{m₀}" and "5.99" were downward-rounded, so they are not
+   sufficient conditions. Exact: |t| > γ/a_{m₀} with γ = 3.70448…; sufficient: |t| ≥ 3.705/a_{m₀}, or |t| ≥ 6 for
+   m₀ = 1.
+3. **The Lean reuse boundary (agreed, made precise).**
+   - The blueprint propositions name `latticeKernel1`. So a generic interface must be stated and compiled first: a real
+     function R(T, v) with the five envelopes and R ≤ 2π as hypotheses, and R ≤ C* T^{−1/3} for T > 0, v ≥ 0 as
+     conclusion. Then the cosine and KG kernels are separate instances.
+   - The small-time step needs the KG kernel's own 2π bound, because the existing lemma unfolds the cosine integrand.
+   - The cost estimates in this file are structural planning estimates, not compilation results.
+
