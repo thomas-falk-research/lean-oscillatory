@@ -6,6 +6,7 @@ SPDX-License-Identifier: Apache-2.0
 -/
 
 import OscInt.Front.Core
+import OscInt.Cusp.Final
 import OscInt.Front.Convert
 import OscInt.Front.ConvertSanity
 import OscInt.Front.Poly

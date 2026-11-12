@@ -1279,7 +1279,7 @@
   {
    "label": "S1.k",
    "name": "OscInt.Statements.VdCkStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.vdCk",
    "summary": "k-th derivative van der Corput bound with amplitude, `k ≥ 2`, constant `5·2^{k−1} − 2`, uniform in a linear term.",
    "file": "OscInt/Statements/Cusp.lean",
    "commitment": "3f6bcd10ddc304463b047a2ff97bea79cca928d63280b315c80a6192657022b3",
@@ -1299,13 +1299,13 @@
     "S1.2",
     "S1.3"
    ],
-   "snippet": "example : VdCkStatement → VdC2Statement := OscInt.API.CuspSanity.vdCk_to_vdC2",
+   "snippet": "example : VdCkStatement := OscInt.API.vdCk",
    "status": "see docs/STATUS.md (row S1.k)"
   },
   {
    "label": "S5.1",
    "name": "OscInt.Statements.CuspBoundStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.cuspBound",
    "summary": "Uniform stable-cusp bound: at a stable A3 point, decay `t^{-3/4}`, uniform over every linear term.",
    "file": "OscInt/Statements/Cusp.lean",
    "commitment": "58fdc9e1b30433dab199864ae01cb90d2691c03c2cfa9560582f6bd96bb0477a",
@@ -1325,13 +1325,13 @@
     "S4.1′",
     "S3"
    ],
-   "snippet": "example : CuspBoundGenStatement → CuspBoundStatement := fun h φ hφ h3 => h φ hφ (OscInt.API.CuspSanity.stable_isA3 h3)",
+   "snippet": "example : CuspBoundStatement := OscInt.API.cuspBound",
    "status": "see docs/STATUS.md (row S5.1)"
   },
   {
    "label": "S5.1′",
    "name": "OscInt.Statements.CuspBoundGenStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.cuspBoundGen",
    "summary": "Uniform cusp bound: at an A3 point, decay `t^{-3/4}`, uniform over every linear term.",
    "file": "OscInt/Statements/Cusp.lean",
    "commitment": "05686ea0396f3ff430c3d6e2b5f177182ae26e377645beb1280298810799783b",
@@ -1350,7 +1350,7 @@
     "S5.1",
     "S1.k"
    ],
-   "snippet": "example (h : CuspBoundGenStatement) := OscInt.API.CuspSanity.cuspBoundGen_nonv h",
+   "snippet": "example : CuspBoundGenStatement := OscInt.API.cuspBoundGen",
    "status": "see docs/STATUS.md (row S5.1′)"
   },
   {

@@ -833,8 +833,8 @@
     "S1.2",
     "S1.3"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example : VdCkStatement → VdC2Statement := OscInt.API.CuspSanity.vdCk_to_vdC2"
+   "snippet_kind": "type",
+   "snippet": "example : VdCkStatement := OscInt.API.vdCk"
   },
   "S5.1": {
    "hypotheses": [
@@ -851,8 +851,8 @@
     "S4.1′",
     "S3"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example : CuspBoundGenStatement → CuspBoundStatement := fun h φ hφ h3 => h φ hφ (OscInt.API.CuspSanity.stable_isA3 h3)"
+   "snippet_kind": "type",
+   "snippet": "example : CuspBoundStatement := OscInt.API.cuspBound"
   },
   "S5.1′": {
    "hypotheses": [
@@ -868,8 +868,8 @@
     "S5.1",
     "S1.k"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : CuspBoundGenStatement) := OscInt.API.CuspSanity.cuspBoundGen_nonv h"
+   "snippet_kind": "type",
+   "snippet": "example : CuspBoundGenStatement := OscInt.API.cuspBoundGen"
   },
   "T0E′": {
    "hypotheses": [

@@ -217,15 +217,15 @@ example : GlobalNondegVecStatement := OscInt.API.globalNondegVec
 
 /-! ### S1.k: k-th derivative van der Corput bound with amplitude, `k ≥ 2`, constant `5·2^{k−1} − 2`, uniform in a linear term. -/
 
-example : VdCkStatement → VdC2Statement := OscInt.API.CuspSanity.vdCk_to_vdC2
+example : VdCkStatement := OscInt.API.vdCk
 
 /-! ### S5.1: Uniform stable-cusp bound: at a stable A3 point, decay `t^{-3/4}`, uniform over every linear term. -/
 
-example : CuspBoundGenStatement → CuspBoundStatement := fun h φ hφ h3 => h φ hφ (OscInt.API.CuspSanity.stable_isA3 h3)
+example : CuspBoundStatement := OscInt.API.cuspBound
 
 /-! ### S5.1′: Uniform cusp bound: at an A3 point, decay `t^{-3/4}`, uniform over every linear term. -/
 
-example (h : CuspBoundGenStatement) := OscInt.API.CuspSanity.cuspBoundGen_nonv h
+example : CuspBoundGenStatement := OscInt.API.cuspBoundGen
 
 /-! ### T0E′: Cube-root bound for the 1D lattice kernel: `|I(t, ξ)| ≤ 8(1 + √7)/3 · t^{−1/3}` for every `t > 0` and every real `ξ`. -/
 

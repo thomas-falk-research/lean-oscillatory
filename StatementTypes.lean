@@ -81,3 +81,6 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
 #assert_type_is OscInt.API.latticeLaplacianCubeRoot OscInt.Statements.LatticeLaplacianCubeRootStatement
 #assert_type_is OscInt.API.hypercubicKernelFactor OscInt.Statements.HypercubicKernelFactorStatement
 #assert_type_is OscInt.API.hypercubicCubeRoot OscInt.Statements.HypercubicCubeRootStatement
+#assert_type_is OscInt.API.vdCk OscInt.Statements.VdCkStatement
+#assert_type_is OscInt.API.cuspBoundGen OscInt.Statements.CuspBoundGenStatement
+#assert_type_is OscInt.API.cuspBound OscInt.Statements.CuspBoundStatement
