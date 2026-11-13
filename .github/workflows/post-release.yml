@@ -111,12 +111,16 @@ jobs:
           b="release/$TAG-pins"
           git switch -c "$b"
           echo "$SHA" > "docs/release-notes/$TAG.commit"
-          # on every line that pins a tag (`rev = "vX.Y.Z"`), the old tag becomes the new one, comments included
+          # on every line that pins a tag (`rev = "vX.Y.Z"`), the old tag becomes the new one, comments included.
+          # The files are every pinning file that `tools/check_docs.py` pins-checks (tracked README.md and docs/**/*.md
+          # outside docs/release-notes/), so the two lists cannot drift apart (a fixed list missed docs/downstream.md
+          # in the v0.5.0 pins pull request), plus the release consumer's lakefile.
+          mapfile -t pinned < <(git grep -lE 'rev = "v[0-9]+\.[0-9]+\.[0-9]+"' -- README.md 'docs/*.md' ':!docs/release-notes/*')
           sed -i -E "/rev = \"v[0-9]+\.[0-9]+\.[0-9]+\"/ s/v[0-9]+\.[0-9]+\.[0-9]+/$TAG/g" \
-            README.md docs/policy.md examples/consumer-release/lakefile.toml
+            "${pinned[@]}" examples/consumer-release/lakefile.toml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A && git commit -q -m "Release $TAG: record the release commit $SHA; README and consumer-release pin $TAG"
+          git add -A && git commit -q -m "Release $TAG: record the release commit $SHA; pins in README, docs and consumer-release move to $TAG"
           git push -q origin "$b"
           if ! gh pr create --base main --head "$b" --title "Release $TAG: pins" --body "Written by post-release run ${{ github.run_id }} after the checks of $TAG ($SHA) and the consumer build against the tag passed. CI is dispatched on this branch; merge when it is green."; then
             echo "::warning::could not open the pull request (repository setting?); open it by hand: https://github.com/${{ github.repository }}/compare/main...$b"

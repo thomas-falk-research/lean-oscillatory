@@ -72,7 +72,9 @@ jobs:
 
   consumer:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    # build, checker with recomputed commitments and negative controls took 48 min on PR #13 (2026-11-13) and passed 60
+    # on slower runners the same day (checker 26-28 min instead of 19), with every finished step green
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup-lean
