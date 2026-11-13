@@ -2,6 +2,9 @@
 Copyright (c) 2025 Joris Roos. All rights reserved.
 Copyright (c) 2026 Thomas Falk III. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Joris Roos, Manasa Praveen, Thomas Falk III
+Modified 2026 by Thomas Falk III: extends OscInt.VanDerCorput, which is derived from roos-j/lean-oscillatory; the proof
+text was drafted with an external AI tool and integrated with fixes (provenance in the module docstring).
 SPDX-License-Identifier: Apache-2.0
 -/
 

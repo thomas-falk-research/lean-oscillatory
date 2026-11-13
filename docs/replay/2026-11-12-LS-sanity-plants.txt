@@ -85,3 +85,10 @@ witness-K-plus: accepted (want accepted)
 #   Not planted: mutations of latticeLaplacian (dropping −2g(x), a wrong neighbour, Δ = 0); the new bite
 #   const_not_solution excludes Δ = 0 and a vacuous derivative clause, and the derivative theorems kernel_deriv_zero_*
 #   record what the statements imply at t = 0.
+#
+# Addendum after the A3 adversarial review (2026-11-13; review/2026-11-12-A3-post-proof-answers.md, MINOR 4):
+#   Why D-rate-natdiv is detected. The plant writes the exponent as -((d / 3 : ℕ) : ℝ), which is 0 at d = 2.
+#   The sanity theorem dispersive_two (d = 2, t = 4, f = δ₀, so 2|t| = 8) concludes the frozen bound
+#   (C*/(2π))² · 8^(-2/3) ≈ 0.598. The planted statement gives only min{1, (C*/(2π))² · 8^0} = min{1, 2.394} = 1, which
+#   does not imply 0.598. So the rejection is semantic (the plant is weaker), not a script-step failure; unlike
+#   D-rate, D-const-half and Dp-rate, whose planted bounds are at most the frozen ones on this datum.

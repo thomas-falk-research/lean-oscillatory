@@ -14,11 +14,14 @@ Only `import OscInt.API` and Mathlib. Answers Track C, item C1, of the external 
 (`review/2026-11-12-DNLS-packet-answers.md`).
 
 Model (paper, not formalised here): the cold-plasma parallel whistler branch `ω(k) = c²k²Ω/(ω_pe² + c²k²)` above the ion
-gyrofrequency (Eliasson–Shukla, GRL 31 (2004), §2, as read by the external reviewer). With `q = ck/ω_pe`, `τ = Ωt` and
+gyrofrequency (Eliasson–Shukla, GRL 31 (2004), §2, as read by the external reviewer; CITED-UNREAD by the lead). Validity:
+cold collisionless electrons, parallel propagation, immobile ions, and `ω_pe² ≫ ω(Ω − ω)`; on the band below,
+`ω/Ω ∈ [0.2, 0.31]`. With `q = ck/ω_pe`, `τ = Ωt` and
 `ζ = (ω_pe/c) z`, a wave packet band-limited to `q ∈ [1/2, 2/3]` is, up to a constant factor absorbed in the amplitude,
   `E(τ, ζ) = ∫_{1/2}^{2/3} e^{i(ζq − τ h(q))} A(q) dq`, `h(q) = q²/(1 + q²)`.
-The group velocity `h′` has its maximum at the inflection `q = 1/√3 ∈ [1/2, 2/3]`, where `h″ = 0`, so the packet
-disperses like `τ^{−1/3}` (an Airy-type front), not `τ^{−1/2}`. This file proves, from the frozen and proved S1.3
+The group velocity `h′` has its maximum at the inflection `q = 1/√3 ∈ [1/2, 2/3]`, where `h″ = 0`. There the
+classical behaviour is an Airy-type front decaying like `τ^{−1/3}`; this file proves only the upper bound, not that the
+decay is no faster. It proves, from the frozen and proved S1.3
 (`OscInt.vanDerCorput_three`), the explicit bound
   `‖E(τ, ζ)‖ ≤ 18 (43740 τ / 28561)^{−1/3} (|A(2/3)| + ∫ |A′|)` for every `τ > 0` and every real `ζ`,
 uniformly in the observation point `ζ`. The constant `43740/28561 ≤ min |h‴|` on the band is a hand bound, proved here.

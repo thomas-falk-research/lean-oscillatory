@@ -1,6 +1,38 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (48 entries); every rule in it is binding.
+For a reader who saw nothing. Read `docs/lessons.md` first (49 entries); every rule in it is binding.
+
+## Session 10, continued (2026-11-12/13): batch A3 proved; batch LS stated, reviewed and routed; external packets
+
+**State at this commit.**
+- **Batch A3 (S1.k, S5.1, S5.1′) is proved in Lean.**
+  - It came from an external packet drafted with an OpenAI model and was integrated at 93a8a8d with five elaboration
+    fixes (`review/2026-11-12-A3-packet-answers.md`).
+  - Post-proof reviews: FAITHFUL ×3, parts SOUND. The adversarial review's three MAJORs are answered
+    (`review/2026-11-12-A3-post-proof-answers.md`).
+  - Build, axiom audit and type assertions pass in the main tree.
+  - **Not yet "as stated":** the isolated replay of this commit is the next step. Derive the three STATUS rows from its
+    record.
+- **Batch LS (the free lattice Schrödinger group on ℤ^d: LS-E, LS-K, LS-D, LS-D′).**
+  - Frozen (stamp `20261112T215742Z-d18e0780abdb`) and blind-reviewed (answers
+    `review/2026-11-12-LS-pre-proof-answers.md`).
+  - Route `docs/proof-LS.md`: nine parts in `Blueprint/LatticeGroup.lean`, compiled assembly
+    `OscInt/Front/LatticeGroupAssembly.lean`, refereed with no BLOCKER.
+  - Read the section "Revision after the route referee" before proving: P-conv must use the exponential series over ℂ.
+  - Next: prove the nine parts (drafts and probes are not in the tree), then the final file (LatticeGroupFinal, named in the route), a
+    replay and the post-proof reviews.
+- **External packets answered, all in the lead's words (lessons 46):**
+  - R2 Klein–Gordon kernel (`review/2026-11-12-R2-KG-answers.md`);
+  - lattice NLS (`review/2026-11-12-DNLS-packet-answers.md`);
+  - the A3 Lean packet (above);
+  - the application-chains dossier (`review/2026-11-13-application-chains-answers.md`). It is TRUE as hand mathematics
+    and classical or known in part, with two consumer candidates in the ROADMAP. It found four errors in
+    `docs/applications.md` (fixed) and the lessons-28 problem below.
+- **Replay isolation.** The replay of e814510 was not isolated: the LS route referee ran Lean during it (lessons 49).
+  A container restart then cut it off. It is kept, labelled, at `docs/replay/2026-11-12-session10-e814510-partial.txt`;
+  it is not an acceptance record.
+- **Consumer** `examples/consumer/ConsumerWhistler.lean` (S1.3 at the whistler inflection; upper bound only).
+- **Lessons:** 49.
 
 ## Session 10, continued (2026-11-12): batch HC proved end to end; plasma consumers; DNLS scoped
 - **Owner request 2026-11-12:** bets 1 and 3, then scope bet 2.

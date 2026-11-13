@@ -24,8 +24,9 @@ in Lean; numerics in `numerics/` are tooling and are never cited as evidence.
   the classification (four D4 points at `(±π/2, ±π/2)`, folds elsewhere; numerically confirmed by a grid method,
   `numerics/results-classify-2026-11-08.txt`, which cannot see sub-grid cusps, lessons 43; re-examined by the census,
   model M11) is discharged in Lean: **proposed**. Uniformly over `(a, b)`: needs a family D4 statement, **proposed** (open analysis).
-- **Single-photon transition probabilities on a cosine-band photonic lattice** (for example a synthetic orbital-angular-momentum lattice): every single-site probability is at most `min(1, b(2κt))²`, with `b` the T0E envelope divided by `2π`, nontrivial for `2κt ≥ 519` (machine-checked threshold), **demonstrated** (`examples/consumer/ConsumerPhotonLattice.lean`; the identification of the amplitude with the physical model is a paper step, `review/2026-11-10-external-followup-answers.md`). With T0E′ (batch LE2, machine-checked) the envelope becomes `1.547 (2κt)^{−1/3}`, below 1 for every `2κt ≥ 4`: **demonstrated** in the same file (`amp_le_cubeRoot`, `amp_cubeRoot_lt_one`). Loss, input/output coupling, finite chains and control are not covered.
-- **Quantum-walk spreading bounds** (ballistic spreading with `t^{-2/3}` decay of return amplitudes): **proposed**; needs
+- **Single-photon transition probabilities on a cosine-band photonic lattice** (for example a synthetic orbital-angular-momentum lattice): every single-site probability is at most `min(1, b(2κt))²`, with `b` the T0E envelope divided by `2π`, nontrivial for `2κt ≥ 519` (machine-checked threshold), **demonstrated** (`examples/consumer/ConsumerPhotonLattice.lean`; the identification of the amplitude with the physical model is a paper step, `review/2026-11-10-external-followup-answers.md`). With T0E′ (batch LE2, machine-checked) the envelope becomes `(C*/(2π)) (2κt)^{−1/3}` with `C*/(2π) = 1.54730… < 1.548`, below 1 for every `2κt ≥ 4`: **demonstrated** in the same file (`amp_le_cubeRoot`, `amp_cubeRoot_lt_one`). Loss, input/output coupling, finite chains and control are not covered.
+- **Quantum-walk spreading bounds** (ballistic spreading: the bound `t^{-2/3}` uniform over all sites in 2D; the return amplitude at the starting site
+  decays faster, like `t^{-1}`, since its stationary points are nondegenerate): **proposed**; needs
   vector-valued (matrix) amplitudes for the coin space (done for the global theorems: batch VT) and a classified two-band
   symbol (none found yet: `docs/design/vector-amplitudes.md` §6).
 
@@ -45,7 +46,11 @@ in Lean; numerics in `numerics/` are tooling and are never cited as evidence.
   `‖E(τ, ζ)‖ ≤ 18 (43740 τ/28561)^{−1/3} (|A(2/3)| + ∫|A′|)` uniformly in the position `ζ`: **demonstrated**
   (`examples/consumer/ConsumerWhistler.lean`, S1.3; the third-derivative bound is proved there). An explicit, valid
   bound, not a sharp one (with `A = 1` it beats the trivial bound only for `τ ≳ 8.2·10⁵`). Source: Track C, item C1, of
-  `review/2026-11-12-DNLS-packet-answers.md`.
+  `review/2026-11-12-DNLS-packet-answers.md`. An upper bound only: that the packet decays like `τ^{−1/3}` and no
+  faster at the inflection is classical (Airy-type behaviour) and is not proved here. Validity regime of the model: cold
+  collisionless electrons, parallel propagation, immobile ions (frequencies far above the ion gyrofrequency) and
+  `ω_pe² ≫ ω(Ω − ω)`; on the band, `ω/Ω = q²/(1 + q²) ∈ [0.2, 0.31]`. The cited Eliasson–Shukla paper is CITED-UNREAD
+  by the lead.
 - **Gyroaverage**: `|J₀(z)| ≤ 1.548 z^{−1/3}` for every `z > 0` follows from T0E′ (`latticeKernel1 z 0 = 2π J₀(z)`, the
   Bessel identification not formalised); valid but weaker than the classical `(2/(πz))^{1/2}`; no consumer yet.
 
@@ -54,7 +59,7 @@ in Lean; numerics in `numerics/` are tooling and are never cited as evidence.
   hypothesis, **demonstrated** on explicit phases (`examples/consumer/ConsumerLocal.lean`, `foldOn`; the bite
   `foldCrit_fold_bite`).
 - **Umbilic caustics (D4)**: the uniform `t^{-2/3}` bound and the exact leading term with constant
-  `Γ(1/3)²/(√3 |Disc|^{1/6})`, **demonstrated** (`OscInt.API.d4LimitClosedForm`, F2; `examples/consumer/ConsumerFormula.lean`).
+  `Γ(1/3)²/(√3 |Disc|^{1/6})` for `Disc < 0` and `Γ(1/3)²/Disc^{1/6}` for `Disc > 0`, **demonstrated** (`OscInt.API.d4LimitClosedForm`, F2; `examples/consumer/ConsumerFormula.lean`).
 - **Diffraction integrals with explicit error bars**: **proposed**; needs explicit constants (`docs/constants.md`:
   the general route gives only crude constants; a certified-numerics demonstrator is ROADMAP P6).
 
@@ -72,8 +77,9 @@ in Lean; numerics in `numerics/` are tooling and are never cited as evidence.
   (ROADMAP P5).
 
 ## Verified reference targets for AI theorem provers
-- Every statement in `stamps/statements.json` is a frozen, reviewed `Prop` with a machine-checked proof and a
-  commitment (SHA-256 of its definitional closure); the `Challenge/` files are the same statements with `sorry`
+- Every statement in `stamps/statements.json` is a frozen, reviewed `Prop` with a commitment (SHA-256 of its
+  definitional closure). All but the four batch-LS statements have a machine-checked proof; `docs/STATUS.md` gives
+  each one's replay status (corrected 2026-11-13: this line said every statement was proved). The `Challenge/` files are the same statements with `sorry`
   proofs, accepted by `lake comparator` only for a proof whose statement matches. **Demonstrated** as a mechanism
   (`comparator-*.json`, `make comparator` in `make verify-all`); use as a benchmark (strip a proof, ask a prover to
   re-prove the statement, judge with the comparator) is **proposed**.

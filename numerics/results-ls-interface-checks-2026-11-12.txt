@@ -8,3 +8,12 @@ I3 kernel series sum_n (it)^n/n! L_n(z) = G_d(t, z): max error / (1e-15 e^(4d|t|
 RUNTIME python 3.13.18 numpy 2.3.5 scipy 1.17.0
 RESULT PASS
 # exit status 0
+
+# Note added 2026-11-13 (not part of the run above; after the A3 adversarial review and the application-chains audit):
+# I3 uses stencils on a periodic grid with R = 24 (49 sites per axis) for orders n <= 60, so for n >= 49 - |z| periodic
+# images of L_n enter the sum. The lead computed their contribution exactly (integer stencils on a grid large enough
+# to hold every order, compared with the periodic ones), at the I3 times t = -1.3, 0.4, 2.0 and the I3 sites
+# (z = 0, 1, -3 in d = 1; (0, 0), (1, -2) in d = 2): max over cases of sum_n |t|^n/n! |L_n^periodic(z) - L_n(z)| =
+# 7.6e-43 (d = 1) and 1.2e-41 (d = 2). Script: the lead's scratch check, reproduced in
+# numerics/review/application_chains_checks.py (section I3-alias).
+# The recorded PASS is unaffected. I1 and I2 use orders <= 10, where no image enters.

@@ -36,7 +36,12 @@ download Lean (HTTP 403).
 
 ## What the lead did
 
-1. **Integrity.** The archive's SHA-256 (cca17e47…) matches the one the owner relayed.
+1. **Integrity.** The archive's SHA-256, cca17e47309c2598036526c25a4a95ade9dba303b54cf4fe20142428d9770a76, matches
+   the one the owner relayed.
+   - Times (UTC, file times in the session scratchpad; added after the adversarial review,
+     `review/2026-11-12-A3-post-proof-answers.md`, MINOR 6): extraction 22:38:56; compilation in the worktree
+     22:42:36 to 22:52:19; integration commit 93a8a8d 23:02:13.
+   - The owner approved compilation before the first compile.
 2. **Safety scan before running anything.** The lead read every Lean file in the packet for constructs that execute
    code at elaboration or weaken the proof. Searched for:
    - code execution: `#eval`, IO, `run_cmd`, `initialize`, macros, `elab`, `unsafe`, `extern`;
@@ -44,7 +49,8 @@ download Lean (HTTP 403).
    
    None was found. The only `elab` is the repository's own `#assert_type_is` in `StatementTypes.lean`.
    - The patch changes existing files only by adding two `import OscInt.Cusp.Final` lines and the type assertions.
-   - The new definitions are helpers in their own auxiliary namespaces. Nothing frozen is redefined or shadowed.
+   - The new definitions are helpers in auxiliary namespaces: their own, except that the P3 helpers extend the
+     existing `OscInt.StationaryPhase.ImplicitAux`. Nothing frozen is redefined or shadowed.
    - The session's safety filter blocks running external code by default. The owner approved compiling this packet
      on 2026-11-12, on the condition of an isolated worktree first.
 3. **Compilation, in an isolated git worktree at 100d545 with the patch applied:**
@@ -54,6 +60,7 @@ download Lean (HTTP 403).
      - `VdCk.lean`: twice, a cast `((1 + 1 : ℕ) : ℝ)` or `((2 + 1 : ℕ) : ℝ)` is rewritten to the numeral before an
        existing step. This replaces a `simp` that made no progress.
      - `Implicit4.lean`: a trailing `ring` after a `simp` that had already closed the goal is removed.
+       (The removed `ring` cannot be seen in the integrated file; the other four fixes can.)
      - `Core4.lean`: a `show` states the goal with the local `g` before a rewrite, because the goal was not
        beta-reduced.
      - `Core4.lean`: `oscInt2_eq_iterated` is given its phase explicitly, `(Q := fun k => Q k + p * k.1)`, because
@@ -62,7 +69,8 @@ download Lean (HTTP 403).
      - `lake build OscInt` succeeds;
      - `StatementTypes.lean` prints TYPE-OK for `OscInt.API.vdCk`, `cuspBoundGen` and `cuspBound` against the frozen
        statement types;
-     - `#print axioms` on all 51 new declarations shows only propext, Classical.choice and Quot.sound;
+     - `#print axioms` on all 51 new theorems (there are also 10 new definitions) shows only propext, Classical.choice
+       and Quot.sound;
      - the guard passes, with no `sorry` and no banned constructs;
      - `make lean` (build, guard, axiom audit) passes in the worktree.
    - **The comparator did not run in the worktree.** Lake treated the symlinked package directory as missing, which
@@ -78,7 +86,8 @@ download Lean (HTTP 403).
 
 ## The route and the deviations
 
-The route (`docs/proof-A3.md`) was refereed at b719ba4, before these parts existed. The parts follow it, with one
+The route (`docs/proof-A3.md`) was refereed at b719ba4, before these parts existed. It covers the cusp parts P1–P5;
+S1.k for general k is outside it (correction after the adversarial review, MAJOR 2). The cusp parts follow it, with one
 deviation:
 - **P4.** It integrates by parts against the whole compactly supported amplitude in the transverse variable, rather
   than first cutting the inner integral to [−b, b] as the route revision proposed.
@@ -107,8 +116,9 @@ deviation:
 
 ## AI-use disclosure
 
-- **The proof text** of these parts was drafted with an OpenAI model (the reviewer's tool; version as given by the
-  owner, not verified), following the route written and refereed by Claude instances.
+- **The proof text** of these parts was drafted with an OpenAI model (the reviewer's tool; version not stated for this
+  packet). The cusp parts follow the route written and refereed by Claude instances; S1.k for general k had no route
+  review (`docs/proof-A3.md` lists it under "Not needed"), only the post-proof reviews.
 - **Its integration, the fixes and the checks** were done by the lead, a Claude instance.
 - Agreement between instances of one model family is not independent confirmation. The Lean kernel check is.
 - `docs/prior_art.md` records this disclosure for batch A3.

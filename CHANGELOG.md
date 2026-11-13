@@ -6,9 +6,16 @@ or `proved_by` name. Every release lists its statement changes, even when there 
 
 ## Unreleased
 
-Statement changes: three new statements, frozen and reviewed, **not proved**: S1.k (`VdCkStatement`), S5.1
+Statement changes: three new statements, frozen and reviewed: S1.k (`VdCkStatement`), S5.1
 (`CuspBoundStatement`) and S5.1′ (`CuspBoundGenStatement`) in `OscInt/Statements/Cusp.lean`, stamp
-`stamps/20261109T201548Z-fcb46d9a6239`. No existing statement, commitment or `proved_by` name changed.
+`stamps/20261109T201548Z-fcb46d9a6239`. Since 93a8a8d they are **proved** (`proved_by`: `OscInt.API.vdCk`,
+`cuspBound`, `cuspBoundGen`); "as stated" waits for the isolated replay (`docs/STATUS.md`). No existing statement or
+commitment changed.
+
+Statement changes (batch LS, session 10): four new statements, frozen and reviewed, **not proved**: LS-E
+(`LatticeSchrodingerExistsStatement`), LS-K (`LatticeSchrodingerKernelStatement`), LS-D
+(`LatticeSchrodingerDispersiveStatement`) and LS-D′ (`LatticeSchrodingerDecayStatement`) in
+`OscInt/Statements/LatticeGroup.lean`, stamp `stamps/20261112T215742Z-d18e0780abdb`. No existing statement changed.
 
 Statement changes (batch LE2, session 10): two new statements, frozen, reviewed and **proved**: T0E′
 (`LatticeKernel1CubeRootStatement`, `OscInt.API.latticeKernel1CubeRoot`) and T6E′ (`LatticeLaplacianCubeRootStatement`,
@@ -20,6 +27,17 @@ Statement changes (batch HC, session 10): two new statements, frozen, reviewed a
 `OscInt.API.hypercubicCubeRoot`) in `OscInt/Statements/Hypercubic.lean`, stamp `stamps/20261112T120616Z-c56beb57ff8c`.
 No existing statement changed.
 
+- Batch A3 proved in Lean (S1.k, S5.1, S5.1′), from an external packet drafted with an OpenAI model and integrated by
+  the lead with five elaboration fixes (`review/2026-11-12-A3-packet-answers.md`); post-proof reviews answered
+  (`review/2026-11-12-A3-post-proof-answers.md`); "Parts as proved" in `docs/proof-A3.md`.
+- Batch LS (the free lattice Schrödinger group): statements, sanity layer and planted controls, two blind pre-proof
+  reviews (`review/2026-11-12-LS-pre-proof-answers.md`), review stamp; route `docs/proof-LS.md` with nine parts in
+  `Blueprint/LatticeGroup.lean` and a compiled assembly, refereed (revision section in the route).
+- Answers to the external application-chains dossier (`review/2026-11-13-application-chains-answers.md`): six hand
+  propositions and an imaging block bound checked (TRUE, not machine-checked); lead's checks
+  `numerics/review/application_chains_checks.py`; four corrections to `docs/applications.md`.
+- Consumer example `examples/consumer/ConsumerWhistler.lean`: whistler packet at the inflection of the dispersion (S1.3).
+- Partial, non-isolated replay of e814510 kept for the record (`docs/replay/2026-11-12-session10-e814510-partial.txt`).
 - Answers to the external research packet on lattice NLS and domain connections
   (`review/2026-11-12-DNLS-packet-answers.md`): kernel-to-group identification, global ℓ² dynamics and explicit
   small-data decay checked (hand proofs, not machine-checked); lead's checks `numerics/review/dnls_checks.py` (record

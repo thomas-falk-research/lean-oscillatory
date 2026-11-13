@@ -201,3 +201,25 @@ import Mathlib
 #check @summable_prod_of_nonneg
 #check @MeasureTheory.hasSum_integral_of_dominated_convergence
 #check @NormedAlgebra.complexToReal
+
+-- Batch LS route, revision after the route referee (docs/proof-LS.md, 2026-11-13), and names the A3 adversarial
+-- referee found un-checked in the route (review/2026-11-12-A3-post-proof-answers.md, MINOR 9).
+#check @HasSum.mapL
+#check @ContinuousLinearMap.map_tsum
+#check @integral_conj
+#check @HasDerivAt.clm_apply
+#check @NormedSpace.exp_eq_tsum
+#check @NormedSpace.expSeries_div_hasSum_exp
+#check @Complex.exp_eq_exp_ℂ
+#check @MeasureTheory.integral_const_mul
+#check @Real.summable_pow_div_factorial
+#check @Summable.tsum_comm
+#check @hasDerivAt_exp_smul_const'
+#check @ContinuousLinearMap.lipschitzWith
+#check @ContinuousLinearMap.apply
+#check @ContinuousLinearMap.restrictScalars
+#check @ContinuousLinearMap.hasFDerivAt
+#check @Equiv.tsum_eq
+#check @Complex.real_smul
+#check @lp.coeFn_smul
+#check @LinearMap.mkContinuous

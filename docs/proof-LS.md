@@ -135,3 +135,61 @@ The route's own interfaces are checked in `numerics/review/ls_interface_checks.p
   proof already does this kind of rewrite.
 - **P-bound:** the conjugation step for t < 0 needs the measure of the box to be invariant under k ↦ −k, or the
   pointwise conjugate identity with `integral_conj`. The latter avoids the change of variables.
+
+## Revision after the route referee (2026-11-12/13)
+
+A fresh-context route referee (a Claude instance) read this route at e814510. It was launched at 23:11:40 UTC, and its
+last action was at 23:19:24. Its verdict: every part TRUE, the assembly sufficient, no BLOCKER.
+- The referee compiled four small probe files against the pinned Mathlib, eleven Lean runs from 23:14:12 to 23:17:40.
+- That was during a full replay, against lessons 28. That replay is therefore not an acceptance record
+  (`docs/replay/2026-11-12-session10-e814510-partial.txt`).
+
+**Count of parts.** The route has nine parts, P-op to P-envelope, and `Blueprint/LatticeGroup.lean` has nine `…Facts`
+propositions. The message of commit e814510 says "eight parts"; that is wrong. The commit message is not rewritten.
+
+**MAJOR, P-conv: the series step fails at the pin as written.** With 𝕂 = ℝ, `exp_series_hasSum_exp'` gives the series
+of (n!)⁻¹ • (t • B)ⁿ with an ℝ-action on `LatticeL2 d →L[ℂ] LatticeL2 d`. Rewriting (t • B)ⁿ = tⁿ • Bⁿ then meets
+`Complex.coe_smul`, `IsSMulApply` and the `IsScalarTower` instance that `smul_pow` needs. Replacement, compiled by the
+referee (probe 4):
+- rewrite t • (I • A) = (I * t) • A: `ext` and `simp [ContinuousLinearMap.smul_apply, lp.coeFn_smul, Pi.smul_apply,
+  smul_eq_mul, Complex.real_smul]`, then `ring`;
+- use `exp_series_hasSum_exp'` with 𝕂 = ℂ;
+- prove (c • A)^m = c^m • A^m by induction with `ext`;
+- evaluate with `HasSum.mapL` at `(lp.evalCLM ℂ _ 2 x).comp (ContinuousLinearMap.apply ℂ _ f)`. `lp.evalCLM` takes p
+  explicitly.
+
+**MINOR, P-exp.**
+- `HasDerivAt.clm_apply` does not fit: the operator is ℂ-linear, while the derivative is in a real variable.
+- `Commute.exp_left` is unnecessary.
+- Use `hasDerivAt_exp_smul_const'` (𝕂 = ℝ) at `I • A`, composed with
+  `((ContinuousLinearMap.apply ℂ _ f).restrictScalars ℝ).hasFDerivAt` (probe 1 compiles).
+
+**P-unique.** `ODE_solution_unique_univ` with `v := fun _ => B`, `s := fun _ => univ`, `K := ‖B‖₊`, `t₀ := 0` and
+`B.lipschitzWith.lipschitzOnWith` compiles.
+
+**MINOR, P-series names.**
+- `Complex.hasSum_exp` does not exist at the pin.
+- Use instead:
+  - `NormedSpace.expSeries_div_hasSum_exp` with `Complex.exp_eq_exp_ℂ`;
+  - `integral_const_mul`;
+  - `Real.summable_pow_div_factorial`.
+
+**MINOR, P-conv exchange.** Use `Summable.tsum_comm`, which takes one summability hypothesis. Get it from
+`summable_prod_of_nonneg` on the norms, then `.of_norm`.
+
+**NITs.**
+- **P-op.** The bound ‖A‖ ≤ 4d is unused downstream. It is kept, because `LinearMap.mkContinuous` needs a bound;
+  ‖Δ‖ = 4d exactly. The shift API is absent from Mathlib, about 100 lines.
+- **P-op.** `latticeLaplacian` uses x − e_j. Rewrite it with `sub_eq_add_neg`.
+- **P-stencil.** The convolution step needs no reindexing: Aⁿ⁺¹ = A · Aⁿ (`pow_succ'`), the coordinate formula at
+  g = Aⁿ f, and the induction hypothesis at x ± e_j. Reindexing, by `(Equiv.addRight e).tsum_eq`, is needed only for
+  the ℓ¹ bound.
+- **P-bound.** `hypercubeBox_volume` is in `OscInt/Front/HypercubicSanity.lean`. Import it (a library file already
+  imports a sanity file) or copy its three lines.
+- **Deprecations.** `ContinuousLinearMap.lipschitz` becomes `lipschitzWith`.
+
+**The lead's interface check I3** (`numerics/review/ls_interface_checks.py`) uses a periodic grid with 49 sites per
+axis for orders up to 60, so periodic images enter. The lead computed their contribution in exact integers, at the I3
+times and sites: at most 1.2·10⁻⁴¹. The recorded PASS stands. A note is added to the record.
+
+The names above are `#check`ed in `MathlibNames.lean`.

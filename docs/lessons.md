@@ -355,3 +355,13 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     taken from the session record at the time; every numerics record prints the interpreter and package versions from
     the running process. Check: the table in `review/2026-11-12-HC-post-proof-answers.md` (finding 2); the RUNTIME line
     of `numerics/review/hc_interface_checks.py`.
+49. **Referees were launched one minute after the final replay started (lessons 28 broken again).** Session 10,
+    2026-11-12: `make verify-all` on e814510 started at 23:10:53; four referees were launched at 23:11:40. Three only read
+    files, but the LS route referee compiled its own probe files, eleven Lean runs from 23:14:12 to 23:17:40. The lead's
+    first account ("six probes, 23:14–23:20") was taken from memory, not from the session record, and was wrong; the
+    lead also proposed to disclose the overlap instead of rerunning, which would have been an exception that lessons 28
+    does not provide (the external reviewer of the application-chains dossier pointed this out). The run was later cut
+    off by a container restart. Rule: launch referees only before `make verify-all` starts or after it ends; a referee
+    prompt written while a replay runs says "do not run lean, lake or make"; a non-isolated run is kept but labelled,
+    and the acceptance record is a new isolated run. Check: the replay record's header states its isolation from a
+    process snapshot taken during the run (`docs/replay/2026-11-12-session10-e814510-partial.txt` records the failure).
