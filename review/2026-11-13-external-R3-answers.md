@@ -319,6 +319,78 @@ were checked by metadata only (Landau's conference version was read).
       was not in its output, so the file was absent when that search ran.
 - **Lessons 46: no referee report is reproduced.** Every finding above is the lead's restatement.
 
+## Addendum: the reviewer's reply to these answers (2026-11-13, relayed by the owner)
+
+The reply is restated in the lead's words (lessons 46). The reviewer read this file at 93a31ed, the 2026-11-10 C6 record
+and the pinned Mathlib source. It did not rerun Lean.
+
+**What the reviewer withdrew.**
+- Its recommendation to rank T5 first.
+- Its recommendation to freeze the scalar T8 alias identity as the next mathematical batch.
+- Its framing of both its packets (this one and the application-chains dossier) as evidence of a new capability.
+
+It agrees with each finding above:
+- the missed C6 record;
+- the missed Mathlib theorem;
+- the false threshold sentence;
+- the sanity layer that cannot see the sign;
+- the T5 schema and chronology defects;
+- the zero-error pilot.
+
+It takes responsibility for all of them.
+
+**What it confirms independently.**
+- **The exact errors.** At N = 20 the exact signed error and the uniform envelope are both 2/1048575. At N = 21 they are
+  2/2097153 and 2/2097151, so both first pass 10⁻⁶ at N = 21. Its corrected sentence: for odd N the exact error is
+  smaller than the envelope, but both first pass the tolerance at N = 21. That agrees with the lead's check.
+- **The pass probability.** 0.99^{172} = 0.1775225. The reviewer adds that a better sample size should not be proposed
+  until a population, targets and decision risks are agreed. It sees no current need to make this an OscInt project.
+- **The trust ladder.** Writing a proposition, elaborating it, and compiling a theorem that assumes it are different
+  stages from proving it. R3 reached the second and third stages only after the lead's repairs.
+- **The lessons-16 deviation.** The referees' accounts support "not read" but do not establish enforced isolation. The
+  lead agrees; the record above says "said they did not see it", which is all the evidence shows.
+
+**Its revised recommendation** is the order already in "Start here" in `docs/HANDOFF.md`:
+1. the batch LS proofs;
+2. then CENSUS, LeanCert and I3;
+3. I7 stays the bounded experiment with its existing gates.
+
+The lead agrees. Nothing in the reply changes the roadmap.
+
+**The reviewer's application survey (exploratory).** The reviewer also sent a survey of possible future applications:
+- gravitational-wave lensing in the wave-optics regime (its preferred large target);
+- late-time tails around black holes;
+- radio-interferometric and seismic imaging operators;
+- optical diffraction tomography and photoacoustic reconstruction;
+- synthetic-dimension acoustic and photonic lattices;
+- six-dimensional collisionless kinetics;
+- models with extra spatial dimensions.
+
+Its own reply labels these directions without priority. The lead's reading is as follows.
+- **Lensing: a structural fit.** In the thin-lens amplification factor F(w, y) = (w/2πi) ∫_{ℝ²} e^{iw[½|x − y|² − ψ(x)]} d²x
+  (up to a constant phase), the source position enters only through the linear term −w y·x. OscInt's global bounds
+  (GD-F, GD-N) and its local cusp and D4 bounds are uniform in all linear terms. So for a smooth lens and a compactly
+  supported cut-off they bound the cut-off part uniformly in the source position. The fold bound alone is uniform only
+  over compact sets of linear terms; GD-F carries it to all.
+- **The rates match** (lead's check of exponents, FOLKLORE for the optics side). OscInt's rates are w^{−5/6} at a fold
+  (A2), w^{−3/4} at a cusp (A3) and w^{−2/3} at an umbilic (D4). With the prefactor w they give growth of |F| at most
+  w^{1/6}, w^{1/4} and w^{1/3}. These are the catastrophe-optics singularity indices (Berry–Upstill), cited from memory,
+  not re-read.
+- **What OscInt does not supply:**
+  - The integral over ℝ² is not absolutely convergent and needs a tail argument. OscInt's amplitudes are compactly
+    supported.
+  - The common lenses (point mass, singular isothermal sphere) are not smooth at the centre.
+  - OscInt gives upper bounds, not evaluations with error bars. That is validated numerics, closer to ROADMAP I2.
+  - Its present constants become useful only at large parameters: the T2 thresholds above are 2547 to 61047.
+- **The lead's judgment:** a plausible future consumer, with nothing to act on until someone who owns a lensing
+  calculation states a tolerance. It does not become a ROADMAP candidate now (gate 1: no named consumer).
+- **The other directions** need a model reduction first:
+  - finite arrays recur, so the T10 finding applies to the synthetic-dimension lattices;
+  - the black-hole tails need the spectral analysis upstream of any oscillatory-integral step.
+
+  The lead has nothing to add to them now.
+- **The survey's citations:** a fresh-context check is running at this commit; its result will be added here.
+
 ## AI-use disclosure
 
 - The packet was produced with ChatGPT (GPT-6 Astra Pro), as the packet states. Its own audits share that model family.
