@@ -365,3 +365,7 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     prompt written while a replay runs says "do not run lean, lake or make"; a non-isolated run is kept but labelled,
     and the acceptance record is a new isolated run. Check: the replay record's header states its isolation from a
     process snapshot taken during the run (`docs/replay/2026-11-12-session10-e814510-partial.txt` records the failure).
+    Follow-up, 2026-11-13: the isolated replay of 1f7d041 ran with a once-a-minute watcher (170 snapshots, no foreign
+    Lean process; `docs/replay/2026-11-13-session10-A3-verify-all.txt`). Its first attempt, started as a harness
+    background task, was killed by the harness's two-hour limit on such tasks; a full replay takes about 2 h 50 min, so
+    it must run detached (`setsid nohup`).

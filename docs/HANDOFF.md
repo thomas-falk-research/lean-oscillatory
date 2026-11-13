@@ -2,7 +2,7 @@
 
 For a reader who saw nothing. Read `docs/lessons.md` first (49 entries); every rule in it is binding.
 
-## Session 10, continued (2026-11-12/13): batch A3 proved; batch LS stated, reviewed and routed; external packets
+## Session 10, continued (2026-11-12/13): batch A3 machine-checked as stated; batch LS stated, reviewed and routed; external packets
 
 **State at this commit.**
 - **Batch A3 (S1.k, S5.1, S5.1′) is proved in Lean.**
@@ -10,9 +10,11 @@ For a reader who saw nothing. Read `docs/lessons.md` first (49 entries); every r
     fixes (`review/2026-11-12-A3-packet-answers.md`).
   - Post-proof reviews: FAITHFUL ×3, parts SOUND. The adversarial review's three MAJORs are answered
     (`review/2026-11-12-A3-post-proof-answers.md`).
-  - Build, axiom audit and type assertions pass in the main tree.
-  - **Not yet "as stated":** the isolated replay of this commit is the next step. Derive the three STATUS rows from its
-    record.
+  - **Machine-checked as stated:** the isolated replay of 1f7d041
+    (`docs/replay/2026-11-13-session10-A3-verify-all.txt`) accepted comparator-A3 with six kernels; verify-all is
+    INCOMPLETE only because comparator-LS has no solution yet.
+  - The replay takes about 2 h 50 min. Run it detached (`setsid nohup`): a first attempt, run as a harness background
+    task, was killed by the two-hour limit on background tasks.
 - **Batch LS (the free lattice Schrödinger group on ℤ^d: LS-E, LS-K, LS-D, LS-D′).**
   - Frozen (stamp `20261112T215742Z-d18e0780abdb`) and blind-reviewed (answers
     `review/2026-11-12-LS-pre-proof-answers.md`).

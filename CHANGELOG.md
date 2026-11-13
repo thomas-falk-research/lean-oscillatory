@@ -9,7 +9,7 @@ or `proved_by` name. Every release lists its statement changes, even when there 
 Statement changes: three new statements, frozen and reviewed: S1.k (`VdCkStatement`), S5.1
 (`CuspBoundStatement`) and S5.1′ (`CuspBoundGenStatement`) in `OscInt/Statements/Cusp.lean`, stamp
 `stamps/20261109T201548Z-fcb46d9a6239`. Since 93a8a8d they are **proved** (`proved_by`: `OscInt.API.vdCk`,
-`cuspBound`, `cuspBoundGen`); "as stated" waits for the isolated replay (`docs/STATUS.md`). No existing statement or
+`cuspBound`, `cuspBoundGen`); machine-checked as stated since the isolated replay of 1f7d041 (`docs/STATUS.md`). No existing statement or
 commitment changed.
 
 Statement changes (batch LS, session 10): four new statements, frozen and reviewed, **not proved**: LS-E
@@ -30,6 +30,9 @@ No existing statement changed.
 - Batch A3 proved in Lean (S1.k, S5.1, S5.1′), from an external packet drafted with an OpenAI model and integrated by
   the lead with five elaboration fixes (`review/2026-11-12-A3-packet-answers.md`); post-proof reviews answered
   (`review/2026-11-12-A3-post-proof-answers.md`); "Parts as proved" in `docs/proof-A3.md`.
+- Batch A3 replayed in isolation on 1f7d041 (`docs/replay/2026-11-13-session10-A3-verify-all.txt`): comparator-A3
+  accepted by six kernels; S1.k, S5.1 and S5.1′ are machine-checked as stated. A first attempt was stopped by the
+  session's two-hour limit on background tasks and is disclosed in the record.
 - Batch LS (the free lattice Schrödinger group): statements, sanity layer and planted controls, two blind pre-proof
   reviews (`review/2026-11-12-LS-pre-proof-answers.md`), review stamp; route `docs/proof-LS.md` with nine parts in
   `Blueprint/LatticeGroup.lean` and a compiled assembly, refereed (revision section in the route).
