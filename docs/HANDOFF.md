@@ -46,6 +46,24 @@ batches LE2, HC and A3 end to end.
 - **Count from the session record, not from memory.** The "six probes" error (lessons 49) came from counting from
   memory.
 
+## Session 11 (2026-11-13): external R3 packet answered; nothing frozen, nothing proved
+- **R3 packet** (three archives and a decision brief, same external reviewer). It triages six targets and selects T5,
+  an evidence profile, and T8, a Fourier error package. Answers: `review/2026-11-13-external-R3-answers.md`.
+  - **Mathematics:** TRUE as hand mathematics and classical. No novelty; the packet claims none.
+  - **Already here:** T8's signed −π-grid alias identity and its parity trap were recorded on 2026-11-10 (dossier C6).
+  - **T5:** no new guarantee for OscInt, and three MAJOR design defects.
+  - **The draft Lean:** does not parse as shipped; it elaborates after three repairs.
+  - **Lead's checks:** 26/26 (`numerics/results-r3-packet-checks-2026-11-13.txt`).
+  - **Referees:** four fresh-context referees found no BLOCKER.
+- **Fixed in this repository:** `docs/calibration.md` rounded Clopper–Pearson bounds in the unsafe direction (table
+  corrected, dated note); the `review/README.md` index was brought up to date. ROADMAP I7 gains a pointer; its gates are
+  unchanged.
+- **Disclosed deviation (lessons 16):** the lead's check script was untracked in the tree for about two minutes while
+  referees ran. All four referees said they did not see it, with the evidence in the answers file.
+- **Container:** the pinned toolchain was installed from `toolchain.sha256` and the Mathlib cache fetched in about
+  four minutes.
+- **Next steps:** unchanged ("Start here" above).
+
 ## Session 10, continued (2026-11-12/13): batch A3 machine-checked as stated; batch LS stated, reviewed and routed; external packets
 
 **State at this commit.**

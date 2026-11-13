@@ -42,9 +42,21 @@ answers use plain `-answers`. External reviews are `<date>-external-<topic>-answ
 - `2026-11-09-VT-post-proof-answers.md`
 - `2026-11-10-A3-route-answers.md`
 - `2026-11-10-CENSUS-spec-answers.md`
+- `2026-11-10-LE2-pre-proof-answers.md`
 - `2026-11-10-external-audit-answers.md`
 - `2026-11-10-external-dossier-answers.md`
+- `2026-11-10-external-followup-answers.md`
 - `2026-11-10-external-results-answers.md`
+- `2026-11-11-LE2-post-proof-answers.md`
+- `2026-11-12-A3-packet-answers.md`
+- `2026-11-12-A3-post-proof-answers.md`
+- `2026-11-12-DNLS-packet-answers.md`
+- `2026-11-12-HC-post-proof-answers.md`
+- `2026-11-12-HC-pre-proof-answers.md`
+- `2026-11-12-LS-pre-proof-answers.md`
+- `2026-11-12-R2-KG-answers.md`
+- `2026-11-13-application-chains-answers.md`
+- `2026-11-13-external-R3-answers.md`
 
 ## Calibration test data
 

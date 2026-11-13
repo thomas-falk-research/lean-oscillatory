@@ -164,6 +164,13 @@ another. Nothing here is a capability until its evidence exists (`docs/STATUS.md
     are built before that.
   - *Shared primitive (design note, not a claim).* On a translation-invariant lattice, conjugation by `e^{η·x}` has
     symbol `Ĥ(k + iη)`, so C5 and the graph bound D1 are one mechanism (`review/2026-11-10-external-dossier-answers.md`, follow-up round).
+  - *Input from the external R3 packet (2026-11-13; `review/2026-11-13-external-R3-answers.md`).*
+    - What it supplies: scalar statements of the alias identity and its budgets, exact parity controls by monomials, and
+      a Poisson-kernel acceptance example. TRUE as hand mathematics; classical.
+    - Its draft Lean elaborates only after three repairs. Its sanity layer has no parity control and would accept
+      planted statement errors.
+    - The continuum Poisson identity is already Mathlib's `Real.tsum_eq_tsum_fourier_of_rpow_decay`.
+    - None of this is the matrix-valued deliverable. The gates and the stop rule above are unchanged.
 - Input language for I1, I2 and I5: `docs/decisions/2026-11-09-input-language.md` (trigonometric polynomials with
   rational coefficients under an outer function `G` with `(G′)²` rational).
 
