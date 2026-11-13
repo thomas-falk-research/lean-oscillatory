@@ -368,20 +368,29 @@ The lead agrees. Nothing in the reply changes the roadmap.
 
 Its own reply labels these directions without priority. The lead's reading is as follows.
 - **Lensing: a structural fit.** In the thin-lens amplification factor F(w, y) = (w/2πi) ∫_{ℝ²} e^{iw[½|x − y|² − ψ(x)]} d²x
-  (up to a constant phase), the source position enters only through the linear term −w y·x. OscInt's global bounds
-  (GD-F, GD-N) and its local cusp and D4 bounds are uniform in all linear terms. So for a smooth lens and a compactly
-  supported cut-off they bound the cut-off part uniformly in the source position. The fold bound alone is uniform only
+  (up to a factor of modulus one that depends on y, which matters for phase-sensitive waveforms but not for bounds), the
+  source position enters only through the linear term −w y·x. OscInt's global bounds (GD-F, GD-N) and its local cusp
+  and D4 bounds are uniform in all linear terms. So, when the phase ½|x|² − ψ(x) meets their pointwise classification
+  hypotheses on the support of a smooth cut-off, they bound the cut-off part uniformly in the source position.
+  Smoothness alone does not give those hypotheses. The fold bound alone is uniform only
   over compact sets of linear terms; GD-F carries it to all.
-- **The rates match** (lead's check of exponents, FOLKLORE for the optics side). OscInt's rates are w^{−5/6} at a fold
-  (A2), w^{−3/4} at a cusp (A3) and w^{−2/3} at an umbilic (D4). With the prefactor w they give growth of |F| at most
-  w^{1/6}, w^{1/4} and w^{1/3}. These are the catastrophe-optics singularity indices (Berry–Upstill), cited from memory,
-  not re-read.
+- **The rates match.** OscInt's rates are w^{−5/6} at a fold (A2), w^{−3/4} at a cusp (A3) and w^{−2/3} at an umbilic
+  (D4). With the prefactor w they give growth of |F| at most w^{1/6}, w^{1/4} and w^{1/3}.
+  - These are the amplitude exponents β of M. V. Berry and C. Upstill, "Catastrophe optics", Progress in Optics XVIII
+    (1980), §3, Table 2, printed page 296: β = 1/6 (fold), 1/4 (cusp), 1/3 (elliptic and hyperbolic umbilics). Their
+    diffraction integral carries the prefactor k^{N/2}, which is k for two variables, as here.
+  - Read by the lead in the text extracted from the publisher's PDF, after the reviewer cited the same table; the first
+    version of this addendum cited it from memory.
+  - These are upper-bound powers of the amplitude. They give no lower bound or diffraction profile, and intensity
+    doubles each exponent.
 - **What OscInt does not supply:**
   - The integral over ℝ² is not absolutely convergent and needs a tail argument. OscInt's amplitudes are compactly
     supported.
   - The common lenses (point mass, singular isothermal sphere) are not smooth at the centre.
   - OscInt gives upper bounds, not evaluations with error bars. That is validated numerics, closer to ROADMAP I2.
-  - Its present constants become useful only at large parameters: the T2 thresholds above are 2547 to 61047.
+  - Its present constants can make a bound useful only at large parameters. In the separated-phase examples of T2
+    above, the thresholds are 2547 to 61047. Those numbers belong to those examples, not to any lensing calculation,
+    which would need its own normalisation, amplitude and constants.
 - **The lead's judgment:** a plausible future consumer, with nothing to act on until someone who owns a lensing
   calculation states a tolerance. It does not become a ROADMAP candidate now (gate 1: no named consumer).
 - **The other directions** need a model reduction first:

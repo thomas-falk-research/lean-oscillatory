@@ -112,9 +112,10 @@ jobs:
           git switch -c "$b"
           echo "$SHA" > "docs/release-notes/$TAG.commit"
           # on every line that pins a tag (`rev = "vX.Y.Z"`), the old tag becomes the new one, comments included.
-          # The files are every pinning file that `tools/check_docs.py` pins-checks (tracked README.md and docs/**/*.md
-          # outside docs/release-notes/), so the two lists cannot drift apart (a fixed list missed docs/downstream.md
-          # in the v0.5.0 pins pull request), plus the release consumer's lakefile.
+          # The files are found by the rule `tools/check_docs.py` uses for its pins check (tracked README.md and
+          # docs/**/*.md outside docs/release-notes/), plus the release consumer's lakefile. A fixed list missed
+          # docs/downstream.md in the v0.5.0 pins pull request. The rule is written twice, here and in check_docs.py:
+          # change both together.
           mapfile -t pinned < <(git grep -lE 'rev = "v[0-9]+\.[0-9]+\.[0-9]+"' -- README.md 'docs/*.md' ':!docs/release-notes/*')
           sed -i -E "/rev = \"v[0-9]+\.[0-9]+\.[0-9]+\"/ s/v[0-9]+\.[0-9]+\.[0-9]+/$TAG/g" \
             "${pinned[@]}" examples/consumer-release/lakefile.toml

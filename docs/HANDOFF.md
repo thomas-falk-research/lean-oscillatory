@@ -2,20 +2,23 @@
 
 For a reader who saw nothing. Read `docs/lessons.md` first (49 entries); every rule in it is binding.
 
-## Start here (end of session 10, 2026-11-13)
+## Start here (end of session 11, 2026-11-13; the plan is session 10's, unchanged)
 
 **State.** 63 pinned statements; 59 are machine-checked as stated (`docs/STATUS.md`). The four of batch LS (the free
 lattice Schrödinger group on ℓ²(ℤ^d)) are stated, frozen, reviewed and routed, and not proved. Session 10 completed
-batches LE2, HC and A3 end to end.
+batches LE2, HC and A3 end to end. Session 11 proved nothing; it answered an external packet and fixed two CI
+workflows (below).
 
-**Release v0.5.0 is prepared on this branch, not published.**
-- Prepared: versions set in `lakefile.toml`, `CITATION.cff`, `codemeta.json` and `.zenodo.json`; the CHANGELOG
-  section; notes with pins in `docs/release-notes/v0.5.0.md`. `tools/release_preflight.sh 0.5.0` passes.
-- It ships LS with `proved_by` null; the owner chose this on 2026-11-13, rather than waiting for LS.
-- Owner steps: merge the release pull request to `main`, run `release-candidate` with version `0.5.0`, tag and publish
-  (the commands are in the notes, "Publishing"), then merge the `post-release` pins pull request and record the
-  Zenodo DOI.
-- If the release is published after 2026-11-13, change the three dates first.
+**Release v0.5.0 is published** (GitHub release 2026-11-13T19:02:37Z, tag on 2cf118d; `release-candidate` and
+`post-release` green). It ships LS with `proved_by` null (owner choice, 2026-11-13). Open release items:
+- **The pins pull request** ([thomas-falk-research/lean-oscillatory#14](https://github.com/thomas-falk-research/lean-oscillatory/pull/14),
+  branch `release/v0.5.0-pins`) has red `ci`.
+  - Before merging, `docs/downstream.md:12` must say v0.5.0 in both places: the `rev` and the `.commit` file it names.
+  - The workflow that produced the PR is fixed on `claude/pensive-hawking-l3luid` at 43a13fb.
+  - The PR's own `consumer` job needs the 90-minute limit of that commit, so its CI should run after this branch is
+    merged.
+- **The Zenodo version DOI:** record it once minted. Not checked in session 11.
+- **The release process** (CONTRIBUTING "Commits and releases") is unchanged.
 
 **Next, in order:**
 1. **Batch LS proofs.**
