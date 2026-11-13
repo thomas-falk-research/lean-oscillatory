@@ -19,6 +19,13 @@ path = [
 SPDX-FileCopyrightText = "2026 Thomas Falk III <research@thomas-falk-research.com>"
 SPDX-License-Identifier = "Apache-2.0"
 
+# A check script cited by its SHA-256 in its results record (numerics/results-application-chains-checks-2026-11-13.txt);
+# a comment header would change that hash, so it carries none.
+[[annotations]]
+path = "numerics/review/application_chains_checks.py"
+SPDX-FileCopyrightText = "2026 Thomas Falk III <research@thomas-falk-research.com>"
+SPDX-License-Identifier = "Apache-2.0"
+
 # Frozen challenges: the comparator checks their export's SHA-256 against the stamp, and a header would shift the source
 # positions that Lean records in each `sorry`, changing the export; they carry no comment header.
 [[annotations]]
