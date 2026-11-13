@@ -6,27 +6,47 @@ or `proved_by` name. Every release lists its statement changes, even when there 
 
 ## Unreleased
 
-Statement changes: three new statements, frozen and reviewed: S1.k (`VdCkStatement`), S5.1
+Nothing yet.
+
+## v0.5.0 — 2026-11-13
+
+A minor release. Before 1.0.0 a minor release may change statements; this one changes none. It adds 11 statements:
+- **seven proved and machine-checked as stated:** batch A3 (S1.k, S5.1, S5.1′), batch LE2 (T0E′, T6E′) and batch HC
+  (TdF, TdE′);
+- **four stated, frozen and reviewed but not proved:** batch LS (LS-E, LS-K, LS-D, LS-D′), whose `proved_by` is
+  `null` in `stamps/statements.json`. Their proofs will come in a later minor release.
+
+There are 63 statements in all, 59 of them machine-checked as stated (`docs/STATUS.md`). The 52 entries of v0.4.0 in
+`stamps/statements.json` are unchanged, field for field (compared with the v0.4.0 tag on 2026-11-13). Toolchain
+`leanprover/lean4:v4.35.0` and Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679`, both unchanged. Release notes
+and pins: `docs/release-notes/v0.5.0.md`.
+
+### Statement changes
+
+Batch A3 (sessions 8–10): three new statements, frozen, reviewed and **proved**: S1.k (`VdCkStatement`), S5.1
 (`CuspBoundStatement`) and S5.1′ (`CuspBoundGenStatement`) in `OscInt/Statements/Cusp.lean`, stamp
-`stamps/20261109T201548Z-fcb46d9a6239`. Since 93a8a8d they are **proved** (`proved_by`: `OscInt.API.vdCk`,
-`cuspBound`, `cuspBoundGen`); machine-checked as stated since the isolated replay of 1f7d041 (`docs/STATUS.md`). No existing statement or
-commitment changed.
+`stamps/20261109T201548Z-fcb46d9a6239`; `proved_by` `OscInt.API.vdCk`, `cuspBound`, `cuspBoundGen` (since 93a8a8d);
+machine-checked as stated since the isolated replay of 1f7d041 (`docs/STATUS.md`).
 
-Statement changes (batch LS, session 10): four new statements, frozen and reviewed, **not proved**: LS-E
-(`LatticeSchrodingerExistsStatement`), LS-K (`LatticeSchrodingerKernelStatement`), LS-D
-(`LatticeSchrodingerDispersiveStatement`) and LS-D′ (`LatticeSchrodingerDecayStatement`) in
-`OscInt/Statements/LatticeGroup.lean`, stamp `stamps/20261112T215742Z-d18e0780abdb`. No existing statement changed.
-
-Statement changes (batch LE2, session 10): two new statements, frozen, reviewed and **proved**: T0E′
+Batch LE2 (session 10): two new statements, frozen, reviewed and **proved**: T0E′
 (`LatticeKernel1CubeRootStatement`, `OscInt.API.latticeKernel1CubeRoot`) and T6E′ (`LatticeLaplacianCubeRootStatement`,
 `OscInt.API.latticeLaplacianCubeRoot`) in `OscInt/Statements/LatticeCubeRoot.lean`, stamp
 `stamps/20261110T234417Z-0532b1cf8880`. They imply the frozen T0E and T6E, which are unchanged.
 
-Statement changes (batch HC, session 10): two new statements, frozen, reviewed and **proved**: TdF
+Batch HC (session 10): two new statements, frozen, reviewed and **proved**: TdF
 (`HypercubicKernelFactorStatement`, `OscInt.API.hypercubicKernelFactor`) and TdE′ (`HypercubicCubeRootStatement`,
 `OscInt.API.hypercubicCubeRoot`) in `OscInt/Statements/Hypercubic.lean`, stamp `stamps/20261112T120616Z-c56beb57ff8c`.
-No existing statement changed.
 
+Batch LS (session 10): four new statements, frozen and reviewed, **not proved**: LS-E
+(`LatticeSchrodingerExistsStatement`), LS-K (`LatticeSchrodingerKernelStatement`), LS-D
+(`LatticeSchrodingerDispersiveStatement`) and LS-D′ (`LatticeSchrodingerDecayStatement`) in
+`OscInt/Statements/LatticeGroup.lean`, stamp `stamps/20261112T215742Z-d18e0780abdb`.
+
+### Changes
+
+- Package metadata for v0.5.0 (`lakefile.toml`, `CITATION.cff`, `codemeta.json`, `.zenodo.json`): a new abstract
+  covering the cusp and lattice results, and more keywords. README rewritten around what is proved; documentation
+  index, decision tree (`docs/which-theorem.md`), ROADMAP and hand-off updated.
 - Batch A3 proved in Lean (S1.k, S5.1, S5.1′), from an external packet drafted with an OpenAI model and integrated by
   the lead with five elaboration fixes (`review/2026-11-12-A3-packet-answers.md`); post-proof reviews answered
   (`review/2026-11-12-A3-post-proof-answers.md`); "Parts as proved" in `docs/proof-A3.md`.

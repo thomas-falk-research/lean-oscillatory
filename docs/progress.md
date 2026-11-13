@@ -1,5 +1,8 @@
 # Progress log
 
+Sessions 1–3 only. Sessions 7–10 are in `docs/HANDOFF.md` (newest first); sessions 4–6 are in its git history and in
+`CHANGELOG.md`.
+
 ## 2026-11-05 — M0
 Toolchain v4.35.0 and elan v4.2.4 installed from hash-pinned downloads; the installed toolchain is byte-identical to
 the pinned archive. Mathlib pinned at tag v4.35.0. Library skeleton with one theorem; axiom audit enumerating

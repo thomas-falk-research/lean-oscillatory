@@ -42,6 +42,8 @@ another. Nothing here is a capability until its evidence exists (`docs/STATUS.md
       are on `main`. #10's `verify` run on its final head (run 42667383698) passed all 17 jobs, but its `verdict`
       job was never created and the run is marked failed with no failed job (GitHub refused a re-run); the owner merged
       it on those 17 jobs. The `verify` run on `main` after the merge is the check of the merged tree.
+- [ ] **Release v0.5.0** (prepared 2026-11-13, owner publishes): batches A3, LE2 and HC, plus the stated LS batch
+      (`docs/release-notes/v0.5.0.md`; `tools/release_preflight.sh 0.5.0` passes on the branch).
 - [ ] **I1 Singularity census of industry dispersion relations.** Which degenerate points (A3 cusps, A≥4, D4, D≥5, E/J,
       non-isolated sets, non-smooth points) occur in 18 2D models (nine weighted families, plus one unweighted re-check) across five domains (lattice materials,
       two-band topological models, quantum walks, numerical schemes, lattice waves), classified exactly by two
@@ -76,6 +78,11 @@ another. Nothing here is a capability until its evidence exists (`docs/STATUS.md
       3. Then I3b (the dimension-generic track).
       This revises the morning's order, which put I3a first. Background:
       `review/2026-11-10-external-dossier-answers.md` and `docs/HANDOFF.md`, session 9.
+      *Done 2026-11-13:* the general k-th-order van der Corput bound (S1.k) and the local A3 bound t^{−3/4} uniform in
+      the linear term (S5.1, S5.1′) are machine-checked as stated (batch A3; replay
+      `docs/replay/2026-11-13-session10-A3-verify-all.txt`). Open in I3: global assembly with A3 points, I3a, I3b.
+      Batch LS (the free lattice Schrödinger group, ROADMAP "Candidates", the discrete NLS row) is stated and routed,
+      not proved.
   - [ ] **I3a Parametrised transverse stationary phase, transverse dimension n.**
     - *The lemma.* Take a phase `F(s, u) + y·(s, u)` with `s ∈ ℝⁿ` and `u ∈ ℝ^r`, whose s-Hessian is invertible on
       the amplitude's support. The lemma says the s-integral equals its stationary-phase leading term plus a remainder

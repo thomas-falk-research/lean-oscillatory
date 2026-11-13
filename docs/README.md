@@ -25,8 +25,12 @@ The exact text and status of each label are in `statements.md` and `STATUS.md`.
 - **T6, T6L**: the 2D lattice-Laplacian dispersive bound and its leading term.
 - **T0E, T6F, T6E** (batch LE): explicit lattice constants.
 - **GD-…-V** (batch VT): the global decay estimates for amplitudes in a Banach space.
-- **Batch labels:** **API1–API3** are the front-end batches; **GD, LE, VT, A3** are the batches named after their
-  statements.
+- **T0E′, T6E′** (batch LE2): the cube-root constant 8(1 + √7)/3 for the 1D and 2D lattice kernels.
+- **TdF, TdE′** (batch HC): the d-dimensional hypercubic lattice kernel factorises; its bound (8(1 + √7)/3)^d t^{−d/3}.
+- **LS-E, LS-K, LS-D, LS-D′** (batch LS): the free lattice Schrödinger group on ℓ²(ℤ^d), its kernel representation,
+  and its dispersive decay (stated and reviewed, not proved).
+- **Batch labels:** **API1–API3** are the front-end batches; **GD, LE, LE2, VT, HC, A3, LS** are the batches named
+  after their statements.
 
 ## Reference
 
@@ -51,7 +55,8 @@ The exact text and status of each label are in `statements.md` and `STATUS.md`.
 ## Proof routes (one per batch; CONTRIBUTING step 6)
 
 `proof-S2S3.md`, `proof-S4.md`, `proof-S42.md`, `proof-S43.md`, `proof-S44.md`, `proof-API2.md`, `proof-API3.md`,
-`proof-GD.md`, `proof-LE.md`, `proof-VT.md`, `proof-A3.md` (in progress).
+`proof-GD.md`, `proof-LE.md`, `proof-VT.md`, `proof-LE2.md`, `proof-HC.md`, `proof-A3.md`, `proof-LS.md` (route
+refereed; parts not yet proved).
 
 ## Process and history
 
@@ -60,7 +65,7 @@ The exact text and status of each label are in `statements.md` and `STATUS.md`.
 | `lessons.md` | Durable lessons; each is a binding rule |
 | `HANDOFF.md` | State and next steps, newest session first |
 | `ROADMAP.md` | Plan, programmes, gated candidates, standing hygiene |
-| `progress.md` | Chronological log |
+| `progress.md` | Chronological log of sessions 1–3; sessions 7–10 are in `HANDOFF.md`, sessions 4–6 in its history and in `CHANGELOG.md` |
 | `decisions/` | Owner decisions and the memos behind them |
 | `design/` | Design notes (torus lattice, vector amplitudes, leading terms) |
 | `prereg/` | Pre-registered numerical studies and their ledger (`prereg/LEDGER.md`) |

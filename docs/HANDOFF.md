@@ -2,6 +2,50 @@
 
 For a reader who saw nothing. Read `docs/lessons.md` first (49 entries); every rule in it is binding.
 
+## Start here (end of session 10, 2026-11-13)
+
+**State.** 63 pinned statements; 59 are machine-checked as stated (`docs/STATUS.md`). The four of batch LS (the free
+lattice Schrödinger group on ℓ²(ℤ^d)) are stated, frozen, reviewed and routed, and not proved. Session 10 completed
+batches LE2, HC and A3 end to end.
+
+**Release v0.5.0 is prepared on this branch, not published.**
+- Prepared: versions set in `lakefile.toml`, `CITATION.cff`, `codemeta.json` and `.zenodo.json`; the CHANGELOG
+  section; notes with pins in `docs/release-notes/v0.5.0.md`. `tools/release_preflight.sh 0.5.0` passes.
+- It ships LS with `proved_by` null; the owner chose this on 2026-11-13, rather than waiting for LS.
+- Owner steps: merge the release pull request to `main`, run `release-candidate` with version `0.5.0`, tag and publish
+  (the commands are in the notes, "Publishing"), then merge the `post-release` pins pull request and record the
+  Zenodo DOI.
+- If the release is published after 2026-11-13, change the three dates first.
+
+**Next, in order:**
+1. **Batch LS proofs.**
+   - Route: `docs/proof-LS.md`. Read "Revision after the route referee" first: P-conv must use the exponential series
+     over ℂ, P-exp goes through `restrictScalars`, and the uniqueness part is P-unique.
+   - The nine parts are interfaces in `Blueprint/LatticeGroup.lean`. The compiled assembly is
+     `OscInt/Front/LatticeGroupAssembly.lean`.
+   - No part proof exists in the tree. Drafts and probes from session 10 lived in the session scratchpad, which does
+     not survive the container.
+   - Then the final file (LatticeGroupFinal, named in the route), an **isolated** `make verify-all`, the post-proof
+     reviews (A, B, adversarial), the records, and a minor release (v0.6.0) that sets `proved_by`.
+2. CENSUS held-out pool (ROADMAP I1), then its implementations.
+3. LeanCert experiment (I2).
+4. I3: global assembly with A3 points; then I3a and I3b.
+5. Optional, a separate change: the six style warnings of `OscInt/Cusp/Implicit4.lean` (lines 131, 227, 229). A proof
+   change, so it needs a build, an axiom audit and a replay record.
+
+**Candidates waiting for the owner (ROADMAP "Candidates"):**
+- the discrete Klein–Gordon kernel bound (R2);
+- the two-port memory consumer and the imaging block consumer (the application-chains dossier);
+- QWZ at the critical mass.
+
+**Process, learned the hard way this session:**
+- **Lessons 49.** No Lean, `lake`, `make` or Lean-running referee while `make verify-all` runs. Launch referees
+  before it starts or after it ends.
+- **Run the replay detached.** A full replay takes about 2 h 50 min. Start it with `setsid nohup` and a process
+  watcher (as in the A3 record's header). A harness background task is killed after 2 hours.
+- **Count from the session record, not from memory.** The "six probes" error (lessons 49) came from counting from
+  memory.
+
 ## Session 10, continued (2026-11-12/13): batch A3 machine-checked as stated; batch LS stated, reviewed and routed; external packets
 
 **State at this commit.**
@@ -217,9 +261,9 @@ S5.1′): 55 pinned, 52 proved (`docs/STATUS.md`). Branch names, commits and cou
 1. **CONTRIBUTING step 5: decided 2026-11-09, option (iii).** One-time waivers for API3's test-layer MAJOR and LE's
    documentation-only MAJOR (recorded in the 13 STATUS rows and the answers files); step 2 amended (conditional sanity
    theorems with planted copies before the stamp); step 5 gains a clause for documentation-only MAJORs.
-2. **v0.4.0: prepared in this branch** (versions bumped, CHANGELOG section, notes with pins for batches 3, GD, LE and VT;
-   `tools/release_preflight.sh 0.4.0` passes). After the merge: Actions → `release-candidate` on `main`, then the three
-   commands it prints (`docs/release-notes/v0.4.0.md`, "Publishing").
+2. **Releases.** v0.4.0 is published. v0.5.0 is prepared in this branch (versions, CHANGELOG section, notes with
+   pins; `tools/release_preflight.sh 0.5.0` passes). After the merge: Actions → `release-candidate` on `main`, then the
+   commands it prints (`docs/release-notes/v0.5.0.md`, "Publishing").
 3. AI-authorship wording (adversarial finding f1 of session 6), branch protection, P5 tactic policy, discoverability.
 4. Human expert review: deferred by the owner under `docs/policy.md` (wording rule, calibration plan, triggers).
 
@@ -235,8 +279,8 @@ S5.1′): 55 pinned, 52 proved (`docs/STATUS.md`). Branch names, commits and cou
 3. Strichartz (non-endpoint), then 4. the family D4 bound: not started.
 
 ## Process notes for the next lead
-- `make quick` before every push (lessons 35, 37). The final `make verify-all` takes about 2 hours on a 4-core machine,
-  longer than the session tool's 2-hour background limit: start it detached (`nohup setsid …`) and wait on its log;
+- `make quick` before every push (lessons 35, 37). The final `make verify-all` takes about 2 h 50 min on a 4-core machine
+  (2026-11-13), longer than the session tool's 2-hour background limit: start it detached (`nohup setsid …`) and wait on its log;
   log `date -u` at start and end (adversarial n9).
 - Do not write proofs while a referee reads the tree (lessons 16, 42).
 - Follow-ups recorded, not done: pin paths not validated in `stamp` (n5); actionlint and shellcheck not hash-pinned

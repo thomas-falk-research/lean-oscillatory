@@ -16,6 +16,11 @@ code there cannot rot silently; copy from it. Which theorem fits which phase: `d
 | Periodic integrals over `[−π, π]²` | `OscInt/Front/GlobalSanity.lean` (`latticeKernel_zero_zero`, `torusUnfold_moments`) | T1 |
 | The 2D lattice Laplacian, `t^{-2/3}` and sharpness | `examples/consumer/ConsumerLattice.lean` | T6, T6L, SH |
 | Every batch-GD theorem applied to concrete data | `examples/consumer/ConsumerGlobalChecks.lean` | GD-C, GD, GD-F, GD-N, SH, T1, T6, T6L |
+| The 1D lattice kernel with the cube-root constant: transition probabilities on a cosine-band lattice | `examples/consumer/ConsumerPhotonLattice.lean` | T0E′ (`latticeKernel1CubeRoot`) |
+| The d-dimensional hypercubic kernel, factorised and bounded | `OscInt/Front/HypercubicSanity.lean` | TdF, TdE′ |
+| Checking `IsA3Point` / `IsStableA3Point` for an explicit quartic phase; S1.k at k = 2, 3 | `OscInt/Front/CuspSanity.lean` | S1.k, S5.1, S5.1′ |
+| A 1D phase with a third-derivative lower bound (whistler waves at an inflection) | `examples/consumer/ConsumerWhistler.lean` | S1.3 (`vanDerCorput_three`) |
+| A phase with nondegenerate Hessian everywhere (cold-plasma waves); free streaming | `examples/consumer/ConsumerColdPlasma.lean`, `examples/consumer/ConsumerPhaseMixing.lean` | GD-N, FE-S2.1 |
 
 Recurring steps, in the order they come up:
 1. **Smoothness.** `fun_prop` closes `ContDiff ℝ n` for polynomial and trigonometric formulas; for `ContDiffOn` on an

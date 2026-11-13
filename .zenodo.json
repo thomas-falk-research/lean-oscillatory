@@ -7,7 +7,7 @@
       "orcid": "0009-0001-9478-6061"
     }
   ],
-  "description": "A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates in one and two variables: van der Corput's lemma with explicit constants, non-stationary and nondegenerate stationary phase, the uniform fold and D4 (umbilic) estimates with the D4 leading term and its closed-form constant, front ends in Mathlib's idiom with local smoothness and compact families of phases, global decay from a pointwise classification of the phase (also for amplitudes with values in any complex Banach space), and the dispersive estimate t^{-2/3} for the 2D lattice Laplacian with an explicit constant and its sharpness (a classical, separable example). Statements are frozen and timestamped before their proofs and replayed by several independent kernels; statement fidelity is reviewed by AI referees, not yet by a human expert.",
+  "description": "A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates: van der Corput's lemma for every derivative order with explicit constants, non-stationary and nondegenerate stationary phase, uniform decay at fold (A2), cusp (A3) and umbilic (D4) points with the D4 leading term and its closed-form constant, global decay from a pointwise classification of the phase (also for amplitudes in any complex Banach space), front ends in Mathlib's idiom, and explicit bounds for the propagator kernel of the free discrete Schrödinger equation: on Z, |∫_{-π}^{π} e^{i(t cos k + ξk)} dk| ≤ 8(1 + √7)/3 · t^{-1/3} for all t > 0 and real ξ, and on Z^d the d-th power of that constant with t^{-d/3}. The degenerate-point and global bounds are uniform over all linear terms of the phase, as dispersive estimates need. Statements are frozen, timestamped and reviewed blind before their proofs (exceptions are disclosed), and the proofs are replayed by six kernel checkers; a downstream checker verifies that a project depends on exactly the reviewed statements. Proofs and reviews are largely by AI agents; statement fidelity has been reviewed by AI referees, not yet by a human expert.",
   "keywords": [
     "Lean 4",
     "Mathlib",
@@ -16,15 +16,22 @@
     "stationary phase",
     "van der Corput lemma",
     "dispersive estimates",
+    "cusp singularity",
+    "umbilic singularity",
+    "discrete Schrödinger equation",
+    "lattice dynamics",
+    "explicit constants",
     "MSC2020: 42B20 Singular and oscillatory integrals",
     "MSC2020: 41A60 Asymptotic approximations, asymptotic expansions",
+    "MSC2020: 33C10 Bessel and Airy functions, cylinder functions",
+    "MSC2020: 39A12 Discrete version of topics in analysis",
     "MSC2020: 35Q41 Time-dependent Schrödinger equations",
     "MSC2020: 68V20 Formalization of mathematics in connection with theorem provers",
     "MSC2020: 03B35 Mechanization of proofs and logical operations"
   ],
   "license": "Apache-2.0",
   "language": "eng",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "related_identifiers": [
     {
       "identifier": "https://github.com/roos-j/lean-oscillatory",
