@@ -62,7 +62,18 @@ batches LE2, HC and A3 end to end.
   referees ran. All four referees said they did not see it, with the evidence in the answers file.
 - **Container:** the pinned toolchain was installed from `toolchain.sha256` and the Mathlib cache fetched in about
   four minutes.
-- **Next steps:** unchanged ("Start here" above).
+- **Remote state at session start differs from "Start here" (lessons 31).** v0.5.0 is published: GitHub release
+  2026-11-13T19:02:37Z, tag on 2cf118d, `release-candidate` and `post-release` green. The pins pull request
+  ([thomas-falk-research/lean-oscillatory#14](https://github.com/thomas-falk-research/lean-oscillatory/pull/14),
+  branch `release/v0.5.0-pins`) has red `ci`, for two reasons. Neither is fixed yet; both await the owner.
+  - `quick` fails `docs-check pins`: `docs/downstream.md:12` still pins v0.4.0. The pins step of
+    `.github/workflows/post-release.yml` (lines 115–116) runs `sed` over three named files. `tools/check_docs.py` checks
+    every `rev = "vX.Y.Z"` in `README.md` and `docs/*.md`, so every release's pins pull request will fail until the
+    two lists agree.
+  - `consumer` is cancelled at its 60-minute limit (`.github/workflows/ci.yml:75`) on slow runners, also on `main` run
+    158. Every finished step passed. The green PR #13 run took 48 minutes (checker 19, controls 24); the failing runs
+    spent 26–28 minutes in the checker alone.
+- **Next steps:** unchanged ("Start here" above), plus the two CI fixes above once the owner decides.
 
 ## Session 10, continued (2026-11-12/13): batch A3 machine-checked as stated; batch LS stated, reviewed and routed; external packets
 
