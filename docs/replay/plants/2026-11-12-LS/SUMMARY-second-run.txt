@@ -1,0 +1,16 @@
+ok-K-norm: accepted (want accepted)
+plant-K-norm: rejected (recorded)
+    first error: plant-K-norm.lean:18:2: error: Type mismatch: After simplification, term
+witness-K-norm: accepted (want accepted)
+ok-D-t0: accepted (want accepted)
+plant-D-t0: rejected (recorded)
+    first error: plant-D-t0.lean:19:12: error: Function expected at
+witness-D-t0: accepted (want accepted)
+ok-Dp-one: accepted (want accepted)
+plant-Dp-one: rejected (recorded)
+    first error: plant-Dp-one.lean:20:28: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-Dp-one: accepted (want accepted)
+ok-K-plus: accepted (want accepted)
+plant-K-plus: rejected (recorded)
+    first error: plant-K-plus.lean:19:2: error: Type mismatch: After simplification, term
+witness-K-plus: accepted (want accepted)

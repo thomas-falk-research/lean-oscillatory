@@ -1,0 +1,127 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the batch-LE2 statements against copies of their sanity theorems.
+
+As docs/replay/plants/2026-11-08-LE/plants_le.py.txt: for each plant, copy the named def (from
+OscInt/Statements/LatticeCubeRoot.lean) and sanity theorems (from OscInt/Front/LatticeCubeRootSanity.lean) under the
+prefix P_, apply exactly one textual mutation to the copied def, compile with `lake env lean -DautoImplicit=false`.
+The unplanted copy must compile. Witness files (lessons 44): for plants that strengthen the statement, a file proving
+the negation of the planted statement from the unconditional bites of the sanity file; it must compile.
+Usage: plants_le2.py REPO OUTDIR
+"""
+import os, re, subprocess, sys
+
+REPO, OUT = sys.argv[1], sys.argv[2]
+os.makedirs(OUT, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/LatticeCubeRoot.lean')).read().split('\n')
+SAN = open(os.path.join(REPO, 'OscInt/Front/LatticeCubeRootSanity.lean')).read().split('\n')
+T0 = 'LatticeKernel1CubeRootStatement'
+T6 = 'LatticeLaplacianCubeRootStatement'
+
+
+def block(lines, kind, name):
+    pat = re.compile(r'^(noncomputable )?' + kind + r' ' + re.escape(name) + r'\b')
+    for i, l in enumerate(lines):
+        if pat.match(l):
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {kind} {name}')
+
+
+PLANTS = [
+    # (id, def, sanity theorems, (old, new), want for the planted copy, witness proof of ¬P_def or None)
+    ('T0Ep-rate', T0, ['latticeKernel1CubeRoot_eight'],
+     ('t ^ (-(1 : ℝ) / 3)', 't ^ (-(1 : ℝ) / 4)'), 'rejected', None),
+    ('T0Ep-const-larger', T0, ['latticeKernel1CubeRoot_eight'],
+     ('8 * (1 + Real.sqrt 7) / 3 * t', '9 * (1 + Real.sqrt 7) / 3 * t'), 'rejected', None),
+    ('T0Ep-const-half', T0, ['latticeKernel1CubeRoot_eight'],
+     ('8 * (1 + Real.sqrt 7) / 3 * t', '4 * (1 + Real.sqrt 7) / 3 * t'), None,
+     'fun h => cubeRoot_half_const_false (h (343 / 512) 0 (by norm_num))'),
+    ('T0Ep-int', T0, ['latticeKernel1CubeRoot_eight'],
+     ('∀ t ξ : ℝ, 0 < t →', '∀ (t : ℝ) (ξ : ℤ), 0 < t →'), 'rejected', None),
+    ('T0Ep-xi-nonneg', T0, ['latticeKernel1CubeRoot_neg'],
+     ('∀ t ξ : ℝ, 0 < t →', '∀ t ξ : ℝ, 0 < t → 0 ≤ ξ →'), 'rejected', None),
+    ('T0Ep-threshold', T0, ['latticeKernel1CubeRoot_eighth'],
+     ('∀ t ξ : ℝ, 0 < t →', '∀ t ξ : ℝ, 4 ≤ t →'), 'rejected', None),
+    ('T0Ep-weaker-than-T0E', T0, ['latticeKernel1Explicit_of_cubeRoot'],
+     ('8 * (1 + Real.sqrt 7) / 3 * t', '41 * t'), 'rejected', None),
+    ('T0Ep-nonneg-t', T0, ['latticeKernel1CubeRoot_eight', 'latticeKernel1CubeRoot_eighth'],
+     ('∀ t ξ : ℝ, 0 < t →', '∀ t ξ : ℝ, 0 ≤ t →'), None,
+     'fun h => cubeRoot_bound_false_at_zero (h 0 0 le_rfl)'),
+    ('T6Ep-threshold', T6, ['latticeLaplacianCubeRoot_eighth'],
+     ('∀ (t : ℝ) (x : ℤ × ℤ), 0 < t →', '∀ (t : ℝ) (x : ℤ × ℤ), 1 ≤ t →'), 'rejected', None),
+    ('T6Ep-rate', T6, ['latticeLaplacianCubeRoot_diag'],
+     ('t ^ (-(2 : ℝ) / 3)', 't ^ (-(1 : ℝ) / 2)'), 'rejected', None),
+    ('T6Ep-const', T6, ['latticeLaplacianCubeRoot_diag'],
+     ('(8 * (1 + Real.sqrt 7) / 3) ^ 2 * t', '(8 * (1 + Real.sqrt 7) / 3) ^ 3 * t'), 'rejected', None),
+    # second run, after the blind pre-proof reviews (A and B): data in the non-trivial regime, T6E' bites, faster rate
+    ('T0Ep-threshold-thr', T0, ['latticeKernel1CubeRoot_thr'],
+     ('∀ t ξ : ℝ, 0 < t →', '∀ t ξ : ℝ, 4 ≤ t →'), 'rejected', None),
+    ('T6Ep-threshold-thr', T6, ['latticeLaplacianCubeRoot_thr'],
+     ('∀ (t : ℝ) (x : ℤ × ℤ), 0 < t →', '∀ (t : ℝ) (x : ℤ × ℤ), 4 ≤ t →'), 'rejected', None),
+    ('T6Ep-unsquared', T6, ['latticeLaplacianCubeRoot_diag'],
+     ('(8 * (1 + Real.sqrt 7) / 3) ^ 2 * t', '(8 * (1 + Real.sqrt 7) / 3) * t'), None,
+     'fun h => laplacianCubeRoot_unsquared_false (h 1 (0, 0) one_pos)'),
+    ('T6Ep-quarter', T6, ['latticeLaplacianCubeRoot_diag'],
+     ('(8 * (1 + Real.sqrt 7) / 3) ^ 2 * t', '(4 * (1 + Real.sqrt 7) / 3) ^ 2 * t'), None,
+     'fun h => laplacianCubeRoot_half_const_false (h (343 / 512) (0, 0) (by norm_num))'),
+    ('T6Ep-nonneg-t', T6, ['latticeLaplacianCubeRoot_diag'],
+     ('∀ (t : ℝ) (x : ℤ × ℤ), 0 < t →', '∀ (t : ℝ) (x : ℤ × ℤ), 0 ≤ t →'), None,
+     'fun h => laplacianCubeRoot_false_at_zero (h 0 (0, 0) le_rfl)'),
+    ('T0Ep-rate-faster-NOTDETECTED', T0, ['latticeKernel1CubeRoot_eight', 'latticeKernel1CubeRoot_eighth', 'latticeKernel1CubeRoot_thr'],
+     ('t ^ (-(1 : ℝ) / 3)', 't ^ (-(1 : ℝ) / 2)'), None, None),
+]
+
+HEADER = """import OscInt.Front.LatticeCubeRootSanity
+
+namespace OscInt.API.LatticeCubeRootSanity
+
+open OscInt.Statements OscInt.API.LatticeExplicitSanity
+"""
+
+
+def make(d, thms, mut, planted, witness=None):
+    t = block(STMT, 'def', d)
+    if planted:
+        assert t.count(mut[0]) == 1, (d, mut[0])
+        t = t.replace(mut[0], mut[1])
+    parts = [t]
+    if witness is None:
+        parts += [block(SAN, 'theorem', th) for th in thms]
+    else:
+        parts.append(f'theorem witness_not_{d} : ¬ {d} :=\n  {witness}')
+    text = '\n\n'.join(parts)
+    for n in sorted([d] + thms, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r'(?![\w])', 'P_' + n, text)
+    return HEADER + '\n' + text + '\n\nend OscInt.API.LatticeCubeRootSanity\n'
+
+
+def run(tag, text):
+    src = os.path.join(OUT, tag + '.lean')
+    open(src, 'w').write(text)
+    r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                       cwd=REPO, capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+    errs = [l for l in out.split('\n') if ': error' in l]
+    return ('accepted' if r.returncode == 0 and not errs else 'rejected'), errs
+
+
+summary = []
+ONLY = sys.argv[3:] 
+for pid, d, thms, mut, want, witness in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    jobs = [('ok-' + pid, make(d, thms, mut, False), 'accepted'),
+            ('plant-' + pid, make(d, thms, mut, True), want)]
+    if witness:
+        jobs.append(('witness-' + pid, make(d, thms, mut, True, witness), 'accepted'))
+    for tag, text, w in jobs:
+        verdict, errs = run(tag, text)
+        line = f"{tag}: {verdict}" + (f" (want {w}){'' if verdict == w else '  <-- MISMATCH'}" if w else ' (recorded)')
+        if errs:
+            line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+        print(line, flush=True)
+        summary.append(line)
+open(os.path.join(OUT, 'SUMMARY.txt'), 'w').write('\n'.join(summary) + '\n')

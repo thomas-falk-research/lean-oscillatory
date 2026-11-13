@@ -33,7 +33,8 @@ Large transverse frequencies are handled by one integration by parts (P4). The A
 coordinates by P5.
 
 Not needed: the parametrised transverse lemma I3a, S1.k, the dyadic rescaling of S4, and the stability conjunct
-(`T ≠ 0`).
+(`T ≠ 0`). Also not needed (noted 2026-11-13 after post-proof referee B): the hypothesis D³φ[v, v, v] = 0 of
+`IsA3Point`; S5.1′ holds without it. S1.k for general k was later proved outside this route (see "Parts as proved").
 
 ## The parts
 
@@ -185,3 +186,26 @@ statements. The following replaces the corresponding text above.
   (lessons 12), so it cannot be used. Permute with `dd_comm` instead: once on `y ↦ fderiv f y u` for the inner pair, and
   once pointwise inside `ddd` for the outer pair.
 - **P1's place (NIT).** `VdC4Facts` is internal to P2. It is not a hypothesis of `cuspBoundGen_of`.
+
+## Parts as proved (2026-11-13, after the post-proof reviews)
+
+The Lean parts were integrated at 93a8a8d (`review/2026-11-12-A3-packet-answers.md`) and reviewed after the proof
+(`review/2026-11-12-A3-post-proof-answers.md`). Where they differ from the route above:
+- **P1 and S1.k.**
+  - `OscInt/Cusp/VdC4.lean` proves the order-four case directly from the order-three plain bound, as routed.
+  - `OscInt/Cusp/VdCk.lean` proves S1.k for every k ≥ 2 by induction on k with radius μ^{−1/(k+1)}. Its base cases
+    k = 2 and k = 3 are S1.2 and S1.3 (`base_two`, and the constant 18 for k = 3).
+  - This file was not part of the route ("Not needed" above). Its only review is the post-proof one.
+- **P2.** It proves less regularity of g than g ∈ C⁴, and what it proves is enough for the order-four estimate.
+- **P3.** It follows the revised route with the explicit G4. Referee B checked symbolically that G4 equals the fourth
+  derivative of g.
+- **P4 (deviation).** The proof does not slice. `norm_oscInt2_transverse` (`OscInt/Cusp/Transverse.lean`):
+  - integrates by parts once over the whole plane in the direction (0, 1) (`integral_cexp_phase_mul_fderiv`);
+  - the weight is B = A/∂_yΦ, which is C¹ with compact support inside K because A vanishes near every zero of ∂_yΦ
+    outside K;
+  - so there is no Fubini, no cut and no boundary term.
+  
+  The bound |∂_y B| ≤ M/c + M D/c² gives the constant (1/c + D/c²)·volume.real K, which is 4ab(1/c + D/c²) on the box
+  [−a, a] × [−b, b].
+- **P5.** It follows the route, including the symmetry fix of the route revision.
+- **Unused hypothesis.** S5.1′ does not use D³φ[v, v, v] = 0.

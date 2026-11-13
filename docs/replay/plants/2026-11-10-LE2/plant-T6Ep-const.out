@@ -1,0 +1,7 @@
+/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/plants/out/plant-T6Ep-const.lean:16:2: error: linarith failed to find a contradiction
+h : P_LatticeLaplacianCubeRootStatement
+n : ℤ
+this : ‖latticeKernel 8 (n, n)‖ ≤ (8 * (1 + √7) / 3) ^ 3 * (1 / 4)
+a✝ : (8 * (1 + √7) / 3) ^ 2 / 4 < ‖latticeKernel 8 (n, n)‖
+⊢ False
+failed

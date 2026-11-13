@@ -1,0 +1,127 @@
+# Planted controls for batch LE2 (OscInt/Front/LatticeCubeRootSanity.lean), 2026-11-10, session-10 lead: run before the LE2
+# stamp and before any proof of an LE2 statement (lessons 33). Generator: docs/replay/plants/2026-11-10-LE2/plants_le2.py.txt
+# (adapted from the batch-LE generator: copies the named def of OscInt/Statements/LatticeCubeRoot.lean and the named sanity
+# theorems under the prefix P_, applies exactly one textual mutation, compiles with `lake env lean -DautoImplicit=false`
+# against `import OscInt.Front.LatticeCubeRootSanity` built from the working tree on top of git HEAD f63458ba3579a47d3e00a4277fa81e471f6413dd).
+# Sources (.lean.txt) and full compiler output (.out) in that directory. Started 2026-11-10T23:19:42Z.
+# A rejection counts as semantic only if the planted claim is shown not to give the sanity conclusion (exact computation
+# noted per line) or, for plants that strengthen the statement, if a compiled witness proves the planted statement false
+# (lessons 44). Eleven plants: nine rejected by the sanity theorems with semantic evidence, two strengthening plants
+# detected semantically by compiled witnesses (one of them, 0 < t -> 0 <= t, is the blind spot batch LE recorded as
+# undetectable; here the unconditional bite cubeRoot_bound_false_at_zero refutes it). Eleven unplanted copies accepted.
+#
+ok-T0Ep-rate: accepted (want accepted)
+plant-T0Ep-rate: rejected (want rejected)
+    first error: plant-T0Ep-rate.lean:14:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+ok-T0Ep-const-larger: accepted (want accepted)
+plant-T0Ep-const-larger: rejected (want rejected)
+    first error: plant-T0Ep-const-larger.lean:15:2: error: linarith failed to find a contradiction
+ok-T0Ep-const-half: accepted (want accepted)
+plant-T0Ep-const-half: rejected (recorded)
+    first error: plant-T0Ep-const-half.lean:15:2: error: linarith failed to find a contradiction
+witness-T0Ep-const-half: accepted (want accepted)
+ok-T0Ep-int: accepted (want accepted)
+plant-T0Ep-int: rejected (want rejected)
+    first error: plant-T0Ep-int.lean:15:2: error: linarith failed to find a contradiction
+ok-T0Ep-xi-nonneg: accepted (want accepted)
+plant-T0Ep-xi-nonneg: rejected (want rejected)
+    first error: plant-T0Ep-xi-nonneg.lean:15:2: error: linarith failed to find a contradiction
+ok-T0Ep-threshold: accepted (want accepted)
+plant-T0Ep-threshold: rejected (want rejected)
+    first error: plant-T0Ep-threshold.lean:13:29: error: unsolved goals
+ok-T0Ep-weaker-than-T0E: accepted (want accepted)
+plant-T0Ep-weaker-than-T0E: rejected (want rejected)
+    first error: plant-T0Ep-weaker-than-T0E.lean:20:2: error: linarith failed to find a contradiction
+ok-T0Ep-nonneg-t: accepted (want accepted)
+plant-T0Ep-nonneg-t: accepted (recorded)
+witness-T0Ep-nonneg-t: accepted (want accepted)
+ok-T6Ep-threshold: accepted (want accepted)
+plant-T6Ep-threshold: rejected (want rejected)
+    first error: plant-T6Ep-threshold.lean:13:29: error: unsolved goals
+ok-T6Ep-rate: accepted (want accepted)
+plant-T6Ep-rate: rejected (want rejected)
+    first error: plant-T6Ep-rate.lean:15:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+ok-T6Ep-const: accepted (want accepted)
+plant-T6Ep-const: rejected (want rejected)
+    first error: plant-T6Ep-const.lean:16:2: error: linarith failed to find a contradiction
+#
+# Semantic evidence per plant (exact):
+# T0Ep-rate (t^(-1/3) -> t^(-1/4)), datum t = 8: the planted instance gives C*·8^(-1/4) = C*·2^(-3/4) > C*/2 (2^(3/4) < 2),
+#   so it does not give the conclusion C*/2 = 4(1+sqrt7)/3.
+# T0Ep-const-larger (8 -> 9): 9(1+sqrt7)/6 > 4(1+sqrt7)/3.
+# T0Ep-const-half (8 -> 4, strengthens): witness-T0Ep-const-half compiles: the planted statement is false at
+#   (t, xi) = (343/512, 0) by cubeRoot_half_const_false (||I(t,0)|| >= 2pi - pi t^2/2).
+# T0Ep-int (xi real -> xi integer): the datum xi = 1/2 is not an integer ((1/2 : Z) = 0 in Lean), so no planted instance
+#   speaks about it.
+# T0Ep-xi-nonneg (0 <= xi added): the datum xi = -5/2 violates it.
+# T0Ep-threshold (0 < t -> 4 <= t): the datum t = 1/8 violates it.
+# T0Ep-weaker-than-T0E (constant -> 41): 41 > 36 * 2^(1/6) (2^(1/6) < 1.12247, so 36 * 2^(1/6) < 40.41); the
+#   implication T0E' -> T0E needs the constant below 36 * 2^(1/6).
+# T0Ep-nonneg-t (0 < t -> 0 <= t, strengthens; makes T0E' false at t = 0): accepted by the sanity theorems (they only
+#   use t > 0) and detected by witness-T0Ep-nonneg-t, which compiles: cubeRoot_bound_false_at_zero refutes the planted
+#   statement at (0, 0).
+# T6Ep-threshold (0 < t -> 1 <= t): the datum t = 1/8 violates it.
+# T6Ep-rate (t^(-2/3) -> t^(-1/2)), datum t = 8: 8^(-1/2) > 1/4, so the planted instance is weaker than the conclusion.
+# T6Ep-const ((...)^2 -> (...)^3): C*^3/4 > C*^2/4 since C* > 1.
+# Structural limit (as batch LE): a plant that weakens a hypothesis or strengthens a conclusion in a way the closed data
+# cannot refute is not detected by this layer; it rests on the blind reviews and on the proof.
+#
+# Second run, 2026-11-11T00:33:13Z, after the blind pre-proof reviews (review/2026-11-10-LE2-pre-proof-answers.md), before
+# any proof of an LE2 statement, on top of git HEAD 90e6ac8ad09b510c7267a003dbd3ce797a190ecc with the extended sanity file (statements unchanged).
+# Command: plants_le2.py REPO OUTDIR <plant ids> (the six plants below). Summary: SUMMARY-second-run.txt.
+ok-T0Ep-threshold-thr: accepted (want accepted)
+plant-T0Ep-threshold-thr: rejected (want rejected)
+    first error: plant-T0Ep-threshold-thr.lean:13:36: error: unsolved goals
+ok-T6Ep-threshold-thr: accepted (want accepted)
+plant-T6Ep-threshold-thr: rejected (want rejected)
+    first error: plant-T6Ep-threshold-thr.lean:13:36: error: unsolved goals
+ok-T6Ep-unsquared: accepted (want accepted)
+plant-T6Ep-unsquared: rejected (recorded)
+    first error: plant-T6Ep-unsquared.lean:16:2: error: linarith failed to find a contradiction
+witness-T6Ep-unsquared: accepted (want accepted)
+ok-T6Ep-quarter: accepted (want accepted)
+plant-T6Ep-quarter: rejected (recorded)
+    first error: plant-T6Ep-quarter.lean:16:2: error: linarith failed to find a contradiction
+witness-T6Ep-quarter: accepted (want accepted)
+ok-T6Ep-nonneg-t: accepted (want accepted)
+plant-T6Ep-nonneg-t: accepted (recorded)
+witness-T6Ep-nonneg-t: accepted (want accepted)
+ok-T0Ep-rate-faster-NOTDETECTED: accepted (want accepted)
+plant-T0Ep-rate-faster-NOTDETECTED: rejected (recorded)
+    first error: plant-T0Ep-rate-faster-NOTDETECTED.lean:14:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+#
+# Evidence, second run:
+# T0Ep-threshold-thr, T6Ep-threshold-thr (0 < t -> 4 <= t), datum t = (31/20)^3 ~ 3.724: instance level (the datum violates
+#   the planted threshold); unlike t = 1/8, the sanity conclusions there are below the trivial bounds 2pi and 4pi^2
+#   (thr_nontrivial, compiled), so they do not hold for a trivial reason.
+# T6Ep-unsquared (C*^2 -> C*, strengthens; false): witness-T6Ep-unsquared compiles (laplacianCubeRoot_unsquared_false at t = 1).
+# T6Ep-quarter (C*^2 -> (C*/2)^2, strengthens; false): witness-T6Ep-quarter compiles (laplacianCubeRoot_half_const_false at
+#   t = (7/8)^3).
+# T6Ep-nonneg-t (0 < t -> 0 <= t, false at t = 0): accepted by the sanity theorems; witness-T6Ep-nonneg-t compiles
+#   (laplacianCubeRoot_false_at_zero).
+# T0Ep-rate-faster-NOTDETECTED (t^(-1/3) -> t^(-1/2), strengthens; false, e.g. |I(1000, xi)| ~ 0.4246 > C* 1000^(-1/2)
+#   ~ 0.307 near the caustic, floating point, both reviews): the script rejection is only a failed rewrite; robust
+#   closings compile (review A), and no witness exists (it needs a large-t lower bound). NOT DETECTED: rests on the
+#   reviews and on the proof.
+#
+# Corrections to the first run's evidence wording (reviews A and B; no plant outcome changes):
+# - T0Ep-threshold and T6Ep-threshold at t = 1/8 are rejected at instance level only: at t = 1/8 the sanity conclusions
+#   follow from the trivial bounds (2 C* > 2pi, 4 C*^2 > 4pi^2). The second run's data at (31/20)^3 replace them as the
+#   meaningful threshold controls.
+# - T0Ep-xi-nonneg (0 <= xi added) is equivalent to T0E' by I(t, -xi) = I(t, xi); its rejection is syntactic. The sign of
+#   xi is not a feature a plant can change in substance.
+# - Hence "nine rejected with semantic evidence" in the header overstates: the weakening plants (rate slower, constant
+#   larger, int, weaker-than-T0E, T6 rate, T6 const) are rejected with the exact semantic evidence listed; the threshold
+#   and sign plants are instance-level or syntactic; the five strengthening plants that are false (T0E' half constant,
+#   T0E' 0 <= t, T6E' unsquared, T6E' quarter, T6E' 0 <= t) are refuted by compiled witnesses; the faster rate is not
+#   detected.
+#
+# Corrections after the adversarial review (2026-11-11):
+# - T0Ep-int (xi real -> xi integer) is instance-level like the threshold plants (the datum xi = 1/2 is not an integer),
+#   not "exact semantic evidence". The plants with semantic evidence (exact computation showing the planted instance does
+#   not give the conclusion) are: rate slower, constant larger, weaker-than-T0E, T6 rate, T6 const.
+# - The sanity file each run compiled against was in the working tree, uncommitted at run time. Its SHA-256 as committed
+#   right after each run: first run (committed in bc58c8c) ed37b6583d73c739f4f05e943ce9da99d086c33facf09ee3c98a83050711bdb3,
+#   second run (committed in bf8af89) 7c4e3d556487334a43001ed3ccb9db12743c217f2fc9035539ae67e73485aa44. That the runs used
+#   exactly these bytes rests on the lead's session record (no edit between run and commit); the run itself did not hash
+#   the file.

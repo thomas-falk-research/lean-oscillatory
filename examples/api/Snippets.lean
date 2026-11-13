@@ -217,14 +217,46 @@ example : GlobalNondegVecStatement := OscInt.API.globalNondegVec
 
 /-! ### S1.k: k-th derivative van der Corput bound with amplitude, `k ≥ 2`, constant `5·2^{k−1} − 2`, uniform in a linear term. -/
 
-example : VdCkStatement → VdC2Statement := OscInt.API.CuspSanity.vdCk_to_vdC2
+example : VdCkStatement := OscInt.API.vdCk
 
 /-! ### S5.1: Uniform stable-cusp bound: at a stable A3 point, decay `t^{-3/4}`, uniform over every linear term. -/
 
-example : CuspBoundGenStatement → CuspBoundStatement := fun h φ hφ h3 => h φ hφ (OscInt.API.CuspSanity.stable_isA3 h3)
+example : CuspBoundStatement := OscInt.API.cuspBound
 
 /-! ### S5.1′: Uniform cusp bound: at an A3 point, decay `t^{-3/4}`, uniform over every linear term. -/
 
-example (h : CuspBoundGenStatement) := OscInt.API.CuspSanity.cuspBoundGen_nonv h
+example : CuspBoundGenStatement := OscInt.API.cuspBoundGen
+
+/-! ### T0E′: Cube-root bound for the 1D lattice kernel: `|I(t, ξ)| ≤ 8(1 + √7)/3 · t^{−1/3}` for every `t > 0` and every real `ξ`. -/
+
+example : LatticeKernel1CubeRootStatement := OscInt.API.latticeKernel1CubeRoot
+
+/-! ### T6E′: Dispersive decay of the 2D lattice Laplacian with the cube-root constant: `|K(t, x)| ≤ (8(1 + √7)/3)² t^{−2/3}` for every `t > 0`, uniformly over `x ∈ ℤ²`. -/
+
+example : LatticeLaplacianCubeRootStatement := OscInt.API.latticeLaplacianCubeRoot
+
+/-! ### TdF: The `d`-dimensional hypercubic kernel factorises: `K_d(t, x) = ∏_j I(t, x_j)` for every `d`, every real `t` and `x ∈ ℤ^d`. -/
+
+example : HypercubicKernelFactorStatement := OscInt.API.hypercubicKernelFactor
+
+/-! ### TdE′: Dispersive decay of the free lattice Schrödinger group on `ℤ^d` with an explicit constant: `|K_d(t, x)| ≤ (8(1 + √7)/3)^d t^{−d/3}` for every `d`, every `t > 0` and `x ∈ ℤ^d`. -/
+
+example : HypercubicCubeRootStatement := OscInt.API.hypercubicCubeRoot
+
+/-! ### LS-E: Every datum `f ∈ ℓ²(ℤ^d)` has a solution of `i u′ + Δu = 0` with `u(0) = f`. -/
+
+example : LatticeSchrodingerExistsStatement → LatticeSchrodingerKernelStatement → ∀ x : Fin 1 → ℤ, schrodingerKernel 1 0 x = if x = 0 then 1 else 0 := fun hE hK x => OscInt.API.LatticeGroupSanity.kernel_zero_time hE hK 1 x
+
+/-! ### LS-K: Every solution is the kernel convolution of its datum: for every real `t` and site `x`, the series `Σ_y G_d(t, x − y) f(y)` converges absolutely and equals `u(t, x)`. -/
+
+example : LatticeSchrodingerExistsStatement → LatticeSchrodingerKernelStatement → ∀ (d : ℕ) (x : Fin d → ℤ), schrodingerKernel d 0 x = if x = 0 then 1 else 0 := OscInt.API.LatticeGroupSanity.kernel_zero_time
+
+/-! ### LS-D: Dispersive estimate with an explicit constant: for a solution with `ℓ¹` datum and `t ≠ 0`, `|u(t, x)| ≤ min{1, (C*/(2π))^d (2|t|)^{−d/3}} ‖f‖_1`, `C* = 8(1 + √7)/3`. -/
+
+example : LatticeSchrodingerExistsStatement → LatticeSchrodingerDispersiveStatement → ∃ u : ℝ → LatticeL2 1, IsLatticeSchrodingerSolution 1 (OscInt.API.LatticeGroupSanity.delta0 1) u ∧ ‖u 4 0‖ ≤ 8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi) / 2 := OscInt.API.LatticeGroupSanity.dispersive_one
+
+/-! ### LS-D′: Decay at every time: for a solution with `ℓ¹` datum and every real `t`, `|u(t, x)| ≤ (1 + τ)^{d/3} (1 + |t|)^{−d/3} ‖f‖_1`, `τ = (C*/(2π))³/2`, `C* = 8(1 + √7)/3`. -/
+
+example : LatticeSchrodingerExistsStatement → LatticeSchrodingerDecayStatement → ∃ u : ℝ → LatticeL2 1, IsLatticeSchrodingerSolution 1 (OscInt.API.LatticeGroupSanity.delta0 1) u ∧ ‖u 7 0‖ ≤ (1 + (8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi)) ^ 3 / 2) ^ ((1 : ℝ) / 3) / 2 := OscInt.API.LatticeGroupSanity.decay_seven
 
 end OscIntSnippets

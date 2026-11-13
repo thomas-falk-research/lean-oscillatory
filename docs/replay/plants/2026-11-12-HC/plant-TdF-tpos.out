@@ -1,0 +1,6 @@
+/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/plants/out_hc/plant-TdF-tpos.lean:13:2: error: Type mismatch: After simplification, term
+  h 3 (-2) ![1, 0, -3]
+ has type
+  True
+but is expected to have type
+  hypercubicKernel 3 (-2) ![1, 0, -3] = latticeKernel1 (-2) 1 * latticeKernel1 (-2) 0 * latticeKernel1 (-2) (-3)

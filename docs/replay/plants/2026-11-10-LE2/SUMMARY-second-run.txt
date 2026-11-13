@@ -1,0 +1,20 @@
+ok-T0Ep-threshold-thr: accepted (want accepted)
+plant-T0Ep-threshold-thr: rejected (want rejected)
+    first error: plant-T0Ep-threshold-thr.lean:13:36: error: unsolved goals
+ok-T6Ep-threshold-thr: accepted (want accepted)
+plant-T6Ep-threshold-thr: rejected (want rejected)
+    first error: plant-T6Ep-threshold-thr.lean:13:36: error: unsolved goals
+ok-T6Ep-unsquared: accepted (want accepted)
+plant-T6Ep-unsquared: rejected (recorded)
+    first error: plant-T6Ep-unsquared.lean:16:2: error: linarith failed to find a contradiction
+witness-T6Ep-unsquared: accepted (want accepted)
+ok-T6Ep-quarter: accepted (want accepted)
+plant-T6Ep-quarter: rejected (recorded)
+    first error: plant-T6Ep-quarter.lean:16:2: error: linarith failed to find a contradiction
+witness-T6Ep-quarter: accepted (want accepted)
+ok-T6Ep-nonneg-t: accepted (want accepted)
+plant-T6Ep-nonneg-t: accepted (recorded)
+witness-T6Ep-nonneg-t: accepted (want accepted)
+ok-T0Ep-rate-faster-NOTDETECTED: accepted (want accepted)
+plant-T0Ep-rate-faster-NOTDETECTED: rejected (recorded)
+    first error: plant-T0Ep-rate-faster-NOTDETECTED.lean:14:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern

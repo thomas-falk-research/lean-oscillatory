@@ -339,3 +339,33 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     files. Earlier prompts and verbatim reports on `main` are an open owner item: removing them from `main`'s history
     would invalidate every stamp. Check: none automatic yet; a candidate `make quick` check for `review/prompts/`
     additions and for transcript markers is in ROADMAP "Standing: repository hygiene".
+47. **Sanity data for an explicit bound must lie where the bound beats the trivial one.** The first LE2 sanity layer
+    tested T0E′ and T6E′ at t = 1/8, where 2C* > 2π and 4C*² > 4π²: the conclusions followed from |I| ≤ 2π alone, so the
+    threshold plants were rejected at instance level only, and T6E′ had no bite (both blind pre-proof referees, MINOR).
+    Fixed before any proof: data at t = (31/20)³ just above the usefulness threshold, with a compiled `thr_nontrivial`,
+    and three T6E′ bites through the proved T6F. Rule: for a statement with an explicit constant, at least one sanity
+    datum lies in the non-trivial regime (proved there), and every strengthening plant that is false gets a compiled
+    witness or is recorded NOT DETECTED. Check: `thr_nontrivial` in `OscInt/Front/LatticeCubeRootSanity.lean`.
+48. **Provenance facts in a record are captured when they happen, not reconstructed or copied.** Two session-10 cases.
+    The HC adversarial referee could not confirm from the repository that the pre-proof and route referees had finished
+    before the next commits: no answers file gave their launch commit or run time, and the lead had to recover them
+    from the session record (one value in the first draft, 228 s, was wrong; the record says 239 s). And the LE2
+    numerics record said "numpy 2.3.5", copied from the script's docstring, while this container runs 2.5.3. Rule:
+    every answers file gives, per referee, the commit it was launched at, its launch and finish times and its run time,
+    taken from the session record at the time; every numerics record prints the interpreter and package versions from
+    the running process. Check: the table in `review/2026-11-12-HC-post-proof-answers.md` (finding 2); the RUNTIME line
+    of `numerics/review/hc_interface_checks.py`.
+49. **Referees were launched one minute after the final replay started (lessons 28 broken again).** Session 10,
+    2026-11-12: `make verify-all` on e814510 started at 23:10:53; four referees were launched at 23:11:40. Three only read
+    files, but the LS route referee compiled its own probe files, eleven Lean runs from 23:14:12 to 23:17:40. The lead's
+    first account ("six probes, 23:14–23:20") was taken from memory, not from the session record, and was wrong; the
+    lead also proposed to disclose the overlap instead of rerunning, which would have been an exception that lessons 28
+    does not provide (the external reviewer of the application-chains dossier pointed this out). The run was later cut
+    off by a container restart. Rule: launch referees only before `make verify-all` starts or after it ends; a referee
+    prompt written while a replay runs says "do not run lean, lake or make"; a non-isolated run is kept but labelled,
+    and the acceptance record is a new isolated run. Check: the replay record's header states its isolation from a
+    process snapshot taken during the run (`docs/replay/2026-11-12-session10-e814510-partial.txt` records the failure).
+    Follow-up, 2026-11-13: the isolated replay of 1f7d041 ran with a once-a-minute watcher (170 snapshots, no foreign
+    Lean process; `docs/replay/2026-11-13-session10-A3-verify-all.txt`). Its first attempt, started as a harness
+    background task, was killed by the harness's two-hour limit on such tasks; a full replay takes about 2 h 50 min, so
+    it must run detached (`setsid nohup`).

@@ -1,0 +1,14 @@
+import OscInt.Front.HypercubicSanity
+
+namespace OscInt.API.HypercubicSanity
+
+open OscInt.Statements OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+
+def P_HypercubicCubeRootStatement : Prop :=
+  ∀ (d : ℕ) (t : ℝ) (x : Fin d → ℤ), 0 ≤ t →
+    ‖hypercubicKernel d t x‖ ≤ (8 * (1 + Real.sqrt 7) / 3) ^ d * t ^ (-(d : ℝ) / 3)
+
+theorem witness_not_HypercubicCubeRootStatement : ¬ P_HypercubicCubeRootStatement :=
+  fun h => hypercubicCubeRoot_false_at_zero (h 1 0 0 le_rfl)
+
+end OscInt.API.HypercubicSanity

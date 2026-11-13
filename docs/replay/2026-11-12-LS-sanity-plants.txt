@@ -1,0 +1,94 @@
+# Planted controls for batch LS (OscInt/Front/LatticeGroupSanity.lean), session-10 lead, run 2026-11-12T21:32:04Z to 2026-11-12T21:33:36Z: before the
+# LS stamp and before any Lean proof of an LS statement (lessons 33). Generator: docs/replay/plants/2026-11-12-LS/plants_ls.py.txt (as batch HC's: one
+# textual mutation of a copied statement def, compiled with `lake env lean -DautoImplicit=false` against `import
+# OscInt.Front.LatticeGroupSanity` built from the working tree on top of git HEAD 9dcbf0c8a32e93e29e20eb21d735caad499fc74f).
+# SHA-256 at run time (lessons 48):
+#   1723c0da771d260476fe4182f59d0547f5597fc60bc4d7ca868bdd8859fcabdd  OscInt/Front/LatticeGroupSanity.lean
+#   52b68ca110e1ba886e8a56ec57d697d64a418c587a89e38888d2728f0efb03a1  OscInt/Statements/LatticeGroup.lean
+#   232bf2a7e8d4874861c97a68cf22ea2a70c11545bd0a6fe6b7483691cce63e66  <scratch>/plants_ls.py
+# Classification (lessons 44): INSTANCE (the closed datum no longer gives the planted conclusion; not a proof that the
+# plant is false), WITNESS (a compiled theorem refutes the planted statement; here conditional on LS-E, which supplies the
+# solution for the datum delta0), NOT DETECTED.
+#   K-norm        INSTANCE + WITNESS (LS-E → ¬ planted LS-K: at t = 0 the planted kernel gives 1 = 2 · G(0, 0) = 2)
+#   K-time-scale  NOT DETECTED (expected: G(2t, ·) and G(t, ·) agree at t = 0; a time-scale error is caught by the
+#                 proof of LS-K, not by this layer; stated in the sanity header)
+#   D-t0          INSTANCE + WITNESS (LS-E → ¬ planted LS-D: at t = 0, |δ₀(0)| = 1 ≤ min 1 (c · 0^{−1/3}) = 0 is false)
+#   D-rate        INSTANCE (t^{−d/2} instead of t^{−d/3})
+#   D-const-half  INSTANCE (constant C*/(4π) instead of C*/(2π))
+#   D-rate-natdiv INSTANCE (natural-number division d/3 at d = 2)
+#   Dp-one        INSTANCE + WITNESS (LS-E → ¬ planted LS-D′ without the 1 + : at t = 0 the bound is 0)
+#   Dp-rate       INSTANCE ((1 + |t|)^{−d/2})
+# Mutations of the solution predicate (the sign of i) are not planted: both signs have solutions, so LS-E cannot see
+# it, and LS-K's proof is what fixes the sign.
+#
+ok-K-norm: accepted (want accepted)
+plant-K-norm: rejected (recorded)
+    first error: plant-K-norm.lean:18:2: error: Type mismatch: After simplification, term
+witness-K-norm: accepted (want accepted)
+ok-K-time-scale: accepted (want accepted)
+plant-K-time-scale: accepted (want accepted)
+ok-D-t0: accepted (want accepted)
+plant-D-t0: rejected (recorded)
+    first error: plant-D-t0.lean:19:12: error: Function expected at
+witness-D-t0: accepted (want accepted)
+ok-D-rate: accepted (want accepted)
+plant-D-rate: rejected (want rejected)
+    first error: plant-D-rate.lean:21:4: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+ok-D-const-half: accepted (want accepted)
+plant-D-const-half: rejected (want rejected)
+    first error: plant-D-const-half.lean:22:53: error: unsolved goals
+ok-D-rate-natdiv: accepted (want accepted)
+plant-D-rate-natdiv: rejected (want rejected)
+    first error: plant-D-rate-natdiv.lean:21:4: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+ok-Dp-one: accepted (want accepted)
+plant-Dp-one: rejected (recorded)
+    first error: plant-Dp-one.lean:20:28: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-Dp-one: accepted (want accepted)
+ok-Dp-rate: accepted (want accepted)
+plant-Dp-rate: rejected (want rejected)
+    first error: plant-Dp-rate.lean:21:4: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+
+# Second run (after the blind pre-proof reviews; review/2026-11-12-LS-pre-proof-answers.md), 2026-11-12T22:20:35Z to 2026-11-12T22:21:29Z,
+# on git HEAD f59bd86540b80cc8829759f9f2989bfd8fd0abac plus the extended sanity file. SHA-256 at run time:
+#   4827d096054915e7768966098ccdb9da071ff8276067c42a54826e93c887afa4  OscInt/Front/LatticeGroupSanity.lean
+#   52b68ca110e1ba886e8a56ec57d697d64a418c587a89e38888d2728f0efb03a1  OscInt/Statements/LatticeGroup.lean
+#   d1527535cb44962ab5368ce4161f1104e6c52c5ff3a06761dd529f359f44a999  <scratch>/plants_ls.py
+# New plant K-plus (x + y in place of x − y): INSTANCE + WITNESS (LS-E → ¬ planted LS-K, from the data δ₀ and δ_{e₁}).
+# The witnesses of K-norm, D-t0 and Dp-one were re-run against the extended sanity file and still compile.
+#
+ok-K-norm: accepted (want accepted)
+plant-K-norm: rejected (recorded)
+    first error: plant-K-norm.lean:18:2: error: Type mismatch: After simplification, term
+witness-K-norm: accepted (want accepted)
+ok-D-t0: accepted (want accepted)
+plant-D-t0: rejected (recorded)
+    first error: plant-D-t0.lean:19:12: error: Function expected at
+witness-D-t0: accepted (want accepted)
+ok-Dp-one: accepted (want accepted)
+plant-Dp-one: rejected (recorded)
+    first error: plant-Dp-one.lean:20:28: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-Dp-one: accepted (want accepted)
+ok-K-plus: accepted (want accepted)
+plant-K-plus: rejected (recorded)
+    first error: plant-K-plus.lean:19:2: error: Type mismatch: After simplification, term
+witness-K-plus: accepted (want accepted)
+#
+# Corrections after the blind pre-proof reviews (review A, finding 1; lessons 44 and 47):
+#   D-rate, D-const-half and Dp-rate STRENGTHEN the bound. Their "rejected" outcomes above are script-only (a rewrite
+#   or a closing step failed); the planted conclusion still holds on the datum, so they are NOT DETECTED, as the batch-HC
+#   record classifies a faster rate. All three planted statements are false (referee A's computations, FLOAT):
+#     D-rate: at t = 200, max_x |G_1(t, x)| = 0.0918 > 0.0774 (the planted bound);
+#     Dp-rate: at t = 1000, 0.0536 > 0.0448;
+#     D-const-half: sup over integers n and s > 0 of s^{1/3}|J_n(s)| is 0.78575 (Landau's constant) > C*/(4π) = 0.77365,
+#     so at t ≈ 0.392, x = 0, datum δ₀ the planted bound 0.839 is below the true value 0.852 (margin about 1.6%).
+#   D-rate-natdiv weakens the bound at d = 2 (exponent 0) and is genuinely detected (INSTANCE).
+#   Not planted: mutations of latticeLaplacian (dropping −2g(x), a wrong neighbour, Δ = 0); the new bite
+#   const_not_solution excludes Δ = 0 and a vacuous derivative clause, and the derivative theorems kernel_deriv_zero_*
+#   record what the statements imply at t = 0.
+#
+# Addendum after the A3 adversarial review (2026-11-13; review/2026-11-12-A3-post-proof-answers.md, MINOR 4):
+#   Why D-rate-natdiv is detected. The plant writes the exponent as -((d / 3 : ℕ) : ℝ), which is 0 at d = 2.
+#   The sanity theorem dispersive_two (d = 2, t = 4, f = δ₀, so 2|t| = 8) concludes the frozen bound
+#   (C*/(2π))² · 8^(-2/3) ≈ 0.598. The planted statement gives only min{1, (C*/(2π))² · 8^0} = min{1, 2.394} = 1, which
+#   does not imply 0.598. So the rejection is semantic (the plant is weaker), not a script-step failure; unlike
+#   D-rate, D-const-half and Dp-rate, whose planted bounds are at most the frozen ones on this datum.

@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the batch-HC statements against copies of their sanity theorems.
+
+As the batch-LE2 generator: for each plant, copy the named def (from
+OscInt/Statements/Hypercubic.lean) and sanity theorems (from OscInt/Front/HypercubicSanity.lean) under the
+prefix P_, apply exactly one textual mutation to the copied def, compile with `lake env lean -DautoImplicit=false`.
+The unplanted copy must compile. Witness files (lessons 44): for plants that strengthen the statement, a file proving
+the negation of the planted statement from the unconditional bites of the sanity file; it must compile.
+Usage: plants_hc.py REPO OUTDIR [plant ids]
+"""
+import os, re, subprocess, sys
+
+REPO, OUT = sys.argv[1], sys.argv[2]
+os.makedirs(OUT, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/Hypercubic.lean')).read().split('\n')
+SAN = open(os.path.join(REPO, 'OscInt/Front/HypercubicSanity.lean')).read().split('\n')
+TE = 'HypercubicCubeRootStatement'
+TF = 'HypercubicKernelFactorStatement'
+
+
+def block(lines, kind, name):
+    pat = re.compile(r'^(noncomputable )?' + kind + r' ' + re.escape(name) + r'\b')
+    for i, l in enumerate(lines):
+        if pat.match(l):
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {kind} {name}')
+
+
+PLANTS = [
+    # (id, def, sanity theorems, (old, new), want, witness: (type, proof) of a theorem refuting the planted def, or None)
+    ('TdE-rate', TE, ['hypercubicCubeRoot_three'],
+     ('t ^ (-(d : ℝ) / 3)', 't ^ (-(1 : ℝ) / 3)'), 'rejected', None),
+    ('TdE-const-larger', TE, ['hypercubicCubeRoot_three'],
+     ('(8 * (1 + Real.sqrt 7) / 3) ^ d', '(8 * (1 + Real.sqrt 7) / 3) ^ (d + 1)'), 'rejected', None),
+    ('TdE-threshold-thr', TE, ['hypercubicCubeRoot_thr'],
+     ('∀ (d : ℕ) (t : ℝ) (x : Fin d → ℤ), 0 < t →', '∀ (d : ℕ) (t : ℝ) (x : Fin d → ℤ), 4 ≤ t →'), 'rejected', None),
+    ('TdE-nonneg-t', TE, ['hypercubicCubeRoot_three', 'hypercubicCubeRoot_eighth', 'hypercubicCubeRoot_thr'],
+     ('∀ (d : ℕ) (t : ℝ) (x : Fin d → ℤ), 0 < t →', '∀ (d : ℕ) (t : ℝ) (x : Fin d → ℤ), 0 ≤ t →'), None,
+     ('¬ P_HypercubicCubeRootStatement', 'fun h => hypercubicCubeRoot_false_at_zero (h 1 0 0 le_rfl)')),
+    ('TdE-half-const', TE, ['hypercubicCubeRoot_three'],
+     ('(8 * (1 + Real.sqrt 7) / 3) ^ d', '(4 * (1 + Real.sqrt 7) / 3) ^ d'), None,
+     ('HypercubicKernelFactorStatement → ¬ P_HypercubicCubeRootStatement',
+      'by\n  intro hF h\n  have h1 := h 1 (343 / 512) ![0] (by norm_num)\n  rw [hF 1 (343 / 512) ![0]] at h1\n'
+      '  simp only [Fin.prod_univ_one, Matrix.cons_val_zero, Int.cast_zero, pow_one] at h1\n'
+      '  rw [show (-((1 : ℕ) : ℝ) / 3) = -(1 : ℝ) / 3 by norm_num] at h1\n  exact cubeRoot_half_const_false h1')),
+    ('TdF-time', TF, ['hypercubicFactor_two'],
+     ('∏ j, latticeKernel1 t (x j : ℝ)', '∏ j, latticeKernel1 (2 * t) (x j : ℝ)'), 'rejected', None),
+    ('TdF-tpos', TF, ['hypercubicFactor_neg'],
+     ('∀ (d : ℕ) (t : ℝ) (x : Fin d → ℤ), hypercubicKernel', '∀ (d : ℕ) (t : ℝ) (x : Fin d → ℤ), 0 < t → hypercubicKernel'),
+     'rejected', None),
+    # second run, after the blind pre-proof reviews (A finding 1, B finding 2)
+    ('TdE-rate-natdiv', TE, ['hypercubicCubeRoot_two'],
+     ('t ^ (-(d : ℝ) / 3)', 't ^ (-((d / 3 : ℕ) : ℝ))'), 'rejected', None),
+    ('TdE-const-copied-d3', TE, ['hypercubicCubeRoot_two'],
+     ('(8 * (1 + Real.sqrt 7) / 3) ^ d', '(8 * (1 + Real.sqrt 7) / 3) ^ 3'), 'rejected', None),
+]
+
+HEADER = """import OscInt.Front.HypercubicSanity
+
+namespace OscInt.API.HypercubicSanity
+
+open OscInt.Statements OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+"""
+
+
+def make(d, thms, mut, planted, witness=None):
+    t = block(STMT, 'def', d)
+    if planted:
+        assert t.count(mut[0]) == 1, (d, mut[0])
+        t = t.replace(mut[0], mut[1])
+    parts = [t]
+    if witness is None:
+        parts += [block(SAN, 'theorem', th) for th in thms]
+    else:
+        parts.append(f'theorem witness_not_{d} : {witness[0]} :=\n  {witness[1]}')
+    text = '\n\n'.join(parts)
+    for n in sorted([d] + thms, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r'(?![\w])', 'P_' + n, text)
+    return HEADER + '\n' + text + '\n\nend OscInt.API.HypercubicSanity\n'
+
+
+def run(tag, text):
+    src = os.path.join(OUT, tag + '.lean')
+    open(src, 'w').write(text)
+    r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                       cwd=REPO, capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+    errs = [l for l in out.split('\n') if ': error' in l]
+    return ('accepted' if r.returncode == 0 and not errs else 'rejected'), errs
+
+
+summary = []
+ONLY = sys.argv[3:] 
+for pid, d, thms, mut, want, witness in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    jobs = [('ok-' + pid, make(d, thms, mut, False), 'accepted'),
+            ('plant-' + pid, make(d, thms, mut, True), want)]
+    if witness:
+        jobs.append(('witness-' + pid, make(d, thms, mut, True, witness), 'accepted'))
+    for tag, text, w in jobs:
+        verdict, errs = run(tag, text)
+        line = f"{tag}: {verdict}" + (f" (want {w}){'' if verdict == w else '  <-- MISMATCH'}" if w else ' (recorded)')
+        if errs:
+            line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+        print(line, flush=True)
+        summary.append(line)
+open(os.path.join(OUT, 'SUMMARY.txt'), 'w').write('\n'.join(summary) + '\n')

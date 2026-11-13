@@ -726,3 +726,184 @@ stands):
    (u, y₂/t) and a C² remainder, then S1.k with k = 4 in the kernel variable, suffices; no Morse lemma with parameters is
    needed, and the route does not use condition (v), so it would prove S5.1 as well. Which route is used is decided in
    the route document, before any proof.
+
+## Batch LE2: the cube-root bound for the 1D lattice kernel, and its 2D corollary (session 10, 2026-11-10)
+
+Order. As batch LE: the statements below, `OscInt/Statements/LatticeCubeRoot.lean`, sanity theorems with planted
+controls (`OscInt/Front/LatticeCubeRootSanity.lean`), the challenge `Challenge/LatticeCubeRoot.lean` and
+`comparator-LE2.json` are committed and stamped before the blind pre-proof reviews; the reviews are answered and the
+route is reviewed before any Lean proof of these statements is written. Owner decision (2026-11-10, session 10): start
+this batch in the session that checked the bound.
+
+Why. T0E's constants make it beat the trivial bound |I| ≤ 2π only for t > 518.5 (batch LE, clarification 6); ROADMAP
+I4 asks for a "useful from" threshold for each explicit constant. An external reviewer submitted (2026-11-10) a hand
+proof of a bound with one term and a constant within a factor 2 of the best possible; the lead re-derived it line by line
+(`review/2026-11-10-external-followup-answers.md`). It is useful from t ≈ 3.70. The frozen LE files are not edited.
+
+Notation. I(t, ξ) = ∫_{−π}^{π} e^{i(t cos k + ξk)} dk (`latticeKernel1`, batch LE, unchanged) and K(t, x) T6's kernel
+(`latticeKernel`, batch GD, unchanged). C* = 8(1 + √7)/3 ≈ 9.72200.
+
+**T0E′ (cube-root bound for the 1D lattice kernel).** For every t > 0 and every real ξ: |I(t, ξ)| ≤ C* t^{−1/3}.
+
+**T6E′ (explicit constant for T6, cube-root form).** For every t > 0 and x ∈ ℤ²: |K(t, x)| ≤ C*² t^{−2/3}.
+(C*² = (512 + 128√7)/9 ≈ 94.517.)
+
+Route (for the reviewers' orientation only; no Lean proof exists when this is frozen; the external reviewer's hand proof does, re-derived by the lead in `review/2026-11-10-external-followup-answers.md`). T6E′ is T6F and T0E′ applied twice.
+T0E′: by I(t, −ξ) = I(t, ξ) (substitute k ↦ −k) take ξ ≥ 0, and put v = ξ/t, g = t(v − sin k) (the derivative of the
+phase).
+1. Integration by parts on the sets where |g| ≥ tδ, with the boundary terms at ±π kept: they combine into
+   2e^{−it} sin(πξ)/(tv), of size ≤ 2/(tv). The rest of [−π, π] is bounded by its length. This gives a "band" bound
+   |I| ≤ 2(arcsin(v + δ) − arcsin(v − δ)) + 8/(tδ) − 4/(t(1 − v²)) [+ 2/(tv) if v > δ], valid for −1 < v − δ and
+   v + δ < 1, and a "cap" bound |I| ≤ 2 arccos(v − δ) + 4/(tδ) − 2/(t(1 + v)) [+ 2/(tv) if v > δ].
+2. t ≥ 8, τ = t^{−1/3}: cap with δ = 2τ² for v ≥ 1 − 2τ² (≤ 2π + 8/3); band with δ = (3/2)τ² for 1/2 ≤ v < 1 − 2τ²
+   (the bound decreases in Δ = (1 − v)/τ² and equals C* at Δ = 2: the extremal case) and for 0 ≤ v ≤ 1/2 (≤ 277/30).
+3. 3 ≤ t ≤ 8, δ = 1/2: cap or band; each bound is A + B/t, and t^{1/3}(A + B/t) is largest at t = 3 or t = 8, where
+   rational arithmetic gives < 97/10 < C*. 4. 0 < t ≤ 3: |I| ≤ 2π and 2π·3^{1/3} < 97/10.
+No Bessel function and no S1 statement is used.
+
+Modelling choices and what is omitted.
+1. ξ is real (as T0E). For non-integer ξ the integral is an Anger-type function, not a Bessel function; the end-point
+   terms at ±π are the reason the proof needs the 2/(tv) terms.
+2. t > 0 for both (at t = 0 Lean's `Real.rpow` gives 0^{−1/3} = 0 and both bounds are false); t < 0 reduces to t > 0
+   by I(−t, ξ) = conj I(t, −ξ). T6E′ holds for every t > 0, not only t ≥ 1 (unlike T6E): each factor obeys T0E′.
+3. **How good the constant is.** C* is within a factor 2 of the best constant C_opt = sup over t > 0 and real ξ of
+   t^{1/3}|I(t, ξ)|: C_opt ≥ (4/5)^{1/3}|I(4/5, 0)| > 4.93 (an elementary Taylor bound, exact rational arithmetic), and
+   the LE review B point (t, ξ) = (5.7972…, 4.404) gives C_opt ≥ 2π·0.80366 ≈ 5.0495 (floating point). For integer ξ
+   the best constant is Landau's, 2π·0.7857… ≈ 4.937 (`docs/prior_art.md`). So C*/C_opt ≤ 1.9706 rigorously and ≈ 1.925 numerically (the overshoot over Landau's
+   integer-ξ constant is ≈ 1.969).
+4. **Where the bounds have content.** C* t^{−1/3} < 2π exactly when t > (C*/(2π))³ ≈ 3.7045; C*² t^{−2/3} < 4π² for the
+   same t. Compared with batch LE: C* < B = 36·2^{1/6} ≈ 40.41 (T0E's t^{−1/3} coefficient alone), and
+   C*² ≈ 94.517 is about 50.3 times smaller than T6E's (A + B)² ≈ 4754.
+5. T0E′ is stronger than T0E for every t > 0 (C* < B, and T0E has a further positive term), so T0E becomes a corollary;
+   T6E′ is stronger than T6E for t ≥ 1. Neither frozen statement is edited or withdrawn.
+6. The normalisation (2π)^{−1} (per factor), the time scale and the phases are omitted as in T0E and T6.
+7. AI-use disclosure (as for S5.1′, `docs/prior_art.md`): the constant and the hand proof come from the external
+   reviewer's submission of 2026-11-10 (OpenAI ChatGPT 6, version as given by the owner); not authorship or credit.
+   The ingredients (integration by parts with end-point terms, arcsine band lengths, convexity) are elementary and
+   classical; the constant was not found in the reviewer's logged search, which is the entire novelty claim.
+
+Clarifications after the pre-proof reviews (2026-11-10; answers `review/2026-11-10-LE2-pre-proof-answers.md`; both
+referees FAITHFUL and TRUE for T0E′ and T6E′, no BLOCKER or MAJOR; no statement text changed, the stamp
+`stamps/20261110T234417Z-0532b1cf8880` stands):
+1. **Which step is tight** (A and B, NIT). In the route above, C* arises in the regime 1/2 ≤ v < 1 − 2τ², t ≥ 8, only
+   after the relaxation (1 + s)^{−1/2} ≤ 2√2/3 on the band; the exact band expression there peaks near 8.76. The
+   tightest step of the route is 3 ≤ t ≤ 8 at t = 3, v ↓ 1/2 (cap bound with the 2/(tv) term): 3^{1/3}(π + 32/9) ≈ 9.659,
+   checked against 97/10 exactly (`numerics/review/followup_checks.py`, R1c-cap). The same route would give a constant
+   near 9.66; C* is the frozen one.
+2. **Ranges of the route's bounds** (A, NIT). The band bound needs −1 < v − δ and v + δ < 1. The cap bound needs
+   −1 < v − δ < 1; when v − δ ≥ 1 (so v > 1) the whole interval has g > 0, and the bound
+   |I| ≤ 2/(t(v − 1)) + 2/(tv(v + 1)) replaces it.
+3. **Sanity data** (A and B, MINOR). At t = 1/8 the sanity conclusions follow from the trivial bounds; data at
+   t = (31/20)³ ≈ 3.724, just above the usefulness threshold, and three T6E′ bites were added to
+   `OscInt/Front/LatticeCubeRootSanity.lean` (plant record, second run). The faster rate t^{−1/2} in T0E′ is false but
+   not detected by the sanity layer; it rests on the reviews and on the proof.
+4. **The proof as written** (2026-11-11, post-proof reviews A and B). The Lean proof (`docs/proof-LE2.md`, "The parts as
+   proved") bounds the sub-case t ≥ 8, δ ≤ v ≤ 1/2 by 9.7047·t^{−1/3}, not by 277/30: after the extremal sub-case this
+   is now the smallest margin of the proof (≈ 0.017), so clarification 1's "tightest step" (t = 3, 9.659) describes the
+   route sketch above, not the proof.
+
+## Batch HC: the hypercubic lattice kernel in every dimension (session 10, 2026-11-12)
+
+Order. As batches LE and LE2: statements, `OscInt/Statements/Hypercubic.lean`, sanity theorems with planted controls
+(`OscInt/Front/HypercubicSanity.lean`), challenge `Challenge/Hypercubic.lean` and `comparator-HC.json`, frozen and
+stamped before the blind pre-proof reviews; no Lean proof of these statements exists before the reviews are answered.
+Owner decision (2026-11-12, session 10): "bet 1", the separable corollary that ROADMAP I3b lists as an optional early
+demonstration, now with the T0E′ constant.
+
+Why. T0E′ is a 1D estimate; by Fubini the kernel of the free lattice Schrödinger group on ℤ^d factorises into d 1D
+kernels, so T0E′ gives an explicit, machine-checkable dispersive bound in every dimension d: three-dimensional crystals
+and cubic optical lattices (d = 3), and every d ≥ 4 as a mathematical family. Classical and separable: no claim beyond a
+machine-checked corollary with an explicit constant (`docs/prior_art.md`, "Lattice kernels").
+
+Notation. For d ∈ ℕ, t ∈ ℝ and x ∈ ℤ^d,
+K_d(t, x) = ∫_{[−π, π]^d} e^{i(t Σ_j cos k_j + Σ_j x_j k_j)} dk (Lebesgue measure on ℝ^d, Lean: `Fin d → ℝ` with its
+product measure, the box `Set.univ.pi (fun _ => Icc (−π) π)`). I(t, ξ) is `latticeKernel1` (batch LE).
+C* = 8(1 + √7)/3 as in batch LE2.
+
+**TdF (the d-dimensional kernel factorises).** For every d, real t and x ∈ ℤ^d: K_d(t, x) = ∏_{j<d} I(t, x_j).
+
+**TdE′ (explicit decay in every dimension).** For every d, every t > 0 and x ∈ ℤ^d: |K_d(t, x)| ≤ C*^d t^{−d/3}.
+
+Route (orientation only). TdF: the integrand is ∏_j e^{i(t cos k_j + x_j k_j)} (`Complex.exp` of a sum is a product),
+the restricted product measure of a box is the product of restricted measures, and the integral of a product of
+one-variable functions over `Fin d → ℝ` is the product of integrals (`MeasureTheory.integral_fintype_prod_eq_prod`).
+TdE′: TdF, `norm_prod`, T0E′ on each factor, and (t^{−1/3})^d = t^{−d/3}.
+
+Modelling choices and what is omitted.
+1. x ∈ ℤ^d (lattice sites), as T6; the factorisation and the bound also hold for real x, not stated.
+2. d = 0 is included: K_0 = 1 (the integral over the one-point space) and both sides of TdE′ equal 1.
+3. t > 0 in TdE′ (rpow at 0, as T0E′). The rate t^{−d/3} is the sharp rate for the hypercubic lattice (caustic
+   directions, from the 1D rate t^{−1/3}); sharpness is not stated.
+4. The constant C*^d grows exponentially in d; the bound beats the trivial |K_d| ≤ (2π)^d for t > (C*/(2π))³ ≈ 3.70 in
+   every dimension. For d = 2 it is T6E′ (on `Fin 2 → ℝ` instead of ℝ × ℝ; the identification is not stated).
+5. Normalisation (2π)^{−d}, time scale and phases omitted, as T6. A user's e^{itH} with H = Σ_j 2 cos k_j has kernel
+   (2π)^{−d} K_d(2t, x).
+6. AI-use disclosure: TdE′ inherits T0E′'s (`docs/prior_art.md`); the batch itself was proposed by the lead.
+
+Clarifications after the pre-proof reviews (2026-11-12; answers `review/2026-11-12-HC-pre-proof-answers.md`; TdF, TdE′
+FAITHFUL and TRUE ×2, no BLOCKER or MAJOR; the stamp `stamps/20261112T120616Z-c56beb57ff8c` stands):
+1. "Beats the trivial bound in every dimension" means every d ≥ 1; at d = 0 both sides are 1.
+2. Sanity data with 3 ∤ d (d = 2), in the non-trivial regime (d = 1, 3) and at d = 0 were added; mutations of the
+   kernel definition are not seen by the sanity layer and are caught by the TdF proof (plant record).
+
+## Batch LS: the free lattice Schrödinger group on ℤ^d (session 10, 2026-11-12)
+
+Order. As batches LE2 and HC: statements, `OscInt/Statements/LatticeGroup.lean`, sanity theorems with planted controls
+(`OscInt/Front/LatticeGroupSanity.lean`, record `docs/replay/2026-11-12-LS-sanity-plants.txt`), challenge
+`Challenge/LatticeGroup.lean` and `comparator-LS.json`, frozen and stamped before the blind pre-proof reviews; no Lean proof
+of these statements exists before the reviews are answered. Owner decision (2026-11-12, session 10): "B1", from the
+external research packet answered in `review/2026-11-12-DNLS-packet-answers.md` (its hand proof B1; the packet's Lean
+statements were not used: they do not parse, and these are written fresh).
+
+Why. TdE′ bounds the kernel K_d; batch LS turns it into a statement about the evolution itself. It is the shared
+dependency of the discrete NLS candidate (ROADMAP "Candidates"), optical-lattice hopping and numerical dispersion
+(Track C items C3 and C7 of that packet). Classical mathematics; the kernel formula is in Stefanov–Kevrekidis (arXiv
+nlin/0409009v1, eq. (6)). The novelty claim, if proved, is "machine-checked, with an explicit constant".
+
+Notation. ℓ²(ℤ^d) is `lp (fun _ : Fin d → ℤ => ℂ) 2` (Lean name `LatticeL2 d`). For g : ℤ^d → ℂ,
+(Δg)(x) = Σ_{j<d} (g(x + e_j) + g(x − e_j) − 2g(x)), e_j = `Pi.single j 1` (Lean `latticeLaplacian`). A **solution with
+datum f** is u : ℝ → ℓ²(ℤ^d) with u(0) = f such that, at every real t, u is differentiable in the ℓ² norm with
+derivative w(t) ∈ ℓ², and w(t)(x) = i (Δu(t))(x) for every site x (Lean `IsLatticeSchrodingerSolution`); that is,
+i u′ + Δu = 0. G_d(t, z) = (2π)^{−d} e^{−2idt} K_d(2t, z) (Lean `schrodingerKernel`), with K_d of batch HC.
+C* = 8(1 + √7)/3 and τ = (C*/(2π))³/2 ≈ 1.852.
+
+**LS-E (existence).** For every d and f ∈ ℓ²(ℤ^d) there is a solution with datum f.
+
+**LS-K (kernel).** For every d, every f ∈ ℓ²(ℤ^d), every solution u with datum f, every real t and x ∈ ℤ^d: the series
+Σ_y G_d(t, x − y) f(y) converges absolutely and u(t)(x) = Σ_y G_d(t, x − y) f(y). (In particular the solution is unique.)
+
+**LS-D (dispersive estimate).** For every d, every f with Σ_y |f(y)| < ∞, every solution u with datum f, every t ≠ 0 and
+x: |u(t)(x)| ≤ min{1, (C*/(2π))^d (2|t|)^{−d/3}} Σ_y |f(y)|.
+
+**LS-D′ (decay at every time).** Same hypotheses, every real t: |u(t)(x)| ≤ (1 + τ)^{d/3} (1 + |t|)^{−d/3} Σ_y |f(y)|.
+
+Route (orientation only; the route document comes after the reviews). LS-K: the kernel convolution is a solution
+(∂_t G_d = iΔ_z G_d by differentiating under the integral, since Δ_z e^{iz·k} = (2Σ_j cos k_j − 2d) e^{iz·k}; G_d(t, ·) is
+in ℓ¹, so convolution maps ℓ² to ℓ² boundedly) and solutions of the linear equation are unique (Δ is a bounded operator
+on ℓ², norm ≤ 4d; Gronwall or Mathlib's ODE uniqueness). LS-E: the kernel convolution, or `NormedSpace.exp` of iΔ.
+LS-D: LS-K, TdE′ at 2|t| (negative t by conjugation, K_d(−s, x) = conj K_d(s, −x)), |K_d| ≤ (2π)^d, and the triangle
+inequality. LS-D′: LS-D, since (C*/(2π))^d 2^{−d/3} = τ^{d/3} and min{1, (τ/|t|)^{d/3}} ≤ ((1 + τ)/(1 + |t|))^{d/3}, with
+t = 0 from u(0) = f.
+
+Modelling choices and what is omitted.
+1. Solutions are characterised by the equation, not by an operator exponential, so "the solution of i u′ + Δu = 0 is
+   the kernel convolution" is the literal claim and no operator is constructed in the frozen file. Differentiability in
+   the ℓ² norm at every real time (a strong solution) is required; weaker notions are not covered.
+2. The sign convention: i u′ + Δu = 0, i.e. u′ = iΔu, so u(t) = e^{itΔ} f. With the opposite sign the kernel is the
+   complex conjugate; not stated.
+3. d = 0 is included (one site, Δ = 0, u constant, G_0 = 1); LS-D and LS-D′ then read |f| ≤ |f|.
+4. LS-D and LS-D′ take ℓ¹ data (Σ_y |f(y)| < ∞, which implies f ∈ ℓ², as `lp` already requires). The bound
+   min{1, ·} is stated with its trivial part; the decaying part beats 1 exactly when |t| > τ.
+5. LS-D excludes t = 0 (Lean's 0^{−d/3} = 0 would make the bound false there; bite in the sanity file).
+6. Omitted: mass conservation (unitarity), the group law, ℓ^p bounds for other p, Strichartz estimates, potentials and
+   nonlinear terms; these belong to the discrete NLS candidate.
+7. AI-use disclosure: the hand proof that suggested the batch is from the external reviewer's packet produced with an
+   OpenAI model (`review/2026-11-12-DNLS-packet-answers.md`); the statements, sanity layer and plants are the lead's.
+
+Clarifications after the pre-proof reviews (2026-11-12; answers `review/2026-11-12-LS-pre-proof-answers.md`; LS-E, LS-K,
+LS-D, LS-D′ FAITHFUL and TRUE ×2, no BLOCKER or MAJOR; the stamp `stamps/20261112T215742Z-d18e0780abdb` stands):
+1. LS-D′, like LS-D, beats the trivial |u(t, x)| ≤ ‖f‖₁ only for |t| > τ ≈ 1.852, and its constant (1 + τ)^{d/3} grows
+   with d. The per-dimension factor C*/(2π) = 1.547 is about 1.97 times Landau's sharp 0.786.
+2. The sanity layer now also pins the derivative clause and the diagonal term of Δ (a bite), states the derivative of
+   t ↦ G_1(t, x) at t = 0 implied by LS-E and LS-K, and detects x + y in place of x − y. Mutations of the gauge, the
+   factor 2 and the sign of i are not refuted by the sanity layer; LS-K's proof fixes them.

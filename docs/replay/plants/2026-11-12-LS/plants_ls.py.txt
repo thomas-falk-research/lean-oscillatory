@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the batch-LS statements against copies of their sanity theorems.
+
+As the batch-HC generator: for each plant, copy the named def (from OscInt/Statements/LatticeGroup.lean) and sanity
+theorems (from OscInt/Front/LatticeGroupSanity.lean) under the prefix P_, apply exactly one textual mutation to the
+copied def, compile with `lake env lean -DautoImplicit=false`. The unplanted copy must compile. Witness files (lessons
+44): for plants that strengthen the statement, a file proving the negation of the planted statement (possibly from
+LS-E, which supplies the solution for the datum delta0); it must compile.
+Usage: plants_ls.py REPO OUTDIR [plant ids]
+"""
+import os, re, subprocess, sys
+
+REPO, OUT = sys.argv[1], sys.argv[2]
+os.makedirs(OUT, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/LatticeGroup.lean')).read().split('\n')
+SAN = open(os.path.join(REPO, 'OscInt/Front/LatticeGroupSanity.lean')).read().split('\n')
+TK = 'LatticeSchrodingerKernelStatement'
+TD = 'LatticeSchrodingerDispersiveStatement'
+TDp = 'LatticeSchrodingerDecayStatement'
+
+
+def block(lines, kind, name):
+    pat = re.compile(r'^(noncomputable )?' + kind + r' ' + re.escape(name) + r'\b')
+    for i, l in enumerate(lines):
+        if pat.match(l):
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {kind} {name}')
+
+
+PLANTS = [
+    # (id, def, sanity theorems, (old, new), want, witness: (type, proof) of a theorem refuting the planted def, or None)
+    ('K-norm', TK, ['kernel_zero_time'],
+     ("u t x = ∑' y : Fin d → ℤ, schrodingerKernel d t (x - y) * f y",
+      "u t x = ∑' y : Fin d → ℤ, 2 * schrodingerKernel d t (x - y) * f y"), None,
+     ('LatticeSchrodingerExistsStatement → ¬ P_LatticeSchrodingerKernelStatement',
+      'by\n  intro hE h\n  obtain ⟨u, hu⟩ := hE 1 (delta0 1)\n  have h0 := (h 1 _ u hu 0 0).2\n'
+      '  rw [hu.1, tsum_eq_single 0 (fun y hy => by simp [delta0_apply, hy])] at h0\n'
+      '  simp only [delta0_apply, sub_zero, ite_true, schrodingerKernel_zero_zero, mul_one] at h0\n  norm_num at h0')),
+    ('K-time-scale', TK, ['kernel_zero_time'],
+     ("u t x = ∑' y : Fin d → ℤ, schrodingerKernel d t (x - y) * f y",
+      "u t x = ∑' y : Fin d → ℤ, schrodingerKernel d (2 * t) (x - y) * f y"), 'accepted', None),
+    ('D-t0', TD, ['dispersive_one'],
+     ('∀ (t : ℝ) (x : Fin d → ℤ), t ≠ 0 →', '∀ (t : ℝ) (x : Fin d → ℤ),'), None,
+     ('LatticeSchrodingerExistsStatement → ¬ P_LatticeSchrodingerDispersiveStatement',
+      'by\n  intro hE h\n  obtain ⟨u, hu⟩ := hE 1 (delta0 1)\n'
+      '  exact dispersive_false_at_zero u hu (h 1 _ u hu (delta0_summable 1) 0 0)')),
+    ('D-rate', TD, ['dispersive_one'],
+     ('(2 * |t|) ^ (-(d : ℝ) / 3)', '(2 * |t|) ^ (-(d : ℝ) / 2)'), 'rejected', None),
+    ('D-const-half', TD, ['dispersive_one'],
+     ('/ (2 * Real.pi)) ^ d * (2 * |t|)', '/ (4 * Real.pi)) ^ d * (2 * |t|)'), 'rejected', None),
+    ('D-rate-natdiv', TD, ['dispersive_two'],
+     ('(2 * |t|) ^ (-(d : ℝ) / 3)', '(2 * |t|) ^ (-((d / 3 : ℕ) : ℝ))'), 'rejected', None),
+    ('Dp-one', TDp, ['decay_seven'],
+     ('(1 + |t|) ^ (-(d : ℝ) / 3)', '|t| ^ (-(d : ℝ) / 3)'), None,
+     ('LatticeSchrodingerExistsStatement → ¬ P_LatticeSchrodingerDecayStatement',
+      'by\n  intro hE h\n  obtain ⟨u, hu⟩ := hE 1 (delta0 1)\n'
+      '  exact decay_false_without_one u hu (h 1 _ u hu (delta0_summable 1) 0 0)')),
+    ('Dp-rate', TDp, ['decay_seven'],
+     ('(1 + |t|) ^ (-(d : ℝ) / 3)', '(1 + |t|) ^ (-(d : ℝ) / 2)'), 'rejected', None),
+    # second run, after the blind pre-proof reviews (B finding 1)
+    ('K-plus', TK, ['kernel_zero_time_shift'],
+     ("u t x = ∑' y : Fin d → ℤ, schrodingerKernel d t (x - y) * f y",
+      "u t x = ∑' y : Fin d → ℤ, schrodingerKernel d t (x + y) * f y"), None,
+     ('LatticeSchrodingerExistsStatement → ¬ P_LatticeSchrodingerKernelStatement',
+      'by\n  intro hE h\n  obtain ⟨u, hu⟩ := hE 1 (delta0 1)\n  obtain ⟨v, hv⟩ := hE 1 (deltaAt 1 (latticeUnit 1 0))\n'
+      '  have h0 := (h 1 _ u hu 0 (latticeUnit 1 0 + latticeUnit 1 0)).2\n'
+      '  have h1 := (h 1 _ v hv 0 (latticeUnit 1 0)).2\n'
+      '  rw [hu.1, tsum_eq_single 0 (fun y hy => by simp [delta0_apply, hy])] at h0\n'
+      '  rw [hv.1, tsum_eq_single (latticeUnit 1 0) (fun y hy => by simp [deltaAt_apply, hy])] at h1\n'
+      '  have hne : latticeUnit 1 0 + latticeUnit 1 0 ≠ 0 := by\n'
+      '    intro hz; have := congrFun hz 0; simp [latticeUnit] at this\n'
+      '  simp only [delta0_apply, hne, ite_false, add_zero, deltaAt_apply, ite_true, mul_one] at h0 h1\n'
+      '  rw [← h1] at h0\n  norm_num at h0')),
+]
+
+HEADER = """import OscInt.Front.LatticeGroupSanity
+
+namespace OscInt.API.LatticeGroupSanity
+
+open OscInt.Statements OscInt.API.HypercubicSanity
+"""
+
+
+def make(d, thms, mut, planted, witness=None):
+    t = block(STMT, 'def', d)
+    if planted:
+        assert t.count(mut[0]) == 1, (d, mut[0])
+        t = t.replace(mut[0], mut[1])
+    parts = [t]
+    if witness is None:
+        parts += [block(SAN, 'theorem', th) for th in thms]
+    else:
+        parts.append(f'theorem witness_not_{d} : {witness[0]} :=\n  {witness[1]}')
+    text = '\n\n'.join(parts)
+    for n in sorted([d] + thms, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r'(?![\w])', 'P_' + n, text)
+    return HEADER + '\n' + text + '\n\nend OscInt.API.LatticeGroupSanity\n'
+
+
+def run(tag, text):
+    src = os.path.join(OUT, tag + '.lean')
+    open(src, 'w').write(text)
+    r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                       cwd=REPO, capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+    errs = [l for l in out.split('\n') if ': error' in l]
+    return ('accepted' if r.returncode == 0 and not errs else 'rejected'), errs
+
+
+summary = []
+ONLY = sys.argv[3:] 
+for pid, d, thms, mut, want, witness in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    jobs = [('ok-' + pid, make(d, thms, mut, False), 'accepted'),
+            ('plant-' + pid, make(d, thms, mut, True), want)]
+    if witness:
+        jobs.append(('witness-' + pid, make(d, thms, mut, True, witness), 'accepted'))
+    for tag, text, w in jobs:
+        verdict, errs = run(tag, text)
+        line = f"{tag}: {verdict}" + (f" (want {w}){'' if verdict == w else '  <-- MISMATCH'}" if w else ' (recorded)')
+        if errs:
+            line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+        print(line, flush=True)
+        summary.append(line)
+open(os.path.join(OUT, 'SUMMARY.txt'), 'w').write('\n'.join(summary) + '\n')

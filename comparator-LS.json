@@ -1,0 +1,5 @@
+{"challenge_module": "Challenge", "solution_module": "OscInt",
+ "theorem_names": ["OscInt.API.latticeSchrodingerExists", "OscInt.API.latticeSchrodingerKernel",
+                   "OscInt.API.latticeSchrodingerDispersive", "OscInt.API.latticeSchrodingerDecay"],
+ "definition_names": [],
+ "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]}

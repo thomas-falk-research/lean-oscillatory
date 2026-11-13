@@ -1,0 +1,17 @@
+import OscInt.Front.HypercubicSanity
+
+namespace OscInt.API.HypercubicSanity
+
+open OscInt.Statements OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+
+def P_HypercubicCubeRootStatement : Prop :=
+  ∀ (d : ℕ) (t : ℝ) (x : Fin d → ℤ), 0 < t →
+    ‖hypercubicKernel d t x‖ ≤ (8 * (1 + Real.sqrt 7) / 3) ^ 3 * t ^ (-(d : ℝ) / 3)
+
+theorem P_hypercubicCubeRoot_two (h : P_HypercubicCubeRootStatement) :
+    ‖hypercubicKernel 2 8 ![1, -2]‖ ≤ (8 * (1 + Real.sqrt 7) / 3) ^ 2 / 4 := by
+  have := h 2 8 ![1, -2] (by norm_num)
+  rw [show (-((2 : ℕ) : ℝ) / 3) = -(2 : ℝ) / 3 by norm_num, eight_rpow_neg_two_thirds] at this
+  linarith
+
+end OscInt.API.HypercubicSanity

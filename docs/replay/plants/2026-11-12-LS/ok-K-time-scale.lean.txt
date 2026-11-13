@@ -1,0 +1,20 @@
+import OscInt.Front.LatticeGroupSanity
+
+namespace OscInt.API.LatticeGroupSanity
+
+open OscInt.Statements OscInt.API.HypercubicSanity
+
+def P_LatticeSchrodingerKernelStatement : Prop :=
+  ∀ (d : ℕ) (f : LatticeL2 d) (u : ℝ → LatticeL2 d), IsLatticeSchrodingerSolution d f u →
+    ∀ (t : ℝ) (x : Fin d → ℤ),
+      Summable (fun y : Fin d → ℤ => ‖schrodingerKernel d t (x - y) * f y‖) ∧
+        u t x = ∑' y : Fin d → ℤ, schrodingerKernel d t (x - y) * f y
+
+theorem P_kernel_zero_time (hE : LatticeSchrodingerExistsStatement) (hK : P_LatticeSchrodingerKernelStatement)
+    (d : ℕ) (x : Fin d → ℤ) : schrodingerKernel d 0 x = if x = 0 then 1 else 0 := by
+  obtain ⟨u, hu⟩ := hE d (delta0 d)
+  have h := (hK d _ u hu 0 x).2
+  rw [hu.1, tsum_eq_single 0 (fun y hy => by simp [delta0_apply, hy])] at h
+  simpa [delta0_apply] using h.symm
+
+end OscInt.API.LatticeGroupSanity

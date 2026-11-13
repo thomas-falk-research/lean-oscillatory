@@ -1,0 +1,22 @@
+ok-TdE-rate: accepted (want accepted)
+plant-TdE-rate: rejected (want rejected)
+    first error: plant-TdE-rate.lean:16:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+ok-TdE-const-larger: accepted (want accepted)
+plant-TdE-const-larger: rejected (want rejected)
+    first error: plant-TdE-const-larger.lean:17:2: error: linarith failed to find a contradiction
+ok-TdE-threshold-thr: accepted (want accepted)
+plant-TdE-threshold-thr: rejected (want rejected)
+    first error: plant-TdE-threshold-thr.lean:13:42: error: unsolved goals
+ok-TdE-nonneg-t: accepted (want accepted)
+plant-TdE-nonneg-t: accepted (recorded)
+witness-TdE-nonneg-t: accepted (want accepted)
+ok-TdE-half-const: accepted (want accepted)
+plant-TdE-half-const: rejected (recorded)
+    first error: plant-TdE-half-const.lean:17:2: error: linarith failed to find a contradiction
+witness-TdE-half-const: accepted (want accepted)
+ok-TdF-time: accepted (want accepted)
+plant-TdF-time: rejected (want rejected)
+    first error: plant-TdF-time.lean:12:2: error: Type mismatch: After simplification, term
+ok-TdF-tpos: accepted (want accepted)
+plant-TdF-tpos: rejected (want rejected)
+    first error: plant-TdF-tpos.lean:13:2: error: Type mismatch: After simplification, term

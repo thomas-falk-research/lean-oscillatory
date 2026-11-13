@@ -1,0 +1,34 @@
+ok-T0Ep-rate: accepted (want accepted)
+plant-T0Ep-rate: rejected (want rejected)
+    first error: plant-T0Ep-rate.lean:14:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+ok-T0Ep-const-larger: accepted (want accepted)
+plant-T0Ep-const-larger: rejected (want rejected)
+    first error: plant-T0Ep-const-larger.lean:15:2: error: linarith failed to find a contradiction
+ok-T0Ep-const-half: accepted (want accepted)
+plant-T0Ep-const-half: rejected (recorded)
+    first error: plant-T0Ep-const-half.lean:15:2: error: linarith failed to find a contradiction
+witness-T0Ep-const-half: accepted (want accepted)
+ok-T0Ep-int: accepted (want accepted)
+plant-T0Ep-int: rejected (want rejected)
+    first error: plant-T0Ep-int.lean:15:2: error: linarith failed to find a contradiction
+ok-T0Ep-xi-nonneg: accepted (want accepted)
+plant-T0Ep-xi-nonneg: rejected (want rejected)
+    first error: plant-T0Ep-xi-nonneg.lean:15:2: error: linarith failed to find a contradiction
+ok-T0Ep-threshold: accepted (want accepted)
+plant-T0Ep-threshold: rejected (want rejected)
+    first error: plant-T0Ep-threshold.lean:13:29: error: unsolved goals
+ok-T0Ep-weaker-than-T0E: accepted (want accepted)
+plant-T0Ep-weaker-than-T0E: rejected (want rejected)
+    first error: plant-T0Ep-weaker-than-T0E.lean:20:2: error: linarith failed to find a contradiction
+ok-T0Ep-nonneg-t: accepted (want accepted)
+plant-T0Ep-nonneg-t: accepted (recorded)
+witness-T0Ep-nonneg-t: accepted (want accepted)
+ok-T6Ep-threshold: accepted (want accepted)
+plant-T6Ep-threshold: rejected (want rejected)
+    first error: plant-T6Ep-threshold.lean:13:29: error: unsolved goals
+ok-T6Ep-rate: accepted (want accepted)
+plant-T6Ep-rate: rejected (want rejected)
+    first error: plant-T6Ep-rate.lean:15:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+ok-T6Ep-const: accepted (want accepted)
+plant-T6Ep-const: rejected (want rejected)
+    first error: plant-T6Ep-const.lean:16:2: error: linarith failed to find a contradiction

@@ -9,39 +9,52 @@ Author: Thomas Falk III ([ORCID 0009-0001-9478-6061](https://orcid.org/0009-0001
 [10.5281/zenodo.24045231](https://doi.org/10.5281/zenodo.24045231), v0.2.0
 [10.5281/zenodo.24021329](https://doi.org/10.5281/zenodo.24021329).
 
-A Lean 4 + Mathlib library of uniform oscillatory-integral estimates in one and two variables: van der Corput with
-explicit constants (S1), nondegenerate stationary phase uniform in a linear term (S2), the uniform fold
-estimate m^{-5/6} (S3), and the uniform D4 estimate t^{-2/3} (S4.1, S4.1′), the limit t^{2/3}∫e^{itφ}A → c_C A(0) with a Gamma-free c_C (S4.2), c_C > 0 (S4.3) and the
-closed form of c_C (S4.4), Mathlib-idiom front ends and conversions (F1, F2, C1–C9, C7′, FE-S2.1, FE-S2.2, FE-S3,
-FE-S4.1′), compact families and local smoothness (front-end batch 3), and global decay from a pointwise classification
-of the phase with the 2D lattice-Laplacian dispersive estimate t^{-2/3} and its sharpness (batch GD; that example is
-classical and separable, `docs/prior_art.md`), and explicit constants for the 1D and 2D lattice kernels (batch LE); every statement
-with a row in `docs/STATUS.md` has its status there, derived from evidence files. Which theorem to use:
-`docs/which-theorem.md`.
-Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0).
+**Machine-checked uniform estimates for oscillatory integrals, in Lean 4 and Mathlib.** OscInt formalises the
+estimates that dispersive PDE, semiclassical analysis and lattice dynamics rest on:
+- the van der Corput lemma for every derivative order, with explicit constants;
+- non-stationary and nondegenerate stationary phase;
+- uniform decay at degenerate critical points: the fold (A2, m^{−5/6}), the cusp (A3, t^{−3/4}) and the umbilics
+  (D4, t^{−2/3}, with the exact leading term and its Γ(1/3) constant);
+- global decay assembled from a pointwise classification of the phase, also for vector-valued amplitudes;
+- explicit bounds for the propagator kernel of the free discrete (lattice) Schrödinger equation: on ℤ,
+  |∫_{−π}^{π} e^{i(t cos k + ξk)} dk| ≤ 8(1 + √7)/3 · t^{−1/3} for all t > 0 and real ξ (for integer ξ the kernel is
+  2π i^ξ J_ξ(t), a Bessel function), and on ℤ^d the kernel is bounded by (8(1 + √7)/3)^d t^{−d/3}.
 
-## Status
+The bounds at degenerate points and the global bounds are uniform over all linear terms of the phase, which is what
+dispersive estimates need; stationary phase and the fold bound are uniform over compact sets of linear terms. Statements are
+written, timestamped and reviewed blind before their proofs (the few exceptions are disclosed in `docs/STATUS.md`),
+and every proof is replayed by six kernel checkers: Lean's own kernel in two modes and four independent
+implementations. A downstream project can check in CI that it depends on exactly the reviewed statements.
 
-| Statement | Status |
-|---|---|
-| S1 1D van der Corput | machine-checked as stated (`OscInt.vanDerCorput_one/two/three`); proof ported from roos-j/lean-oscillatory (Roos–Praveen, Mathlib PR #39406), see `docs/STATUS.md` |
-| S2 stationary phase (S2.1 non-stationary, S2.2 nondegenerate) | machine-checked as stated (`OscInt.nonStationary`, `OscInt.stationaryPhase`), see `docs/STATUS.md` |
-| S3 fold | machine-checked as stated (`OscInt.fold`; fold condition required on all of K) |
-| S4.1 uniform D4 bound (hyperbolic umbilic D4⁺, `disc < 0`, as the brief) | machine-checked as stated (`OscInt.d4Bound`), see `docs/STATUS.md` |
-| S4.1′ uniform D4 bound, both umbilics (`disc ≠ 0`) | machine-checked as stated (`OscInt.d4BoundNe`) |
-| S4.2 D4 limit with the Gamma-free c_C | machine-checked as stated (`OscInt.d4Limit`) |
-| S4.3 c_C > 0 (alternating series, no Gamma) | machine-checked as stated (`OscInt.d4ConstantPos`; Gamma-free by name, `GammaFree.lean`) |
-| S4.4 closed forms of c_C (the brief's Γ(1/3)²/(√3\|Disc\|^{1/6})) | machine-checked as stated (`OscInt.d4ConstantClosedForm`; verify-all PASS). The brief's limit with its constant is S4.2 ∧ S4.4 (`OscInt.d4Limit`, `OscInt.d4ConstantClosedForm`) |
-| F1, F2 front end (`ContDiff` amplitudes; the D4 limit with its closed-form constant as one theorem) | machine-checked as stated (`OscInt.API.ampBoundOfContDiff`, `OscInt.API.d4LimitClosedForm`; bridges drafted before the review, disclosed), see `docs/STATUS.md` |
-| Front-end batch 2: conversions C1–C9, C7′ (`iteratedFDeriv`, Hessian matrices, `Cubic.discr`, kernel/rank fold condition, norms, `HasCompactSupport`) and front ends FE-S2.1, FE-S2.2, FE-S3, FE-S4.1′ (`OscInt.API.*`, `import OscInt.API`) | see `docs/STATUS.md` (post-proof FAITHFUL ×2; final replay record named there) |
-| Front-end batch 3: compact families (S2.2F, S3c, C10), local smoothness (FE-S2.1L/S2.2L/S3L/S4.1′L, single-phase forms) | see `docs/STATUS.md` (one-time waiver of CONTRIBUTING step 5, ratified by the owner 2026-11-09) |
-| Batch GD: global decay from a local classification (GD-C, GD, GD-F, GD-N), sharpness (SH), torus unfolding (T1), 2D lattice-Laplacian dispersive estimate t^{-2/3} and its leading term (T6, T6L) | see `docs/STATUS.md`; example `examples/consumer/ConsumerLattice.lean`. T6 and T6L are classical (the kernel factorises into 1D Bessel kernels, `docs/prior_art.md`) |
-| Batch VT: GD-C-V, GD-V, GD-F-V, GD-N-V, the global decay estimates for amplitudes in any complex Banach space (matrices, ℂⁿ, bounded sequences), one constant for every E | see `docs/STATUS.md`; example `examples/consumer/ConsumerVector.lean` |
-| Batch LE: explicit constants, T0E (1D kernel), T6F (factorisation), T6E (2D, (A+B)² ≈ 4754); content only for t > 518 / t > 1321 | see `docs/STATUS.md`; example `examples/consumer/ConsumerLatticeExplicit.lean` |
-| Batch A3: S1.k (k-th derivative van der Corput, constant 5·2^{k−1} − 2), S5.1 (stable cusp, t^{−3/4} uniform in the linear term), S5.1′ (any A3 point) | **stated, frozen and reviewed; not proved** (`OscInt/Statements/Cusp.lean`, `docs/STATUS.md`). S1.k is anticipated by Roos–Praveen (`docs/prior_art.md`) |
+- **63 pinned statements; 59 are machine-checked as stated.** The other four, batch LS (the free lattice Schrödinger
+  group on ℓ²(ℤ^d)), are stated, frozen and reviewed, with a refereed proof route, and are not yet proved.
+- **Entry point:** `import OscInt.API`. Which theorem to use: `docs/which-theorem.md`. Recipes: `docs/cookbook.md`.
+  Machine-readable index: `docs/api.json`.
+- Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0).
+- Proofs and reviews are largely by AI agents (Claude instances, as the commit trailers record). Work drafted with
+  an external reviewer's tools names those tools in `docs/prior_art.md`. Statement fidelity has been read by AI
+  referees only, not yet by a human expert.
 
-"As stated" means the hypotheses in `docs/statements.md` (derivatives continuous up to the endpoints, as in the
-source's C^k assumption). Details and evidence: `docs/STATUS.md`.
+## What is proved
+
+"Machine-checked as stated" means every row of the trust chain (below) exists for that statement, with the
+hypotheses in `docs/statements.md`, for example derivatives continuous up to the endpoints, as in the source's C^k
+assumption. The status of each statement, with its evidence: `docs/STATUS.md`.
+
+| Statements | Lean names | Status |
+|---|---|---|
+| **One variable.** S1: van der Corput for k = 1, 2, 3 (constants 3, 8, 18). S1.k: every k ≥ 2, constant 5·2^{k−1} − 2, uniform in a linear term | `OscInt.vanDerCorput_one/two/three`, `OscInt.API.vdCk` | machine-checked as stated; S1.k AI-assisted, disclosed. S1 is ported from roos-j/lean-oscillatory (Roos–Praveen, Mathlib PR #39406), which also anticipates S1.k (`docs/prior_art.md`) |
+| **Two variables, local.** S2.1 non-stationary phase; S2.2 nondegenerate stationary phase; S3 the fold, m^{−5/6} | `OscInt.nonStationary`, `OscInt.stationaryPhase`, `OscInt.fold` | machine-checked as stated (S3: fold condition on all of K) |
+| **Cusp (A3), local.** S5.1 stable cusp and S5.1′ any A3 point: t^{−3/4} for C² amplitudes supported in a small ball around the point, uniform in the linear term | `OscInt.API.cuspBound`, `OscInt.API.cuspBoundGen` | machine-checked as stated (2026-11-13); AI-assisted proof, disclosed |
+| **Umbilics (D4).** S4.1, S4.1′ the uniform bound t^{−2/3}; S4.2 the limit t^{2/3}∫e^{itφ}A → c_C A(0); S4.3 c_C > 0 with a Gamma-free proof; S4.4 the closed forms Γ(1/3)²/(√3\|Disc\|^{1/6}) and Γ(1/3)²/Disc^{1/6} | `OscInt.d4Bound`, `d4BoundNe`, `d4Limit`, `d4ConstantPos`, `d4ConstantClosedForm` | machine-checked as stated |
+| **Front ends in Mathlib's idiom.** F1, F2; conversions C1–C10, C7′ (`iteratedFDeriv`, Hessian matrices, `Cubic.discr`, kernel and rank forms of the fold condition, norms, `HasCompactSupport`); FE-S2.1, FE-S2.2, FE-S3, FE-S4.1′; compact families S2.2F, S3c; local smoothness (…L forms) | `OscInt.API.*` | machine-checked as stated (front-end batch 3 under a one-time waiver, ratified by the owner 2026-11-09) |
+| **Global decay** from a pointwise classification (GD-C, GD, GD-F, GD-N), also for amplitudes in any complex Banach space (GD-…-V); sharpness (SH); torus unfolding (T1) | `OscInt.API.globalDecay`, … | machine-checked as stated |
+| **Lattice kernels.** T6, T6L: the 2D lattice Laplacian decays like t^{−2/3}, sharply (classical and separable). T0E, T6F, T6E: explicit but weak constants (content only for t > 518 and t > 1321). T0E′, T6E′: the cube-root constant 8(1 + √7)/3, within a factor 2 of the best, useful from t ≈ 3.70 (AI-assisted, disclosed). TdF, TdE′: the d-dimensional hypercubic kernel factorises and is bounded by (8(1 + √7)/3)^d t^{−d/3} | `OscInt.API.latticeLaplacianDecay`, `latticeKernel1CubeRoot`, `latticeLaplacianCubeRoot`, `hypercubicKernelFactor`, `hypercubicCubeRoot`, … | machine-checked as stated. The rates are classical (Stefanov–Kevrekidis 2005); the constants are new only through T0E′ (`docs/prior_art.md`) |
+| **Batch LS.** LS-E, LS-K, LS-D, LS-D′: existence of the free lattice Schrödinger group on ℓ²(ℤ^d), its kernel representation, uniqueness, and dispersive decay with explicit constants | `OscInt/Statements/LatticeGroup.lean` | **stated, frozen and reviewed; not proved.** Route `docs/proof-LS.md`, with a compiled assembly |
+
+Worked examples, which also check that the hypotheses can be met (`examples/consumer/`): the lattice Schrödinger
+kernel, single photons on a cosine-band lattice, cold-plasma waves, phase mixing, whistler waves, matrix-valued
+amplitudes, and phases given by formulas. Where the results apply: `docs/applications.md`.
 
 ## Depending on OscInt
 
@@ -55,6 +68,8 @@ name = "oscint"
 git = "https://github.com/thomas-falk-research/lean-oscillatory"
 rev = "v0.4.0"   # a release tag (pins and notes: docs/release-notes/v0.4.0.md)
 ```
+
+v0.5.0 is prepared (`docs/release-notes/v0.5.0.md`) and is published by the owner; until its tag exists, pin v0.4.0.
 
 v0.3.0 is the first release with `OscInt.API`, `stamps/statements.json` and `tools/oscint_check.py` (v0.2.0 has none
 of them). Published 2026-11-07 (GitHub release `v0.3.0`, tag on the release commit recorded in
@@ -141,31 +156,35 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 ## Layout
 
 - `OscInt/` library: `OscInt/Statements/` frozen statements, `OscInt/VanDerCorput/` (S1),
-  `OscInt/StationaryPhase/` (S2, S3), `OscInt/D4/` (S4), `OscInt/Front/` (front ends, conversions, hypothesis helpers;
-  entry point `OscInt/API.lean`).
+  `OscInt/StationaryPhase/` (S2, S3), `OscInt/D4/` (S4), `OscInt/Cusp/` (S1.k, S5.1, S5.1′), `OscInt/Front/` (front
+  ends, conversions, hypothesis helpers, global decay, lattice kernels; entry point `OscInt/API.lean`).
 - `Blueprint/` intermediate propositions (definitions only); `Challenge/` `sorry` theorems over the statement modules
   for `lake comparator` (never imported; frozen by the stamped export hash and the pinned statement-file hashes,
   `stamps/pins.txt`); one `comparator*.json` per milestone.
 - Checks run by `make lean`: `Axioms.lean` (axiom audit), `StatementTypes.lean` (final types are the frozen
   constants), `MathlibNames.lean` (names the plan relies on), `GammaFree.lean` (S4.3 proof method).
 - `tools/` Rust binaries (std only) and the Lean commitment producer; `numerics/` floating-point probes (tooling,
-  never evidence); `stamps/` timestamp records; `review/` referee reports and prompts (`review/README.md`).
+  never evidence); `stamps/` timestamp records; `review/` the lead's answers to every review (`review/README.md`; older verbatim
+  reports are in history only, owner privacy rule).
 
 ## Documents
 
 | File | Content |
 |---|---|
+| `docs/README.md` | index of all documents, with the statement labels |
+| `docs/which-theorem.md`, `docs/cookbook.md`, `docs/api.json` | which theorem to use; copy-paste recipes; machine-readable API index |
+| `docs/applications.md` | where the results apply (models and domains), with worked examples |
 | `docs/statements.md` | the mathematics of every statement, with dated clarifications |
 | `docs/STATUS.md` | evidence-derived status per statement |
 | `docs/HANDOFF.md` | state and next steps for the next session |
 | `docs/ROADMAP.md` | the path to a production-ready library, as a checklist |
-| `docs/proof-S2S3.md`, `docs/proof-S4.md`, `docs/proof-S42.md`, `docs/proof-S43.md`, `docs/proof-S44.md` | refereed proof routes |
+| `docs/proof-*.md` | refereed proof routes, one per batch (S2S3, S4, S42, S43, S44, API2, API3, GD, VT, LE, LE2, HC, A3, LS) |
 | `docs/policy.md`, `CONTRIBUTING.md` | versions, stable names, deprecation, Mathlib re-freeze rule; adding a statement end to end |
 | `docs/decisions/` | dated decision records |
 | `docs/lessons.md` | lessons, each with a rule and (where possible) a check |
 | `docs/calibration.md` | referee calibration rounds (planted errors, sealed keys) |
-| `docs/progress.md` | chronological log |
-| `CHANGELOG.md` | released versions |
+| `docs/progress.md` | chronological log of sessions 1–3; sessions 7–10 are in `docs/HANDOFF.md`, sessions 4–6 in its history and in `CHANGELOG.md` |
+| `CHANGELOG.md`, `docs/release-notes/` | released versions; per-release pins of the trust chain |
 | `docs/toolchain.md`, `docs/dependencies.md`, `docs/commitment-format.md` | toolchain, pins, commitment format |
 | `docs/prior_art.md`, `docs/upstream.md` | prior-art gate; Mathlib candidates (no PR without the owner) |
 | `docs/replay/` | committed `verify-all` and replay records |

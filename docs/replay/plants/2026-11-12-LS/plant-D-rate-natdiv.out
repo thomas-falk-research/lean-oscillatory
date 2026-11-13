@@ -1,0 +1,22 @@
+/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/ls/plants/plant-D-rate-natdiv.lean:21:4: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  -↑2 / 3
+in the target expression
+  ‖↑(u 4) 0‖ ≤ min 1 ((8 * (1 + √7) / 3 / (2 * Real.pi)) ^ 2 * 8 ^ (-↑(2 / 3)))
+
+hE : LatticeSchrodingerExistsStatement
+hD : P_LatticeSchrodingerDispersiveStatement
+u : ℝ → ↥(LatticeL2 2)
+hu : IsLatticeSchrodingerSolution 2 (delta0 2) u
+h : ‖↑(u 4) 0‖ ≤ min 1 ((8 * (1 + √7) / 3 / (2 * Real.pi)) ^ 2 * 8 ^ (-↑(2 / 3)))
+⊢ ‖↑(u 4) 0‖ ≤ (8 * (1 + √7) / 3 / (2 * Real.pi)) ^ 2 / 4
+
+Note: The target expression is not type-correct under the `implicit` transparency level, which may have triggered the failure. This is usually caused by unfolding of semireducible definitions in prior tactic steps. Use `set_option linter.tacticCheckInstances true` to investigate the source of the issue.
+Full error:
+  Application type mismatch: The argument
+    fun x => x ∈ lp (fun x => ℂ) 2
+  has type
+    (PreLp fun x => ℂ) → Prop
+  but is expected to have type
+    ((i : Fin 2 → ℤ) → (fun x => ℂ) i) → Prop
+  in the application
+    @Subtype.val ((i : Fin 2 → ℤ) → (fun x => ℂ) i) fun x => x ∈ lp (fun x => ℂ) 2

@@ -1,6 +1,152 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (46 entries); every rule in it is binding.
+For a reader who saw nothing. Read `docs/lessons.md` first (49 entries); every rule in it is binding.
+
+## Start here (end of session 10, 2026-11-13)
+
+**State.** 63 pinned statements; 59 are machine-checked as stated (`docs/STATUS.md`). The four of batch LS (the free
+lattice Schrödinger group on ℓ²(ℤ^d)) are stated, frozen, reviewed and routed, and not proved. Session 10 completed
+batches LE2, HC and A3 end to end.
+
+**Release v0.5.0 is prepared on this branch, not published.**
+- Prepared: versions set in `lakefile.toml`, `CITATION.cff`, `codemeta.json` and `.zenodo.json`; the CHANGELOG
+  section; notes with pins in `docs/release-notes/v0.5.0.md`. `tools/release_preflight.sh 0.5.0` passes.
+- It ships LS with `proved_by` null; the owner chose this on 2026-11-13, rather than waiting for LS.
+- Owner steps: merge the release pull request to `main`, run `release-candidate` with version `0.5.0`, tag and publish
+  (the commands are in the notes, "Publishing"), then merge the `post-release` pins pull request and record the
+  Zenodo DOI.
+- If the release is published after 2026-11-13, change the three dates first.
+
+**Next, in order:**
+1. **Batch LS proofs.**
+   - Route: `docs/proof-LS.md`. Read "Revision after the route referee" first: P-conv must use the exponential series
+     over ℂ, P-exp goes through `restrictScalars`, and the uniqueness part is P-unique.
+   - The nine parts are interfaces in `Blueprint/LatticeGroup.lean`. The compiled assembly is
+     `OscInt/Front/LatticeGroupAssembly.lean`.
+   - No part proof exists in the tree. Drafts and probes from session 10 lived in the session scratchpad, which does
+     not survive the container.
+   - Then the final file (LatticeGroupFinal, named in the route), an **isolated** `make verify-all`, the post-proof
+     reviews (A, B, adversarial), the records, and a minor release (v0.6.0) that sets `proved_by`.
+2. CENSUS held-out pool (ROADMAP I1), then its implementations.
+3. LeanCert experiment (I2).
+4. I3: global assembly with A3 points; then I3a and I3b.
+5. Optional, a separate change: the six style warnings of `OscInt/Cusp/Implicit4.lean` (lines 131, 227, 229). A proof
+   change, so it needs a build, an axiom audit and a replay record.
+
+**Candidates waiting for the owner (ROADMAP "Candidates"):**
+- the discrete Klein–Gordon kernel bound (R2);
+- the two-port memory consumer and the imaging block consumer (the application-chains dossier);
+- QWZ at the critical mass.
+
+**Process, learned the hard way this session:**
+- **Lessons 49.** No Lean, `lake`, `make` or Lean-running referee while `make verify-all` runs. Launch referees
+  before it starts or after it ends.
+- **Run the replay detached.** A full replay takes about 2 h 50 min. Start it with `setsid nohup` and a process
+  watcher (as in the A3 record's header). A harness background task is killed after 2 hours.
+- **Count from the session record, not from memory.** The "six probes" error (lessons 49) came from counting from
+  memory.
+
+## Session 10, continued (2026-11-12/13): batch A3 machine-checked as stated; batch LS stated, reviewed and routed; external packets
+
+**State at this commit.**
+- **Batch A3 (S1.k, S5.1, S5.1′) is proved in Lean.**
+  - It came from an external packet drafted with an OpenAI model and was integrated at 93a8a8d with five elaboration
+    fixes (`review/2026-11-12-A3-packet-answers.md`).
+  - Post-proof reviews: FAITHFUL ×3, parts SOUND. The adversarial review's three MAJORs are answered
+    (`review/2026-11-12-A3-post-proof-answers.md`).
+  - **Machine-checked as stated:** the isolated replay of 1f7d041
+    (`docs/replay/2026-11-13-session10-A3-verify-all.txt`) accepted comparator-A3 with six kernels; verify-all is
+    INCOMPLETE only because comparator-LS has no solution yet.
+  - The replay takes about 2 h 50 min. Run it detached (`setsid nohup`): a first attempt, run as a harness background
+    task, was killed by the two-hour limit on background tasks.
+- **Batch LS (the free lattice Schrödinger group on ℤ^d: LS-E, LS-K, LS-D, LS-D′).**
+  - Frozen (stamp `20261112T215742Z-d18e0780abdb`) and blind-reviewed (answers
+    `review/2026-11-12-LS-pre-proof-answers.md`).
+  - Route `docs/proof-LS.md`: nine parts in `Blueprint/LatticeGroup.lean`, compiled assembly
+    `OscInt/Front/LatticeGroupAssembly.lean`, refereed with no BLOCKER.
+  - Read the section "Revision after the route referee" before proving: P-conv must use the exponential series over ℂ.
+  - Next: prove the nine parts (drafts and probes are not in the tree), then the final file (LatticeGroupFinal, named in the route), a
+    replay and the post-proof reviews.
+- **External packets answered, all in the lead's words (lessons 46):**
+  - R2 Klein–Gordon kernel (`review/2026-11-12-R2-KG-answers.md`);
+  - lattice NLS (`review/2026-11-12-DNLS-packet-answers.md`);
+  - the A3 Lean packet (above);
+  - the application-chains dossier (`review/2026-11-13-application-chains-answers.md`). It is TRUE as hand mathematics
+    and classical or known in part, with two consumer candidates in the ROADMAP. It found four errors in
+    `docs/applications.md` (fixed) and the lessons-28 problem below.
+- **Replay isolation.** The replay of e814510 was not isolated: the LS route referee ran Lean during it (lessons 49).
+  A container restart then cut it off. It is kept, labelled, at `docs/replay/2026-11-12-session10-e814510-partial.txt`;
+  it is not an acceptance record.
+- **Consumer** `examples/consumer/ConsumerWhistler.lean` (S1.3 at the whistler inflection; upper bound only).
+- **Lessons:** 49.
+
+## Session 10, continued (2026-11-12): batch HC proved end to end; plasma consumers; DNLS scoped
+- **Owner request 2026-11-12:** bets 1 and 3, then scope bet 2.
+- **Batch HC (bet 1): TdF and TdE′, machine-checked as stated.**
+  - TdF: the d-dimensional hypercubic kernel K_d(t, x) = ∫_{[−π,π]^d} e^{i(t Σ cos k_j + x·k)} dk factorises into 1D
+    kernels. TdE′: |K_d(t, x)| ≤ (8(1 + √7)/3)^d t^{−d/3} for every d, t > 0 and x ∈ ℤ^d.
+  - Records:
+    - statements: `OscInt/Statements/Hypercubic.lean`, stamp `20261112T120616Z-c56beb57ff8c`;
+    - pre-proof reviews: FAITHFUL and TRUE ×2, review stamp `20261112T123958Z-8e4f8c5cbcaf`;
+    - route: `docs/proof-HC.md`, refereed (no BLOCKER or MAJOR);
+    - part and assembly: `OscInt/Front/Hypercubic{Fubini,Assembly,Final}.lean` (Mathlib's finite-product Fubini);
+    - replay: `docs/replay/2026-11-12-session10-HC-verify-all.txt` on 5a5f714. Every step passes; the comparator is INCOMPLETE only because comparator-A3 has no
+      solution yet;
+    - post-proof reviews: FAITHFUL ×2. The adversarial review's two MAJORs (the DNLS scoping condition; evidence for the
+      referee windows) are answered in `review/2026-11-12-HC-post-proof-answers.md`.
+  - Prior art: the rate and the factorisation are anticipated (Stefanov–Kevrekidis 2005); the constant is new only
+    through T0E′ (`docs/prior_art.md`).
+- **Plasma consumers (bet 3):** `examples/consumer/ConsumerColdPlasma.lean` (cold-plasma transverse waves, τ^{−1} via
+  GD-N) and `examples/consumer/ConsumerPhaseMixing.lean` (phase mixing of free streaming, via FE-S2.1). Linear,
+  idealised models; the physics reductions are paper steps.
+- **DNLS scoping (bet 2):** `docs/design/dnls-scoping.md`, corrected after the adversarial review: decay of small
+  solutions whenever (d/3)(2p − 1) > 1, in every dimension. Next step is a route document for ℓ² well-posedness and the
+  kernel-to-group identification, with every Mathlib name checked (the go/no-go).
+- **External R2 packet (discrete Klein–Gordon kernel):** TRUE by the lead's checks and a fresh-context referee, not
+  machine-checked; a ROADMAP candidate awaiting the owner (`review/2026-11-12-R2-KG-answers.md`). If promoted, the LE2
+  scalar layer generalises mechanically; the new Lean work is the KG level-set geometry, the pieces and m → 0.
+- **Lessons:** 48 (provenance facts are captured when they happen).
+- **No CI ran:** the branch has no pull request; the local replays are the evidence.
+
+## Session 10 (2026-11-10/11): batch LE2 proved end to end; external follow-up answered
+- **External follow-up (2026-11-10), four packets from the same reviewer**, answered in
+  `review/2026-11-10-external-followup-answers.md`, the lead's words only (lessons 46).
+  - Packets: a cube-root cosine bound (Result 1); QWZ at the critical mass m = 2 (Result 2 and an audit with a further
+    t^{−4/3} theorem); a photonic application study; a plasma application study.
+  - All four are correct.
+  - The QWZ results and the plasma study were checked by fresh-context checkers with their own code. The QWZ results
+    stay candidate evidence (owner decision); see ROADMAP "Candidates".
+  - Lead's checks: `numerics/review/followup_checks.py` (43/43 exact).
+- **Batch LE2 (owner decision 2026-11-10): T0E′ and T6E′, machine-checked as stated.**
+  - Statements: `|I(t, ξ)| ≤ 8(1 + √7)/3 · t^{−1/3}` for t > 0 and real ξ, and the 2D form with the constant squared.
+    They are useful from t ≈ 3.70, against 518 and 1321 for T0E and T6E.
+  - Records:
+    - statements: `OscInt/Statements/LatticeCubeRoot.lean`, stamp `20261110T234417Z-0532b1cf8880`;
+    - pre-proof reviews: FAITHFUL and TRUE ×2, review stamp `20261111T005634Z-bf8af89bc235`;
+    - route: `docs/proof-LE2.md`. The route referee's one MAJOR (an unjustified monotonicity step) is fixed by a split
+      at v = 1/8;
+    - parts: `OscInt/Front/LatticeCubeRoot*.lean`, by proof agents after the route review;
+    - replay: `docs/replay/2026-11-11-session10-LE2-verify-all.txt` on 68aec60. Every step passes; the comparator is
+      INCOMPLETE only because comparator-A3 has no solution yet;
+    - post-proof reviews: FAITHFUL ×2. The adversarial review's three MAJORs were documentation, answered in
+      `review/2026-11-11-LE2-post-proof-answers.md`.
+  - The constant is within a factor 1.9706 of the best: rigorous by hand. The Lean bite proves the best constant
+    exceeds C*/2.
+  - AI-use disclosure: `docs/prior_art.md`.
+- **Consumer** `examples/consumer/ConsumerPhotonLattice.lean`: single-photon probabilities on a cosine-band lattice,
+  nontrivial from 2κt ≥ 519 with T0E and from 2κt ≥ 4 with T0E′.
+- **Lessons:** 47 (sanity data in the non-trivial regime of an explicit bound). The adversarial review also found two
+  commits made while referees read the tree (lessons 16): disclosed, not repeated.
+- **No CI ran:** the branch has no pull request. The local replay is the evidence. The owner opens a pull request when
+  wanted.
+- **Owner items open (new):** whether the packet SHA-256 prefixes in the follow-up answers stay (they identify unpublished
+  packets). Earlier owner items are unchanged.
+- **Next, in order:**
+  1. As before: `docs/proof-A3.md` parts and replay (A3 route reviewed at b719ba4).
+  2. CENSUS held-out pool.
+  3. LeanCert (I2).
+  4. I3a, I3b.
+  5. Optional: a cold-plasma GD-N consumer (`review/2026-11-10-external-followup-answers.md`; mind the max-norm hazard).
 
 ## Session 9 (2026-11-10): external reviews checked; a hand proof of S5.1′; nothing proved in Lean, nothing frozen
 - **Privacy rule (owner, 2026-11-10; lessons 46).** No chat transcripts, prompts (the owner's, reviewers' or
@@ -115,9 +261,9 @@ S5.1′): 55 pinned, 52 proved (`docs/STATUS.md`). Branch names, commits and cou
 1. **CONTRIBUTING step 5: decided 2026-11-09, option (iii).** One-time waivers for API3's test-layer MAJOR and LE's
    documentation-only MAJOR (recorded in the 13 STATUS rows and the answers files); step 2 amended (conditional sanity
    theorems with planted copies before the stamp); step 5 gains a clause for documentation-only MAJORs.
-2. **v0.4.0: prepared in this branch** (versions bumped, CHANGELOG section, notes with pins for batches 3, GD, LE and VT;
-   `tools/release_preflight.sh 0.4.0` passes). After the merge: Actions → `release-candidate` on `main`, then the three
-   commands it prints (`docs/release-notes/v0.4.0.md`, "Publishing").
+2. **Releases.** v0.4.0 is published. v0.5.0 is prepared in this branch (versions, CHANGELOG section, notes with
+   pins; `tools/release_preflight.sh 0.5.0` passes). After the merge: Actions → `release-candidate` on `main`, then the
+   commands it prints (`docs/release-notes/v0.5.0.md`, "Publishing").
 3. AI-authorship wording (adversarial finding f1 of session 6), branch protection, P5 tactic policy, discoverability.
 4. Human expert review: deferred by the owner under `docs/policy.md` (wording rule, calibration plan, triggers).
 
@@ -133,8 +279,8 @@ S5.1′): 55 pinned, 52 proved (`docs/STATUS.md`). Branch names, commits and cou
 3. Strichartz (non-endpoint), then 4. the family D4 bound: not started.
 
 ## Process notes for the next lead
-- `make quick` before every push (lessons 35, 37). The final `make verify-all` takes about 2 hours on a 4-core machine,
-  longer than the session tool's 2-hour background limit: start it detached (`nohup setsid …`) and wait on its log;
+- `make quick` before every push (lessons 35, 37). The final `make verify-all` takes about 2 h 50 min on a 4-core machine
+  (2026-11-13), longer than the session tool's 2-hour background limit: start it detached (`nohup setsid …`) and wait on its log;
   log `date -u` at start and end (adversarial n9).
 - Do not write proofs while a referee reads the tree (lessons 16, 42).
 - Follow-ups recorded, not done: pin paths not validated in `stamp` (n5); actionlint and shellcheck not hash-pinned

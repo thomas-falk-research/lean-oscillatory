@@ -1,0 +1,26 @@
+ok-K-norm: accepted (want accepted)
+plant-K-norm: rejected (recorded)
+    first error: plant-K-norm.lean:18:2: error: Type mismatch: After simplification, term
+witness-K-norm: accepted (want accepted)
+ok-K-time-scale: accepted (want accepted)
+plant-K-time-scale: accepted (want accepted)
+ok-D-t0: accepted (want accepted)
+plant-D-t0: rejected (recorded)
+    first error: plant-D-t0.lean:19:12: error: Function expected at
+witness-D-t0: accepted (want accepted)
+ok-D-rate: accepted (want accepted)
+plant-D-rate: rejected (want rejected)
+    first error: plant-D-rate.lean:21:4: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+ok-D-const-half: accepted (want accepted)
+plant-D-const-half: rejected (want rejected)
+    first error: plant-D-const-half.lean:22:53: error: unsolved goals
+ok-D-rate-natdiv: accepted (want accepted)
+plant-D-rate-natdiv: rejected (want rejected)
+    first error: plant-D-rate-natdiv.lean:21:4: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+ok-Dp-one: accepted (want accepted)
+plant-Dp-one: rejected (recorded)
+    first error: plant-Dp-one.lean:20:28: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-Dp-one: accepted (want accepted)
+ok-Dp-rate: accepted (want accepted)
+plant-Dp-rate: rejected (want rejected)
+    first error: plant-Dp-rate.lean:21:4: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern

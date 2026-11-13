@@ -1,0 +1,22 @@
+# command: python3 -I numerics/review/hc_interface_checks.py (versions: see the RUNTIME line, read at run time)
+# started 2026-11-12T15:41:06Z
+# git HEAD 5a5f7149824bef50ce02148ff961b94107b74144, tracked files modified: yes (documentation only, not yet committed); script untracked, sha256 eb66fdf662f73670a2e3fe2f2db90a383046574bbafd7cf94d7dace3f3c5b067; record written outside the tree and copied in (lessons 45)
+H1/H2 d=2 t=  3.00 x=(1, -2): |K - prod I| = 3.43e-13, |K| = 6.5066, bound 45.4392 OK
+H1/H2 d=2 t= -2.00 x=(1, 0): |K - prod I| = 5.42e-13, |K| = 5.0976
+H1/H2 d=2 t=  0.30 x=(11, -12): |K - prod I| = 7.52e-16, |K| = 0.0000, bound 210.9101 OK
+H1/H2 d=2 t=  8.00 x=(1, -2): |K - prod I| = 1.83e-13, |K| = 1.0467, bound 23.6293 OK
+H1/H2 d=2 t= 20.00 x=(5, -7): |K - prod I| = 2.26e-13, |K| = 1.0994, bound 12.8280 OK
+H1/H2 d=3 t=  3.00 x=(1, 0, -3): |K - prod I| = 1.49e-13, |K| = 6.7596, bound 306.2993 OK
+H1/H2 d=3 t= -2.00 x=(2, 1, 0): |K - prod I| = 7.00e-13, |K| = 11.3009
+H1/H2 d=3 t=  8.00 x=(1, 0, -3): |K - prod I| = 4.41e-13, |K| = 2.9085, bound 114.8623 OK
+H1/H2 d=3 t= 20.00 x=(19, -20, 0): |K - prod I| = 2.88e-11, |K| = 1.4939, bound 45.9449 OK
+H1 max discrepancy 2.88e-11 (PASS); H2 d = 0: K_0 = 1 by definition
+H3 s=0.333 a=1.667: 1.387, 1.489, 1.499, 1.500 (bounded: PASS)
+H3 s=0.667 a=2.000: 1.181, 1.040, 1.006, 1.001 (bounded: PASS)
+H3 s=1.000 a=3.000: 0.624, 0.511, 0.501, 0.501 (bounded: PASS)
+H3 s=1.333 a=1.333: 4.839, 6.085, 6.586, 6.810 (bounded: PASS)
+H3 s=1.000 a=1.000: 5.654, 10.215, 14.816, 19.421 (grows: PASS)
+RUNTIME python 3.13.18 numpy 2.5.3
+RESULT PASS
+# exit status 0
+# finished 2026-11-12T15:41:08Z

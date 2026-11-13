@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 name = "oscint"
-version = "0.4.0"
+version = "0.5.0"
 defaultTargets = ["OscInt", "Blueprint"]
 # Our files are plain (non-module) Lean files that import Mathlib, which uses the module system. The statement files
 # are stamped and cannot gain a `module` header without a re-freeze (docs/ROADMAP.md §3), so we declare the mix

@@ -6,10 +6,86 @@ or `proved_by` name. Every release lists its statement changes, even when there 
 
 ## Unreleased
 
-Statement changes: three new statements, frozen and reviewed, **not proved**: S1.k (`VdCkStatement`), S5.1
-(`CuspBoundStatement`) and S5.1′ (`CuspBoundGenStatement`) in `OscInt/Statements/Cusp.lean`, stamp
-`stamps/20261109T201548Z-fcb46d9a6239`. No existing statement, commitment or `proved_by` name changed.
+Nothing yet.
 
+## v0.5.0 — 2026-11-13
+
+A minor release. Before 1.0.0 a minor release may change statements; this one changes none. It adds 11 statements:
+- **seven proved and machine-checked as stated:** batch A3 (S1.k, S5.1, S5.1′), batch LE2 (T0E′, T6E′) and batch HC
+  (TdF, TdE′);
+- **four stated, frozen and reviewed but not proved:** batch LS (LS-E, LS-K, LS-D, LS-D′), whose `proved_by` is
+  `null` in `stamps/statements.json`. Their proofs will come in a later minor release.
+
+There are 63 statements in all, 59 of them machine-checked as stated (`docs/STATUS.md`). The 52 entries of v0.4.0 in
+`stamps/statements.json` are unchanged, field for field (compared with the v0.4.0 tag on 2026-11-13). Toolchain
+`leanprover/lean4:v4.35.0` and Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679`, both unchanged. Release notes
+and pins: `docs/release-notes/v0.5.0.md`.
+
+### Statement changes
+
+Batch A3 (sessions 8–10): three new statements, frozen, reviewed and **proved**: S1.k (`VdCkStatement`), S5.1
+(`CuspBoundStatement`) and S5.1′ (`CuspBoundGenStatement`) in `OscInt/Statements/Cusp.lean`, stamp
+`stamps/20261109T201548Z-fcb46d9a6239`; `proved_by` `OscInt.API.vdCk`, `cuspBound`, `cuspBoundGen` (since 93a8a8d);
+machine-checked as stated since the isolated replay of 1f7d041 (`docs/STATUS.md`).
+
+Batch LE2 (session 10): two new statements, frozen, reviewed and **proved**: T0E′
+(`LatticeKernel1CubeRootStatement`, `OscInt.API.latticeKernel1CubeRoot`) and T6E′ (`LatticeLaplacianCubeRootStatement`,
+`OscInt.API.latticeLaplacianCubeRoot`) in `OscInt/Statements/LatticeCubeRoot.lean`, stamp
+`stamps/20261110T234417Z-0532b1cf8880`. They imply the frozen T0E and T6E, which are unchanged.
+
+Batch HC (session 10): two new statements, frozen, reviewed and **proved**: TdF
+(`HypercubicKernelFactorStatement`, `OscInt.API.hypercubicKernelFactor`) and TdE′ (`HypercubicCubeRootStatement`,
+`OscInt.API.hypercubicCubeRoot`) in `OscInt/Statements/Hypercubic.lean`, stamp `stamps/20261112T120616Z-c56beb57ff8c`.
+
+Batch LS (session 10): four new statements, frozen and reviewed, **not proved**: LS-E
+(`LatticeSchrodingerExistsStatement`), LS-K (`LatticeSchrodingerKernelStatement`), LS-D
+(`LatticeSchrodingerDispersiveStatement`) and LS-D′ (`LatticeSchrodingerDecayStatement`) in
+`OscInt/Statements/LatticeGroup.lean`, stamp `stamps/20261112T215742Z-d18e0780abdb`.
+
+### Changes
+
+- Package metadata for v0.5.0 (`lakefile.toml`, `CITATION.cff`, `codemeta.json`, `.zenodo.json`): a new abstract
+  covering the cusp and lattice results, and more keywords. README rewritten around what is proved; documentation
+  index, decision tree (`docs/which-theorem.md`), ROADMAP and hand-off updated.
+- Batch A3 proved in Lean (S1.k, S5.1, S5.1′), from an external packet drafted with an OpenAI model and integrated by
+  the lead with five elaboration fixes (`review/2026-11-12-A3-packet-answers.md`); post-proof reviews answered
+  (`review/2026-11-12-A3-post-proof-answers.md`); "Parts as proved" in `docs/proof-A3.md`.
+- Batch A3 replayed in isolation on 1f7d041 (`docs/replay/2026-11-13-session10-A3-verify-all.txt`): comparator-A3
+  accepted by six kernels; S1.k, S5.1 and S5.1′ are machine-checked as stated. A first attempt was stopped by the
+  session's two-hour limit on background tasks and is disclosed in the record.
+- Batch LS (the free lattice Schrödinger group): statements, sanity layer and planted controls, two blind pre-proof
+  reviews (`review/2026-11-12-LS-pre-proof-answers.md`), review stamp; route `docs/proof-LS.md` with nine parts in
+  `Blueprint/LatticeGroup.lean` and a compiled assembly, refereed (revision section in the route).
+- Answers to the external application-chains dossier (`review/2026-11-13-application-chains-answers.md`): six hand
+  propositions and an imaging block bound checked (TRUE, not machine-checked); lead's checks
+  `numerics/review/application_chains_checks.py`; four corrections to `docs/applications.md`.
+- Consumer example `examples/consumer/ConsumerWhistler.lean`: whistler packet at the inflection of the dispersion (S1.3).
+- Partial, non-isolated replay of e814510 kept for the record (`docs/replay/2026-11-12-session10-e814510-partial.txt`).
+- Answers to the external research packet on lattice NLS and domain connections
+  (`review/2026-11-12-DNLS-packet-answers.md`): kernel-to-group identification, global ℓ² dynamics and explicit
+  small-data decay checked (hand proofs, not machine-checked); lead's checks `numerics/review/dnls_checks.py` (record
+  `numerics/results-dnls-checks-2026-11-12.txt`).
+- Answers to the external R2 packet (`review/2026-11-12-R2-KG-answers.md`): an explicit cube-root bound for the 1D
+  discrete Klein–Gordon kernel at every mass, checked (TRUE, not machine-checked) and recorded as a ROADMAP candidate;
+  lead's checks `numerics/review/kg_checks.py` (record `numerics/results-kg-checks-2026-11-12.txt`). Addendum after an
+  external audit: C* is within a factor below 1.9 of the best universal mass-normalised coefficient (exact check
+  `numerics/review/kg_factor_check.py`, record `numerics/results-kg-factor-check-2026-11-12.txt`).
+- Batch HC: the hypercubic lattice kernel on ℤ^d factorises, and `|K_d(t, x)| ≤ (8(1 + √7)/3)^d t^{−d/3}` for every
+  `d`, `t > 0` and `x`; statement-first, blind-reviewed, routed and refereed, proved in Lean, replayed
+  (`docs/replay/2026-11-12-session10-HC-verify-all.txt`); post-proof answers `review/2026-11-12-HC-post-proof-answers.md`.
+- Consumer examples `examples/consumer/ConsumerColdPlasma.lean` (cold-plasma transverse waves, `τ^{−1}` uniformly in the
+  observation point) and `examples/consumer/ConsumerPhaseMixing.lean` (phase mixing of free streaming).
+- Scoping `docs/design/dnls-scoping.md`: small-data decay for the discrete NLS from TdE′ (not a commitment).
+- Numerical interface check `numerics/review/hc_interface_checks.py` (record
+  `numerics/results-hc-interface-checks-2026-11-12.txt`).
+- Batch LE2: the cube-root bound `|∫_{−π}^{π} e^{i(t cos k + ξk)} dk| ≤ 8(1 + √7)/3 · t^{−1/3}` for every `t > 0` and real
+  `ξ`, and its 2D form; useful from `t ≈ 3.70` instead of 518 and 1321. From an external reviewer's hand proof
+  (AI-use disclosure in `docs/prior_art.md`), re-derived, blind-reviewed, routed and refereed, proved in Lean, replayed
+  (`docs/replay/2026-11-11-session10-LE2-verify-all.txt`).
+- Answers to the external follow-up submissions (`review/2026-11-10-external-followup-answers.md`): the cube-root bound,
+  the QWZ critical-mass results (candidate evidence), and the photonic and plasma application studies.
+- Consumer example `examples/consumer/ConsumerPhotonLattice.lean`: single-photon transition probabilities on a
+  cosine-band lattice, nontrivial from `2κt ≥ 4` with T0E′.
 - Batch A3 statement-first phase: sanity data and planted controls, two blind pre-proof reviews (FAITHFUL, TRUE),
   reviews stamped (`stamps/20261109T214121Z-47c1360ccd6f`).
 - CENSUS (ROADMAP I1): specification and registration, both DRAFT; exact spec checks 39/39

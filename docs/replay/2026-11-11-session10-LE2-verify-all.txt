@@ -1,0 +1,865 @@
+# make verify-all on 68aec60081eb6dbd6ae2e196d0c517ae3e4887b1 (clean tree, dirty=0 at start), session-10 lead, 2026-11-11.
+# Started 2026-11-11T02:33:59Z, finished 2026-11-11T04:37:57Z (UTC), alone on the 4-core 15 GB session machine (a first
+# attempt on 48e7f24 was killed by a container restart before its kernel steps; it is not counted). Full output below.
+# Result: RESULT INCOMPLETE. Every step PASS except comparator, which is SKIPPED because comparator-A3.json has no
+# challenge theorem yet (batch A3 is frozen but not proved; the same skip CI reports as success). Within the comparator
+# step every other configuration was accepted, comparator-LE2.json included (against stamps/20261110T234417Z-0532b1cf8880,
+# with the Lean, paranoid, lean4lean, nanoda, con-leche and con-ron kernels). Batch LE2 is therefore fully replayed;
+# the INCOMPLETE verdict is batch A3's, not LE2's.
+#
+started 2026-11-11T02:33:59Z HEAD 68aec60081eb6dbd6ae2e196d0c517ae3e4887b1 dirty=0
+cd tools && cargo build --release --locked --quiet
+tools/target/release/verify_all 
+cd tools && cargo build --release --locked --quiet
+tools/target/release/toolchain .
+verify-toolchain: elan-init.sh: sha256 a620ff1641616222c8d37c54845492004bb84d6877cdbc944dd65c1aa685bf53 OK
+verify-toolchain: lean-4.35.0-linux.tar.zst: sha256 7289597a44543246c9227b8cae501767e095ce17f6d448b95fc4a8dc97268f6d OK
+verify-toolchain: installed toolchain /root/lean/lean-4.35.0-linux is byte-identical to lean-4.35.0-linux.tar.zst
+cd tools && cargo test --release --locked --quiet
+
+running 8 tests
+........
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+......
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+....
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+..
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 9 tests
+.........
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+
+
+running 5 tests
+.....
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+...
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+cd tools && cargo build --release --locked --quiet
+tools/target/release/guard .
+guard: ok: 119 file(s), 0 violations, 1126 theorem declaration(s)
+cd tools && cargo build --release --locked --quiet
+rm -f build/lean.ok
+lake build
+Build completed successfully (9167 jobs).
+mkdir -p build && lake env lean Axioms.lean > build/axioms.out
+tools/target/release/audit build/axioms.out . build/audited.txt
+axiom audit: 1126 of 1126 theorems clean (permitted: propext, Classical.choice, Quot.sound)
+lake env lean StatementTypes.lean
+TYPE-OK OscInt.vanDerCorput_one : OscInt.Statements.VdC1Statement
+TYPE-OK OscInt.vanDerCorput_two : OscInt.Statements.VdC2Statement
+TYPE-OK OscInt.vanDerCorput_three : OscInt.Statements.VdC3Statement
+TYPE-OK OscInt.nonStationary : OscInt.Statements.NonStationaryStatement
+TYPE-OK OscInt.stationaryPhase : OscInt.Statements.StationaryPhaseStatement
+TYPE-OK OscInt.fold : OscInt.Statements.FoldStatement
+TYPE-OK OscInt.d4Bound : OscInt.Statements.D4BoundStatement
+TYPE-OK OscInt.d4BoundNe : OscInt.Statements.D4BoundNeStatement
+TYPE-OK OscInt.d4ConstantPos : OscInt.Statements.D4ConstantPosStatement
+TYPE-OK OscInt.d4Limit : OscInt.Statements.D4LimitStatement
+TYPE-OK OscInt.d4ConstantClosedForm : OscInt.Statements.D4ConstantClosedFormStatement
+TYPE-OK OscInt.API.ampBoundOfContDiff : OscInt.Statements.AmpBoundOfContDiffStatement
+TYPE-OK OscInt.API.d4LimitClosedForm : OscInt.Statements.D4LimitClosedFormStatement
+TYPE-OK OscInt.API.dd_iteratedFDeriv : OscInt.Statements.DdEqIteratedStatement
+TYPE-OK OscInt.API.ddd_iteratedFDeriv : OscInt.Statements.DddEqIteratedStatement
+TYPE-OK OscInt.API.hessDet_eq_det : OscInt.Statements.HessDetEqDetStatement
+TYPE-OK OscInt.API.cubicCoeffs_eq : OscInt.Statements.CubicCoeffsEqStatement
+TYPE-OK OscInt.API.disc_eq_cubic_discr : OscInt.Statements.DiscEqCubicDiscrStatement
+TYPE-OK OscInt.API.disc_ne_zero_iff_isolated : OscInt.Statements.DiscNeZeroIffIsolatedStatement
+TYPE-OK OscInt.API.foldOrNondeg_iff : OscInt.Statements.FoldOrNondegIffStatement
+TYPE-OK OscInt.API.foldOrNondeg_of_hasFDeriv : OscInt.Statements.FoldOrNondegOfHasFDerivStatement
+TYPE-OK OscInt.API.gradLower_iff : OscInt.Statements.GradLowerIffStatement
+TYPE-OK OscInt.API.ampBound_conv : OscInt.Statements.AmpBoundConvStatement
+TYPE-OK OscInt.API.nonStationaryFE : OscInt.Statements.NonStationaryFEStatement
+TYPE-OK OscInt.API.stationaryPhaseFE : OscInt.Statements.StationaryPhaseFEStatement
+TYPE-OK OscInt.API.foldFE : OscInt.Statements.FoldFEStatement
+TYPE-OK OscInt.API.d4BoundFE : OscInt.Statements.D4BoundFEStatement
+TYPE-OK OscInt.API.stationaryPhaseFamily : OscInt.Statements.StationaryPhaseFamilyStatement
+TYPE-OK OscInt.API.foldCrit : OscInt.Statements.FoldCritStatement
+TYPE-OK OscInt.API.familyCk_of_uncurry : OscInt.Statements.FamilyCkOfUncurryStatement
+TYPE-OK OscInt.API.nonStationaryLocal : OscInt.Statements.NonStationaryLocalStatement
+TYPE-OK OscInt.API.stationaryPhaseLocal : OscInt.Statements.StationaryPhaseLocalStatement
+TYPE-OK OscInt.API.foldLocal : OscInt.Statements.FoldLocalStatement
+TYPE-OK OscInt.API.d4BoundLocal : OscInt.Statements.D4BoundLocalStatement
+TYPE-OK OscInt.API.nonStationaryOn : OscInt.Statements.NonStationaryOnStatement
+TYPE-OK OscInt.API.stationaryPhaseOn : OscInt.Statements.StationaryPhaseOnStatement
+TYPE-OK OscInt.API.foldOn : OscInt.Statements.FoldOnStatement
+TYPE-OK OscInt.API.globalDecayCrit : OscInt.Statements.GlobalDecayCritStatement
+TYPE-OK OscInt.API.globalDecay : OscInt.Statements.GlobalDecayStatement
+TYPE-OK OscInt.API.globalFold : OscInt.Statements.GlobalFoldStatement
+TYPE-OK OscInt.API.globalNondeg : OscInt.Statements.GlobalNondegStatement
+TYPE-OK OscInt.API.sharpness : OscInt.Statements.SharpnessStatement
+TYPE-OK OscInt.API.torusUnfold : OscInt.Statements.TorusUnfoldStatement
+TYPE-OK OscInt.API.latticeLaplacianDecay : OscInt.Statements.LatticeLaplacianDecayStatement
+TYPE-OK OscInt.API.latticeLaplacianLimit : OscInt.Statements.LatticeLaplacianLimitStatement
+TYPE-OK OscInt.API.latticeKernel1Explicit : OscInt.Statements.LatticeKernel1ExplicitStatement
+TYPE-OK OscInt.API.latticeKernelFactor : OscInt.Statements.LatticeKernelFactorStatement
+TYPE-OK OscInt.API.latticeLaplacianExplicit : OscInt.Statements.LatticeLaplacianExplicitStatement
+TYPE-OK OscInt.API.globalDecayCritVec : OscInt.Statements.GlobalDecayCritVecStatement
+TYPE-OK OscInt.API.globalDecayVec : OscInt.Statements.GlobalDecayVecStatement
+TYPE-OK OscInt.API.globalFoldVec : OscInt.Statements.GlobalFoldVecStatement
+TYPE-OK OscInt.API.globalNondegVec : OscInt.Statements.GlobalNondegVecStatement
+TYPE-OK OscInt.API.latticeKernel1CubeRoot : OscInt.Statements.LatticeKernel1CubeRootStatement
+TYPE-OK OscInt.API.latticeLaplacianCubeRoot : OscInt.Statements.LatticeLaplacianCubeRootStatement
+lake env lean MathlibNames.lean > /dev/null
+lake env lean GammaFree.lean
+GAMMA-FREE CONTROL Real.Gamma_pos_of_pos rejected as expected (33 forbidden constant(s))
+GAMMA-FREE CONTROL gammaProofControl rejected as expected (33 forbidden constant(s))
+GAMMA-FREE OK OscInt.Statements.D4ConstantPosStatement (33099 constants in the closure)
+GAMMA-FREE OK OscInt.d4ConstantPos (43612 constants in the closure)
+GAMMA-FREE OK OscInt.d4Limit (53780 constants in the closure)
+GAMMA-FREE OK OscInt.d4BoundNe (51302 constants in the closure)
+touch build/lean.ok
+cd tools && cargo build --release --locked --quiet
+tools/target/release/replay . build/audited.txt build/replay
+PASS  no stale build products  (0.0s)  117 module(s)
+PASS  leanchecker OscInt.API  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Basic  (2.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Cusp.Assembly  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Angular  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Assembly  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Basic  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Beta  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Bite  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Chart  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.ClosedForm  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.ClosedFormFinal  (4.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.ConstantPos  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.ConstantPosFinal  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.CosMoment  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.CosMomentValue  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Covariance  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.CubicComp  (5.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Final  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.GammaSixth  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Gauge  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.LimitAssembly  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.LimitFinal  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.LimitSanity  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.LineMoments  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.NormalForm  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Open  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Polar  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.PolarLimit  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Radial  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Rescale  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Sanity  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.SingularPower  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Tail  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Convert  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.ConvertDeriv  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.ConvertDisc  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.ConvertFold  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.ConvertNorm  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.ConvertSanity  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Core  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.CuspSanity  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Cutoff  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Examples  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Family  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FamilyC10  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FamilySanity  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FamilySanity2  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.GlobalAssembly  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.GlobalFinal  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.GlobalLocal  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.GlobalNondegLocalSanity  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.GlobalSanity  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeCubeRootAssembly  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeCubeRootFinal  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeCubeRootIbp  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeCubeRootPieces  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeCubeRootRegime38  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeCubeRootRegime8  (5.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeCubeRootSanity  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeExplicitAssembly  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeExplicitFinal  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeExplicitParts  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeExplicitSanity  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeFinal  (4.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeKernel  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeLimit  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeSymbol  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Local  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Poly  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Sanity  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Sharpness  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Torus  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.VectorAssembly  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.VectorFinal  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.VectorParts  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.VectorSanity  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.Convert  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.Cusp  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.D4  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.D4Limit  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.Family  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.FrontEnd  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.Global  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.LatticeCubeRoot  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.LatticeExplicit  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.StationaryPhase  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.VanDerCorput  (3.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.Vector  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Assembly  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Change  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Core  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Family  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Final  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Implicit  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Local  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.LocalCrit  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Localize  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.NonStat  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Partition  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Sanity  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Amplitude  (3.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Assembly  (3.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Final  (3.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Higher  (3.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.One  (3.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Split  (3.2s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.Cusp  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.D4  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.D4ClosedForm  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.D4Limit  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.D4LimitS42  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.Global  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.LatticeCubeRoot  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.LatticeExplicit  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.StationaryPhase  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.VanDerCorput  (3.2s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.Vector  (4.4s)  accepted (exit 0, no error output)
+PASS  leanexport  (41.4s)  69649 declarations, 1126 target theorem(s), axioms [propext, Quot.sound, Classical.choice]; sha256 1941f6e4173bd606009d6bc4b0d030a401d932b7d4dd29d7d66d343011e6de4a
+PASS  leanchecker --from-export  (144.8s)  Lean default kernel accepts the solution
+PASS  leanchecker-paranoid --from-export  (172.2s)  Lean default kernel accepts the solution
+PASS  nanoda  (90.6s)  Checked 69649 declarations with no typechecker errors
+PASS  con-leche --verified  (36.3s)  con-leche: accepted 67320 declarations (--verified)
+PASS  con-ron --verified  (20.8s)  con-ron: accepted 67320 declarations (--verified)
+PASS  lake check --from-export --paranoid  (566.0s)  lean4lean kernel accepts the solution; 6 kernels accepted
+cd tools && cargo build --release --locked --quiet
+mkdir -p build/skipped && rm -f build/skipped/commit; lake build oscint-commit-env && { tools/target/release/commit build/commit || { [ $? -eq 3 ] && mkdir -p build/skipped && touch build/skipped/commit; }; }
+Build completed successfully (4 jobs).
+2650f1484b3252166e9442f383ad734075f60f180d595c7d6729d9737edba5ad  OscInt.Statements.FoldStatement
+a837c8bd8352929aa4ba6456ff19603cd34f7ae09b2896de0af2565fd0f803b4  OscInt.Statements.VdC1Statement
+66cc331de7d7bf5fb38076895ff7014f280b41cced6492f70cd87134a78a39f5  OscInt.Statements.VdC2Statement
+30b3f96ca215778d4034c6ca660818b04a842bb4b574f27f4a648a64bf9ab4f4  OscInt.Statements.VdC3Statement
+3f6bcd10ddc304463b047a2ff97bea79cca928d63280b315c80a6192657022b3  OscInt.Statements.VdCkStatement
+0f3fb86be54bedd6800f47e92a4ec39ea40b02aaa525a55810bc1b2e706131e5  OscInt.Statements.FoldFEStatement
+9e5060bc1dcb931cb5f903b812d9f769c0272a13c7d8ab722802525c3e3682f7  OscInt.Statements.FoldOnStatement
+5205ebc0a6a6286803155f16135a6405e8217037c93cb17ff876a9ec2902cdfd  OscInt.Statements.D4BoundStatement
+9490bf1bdc254b2bd297cb0c4a7f76db64fa363ccf1141a92a14fd78331552a9  OscInt.Statements.D4LimitStatement
+250229601f6b6504443fcb896fd5310ef3e152d84d4ea35d1a001705197fd550  OscInt.Statements.FoldCritStatement
+58fdc9e1b30433dab199864ae01cb90d2691c03c2cfa9560582f6bd96bb0477a  OscInt.Statements.CuspBoundStatement
+6d19397535704238238140de06b3e7f4c4fc3296a03d1b4685a9fbcafb8722df  OscInt.Statements.D4BoundFEStatement
+f4e245bd4b1a3f0ca2e8fb006f574568849b717c089099de66c70f91843d4292  OscInt.Statements.D4BoundNeStatement
+dba23e4faf26f648b9048a14557f6f5d81e90bfc534d9a749e0c6202420f592e  OscInt.Statements.FoldLocalStatement
+7e2d846d91a10c1089e2be02c5c3a11a3fa3356c92a5d05ac36672dd49fff8f4  OscInt.Statements.SharpnessStatement
+dc7e03cebd759bf1bfce95671f04833ed6b8498bb3f4ce35ba5e604d3f3a5e08  OscInt.Statements.GlobalFoldStatement
+b87a60a72581eec6cedb64ec8a2a8f94322a83fce7e0a9e91b66e1a2d83e7fe2  OscInt.Statements.GlobalDecayStatement
+15f6d28880063e4e7be0ebca30e3f887c84bbdcf87dd13719ddf6ef686eb28f2  OscInt.Statements.TorusUnfoldStatement
+bdcb71a321987be7a5de005f6984f193b3947aade4acf29bbe4a155bedc5c6c9  OscInt.Statements.AmpBoundConvStatement
+05686ea0396f3ff430c3d6e2b5f177182ae26e377645beb1280298810799783b  OscInt.Statements.CuspBoundGenStatement
+996bbfaff4b255ce57d21bc8810527b0001c9c0df254348e9dcbbaaa2a0be852  OscInt.Statements.D4BoundLocalStatement
+88880a9377a1cb58aaa315e01ddcc83055a294e8518316c5d843aede69859375  OscInt.Statements.DdEqIteratedStatement
+81a7043fa38d91646a25bf72ee2bfee15cd2ec5e4eaa027b9bf6ac52c65cec30  OscInt.Statements.GlobalNondegStatement
+c46e578b3f119cb9f17dd3690e103e2fb641ac03288e8b863f94f1e940ff443c  OscInt.Statements.GradLowerIffStatement
+ad8bfd7283e818c8b9ae1290765dec3f6122e76790f493f35c02139189cb16b8  OscInt.Statements.HessDetEqDetStatement
+b3a10d767ce7cc1558a06629db152378bb13c719d58b62f9ee2db8bbd7635a70  OscInt.Statements.CubicCoeffsEqStatement
+96eb2416b768396e5f29e3bfc865d4f181c6ec9ccaf1f1ac0aaf01ef18053be1  OscInt.Statements.D4ConstantPosStatement
+c90a3e07e9299b77bee1425af8810b3d745982ce1fc01d03281d1e167541db27  OscInt.Statements.DddEqIteratedStatement
+71428213100bfbcdb29b2d20f8234bf3f8f6dfc921472657134966e1bdaeccbb  OscInt.Statements.GlobalFoldVecStatement
+238318a74792495f2009807e724673e80c4d3f66b91580c564105d84396fe8f8  OscInt.Statements.NonStationaryStatement
+15935a570eb2a5e976afb37b7740dbd4fd6905a8723687bab6d45f0453d63757  OscInt.Statements.GlobalDecayVecStatement
+b05dd45ea11747ed3f364fd9ed95819be61b82d91a0ba2e617b7d7ff729de907  OscInt.Statements.FoldOrNondegIffStatement
+8135968718f6b9a261141f06d6155953423cd93dd1e4a13e1175304d6795ee7e  OscInt.Statements.GlobalDecayCritStatement
+2dda7e400448a35542f23fab458b6a1bdcfa5ee3ae69d38c9664ed9d02eda0f9  OscInt.Statements.GlobalNondegVecStatement
+658ca3ba7c2aa48bd189db69c7fa6de41dccc5b293c13da3e35262a407ad3670  OscInt.Statements.NonStationaryFEStatement
+ca7b598d6e0643d8adf1c14873b7a8a51684be08ea266a0aac895b22c5a1ce2d  OscInt.Statements.NonStationaryOnStatement
+283a23fe63ba052ba6600edd08ee3def6d728a75dbbaa6d7f39fc031fc9eccff  OscInt.Statements.StationaryPhaseStatement
+b695631f883cf016c403cefef9e9b41f753dcab0ff8acf7e7dc331c3525207bc  OscInt.Statements.DiscEqCubicDiscrStatement
+7db2d5f188ee0984ee684caa10e18c74af554e0c718a903cd643e540d278f741  OscInt.Statements.D4LimitClosedFormStatement
+d7326dcfb104149d688373165af573d87f934d15c8ed9189579bd6d954ee732c  OscInt.Statements.FamilyCkOfUncurryStatement
+853de5aec4e7209f3452e92c038f15ae35a9ba77ec68e668b81b54993be7fcf8  OscInt.Statements.StationaryPhaseFEStatement
+57a3c45db40bbfe67d37c192208d2e7025b68d28af93226a8565e890c9cd07e5  OscInt.Statements.StationaryPhaseOnStatement
+ec40ed3e51ec4cc137fcc2c1a5462f076cabd712d0701b729f9cb64856a50c58  OscInt.Statements.AmpBoundOfContDiffStatement
+b10f3ac4f4192b9dda8fcb91cf171e191deb773dfd84e7026bf38a66653e0f00  OscInt.Statements.GlobalDecayCritVecStatement
+db12dc1d9f844151b7320bf2490a1f94fa73e9fedc08217aab59a75e4d1c9e1c  OscInt.Statements.NonStationaryLocalStatement
+0f3dd76d127c914be30adbd8db3d8e19f848f2feab05ebb48a663c3c6839b5d5  OscInt.Statements.LatticeKernelFactorStatement
+3f089384d33ac7f6d4a24195c64b10af9093125fec7456da342a0477e510e6cc  OscInt.Statements.D4ConstantClosedFormStatement
+80c251734768c1948733e2d437b26b61ec01d9dbd96d4a507192ccad4f7b99e0  OscInt.Statements.StationaryPhaseLocalStatement
+129d6bfd60d242a109cb1ca4a9f021a85d1d0829c1a9d01fd2f88f59c15455ef  OscInt.Statements.DiscNeZeroIffIsolatedStatement
+5e66240de60fe7c659a563e5bae55782c37690afc14c8ec735d5ac60425e5ad0  OscInt.Statements.LatticeLaplacianDecayStatement
+cd82929010093efb087c595f96277006f986a116233a87628889b3d71e2750f1  OscInt.Statements.LatticeLaplacianLimitStatement
+c2038a6b5bfd58f54af6f056f4c71232db914131199a05804b878c5161f880be  OscInt.Statements.StationaryPhaseFamilyStatement
+45612c50752ef0035b4b854cb8b24c70ae3776114fccb360068c3d6b770f2d22  OscInt.Statements.LatticeKernel1CubeRootStatement
+d087e02b99d4a5de72d9d9fbc2a3dd1cbee49178cdd8458e15189207ebb65a73  OscInt.Statements.LatticeKernel1ExplicitStatement
+cf87f81a3e5eaab15f2e671a7efefcc88ce509646daf6cf75a56d5d86c813a56  OscInt.Statements.FoldOrNondegOfHasFDerivStatement
+54ae8110b6c536902871cc6ec2407659c673e3239dbb8c26c8b911c9b16a2a06  OscInt.Statements.LatticeLaplacianCubeRootStatement
+181d42d75a2cf9726e878d35e3ba5bc814e8dd712ae26964a9613b4ec1cd0889  OscInt.Statements.LatticeLaplacianExplicitStatement
+commit: OscInt.Statements.FoldStatement matches its stamp stamps/20261105T234456Z-533ae0272521
+commit: OscInt.Statements.VdC1Statement matches its stamp stamps/20261105T203058Z-7516eb518dce
+commit: OscInt.Statements.VdC2Statement matches its stamp stamps/20261105T203058Z-7516eb518dce
+commit: OscInt.Statements.VdC3Statement matches its stamp stamps/20261105T203058Z-7516eb518dce
+commit: OscInt.Statements.VdCkStatement matches its stamp stamps/20261109T201548Z-fcb46d9a6239
+commit: OscInt.Statements.FoldFEStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+commit: OscInt.Statements.FoldOnStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+commit: OscInt.Statements.D4BoundStatement matches its stamp stamps/20261106T033706Z-63564a8d78cd
+commit: OscInt.Statements.D4LimitStatement matches its stamp stamps/20261106T081634Z-e2d7771c358e
+commit: OscInt.Statements.FoldCritStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+commit: OscInt.Statements.CuspBoundStatement matches its stamp stamps/20261109T201548Z-fcb46d9a6239
+commit: OscInt.Statements.D4BoundFEStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+commit: OscInt.Statements.D4BoundNeStatement matches its stamp stamps/20261106T081634Z-e2d7771c358e
+commit: OscInt.Statements.FoldLocalStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+commit: OscInt.Statements.SharpnessStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+commit: OscInt.Statements.GlobalFoldStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+commit: OscInt.Statements.GlobalDecayStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+commit: OscInt.Statements.TorusUnfoldStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+commit: OscInt.Statements.AmpBoundConvStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+commit: OscInt.Statements.CuspBoundGenStatement matches its stamp stamps/20261109T201548Z-fcb46d9a6239
+commit: OscInt.Statements.D4BoundLocalStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+commit: OscInt.Statements.DdEqIteratedStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+commit: OscInt.Statements.GlobalNondegStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+commit: OscInt.Statements.GradLowerIffStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+commit: OscInt.Statements.HessDetEqDetStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+commit: OscInt.Statements.CubicCoeffsEqStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+commit: OscInt.Statements.D4ConstantPosStatement matches its stamp stamps/20261106T081634Z-e2d7771c358e
+commit: OscInt.Statements.DddEqIteratedStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+commit: OscInt.Statements.GlobalFoldVecStatement matches its stamp stamps/20261108T235416Z-961cebc296ef
+commit: OscInt.Statements.NonStationaryStatement matches its stamp stamps/20261105T234456Z-533ae0272521
+commit: OscInt.Statements.GlobalDecayVecStatement matches its stamp stamps/20261108T235416Z-961cebc296ef
+commit: OscInt.Statements.FoldOrNondegIffStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+commit: OscInt.Statements.GlobalDecayCritStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+commit: OscInt.Statements.GlobalNondegVecStatement matches its stamp stamps/20261108T235416Z-961cebc296ef
+commit: OscInt.Statements.NonStationaryFEStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+commit: OscInt.Statements.NonStationaryOnStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+commit: OscInt.Statements.StationaryPhaseStatement matches its stamp stamps/20261105T234456Z-533ae0272521
+commit: OscInt.Statements.DiscEqCubicDiscrStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+commit: OscInt.Statements.D4LimitClosedFormStatement matches its stamp stamps/20261107T012459Z-2d5356432156
+commit: OscInt.Statements.FamilyCkOfUncurryStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+commit: OscInt.Statements.StationaryPhaseFEStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+commit: OscInt.Statements.StationaryPhaseOnStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+commit: OscInt.Statements.AmpBoundOfContDiffStatement matches its stamp stamps/20261107T012459Z-2d5356432156
+commit: OscInt.Statements.GlobalDecayCritVecStatement matches its stamp stamps/20261108T235416Z-961cebc296ef
+commit: OscInt.Statements.NonStationaryLocalStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+commit: OscInt.Statements.LatticeKernelFactorStatement matches its stamp stamps/20261108T160847Z-4a183530559f
+commit: OscInt.Statements.D4ConstantClosedFormStatement matches its stamp stamps/20261106T081634Z-e2d7771c358e
+commit: OscInt.Statements.StationaryPhaseLocalStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+commit: OscInt.Statements.DiscNeZeroIffIsolatedStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+commit: OscInt.Statements.LatticeLaplacianDecayStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+commit: OscInt.Statements.LatticeLaplacianLimitStatement matches its stamp stamps/20261108T094842Z-edf7787a2845
+commit: OscInt.Statements.StationaryPhaseFamilyStatement matches its stamp stamps/20261108T002603Z-9d03130c8f3a
+commit: OscInt.Statements.LatticeKernel1CubeRootStatement matches its stamp stamps/20261110T234417Z-0532b1cf8880
+commit: OscInt.Statements.LatticeKernel1ExplicitStatement matches its stamp stamps/20261108T160847Z-4a183530559f
+commit: OscInt.Statements.FoldOrNondegOfHasFDerivStatement matches its stamp stamps/20261107T101640Z-4acb308f54f4
+commit: OscInt.Statements.LatticeLaplacianCubeRootStatement matches its stamp stamps/20261110T234417Z-0532b1cf8880
+commit: OscInt.Statements.LatticeLaplacianExplicitStatement matches its stamp stamps/20261108T160847Z-4a183530559f
+cd tools && cargo build --release --locked --quiet
+mkdir -p build/skipped && rm -f build/skipped/comparator; tools/target/release/challenge check-all . || { [ $? -eq 3 ] && mkdir -p build/skipped && touch build/skipped/comparator; }
+comparator: comparator-A3.json: no challenge theorem is declared yet
+challenge: export ./build/challenge/API1.ndjson sha256 1a23282ebd666f960c05fcd89c1be6097b3e5041afd5c30fa9135ebb97489d7b
+challenge: export sha256 1a23282ebd666f960c05fcd89c1be6097b3e5041afd5c30fa9135ebb97489d7b matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9165 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.API.ampBoundOfContDiff, OscInt.API.d4LimitClosedForm, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 55989 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 55992 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 55992 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-API1.json accepted against stamps/20261107T012459Z-2d5356432156
+challenge: export ./build/challenge/API2.ndjson sha256 497bd5320495333f949c9cd8390e8caf2633c602c56f2e079e866da16899ad38
+challenge: export sha256 497bd5320495333f949c9cd8390e8caf2633c602c56f2e079e866da16899ad38 matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9165 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.API.dd_iteratedFDeriv, OscInt.API.ddd_iteratedFDeriv, OscInt.API.hessDet_eq_det, OscInt.API.cubicCoeffs_eq, OscInt.API.disc_eq_cubic_discr, OscInt.API.disc_ne_zero_iff_isolated, OscInt.API.foldOrNondeg_iff, OscInt.API.foldOrNondeg_of_hasFDeriv, OscInt.API.gradLower_iff, OscInt.API.ampBound_conv, OscInt.API.nonStationaryFE, OscInt.API.stationaryPhaseFE, OscInt.API.foldFE, OscInt.API.d4BoundFE, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 56918 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 56921 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 56921 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-API2.json accepted against stamps/20261107T101640Z-4acb308f54f4
+challenge: export ./build/challenge/API3.ndjson sha256 cfb9e77b8076a30c9d79389ba41d3cad9e457e779cca01c217c1110f6da80407
+challenge: export sha256 cfb9e77b8076a30c9d79389ba41d3cad9e457e779cca01c217c1110f6da80407 matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9165 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.API.stationaryPhaseFamily, OscInt.API.foldCrit, OscInt.API.familyCk_of_uncurry, OscInt.API.nonStationaryLocal, OscInt.API.stationaryPhaseLocal, OscInt.API.foldLocal, OscInt.API.d4BoundLocal, OscInt.API.nonStationaryOn, OscInt.API.stationaryPhaseOn, OscInt.API.foldOn, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 51336 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 51339 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 51339 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-API3.json accepted against stamps/20261108T002603Z-9d03130c8f3a
+challenge: export ./build/challenge/GD.ndjson sha256 d64efdedfdfd7dde2393d9cb8768d3851e1c62674a60ab78a1e20c09498147c4
+challenge: export sha256 d64efdedfdfd7dde2393d9cb8768d3851e1c62674a60ab78a1e20c09498147c4 matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9165 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.API.globalDecayCrit, OscInt.API.globalDecay, OscInt.API.globalFold, OscInt.API.globalNondeg, OscInt.API.sharpness, OscInt.API.torusUnfold, OscInt.API.latticeLaplacianDecay, OscInt.API.latticeLaplacianLimit, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 61611 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 61614 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 61614 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-GD.json accepted against stamps/20261108T094842Z-edf7787a2845
+challenge: export ./build/challenge/LE.ndjson sha256 9b5208faddeea52a37259dbd7784e972e46f13390b1ae1026877ed824d26d67a
+challenge: export sha256 9b5208faddeea52a37259dbd7784e972e46f13390b1ae1026877ed824d26d67a matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9165 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.API.latticeKernel1Explicit, OscInt.API.latticeKernelFactor, OscInt.API.latticeLaplacianExplicit, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 41146 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 41149 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 41149 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-LE.json accepted against stamps/20261108T160847Z-4a183530559f
+challenge: export ./build/challenge/LE2.ndjson sha256 3802729712525fb45d2ae84f8b148e0983e9a7be1fa30100d3c3a005b8337518
+challenge: export sha256 3802729712525fb45d2ae84f8b148e0983e9a7be1fa30100d3c3a005b8337518 matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9165 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.API.latticeKernel1CubeRoot, OscInt.API.latticeLaplacianCubeRoot, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+[anonymous]:thmDecl KaehlerDifferential.mvPolynomialEquiv._proof_2: lean4lean took 1064
+checked 50070 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 50073 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 50073 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-LE2.json accepted against stamps/20261110T234417Z-0532b1cf8880
+challenge: export ./build/challenge/S2S3.ndjson sha256 41b545cc2ffae644b57c7ac4d0336ef2b5bddb7e9d22a7fa148d8e8e80c1dd06
+challenge: export sha256 41b545cc2ffae644b57c7ac4d0336ef2b5bddb7e9d22a7fa148d8e8e80c1dd06 matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9165 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.nonStationary, OscInt.stationaryPhase, OscInt.fold, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 49812 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 49815 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 49815 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-S2S3.json accepted against stamps/20261105T234456Z-533ae0272521
+challenge: export ./build/challenge/S4.ndjson sha256 01c2722eee9bcb93ec9f3eab147c67fb3516a51461947c5e2ba3fa641fb12bca
+challenge: export sha256 01c2722eee9bcb93ec9f3eab147c67fb3516a51461947c5e2ba3fa641fb12bca matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9165 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.d4Bound, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 50031 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 50034 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 50034 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-S4.json accepted against stamps/20261106T033706Z-63564a8d78cd
+challenge: export ./build/challenge/S41w.ndjson sha256 577ec19b55a9cf38b385d7cc2647c0d7e34fe7761a72418b7ce17b0611672dd0
+challenge: export sha256 577ec19b55a9cf38b385d7cc2647c0d7e34fe7761a72418b7ce17b0611672dd0 matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9165 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.d4BoundNe, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 50028 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 50031 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 50031 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-S41w.json accepted against stamps/20261106T081634Z-e2d7771c358e
+challenge: export ./build/challenge/S42.ndjson sha256 cd71c5498da32b9414d9c0d9a89224f58d5175da8e7aba32b793e684b71993ec
+challenge: export sha256 cd71c5498da32b9414d9c0d9a89224f58d5175da8e7aba32b793e684b71993ec matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9165 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.d4Limit, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 52492 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 52495 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 52495 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-S42.json accepted against stamps/20261106T081634Z-e2d7771c358e
+challenge: export ./build/challenge/S43.ndjson sha256 91cf89c62badf698a2fb9a8812f1934ddd7e7cbb49c2f62773c958587050c5e1
+challenge: export sha256 91cf89c62badf698a2fb9a8812f1934ddd7e7cbb49c2f62773c958587050c5e1 matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9165 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.d4ConstantPos, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 42435 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 42438 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 42438 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-S43.json accepted against stamps/20261106T081634Z-e2d7771c358e
+challenge: export ./build/challenge/S44.ndjson sha256 44a646d1a708b6717bc4195749d1701ee4de3ade8285dfa98ac6ad92779d9bc1
+challenge: export sha256 44a646d1a708b6717bc4195749d1701ee4de3ade8285dfa98ac6ad92779d9bc1 matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9165 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.d4ConstantClosedForm, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 51697 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 51700 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 51700 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-S44.json accepted against stamps/20261106T081634Z-e2d7771c358e
+challenge: export ./build/challenge/VT.ndjson sha256 28f04e540dea48ea9f9415fd4159e15d018f82358072afc3911194813d0d5117
+challenge: export sha256 28f04e540dea48ea9f9415fd4159e15d018f82358072afc3911194813d0d5117 matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9165 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.API.globalDecayCritVec, OscInt.API.globalDecayVec, OscInt.API.globalFoldVec, OscInt.API.globalNondegVec, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 55920 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 55923 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 55923 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-VT.json accepted against stamps/20261108T235416Z-961cebc296ef
+challenge: export ./build/challenge/challenge.ndjson sha256 7fe4db8d718e07752f62e915c55dec0c99a02f1fe39f930cc3114b35f6e9442a
+challenge: export sha256 7fe4db8d718e07752f62e915c55dec0c99a02f1fe39f930cc3114b35f6e9442a matches the stamped manifest
+Resolving dependencies
+Building OscInt
+Build completed successfully (9165 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.vanDerCorput_one, OscInt.vanDerCorput_two, OscInt.vanDerCorput_three, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 37294 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 37297 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 37297 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator.json accepted against stamps/20261105T203058Z-7516eb518dce
+comparator: INCOMPLETE
+cd tools && cargo build --release --locked --quiet
+mkdir -p build/skipped && rm -f build/skipped/stamp-verify; if [ -f stamps/pins.txt ]; then tools/target/release/stamp verify-every .; else echo "stamp-verify: SKIPPED: no pinned stamp yet"; mkdir -p build/skipped && touch build/skipped/stamp-verify; fi
+== stamps/20261105T203058Z-7516eb518dce (pinned)
+manifest: 60 file hashes match commit 7516eb518dce585ffc7e831ba6171afa9b938e46, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  5 20:30:59 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  5 20:30:59 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  5 20:30:59 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261105T234456Z-533ae0272521 (pinned)
+manifest: 101 file hashes match commit 533ae0272521192adbe020aebb922a2c9559e212, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  5 23:44:57 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  5 23:44:58 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  5 23:44:58 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261106T033706Z-63564a8d78cd (pinned)
+manifest: 141 file hashes match commit 63564a8d78cd2a36f80a660d16b04b4139095835, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  6 03:37:07 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  6 03:37:08 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  6 03:37:08 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261106T081634Z-e2d7771c358e (pinned)
+manifest: 198 file hashes match commit e2d7771c358eed0b1d52521d2d92255ef6967072, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  6 08:16:37 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  6 08:16:37 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  6 08:16:37 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261107T012459Z-2d5356432156 (pinned)
+manifest: 282 file hashes match commit 2d5356432156977cc66afd7e05f2d845e1004687, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  7 01:25:01 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  7 01:25:01 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  7 01:25:01 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261107T101640Z-4acb308f54f4 (pinned)
+manifest: 307 file hashes match commit 4acb308f54f447ea703d7cdd07ff6527156307e2, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  7 10:16:42 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  7 10:16:43 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  7 10:16:43 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261108T002603Z-9d03130c8f3a (pinned)
+manifest: 354 file hashes match commit 9d03130c8f3ae7ba677173ede8868f30d6d2a86d, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  8 00:26:05 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  8 00:26:05 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  8 00:26:05 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261108T094842Z-edf7787a2845 (pinned)
+manifest: 461 file hashes match commit edf7787a28459847d1d126fdda871fd48a0f6ddc, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  8 09:48:45 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  8 09:48:45 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  8 09:48:45 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261108T160847Z-4a183530559f (pinned)
+manifest: 589 file hashes match commit 4a183530559fb4450bea27d8856585e94fa5f627, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  8 16:08:50 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  8 16:08:50 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  8 16:08:50 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261108T235416Z-961cebc296ef (pinned)
+manifest: 696 file hashes match commit 961cebc296eff7f55dddcecc70ef6d164f8e6de6, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  8 23:54:21 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  8 23:54:21 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  8 23:54:21 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261109T201548Z-fcb46d9a6239 (pinned)
+manifest: 788 file hashes match commit fcb46d9a62397c0faf46fc049ab9825b6cf93c84, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  9 20:15:52 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  9 20:15:52 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  9 20:15:52 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261110T234417Z-0532b1cf8880 (pinned)
+manifest: 774 file hashes match commit 0532b1cf88801ec88b0f1082d6bd977bc9273370, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov 10 23:44:20 2026 GMT
+digicert: Verification: OK; Time stamp: Nov 10 23:44:20 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov 10 23:44:21 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261108T010546Z-7bb457958327 (unpinned)
+manifest: 370 file hashes match commit 7bb4579583271feb63995fefa5b14660814fd451, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  8 01:05:48 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  8 01:05:48 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  8 01:05:49 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261108T102629Z-8c8d7b090adb (unpinned)
+manifest: 507 file hashes match commit 8c8d7b090adb2c933a3249cba0f7bf45d4117848, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  8 10:26:32 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  8 10:26:32 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  8 10:26:32 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261108T164514Z-c91a9a8bb0b6 (unpinned)
+manifest: 622 file hashes match commit c91a9a8bb0b6aceb9474501878561ab3cf86948a, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  8 16:45:19 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  8 16:45:19 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  8 16:45:19 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261109T002419Z-45505299011a (unpinned)
+manifest: 735 file hashes match commit 45505299011a7ed6b725a8a1f0a95a5cc3e0be7b, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  9 00:24:23 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  9 00:24:23 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  9 00:24:23 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261109T214121Z-47c1360ccd6f (unpinned)
+manifest: 817 file hashes match commit 47c1360ccd6f639a9238bebb78ce909776d4d601, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov  9 21:41:25 2026 GMT
+digicert: Verification: OK; Time stamp: Nov  9 21:41:26 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov  9 21:41:26 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+== stamps/20261111T005634Z-bf8af89bc235 (unpinned)
+manifest: 813 file hashes match commit bf8af89bc23564548a6bb7ecee12adc87cb93189, exactly its tracked files
+freetsa: Verification: OK; Time stamp: Nov 11 00:56:38 2026 GMT
+digicert: Verification: OK; Time stamp: Nov 11 00:56:38 2026 GMT
+sectigo: Verification: OK; Time stamp: Nov 11 00:56:38 2026 GMT
+opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
+opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+stamp directories: 18 verified, 0 failed
+cd tools && cargo build --release --locked --quiet
+mkdir -p build/skipped && rm -f build/skipped/statements-check; tools/target/release/statements check . || { [ $? -eq 3 ] && mkdir -p build/skipped && touch build/skipped/statements-check; }
+statements: ok: stamps/statements.json matches pins, manifests and sources (57 statements)
+
+== verify-all
+PASS        verify-toolchain
+PASS        tools-test
+PASS        guard
+PASS        lean
+PASS        lean-replay
+PASS        commit
+SKIPPED     comparator
+PASS        stamp-verify
+PASS        statements-check
+RESULT INCOMPLETE
+make: *** [Makefile:72: verify-all] Error 3
+EXIT=2
+finished 2026-11-11T04:37:57Z

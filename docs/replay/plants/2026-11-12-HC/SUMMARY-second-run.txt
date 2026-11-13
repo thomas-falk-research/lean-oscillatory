@@ -1,0 +1,6 @@
+ok-TdE-rate-natdiv: accepted (want accepted)
+plant-TdE-rate-natdiv: rejected (want rejected)
+    first error: plant-TdE-rate-natdiv.lean:14:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+ok-TdE-const-copied-d3: accepted (want accepted)
+plant-TdE-const-copied-d3: rejected (want rejected)
+    first error: plant-TdE-const-copied-d3.lean:15:2: error: linarith failed to find a contradiction

@@ -1,0 +1,17 @@
+import OscInt.Front.LatticeCubeRootSanity
+
+namespace OscInt.API.LatticeCubeRootSanity
+
+open OscInt.Statements OscInt.API.LatticeExplicitSanity
+
+def P_LatticeKernel1CubeRootStatement : Prop :=
+  ∀ t ξ : ℝ, 0 < t →
+    ‖latticeKernel1 t ξ‖ ≤ 8 * (1 + Real.sqrt 7) / 3 * t ^ (-(1 : ℝ) / 3)
+
+theorem P_latticeKernel1CubeRoot_neg (h : P_LatticeKernel1CubeRootStatement) :
+    ‖latticeKernel1 8 (-5 / 2)‖ ≤ 4 * (1 + Real.sqrt 7) / 3 := by
+  have := h 8 (-5 / 2) (by norm_num)
+  rw [eight_rpow_neg_third] at this
+  linarith
+
+end OscInt.API.LatticeCubeRootSanity

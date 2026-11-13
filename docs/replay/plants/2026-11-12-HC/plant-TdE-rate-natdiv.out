@@ -1,0 +1,8 @@
+/tmp/claude-0/-home-user-lean-oscillatory/d8a03479-e3ee-59b5-ad19-008087b9ec47/scratchpad/plants/out_hc2/plant-TdE-rate-natdiv.lean:14:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  -↑2 / 3
+in the target expression
+  ‖hypercubicKernel 2 8 ![1, -2]‖ ≤ (8 * (1 + √7) / 3) ^ 2 * 8 ^ (-↑(2 / 3))
+
+h : P_HypercubicCubeRootStatement
+this : ‖hypercubicKernel 2 8 ![1, -2]‖ ≤ (8 * (1 + √7) / 3) ^ 2 * 8 ^ (-↑(2 / 3))
+⊢ ‖hypercubicKernel 2 8 ![1, -2]‖ ≤ (8 * (1 + √7) / 3) ^ 2 / 4

@@ -1,0 +1,19 @@
+# command: python3 -I numerics/review/ls_interface_checks.py, run as <venv>/bin/python -I <scratch>/ls_interface_checks.py from the repository root (versions: RUNTIME line, read at run time)
+# started 2026-11-12T23:02:55Z, finished 2026-11-12T23:02:55Z (UTC)
+# git HEAD 93a8a8d0f26ddd8961728a55a0e7a71da39a18ef, tracked files modified: yes (the LS route files being added in the same commit; the script reads none of them); script sha256 67f8ee80b833b467e3479993c868b8c4a6154a4b46ca546548459379aeabf5a8 (identical to the copy run); record written outside the tree and copied in (lessons 45). A first run used a fixed 1e-12 tolerance in I3 and failed at 6.1e-12 (double-precision cancellation in the alternating series); the tolerance is now 1e-15 e^{4d|t|}.
+I1 d=1: sum |L_n| <= (4d)^n for n <= 10 (exact integers): PASS; sum |L_10| = 1048576 vs 1048576
+I1 d=2: sum |L_n| <= (4d)^n for n <= 10 (exact integers): PASS; sum |L_10| = 1073741824 vs 1073741824
+I2 Fourier representation of L_n: max error 9.1e-12 PASS
+I3 kernel series sum_n (it)^n/n! L_n(z) = G_d(t, z): max error / (1e-15 e^(4d|t|)) = 0.05 (< 1) PASS
+RUNTIME python 3.13.18 numpy 2.3.5 scipy 1.17.0
+RESULT PASS
+# exit status 0
+
+# Note added 2026-11-13 (not part of the run above; after the A3 adversarial review and the application-chains audit):
+# I3 uses stencils on a periodic grid with R = 24 (49 sites per axis) for orders n <= 60, so for n >= 49 - |z| periodic
+# images of L_n enter the sum. The lead computed their contribution exactly (integer stencils on a grid large enough
+# to hold every order, compared with the periodic ones), at the I3 times t = -1.3, 0.4, 2.0 and the I3 sites
+# (z = 0, 1, -3 in d = 1; (0, 0), (1, -2) in d = 2): max over cases of sum_n |t|^n/n! |L_n^periodic(z) - L_n(z)| =
+# 7.6e-43 (d = 1) and 1.2e-41 (d = 2). Script: the lead's scratch check, reproduced in
+# numerics/review/application_chains_checks.py (section I3-alias).
+# The recorded PASS is unaffected. I1 and I2 use orders <= 10, where no image enters.

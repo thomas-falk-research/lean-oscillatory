@@ -1,0 +1,26 @@
+# command: python3 -I numerics/review/dnls_checks.py, run as <venv>/bin/python -I -u <scratch>/dnls_checks.py from the repository root (versions: RUNTIME line, read at run time)
+# started 2026-11-12T20:39:56Z, finished 2026-11-12T20:48:06Z (UTC)
+# git HEAD bd91e2cd20c75a400fd7bcf008a72c63f12d2484, tracked files modified: no; script sha256 1f48c99116ec396aee30a3a68afea4a58d8d632cb58ef59d7b58bafdef4da3f6 (identical to the copy run); record written outside the tree and copied in (lessons 45). A first run (earlier in the same session; its start time was overwritten, so it is not recorded) used a D3 grid without t = tau and failed D3 for d = 2, 3, 4 at a 1e-6 tolerance (sampled maxima just below L_d); the grid was fixed and the run below is the second.
+D1 max |e^(itΔ)δ0(x) - (2π)^-d e^(-2idt) K_d(2t,x)| = 4.2e-16; controls (no gauge 0.73, no factor 2 0.69) rejected: PASS
+D2 sqrt 7 < 53/20, so C* < 146/15: PASS
+D2 tau < (1/2)(146/15 / (2*157/50))^3 < 2: PASS
+D2 bite self-map ratio (1/2 + r/4) = 145/288 at r = 1/72: PASS
+D2 bite Lipschitz r/4 + 1/4 = 73/288: PASS
+D2 4608 (71/72)^2 = 40328/9: PASS
+D2 Omega = 128 d n^2 = 4608 at d = 4, n = 3: PASS
+D3 d=1: sup (1+t)^s min(1, c_d t^-s) = 1.41817161 vs L_d = 1.41817161; c_d = tau^s: PASS
+D3 d=2: sup (1+t)^s min(1, c_d t^-s) = 2.01121072 vs L_d = 2.01121072; c_d = tau^s: PASS
+D3 d=3: sup (1+t)^s min(1, c_d t^-s) = 2.85224196 vs L_d = 2.85224196; c_d = tau^s: PASS
+D3 d=4: sup (1+t)^s min(1, c_d t^-s) = 4.04496858 vs L_d = 4.04496858; c_d = tau^s: PASS
+D3 tau = 1.8522419587 (< 2)
+D4 (s, a) = (0.333, 1.667): sup = 1.5000 <= J = 6.6521 PASS
+D4 (s, a) = (0.667, 2.000): sup = 1.0748 <= J = 13.5874 PASS
+D4 (s, a) = (1.000, 3.000): sup = 0.5860 <= J = 5.0000 PASS
+D4 (s, a) = (1.333, 1.333): sup = 5.9114 <= J = 15.1191 PASS
+D4 (s, a) = (2.000, 2.000): sup = 2.2415 <= J = 8.0000 PASS
+D4 borderline identity max error 1.1e-16 PASS
+D5 whistler: h''(1/sqrt 3) = 0: True; min |h'''| on [1/2, 2/3] = 2.041945 >= 43740/28561 = 1.531459 PASS
+D5 Kelvin at tan g = 1/(2 sqrt 2), q = 1/sqrt 2: psi' = 0, psi'' = 0, psi''' = -4*sqrt(6)/9 (claim -4 sqrt 6/9): PASS
+RUNTIME python 3.13.18 numpy 2.3.5 scipy 1.17.0 sympy 1.14.0
+RESULT PASS
+# exit status 0

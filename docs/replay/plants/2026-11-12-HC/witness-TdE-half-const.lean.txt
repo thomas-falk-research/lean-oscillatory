@@ -1,0 +1,20 @@
+import OscInt.Front.HypercubicSanity
+
+namespace OscInt.API.HypercubicSanity
+
+open OscInt.Statements OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+
+def P_HypercubicCubeRootStatement : Prop :=
+  ∀ (d : ℕ) (t : ℝ) (x : Fin d → ℤ), 0 < t →
+    ‖hypercubicKernel d t x‖ ≤ (4 * (1 + Real.sqrt 7) / 3) ^ d * t ^ (-(d : ℝ) / 3)
+
+theorem witness_not_HypercubicCubeRootStatement : HypercubicKernelFactorStatement → ¬ P_HypercubicCubeRootStatement :=
+  by
+  intro hF h
+  have h1 := h 1 (343 / 512) ![0] (by norm_num)
+  rw [hF 1 (343 / 512) ![0]] at h1
+  simp only [Fin.prod_univ_one, Matrix.cons_val_zero, Int.cast_zero, pow_one] at h1
+  rw [show (-((1 : ℕ) : ℝ) / 3) = -(1 : ℝ) / 3 by norm_num] at h1
+  exact cubeRoot_half_const_false h1
+
+end OscInt.API.HypercubicSanity

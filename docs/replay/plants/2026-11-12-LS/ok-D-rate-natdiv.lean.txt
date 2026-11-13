@@ -1,0 +1,24 @@
+import OscInt.Front.LatticeGroupSanity
+
+namespace OscInt.API.LatticeGroupSanity
+
+open OscInt.Statements OscInt.API.HypercubicSanity
+
+def P_LatticeSchrodingerDispersiveStatement : Prop :=
+  ∀ (d : ℕ) (f : LatticeL2 d) (u : ℝ → LatticeL2 d), IsLatticeSchrodingerSolution d f u →
+    Summable (fun y : Fin d → ℤ => ‖f y‖) →
+    ∀ (t : ℝ) (x : Fin d → ℤ), t ≠ 0 →
+      ‖u t x‖ ≤ min 1 ((8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi)) ^ d * (2 * |t|) ^ (-(d : ℝ) / 3)) *
+        ∑' y : Fin d → ℤ, ‖f y‖
+
+theorem P_dispersive_two (hE : LatticeSchrodingerExistsStatement) (hD : P_LatticeSchrodingerDispersiveStatement) :
+    ∃ u : ℝ → LatticeL2 2, IsLatticeSchrodingerSolution 2 (delta0 2) u ∧
+      ‖u 4 0‖ ≤ (8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi)) ^ 2 / 4 := by
+  obtain ⟨u, hu⟩ := hE 2 (delta0 2)
+  refine ⟨u, hu, ?_⟩
+  have h := hD 2 _ u hu (delta0_summable 2) 4 0 (by norm_num)
+  rw [delta0_tsum, mul_one, show (2 * |(4 : ℝ)|) = 8 by norm_num,
+    show (-((2 : ℕ) : ℝ) / 3) = -(2 : ℝ) / 3 by norm_num, eight_rpow_neg_two_thirds'] at h
+  exact h.trans ((min_le_right _ _).trans (le_of_eq (by ring)))
+
+end OscInt.API.LatticeGroupSanity
