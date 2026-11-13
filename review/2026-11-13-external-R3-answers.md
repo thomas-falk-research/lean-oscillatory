@@ -389,7 +389,22 @@ Its own reply labels these directions without priority. The lead's reading is as
   - the black-hole tails need the spectral analysis upstream of any oscillatory-integral step.
 
   The lead has nothing to add to them now.
-- **The survey's citations:** a fresh-context check is running at this commit; its result will be added here.
+- **The survey's citations: all twelve exist, and none is invented.** Checked by a fresh-context agent, 22:58–23:01Z,
+  from the sources' full texts; one source was read through its arXiv version only.
+  - Supported as described:
+    - the GLoW default target of 10⁻³ relative error for F(w), after interpolation (§VI.D);
+    - Hintz's sharp Price law, which covers scalar waves;
+    - the late-time tails of De Amicis et al. Their runs are head-on collisions with near-equal masses.
+    - uSARA on ASKAP data;
+    - Sung et al.'s tomography on beads and cells;
+    - the depth-dependent loss in Schmid et al., 10.6 and 13.7% per mm, stated in the body of the paper;
+    - the 4D pumping experiments of Zilberberg et al. and Chen et al., with edge and corner transport measured;
+    - the 6D Vlasov–Poisson integration;
+    - CERN's conditional wording on extra dimensions.
+  - Two descriptions are slightly off:
+    - Takahashi–Nakamura print the amplification factor in physical units (Eqs. (11)–(12), with +φ_m(y)). The w/(2πi)
+      form above follows only after a substitution the paper does not make.
+    - Hertweck et al. start from the 3D Kirchhoff integral, but their stationary-phase analysis is 2.5D.
 
 ## AI-use disclosure
 
