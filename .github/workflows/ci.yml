@@ -5,20 +5,28 @@
 name: ci
 
 # Fast feedback on every pull request and on main (docs/decisions/2026-11-08-ci-release-review.md, option B).
-# The full replay is verify.yml; releases: release-candidate.yml and post-release.yml. Jobs here run in parallel.
+# The full replay is verify.yml; releases: release-candidate.yml (which also calls this workflow on the release
+# commit) and post-release.yml. Jobs here run in parallel.
 on:
   pull_request:
   push:
     branches: [main]
   merge_group:
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        description: Commit to check (release-candidate.yml passes the commit the owner will tag)
+        type: string
+        required: true
 
 permissions:
   contents: read
 
 concurrency:
-  # a newer push to the same pull request supersedes the older run; runs on main are never cancelled
-  group: ci-${{ github.event.pull_request.number || github.sha }}
+  # a newer push to the same pull request supersedes the older run; runs on main are never cancelled. A release
+  # candidate's call has its own group, so it neither waits behind nor is replaced by the push run of the same commit
+  group: ci-${{ inputs.ref && format('rc-{0}', inputs.ref) || github.event.pull_request.number || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
@@ -28,6 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ inputs.ref }}  # empty except when called: the event's commit
           fetch-depth: 0  # docs-check accepts cited paths found in history (tools/check_docs.py)
       - uses: ./.github/actions/setup-lean
       - name: Rust toolchain pinned in tools/rust-toolchain.toml
@@ -47,12 +56,14 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ inputs.ref }}
           fetch-depth: 0  # release-pin check 4 reads history
       - name: Rust unit tests of the trust-chain tools
         run: cd tools && rustup toolchain install && cargo test --release --locked --quiet
-      - name: release-pin and release-preflight self-tests, and every pinned release tag against its notes
+      - name: release-pin, release-preflight and publish-release self-tests, and every pinned release tag against its notes
         run: |
           tools/release_preflight.sh --self-test
+          tools/publish_release.sh --self-test
           tools/check_release_pin.sh --self-test
           tools/check_release_pin.sh "https://github.com/${{ github.repository }}"
       - name: API index generator self-test (6 planted defects) and drift check
@@ -77,6 +88,8 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
       - uses: ./.github/actions/setup-lean
         with:
           mathlib-cache: "false"

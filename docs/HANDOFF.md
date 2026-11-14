@@ -14,7 +14,12 @@ were drafted by an external reviewer with an AI tool (R4 packet) and made to ela
 
 **Release v0.5.0 is published** (GitHub release 2026-11-13T19:02:37Z, tag on 2cf118d). Its pins pull request
 [thomas-falk-research/lean-oscillatory#14](https://github.com/thomas-falk-research/lean-oscillatory/pull/14) is merged
-(cb2f648). The Zenodo version DOI is still to be recorded; not checked in session 11.
+(cb2f648). Its Zenodo version DOI is `10.5281/zenodo.24205167` (read from the Zenodo API on 2026-11-14, recorded
+in `CITATION.cff` and the README in the v0.6.0 preparation).
+
+**Release v0.6.0 is prepared** (`docs/release-notes/v0.6.0.md`, date 2026-11-15; owner decision 2026-11-14: one pull
+request with the release content and the pipeline fixes of the session-11 release audit). The owner publishes, with
+the steps in those notes; publishing now goes through `tools/publish_release.sh`.
 
 **Next, in order:**
 1. **Finish batch LS:**
@@ -25,7 +30,8 @@ were drafted by an external reviewer with an AI tool (R4 packet) and made to ela
       (`docs/replay/2026-11-14-session11-LS-final-verify-all.txt`).
    4. Done: the records (STATUS rows "machine-checked as stated (replay of 35dc5c0)", CHANGELOG, README and the
       pages that track status).
-   5. A minor release (v0.6.0) that sets `proved_by` (owner publishes).
+   5. Prepared: the minor release v0.6.0 that sets `proved_by` (owner publishes; steps in
+      `docs/release-notes/v0.6.0.md`, "Publishing").
 2. CENSUS held-out pool (ROADMAP I1), then its implementations.
 3. LeanCert experiment (I2).
 4. I3: global assembly with A3 points; then I3a and I3b.

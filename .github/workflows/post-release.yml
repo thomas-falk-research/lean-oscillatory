@@ -21,6 +21,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: post-release-${{ github.event.release.tag_name || inputs.tag }}
+  cancel-in-progress: false
+
 jobs:
   check:
     runs-on: ubuntu-24.04
@@ -50,11 +54,18 @@ jobs:
           n=$(gh run list --repo "${{ github.repository }}" --workflow release-candidate.yml --commit "$sha" --status success \
                 --json databaseId --jq length)
           [ "$n" -gt 0 ] || { echo "::error::no successful release-candidate run for $sha"; exit 1; }
+          assets=$(gh release view "$TAG" --repo "${{ github.repository }}" --json assets -q '[.assets[].name] | sort | join(" ")')
+          [ "$assets" = "SHA256SUMS oscint_check.py statements.json" ] \
+            || { echo "::error::$TAG has the assets [$assets], not exactly SHA256SUMS, oscint_check.py, statements.json"; exit 1; }
           mkdir rel && gh release download "$TAG" --repo "${{ github.repository }}" -D rel
-          (cd rel && sha256sum -c SHA256SUMS)
+          (cd rel && sha256sum --strict -c SHA256SUMS)
           cmp rel/statements.json stamps/statements.json && cmp rel/oscint_check.py tools/oscint_check.py
+          # signed by release-candidate.yml, dispatched on main, for this commit (an attestation of another workflow,
+          # ref or commit of this repository is refused)
           for f in rel/statements.json rel/oscint_check.py rel/SHA256SUMS; do
-            gh attestation verify "$f" --repo "${{ github.repository }}"
+            gh attestation verify "$f" --repo "${{ github.repository }}" \
+              --signer-workflow "${{ github.repository }}/.github/workflows/release-candidate.yml" \
+              --source-ref refs/heads/main --source-digest "$sha"
           done
           { echo "tag=$TAG"; echo "sha=$sha"; } >> "$GITHUB_OUTPUT"
 
@@ -70,7 +81,7 @@ jobs:
       - uses: ./.github/actions/setup-lean
         with:
           mathlib-cache: "false"
-      - name: Build examples/consumer-release against the tag; the package is the tagged commit; checker PASS
+      - name: Build examples/consumer-release against the tag; the package is the tagged commit; checker PASS on every proved statement
         working-directory: examples/consumer-release
         env:
           TAG: ${{ needs.check.outputs.tag }}
@@ -82,21 +93,26 @@ jobs:
           for _ in 1 2 3; do lake exe cache get && break; sleep 30; done
           lake build && lake build OscInt Blueprint
           test "$(git -C .lake/packages/oscint rev-parse HEAD)" = "$SHA"
-          python3 .lake/packages/oscint/tools/oscint_check.py --oscint .lake/packages/oscint \
-            --statement OscInt.Statements.StationaryPhaseStatement --statement OscInt.Statements.FoldFEStatement \
-            --statement OscInt.Statements.LatticeLaplacianDecayStatement \
+          # every statement with a proved_by, so a release's new proofs are checked downstream too (the checker
+          # replays every module and recomputes every commitment once, whatever the number of statements)
+          mapfile -t st < <(jq -r '.statements[] | select(.proved_by != null) | "--statement=" + .name' ../../stamps/statements.json)
+          [ "${#st[@]}" -gt 0 ]
+          echo "checking ${#st[@]} proved statements"
+          python3 .lake/packages/oscint/tools/oscint_check.py --oscint .lake/packages/oscint "${st[@]}" \
             --expect-sha256 "$(sha256sum ../../stamps/statements.json | cut -d' ' -f1)" --commitments
 
   pins-pr:
     # needs the repository setting "Allow GitHub Actions to create and approve pull requests"; without it the branch
-    # is still pushed and the step prints the link to open the pull request by hand
+    # is still pushed and the step prints the link to open the pull request by hand. Only on publishing: a dispatch
+    # re-checks a release and writes nothing
+    if: github.event_name == 'release'
     needs: [check, consumer-release]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: write        # pushes the branch release/<tag>-pins only
       pull-requests: write
-      actions: write         # dispatches ci.yml on that branch (GITHUB_TOKEN events do not trigger pull_request runs)
+      actions: write         # dispatches ci.yml and verify.yml on that branch (GITHUB_TOKEN events do not trigger pull_request runs)
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -109,6 +125,8 @@ jobs:
         run: |
           set -euo pipefail
           b="release/$TAG-pins"
+          if git ls-remote --exit-code --heads origin "$b" >/dev/null; then
+            echo "::notice::$b already exists (an earlier run of this release); nothing to do"; exit 0; fi
           git switch -c "$b"
           echo "$SHA" > "docs/release-notes/$TAG.commit"
           # on every line that pins a tag (`rev = "vX.Y.Z"`), the old tag becomes the new one, comments included.
@@ -123,7 +141,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A && git commit -q -m "Release $TAG: record the release commit $SHA; pins in README, docs and consumer-release move to $TAG"
           git push -q origin "$b"
-          if ! gh pr create --base main --head "$b" --title "Release $TAG: pins" --body "Written by post-release run ${{ github.run_id }} after the checks of $TAG ($SHA) and the consumer build against the tag passed. CI is dispatched on this branch; merge when it is green."; then
+          if ! gh pr create --base main --head "$b" --title "Release $TAG: pins" --body "Written by post-release run ${{ github.run_id }} after the checks of $TAG ($SHA) and the consumer build against the tag passed. ci and verify are dispatched on this branch; merge when both are green."; then
             echo "::warning::could not open the pull request (repository setting?); open it by hand: https://github.com/${{ github.repository }}/compare/main...$b"
           fi
           gh workflow run ci.yml --ref "$b"
+          gh workflow run verify.yml --ref "$b"

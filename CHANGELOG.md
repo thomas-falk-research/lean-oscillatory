@@ -4,23 +4,76 @@ Versions follow semantic versioning from v0.3.0 (`docs/policy.md`): before 1.0.0
 statements and says so under "Statement changes"; a patch (0.y.Z) changes no statement, commitment, statement file
 or `proved_by` name. Every release lists its statement changes, even when there are none.
 
-## Unreleased
+## v0.6.0 — 2026-11-15
+
+A minor release. Before 1.0.0 a minor release may change statements; this one changes no statement's text, file,
+commitment or stamp. It sets `proved_by` for the four statements of batch LS, which were stated, frozen and reviewed
+in v0.5.0 and are now proved and machine-checked as stated (`docs/policy.md`: `null` → a theorem is a minor change).
+All 63 statements are now machine-checked as stated (`docs/STATUS.md`). Compared with the v0.5.0 tag on 2026-11-14,
+field for field, the only change in `stamps/statements.json` is these four `proved_by` fields;
+`tools/oscint_check.py` is byte-identical to v0.5.0's. Toolchain `leanprover/lean4:v4.35.0` and Mathlib
+`56a005855ea17e0b0958f73ec801ae140b0a1679`, both unchanged. Release notes and pins: `docs/release-notes/v0.6.0.md`.
+
+### Statement changes
+
+Batch LS (`OscInt/Statements/LatticeGroup.lean`, stamp `stamps/20261112T215742Z-d18e0780abdb`, unchanged): `proved_by`
+goes from `null` to a theorem for
+- LS-E `LatticeSchrodingerExistsStatement`: `OscInt.API.latticeSchrodingerExists`;
+- LS-K `LatticeSchrodingerKernelStatement`: `OscInt.API.latticeSchrodingerKernel`;
+- LS-D `LatticeSchrodingerDispersiveStatement`: `OscInt.API.latticeSchrodingerDispersive`;
+- LS-D′ `LatticeSchrodingerDecayStatement`: `OscInt.API.latticeSchrodingerDecay`.
+
+No other entry changed.
 
 ### Proofs
 
-Batch LS (LS-E, LS-K, LS-D, LS-D′, `OscInt/Statements/LatticeGroup.lean`, statements unchanged): proved in Lean on
-2026-11-14 (`OscInt/Front/LatticeGroup{Op,Exp,Unique,Stencil,FourierStencil,Series,Conv,Bound,Envelope,Final}.lean`);
-`proved_by` set to `OscInt.API.latticeSchrodinger{Exists,Kernel,Dispersive,Decay}` in `stamps/statements.json`. The
-parts were drafted by an external reviewer with an AI tool and repaired to elaborate by the lead's proof agents with
-32 mechanical changes (`docs/replay/2026-11-14-LS-packet-repairs.diff`; disclosure in `docs/prior_art.md`). Isolated
-replay of 1bc377b: `docs/replay/2026-11-14-session11-LS-verify-all.txt`. Post-proof reviews:
-`review/2026-11-14-LS-post-proof-answers.md`. Isolated replay of 35dc5c0, after the post-review Lean changes:
-`docs/replay/2026-11-14-session11-LS-final-verify-all.txt`. All four are machine-checked as stated, so all 63
-statements are (`docs/STATUS.md`).
+Batch LS: proved in Lean on 2026-11-14
+(`OscInt/Front/LatticeGroup{Op,Exp,Unique,Stencil,FourierStencil,Series,Conv,Bound,Envelope,Final}.lean`). The parts
+were drafted by an external reviewer with an AI tool and repaired to elaborate by the lead's proof agents with 32
+mechanical changes (`docs/replay/2026-11-14-LS-packet-repairs.diff`; disclosure in `docs/prior_art.md`; answers
+`review/2026-11-14-external-R4-answers.md`). Isolated replay of 1bc377b:
+`docs/replay/2026-11-14-session11-LS-verify-all.txt`. Post-proof reviews: `review/2026-11-14-LS-post-proof-answers.md`.
+Isolated replay of 35dc5c0, after the post-review Lean changes (docstrings, one import, the local lemma `box_volume`):
+`docs/replay/2026-11-14-session11-LS-final-verify-all.txt`, comparator-LS accepted by six kernels.
 
 ### Added
 
 - `examples/consumer/ConsumerLatticeSchrodinger.lean`: unconditional time derivatives of the LS kernel at `t = 0`.
+
+### Release pipeline
+
+The v0.5.0 release was tagged while the push run of `ci.yml` on its commit had been cancelled at a timeout, and its
+pins pull request needed a hand fix. After an audit of the release pipeline:
+- `release-candidate.yml` also runs `ci.yml` (made callable) on the release commit, so docs-check, `make quick`, REUSE,
+  the `CITATION.cff` schema, actionlint and the downstream consumer gate the release.
+- New `tools/publish_release.sh`: the owner's single publishing command. Before anything is public (Zenodo mints a
+  permanent DOI on publishing) it checks the candidate run, the exact asset set, `SHA256SUMS`, that the assets equal
+  the files of the release commit, the release body, and each attestation pinned to `release-candidate.yml` on `main`
+  for that commit; then it tags, publishes and checks the published assets. `--dry-run` stops before the tag;
+  `--self-test` plants 8 defects.
+- `tools/release_preflight.sh` now compares the release with the previous tag: the version is greater, a patch leaves
+  `stamps/statements.json` byte-identical, from 1.0.0 a minor changes no entry, and every changed entry's label is
+  named in the notes' and the CHANGELOG's statement changes. It also requires the three release dates to agree, every
+  `rev =` in the notes to be the new tag, and every `proved_by` theorem to be covered by a comparator configuration
+  (22 planted defects in its self-test).
+- `post-release.yml`: attestations are verified with the signer workflow, source ref and commit pinned; the release
+  must have exactly the three assets; the downstream check covers every proved statement instead of three; the pins
+  step runs only on publishing, does nothing if its branch exists, and also dispatches `verify.yml`.
+- The release candidate's calls of `verify.yml` and `ci.yml` have their own concurrency groups, so they no longer
+  queue behind, or get replaced by, the push run of the same commit.
+- Earlier, at 43a13fb: the `ci` consumer job's timeout went from 60 to 90 minutes, and the pins step moves every pin
+  that docs-check checks (it had missed `docs/downstream.md`).
+
+### Changes
+
+- The v0.5.0 version DOI `10.5281/zenodo.24205167` recorded in `CITATION.cff` and the README.
+- Answers to the external R3 packet (`review/2026-11-13-external-R3-answers.md`, with the reviewer's reply and a
+  citation check of its application survey; lead's checks `numerics/review/r3_packet_checks.py`) and to the R4 packet
+  and W2 addendum (`review/2026-11-14-external-R4-answers.md`; `numerics/review/r4_packet_checks.py`).
+  `docs/calibration.md`: the Clopper–Pearson bounds of its table are now rounded outwards (three printed values were
+  not bounds; no reading changes).
+- `docs/lessons.md` 50: keep a cloud session busy while a detached replay runs; two cut-off replays recorded as
+  partial (`docs/replay/2026-11-14-session11-d760beb-partial.txt`, `docs/replay/2026-11-14-session11-1bc377b-partial.txt`).
 
 ## v0.5.0 — 2026-11-13
 
