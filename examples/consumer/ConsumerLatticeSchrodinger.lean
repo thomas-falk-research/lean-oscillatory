@@ -19,8 +19,9 @@ time `2t` in `K_d`):
 
 What these pin, by hand computation (not compiled): with `K_1(t, ·)` in place of `K_1(2t, ·)` the derivative at `e₁`
 would be `i/2`, since `∫_{−π}^{π} cos k e^{ik} dk = π`; without the gauge the derivative at the origin would be `0`,
-since `∫_{−π}^{π} cos k dk = 0`. The pre-proof review of batch LS asked for these unconditional pins once LS-K was
-proved (`review/2026-11-12-LS-pre-proof-answers.md`, finding 2; `review/2026-11-14-LS-post-proof-answers.md`).
+since `∫_{−π}^{π} cos k dk = 0`. The pre-proof answers deferred these unconditional pins to the proof of LS-K
+(`review/2026-11-12-LS-pre-proof-answers.md`, referee A's finding 2); the post-proof adversarial review asked for them
+(`review/2026-11-14-LS-post-proof-answers.md`, item 5).
 -/
 
 open OscInt.Statements OscInt.API OscInt.API.LatticeGroupSanity

@@ -978,7 +978,7 @@
     "Σ_y |f(y)| < ∞",
     "t ≠ 0"
    ],
-   "conclusion": "|u(t, x)| ≤ min{1, (C*/(2π))^d (2|t|)^{−d/3}} ‖f‖_1, C* = 8(1+√7)/3 (the decaying part beats 1 exactly for |t| > τ ≈ 1.852)",
+   "conclusion": "|u(t, x)| ≤ min{1, (C*/(2π))^d (2|t|)^{−d/3}} ‖f‖_1, C* = 8(1+√7)/3 (for d ≥ 1 the decaying part beats 1 exactly for |t| > τ ≈ 1.852; at d = 0 it is 1)",
    "rate": "|t|^{-d/3} (explicit constant)",
    "uniform_over": "x ∈ ℤ^d, t ≠ 0, ℓ¹ data",
    "smoothness": "—",

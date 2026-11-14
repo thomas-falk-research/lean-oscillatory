@@ -146,6 +146,32 @@ NIT answers:
 - **B NIT 4: the route's operator versus the code's.** The route writes Σ_j(S_{e_j} + S_{−e_j}) − 2d·id; the code
   distributes −2·id into each term. They are the same operator. No change.
 
+## Addendum: a check of the post-review delta (b4300ff)
+
+A fourth fresh-context referee read the diff from be24b9f to b4300ff (Lean, Makefile, examples) and this file,
+read-only and without Lean. It was launched at b4300ff at 19:56:15 UTC and finished at 20:02:15 (360 s, session
+record). The last 15 s of the `make quick` of b4300ff (which ended at 19:56:30 and passed) overlapped its start;
+`make quick` changes no tracked file. The lead pushed b4300ff at about 19:57 and made no tree edit while it ran.
+- **Verdict:** no BLOCKER, MAJOR or MINOR.
+  - The four docstrings are correct against the frozen statements. Numerically G_1(t, z) = e^{−2it} iᶻ J_z(2t) to
+    about 1e−16.
+  - `box_volume` is the same statement and proof as the sanity lemma.
+  - The dropped import removes eight modules from the closure, none of them used. They declare no notation, instance,
+    attribute or option.
+  - The consumer's three theorems, its hand computation and its `linear_combination` step are right. Each derivative
+    pin separates exactly the mutation it names.
+  - No claim of this file about the delta is false.
+- **NIT, done:** the consumer docstring's "finding 2" was ambiguous. It now says referee A's finding 2 of the
+  pre-proof answers, and item 5 here.
+- **NIT, done:** "beats 1 exactly for |t| > τ" holds for d ≥ 1 only (at d = 0 the decaying part is 1). Corrected in
+  `docs/api/annotations.json`. The same words in `docs/statements.md` are covered by the statement stamps, so they
+  stay; this is the note.
+- **NIT, noted: the decay-rate attributions differ.**
+  - The LS-D docstring credits Stefanov–Kevrekidis with the rate for d = 1 only.
+  - `docs/prior_art.md` and `docs/design/torus-lattice.md` credit them with (1 + |t|)^{−d/3} on ℤ^d, as read from the
+    arXiv abstract.
+  - The docstring is the narrower claim and is true. It stays, since a Lean change now would need its own review.
+
 ## What changed, and what remains
 
 - **Lean changes**, all outside the reviewed proof arguments:
