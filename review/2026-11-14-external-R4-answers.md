@@ -255,6 +255,73 @@ review. Recorded as a ROADMAP candidate.
   lead's first attempt, with the scratch output last, failed on the imports between parts. That was a harness error,
   not a packet defect.
 
+## Addendum: the W2 formal sanity layer (2026-11-14, relayed by the owner)
+
+**What arrived.** A follow-up from the same reviewer, supplying the analytic Lean sanity layer that the R4 packet lacked:
+- two archives;
+- `oscint-w2-sanity-proofs-2026-11-14.zip`, SHA-256 42c3c90113ac30dd6692c76cd3d2b76b577a268ee4c55f75ac7c97ee7dab05c6;
+- `oscint-w2-sanity-statements-2026-11-14.zip`, SHA-256 819814601e0a6824a63bde7ebb86e4f9c2397ed3124de69f9552035527d82eeb;
+- a checksum list naming a third, audit archive, which was not relayed.
+
+Both relayed archives match the list. All 37 manifest entries match, and the statements archive binds the proofs
+archive.
+
+**What it contains.** Seven Lean modules (`OscInt.R4Sanity.*`, 1,861 lines):
+- the R4 W2 statement file, byte-identical to the original apart from `λ` renamed to `lam`;
+- eight conditional sanity theorems. Each takes one W2 statement as its only hypothesis, discharges every analytic
+  premise on a concrete datum, and proves that the instantiated right side is below 1/4 ≤ ∫|A|:
+  - L6 in both forms, saddle and fold;
+  - L1 with genuine directional curvature;
+  - (G) once in each branch: a determinant-only datum and a gradient-only datum;
+  - (Q) with a non-diagonal Hessian;
+- fifteen input-premise controls.
+
+**What the lead did.**
+- **The numerical programs**, run on copies in a sandbox with no network: all pass, with outputs matching the expected
+  files apart from runtime fields.
+- **The lead's own check** (mpmath, the lead's code):
+  - ∫|A| = 5.9429, inside the packet's enclosure;
+  - A(0) = 699/119 + 223/119·i;
+  - the quadratic right side at m = 65536 is 1.56·10⁻⁴, below its cap 25/1024.
+- **Lean, as shipped:** `W2Statements` compiles. `Amplitude` (15 errors) and `Phases` (7) fail, and the other four are
+  blocked by their imports.
+- **Repair.** Two proof agents changed only proof bodies:
+
+  | Module | Changes | Mechanical |
+  |---|---|---|
+  | `Amplitude` | 12 | 12 |
+  | `Bounds` | 4 | 4 |
+  | `Arithmetic` | 1 | 1 |
+  | `Phases` | 7 | 7 |
+
+  - Typical fixes:
+    - a `using` clause mis-indented under its `simpa`;
+    - `convert` replaced by `congr_deriv`;
+    - `ext` splitting into two goals;
+    - a missing `fun_prop` rule for the real-to-complex coercion;
+    - `Set.Icc_prod_Icc` firing too early.
+  - Nothing found false. No statement, datum or constant changed.
+  - `Sanity` and `Controls` compiled unchanged.
+- **Verified by the lead in one fresh scratch build of all seven modules:**
+  - no errors; the only warnings are eight linter notes in `Phases`, on untouched lines;
+  - each of the eight final theorems has exactly one premise, its W2 statement (eight arrows in all);
+  - `#print axioms` gives `propext`, `Classical.choice` and `Quot.sound` only;
+  - per-module `leanchecker` accepts all seven modules;
+  - the guard-token scan is clean.
+
+**Verdict.** The W2 candidate statements now have machine-checked conditional sanity: each statement's hypotheses are
+satisfiable on a nontrivial datum where the bound beats the trivial one (lessons 33, 47). This is not a proof of any W2
+estimate. Nothing is integrated into the library, because W2 is not frozen; the sources stay outside the tree.
+
+**Limits,** stated by the packet and confirmed by the lead:
+- The local data have zero transverse third and fourth derivatives, so deleting those hypotheses would go undetected.
+- The ten planted false variants have no compiled planted copies. Their falsity rests on the earlier numerical and
+  referee evidence (lessons 44: a compile failure is not semantic evidence).
+- The caps are generous, by a factor of about 150 for (Q), and say nothing about usefulness.
+
+For a future W2 batch this layer is the starting point. The freeze would still need its own planted copies, recorded
+(lessons 33).
+
 ## AI-use disclosure
 
 - The proof drafts and the W2 mathematics were produced with ChatGPT (GPT-6 Astra Pro), as the packet states.

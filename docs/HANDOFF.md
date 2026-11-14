@@ -16,7 +16,8 @@ were drafted by an external reviewer with an AI tool (R4 packet) and made to ela
 
 **Next, in order:**
 1. **Finish batch LS:**
-   1. an **isolated** `make verify-all` on the committed tree. Run it detached, with a process watcher, and with no
+   1. an **isolated** `make verify-all` on the committed tree. A first run on d760beb was cut off by a container
+      restart (`docs/replay/2026-11-14-session11-d760beb-partial.txt`, not an acceptance record). Run it detached, with a process watcher, and with no
       other Lean process or referee (lessons 28, 49). It must accept comparator-LS.
    2. Post-proof reviews (A, B, adversarial), launched before or after the replay, never during it.
    3. The records: STATUS rows to "as stated" only if both pass, CHANGELOG, README.
@@ -69,6 +70,9 @@ were drafted by an external reviewer with an AI tool (R4 packet) and made to ela
 - **Checks:**
   - `numerics/results-r4-packet-checks-2026-11-14.txt`, 8/8;
   - the packet's programs, run sandboxed, reproduce their expected outputs.
+- **W2 sanity follow-up:** the reviewer's analytic Lean sanity layer for the W2 candidates compiles after 24 mechanical
+  repairs. It has eight one-premise sanity theorems, and the lead checked it (answers file, addendum). It stays outside
+  the tree, because W2 is not frozen.
 - **Compile harness for scratch builds of new modules.** Mirror `.lake/build/lib/lean/OscInt` into a scratch library
   placed FIRST on `LEAN_PATH`, and pass `--root=<scratch src>` (Lean 4.35 requires both).
 
