@@ -193,3 +193,24 @@ axis for orders up to 60, so periodic images enter. The lead computed their cont
 times and sites: at most 1.2·10⁻⁴¹. The recorded PASS stands. A note is added to the record.
 
 The names above are `#check`ed in `MathlibNames.lean`.
+
+## Parts proved (2026-11-14)
+
+All nine parts and the final file are in the tree:
+- **operator side:** `OscInt/Front/LatticeGroup{Op,Exp,Unique}.lean`;
+- **kernel side:** `OscInt/Front/LatticeGroup{Stencil,FourierStencil,Series,Conv,Bound,Envelope}.lean`;
+- **final:** `OscInt/Front/LatticeGroupFinal.lean`, which declares `OscInt.API.latticeSchrodingerExists`, `…Kernel`,
+  `…Dispersive` and `…Decay`.
+
+They follow this route and its referee revision without deviation:
+- P-conv uses the exponential series over ℂ;
+- P-exp evaluates through `restrictScalars ℝ`;
+- P-unique uses `ODE_solution_unique_univ`;
+- the double sum is exchanged with `Summable.tsum_comm`;
+- P-bound reuses TdE′ and `hypercubeBox_volume`.
+
+Drafted by an external reviewer with an AI tool (R4 packet, disclosed in `docs/prior_art.md`). Made to elaborate by the
+lead's proof agents with 32 mechanical changes (`review/2026-11-14-external-R4-answers.md`).
+
+Evidence so far: build, axiom audit, and per-module `leanchecker`. The isolated `make verify-all` and the post-proof
+reviews are pending.

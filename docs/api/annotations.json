@@ -952,8 +952,8 @@
     "LS-D′",
     "TdE′"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example : LatticeSchrodingerExistsStatement → LatticeSchrodingerKernelStatement → ∀ x : Fin 1 → ℤ, schrodingerKernel 1 0 x = if x = 0 then 1 else 0 := fun hE hK x => OscInt.API.LatticeGroupSanity.kernel_zero_time hE hK 1 x"
+   "snippet_kind": "type",
+   "snippet": "example : LatticeSchrodingerExistsStatement := OscInt.API.latticeSchrodingerExists"
   },
   "LS-K": {
    "hypotheses": [
@@ -969,8 +969,8 @@
     "TdF",
     "TdE′"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example : LatticeSchrodingerExistsStatement → LatticeSchrodingerKernelStatement → ∀ (d : ℕ) (x : Fin d → ℤ), schrodingerKernel d 0 x = if x = 0 then 1 else 0 := OscInt.API.LatticeGroupSanity.kernel_zero_time"
+   "snippet_kind": "type",
+   "snippet": "example : LatticeSchrodingerKernelStatement := OscInt.API.latticeSchrodingerKernel"
   },
   "LS-D": {
    "hypotheses": [
@@ -987,8 +987,8 @@
     "LS-D′",
     "TdE′"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example : LatticeSchrodingerExistsStatement → LatticeSchrodingerDispersiveStatement → ∃ u : ℝ → LatticeL2 1, IsLatticeSchrodingerSolution 1 (OscInt.API.LatticeGroupSanity.delta0 1) u ∧ ‖u 4 0‖ ≤ 8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi) / 2 := OscInt.API.LatticeGroupSanity.dispersive_one"
+   "snippet_kind": "type",
+   "snippet": "example : LatticeSchrodingerDispersiveStatement := OscInt.API.latticeSchrodingerDispersive"
   },
   "LS-D′": {
    "hypotheses": [
@@ -1003,8 +1003,8 @@
     "LS-D",
     "LS-K"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example : LatticeSchrodingerExistsStatement → LatticeSchrodingerDecayStatement → ∃ u : ℝ → LatticeL2 1, IsLatticeSchrodingerSolution 1 (OscInt.API.LatticeGroupSanity.delta0 1) u ∧ ‖u 7 0‖ ≤ (1 + (8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi)) ^ 3 / 2) ^ ((1 : ℝ) / 3) / 2 := OscInt.API.LatticeGroupSanity.decay_seven"
+   "snippet_kind": "type",
+   "snippet": "example : LatticeSchrodingerDecayStatement := OscInt.API.latticeSchrodingerDecay"
   }
  },
  "helpers": [

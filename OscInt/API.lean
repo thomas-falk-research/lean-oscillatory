@@ -30,6 +30,7 @@ import OscInt.Front.LatticeExplicitFinal
 import OscInt.Front.VectorFinal
 import OscInt.Front.LatticeCubeRootFinal
 import OscInt.Front.HypercubicFinal
+import OscInt.Front.LatticeGroupFinal
 
 /-!
 # OscInt public API

@@ -1454,7 +1454,7 @@
   {
    "label": "LS-E",
    "name": "OscInt.Statements.LatticeSchrodingerExistsStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.latticeSchrodingerExists",
    "summary": "Every datum `f ∈ ℓ²(ℤ^d)` has a solution of `i u′ + Δu = 0` with `u(0) = f`.",
    "file": "OscInt/Statements/LatticeGroup.lean",
    "commitment": "51cf04edc5883d7c778394fbe09e8f393930ad5d1d1fd843eeb67e9f8350cae7",
@@ -1474,13 +1474,13 @@
     "LS-D′",
     "TdE′"
    ],
-   "snippet": "example : LatticeSchrodingerExistsStatement → LatticeSchrodingerKernelStatement → ∀ x : Fin 1 → ℤ, schrodingerKernel 1 0 x = if x = 0 then 1 else 0 := fun hE hK x => OscInt.API.LatticeGroupSanity.kernel_zero_time hE hK 1 x",
+   "snippet": "example : LatticeSchrodingerExistsStatement := OscInt.API.latticeSchrodingerExists",
    "status": "see docs/STATUS.md (row LS-E)"
   },
   {
    "label": "LS-K",
    "name": "OscInt.Statements.LatticeSchrodingerKernelStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.latticeSchrodingerKernel",
    "summary": "Every solution is the kernel convolution of its datum: for every real `t` and site `x`, the series `Σ_y G_d(t, x − y) f(y)` converges absolutely and equals `u(t, x)`.",
    "file": "OscInt/Statements/LatticeGroup.lean",
    "commitment": "50d7897f580873dbcb4d0f12300bdbf599aec479b485825991431f5bb33b620a",
@@ -1499,13 +1499,13 @@
     "TdF",
     "TdE′"
    ],
-   "snippet": "example : LatticeSchrodingerExistsStatement → LatticeSchrodingerKernelStatement → ∀ (d : ℕ) (x : Fin d → ℤ), schrodingerKernel d 0 x = if x = 0 then 1 else 0 := OscInt.API.LatticeGroupSanity.kernel_zero_time",
+   "snippet": "example : LatticeSchrodingerKernelStatement := OscInt.API.latticeSchrodingerKernel",
    "status": "see docs/STATUS.md (row LS-K)"
   },
   {
    "label": "LS-D",
    "name": "OscInt.Statements.LatticeSchrodingerDispersiveStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.latticeSchrodingerDispersive",
    "summary": "Dispersive estimate with an explicit constant: for a solution with `ℓ¹` datum and `t ≠ 0`, `|u(t, x)| ≤ min{1, (C*/(2π))^d (2|t|)^{−d/3}} ‖f‖_1`, `C* = 8(1 + √7)/3`.",
    "file": "OscInt/Statements/LatticeGroup.lean",
    "commitment": "c7b1f69b1f2313318626f3e728eb6554636424a47f551286041ba8eb297b16ef",
@@ -1525,13 +1525,13 @@
     "LS-D′",
     "TdE′"
    ],
-   "snippet": "example : LatticeSchrodingerExistsStatement → LatticeSchrodingerDispersiveStatement → ∃ u : ℝ → LatticeL2 1, IsLatticeSchrodingerSolution 1 (OscInt.API.LatticeGroupSanity.delta0 1) u ∧ ‖u 4 0‖ ≤ 8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi) / 2 := OscInt.API.LatticeGroupSanity.dispersive_one",
+   "snippet": "example : LatticeSchrodingerDispersiveStatement := OscInt.API.latticeSchrodingerDispersive",
    "status": "see docs/STATUS.md (row LS-D)"
   },
   {
    "label": "LS-D′",
    "name": "OscInt.Statements.LatticeSchrodingerDecayStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.latticeSchrodingerDecay",
    "summary": "Decay at every time: for a solution with `ℓ¹` datum and every real `t`, `|u(t, x)| ≤ (1 + τ)^{d/3} (1 + |t|)^{−d/3} ‖f‖_1`, `τ = (C*/(2π))³/2`, `C* = 8(1 + √7)/3`.",
    "file": "OscInt/Statements/LatticeGroup.lean",
    "commitment": "e2cc325b9ee301afff29a4cc8800bb574c5af34f39d1a7966fcc7d31670a7532",
@@ -1549,7 +1549,7 @@
     "LS-D",
     "LS-K"
    ],
-   "snippet": "example : LatticeSchrodingerExistsStatement → LatticeSchrodingerDecayStatement → ∃ u : ℝ → LatticeL2 1, IsLatticeSchrodingerSolution 1 (OscInt.API.LatticeGroupSanity.delta0 1) u ∧ ‖u 7 0‖ ≤ (1 + (8 * (1 + Real.sqrt 7) / 3 / (2 * Real.pi)) ^ 3 / 2) ^ ((1 : ℝ) / 3) / 2 := OscInt.API.LatticeGroupSanity.decay_seven",
+   "snippet": "example : LatticeSchrodingerDecayStatement := OscInt.API.latticeSchrodingerDecay",
    "status": "see docs/STATUS.md (row LS-D′)"
   }
  ]

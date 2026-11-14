@@ -2,34 +2,25 @@
 
 For a reader who saw nothing. Read `docs/lessons.md` first (49 entries); every rule in it is binding.
 
-## Start here (end of session 11, 2026-11-13; the plan is session 10's, unchanged)
+## Start here (session 11, 2026-11-14)
 
 **State.** 63 pinned statements; 59 are machine-checked as stated (`docs/STATUS.md`). The four of batch LS (the free
-lattice Schrödinger group on ℓ²(ℤ^d)) are stated, frozen, reviewed and routed, and not proved. Session 10 completed
-batches LE2, HC and A3 end to end. Session 11 proved nothing; it answered an external packet and fixed two CI
-workflows (below).
+lattice Schrödinger group on ℓ²(ℤ^d)) are **proved in Lean** since 2026-11-14 (build, axiom audit and per-module
+`leanchecker`). Their isolated replay and post-proof reviews are pending, so they are not yet "as stated". The proofs
+were drafted by an external reviewer with an AI tool (R4 packet) and made to elaborate by the lead's proof agents with
+32 mechanical changes (`review/2026-11-14-external-R4-answers.md`).
 
-**Release v0.5.0 is published** (GitHub release 2026-11-13T19:02:37Z, tag on 2cf118d; `release-candidate` and
-`post-release` green). It ships LS with `proved_by` null (owner choice, 2026-11-13). Open release items:
-- **The pins pull request** ([thomas-falk-research/lean-oscillatory#14](https://github.com/thomas-falk-research/lean-oscillatory/pull/14),
-  branch `release/v0.5.0-pins`) has red `ci`.
-  - Before merging, `docs/downstream.md:12` must say v0.5.0 in both places: the `rev` and the `.commit` file it names.
-  - The workflow that produced the PR is fixed on `claude/pensive-hawking-l3luid` at 43a13fb.
-  - The PR's own `consumer` job needs the 90-minute limit of that commit, so its CI should run after this branch is
-    merged.
-- **The Zenodo version DOI:** record it once minted. Not checked in session 11.
-- **The release process** (CONTRIBUTING "Commits and releases") is unchanged.
+**Release v0.5.0 is published** (GitHub release 2026-11-13T19:02:37Z, tag on 2cf118d). Its pins pull request
+[thomas-falk-research/lean-oscillatory#14](https://github.com/thomas-falk-research/lean-oscillatory/pull/14) is merged
+(cb2f648). The Zenodo version DOI is still to be recorded; not checked in session 11.
 
 **Next, in order:**
-1. **Batch LS proofs.**
-   - Route: `docs/proof-LS.md`. Read "Revision after the route referee" first: P-conv must use the exponential series
-     over ℂ, P-exp goes through `restrictScalars`, and the uniqueness part is P-unique.
-   - The nine parts are interfaces in `Blueprint/LatticeGroup.lean`. The compiled assembly is
-     `OscInt/Front/LatticeGroupAssembly.lean`.
-   - No part proof exists in the tree. Drafts and probes from session 10 lived in the session scratchpad, which does
-     not survive the container.
-   - Then the final file (LatticeGroupFinal, named in the route), an **isolated** `make verify-all`, the post-proof
-     reviews (A, B, adversarial), the records, and a minor release (v0.6.0) that sets `proved_by`.
+1. **Finish batch LS:**
+   1. an **isolated** `make verify-all` on the committed tree. Run it detached, with a process watcher, and with no
+      other Lean process or referee (lessons 28, 49). It must accept comparator-LS.
+   2. Post-proof reviews (A, B, adversarial), launched before or after the replay, never during it.
+   3. The records: STATUS rows to "as stated" only if both pass, CHANGELOG, README.
+   4. A minor release (v0.6.0) that sets `proved_by` (owner publishes).
 2. CENSUS held-out pool (ROADMAP I1), then its implementations.
 3. LeanCert experiment (I2).
 4. I3: global assembly with A3 points; then I3a and I3b.
@@ -48,6 +39,38 @@ workflows (below).
   watcher (as in the A3 record's header). A harness background task is killed after 2 hours.
 - **Count from the session record, not from memory.** The "six probes" error (lessons 49) came from counting from
   memory.
+
+## Session 11, continued (2026-11-14): external R4 packet; batch LS proved in Lean (replay pending)
+- **R4 packet** (answers `review/2026-11-14-external-R4-answers.md`): W1 proof drafts for batch LS, and W2 explicit
+  constants.
+- **W1.**
+  - **As shipped, none of the ten Lean files compiled.**
+  - **Repair:** two proof agents made them elaborate with 32 mechanical changes. There was no change of route,
+    statement or lemma.
+  - **The lead verified it in a fresh build:**
+    - the frozen types are exact;
+    - the axioms are within the allowlist;
+    - per-module `leanchecker` passes on all ten modules, with negative controls.
+  - **Integrated:**
+    - `OscInt/Front/LatticeGroup*.lean`;
+    - `OscInt.API.latticeSchrodinger{Exists,Kernel,Dispersive,Decay}`;
+    - `proved_by` set;
+    - STATUS rows at "machine-checked by build, axiom audit and per-module leanchecker".
+- **W2.** TRUE as hand mathematics; two referees found no BLOCKER or MAJOR. The useful pieces are:
+  - the sharp quadratic bound (Q);
+  - the sharper local L6 and L1.
+
+  They are recorded as a ROADMAP candidate. The general one-phase constant (G) is correct but useless at realistic
+  parameters.
+- **Repository fixes.**
+  - `docs/constants.md`: the `λ` binder in the §4.2 Lean sketch did not parse, and the packet copied it; the core
+    constant's line citation was wrong.
+  - `main` merged into this branch; it was at cb2f648, with PR #14 merged.
+- **Checks:**
+  - `numerics/results-r4-packet-checks-2026-11-14.txt`, 8/8;
+  - the packet's programs, run sandboxed, reproduce their expected outputs.
+- **Compile harness for scratch builds of new modules.** Mirror `.lake/build/lib/lean/OscInt` into a scratch library
+  placed FIRST on `LEAN_PATH`, and pass `--root=<scratch src>` (Lean 4.35 requires both).
 
 ## Session 11 (2026-11-13): external R3 packet answered; nothing frozen, nothing proved
 - **R3 packet** (three archives and a decision brief, same external reviewer). It triages six targets and selects T5,

@@ -28,7 +28,7 @@ The exact text and status of each label are in `statements.md` and `STATUS.md`.
 - **T0E′, T6E′** (batch LE2): the cube-root constant 8(1 + √7)/3 for the 1D and 2D lattice kernels.
 - **TdF, TdE′** (batch HC): the d-dimensional hypercubic lattice kernel factorises; its bound (8(1 + √7)/3)^d t^{−d/3}.
 - **LS-E, LS-K, LS-D, LS-D′** (batch LS): the free lattice Schrödinger group on ℓ²(ℤ^d), its kernel representation,
-  and its dispersive decay (stated and reviewed, not proved).
+  and its dispersive decay (proved in Lean 2026-11-14; full replay and post-proof reviews pending).
 - **Batch labels:** **API1–API3** are the front-end batches; **GD, LE, LE2, VT, HC, A3, LS** are the batches named
   after their statements.
 
@@ -56,7 +56,7 @@ The exact text and status of each label are in `statements.md` and `STATUS.md`.
 
 `proof-S2S3.md`, `proof-S4.md`, `proof-S42.md`, `proof-S43.md`, `proof-S44.md`, `proof-API2.md`, `proof-API3.md`,
 `proof-GD.md`, `proof-LE.md`, `proof-VT.md`, `proof-LE2.md`, `proof-HC.md`, `proof-A3.md`, `proof-LS.md` (route
-refereed; parts not yet proved).
+refereed; parts proved 2026-11-14, replay pending).
 
 ## Process and history
 
