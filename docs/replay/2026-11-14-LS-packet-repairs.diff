@@ -1,0 +1,162 @@
+# Batch LS: the repairs that made the R4 packet's Lean drafts elaborate (post-proof adversarial review, MAJOR M2;
+# review/2026-11-14-LS-post-proof-answers.md). Written by the session-11 lead, 2026-11-14.
+#
+# Left side: the ten Lean files of the packet's proofs archive (SHA-256 6acdfc63fdb58b56..., as recorded in
+# review/2026-11-14-external-R4-answers.md), under their packet paths W1/w1_operator/ and W1/w1_kernel/. Right side:
+# the integrated files as committed in d760beb (identical in be24b9f; the post-review changes of the next commit are
+# not included here). Excluded on both sides, because the lead replaced them wholesale: the copyright header (absent
+# in the packet) and the module docstring (`/-! ... -/`, shown here as the placeholder line "/-! MODULEDOC -/").
+#
+# Per file, in diff regions: Op 6, Exp 1, Unique 0, Stencil 7, FourierStencil 9, Series 4, Conv 4, Bound 1,
+# Envelope 1, Final 0. The 32 changes counted by the proof agents are these 33 regions, with the last two
+# FourierStencil regions (a `convert ... .integrable` and the `simp only [Pi.add_apply, Pi.sub_apply]` it needs)
+# counted as one change. Kinds: Mathlib renames (`if_neg` to `ite_eq_right`, `if_true` to `ite_true`, `push_neg` to
+# `push Not`), rewrite targets reshaped to the form Lean elaborates (`- 2 * c` as `+ -(2 * c)`), an `IntegrableOn` to
+# `Integrable` coercion, rewrites reordered with an explicit side goal, and in Exp one rewrite (`zero_smul`, which
+# does not unify with two ℝ-actions on the operator space) replaced by a pointwise proof of the same equation
+# `(0 : ℝ) • (I • A) = 0`. No statement, interface, lemma choice or route changed. To reproduce: unzip the archive,
+# strip the two excluded blocks from both sides, and diff.
+#
+--- packet/w1_operator/LatticeGroupOp.lean
++++ tree/LatticeGroupOp.lean
+@@ -52,2 +52,2 @@
+-  ∑ j : Fin d, shiftLinear d (latticeUnit d j) + shiftLinear d (-latticeUnit d j) -
+-    (2 : ℂ) • LinearMap.id
++  ∑ j : Fin d, (shiftLinear d (latticeUnit d j) + shiftLinear d (-latticeUnit d j) -
++    (2 : ℂ) • LinearMap.id)
+@@ -58,2 +58,5 @@
+-  simp [lapLinear, shiftLinear, shiftVector, latticeLaplacian, lp.coeFn_sum,
+-    lp.coeFn_add, lp.coeFn_sub, lp.coeFn_smul, sub_eq_add_neg, smul_eq_mul]
++  simp only [lapLinear, LinearMap.sum_apply, LinearMap.sub_apply,
++    LinearMap.add_apply, LinearMap.smul_apply, LinearMap.id_apply]
++  rw [lp.coeFn_sum, Finset.sum_apply]
++  simp only [latticeLaplacian, sub_eq_add_neg]
++  rfl
+@@ -69 +72 @@
+-        ‖(2 : ℂ) • g‖ := add_le_add_right (norm_add_le _ _) _
++        ‖(2 : ℂ) • g‖ := add_le_add_left (norm_add_le _ _) _
+@@ -71 +74 @@
+-    _ = 4 * ‖g‖ := by norm_num [shiftVector_norm, norm_smul] <;> ring
++    _ = 4 * ‖g‖ := by norm_num [shiftVector_norm, norm_smul]; ring
+@@ -76,2 +79,3 @@
+-  change ‖(∑ j : Fin d, shiftLinear d (latticeUnit d j) +
+-    shiftLinear d (-latticeUnit d j) - (2 : ℂ) • LinearMap.id) g‖ ≤ _
++  change ‖(∑ j : Fin d, (shiftLinear d (latticeUnit d j) +
++    shiftLinear d (-latticeUnit d j) - (2 : ℂ) • LinearMap.id) :
++      LatticeL2 d →ₗ[ℂ] LatticeL2 d) g‖ ≤ _
+@@ -85 +89 @@
+-    _ = (4 * d : ℝ) * ‖g‖ := by simp <;> ring
++    _ = (4 * d : ℝ) * ‖g‖ := by simp; ring
+--- packet/w1_operator/LatticeGroupExp.lean
++++ tree/LatticeGroupExp.lean
+@@ -30 +30,6 @@
+-    rw [zero_smul, NormedSpace.exp_zero]
++    -- `zero_smul` does not unify here (two ℝ-actions on the operator space); prove it pointwise.
++    have h0 : (0 : ℝ) • (Complex.I • A) = 0 := by
++      ext g x
++      simp
++    beta_reduce
++    rw [h0, NormedSpace.exp_zero]
+--- packet/w1_kernel/Stencil.lean
++++ tree/LatticeGroupStencil.lean
+@@ -19 +19 @@
+-    by simpa only [sub_eq_add_neg] using (Equiv.addRight (-e)).summable_iff.mpr hg⟩
++    (Equiv.subRight e).summable_iff.mpr hg⟩
+@@ -32 +32,2 @@
+-  rw [lapMajorant, Summable.tsum_finsetSum (fun j _ =>
++  simp only [lapMajorant]
++  rw [Summable.tsum_finsetSum (fun j _ =>
+@@ -58 +59 @@
+-    (add_le_add_right (norm_add_le _ _) _)
++    (add_le_add_left (norm_add_le _ _) _)
+@@ -79 +80,2 @@
+-      simp [stencil]
++      simp only [stencil, apply_ite norm, norm_one, norm_zero]
++      exact ⟨(hasSum_ite_eq 0 1).summable, by rw [tsum_ite_eq]; simp⟩
+@@ -105 +107,3 @@
+-  rw [tsum_mul_right, (Equiv.subLeft x).tsum_eq (fun z => ‖g z‖)] at h
++  have hsub := (Equiv.subLeft x).tsum_eq (fun z => ‖g z‖)
++  simp only [Equiv.subLeft_apply] at hsub
++  rw [tsum_mul_right, hsub] at h
+@@ -128 +132 @@
+-      simp [stencil, sub_eq_zero, eq_comm]
++      simp [stencil, sub_eq_zero]
+@@ -132 +136 @@
+-      rw [pow_succ', ContinuousLinearMap.mul_apply, hA, latticeLaplacian]
++      rw [pow_succ', mul_apply_eq_comp, hA, latticeLaplacian]
+--- packet/w1_kernel/FourierStencil.lean
++++ tree/LatticeGroupFourierStencil.lean
+@@ -68 +68 @@
+-      character d z k * Complex.exp ((-k j : ℂ) * Complex.I) - 2 * character d z k =
++      character d z k * Complex.exp ((-k j : ℂ) * Complex.I) + -(2 * character d z k) =
+@@ -94 +94 @@
+-    rw [he, integral_exp_mul_complex hc, if_neg hq]
++    rw [he, integral_exp_mul_complex hc, ite_eq_right hq]
+@@ -115 +115 @@
+-    simp only [Pi.zero_apply, if_true, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
++    simp only [Pi.zero_apply, ite_true, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+@@ -119 +119 @@
+-  · rw [if_neg hz]
++  · rw [ite_eq_right hz]
+@@ -122 +122 @@
+-      push_neg at h
++      push Not at h
+@@ -126 +126 @@
+-      simp only [if_neg hj]
++      simp only [ite_eq_right hj]
+@@ -145 +145,4 @@
+-    rw [hr, integral_sub (hp.add hm) hz, integral_add hp hm, integral_const_mul]
++    have hz' : IntegrableOn (fun k => (symbol d k : ℂ) ^ n * (2 * character d z k))
++        (hypercubeBox d) := by rw [hr]; exact hz
++    rw [integral_sub ?_ hz', integral_add hp hm, hr, integral_const_mul]
++    exact hp.add hm
+@@ -149 +152 @@
+-    convert (hp.add hm).sub ((term_integrable d n z).const_mul 2) using 1
++    convert ((hp.add hm).sub ((term_integrable d n z).const_mul 2)).integrable using 1
+@@ -150,0 +154 @@
++    simp only [Pi.add_apply, Pi.sub_apply]
+--- packet/w1_kernel/Series.lean
++++ tree/LatticeGroupSeries.lean
+@@ -16 +16 @@
+-    refine (abs_sum_le_sum_abs _ _).trans ?_
++    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+@@ -52 +52,4 @@
+-  convert (term_integrable d n z).const_mul ((Complex.I * t) ^ n / n.factorial) using 1
++  have h : IntegrableOn (fun k => ((Complex.I * t) ^ n / n.factorial) *
++      ((symbol d k : ℂ) ^ n * character d z k)) (hypercubeBox d) :=
++    (term_integrable d n z).const_mul _
++  convert h using 1
+@@ -60 +63 @@
+-  letI : IsFiniteMeasure (volume.restrict (hypercubeBox d)) :=
++  let _ : IsFiniteMeasure (volume.restrict (hypercubeBox d)) :=
+@@ -96 +99 @@
+-  rw [hF d n z]
++  rw [show stencil d n z = coefficient d n z from hF d n z, coefficient]
+--- packet/w1_kernel/Conv.lean
++++ tree/LatticeGroupConv.lean
+@@ -29 +29 @@
+-  simp only [doubleTerm, norm_mul, tsum_mul_left]
++  simp only [doubleTerm, norm_mul (seriesCoefficient t n), tsum_mul_left]
+@@ -51 +51 @@
+-      simp only [pow_succ, ih, ContinuousLinearMap.mul_apply, ContinuousLinearMap.smul_apply]
++      simp only [pow_succ, ih, mul_apply_eq_comp, smul_apply]
+@@ -60 +60 @@
+-  simp only [ContinuousLinearMap.smul_apply, lp.coeFn_smul, Pi.smul_apply,
++  simp only [smul_apply, lp.coeFn_smul, Pi.smul_apply,
+@@ -73,3 +73,3 @@
+-  change HasSum (fun n => ((n.factorial : ℂ)⁻¹ • (((Complex.I * t) • A) ^ n)) f x)
+-    (NormedSpace.exp ((Complex.I * t) • A) f x) at h
+-  simp only [complex_smul_pow, ContinuousLinearMap.smul_apply, lp.coeFn_smul,
++  have hev : ∀ B, ev B = B f x := fun B => rfl
++  simp only [hev] at h
++  simp only [complex_smul_pow, smul_apply, lp.coeFn_smul,
+--- packet/w1_kernel/KernelBound.lean
++++ tree/LatticeGroupBound.lean
+@@ -55 +55 @@
+-    Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
++    norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+--- packet/w1_kernel/Envelope.lean
++++ tree/LatticeGroupEnvelope.lean
+@@ -29 +29 @@
+-    have he : (3 : ℝ) * ((d : ℝ) / 3) = d := by ring
++    have he : ((3 : ℕ) : ℝ) * ((d : ℝ) / 3) = d := by push_cast; ring

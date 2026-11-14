@@ -24,6 +24,16 @@
 # appear once for each of the 18 times the file is elaborated (the build and the 17 comparator configurations); they
 # are the only warnings, and there are no errors. Full output below, then the watcher log.
 #
+# Corrections, 2026-11-14 (post-proof adversarial review, MINOR m5; `review/2026-11-14-LS-post-proof-answers.md`):
+# 1. "Elaborated 18 times" is wrong. The `lean` step built nothing new: each of the 18 builds shows
+#    "Replayed OscInt.Cusp.Implicit4", i.e. Lake reused the build products of the session's earlier build of d760beb
+#    and re-printed their stored warnings. The step's "no stale build products" check (144 modules) passed, and the
+#    kernels re-check the exported declarations, so the verdict stands; the warnings are reported, not re-elaborated,
+#    18 times.
+# 2. "git status was empty and HEAD unchanged after it finished" is from the lead's check in the session record at
+#    19:12:47Z (`git status --porcelain` empty, HEAD 1bc377bafa4a7a9dc1eb928b058339a2c3ceb45b), not from this log, which
+#    records the tree state at the start only.
+#
 started 2026-11-14T16:01:08Z HEAD 1bc377bafa4a7a9dc1eb928b058339a2c3ceb45b dirty=0
 cd tools && cargo build --release --locked --quiet
 tools/target/release/verify_all 

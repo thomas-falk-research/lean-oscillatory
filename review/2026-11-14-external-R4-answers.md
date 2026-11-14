@@ -61,7 +61,7 @@ lead.
   - Every Lean file is labelled UNELABORATED.
   - The W2 Lean sanity theorems are missing.
   - It makes no novelty claim and names no consumer.
-  - Its strongest recommendation is "candidate for statement review".
+  - At most it recommends the explicit constants as candidates for a statement review.
 - **AI-use disclosure.** The packet was produced with ChatGPT (exposed model name GPT-6 Astra Pro), four instances, as
   it states. Its audits are by the same model family. The lead has not verified the version.
 
@@ -215,7 +215,7 @@ The s⁻² cut-off term is 99.7% of the coefficient. Findings:
 - **MINOR (prior-art scope).** The η-dependence is about η^{−17/4}, worse than Alazard–Burq–Zuily's a₀^{−3} in two
   dimensions. The comparison should say so.
 - **NIT.** In the non-stationary regime (G) is within a factor 2 of the integral, so "useless" holds for critical-point
-  data only. The packet's wording, "on the registered saddle", is already right.
+  data only. The packet already restricts its claim to the saddle it registered, which is right.
 
 **The W2 Lean statement drafts: TRUE as written and equivalent to the prose.**
 - The blind referee showed that each restriction the packet disclosed as narrowing loses nothing:

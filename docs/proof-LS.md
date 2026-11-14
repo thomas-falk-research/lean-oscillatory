@@ -198,19 +198,25 @@ The names above are `#check`ed in `MathlibNames.lean`.
 
 All nine parts and the final file are in the tree:
 - **operator side:** `OscInt/Front/LatticeGroup{Op,Exp,Unique}.lean`;
-- **kernel side:** `OscInt/Front/LatticeGroup{Stencil,FourierStencil,Series,Conv,Bound,Envelope}.lean`;
+- **kernel side:** `OscInt/Front/LatticeGroup{Stencil,FourierStencil,Series,Conv,Bound,Envelope}.lean` (the packet's
+  grouping; the repairs of Bound and Envelope were made by the operator-side proof agent);
 - **final:** `OscInt/Front/LatticeGroupFinal.lean`, which declares `OscInt.API.latticeSchrodingerExists`, `…Kernel`,
   `…Dispersive` and `…Decay`.
 
-They follow this route and its referee revision without deviation:
+They follow this route and its referee revision, with one equivalent substitution (post-proof review B, NIT 1): the
+P-fourier base case uses TdF at `t = 0` (`OscInt.API.hypercubicKernelFactor`, which is `tdF_of hcFubiniFacts`), not
+`hcFubiniFacts` directly. Otherwise:
 - P-conv uses the exponential series over ℂ;
 - P-exp evaluates through `restrictScalars ℝ`;
 - P-unique uses `ODE_solution_unique_univ`;
 - the double sum is exchanged with `Summable.tsum_comm`;
-- P-bound reuses TdE′ and `hypercubeBox_volume`.
+- P-bound reuses TdE′ and, since the post-proof reviews, a local copy of `hypercubeBox_volume` (`box_volume`), so the
+  proof no longer imports a sanity module.
 
 Drafted by an external reviewer with an AI tool (R4 packet, disclosed in `docs/prior_art.md`). Made to elaborate by the
 lead's proof agents with 32 mechanical changes (`review/2026-11-14-external-R4-answers.md`).
 
-Evidence so far: build, axiom audit, and per-module `leanchecker`. The isolated `make verify-all` and the post-proof
-reviews are pending.
+Evidence: build, axiom audit and per-module `leanchecker`; the isolated `make verify-all` of 1bc377b
+(`docs/replay/2026-11-14-session11-LS-verify-all.txt`); post-proof reviews answered
+(`review/2026-11-14-LS-post-proof-answers.md`). The replay of the post-review Lean changes is pending. The 32 repairs
+to the packet's drafts: `docs/replay/2026-11-14-LS-packet-repairs.diff`.

@@ -7,7 +7,6 @@ SPDX-License-Identifier: Apache-2.0
 
 import Blueprint.LatticeGroup
 import OscInt.Front.HypercubicFinal
-import OscInt.Front.HypercubicSanity
 import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 /-!
@@ -25,15 +24,21 @@ namespace OscInt.LatticeKernelBoundAux
 open OscInt.Statements OscInt.Blueprint.LatticeGroup MeasureTheory
 open scoped ComplexConjugate
 
+/-- The volume of the box `[−π, π]^d` is `(2π)^d` (the same two-line proof as
+`OscInt.API.HypercubicSanity.hypercubeBox_volume`, kept here so that the proof does not import a sanity module). -/
+theorem box_volume (d : ℕ) : volume (hypercubeBox d) = ENNReal.ofReal (2 * Real.pi) ^ d := by
+  rw [hypercubeBox, volume_pi_pi]
+  simp [Real.volume_Icc, two_mul]
+
 theorem box_measure_real (d : ℕ) : volume.real (hypercubeBox d) = (2 * Real.pi) ^ d := by
-  -- The existing box-volume lemma fixes the normalization, including d=0.
-  rw [measureReal_def, OscInt.API.HypercubicSanity.hypercubeBox_volume,
+  -- The box volume fixes the normalization, including d=0.
+  rw [measureReal_def, box_volume,
     ENNReal.toReal_pow, ENNReal.toReal_ofReal (by positivity)]
 
 theorem hypercubic_norm_trivial (d : ℕ) (s : ℝ) (z : Fin d → ℤ) :
     ‖hypercubicKernel d s z‖ ≤ (2 * Real.pi) ^ d := by
   have hv : volume (hypercubeBox d) < ⊤ := by
-    rw [OscInt.API.HypercubicSanity.hypercubeBox_volume]
+    rw [box_volume]
     finiteness
   -- norm_setIntegral_le_of_norm_le_const requires only finite box volume and |exp(i r)|=1.
   have h := norm_setIntegral_le_of_norm_le_const (f := fun k : Fin d → ℝ =>

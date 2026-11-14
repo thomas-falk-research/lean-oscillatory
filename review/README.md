@@ -58,6 +58,7 @@ answers use plain `-answers`. External reviews are `<date>-external-<topic>-answ
 - `2026-11-13-application-chains-answers.md`
 - `2026-11-13-external-R3-answers.md`
 - `2026-11-14-external-R4-answers.md`
+- `2026-11-14-LS-post-proof-answers.md`
 
 ## Calibration test data
 

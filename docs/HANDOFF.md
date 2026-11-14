@@ -6,9 +6,11 @@ For a reader who saw nothing. Read `docs/lessons.md` first (50 entries); every r
 
 **State.** 63 pinned statements; 59 are machine-checked as stated (`docs/STATUS.md`). The four of batch LS (the free
 lattice Schrödinger group on ℓ²(ℤ^d)) are **proved in Lean** since 2026-11-14 (build, axiom audit and per-module
-`leanchecker`) and **replayed** (isolated `make verify-all` on 1bc377b, RESULT PASS, comparator-LS accepted by six
-kernels, `docs/replay/2026-11-14-session11-LS-verify-all.txt`). Their post-proof reviews are pending, so they are not
-yet "as stated". The proofs
+`leanchecker`), **replayed** (isolated `make verify-all` on 1bc377b, RESULT PASS, comparator-LS accepted by six
+kernels, `docs/replay/2026-11-14-session11-LS-verify-all.txt`) and **post-proof reviewed** (A FAITHFUL, B SOUND,
+adversarial three MAJOR answered, `review/2026-11-14-LS-post-proof-answers.md`). The answers changed Lean outside the
+reviewed proofs (docstrings, one import, one local lemma), so the rows say "as stated" only after an isolated replay
+of that commit. The proofs
 were drafted by an external reviewer with an AI tool (R4 packet) and made to elaborate by the lead's proof agents with
 32 mechanical changes (`review/2026-11-14-external-R4-answers.md`).
 
@@ -20,14 +22,21 @@ were drafted by an external reviewer with an AI tool (R4 packet) and made to ela
 1. **Finish batch LS:**
    1. Done: the isolated `make verify-all` on 1bc377b passed (`docs/replay/2026-11-14-session11-LS-verify-all.txt`).
       Two earlier attempts were cut off by container reclaims and are recorded as partial (lessons 50).
-   2. Post-proof reviews (A, B, adversarial), launched before or after the replay, never during it.
-   3. The records: STATUS rows to "as stated" only if both pass, CHANGELOG, README.
-   4. A minor release (v0.6.0) that sets `proved_by` (owner publishes).
+   2. Done: post-proof reviews A, B and adversarial, answered (`review/2026-11-14-LS-post-proof-answers.md`).
+   3. An isolated `make verify-all` of the commit with the post-review Lean changes, with a watcher and the
+      keep-alive of lessons 50.
+   4. Then the records: STATUS rows to "as stated" (the replay passed and no review finding is open), CHANGELOG,
+      README.
+   5. A minor release (v0.6.0) that sets `proved_by` (owner publishes).
 2. CENSUS held-out pool (ROADMAP I1), then its implementations.
 3. LeanCert experiment (I2).
 4. I3: global assembly with A3 points; then I3a and I3b.
 5. Optional, a separate change: the six style warnings of `OscInt/Cusp/Implicit4.lean` (lines 131, 227, 229). A proof
    change, so it needs a build, an axiom audit and a replay record.
+
+**Owner item (new, batch LS post-proof review, `review/2026-11-14-LS-post-proof-answers.md` item 7):** the ten LS
+proof files, drafted by the external reviewer, carry the project's copyright and licence header (as the A3 files do);
+no licence grant from the external reviewer is recorded.
 
 **Candidates waiting for the owner (ROADMAP "Candidates"):**
 - the discrete Klein–Gordon kernel bound (R2);
@@ -59,7 +68,8 @@ were drafted by an external reviewer with an AI tool (R4 packet) and made to ela
     - `OscInt/Front/LatticeGroup*.lean`;
     - `OscInt.API.latticeSchrodinger{Exists,Kernel,Dispersive,Decay}`;
     - `proved_by` set;
-    - STATUS rows at "machine-checked by build, axiom audit and per-module leanchecker".
+    - STATUS rows first at "machine-checked by build, axiom audit and per-module leanchecker"; now as in the state
+      above.
 - **W2.** TRUE as hand mathematics; two referees found no BLOCKER or MAJOR. The useful pieces are:
   - the sharp quadratic bound (Q);
   - the sharper local L6 and L1.

@@ -64,7 +64,7 @@ Explicit constants, valid for every `t > 0`:
 
 These bound the kernel. The statements about solutions of the lattice Schrödinger equation on ℓ²(ℤ^d) (batch LS:
 existence, kernel representation, decay of solutions) are proved in Lean (`OscInt.API.latticeSchrodingerExists` and its three siblings), with the
-full replay and the post-proof reviews **still pending**
+full replay and the post-proof reviews done and the replay of the post-review changes **still pending**
 (`docs/STATUS.md`). Worked examples: `examples/consumer/ConsumerPhotonLattice.lean` (T0E′), `ConsumerLattice.lean`
 (T6, T6L).
 

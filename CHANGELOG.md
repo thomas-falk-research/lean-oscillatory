@@ -6,7 +6,19 @@ or `proved_by` name. Every release lists its statement changes, even when there 
 
 ## Unreleased
 
-Nothing yet.
+### Proofs
+
+Batch LS (LS-E, LS-K, LS-D, LS-D′, `OscInt/Statements/LatticeGroup.lean`, statements unchanged): proved in Lean on
+2026-11-14 (`OscInt/Front/LatticeGroup{Op,Exp,Unique,Stencil,FourierStencil,Series,Conv,Bound,Envelope,Final}.lean`);
+`proved_by` set to `OscInt.API.latticeSchrodinger{Exists,Kernel,Dispersive,Decay}` in `stamps/statements.json`. The
+parts were drafted by an external reviewer with an AI tool and repaired to elaborate by the lead's proof agents with
+32 mechanical changes (`docs/replay/2026-11-14-LS-packet-repairs.diff`; disclosure in `docs/prior_art.md`). Isolated
+replay of 1bc377b: `docs/replay/2026-11-14-session11-LS-verify-all.txt`. Post-proof reviews:
+`review/2026-11-14-LS-post-proof-answers.md`. Status per `docs/STATUS.md`.
+
+### Added
+
+- `examples/consumer/ConsumerLatticeSchrodinger.lean`: unconditional time derivatives of the LS kernel at `t = 0`.
 
 ## v0.5.0 — 2026-11-13
 

@@ -7,7 +7,6 @@ SPDX-License-Identifier: Apache-2.0
 
 import Blueprint.LatticeGroup
 import OscInt.Front.HypercubicFinal
-import OscInt.Front.HypercubicSanity
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
 
