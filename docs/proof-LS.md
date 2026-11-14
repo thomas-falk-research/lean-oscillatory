@@ -218,5 +218,7 @@ lead's proof agents with 32 mechanical changes (`review/2026-11-14-external-R4-a
 
 Evidence: build, axiom audit and per-module `leanchecker`; the isolated `make verify-all` of 1bc377b
 (`docs/replay/2026-11-14-session11-LS-verify-all.txt`); post-proof reviews answered
-(`review/2026-11-14-LS-post-proof-answers.md`). The replay of the post-review Lean changes is pending. The 32 repairs
+(`review/2026-11-14-LS-post-proof-answers.md`); the isolated `make verify-all` of 35dc5c0, which contains the
+post-review Lean changes (`docs/replay/2026-11-14-session11-LS-final-verify-all.txt`). Status: machine-checked as
+stated. The 32 repairs
 to the packet's drafts: `docs/replay/2026-11-14-LS-packet-repairs.diff`.

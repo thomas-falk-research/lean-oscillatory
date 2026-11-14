@@ -83,7 +83,7 @@ another. Nothing here is a capability until its evidence exists (`docs/STATUS.md
       `docs/replay/2026-11-13-session10-A3-verify-all.txt`). Open in I3: global assembly with A3 points, I3a, I3b.
       Batch LS (the free lattice Schrödinger group, ROADMAP "Candidates", the discrete NLS row) is proved in Lean
       (2026-11-14; build, axiom audit, per-module leanchecker; AI-drafted parts, `review/2026-11-14-external-R4-answers.md`);
-      its isolated replay passed (`docs/replay/2026-11-14-session11-LS-verify-all.txt`) and its post-proof reviews are answered; the replay of the post-review changes is pending.
+      its post-proof reviews are answered, and it is machine-checked as stated since the isolated replay of 35dc5c0 (`docs/replay/2026-11-14-session11-LS-final-verify-all.txt`), which contains the post-review changes.
   - [ ] **I3a Parametrised transverse stationary phase, transverse dimension n.**
     - *The lemma.* Take a phase `F(s, u) + y·(s, u)` with `s ∈ ℝⁿ` and `u ∈ ℝ^r`, whose s-Hessian is invertible on
       the amplitude's support. The lemma says the s-integral equals its stationary-phase leading term plus a remainder

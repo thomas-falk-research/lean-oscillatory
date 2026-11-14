@@ -4,13 +4,11 @@ For a reader who saw nothing. Read `docs/lessons.md` first (50 entries); every r
 
 ## Start here (session 11, 2026-11-14)
 
-**State.** 63 pinned statements; 59 are machine-checked as stated (`docs/STATUS.md`). The four of batch LS (the free
-lattice Schrödinger group on ℓ²(ℤ^d)) are **proved in Lean** since 2026-11-14 (build, axiom audit and per-module
-`leanchecker`), **replayed** (isolated `make verify-all` on 1bc377b, RESULT PASS, comparator-LS accepted by six
-kernels, `docs/replay/2026-11-14-session11-LS-verify-all.txt`) and **post-proof reviewed** (A FAITHFUL, B SOUND,
-adversarial three MAJOR answered, `review/2026-11-14-LS-post-proof-answers.md`). The answers changed Lean outside the
-reviewed proofs (docstrings, one import, one local lemma), so the rows say "as stated" only after an isolated replay
-of that commit. The proofs
+**State.** 63 pinned statements; all 63 are machine-checked as stated (`docs/STATUS.md`). The last four, batch LS (the
+free lattice Schrödinger group on ℓ²(ℤ^d)), were **proved in Lean** on 2026-11-14, **post-proof reviewed** (A FAITHFUL,
+B SOUND, adversarial three MAJOR answered, `review/2026-11-14-LS-post-proof-answers.md`) and **replayed** after the
+post-review Lean changes (isolated `make verify-all` on 35dc5c0, RESULT PASS, comparator-LS accepted by six kernels,
+`docs/replay/2026-11-14-session11-LS-final-verify-all.txt`; the earlier replay of 1bc377b is kept). The proofs
 were drafted by an external reviewer with an AI tool (R4 packet) and made to elaborate by the lead's proof agents with
 32 mechanical changes (`review/2026-11-14-external-R4-answers.md`).
 
@@ -23,10 +21,10 @@ were drafted by an external reviewer with an AI tool (R4 packet) and made to ela
    1. Done: the isolated `make verify-all` on 1bc377b passed (`docs/replay/2026-11-14-session11-LS-verify-all.txt`).
       Two earlier attempts were cut off by container reclaims and are recorded as partial (lessons 50).
    2. Done: post-proof reviews A, B and adversarial, answered (`review/2026-11-14-LS-post-proof-answers.md`).
-   3. An isolated `make verify-all` of the commit with the post-review Lean changes, with a watcher and the
-      keep-alive of lessons 50.
-   4. Then the records: STATUS rows to "as stated" (the replay passed and no review finding is open), CHANGELOG,
-      README.
+   3. Done: the isolated `make verify-all` on 35dc5c0, which contains the post-review Lean changes, passed
+      (`docs/replay/2026-11-14-session11-LS-final-verify-all.txt`).
+   4. Done: the records (STATUS rows "machine-checked as stated (replay of 35dc5c0)", CHANGELOG, README and the
+      pages that track status).
    5. A minor release (v0.6.0) that sets `proved_by` (owner publishes).
 2. CENSUS held-out pool (ROADMAP I1), then its implementations.
 3. LeanCert experiment (I2).

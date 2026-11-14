@@ -375,10 +375,13 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     12:59:28Z, the watchers' last snapshots are 11:29:25Z and 13:04:01Z, and when the session resumed the machine
     reported uptime 0. The likely cause, seen twice and not documented by the platform as far as the lead knows: the
     cloud container is reclaimed a few minutes after the session goes idle, and a detached process does not survive
-    that; it survives only the harness's two-hour limit on background tasks. The third run, with the session kept
-    busy, survived 3 h 11 min. Rule: in a cloud
+    that; it survives only the harness's two-hour limit on background tasks. The third run (1bc377b), with the session
+    kept busy, survived 3 h 11 min, and the fourth (35dc5c0), kept busy the same way, 2 h 56 min. Rule: in a cloud
     session, start the replay detached and also keep the session busy for its whole length with a harness background
-    task that waits on the replay log's `finished` line, re-armed before each two-hour limit. A cut-off run is recorded
+    task that waits on the replay log's `finished` line, re-armed as soon as the harness reports it stopped at its
+    two-hour limit (in the fourth run, within about a minute; a one-shot check-in scheduled just after the limit is the
+    fallback). A cut-off run is recorded
     as partial with the times above. Check: the two partial records
     (`docs/replay/2026-11-14-session11-d760beb-partial.txt`, `docs/replay/2026-11-14-session11-1bc377b-partial.txt`) and
-    the third run's record, whose watcher has no gap longer than two minutes.
+    the records of the third and fourth runs (`docs/replay/2026-11-14-session11-LS-verify-all.txt`,
+    `docs/replay/2026-11-14-session11-LS-final-verify-all.txt`), whose watchers have no gap longer than two minutes.

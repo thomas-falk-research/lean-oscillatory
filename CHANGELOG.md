@@ -14,7 +14,9 @@ Batch LS (LS-E, LS-K, LS-D, LS-D′, `OscInt/Statements/LatticeGroup.lean`, stat
 parts were drafted by an external reviewer with an AI tool and repaired to elaborate by the lead's proof agents with
 32 mechanical changes (`docs/replay/2026-11-14-LS-packet-repairs.diff`; disclosure in `docs/prior_art.md`). Isolated
 replay of 1bc377b: `docs/replay/2026-11-14-session11-LS-verify-all.txt`. Post-proof reviews:
-`review/2026-11-14-LS-post-proof-answers.md`. Status per `docs/STATUS.md`.
+`review/2026-11-14-LS-post-proof-answers.md`. Isolated replay of 35dc5c0, after the post-review Lean changes:
+`docs/replay/2026-11-14-session11-LS-final-verify-all.txt`. All four are machine-checked as stated, so all 63
+statements are (`docs/STATUS.md`).
 
 ### Added
 
