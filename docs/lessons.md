@@ -369,3 +369,14 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     Lean process; `docs/replay/2026-11-13-session10-A3-verify-all.txt`). Its first attempt, started as a harness
     background task, was killed by the harness's two-hour limit on such tasks; a full replay takes about 2 h 50 min, so
     it must run detached (`setsid nohup`).
+50. **A detached replay dies when the cloud session goes idle (two cut-off runs, session 11).** Following lessons 49,
+    `make verify-all` was started detached (`setsid nohup`) on d760beb at 11:24:21Z and on 1bc377b at 12:58:58Z, each
+    time just before the lead's turn ended. Both died in the `lean` step: the session went idle at 11:24:53Z and
+    12:59:28Z, the watchers' last snapshots are 11:29:25Z and 13:04:01Z, and when the session resumed the machine
+    reported uptime 0. The cloud container is reclaimed a few minutes after the session goes idle, and a detached
+    process does not survive that; it survives only the harness's two-hour limit on background tasks. Rule: in a cloud
+    session, start the replay detached and also keep the session busy for its whole length with a harness background
+    task that waits on the replay log's `finished` line, re-armed before each two-hour limit. A cut-off run is recorded
+    as partial with the times above. Check: the two partial records
+    (`docs/replay/2026-11-14-session11-d760beb-partial.txt`, `docs/replay/2026-11-14-session11-1bc377b-partial.txt`) and
+    the third run's record, whose watcher has no gap longer than two minutes.

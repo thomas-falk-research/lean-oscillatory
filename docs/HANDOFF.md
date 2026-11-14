@@ -1,12 +1,14 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (49 entries); every rule in it is binding.
+For a reader who saw nothing. Read `docs/lessons.md` first (50 entries); every rule in it is binding.
 
 ## Start here (session 11, 2026-11-14)
 
 **State.** 63 pinned statements; 59 are machine-checked as stated (`docs/STATUS.md`). The four of batch LS (the free
 lattice Schrödinger group on ℓ²(ℤ^d)) are **proved in Lean** since 2026-11-14 (build, axiom audit and per-module
-`leanchecker`). Their isolated replay and post-proof reviews are pending, so they are not yet "as stated". The proofs
+`leanchecker`) and **replayed** (isolated `make verify-all` on 1bc377b, RESULT PASS, comparator-LS accepted by six
+kernels, `docs/replay/2026-11-14-session11-LS-verify-all.txt`). Their post-proof reviews are pending, so they are not
+yet "as stated". The proofs
 were drafted by an external reviewer with an AI tool (R4 packet) and made to elaborate by the lead's proof agents with
 32 mechanical changes (`review/2026-11-14-external-R4-answers.md`).
 
@@ -16,9 +18,8 @@ were drafted by an external reviewer with an AI tool (R4 packet) and made to ela
 
 **Next, in order:**
 1. **Finish batch LS:**
-   1. an **isolated** `make verify-all` on the committed tree. A first run on d760beb was cut off by a container
-      restart (`docs/replay/2026-11-14-session11-d760beb-partial.txt`, not an acceptance record). Run it detached, with a process watcher, and with no
-      other Lean process or referee (lessons 28, 49). It must accept comparator-LS.
+   1. Done: the isolated `make verify-all` on 1bc377b passed (`docs/replay/2026-11-14-session11-LS-verify-all.txt`).
+      Two earlier attempts were cut off by container reclaims and are recorded as partial (lessons 50).
    2. Post-proof reviews (A, B, adversarial), launched before or after the replay, never during it.
    3. The records: STATUS rows to "as stated" only if both pass, CHANGELOG, README.
    4. A minor release (v0.6.0) that sets `proved_by` (owner publishes).
@@ -36,12 +37,14 @@ were drafted by an external reviewer with an AI tool (R4 packet) and made to ela
 **Process, learned the hard way this session:**
 - **Lessons 49.** No Lean, `lake`, `make` or Lean-running referee while `make verify-all` runs. Launch referees
   before it starts or after it ends.
-- **Run the replay detached.** A full replay takes about 2 h 50 min. Start it with `setsid nohup` and a process
-  watcher (as in the A3 record's header). A harness background task is killed after 2 hours.
+- **Run the replay detached and keep the session busy (lessons 50).** A full replay takes about 3 h. Start it with
+  `setsid nohup` and a process watcher (as in the A3 record's header). A harness background task is killed after
+  2 hours, but an idle cloud session's container is reclaimed within minutes, killing detached processes too: keep a
+  background task waiting on the replay log and re-arm it at the two-hour limit.
 - **Count from the session record, not from memory.** The "six probes" error (lessons 49) came from counting from
   memory.
 
-## Session 11, continued (2026-11-14): external R4 packet; batch LS proved in Lean (replay pending)
+## Session 11, continued (2026-11-14): external R4 packet; batch LS proved in Lean and replayed
 - **R4 packet** (answers `review/2026-11-14-external-R4-answers.md`): W1 proof drafts for batch LS, and W2 explicit
   constants.
 - **W1.**
