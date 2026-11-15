@@ -82,3 +82,6 @@ OscInt.Statements.LatticeSchrodingerKernelStatement stamps/20261112T215742Z-d18e
 OscInt.Statements.LatticeSchrodingerDispersiveStatement stamps/20261112T215742Z-d18e0780abdb
 OscInt.Statements.LatticeSchrodingerDecayStatement stamps/20261112T215742Z-d18e0780abdb
 challenge:comparator-LS.json stamps/20261112T215742Z-d18e0780abdb
+OscInt.Statements.D4LimitUniformStatement stamps/20261115T122915Z-33c56db38f65
+OscInt.Statements.D4LimitOffsetStatement stamps/20261115T122915Z-33c56db38f65
+challenge:comparator-D4U.json stamps/20261115T122915Z-33c56db38f65
