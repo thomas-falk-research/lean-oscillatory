@@ -2,7 +2,8 @@
 
 Lead, session 12, after the pre-proof reviews were answered (`review/2026-11-15-D4U-pre-proof-answers.md`) and stamped.
 - **Blueprint:** `Blueprint/D4Uniform.lean`, one `…Facts` proposition per part.
-- **Assembly:** in the same file, compiled before any part is proved:
+- **Assembly:** compiled before any part was proved, first in the blueprint file at 378d5ae, then moved unchanged to
+  `OscInt/Front/D4UniformAssembly.lean` (the blueprint library holds definitions only):
   - `d4LimitUniform_of (hR : CommonRadiusFacts) (hL : LinearFacts) : D4LimitUniformStatement`;
   - `d4LimitOffset_of (hU : D4LimitUniformStatement) (hM : ModulationFacts) : D4LimitOffsetStatement`.
 
@@ -98,3 +99,13 @@ frozen statement types and depend on the standard axioms only, and estimated P-r
 15–30 and P-mod at 120–220, with mechanical risk only. Lead's note for P-linear: `HasCompactSupport.mul_left` with a
 lambda target times out at the pin (unification of `f * f'` with the pointwise lambda); derive compact support from
 `tsupport_mul_subset_right` and `IsCompact.of_isClosed_subset` instead.
+
+## Proofs (2026-11-15)
+
+`OscInt/Front/D4UniformParts.lean` (P-radius, P-linear; the lead, written in scratch while the route referee read and
+moved into the tree after its answers were committed), `OscInt/Front/D4UniformModulation.lean` (P-mod; a fresh proof
+agent of the lead, under a brief carrying the route referee's notes; the complex-valued slice identity as a local
+lemma, `OscInt/Front/FamilyC10.lean` unchanged), `OscInt/Front/D4UniformFinal.lean` (`OscInt.API.d4LimitUniform`,
+`OscInt.API.d4LimitOffset`). No deviation from the route. Checks by the lead: `make lean` (axiom audit 1352 of 1352
+clean; the two `#assert_type_is` lines in `StatementTypes.lean`), per-module `leanchecker` on the seven D4U modules
+(all exit 0), the guard.

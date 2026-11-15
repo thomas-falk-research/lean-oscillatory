@@ -261,10 +261,10 @@ example : LatticeSchrodingerDecayStatement := OscInt.API.latticeSchrodingerDecay
 
 /-! ### S4.2U: D4 limit uniform over a C²-totally bounded family of amplitudes. -/
 
-example (h : D4LimitUniformStatement) := OscInt.API.D4UniformSanity.uniform_sanity h
+example : D4LimitUniformStatement := OscInt.API.d4LimitUniform
 
 /-! ### S4.2O: D4 limit uniform over bounded linear offsets. -/
 
-example (h : D4LimitOffsetStatement) := OscInt.API.D4UniformSanity.offset_sanity h
+example : D4LimitOffsetStatement := OscInt.API.d4LimitOffset
 
 end OscIntSnippets

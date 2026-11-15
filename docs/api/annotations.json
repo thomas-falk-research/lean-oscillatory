@@ -1020,8 +1020,8 @@
     "S4.2O",
     "S4.1′"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : D4LimitUniformStatement) := OscInt.API.D4UniformSanity.uniform_sanity h"
+   "snippet_kind": "type",
+   "snippet": "example : D4LimitUniformStatement := OscInt.API.d4LimitUniform"
   },
   "S4.2O": {
    "hypotheses": [
@@ -1037,8 +1037,8 @@
     "S4.2U",
     "S4.1′"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : D4LimitOffsetStatement) := OscInt.API.D4UniformSanity.offset_sanity h"
+   "snippet_kind": "type",
+   "snippet": "example : D4LimitOffsetStatement := OscInt.API.d4LimitOffset"
   }
  },
  "helpers": [

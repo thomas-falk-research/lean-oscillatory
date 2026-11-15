@@ -88,3 +88,5 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
 #assert_type_is OscInt.API.latticeSchrodingerKernel OscInt.Statements.LatticeSchrodingerKernelStatement
 #assert_type_is OscInt.API.latticeSchrodingerDispersive OscInt.Statements.LatticeSchrodingerDispersiveStatement
 #assert_type_is OscInt.API.latticeSchrodingerDecay OscInt.Statements.LatticeSchrodingerDecayStatement
+#assert_type_is OscInt.API.d4LimitUniform OscInt.Statements.D4LimitUniformStatement
+#assert_type_is OscInt.API.d4LimitOffset OscInt.Statements.D4LimitOffsetStatement

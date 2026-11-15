@@ -1555,7 +1555,7 @@
   {
    "label": "S4.2U",
    "name": "OscInt.Statements.D4LimitUniformStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.d4LimitUniform",
    "summary": "D4 limit uniform over a C²-totally bounded family of amplitudes.",
    "file": "OscInt/Statements/D4Uniform.lean",
    "commitment": "f06d6098e06f86ff9c054dec9004ea8c12e6241d4fb3c7fc33969c87ee51d289",
@@ -1574,13 +1574,13 @@
     "S4.2O",
     "S4.1′"
    ],
-   "snippet": "example (h : D4LimitUniformStatement) := OscInt.API.D4UniformSanity.uniform_sanity h",
+   "snippet": "example : D4LimitUniformStatement := OscInt.API.d4LimitUniform",
    "status": "see docs/STATUS.md (row S4.2U)"
   },
   {
    "label": "S4.2O",
    "name": "OscInt.Statements.D4LimitOffsetStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.d4LimitOffset",
    "summary": "D4 limit uniform over bounded linear offsets.",
    "file": "OscInt/Statements/D4Uniform.lean",
    "commitment": "9f4ce9a064f994de72bdf931894b8f132f0c986d2e36e62684c0b5020068c405",
@@ -1599,7 +1599,7 @@
     "S4.2U",
     "S4.1′"
    ],
-   "snippet": "example (h : D4LimitOffsetStatement) := OscInt.API.D4UniformSanity.offset_sanity h",
+   "snippet": "example : D4LimitOffsetStatement := OscInt.API.d4LimitOffset",
    "status": "see docs/STATUS.md (row S4.2O)"
   }
  ]
