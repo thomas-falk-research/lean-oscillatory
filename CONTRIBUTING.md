@@ -79,10 +79,11 @@ in a pull request: bump `lakefile.toml`, `CITATION.cff`, `.zenodo.json` and `cod
 CHANGELOG heading (`tools/release_preflight.sh X.Y.Z` checks all of this locally, against the previous release tag,
 and prints the exact rows). After it merges, the owner dispatches `release-candidate` on `main` with the version
 (Actions → release-candidate → Run workflow): it re-runs preflight, the full replay and `ci.yml` on that commit,
-builds the assets with `SHA256SUMS` and a Sigstore build-provenance attestation, and prints one command,
-`tools/publish_release.sh vX.Y.Z <commit> <run id>`, to run first with `--dry-run`: it checks the run, the assets and
-their attestations before anything is public, then creates the tag and the GitHub release (CI never writes tags or
-releases; never create them by hand). Publishing triggers `post-release`: the tag must be on `main` and have a
+builds the assets with `SHA256SUMS` and a Sigstore build-provenance attestation, and prints the command
+`tools/publish_release.sh vX.Y.Z <commit> <run id>`, to run from a checkout of the release commit, first with
+`--dry-run`: it checks the run, the assets, the release body and the attestations before anything is public, then
+creates the tag and the release, as a draft until its assets are checked (CI never writes tags or releases; never
+create them by hand). Publishing triggers `post-release`: the tag must be on `main` and have a
 successful candidate run, the published assets must be exactly the attested ones, `examples/consumer-release` is
 built against the tag and checks every proved statement, and a pull request records
 `docs/release-notes/vX.Y.Z.commit` and moves the pins (merge it when `ci` and `verify` are green). Zenodo then mints

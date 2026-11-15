@@ -48,17 +48,19 @@ pins pull request needed a hand fix. After an audit of the release pipeline:
   the `CITATION.cff` schema, actionlint and the downstream consumer gate the release.
 - New `tools/publish_release.sh`: the owner's single publishing command. Before anything is public (Zenodo mints a
   permanent DOI on publishing) it checks the candidate run, the exact asset set, `SHA256SUMS`, that the assets equal
-  the files of the release commit, the release body, and each attestation pinned to `release-candidate.yml` on `main`
-  for that commit; then it tags, publishes and checks the published assets. `--dry-run` stops before the tag;
-  `--self-test` plants 8 defects.
+  the files of the release commit, that the release body is the one built from that commit's notes (the candidate run
+  builds it with the same function), each attestation pinned to `release-candidate.yml` on `main` for that commit,
+  and that no release exists and any tag is annotated and points at the commit; then it tags, creates the release as
+  a draft, checks the draft's assets and publishes it. `--dry-run` stops before the tag; `--self-test` plants 12
+  defects.
 - `tools/release_preflight.sh` now compares the release with the previous tag: the version is greater, a patch leaves
-  `stamps/statements.json` byte-identical, from 1.0.0 a minor changes no entry, and every changed entry's label is
-  named in the notes' and the CHANGELOG's statement changes. It also requires the three release dates to agree, every
-  `rev =` in the notes to be the new tag, and every `proved_by` theorem to be covered by a comparator configuration
-  (22 planted defects in its self-test).
+  `stamps/statements.json` byte-identical, from 1.0.0 a minor only adds entries or sets a `proved_by` that was null,
+  and every changed entry's label is named in the notes' and the CHANGELOG's statement changes. It also requires the
+  three release dates to agree, every `rev =` in the notes to be the new tag, and every `proved_by` theorem to be
+  covered by a comparator configuration (28 planted defects in its self-test, and the previous-tag order).
 - `post-release.yml`: attestations are verified with the signer workflow, source ref and commit pinned; the release
   must have exactly the three assets; the downstream check covers every proved statement instead of three; the pins
-  step runs only on publishing, does nothing if its branch exists, and also dispatches `verify.yml`.
+  step runs only on publishing, can be re-run after a partial failure, and also dispatches `verify.yml`.
 - The release candidate's calls of `verify.yml` and `ci.yml` have their own concurrency groups, so they no longer
   queue behind, or get replaced by, the push run of the same commit.
 - Earlier, at 43a13fb: the `ci` consumer job's timeout went from 60 to 90 minutes, and the pins step moves every pin

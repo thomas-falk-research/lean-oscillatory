@@ -85,13 +85,8 @@ jobs:
           mkdir -p dist body
           cp stamps/statements.json tools/oscint_check.py dist/
           (cd dist && sha256sum statements.json oscint_check.py > SHA256SUMS && cat SHA256SUMS)
-          {
-            echo "Release commit: \`$SHA\` — verified by release-candidate run ${{ github.run_id }} (full replay and CI on this commit)."
-            echo "Assets: \`SHA256SUMS\`; provenance: \`gh attestation verify <asset> --repo ${{ github.repository }} --signer-workflow ${{ github.repository }}/.github/workflows/release-candidate.yml --source-ref refs/heads/main --source-digest $SHA\`."
-            echo
-            sed -n '/^A minor release\|^A patch release\|^A major release/,/^## Publishing/p' "docs/release-notes/$TAG.md" | sed '$d'
-          } > body/notes.md
-          grep -q '^## Statement changes' body/notes.md || { echo "::error::the release body has no statement changes (notes layout?)"; exit 1; }
+          # the same function rebuilds the body on the owner's machine and compares it byte for byte
+          tools/publish_release.sh --body "$TAG" "$SHA" "${{ github.run_id }}" "${{ github.repository }}" > body/notes.md
       - name: Build provenance attestation of the assets (Sigstore)
         uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
         with:
@@ -114,8 +109,9 @@ jobs:
           cat <<CMDS | tee -a "$GITHUB_STEP_SUMMARY"
           ### $TAG is ready: commit \`$SHA\` passed preflight, the full replay and CI
 
-          From a clone of the repository, with \`gh\` logged in: first the checks alone, then the same command
-          without \`--dry-run\`, which checks again, tags, publishes and checks the published assets.
+          From a clone of the repository, with \`gh\` logged in, check out the release commit and run the checks alone;
+          then run the same command without \`--dry-run\`, which checks again, tags, creates the release as a draft,
+          checks its assets and publishes it. Never create the tag or the release by hand.
 
           \`\`\`bash
           git fetch origin && git switch --detach $SHA

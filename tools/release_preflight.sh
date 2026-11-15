@@ -20,7 +20,8 @@
 #   proved statement can be skipped by the comparator (verify.yml skips a configuration with nothing to check);
 # - against the previous release (the greatest tag vA.B.C below vX.Y.Z; `git fetch --tags` if none is found): the
 #   version is greater; the release class matches docs/policy.md (a patch leaves stamps/statements.json byte-identical;
-#   from 1.0.0 a minor changes or removes no entry); every added, removed or changed entry's label is named in the
+#   from 1.0.0 a minor only adds entries or sets a `proved_by` that was null); every added, removed or changed entry's
+#   label is named in the
 #   notes' `## Statement changes` section and in a `### Statement changes…` subsection of the CHANGELOG section.
 # It does not check CI or the network (the workflows and tools/publish_release.sh do).
 set -uo pipefail
@@ -92,14 +93,24 @@ else:
         if kind == "patch" and pbytes != cbytes:
             say(f"{tag} is a patch release after v{pv}, but stamps/statements.json differs from v{pv}'s; a patch "
                 "changes no statement entry or statement file (docs/policy.md): make it a minor release")
-        elif kind == "minor" and a[0] >= 1 and any(n in pe for n in changed):
-            say(f"{tag} is a minor release after v{pv} but changes or removes entries {labels}; from 1.0.0 that "
-                "needs a major release (docs/policy.md)")
+        elif kind == "minor" and a[0] >= 1:
+            # from 1.0.0 a minor adds entries; an existing one may change only by proved_by going from null to a name
+            def allowed(n):
+                if n not in pe: return True
+                if n not in ce: return False
+                p, c = dict(pe[n]), dict(ce[n])
+                return p.pop("proved_by", None) is None and c.pop("proved_by", None) is not None and p == c
+            bad_entries = sorted({pe[n]["label"] for n in changed if not allowed(n)})
+            if bad_entries:
+                say(f"{tag} is a minor release after v{pv} but changes or removes entries {bad_entries} beyond "
+                    "setting a null proved_by; from 1.0.0 that needs a major release (docs/policy.md)")
         ns = re.search(r"^## Statement changes[ \t]*$(.*?)(?=^## |\Z)", notes, re.M | re.S)
         nsec = ns.group(1) if ns else ""
         csec = "".join(re.findall(r"^### Statement changes[^\n]*$(.*?)(?=^##|\Z)", section, re.M | re.S))
         def named(label, text):
-            return re.search(r"(?<![\w′.\-])" + re.escape(label) + r"(?![\w′\-]|\.\w)", text) is not None
+            # a label ends where no label character follows: LS-D is not named by LS-D′, LS-D' or LS-D-V,
+            # S1 not by S1.k, S2.1 not by FE-S2.1
+            return re.search(r"(?<![\w′″'.\-])" + re.escape(label) + r"(?![\w′″'\-]|\.\w)", text) is not None
         for lab in labels:
             if not named(lab, nsec):
                 say(f"statement {lab} changed since v{pv} but is not named in the `## Statement changes` section "
@@ -191,10 +202,10 @@ self_test() {
     local got; check "$t/r" "$v" "${3-$pv}" "$t/prev.json" >/dev/null 2>&1; got=$?
     if [ "$got" -ne "$2" ]; then echo "release_preflight self-test: FAIL: $1 (exit $got, want $2)"; rc=1; fi
   }
-  # a previous release in which the first entry's proved_by differed
+  # a previous release in which the first entry's FIELD (default proved_by) was null
   prev_changed() {
-    python3 -I -c 'import json,sys; d=json.load(open(sys.argv[1])); d["statements"][0]["proved_by"]=None
-json.dump(d, open(sys.argv[1], "w"))' "$t/prev.json"
+    python3 -I -c 'import json,sys; d=json.load(open(sys.argv[1])); d["statements"][0][sys.argv[2]]=None
+json.dump(d, open(sys.argv[1], "w"))' "$t/prev.json" "${1:-proved_by}"
   }
   # the change named in the notes' and the CHANGELOG's statement-change sections (as NAME)
   name_it() {
@@ -227,9 +238,25 @@ json.dump(d, open(sys.argv[1], "w"))' "$t/prev.json"
   mk; prev_changed; printf '\n%s\n' "$label" >> "$t/r/docs/release-notes/v$v.md"
   printf '\n### Statement changes\n\n%s changed.\n' "$label" >> "$t/r/CHANGELOG.md"
   want "minor, named only in an older CHANGELOG section" 1 0.8.0
-  v=1.9.9; mk; prev_changed; name_it "$label"; want "minor from 1.0 changing an entry" 1 1.8.0
-  mk; prev_changed; name_it "$label"; want "major from 1.0 changing an entry" 0 0.9.0; v=0.9.9
-  [ "$rc" -eq 0 ] && echo "release_preflight self-test: PASS (22 planted defects detected, 3 clean copies accepted)"
+  # label boundaries: each text names a longer or different label only
+  local other
+  for other in "FE-$label" "$label.k" "$label-V" "$label'" "$label$(printf '\xe2\x80\xb3')"; do
+    mk; prev_changed; name_it "$other"; want "minor, only '$other' named" 1 0.8.0
+  done
+  # the notes' statement-changes section ends at the next `## ` heading
+  mk; prev_changed; printf '\n## Evidence\n\n%s\n' "$label" >> "$t/r/docs/release-notes/v$v.md"
+  sed -i "s/^None\.\$/$label changed./" "$t/r/CHANGELOG.md"; want "minor, named only after the notes' section" 1 0.8.0
+  # from 1.0.0 a minor may set a null proved_by, and nothing else
+  v=1.9.9; mk; prev_changed; name_it "$label"; want "minor from 1.0 setting a null proved_by" 0 1.8.0
+  mk; prev_changed commitment; name_it "$label"; want "minor from 1.0 changing a commitment" 1 1.8.0
+  mk; prev_changed; name_it "$label"; want "major (0.9.0 to 1.9.9) changing an entry" 0 0.9.0; v=0.9.9
+  # previous(): the greatest vA.B.C below, numerically, ignoring other tags
+  git -C "$t" init -q tags && git -C "$t/tags" -c user.name=t -c user.email=t@t commit -q --allow-empty -m t
+  local x; for x in v0.9.0 v0.10.1 v1.0.0-rc1 vfoo v2.0.0; do git -C "$t/tags" tag "$x"; done
+  [ "$(previous "$t/tags" 1.0.0)" = 0.10.1 ] || { echo "release_preflight self-test: FAIL: previous below 1.0.0"; rc=1; }
+  [ "$(previous "$t/tags" 0.10.0)" = 0.9.0 ] || { echo "release_preflight self-test: FAIL: previous below 0.10.0"; rc=1; }
+  [ -z "$(previous "$t/tags" 0.9.0)" ] || { echo "release_preflight self-test: FAIL: nothing below 0.9.0"; rc=1; }
+  [ "$rc" -eq 0 ] && echo "release_preflight self-test: PASS (28 planted defects detected, 4 clean copies accepted, 3 previous-tag checks)"
   return "$rc"
 }
 
