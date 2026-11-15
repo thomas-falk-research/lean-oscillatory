@@ -4,9 +4,11 @@ For a reader who saw nothing. Read `docs/lessons.md` first (52 entries); every r
 
 ## Start here (session 12, 2026-11-15)
 
-**State.** 65 pinned statements; 63 machine-checked as stated; the two of batch D4U (S4.2U, S4.2O: the D4 limit
-uniformly over C²-totally bounded amplitude families and over bounded linear offsets) are proved in Lean and
-post-proof reviewed; their isolated `make verify-all` is the next step. Why: a downstream project (two-dimensional
+**State.** 65 pinned statements; all 65 machine-checked as stated. The last two, batch D4U (S4.2U, S4.2O: the D4
+limit uniformly over C²-totally bounded amplitude families and over bounded linear offsets), since the isolated
+`make verify-all` of 720363d (RESULT PASS, 2026-11-15 15:00:14–18:04:12Z, comparator-D4U accepted by six kernels;
+`docs/replay/2026-11-15-session12-D4U-verify-all.txt`; two cut-off attempts in
+`docs/replay/2026-11-15-session12-D4U-partial.txt`). Why: a downstream project (two-dimensional
 split-step quantum walks) needs the D4 limit along lattice sites whose offset from the moving D4 point stays bounded.
 
 **Batch D4U, in order** (each step with its record):
@@ -28,13 +30,14 @@ control (C⁰ in place of C² in the net) is NOT DETECTED; dropping uniformity i
 detect.
 
 **Next, in order:**
-1. The isolated `make verify-all` on the frozen tree (detached, with a keep-busy watcher; lessons 49, 50), its record
-   under `docs/replay/`, then the STATUS rows, README and CHANGELOG at "machine-checked as stated".
-2. Owner decision: the prepared v0.6.0 notes (`docs/release-notes/v0.6.0.md`) were written before batch D4U and say
-   "all 63 statements". Publishing from a `main` that includes this batch needs either those notes updated (two new
-   entries, S4.2U and S4.2O) or a separate release; the downstream project needs a tag that contains D4U.
-3. The API docstrings of `d4LimitUniform`, `d4LimitOffset` cite no textbook statement (CONTRIBUTING step 11).
-4. OpenTimestamps for both D4U stamps is pending (upgrade when the calendars confirm).
+1. Owner: publish v0.6.0. Owner decision 2026-11-15: batch D4U is part of v0.6.0. The notes
+   (`docs/release-notes/v0.6.0.md`) and the CHANGELOG section now name S4.2U and S4.2O, the `stamps/statements.json` pin
+   is recomputed, and the acceptance replay is the one of 720363d; `tools/release_preflight.sh 0.6.0` passes on the
+   branch. Publishing steps unchanged (the notes, "Publishing"). The downstream project needs this tag.
+2. The API docstrings of `d4LimitUniform`, `d4LimitOffset` cite no textbook statement (CONTRIBUTING step 11).
+3. OpenTimestamps for both D4U stamps is pending (upgrade when the calendars confirm).
+4. The machine's disk allowance ran out during the replay (lessons 50-style cut-off): check `df` before a replay and
+   keep at least 15 GB free.
 
 ## Start here (session 11, 2026-11-14)
 
