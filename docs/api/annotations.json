@@ -1005,6 +1005,40 @@
    ],
    "snippet_kind": "type",
    "snippet": "example : LatticeSchrodingerDecayStatement := OscInt.API.latticeSchrodingerDecay"
+  },
+  "S4.2U": {
+   "hypotheses": [
+    "φ C⁴, φ(0) = 0, Dφ(0) = 0, D²φ(0) = 0, disc ≠ 0 (D4LimitPhase)",
+    "S C²-totally bounded on B̄(0, δ) (AmpTotallyBounded), δ depending on φ only"
+   ],
+   "conclusion": "t^{2/3} oscInt2(tφ, A) → c_C A(0) uniformly for A ∈ S",
+   "rate": "t^{-2/3} (exact leading term; no rate of convergence)",
+   "uniform_over": "A ∈ S (a C²-totally bounded family)",
+   "smoothness": "C⁴ on ℝ²",
+   "see_also": [
+    "S4.2",
+    "S4.2O",
+    "S4.1′"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : D4LimitUniformStatement := OscInt.API.d4LimitUniform"
+  },
+  "S4.2O": {
+   "hypotheses": [
+    "φ C⁴, φ(0) = 0, Dφ(0) = 0, D²φ(0) = 0, disc ≠ 0 (D4LimitPhase)",
+    "A C² with AmpBound 2 (B̄(0, δ)) A M, δ depending on φ only"
+   ],
+   "conclusion": "t^{2/3} oscInt2(tφ + y·κ, A) → c_C A(0) uniformly for ‖y‖ ≤ R (max norm)",
+   "rate": "t^{-2/3} (exact leading term; no rate of convergence)",
+   "uniform_over": "bounded linear offsets y, ‖y‖ ≤ R",
+   "smoothness": "C⁴ on ℝ²",
+   "see_also": [
+    "S4.2",
+    "S4.2U",
+    "S4.1′"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : D4LimitOffsetStatement := OscInt.API.d4LimitOffset"
   }
  },
  "helpers": [

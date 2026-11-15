@@ -19,5 +19,6 @@ import Blueprint.LatticeCubeRoot
 import Blueprint.Hypercubic
 import Blueprint.LatticeGroup
 import Blueprint.Vector
+import Blueprint.D4Uniform
 
 /-! Root of the blueprint library: intermediate propositions (definitions only, no proofs). -/

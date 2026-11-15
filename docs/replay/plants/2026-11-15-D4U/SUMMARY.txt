@@ -1,0 +1,33 @@
+ok-U-limit-zero: accepted (want accepted)
+plant-U-limit-zero: rejected (recorded)
+    first error: plant-U-limit-zero.lean:87:7: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-U-limit-zero: accepted (want accepted)
+ok-U-limit-point: accepted (want accepted)
+plant-U-limit-point: rejected (recorded)
+    first error: plant-U-limit-point.lean:87:38: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-U-limit-point: accepted (want accepted)
+ok-U-not-uniform: accepted (want accepted)
+plant-U-not-uniform: rejected (recorded)
+    first error: plant-U-not-uniform.lean:84:9: error: Tactic `rcases` failed: `x✝ : ∀ A ∈ scaleFamily (bumpC δ hδ),
+ok-ATB-finite: accepted (want accepted)
+plant-ATB-finite: rejected (recorded)
+    first error: plant-ATB-finite.lean:84:64: error: Application type mismatch: The argument
+witness-ATB-finite: accepted (want accepted)
+ok-O-limit-zero: accepted (want accepted)
+plant-O-limit-zero: rejected (recorded)
+    first error: plant-O-limit-zero.lean:90:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-O-limit-zero: accepted (want accepted)
+ok-O-rate: accepted (want accepted)
+plant-O-rate: rejected (recorded)
+    first error: plant-O-rate.lean:91:2: error: Tactic `assumption` failed
+witness-O-rate: accepted (want accepted)
+ok-O-moving: accepted (want accepted)
+plant-O-moving: rejected (recorded)
+    first error: plant-O-moving.lean:91:2: error: Tactic `assumption` failed
+ok-O-unbounded: accepted (want accepted)
+plant-O-unbounded: rejected (recorded)
+    first error: plant-O-unbounded.lean:89:10: error: Function expected at
+ok-P-no-disc: accepted (want accepted)
+plant-P-no-disc: rejected (recorded)
+    first error: plant-P-no-disc.lean:75:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-P-no-disc: accepted (want accepted)

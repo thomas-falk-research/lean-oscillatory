@@ -1,0 +1,32 @@
+ok-U-not-uniform-seq: accepted (want accepted)
+plant-U-not-uniform-seq: rejected (recorded)
+    first error: plant-U-not-uniform-seq.lean:133:9: error: Tactic `rcases` failed: `x✝ : ∀ A ∈ seqFamily δ hδ,
+ok-ATB-finite-seq: accepted (want accepted)
+plant-ATB-finite-seq: rejected (recorded)
+    first error: plant-ATB-finite-seq.lean:147:35: error: Application type mismatch: The argument
+witness-ATB-finite-seq: accepted (want accepted)
+ok-U-conj: accepted (want accepted)
+plant-U-conj: rejected (recorded)
+    first error: plant-U-conj.lean:136:2: error: Type mismatch: The rewritten hypothesis
+witness-U-conj: accepted (want accepted)
+ok-ATB-no-budget: accepted (want accepted)
+plant-ATB-no-budget: rejected (recorded)
+    first error: plant-ATB-no-budget.lean:124:9: error: Tactic `rcases` failed: `a✝ : ∀ (η : ℝ),
+witness-ATB-no-budget: accepted (want accepted)
+ok-ATB-C0: accepted (want accepted)
+plant-ATB-C0: accepted (recorded)
+ok-P-neg: accepted (want accepted)
+plant-P-neg: rejected (recorded)
+    first error: plant-P-neg.lean:125:27: error: unsolved goals
+witness-P-neg: accepted (want accepted)
+ok-O-moving: accepted (want accepted)
+plant-O-moving: rejected (recorded)
+    first error: plant-O-moving.lean:141:2: error: Tactic `assumption` failed
+witness-O-moving: accepted (want accepted)
+ok-O-unbounded: accepted (want accepted)
+plant-O-unbounded: rejected (recorded)
+    first error: plant-O-unbounded.lean:139:10: error: Function expected at
+witness-O-unbounded: accepted (want accepted)
+ok-O-forall-y: accepted (want accepted)
+plant-O-forall-y: rejected (recorded)
+    first error: plant-O-forall-y.lean:137:9: error: Tactic `rcases` failed: `x✝ : ∀ (y : ℝ × ℝ),

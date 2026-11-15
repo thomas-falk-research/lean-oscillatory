@@ -1,0 +1,27 @@
+# Batch D4U integration checks (lead, session 12): run 2026-11-15T14:29:28Z on git HEAD 07ff140, tree clean
+# toolchain leanprover/lean4:v4.35.0; leanchecker sha256 12c38901cdbfab178f1bf6145dd30012e9a3b2c11ca695292a5884fa3cbaddb6
+leanchecker OscInt.Statements.D4Uniform rc=0 6s 
+leanchecker OscInt.Front.D4UniformSanity rc=0 7s 
+leanchecker Blueprint.D4Uniform rc=0 7s 
+leanchecker OscInt.Front.D4UniformAssembly rc=0 7s 
+leanchecker OscInt.Front.D4UniformParts rc=0 6s 
+leanchecker OscInt.Front.D4UniformModulation rc=0 6s 
+leanchecker OscInt.Front.D4UniformFinal rc=0 7s 
+# axiom audit (build/axioms.out of the make lean run on 07ff140's tree):
+AUDIT-TOTAL 1352 1352
+AUDIT OscInt.API.d4LimitOffset propext,Classical.choice,Quot.sound
+AUDIT OscInt.API.d4LimitUniform propext,Classical.choice,Quot.sound
+AUDIT OscInt.D4UniformAux.commonRadius propext,Classical.choice,Quot.sound
+AUDIT OscInt.D4UniformAux.d4LimitOffset_of propext,Classical.choice,Quot.sound
+AUDIT OscInt.D4UniformAux.d4LimitUniform_of propext,Classical.choice,Quot.sound
+AUDIT OscInt.D4UniformAux.integrable_osc propext,Classical.choice,Quot.sound
+AUDIT OscInt.D4UniformAux.linear propext,Classical.choice,Quot.sound
+AUDIT OscInt.D4UniformAux.modulation propext,Classical.choice,Quot.sound
+AUDIT OscInt.D4UniformAux.Aux.ampBound_nonneg propext,Classical.choice,Quot.sound
+AUDIT OscInt.D4UniformAux.Aux.err_split propext,Classical.choice,Quot.sound
+AUDIT OscInt.D4UniformAux.ModAux.contDiff_modF propext,Classical.choice,Quot.sound
+AUDIT OscInt.D4UniformAux.ModAux.contDiff_slice propext,Classical.choice,Quot.sound
+AUDIT OscInt.D4UniformAux.ModAux.continuous_slice propext,Classical.choice,Quot.sound
+AUDIT OscInt.D4UniformAux.ModAux.exists_rho propext,Classical.choice,Quot.sound
+AUDIT OscInt.D4UniformAux.ModAux.iteratedFDeriv_slice propext,Classical.choice,Quot.sound
+AUDIT OscInt.D4UniformAux.ModAux.tsupport_slice propext,Classical.choice,Quot.sound

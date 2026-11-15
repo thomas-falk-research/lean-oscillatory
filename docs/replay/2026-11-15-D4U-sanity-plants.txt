@@ -1,0 +1,143 @@
+# Planted controls for batch D4U (OscInt/Front/D4UniformSanity.lean), session-12 lead, run 2026-11-15T12:03:21Z to 2026-11-15T12:06:01Z: before the
+# D4U stamp and before any Lean proof of a D4U statement in this repository (lessons 33). Generator:
+# docs/replay/plants/2026-11-15-D4U/plants_d4u.py.txt (as batch LS's: one textual mutation of a copied def, compiled with
+# `lake env lean -DautoImplicit=false` against `import OscInt.Front.D4UniformSanity` built from git HEAD 5bf645a, clean tree;
+# the witness files also import the proved S4.2 and S4.3, `OscInt.D4.LimitFinal` and `OscInt.D4.ConstantPosFinal`).
+# SHA-256 at run time (lessons 48):
+#   5861245fc73967e9b9f3374a1c5c7b83def8b197f7d17cfd65cc33d72c6c53db  OscInt/Front/D4UniformSanity.lean
+#   230e814b5bc471edd94a013351f83e5abc8c506758e333e7414402dc574c7a6a  OscInt/Statements/D4Uniform.lean
+#   95f02fc763bab2b27b1289787cf8f451ab24636282b9a61e83c190fc2cfd96e9  <scratch>/plants_d4u.py
+# Classification (lessons 44): INSTANCE (the generic datum no longer gives the sanity conclusion; not a proof that the
+# plant is false), WITNESS (a compiled theorem refutes the planted def, from the proved S4.2 and S4.3; for the phase
+# hypothesis, a compiled proof that the planted def holds for x³, where the bite says the original fails), NOT DETECTED.
+#   U-limit-zero   INSTANCE + WITNESS (¬ planted S4.2U: on the singleton family of a bump, the planted limit 0 contradicts
+#                  S4.2's limit c_C ≠ 0)
+#   U-limit-point  INSTANCE + WITNESS (A(1, 0) in place of A(0): the bump of radius ≤ 1/2 vanishes at (1, 0), so the
+#                  planted limit is 0, contradicting S4.2)
+#   U-not-uniform  INSTANCE (∃T after ∀A: a weaker, true statement; the uniform conclusion on the infinite scaling family
+#                  is no longer derivable)
+#   ATB-finite     INSTANCE + WITNESS (S ⊆ B in place of B ⊆ S: the infinite family {c · bump : c ∈ [1, 2]} is not
+#                  planted-totally bounded)
+#   O-limit-zero   INSTANCE + WITNESS (¬ planted S4.2O at y = 0, by S4.2)
+#   O-rate         INSTANCE + WITNESS (t^{1/2} in place of t^{2/3}: with S4.2, t^{1/2}·I = t^{−1/6}·t^{2/3}·I → 0 ≠ c_C)
+#   O-moving       INSTANCE (offset t·y·κ, a moving critical point; false for y ≠ 0, not refuted here)
+#   O-unbounded    INSTANCE (no bound on y; false, not refuted here)
+#   P-no-disc      INSTANCE + WITNESS (disc ≠ 0 dropped: x³ then satisfies the planted phase hypotheses)
+# Not planted: mutations of `cubicCoeffs`, `disc` and `d4Constant` (frozen in S4 and pinned by its own sanity layer).
+#
+ok-U-limit-zero: accepted (want accepted)
+plant-U-limit-zero: rejected (recorded)
+    first error: plant-U-limit-zero.lean:87:7: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-U-limit-zero: accepted (want accepted)
+ok-U-limit-point: accepted (want accepted)
+plant-U-limit-point: rejected (recorded)
+    first error: plant-U-limit-point.lean:87:38: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-U-limit-point: accepted (want accepted)
+ok-U-not-uniform: accepted (want accepted)
+plant-U-not-uniform: rejected (recorded)
+    first error: plant-U-not-uniform.lean:84:9: error: Tactic `rcases` failed: `x✝ : ∀ A ∈ scaleFamily (bumpC δ hδ),
+ok-ATB-finite: accepted (want accepted)
+plant-ATB-finite: rejected (recorded)
+    first error: plant-ATB-finite.lean:84:64: error: Application type mismatch: The argument
+witness-ATB-finite: accepted (want accepted)
+ok-O-limit-zero: accepted (want accepted)
+plant-O-limit-zero: rejected (recorded)
+    first error: plant-O-limit-zero.lean:90:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-O-limit-zero: accepted (want accepted)
+ok-O-rate: accepted (want accepted)
+plant-O-rate: rejected (recorded)
+    first error: plant-O-rate.lean:91:2: error: Tactic `assumption` failed
+witness-O-rate: accepted (want accepted)
+ok-O-moving: accepted (want accepted)
+plant-O-moving: rejected (recorded)
+    first error: plant-O-moving.lean:91:2: error: Tactic `assumption` failed
+ok-O-unbounded: accepted (want accepted)
+plant-O-unbounded: rejected (recorded)
+    first error: plant-O-unbounded.lean:89:10: error: Function expected at
+ok-P-no-disc: accepted (want accepted)
+plant-P-no-disc: rejected (recorded)
+    first error: plant-P-no-disc.lean:75:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-P-no-disc: accepted (want accepted)
+
+# Second run, after the blind pre-proof reviews (answers review/2026-11-15-D4U-pre-proof-answers.md; statements unchanged,
+# OscInt/Statements/D4Uniform.lean SHA-256 230e814b5bc471edd94a013351f83e5abc8c506758e333e7414402dc574c7a6a as above), run
+# 2026-11-15T13:17:26Z to 2026-11-15T13:19:47Z, git HEAD 86f497f with the extended sanity layer in the working tree.
+# Generator: docs/replay/plants/2026-11-15-D4U/second-run/plants_d4u_2.py.txt (first run's, with the plant list below and
+# preamble helpers for complex scalars, offsets and the proved S2.1 `OscInt.nonStationary`). SHA-256 at run time:
+#   548dea1af5dc8bf12eda73ca1fbd82c1f61e9ddd793e321e93dd5dacae2fd577  OscInt/Front/D4UniformSanity.lean
+#   e7cb30cd87c34a3a8c16340a13793650d68135027f160fccc5487218f36fd09f  <scratch>/plants_d4u_2.py
+# Reclassification of the first run (review A, findings 1 and 2):
+#   U-not-uniform  NOT DETECTED at the datum `scaleFamily`: that family is linear in c, so its uniform conclusion follows
+#                  from the planted (pointwise) statement on the single bump; the first run's rejection was the copied
+#                  proof's form only. Superseded by U-not-uniform-seq below.
+#   ATB-finite     WITNESS at the level of the definition (the planted definition excludes `scaleFamily`), NOT DETECTED at
+#                  the level of the statement on that datum (same linearity reason). See ATB-finite-seq below.
+#   O-moving, O-unbounded  NOT DETECTED in the first run (the planted statements are stronger and imply the conclusion of
+#                  `offset_sanity`, so no sanity theorem can reject them; the rejection was script-only, lessons 44).
+#                  Refuted by compiled witnesses in this run.
+# Classification of the second run:
+#   U-not-uniform-seq  INSTANCE (∀A∃T: a weaker statement, true given S4.1′ and S4.2, so it cannot be refuted; on the
+#                  datum `seqFamily`, which is not finite-dimensional, the uniform conclusion is not derivable from the
+#                  planted statement by linearity)
+#   ATB-finite-seq INSTANCE + WITNESS at the level of the definition (`seqFamily_totallyBounded` fails; the planted
+#                  definition excludes the infinite family `scaleFamily`, compiled)
+#   U-conj         INSTANCE + WITNESS (conj(A(0)) in place of A(0): on the singleton {(2 + i) · bump}, the planted limit
+#                  c_C (2 − i) contradicts S4.2's c_C (2 + i), c_C ≠ 0)
+#   ATB-no-budget  INSTANCE + WITNESS (budget conjunct dropped: `const_not_totallyBounded` fails, and the planted
+#                  definition holds for the constant 1, compiled)
+#   ATB-C0         NOT DETECTED (C⁰ in place of C² in the net: the bite uses order 0 only; the planted S4.2U is false
+#                  (review A: an oscillating family that is C⁰- but not C²-totally bounded), but no witness is compiled;
+#                  the proof of S4.2U consumes the C² budget through S4.1′, which pins the order)
+#   P-neg          INSTANCE + WITNESS (disc < 0 in place of disc ≠ 0: `phase_elliptic` fails, and the planted definition
+#                  excludes x³ + 2x²y − 3xy² − 5y³, disc = 169, compiled)
+#   O-moving       INSTANCE + WITNESS (offset t·y·κ: at y = (100, 0) the phase t(φ + 100κ₁) has no critical point; by
+#                  the proved S2.1, t^{2/3}·I = O(t^{−1/3}) → 0, contradicting the planted limit c_C ≠ 0)
+#   O-unbounded    INSTANCE + WITNESS (no bound on y: at y = t·(100, 0) the same non-stationary argument)
+#   O-forall-y     INSTANCE (∀y∃T: a weaker statement, true given S4.2O; `offset_sanity`, whose offsets vary with t,
+#                  is not derivable from it)
+# Not planted (review A, finding 4, NIT part): φ(0) = 0 and Dφ(0) = 0 in `D4LimitPhase` (the bundle is S4.2's
+# hypotheses verbatim); mutations of `cubicCoeffs`, `disc`, `d4Constant` (frozen in S4).
+#
+ok-U-not-uniform-seq: accepted (want accepted)
+plant-U-not-uniform-seq: rejected (recorded)
+    first error: plant-U-not-uniform-seq.lean:133:9: error: Tactic `rcases` failed: `x✝ : ∀ A ∈ seqFamily δ hδ,
+ok-ATB-finite-seq: accepted (want accepted)
+plant-ATB-finite-seq: rejected (recorded)
+    first error: plant-ATB-finite-seq.lean:147:35: error: Application type mismatch: The argument
+witness-ATB-finite-seq: accepted (want accepted)
+ok-U-conj: accepted (want accepted)
+plant-U-conj: rejected (recorded)
+    first error: plant-U-conj.lean:136:2: error: Type mismatch: The rewritten hypothesis
+witness-U-conj: accepted (want accepted)
+ok-ATB-no-budget: accepted (want accepted)
+plant-ATB-no-budget: rejected (recorded)
+    first error: plant-ATB-no-budget.lean:124:9: error: Tactic `rcases` failed: `a✝ : ∀ (η : ℝ),
+witness-ATB-no-budget: accepted (want accepted)
+ok-ATB-C0: accepted (want accepted)
+plant-ATB-C0: accepted (recorded)
+ok-P-neg: accepted (want accepted)
+plant-P-neg: rejected (recorded)
+    first error: plant-P-neg.lean:125:27: error: unsolved goals
+witness-P-neg: accepted (want accepted)
+ok-O-moving: accepted (want accepted)
+plant-O-moving: rejected (recorded)
+    first error: plant-O-moving.lean:141:2: error: Tactic `assumption` failed
+witness-O-moving: accepted (want accepted)
+ok-O-unbounded: accepted (want accepted)
+plant-O-unbounded: rejected (recorded)
+    first error: plant-O-unbounded.lean:139:10: error: Function expected at
+witness-O-unbounded: accepted (want accepted)
+ok-O-forall-y: accepted (want accepted)
+plant-O-forall-y: rejected (recorded)
+    first error: plant-O-forall-y.lean:137:9: error: Tactic `rcases` failed: `x✝ : ∀ (y : ℝ × ℝ),
+
+# Correction after the post-proof reviews (2026-11-15, review/2026-11-15-D4U-post-proof-answers.md, adversarial finding 4).
+# By lessons 44 a plant counts as rejected only if the planted claim is shown false. Of the second run, only U-conj,
+# O-moving and O-unbounded have witnesses refuting the planted statement; ATB-finite-seq and P-neg have witnesses about the
+# planted definition only (their planted statements are true weakenings); ATB-no-budget's witness shows the planted
+# definition admits the constant 1 (the falsity of the planted statement is not compiled; the generated theorem name
+# `witness_not_AmpTotallyBounded` is the generator's, the theorem proves the positive statement); U-not-uniform-seq and
+# O-forall-y are true weakenings, rejected on data and not counted. Of the first run, U-limit-zero, U-limit-point,
+# O-limit-zero, O-rate and P-no-disc have refuting witnesses (P-no-disc at the definition level: x³ satisfies the planted
+# phase hypotheses). A plant that drops the uniformity is a true weakening: no sanity layer can detect it semantically;
+# the proofs pin it. The ATB-C0 remark "the proof pins the order" above is an argument, not a detection.

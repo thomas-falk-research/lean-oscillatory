@@ -385,3 +385,17 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     (`docs/replay/2026-11-14-session11-d760beb-partial.txt`, `docs/replay/2026-11-14-session11-1bc377b-partial.txt`) and
     the records of the third and fourth runs (`docs/replay/2026-11-14-session11-LS-verify-all.txt`,
     `docs/replay/2026-11-14-session11-LS-final-verify-all.txt`), whose watchers have no gap longer than two minutes.
+51. **Assessing an external packet's Lean drafts before writing the statements costs the independence claim, and an
+    unrecorded assessment costs the record.** Batch D4U (session 12): the lead elaborated an external packet's statement
+    drafts and its blueprint (with a compiled reduction of both statements to S4.1′ and S4.2) in scratch, then wrote
+    the statements fresh and followed the packet's decomposition in the route. The records first said "no proof before
+    the reviews" held for the lead's Lean and that the route was the lead's; the adversarial post-proof referee found
+    both overstated and no record of the packet or of the scratch work (MAJOR ×2). Rule: when a packet arrives with
+    proofs, write its record (what it contained, what was compiled, when, and how the batch relates to it) in the same
+    session, before the statements are frozen, and state the order claim at the strength the facts have: "no Lean
+    proof in the repository before the reviews were answered and stamped". Check: `review/2026-11-15-D4U-packet-answers.md`.
+52. **`HasCompactSupport.mul_left` against a pointwise lambda target times out at this pin.** Proving
+    `HasCompactSupport (fun k => e k * F k)` from `HasCompactSupport F` with `hF.mul_left` spent 1.6M heartbeats in
+    `isDefEq` (unifying `f * f'` with the lambda), in a file importing the whole library. Rule: derive it from
+    `tsupport_mul_subset_right` (stated for the lambda) and `IsCompact.of_isClosed_subset`. Check:
+    `OscInt.D4UniformAux.integrable_osc` (`OscInt/Front/D4UniformParts.lean`).

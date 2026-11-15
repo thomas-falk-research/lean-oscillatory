@@ -1,0 +1,27 @@
+/tmp/claude-0/-home-user/54a93ecd-bca7-517d-a02d-9367d35b845d/scratchpad/plants_out/plant-U-limit-zero.lean:87:7: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  cubicCoeffs (genCubic 1 2 3 5)
+in the target expression
+  ‖↑(t ^ (2 / 3)) * oscInt2 (fun κ => t * genCubic 1 2 3 5 κ) (↑c • bumpC δ hδ) - 0‖ < ε
+
+h : P_D4LimitUniformStatement
+δ : ℝ
+hδ : δ > 0
+hU :
+  ∀ (S : Set (ℝ × ℝ → ℂ)),
+    AmpTotallyBounded (Metric.closedBall 0 δ) S →
+      ∀ (ε : ℝ),
+        0 < ε → ∃ T, ∀ (t : ℝ), T ≤ t → ∀ A ∈ S, ‖↑(t ^ (2 / 3)) * oscInt2 (fun κ => t * genCubic 1 2 3 5 κ) A - 0‖ < ε
+M : ℝ
+hM : AmpBound 2 (Metric.closedBall 0 δ) (bumpC δ hδ) M
+ε : ℝ
+hε : 0 < ε
+T : ℝ
+hT :
+  ∀ (t : ℝ),
+    T ≤ t → ∀ A ∈ scaleFamily (bumpC δ hδ), ‖↑(t ^ (2 / 3)) * oscInt2 (fun κ => t * genCubic 1 2 3 5 κ) A - 0‖ < ε
+t : ℝ
+ht : T ≤ t
+c : ℝ
+hc : c ∈ Set.Icc 1 2
+this : ‖↑(t ^ (2 / 3)) * oscInt2 (fun κ => t * genCubic 1 2 3 5 κ) (↑c • bumpC δ hδ) - 0‖ < ε
+⊢ ‖↑(t ^ (2 / 3)) * oscInt2 (fun κ => t * genCubic 1 2 3 5 κ) (↑c • bumpC δ hδ) - ↑(d4Constant (1, 2, 3, 5)) * ↑c‖ < ε

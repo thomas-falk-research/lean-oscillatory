@@ -6,11 +6,13 @@ or `proved_by` name. Every release lists its statement changes, even when there 
 
 ## v0.6.0 — 2026-11-15
 
-A minor release. Before 1.0.0 a minor release may change statements; this one changes no statement's text, file,
-commitment or stamp. It sets `proved_by` for the four statements of batch LS, which were stated, frozen and reviewed
-in v0.5.0 and are now proved and machine-checked as stated (`docs/policy.md`: `null` → a theorem is a minor change).
-All 63 statements are now machine-checked as stated (`docs/STATUS.md`). Compared with the v0.5.0 tag on 2026-11-14,
-field for field, the only change in `stamps/statements.json` is these four `proved_by` fields;
+A minor release. Before 1.0.0 a minor release may change statements; this one changes no existing statement's text,
+file, commitment or stamp. It sets `proved_by` for the four statements of batch LS, which were stated, frozen and
+reviewed in v0.5.0 and are now proved and machine-checked as stated (`docs/policy.md`: `null` → a theorem is a minor
+change), and adds the two statements of batch D4U, stated, frozen, reviewed, proved and machine-checked as stated
+since v0.5.0. All 65 statements are now machine-checked as stated (`docs/STATUS.md`). Compared with the v0.5.0 tag on
+2026-11-14, field for field, the changes in `stamps/statements.json` are these four `proved_by` fields and the two new
+entries;
 `tools/oscint_check.py` is byte-identical to v0.5.0's. Toolchain `leanprover/lean4:v4.35.0` and Mathlib
 `56a005855ea17e0b0958f73ec801ae140b0a1679`, both unchanged. Release notes and pins: `docs/release-notes/v0.6.0.md`.
 
@@ -22,6 +24,10 @@ goes from `null` to a theorem for
 - LS-K `LatticeSchrodingerKernelStatement`: `OscInt.API.latticeSchrodingerKernel`;
 - LS-D `LatticeSchrodingerDispersiveStatement`: `OscInt.API.latticeSchrodingerDispersive`;
 - LS-D′ `LatticeSchrodingerDecayStatement`: `OscInt.API.latticeSchrodingerDecay`.
+
+Batch D4U (`OscInt/Statements/D4Uniform.lean`, stamp `stamps/20261115T122915Z-33c56db38f65`): two new entries,
+- S4.2U `D4LimitUniformStatement` (`proved_by` `OscInt.API.d4LimitUniform`);
+- S4.2O `D4LimitOffsetStatement` (`proved_by` `OscInt.API.d4LimitOffset`).
 
 No other entry changed.
 
@@ -36,8 +42,20 @@ mechanical changes (`docs/replay/2026-11-14-LS-packet-repairs.diff`; disclosure 
 Isolated replay of 35dc5c0, after the post-review Lean changes (docstrings, one import, the local lemma `box_volume`):
 `docs/replay/2026-11-14-session11-LS-final-verify-all.txt`, comparator-LS accepted by six kernels.
 
+Batch D4U: stated, frozen and stamped (33c56db), blind-reviewed (answers `review/2026-11-15-D4U-pre-proof-answers.md`,
+review stamp `stamps/20261115T133952Z-9e9c6245f582`), route `docs/proof-D4U.md` (route referee SOUND), proved in Lean
+(`OscInt/Front/D4Uniform{Assembly,Parts,Modulation,Final}.lean`), post-proof reviews answered
+(`review/2026-11-15-D4U-post-proof-answers.md`). The question, a hand proof and Lean drafts of the same shape came from
+an external research packet, disclosed (`review/2026-11-15-D4U-packet-answers.md`). Isolated replay of 720363d: `docs/replay/2026-11-15-session12-D4U-verify-all.txt`.
+
 ### Added
 
+- `examples/consumer/ConsumerD4Uniform.lean`: unconditionally, the D4 limit along offsets that move with t (lattice
+  rounding) with the closed-form constant, and the eventual lower bound it gives through the sharpness lemma SH.
+
+- `OscInt/Front/D4UniformSanity.lean`: sanity theorems through the D4U statement constants, with a family that is not
+  finite-dimensional, bites, and planted controls (`docs/replay/2026-11-15-D4U-sanity-plants.txt`).
+- `numerics/review/d4u_interface_checks.py`.
 - `examples/consumer/ConsumerLatticeSchrodinger.lean`: unconditional time derivatives of the LS kernel at `t = 0`.
 
 ### Release pipeline

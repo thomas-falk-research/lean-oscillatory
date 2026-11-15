@@ -1551,6 +1551,56 @@
    ],
    "snippet": "example : LatticeSchrodingerDecayStatement := OscInt.API.latticeSchrodingerDecay",
    "status": "see docs/STATUS.md (row LS-D′)"
+  },
+  {
+   "label": "S4.2U",
+   "name": "OscInt.Statements.D4LimitUniformStatement",
+   "proved_by": "OscInt.API.d4LimitUniform",
+   "summary": "D4 limit uniform over a C²-totally bounded family of amplitudes.",
+   "file": "OscInt/Statements/D4Uniform.lean",
+   "commitment": "f06d6098e06f86ff9c054dec9004ea8c12e6241d4fb3c7fc33969c87ee51d289",
+   "stamp": "stamps/20261115T122915Z-33c56db38f65",
+   "lean_statement": "def D4LimitUniformStatement : Prop :=\n  ∀ φ : ℝ × ℝ → ℝ, D4LimitPhase φ →\n    ∃ δ > 0, ∀ S : Set (ℝ × ℝ → ℂ), AmpTotallyBounded (Metric.closedBall 0 δ) S →\n      ∀ ε : ℝ, 0 < ε → ∃ T : ℝ, ∀ t : ℝ, T ≤ t → ∀ A ∈ S,\n        ‖((t ^ ((2 : ℝ) / 3) : ℝ) : ℂ) * oscInt2 (fun κ => t * φ κ) A -\n          (d4Constant (cubicCoeffs φ) : ℂ) * A 0‖ < ε",
+   "hypotheses": [
+    "φ C⁴, φ(0) = 0, Dφ(0) = 0, D²φ(0) = 0, disc ≠ 0 (D4LimitPhase)",
+    "S C²-totally bounded on B̄(0, δ) (AmpTotallyBounded), δ depending on φ only"
+   ],
+   "conclusion": "t^{2/3} oscInt2(tφ, A) → c_C A(0) uniformly for A ∈ S",
+   "rate": "t^{-2/3} (exact leading term; no rate of convergence)",
+   "uniform_over": "A ∈ S (a C²-totally bounded family)",
+   "smoothness": "C⁴ on ℝ²",
+   "see_also": [
+    "S4.2",
+    "S4.2O",
+    "S4.1′"
+   ],
+   "snippet": "example : D4LimitUniformStatement := OscInt.API.d4LimitUniform",
+   "status": "see docs/STATUS.md (row S4.2U)"
+  },
+  {
+   "label": "S4.2O",
+   "name": "OscInt.Statements.D4LimitOffsetStatement",
+   "proved_by": "OscInt.API.d4LimitOffset",
+   "summary": "D4 limit uniform over bounded linear offsets.",
+   "file": "OscInt/Statements/D4Uniform.lean",
+   "commitment": "9f4ce9a064f994de72bdf931894b8f132f0c986d2e36e62684c0b5020068c405",
+   "stamp": "stamps/20261115T122915Z-33c56db38f65",
+   "lean_statement": "def D4LimitOffsetStatement : Prop :=\n  ∀ φ : ℝ × ℝ → ℝ, D4LimitPhase φ →\n    ∃ δ > 0, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ), AmpBound 2 (Metric.closedBall 0 δ) A M →\n      ∀ R ε : ℝ, 0 < ε → ∃ T : ℝ, ∀ t : ℝ, T ≤ t → ∀ y : ℝ × ℝ, ‖y‖ ≤ R →\n        ‖((t ^ ((2 : ℝ) / 3) : ℝ) : ℂ) * oscInt2 (fun κ => t * φ κ + lin y κ) A -\n          (d4Constant (cubicCoeffs φ) : ℂ) * A 0‖ < ε",
+   "hypotheses": [
+    "φ C⁴, φ(0) = 0, Dφ(0) = 0, D²φ(0) = 0, disc ≠ 0 (D4LimitPhase)",
+    "A C² with AmpBound 2 (B̄(0, δ)) A M, δ depending on φ only"
+   ],
+   "conclusion": "t^{2/3} oscInt2(tφ + y·κ, A) → c_C A(0) uniformly for ‖y‖ ≤ R (max norm)",
+   "rate": "t^{-2/3} (exact leading term; no rate of convergence)",
+   "uniform_over": "bounded linear offsets y, ‖y‖ ≤ R",
+   "smoothness": "C⁴ on ℝ²",
+   "see_also": [
+    "S4.2",
+    "S4.2U",
+    "S4.1′"
+   ],
+   "snippet": "example : D4LimitOffsetStatement := OscInt.API.d4LimitOffset",
+   "status": "see docs/STATUS.md (row S4.2O)"
   }
  ]
 }

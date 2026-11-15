@@ -907,3 +907,72 @@ LS-D, LS-D′ FAITHFUL and TRUE ×2, no BLOCKER or MAJOR; the stamp `stamps/2026
 2. The sanity layer now also pins the derivative clause and the diagonal term of Δ (a bite), states the derivative of
    t ↦ G_1(t, x) at t = 0 implied by LS-E and LS-K, and detects x + y in place of x − y. Mutations of the gauge, the
    factor 2 and the sign of i are not refuted by the sanity layer; LS-K's proof fixes them.
+
+## Batch D4U: the D4 limit uniformly over compact amplitude families and bounded linear offsets (session 12, 2026-11-15)
+
+Order. As batch LS: statements, `OscInt/Statements/D4Uniform.lean`, sanity theorems with planted controls
+(`OscInt/Front/D4UniformSanity.lean`, record under `docs/replay/plants/2026-11-15-D4U/`), challenge
+`Challenge/D4Uniform.lean` and `comparator-D4U.json`, frozen and stamped before the blind pre-proof reviews; no Lean
+proof of these statements enters the repository before the reviews are answered and stamped. Disclosed departure from
+lessons 23: a hand proof and unelaborated Lean drafts of statements of this kind (with a reduction of the two
+statements to the stamped S4.1′ and S4.2) existed before this freeze, in an external research packet received by the
+downstream project on 2026-11-15, and the lead elaborated that packet's drafts in scratch, outside this repository, on
+2026-11-15 while assessing it. The statements below are written fresh by the lead; the blind reviewers are not shown
+the packet.
+
+Why. S4.2 gives t^{2/3} ∫ e^{itφ}A → c_C A(0) for one fixed amplitude and no linear term. A downstream lower bound
+(sharpness of the t^{−2/3} decay of gapped two-dimensional split-step quantum walks) evaluates the kernel at
+lattice sites x_t with x_t − t v bounded but not constant, so the linear term y·k with y = x_t − t v varies with t in
+a bounded set. That needs the limit uniformly over bounded linear terms, which in turn follows from uniformity over a
+totally bounded family of amplitudes (the modulations e^{iy·k}A). Classical in mechanism (uniform estimate on
+differences plus the fixed-amplitude limit and a finite net; compare the compact-family arguments of Ikromov–Müller);
+the claim, if proved, is "machine-checked".
+
+Notation as in S4. For K ⊆ ℝ² a family S of amplitudes is **C²-totally bounded on K** (Lean `AmpTotallyBounded K S`)
+if every A ∈ S has some C² budget on K (`AmpBound 2 K A M` for some M) and for every η > 0 there is a finite subset
+B ⊆ S such that every A ∈ S has some b ∈ B with `AmpBound 2 K (A − b) η` (the difference is C², supported in K, and
+its derivatives of order ≤ 2 are bounded by η everywhere). The phase hypotheses of S4.2 are bundled as
+`D4LimitPhase φ`: φ is C⁴, φ(0) = 0, Dφ(0) = 0, D²φ(0) = 0 and disc(C) ≠ 0 for the cubic part C at 0. ‖y‖ on ℝ² is
+the max norm (Mathlib's product norm), lin y κ = y₁κ₁ + y₂κ₂.
+
+**S4.2U (D4 limit, uniform over a totally bounded amplitude family).** For every φ with `D4LimitPhase φ` there is
+δ > 0 such that for every family S that is C²-totally bounded on B̄(0, δ) and every ε > 0 there is T such that for every
+t ≥ T and every A ∈ S: |t^{2/3} ∫ e^{itφ(κ)} A(κ) dκ − c_C A(0)| < ε, with c_C = `d4Constant (cubicCoeffs φ)` as in S4.2.
+
+**S4.2O (D4 limit, uniform over bounded linear offsets).** For every φ with `D4LimitPhase φ` there is δ > 0 such that
+for every amplitude A with `AmpBound 2 (B̄(0, δ)) A M` for some M, every R and every ε > 0 there is T such that for every
+t ≥ T and every y ∈ ℝ² with ‖y‖ ≤ R: |t^{2/3} ∫ e^{i(tφ(κ) + y·κ)} A(κ) dκ − c_C A(0)| < ε.
+
+Modelling choices and omissions.
+1. The radius δ depends on φ only (as in S4.1′ and S4.2), not on the family, R or ε.
+2. Uniformity is stated in the ε–T form, not with `TendstoUniformlyOn`; T may be any real (only large t matter;
+   `t ^ (2/3)` is `Real.rpow`).
+3. The offset y·κ is not multiplied by t: it is a bounded perturbation, and the limit is unchanged because the linear
+   term vanishes at 0. A linear term of size t (a moving critical point) is S4.1′'s case and has no limit here.
+4. S4.2U is not stated with offsets, and S4.2O not for families; the second is the first applied to the modulation
+   family {e^{iy·κ}A : ‖y‖ ≤ R}, which is part of the proof, not of the statements.
+5. No rate and no effective T: both statements are qualitative, like S4.2.
+6. AI-use disclosure: the question and a hand proof (checked by a fresh-context referee of the lead: correct, minor
+   findings only) came from an external research packet produced with an OpenAI model at the owner's request (version
+   not stated for this packet); the statements, the sanity layer and the plants here are the lead's. The packet, the
+   lead's scratch elaboration of its Lean drafts before the freeze and the referee check of its hand proof are recorded
+   in `review/2026-11-15-D4U-packet-answers.md` (added after the post-proof reviews); the route follows the packet's
+   decomposition (part names `CommonRadiusFacts`, `ModulationFacts`).
+
+Clarifications after the pre-proof reviews (2026-11-15; answers `review/2026-11-15-D4U-pre-proof-answers.md`; S4.2U, S4.2O
+FAITHFUL and TRUE ×2, no BLOCKER; the stamp `stamps/20261115T122915Z-33c56db38f65` stands):
+1. "Compact amplitude families" in the heading means C²-totally bounded families (`AmpTotallyBounded`): closedness is not
+   required, so the statement covers more families than compact ones.
+2. Uniformity in the offset holds for each fixed R, not uniformly in R. Referee B's numerics (generic cubic, factorised
+   amplitude, t up to 1e7) show an error of about 0.61 R t^{−1/3} {referee numerics, not repository data} for ‖y‖ ≤ R, and
+   at y = t^{1/3}(1, 0) a different Airy-type limit (ratio about 0.59 to c_C A(0)). For linear terms of size t the
+   critical point moves (modelling choice 3) and there is no c_C A(0) limit. That the uniform limit extends to
+   |y| = o(t^{1/3}) is CONJECTURED (rescaling heuristic and the referee's numerics), not proved; only bounded y is stated.
+   (Corrected 2026-11-15 after the post-proof reviews: the first version said that at |y| ~ t there is no stationary
+   point, which is false in general, and stated the o(t^{1/3}) range as a consequence.)
+3. For consumers: applied at a D4 point k₀ ≠ 0 after recentring, the integral picks up the unimodular factor
+   e^{i(tφ(k₀) + y·k₀)}, which varies with t; it does not affect bounds on the modulus.
+4. The sanity layer now also tests a family that is not finite-dimensional (`seqFamily`, complex amplitude values), the
+   budget conjunct (bite `const_not_totallyBounded`) and the elliptic umbilic (`phase_elliptic`); planted controls,
+   second run, in `docs/replay/2026-11-15-D4U-sanity-plants.txt` (one plant, C⁰ in place of C² in the net, is NOT
+   DETECTED and is pinned by the proof).

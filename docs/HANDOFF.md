@@ -1,6 +1,42 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (50 entries); every rule in it is binding.
+For a reader who saw nothing. Read `docs/lessons.md` first (52 entries); every rule in it is binding.
+
+## Start here (session 12, 2026-11-15)
+
+**State.** 65 pinned statements; all 65 machine-checked as stated. The last two, batch D4U (S4.2U, S4.2O: the D4
+limit uniformly over C²-totally bounded amplitude families and over bounded linear offsets), since the isolated
+`make verify-all` of 720363d (RESULT PASS, 2026-11-15 15:00:14–18:04:12Z, comparator-D4U accepted by six kernels;
+`docs/replay/2026-11-15-session12-D4U-verify-all.txt`; two cut-off attempts in
+`docs/replay/2026-11-15-session12-D4U-partial.txt`). Why: a downstream project (two-dimensional
+split-step quantum walks) needs the D4 limit along lattice sites whose offset from the moving D4 point stays bounded.
+
+**Batch D4U, in order** (each step with its record):
+1. Statements (`docs/statements.md` batch D4U; `OscInt/Statements/D4Uniform.lean`), sanity layer and plants, frozen at
+   33c56db, stamp `stamps/20261115T122915Z-33c56db38f65`.
+2. Blind pre-proof reviews (A FAITHFUL, B TRUE; one MAJOR against the sanity layer, answered by a family that is not
+   finite-dimensional and a second plant run): `review/2026-11-15-D4U-pre-proof-answers.md`; review stamp
+   `stamps/20261115T133952Z-9e9c6245f582`.
+3. Route `docs/proof-D4U.md` with the compiled assembly before any part (route referee SOUND), parts P-radius and
+   P-linear (lead) and P-mod (proof agent), integrated at 07ff140 (audit 1352 of 1352;
+   `docs/replay/2026-11-15-D4U-integration-checks.txt`).
+4. Post-proof reviews (A FAITHFUL, B SOUND, adversarial C: two MAJOR against the process records, answered):
+   `review/2026-11-15-D4U-post-proof-answers.md`; the packet record `review/2026-11-15-D4U-packet-answers.md`.
+
+**Disclosed limits.** A hand proof and Lean drafts of the same shape came from an external packet (OpenAI model,
+version not stated) that the lead read and elaborated in scratch before writing the statements; the claim is "no Lean
+proof in the repository before the reviews were answered and stamped", not independence of the proof. One planted
+control (C⁰ in place of C² in the net) is NOT DETECTED; dropping uniformity is a true weakening that no sanity layer can
+detect.
+
+**Next, in order:**
+1. Owner: publish v0.6.0. Owner decision 2026-11-15: batch D4U is part of v0.6.0. The notes
+   (`docs/release-notes/v0.6.0.md`) and the CHANGELOG section now name S4.2U and S4.2O, the `stamps/statements.json` pin
+   is recomputed, and the acceptance replay is the one of 720363d; `tools/release_preflight.sh 0.6.0` passes on the
+   branch. Publishing steps unchanged (the notes, "Publishing"). The downstream project needs this tag.
+2. OpenTimestamps for both D4U stamps is pending (upgrade when the calendars confirm).
+3. The machine's disk allowance ran out during the replay (lessons 50-style cut-off): check `df` before a replay and
+   keep at least 15 GB free.
 
 ## Start here (session 11, 2026-11-14)
 

@@ -1,0 +1,8 @@
+/tmp/claude-0/-home-user/54a93ecd-bca7-517d-a02d-9367d35b845d/scratchpad/plants_out2/plant-O-forall-y.lean:137:9: error: Tactic `rcases` failed: `x✝ : ∀ (y : ℝ × ℝ),
+  ‖y‖ ≤ R →
+    ∃ T,
+      ∀ (t : ℝ),
+        T ≤ t →
+          ‖↑(t ^ (2 / 3)) * oscInt2 (fun κ => t * genCubic 1 2 3 5 κ + lin y κ) (bumpC δ hδ) -
+                ↑(d4Constant (cubicCoeffs (genCubic 1 2 3 5))) * bumpC δ hδ 0‖ <
+            ε` is not an inductive datatype
