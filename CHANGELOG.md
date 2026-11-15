@@ -4,6 +4,29 @@ Versions follow semantic versioning from v0.3.0 (`docs/policy.md`): before 1.0.0
 statements and says so under "Statement changes"; a patch (0.y.Z) changes no statement, commitment, statement file
 or `proved_by` name. Every release lists its statement changes, even when there are none.
 
+## Unreleased
+
+### Statement changes
+
+Batch D4U (`OscInt/Statements/D4Uniform.lean`, stamp `stamps/20261115T122915Z-33c56db38f65`): two new entries,
+- S4.2U `D4LimitUniformStatement` (`proved_by` `OscInt.API.d4LimitUniform`);
+- S4.2O `D4LimitOffsetStatement` (`proved_by` `OscInt.API.d4LimitOffset`).
+No other entry changed. (The prepared v0.6.0 notes predate this batch; see `docs/HANDOFF.md`.)
+
+### Proofs
+
+Batch D4U: stated, frozen and stamped (33c56db), blind-reviewed (answers `review/2026-11-15-D4U-pre-proof-answers.md`,
+review stamp `stamps/20261115T133952Z-9e9c6245f582`), route `docs/proof-D4U.md` (route referee SOUND), proved in Lean
+(`OscInt/Front/D4Uniform{Assembly,Parts,Modulation,Final}.lean`), post-proof reviews answered
+(`review/2026-11-15-D4U-post-proof-answers.md`). The question, a hand proof and Lean drafts of the same shape came from
+an external research packet, disclosed (`review/2026-11-15-D4U-packet-answers.md`). Isolated replay pending.
+
+### Added
+
+- `OscInt/Front/D4UniformSanity.lean`: sanity theorems through the D4U statement constants, with a family that is not
+  finite-dimensional, bites, and planted controls (`docs/replay/2026-11-15-D4U-sanity-plants.txt`).
+- `numerics/review/d4u_interface_checks.py`.
+
 ## v0.6.0 — 2026-11-15
 
 A minor release. Before 1.0.0 a minor release may change statements; this one changes no statement's text, file,

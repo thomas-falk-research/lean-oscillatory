@@ -1,6 +1,40 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (50 entries); every rule in it is binding.
+For a reader who saw nothing. Read `docs/lessons.md` first (52 entries); every rule in it is binding.
+
+## Start here (session 12, 2026-11-15)
+
+**State.** 65 pinned statements; 63 machine-checked as stated; the two of batch D4U (S4.2U, S4.2O: the D4 limit
+uniformly over C²-totally bounded amplitude families and over bounded linear offsets) are proved in Lean and
+post-proof reviewed; their isolated `make verify-all` is the next step. Why: a downstream project (two-dimensional
+split-step quantum walks) needs the D4 limit along lattice sites whose offset from the moving D4 point stays bounded.
+
+**Batch D4U, in order** (each step with its record):
+1. Statements (`docs/statements.md` batch D4U; `OscInt/Statements/D4Uniform.lean`), sanity layer and plants, frozen at
+   33c56db, stamp `stamps/20261115T122915Z-33c56db38f65`.
+2. Blind pre-proof reviews (A FAITHFUL, B TRUE; one MAJOR against the sanity layer, answered by a family that is not
+   finite-dimensional and a second plant run): `review/2026-11-15-D4U-pre-proof-answers.md`; review stamp
+   `stamps/20261115T133952Z-9e9c6245f582`.
+3. Route `docs/proof-D4U.md` with the compiled assembly before any part (route referee SOUND), parts P-radius and
+   P-linear (lead) and P-mod (proof agent), integrated at 07ff140 (audit 1352 of 1352;
+   `docs/replay/2026-11-15-D4U-integration-checks.txt`).
+4. Post-proof reviews (A FAITHFUL, B SOUND, adversarial C: two MAJOR against the process records, answered):
+   `review/2026-11-15-D4U-post-proof-answers.md`; the packet record `review/2026-11-15-D4U-packet-answers.md`.
+
+**Disclosed limits.** A hand proof and Lean drafts of the same shape came from an external packet (OpenAI model,
+version not stated) that the lead read and elaborated in scratch before writing the statements; the claim is "no Lean
+proof in the repository before the reviews were answered and stamped", not independence of the proof. One planted
+control (C⁰ in place of C² in the net) is NOT DETECTED; dropping uniformity is a true weakening that no sanity layer can
+detect.
+
+**Next, in order:**
+1. The isolated `make verify-all` on the frozen tree (detached, with a keep-busy watcher; lessons 49, 50), its record
+   under `docs/replay/`, then the STATUS rows, README and CHANGELOG at "machine-checked as stated".
+2. Owner decision: the prepared v0.6.0 notes (`docs/release-notes/v0.6.0.md`) were written before batch D4U and say
+   "all 63 statements". Publishing from a `main` that includes this batch needs either those notes updated (two new
+   entries, S4.2U and S4.2O) or a separate release; the downstream project needs a tag that contains D4U.
+3. The API docstrings of `d4LimitUniform`, `d4LimitOffset` cite no textbook statement (CONTRIBUTING step 11).
+4. OpenTimestamps for both D4U stamps is pending (upgrade when the calendars confirm).
 
 ## Start here (session 11, 2026-11-14)
 
