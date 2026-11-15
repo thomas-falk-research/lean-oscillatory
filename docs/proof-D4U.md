@@ -76,3 +76,25 @@ difference over ‖y − y′‖ stays about 11–12 as ‖y − y′‖ goes fr
 
 P-radius and P-linear: tens of lines each. P-mod: the bulk (the complex slice lemma, joint smoothness, uniform
 continuity, the net), estimated 150–300 lines. Assembly: about 80 lines.
+
+## Revision after the route referee
+
+One fresh-context route referee (a Claude instance, like the lead; prompt and report not recorded, lessons 46) read the
+route, the blueprint and the compiled assembly at 378d5ae, launched 13:50:47 UTC, run time 245.6 s; it ran small Lean
+probes of names and definitions in its own scratch directory and wrote no proof of a part; nothing was committed while
+it read. Verdict: SOUND, no BLOCKER or MAJOR; the findings, in the lead's words, and the answers:
+1. MINOR. In P-mod, `fun_prop` does not handle the coercion ℝ → ℂ: use `Complex.ofRealCLM.contDiff.comp` for it,
+   `unfold lin` before `fun_prop` for the real part, `Complex.contDiff_exp` and `.mul` for the rest. Accepted (brief).
+2. MINOR. The slice derivatives for j = 0, 1, 2 have different types, so take one ρ per order and their minimum (or an
+   eventually-statement over `Finset.range 3`). Accepted (brief).
+3. NIT. The complex-valued slice identity: the proof of `OscInt.API.FamilyAux.iteratedFDeriv_slice` goes through for a
+   general normed codomain; put the general version as a local lemma in the D4U proof file, not as an edit of
+   `OscInt/Front/FamilyC10.lean`. Accepted.
+4. NIT. Each member's budget can come from `OscInt.API.ampBoundOfContDiff` directly. Accepted.
+5. NIT. "The assembly" says T = max T₀ 1; the Lean intersects with `eventually_ge_atTop 1`, which is the same. Wording
+   noted here; no change.
+The referee checked that every name the route cites exists at the pin, that both assembly theorems have exactly the
+frozen statement types and depend on the standard axioms only, and estimated P-radius at 30–50 lines, P-linear at
+15–30 and P-mod at 120–220, with mechanical risk only. Lead's note for P-linear: `HasCompactSupport.mul_left` with a
+lambda target times out at the pin (unification of `f * f'` with the pointwise lambda); derive compact support from
+`tsupport_mul_subset_right` and `IsCompact.of_isClosed_subset` instead.
