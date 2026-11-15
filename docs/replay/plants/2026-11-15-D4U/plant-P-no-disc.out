@@ -1,0 +1,7 @@
+/tmp/claude-0/-home-user/54a93ecd-bca7-517d-a02d-9367d35b845d/scratchpad/plants_out/plant-P-no-disc.lean:75:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  cubicCoeffs (genCubic 1 0 0 0)
+in the target expression
+  True
+
+h : True
+⊢ False

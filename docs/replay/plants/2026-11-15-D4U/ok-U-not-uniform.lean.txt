@@ -1,0 +1,89 @@
+import OscInt.Front.D4UniformSanity
+import OscInt.D4.LimitFinal
+import OscInt.D4.ConstantPosFinal
+
+namespace OscInt.API.D4UniformSanity
+
+open Filter Topology OscInt.Statements OscInt.D4
+
+theorem W.c_ne : (d4Constant (1, 2, 3, 5) : ℂ) ≠ 0 := by
+  have := (OscInt.d4ConstantPos.2.2 (1, 2, 3, 5) (by norm_num [disc])).2
+  exact_mod_cast this.ne'
+
+theorem W.ampBound_ball {r δ : ℝ} {A : ℝ × ℝ → ℂ} {M : ℝ} (h : AmpBound 2 (Metric.closedBall 0 r) A M) (hr : r ≤ δ) :
+    AmpBound 2 (Metric.closedBall 0 δ) A M :=
+  ⟨h.1, h.2.1.trans (Metric.closedBall_subset_closedBall hr), h.2.2⟩
+
+theorem W.true_limit : ∃ δ2 > 0, ∀ (r : ℝ) (hr : 0 < r), r ≤ δ2 →
+    Tendsto (fun t : ℝ => ((t ^ ((2 : ℝ) / 3) : ℝ) : ℂ) * oscInt2 (fun κ => t * genCubic 1 2 3 5 κ) (bumpC r hr))
+      atTop (𝓝 (d4Constant (1, 2, 3, 5) : ℂ)) := by
+  obtain ⟨h1, h2, h3, h4, h5⟩ := phase_generic
+  obtain ⟨δ2, hδ2, hL⟩ := OscInt.d4Limit _ h1 h2 h3 h4 h5
+  refine ⟨δ2, hδ2, fun r hr hrd => ?_⟩
+  obtain ⟨M, hM⟩ := bumpC_ampBound r hr
+  have := hL _ M (W.ampBound_ball hM hrd)
+  rwa [coeffs_generic, bumpC_zero, mul_one] at this
+
+theorem W.singleton_tb {K : Set (ℝ × ℝ)} {A : ℝ × ℝ → ℂ} {M : ℝ} (h : AmpBound 2 K A M) :
+    AmpTotallyBounded K {A} := by
+  refine ⟨fun B hB => ⟨M, by rw [Set.mem_singleton_iff.mp hB]; exact h⟩,
+    fun η hη => ⟨{A}, Set.finite_singleton A, le_rfl, fun B hB => ⟨A, rfl, ?_⟩⟩⟩
+  rw [Set.mem_singleton_iff.mp hB, sub_self]
+  exact ⟨contDiff_const, by simp, fun j _ k => by simp [hη.le]⟩
+
+theorem W.bump_one_zero {r : ℝ} (hr : 0 < r) (hr2 : r ≤ 1 / 2) : bumpC r hr (1, 0) = 0 := by
+  apply image_eq_zero_of_notMem_tsupport
+  intro hm
+  have := Metric.mem_closedBall.mp (bumpC_tsupport r hr hm)
+  rw [dist_zero_right, Prod.norm_def] at this
+  simp at this
+  linarith
+
+theorem W.lin_zero (t : ℝ) (φ : ℝ × ℝ → ℝ) : (fun κ => t * φ κ + lin 0 κ) = fun κ => t * φ κ := by
+  funext κ; simp [lin]
+
+theorem W.rate_contradiction {f : ℝ → ℂ} {c : ℂ}
+    (h23 : Tendsto (fun t : ℝ => ((t ^ ((2 : ℝ) / 3) : ℝ) : ℂ) * f t) atTop (𝓝 c))
+    (h12 : Tendsto (fun t : ℝ => ((t ^ ((1 : ℝ) / 2) : ℝ) : ℂ) * f t) atTop (𝓝 c)) : c = 0 := by
+  have hneg : Tendsto (fun t : ℝ => ((t ^ (-((1 : ℝ) / 6)) : ℝ) : ℂ)) atTop (𝓝 0) := by
+    exact (Complex.continuous_ofReal.tendsto 0).comp (tendsto_rpow_neg_atTop (by norm_num : (0 : ℝ) < 1 / 6))
+  have hprod := hneg.mul h23
+  rw [zero_mul] at hprod
+  have heq : (fun t : ℝ => ((t ^ (-((1 : ℝ) / 6)) : ℝ) : ℂ) * (((t ^ ((2 : ℝ) / 3) : ℝ) : ℂ) * f t)) =ᶠ[atTop]
+      (fun t : ℝ => ((t ^ ((1 : ℝ) / 2) : ℝ) : ℂ) * f t) := by
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
+    rw [← mul_assoc, ← Complex.ofReal_mul, ← Real.rpow_add ht]
+    norm_num
+  exact tendsto_nhds_unique h12 (hprod.congr' heq)
+
+theorem W.scale_infinite (B : ℝ × ℝ → ℂ) (hB0 : B 0 = 1) : (scaleFamily B).Infinite := by
+  have : scaleFamily B = (fun c : ℝ => (c : ℂ) • B) '' Set.Icc 1 2 := by
+    ext A
+    simp only [scaleFamily, Set.mem_ofPred_eq, Set.mem_image]
+    constructor <;> rintro ⟨c, hc, h⟩ <;> exact ⟨c, hc, h.symm⟩
+  rw [this, Set.infinite_image_iff]
+  · exact Set.Icc_infinite (by norm_num)
+  · intro c _ d _ hcd
+    have := congrFun hcd 0
+    simpa [hB0] using this
+
+def P_D4LimitUniformStatement : Prop :=
+  ∀ φ : ℝ × ℝ → ℝ, D4LimitPhase φ →
+    ∃ δ > 0, ∀ S : Set (ℝ × ℝ → ℂ), AmpTotallyBounded (Metric.closedBall 0 δ) S →
+      ∀ ε : ℝ, 0 < ε → ∃ T : ℝ, ∀ t : ℝ, T ≤ t → ∀ A ∈ S,
+        ‖((t ^ ((2 : ℝ) / 3) : ℝ) : ℂ) * oscInt2 (fun κ => t * φ κ) A -
+          (d4Constant (cubicCoeffs φ) : ℂ) * A 0‖ < ε
+
+theorem P_uniform_sanity (h : P_D4LimitUniformStatement) :
+    ∃ δ, ∃ hδ : 0 < δ, ∀ ε : ℝ, 0 < ε → ∃ T : ℝ, ∀ t : ℝ, T ≤ t → ∀ c ∈ Set.Icc (1 : ℝ) 2,
+      ‖((t ^ ((2 : ℝ) / 3) : ℝ) : ℂ) * oscInt2 (fun κ => t * genCubic 1 2 3 5 κ) ((c : ℂ) • bumpC δ hδ) -
+        (d4Constant (1, 2, 3, 5) : ℂ) * c‖ < ε := by
+  obtain ⟨δ, hδ, hU⟩ := h _ phase_generic
+  obtain ⟨M, hM⟩ := bumpC_ampBound δ hδ
+  refine ⟨δ, hδ, fun ε hε => ?_⟩
+  obtain ⟨T, hT⟩ := hU _ (scaleFamily_totallyBounded hM) ε hε
+  refine ⟨T, fun t ht c hc => ?_⟩
+  have := hT t ht _ ⟨c, hc, rfl⟩
+  rwa [coeffs_generic, Pi.smul_apply, bumpC_zero, smul_eq_mul, mul_one] at this
+
+end OscInt.API.D4UniformSanity

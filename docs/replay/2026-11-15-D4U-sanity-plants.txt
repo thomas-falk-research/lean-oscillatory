@@ -1,0 +1,60 @@
+# Planted controls for batch D4U (OscInt/Front/D4UniformSanity.lean), session-12 lead, run 2026-11-15T12:03:21Z to 2026-11-15T12:06:01Z: before the
+# D4U stamp and before any Lean proof of a D4U statement in this repository (lessons 33). Generator:
+# docs/replay/plants/2026-11-15-D4U/plants_d4u.py.txt (as batch LS's: one textual mutation of a copied def, compiled with
+# `lake env lean -DautoImplicit=false` against `import OscInt.Front.D4UniformSanity` built from git HEAD 5bf645a, clean tree;
+# the witness files also import the proved S4.2 and S4.3, `OscInt.D4.LimitFinal` and `OscInt.D4.ConstantPosFinal`).
+# SHA-256 at run time (lessons 48):
+#   5861245fc73967e9b9f3374a1c5c7b83def8b197f7d17cfd65cc33d72c6c53db  OscInt/Front/D4UniformSanity.lean
+#   230e814b5bc471edd94a013351f83e5abc8c506758e333e7414402dc574c7a6a  OscInt/Statements/D4Uniform.lean
+#   95f02fc763bab2b27b1289787cf8f451ab24636282b9a61e83c190fc2cfd96e9  <scratch>/plants_d4u.py
+# Classification (lessons 44): INSTANCE (the generic datum no longer gives the sanity conclusion; not a proof that the
+# plant is false), WITNESS (a compiled theorem refutes the planted def, from the proved S4.2 and S4.3; for the phase
+# hypothesis, a compiled proof that the planted def holds for x³, where the bite says the original fails), NOT DETECTED.
+#   U-limit-zero   INSTANCE + WITNESS (¬ planted S4.2U: on the singleton family of a bump, the planted limit 0 contradicts
+#                  S4.2's limit c_C ≠ 0)
+#   U-limit-point  INSTANCE + WITNESS (A(1, 0) in place of A(0): the bump of radius ≤ 1/2 vanishes at (1, 0), so the
+#                  planted limit is 0, contradicting S4.2)
+#   U-not-uniform  INSTANCE (∃T after ∀A: a weaker, true statement; the uniform conclusion on the infinite scaling family
+#                  is no longer derivable)
+#   ATB-finite     INSTANCE + WITNESS (S ⊆ B in place of B ⊆ S: the infinite family {c · bump : c ∈ [1, 2]} is not
+#                  planted-totally bounded)
+#   O-limit-zero   INSTANCE + WITNESS (¬ planted S4.2O at y = 0, by S4.2)
+#   O-rate         INSTANCE + WITNESS (t^{1/2} in place of t^{2/3}: with S4.2, t^{1/2}·I = t^{−1/6}·t^{2/3}·I → 0 ≠ c_C)
+#   O-moving       INSTANCE (offset t·y·κ, a moving critical point; false for y ≠ 0, not refuted here)
+#   O-unbounded    INSTANCE (no bound on y; false, not refuted here)
+#   P-no-disc      INSTANCE + WITNESS (disc ≠ 0 dropped: x³ then satisfies the planted phase hypotheses)
+# Not planted: mutations of `cubicCoeffs`, `disc` and `d4Constant` (frozen in S4 and pinned by its own sanity layer).
+#
+ok-U-limit-zero: accepted (want accepted)
+plant-U-limit-zero: rejected (recorded)
+    first error: plant-U-limit-zero.lean:87:7: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-U-limit-zero: accepted (want accepted)
+ok-U-limit-point: accepted (want accepted)
+plant-U-limit-point: rejected (recorded)
+    first error: plant-U-limit-point.lean:87:38: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-U-limit-point: accepted (want accepted)
+ok-U-not-uniform: accepted (want accepted)
+plant-U-not-uniform: rejected (recorded)
+    first error: plant-U-not-uniform.lean:84:9: error: Tactic `rcases` failed: `x✝ : ∀ A ∈ scaleFamily (bumpC δ hδ),
+ok-ATB-finite: accepted (want accepted)
+plant-ATB-finite: rejected (recorded)
+    first error: plant-ATB-finite.lean:84:64: error: Application type mismatch: The argument
+witness-ATB-finite: accepted (want accepted)
+ok-O-limit-zero: accepted (want accepted)
+plant-O-limit-zero: rejected (recorded)
+    first error: plant-O-limit-zero.lean:90:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-O-limit-zero: accepted (want accepted)
+ok-O-rate: accepted (want accepted)
+plant-O-rate: rejected (recorded)
+    first error: plant-O-rate.lean:91:2: error: Tactic `assumption` failed
+witness-O-rate: accepted (want accepted)
+ok-O-moving: accepted (want accepted)
+plant-O-moving: rejected (recorded)
+    first error: plant-O-moving.lean:91:2: error: Tactic `assumption` failed
+ok-O-unbounded: accepted (want accepted)
+plant-O-unbounded: rejected (recorded)
+    first error: plant-O-unbounded.lean:89:10: error: Function expected at
+ok-P-no-disc: accepted (want accepted)
+plant-P-no-disc: rejected (recorded)
+    first error: plant-P-no-disc.lean:75:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-P-no-disc: accepted (want accepted)
