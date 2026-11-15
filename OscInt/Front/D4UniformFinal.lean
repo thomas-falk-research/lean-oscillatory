@@ -29,14 +29,23 @@ open OscInt.Statements OscInt.D4UniformAux
 
 /-- **S4.2U** (`D4LimitUniformStatement`): at a D4 critical point (C⁴ phase, `φ(0) = 0`, `Dφ(0) = 0`, `D²φ(0) = 0`,
 `disc ≠ 0`) the limit `t^{2/3} ∫ e^{itφ} A → c_C A(0)` of S4.2 holds uniformly over every family of amplitudes that
-is C²-totally bounded on `B̄(0, δ)`, `δ` depending on `φ` only. The classical compact-family form of the stationary
-phase limit (uniform estimate on differences plus a finite net). -/
+is C²-totally bounded on `B̄(0, δ)`, `δ` depending on `φ` only.
+
+Textbook form: the D4 leading term of S4.2 (the umbilic of oscillation index −2/3, Arnold–Gusein-Zade–Varchenko,
+*Singularities of Differentiable Maps II*), made uniform over a compact family of amplitudes by the standard argument
+(a uniform bound on differences, here S4.1′, plus the limit on a finite net). No textbook statement of this exact
+uniform form is cited; the prior-art note is in `docs/statements.md`, batch D4U. -/
 theorem d4LimitUniform : D4LimitUniformStatement :=
   d4LimitUniform_of commonRadius linear
 
 /-- **S4.2O** (`D4LimitOffsetStatement`): the D4 limit with a bounded linear term,
 `t^{2/3} ∫ e^{i(tφ + y·κ)} A → c_C A(0)` uniformly for `‖y‖ ≤ R` (max norm), for each fixed `R` (the threshold depends
-on `R`), for every C² amplitude supported in `B̄(0, δ)`. -/
+on `R`), for every C² amplitude supported in `B̄(0, δ)`.
+
+Textbook form: S4.2 with a bounded linear perturbation y·κ of the phase (not multiplied by t), which leaves the
+leading term unchanged; it is S4.2U applied to the modulations e^{iy·κ}A. No textbook statement of this exact form is
+cited (`docs/statements.md`, batch D4U). Worked example, with the lower bound it gives along offsets that move with t:
+`examples/consumer/ConsumerD4Uniform.lean`. -/
 theorem d4LimitOffset : D4LimitOffsetStatement :=
   d4LimitOffset_of d4LimitUniform modulation
 

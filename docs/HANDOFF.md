@@ -34,9 +34,8 @@ detect.
    (`docs/release-notes/v0.6.0.md`) and the CHANGELOG section now name S4.2U and S4.2O, the `stamps/statements.json` pin
    is recomputed, and the acceptance replay is the one of 720363d; `tools/release_preflight.sh 0.6.0` passes on the
    branch. Publishing steps unchanged (the notes, "Publishing"). The downstream project needs this tag.
-2. The API docstrings of `d4LimitUniform`, `d4LimitOffset` cite no textbook statement (CONTRIBUTING step 11).
-3. OpenTimestamps for both D4U stamps is pending (upgrade when the calendars confirm).
-4. The machine's disk allowance ran out during the replay (lessons 50-style cut-off): check `df` before a replay and
+2. OpenTimestamps for both D4U stamps is pending (upgrade when the calendars confirm).
+3. The machine's disk allowance ran out during the replay (lessons 50-style cut-off): check `df` before a replay and
    keep at least 15 GB free.
 
 ## Start here (session 11, 2026-11-14)

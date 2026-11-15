@@ -50,6 +50,9 @@ an external research packet, disclosed (`review/2026-11-15-D4U-packet-answers.md
 
 ### Added
 
+- `examples/consumer/ConsumerD4Uniform.lean`: unconditionally, the D4 limit along offsets that move with t (lattice
+  rounding) with the closed-form constant, and the eventual lower bound it gives through the sharpness lemma SH.
+
 - `OscInt/Front/D4UniformSanity.lean`: sanity theorems through the D4U statement constants, with a family that is not
   finite-dimensional, bites, and planted controls (`docs/replay/2026-11-15-D4U-sanity-plants.txt`).
 - `numerics/review/d4u_interface_checks.py`.
