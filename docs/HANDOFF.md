@@ -1,37 +1,46 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (49 entries); every rule in it is binding.
+For a reader who saw nothing. Read `docs/lessons.md` first (50 entries); every rule in it is binding.
 
-## Start here (end of session 10, 2026-11-13)
+## Start here (session 11, 2026-11-14)
 
-**State.** 63 pinned statements; 59 are machine-checked as stated (`docs/STATUS.md`). The four of batch LS (the free
-lattice Schrödinger group on ℓ²(ℤ^d)) are stated, frozen, reviewed and routed, and not proved. Session 10 completed
-batches LE2, HC and A3 end to end.
+**State.** 63 pinned statements; all 63 are machine-checked as stated (`docs/STATUS.md`). The last four, batch LS (the
+free lattice Schrödinger group on ℓ²(ℤ^d)), were **proved in Lean** on 2026-11-14, **post-proof reviewed** (A FAITHFUL,
+B SOUND, adversarial three MAJOR answered, `review/2026-11-14-LS-post-proof-answers.md`) and **replayed** after the
+post-review Lean changes (isolated `make verify-all` on 35dc5c0, RESULT PASS, comparator-LS accepted by six kernels,
+`docs/replay/2026-11-14-session11-LS-final-verify-all.txt`; the earlier replay of 1bc377b is kept). The proofs
+were drafted by an external reviewer with an AI tool (R4 packet) and made to elaborate by the lead's proof agents with
+32 mechanical changes (`review/2026-11-14-external-R4-answers.md`).
 
-**Release v0.5.0 is prepared on this branch, not published.**
-- Prepared: versions set in `lakefile.toml`, `CITATION.cff`, `codemeta.json` and `.zenodo.json`; the CHANGELOG
-  section; notes with pins in `docs/release-notes/v0.5.0.md`. `tools/release_preflight.sh 0.5.0` passes.
-- It ships LS with `proved_by` null; the owner chose this on 2026-11-13, rather than waiting for LS.
-- Owner steps: merge the release pull request to `main`, run `release-candidate` with version `0.5.0`, tag and publish
-  (the commands are in the notes, "Publishing"), then merge the `post-release` pins pull request and record the
-  Zenodo DOI.
-- If the release is published after 2026-11-13, change the three dates first.
+**Release v0.5.0 is published** (GitHub release 2026-11-13T19:02:37Z, tag on 2cf118d). Its pins pull request
+[thomas-falk-research/lean-oscillatory#14](https://github.com/thomas-falk-research/lean-oscillatory/pull/14) is merged
+(cb2f648). Its Zenodo version DOI is `10.5281/zenodo.24205167` (read from the Zenodo API on 2026-11-14, recorded
+in `CITATION.cff` and the README in the v0.6.0 preparation).
+
+**Release v0.6.0 is prepared** (`docs/release-notes/v0.6.0.md`, date 2026-11-15; owner decision 2026-11-14: one pull
+request with the release content and the pipeline fixes of the session-11 release audit). The owner publishes, with
+the steps in those notes; publishing now goes through `tools/publish_release.sh`.
 
 **Next, in order:**
-1. **Batch LS proofs.**
-   - Route: `docs/proof-LS.md`. Read "Revision after the route referee" first: P-conv must use the exponential series
-     over ℂ, P-exp goes through `restrictScalars`, and the uniqueness part is P-unique.
-   - The nine parts are interfaces in `Blueprint/LatticeGroup.lean`. The compiled assembly is
-     `OscInt/Front/LatticeGroupAssembly.lean`.
-   - No part proof exists in the tree. Drafts and probes from session 10 lived in the session scratchpad, which does
-     not survive the container.
-   - Then the final file (LatticeGroupFinal, named in the route), an **isolated** `make verify-all`, the post-proof
-     reviews (A, B, adversarial), the records, and a minor release (v0.6.0) that sets `proved_by`.
+1. **Finish batch LS:**
+   1. Done: the isolated `make verify-all` on 1bc377b passed (`docs/replay/2026-11-14-session11-LS-verify-all.txt`).
+      Two earlier attempts were cut off by container reclaims and are recorded as partial (lessons 50).
+   2. Done: post-proof reviews A, B and adversarial, answered (`review/2026-11-14-LS-post-proof-answers.md`).
+   3. Done: the isolated `make verify-all` on 35dc5c0, which contains the post-review Lean changes, passed
+      (`docs/replay/2026-11-14-session11-LS-final-verify-all.txt`).
+   4. Done: the records (STATUS rows "machine-checked as stated (replay of 35dc5c0)", CHANGELOG, README and the
+      pages that track status).
+   5. Prepared: the minor release v0.6.0 that sets `proved_by` (owner publishes; steps in
+      `docs/release-notes/v0.6.0.md`, "Publishing").
 2. CENSUS held-out pool (ROADMAP I1), then its implementations.
 3. LeanCert experiment (I2).
 4. I3: global assembly with A3 points; then I3a and I3b.
 5. Optional, a separate change: the six style warnings of `OscInt/Cusp/Implicit4.lean` (lines 131, 227, 229). A proof
    change, so it needs a build, an axiom audit and a replay record.
+
+**Owner item (new, batch LS post-proof review, `review/2026-11-14-LS-post-proof-answers.md` item 7):** the ten LS
+proof files, drafted by the external reviewer, carry the project's copyright and licence header (as the A3 files do);
+no licence grant from the external reviewer is recorded.
 
 **Candidates waiting for the owner (ROADMAP "Candidates"):**
 - the discrete Klein–Gordon kernel bound (R2);
@@ -41,10 +50,81 @@ batches LE2, HC and A3 end to end.
 **Process, learned the hard way this session:**
 - **Lessons 49.** No Lean, `lake`, `make` or Lean-running referee while `make verify-all` runs. Launch referees
   before it starts or after it ends.
-- **Run the replay detached.** A full replay takes about 2 h 50 min. Start it with `setsid nohup` and a process
-  watcher (as in the A3 record's header). A harness background task is killed after 2 hours.
+- **Run the replay detached and keep the session busy (lessons 50).** A full replay takes about 3 h. Start it with
+  `setsid nohup` and a process watcher (as in the A3 record's header). A harness background task is killed after
+  2 hours, but an idle cloud session's container is reclaimed within minutes, killing detached processes too: keep a
+  background task waiting on the replay log and re-arm it at the two-hour limit.
 - **Count from the session record, not from memory.** The "six probes" error (lessons 49) came from counting from
   memory.
+
+## Session 11, continued (2026-11-14): external R4 packet; batch LS proved in Lean and replayed
+- **R4 packet** (answers `review/2026-11-14-external-R4-answers.md`): W1 proof drafts for batch LS, and W2 explicit
+  constants.
+- **W1.**
+  - **As shipped, none of the ten Lean files compiled.**
+  - **Repair:** two proof agents made them elaborate with 32 mechanical changes. There was no change of route,
+    statement or lemma.
+  - **The lead verified it in a fresh build:**
+    - the frozen types are exact;
+    - the axioms are within the allowlist;
+    - per-module `leanchecker` passes on all ten modules, with negative controls.
+  - **Integrated:**
+    - `OscInt/Front/LatticeGroup*.lean`;
+    - `OscInt.API.latticeSchrodinger{Exists,Kernel,Dispersive,Decay}`;
+    - `proved_by` set;
+    - STATUS rows first at "machine-checked by build, axiom audit and per-module leanchecker"; now as in the state
+      above.
+- **W2.** TRUE as hand mathematics; two referees found no BLOCKER or MAJOR. The useful pieces are:
+  - the sharp quadratic bound (Q);
+  - the sharper local L6 and L1.
+
+  They are recorded as a ROADMAP candidate. The general one-phase constant (G) is correct but useless at realistic
+  parameters.
+- **Repository fixes.**
+  - `docs/constants.md`: the `λ` binder in the §4.2 Lean sketch did not parse, and the packet copied it; the core
+    constant's line citation was wrong.
+  - `main` merged into this branch; it was at cb2f648, with PR #14 merged.
+- **Checks:**
+  - `numerics/results-r4-packet-checks-2026-11-14.txt`, 8/8;
+  - the packet's programs, run sandboxed, reproduce their expected outputs.
+- **W2 sanity follow-up:** the reviewer's analytic Lean sanity layer for the W2 candidates compiles after 24 mechanical
+  repairs. It has eight one-premise sanity theorems, and the lead checked it (answers file, addendum). It stays outside
+  the tree, because W2 is not frozen.
+- **Compile harness for scratch builds of new modules.** Mirror `.lake/build/lib/lean/OscInt` into a scratch library
+  placed FIRST on `LEAN_PATH`, and pass `--root=<scratch src>` (Lean 4.35 requires both).
+
+## Session 11 (2026-11-13): external R3 packet answered; nothing frozen, nothing proved
+- **R3 packet** (three archives and a decision brief, same external reviewer). It triages six targets and selects T5,
+  an evidence profile, and T8, a Fourier error package. Answers: `review/2026-11-13-external-R3-answers.md`.
+  - **Mathematics:** TRUE as hand mathematics and classical. No novelty; the packet claims none.
+  - **Already here:** T8's signed −π-grid alias identity and its parity trap were recorded on 2026-11-10 (dossier C6).
+  - **T5:** no new guarantee for OscInt, and three MAJOR design defects.
+  - **The draft Lean:** does not parse as shipped; it elaborates after three repairs.
+  - **Lead's checks:** 26/26 (`numerics/results-r3-packet-checks-2026-11-13.txt`).
+  - **Referees:** four fresh-context referees found no BLOCKER.
+- **Fixed in this repository:** `docs/calibration.md` rounded Clopper–Pearson bounds in the unsafe direction (table
+  corrected, dated note); the `review/README.md` index was brought up to date. ROADMAP I7 gains a pointer; its gates are
+  unchanged.
+- **Disclosed deviation (lessons 16):** the lead's check script was untracked in the tree for about two minutes while
+  referees ran. All four referees said they did not see it, with the evidence in the answers file.
+- **Container:** the pinned toolchain was installed from `toolchain.sha256` and the Mathlib cache fetched in about
+  four minutes.
+- **Remote state at session start differs from "Start here" (lessons 31).** v0.5.0 is published: GitHub release
+  2026-11-13T19:02:37Z, tag on 2cf118d, `release-candidate` and `post-release` green. The pins pull request
+  ([thomas-falk-research/lean-oscillatory#14](https://github.com/thomas-falk-research/lean-oscillatory/pull/14),
+  branch `release/v0.5.0-pins`) has red `ci`, for two reasons. Both workflows are fixed on this branch at 43a13fb
+  (owner request); PR #14 itself still needs `docs/downstream.md:12` moved to v0.5.0 on its own branch.
+  - `quick` fails `docs-check pins`: `docs/downstream.md:12` still pins v0.4.0. The pins step of
+    `.github/workflows/post-release.yml` (lines 115–116) runs `sed` over three named files. `tools/check_docs.py` checks
+    every `rev = "vX.Y.Z"` in `README.md` and `docs/*.md`, so every release's pins pull request will fail until the
+    two lists agree.
+  - `consumer` is cancelled at its 60-minute limit (`.github/workflows/ci.yml:75`) on slow runners, also on `main` run
+    158. Every finished step passed. The green PR #13 run took 48 minutes (checker 19, controls 24); the failing runs
+    spent 26–28 minutes in the checker alone.
+- **Also in this session:** the reviewer's reply to the R3 answers (an addendum in the answers file). It withdraws its
+  T5-first and freeze-T8 recommendations. Its application survey (gravitational-wave lensing and others) is assessed
+  there; there is no ROADMAP change.
+- **Next steps:** unchanged ("Start here" above). Before or with merging this branch, fix PR #14 as above.
 
 ## Session 10, continued (2026-11-12/13): batch A3 machine-checked as stated; batch LS stated, reviewed and routed; external packets
 

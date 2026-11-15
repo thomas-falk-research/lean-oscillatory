@@ -6,14 +6,15 @@ name: release-candidate
 
 # Prepares a release; never creates a tag or a release (the owner does, decision 2026-11-08 in
 # docs/decisions/2026-11-08-ci-release-review.md). One dispatch on main: preflight (tools/release_preflight.sh), the
-# full replay on that exact commit (verify.yml), the release assets with SHA256SUMS and a Sigstore build-provenance
-# attestation, the release body, and the exact commands to tag and publish in the run summary.
-# post-release.yml then checks what was published.
+# full replay (verify.yml) and the fast checks with the downstream consumer (ci.yml) on that exact commit, the release
+# assets with SHA256SUMS and a Sigstore build-provenance attestation, the release body, and in the run summary the
+# command that checks all of this again on the owner's machine before tagging and publishing
+# (tools/publish_release.sh). post-release.yml then checks what was published.
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version without the v, e.g. 0.4.0 (lakefile.toml, CITATION.cff, .zenodo.json, CHANGELOG and docs/release-notes/v<version>.md must already say so)"
+        description: "Version without the v, e.g. 0.6.0 (lakefile.toml, CITATION.cff, .zenodo.json, codemeta.json, CHANGELOG and docs/release-notes/v<version>.md must already say so)"
         type: string
         required: true
 
@@ -35,7 +36,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - name: From main, the tag is new, versions, CHANGELOG, notes and pins agree (tools/release_preflight.sh)
+      - name: From main, the tag is new; versions, dates, CHANGELOG, notes, pins and statement changes agree (tools/release_preflight.sh)
         id: check
         env:
           VERSION: ${{ inputs.version }}
@@ -55,8 +56,16 @@ jobs:
     with:
       ref: ${{ needs.preflight.outputs.sha }}
 
+  ci:
+    # docs-check, make quick, REUSE, CITATION.cff schema, actionlint and the downstream consumer: the v0.5.0 release
+    # commit was tagged while its push run of ci.yml had been cancelled, because nothing here required it
+    needs: preflight
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.preflight.outputs.sha }}
+
   candidate:
-    needs: [preflight, verify]
+    needs: [preflight, verify, ci]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -76,12 +85,8 @@ jobs:
           mkdir -p dist body
           cp stamps/statements.json tools/oscint_check.py dist/
           (cd dist && sha256sum statements.json oscint_check.py > SHA256SUMS && cat SHA256SUMS)
-          {
-            echo "Release commit: \`$SHA\` — verified by release-candidate run ${{ github.run_id }} (full replay on this commit)."
-            echo "Assets: \`SHA256SUMS\`; provenance: \`gh attestation verify <asset> --repo ${{ github.repository }}\`."
-            echo
-            sed -n '/^A minor release\|^A patch release\|^A major release/,/^## Publishing/p' "docs/release-notes/$TAG.md" | sed '$d'
-          } > body/notes.md
+          # the same function rebuilds the body on the owner's machine and compares it byte for byte
+          tools/publish_release.sh --body "$TAG" "$SHA" "${{ github.run_id }}" "${{ github.repository }}" > body/notes.md
       - name: Build provenance attestation of the assets (Sigstore)
         uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
         with:
@@ -102,14 +107,15 @@ jobs:
           SHA: ${{ needs.preflight.outputs.sha }}
         run: |
           cat <<CMDS | tee -a "$GITHUB_STEP_SUMMARY"
-          ### $TAG is ready: commit \`$SHA\` passed preflight and the full replay
+          ### $TAG is ready: commit \`$SHA\` passed preflight, the full replay and CI
+
+          From a clone of the repository, with \`gh\` logged in, check out the release commit and run the checks alone;
+          then run the same command without \`--dry-run\`, which checks again, tags, creates the release as a draft,
+          checks its assets and publishes it. Never create the tag or the release by hand.
 
           \`\`\`bash
-          gh run download ${{ github.run_id }} --repo ${{ github.repository }} -n release-$TAG -D release-$TAG
-          git fetch origin && git tag -a $TAG $SHA -m "OscInt $TAG" && git push origin $TAG
-          gh release create $TAG --repo ${{ github.repository }} --verify-tag --title "OscInt $TAG" \\
-            --notes-file release-$TAG/body/notes.md release-$TAG/dist/statements.json \\
-            release-$TAG/dist/oscint_check.py release-$TAG/dist/SHA256SUMS
+          git fetch origin && git switch --detach $SHA
+          tools/publish_release.sh $TAG $SHA ${{ github.run_id }} --dry-run
           \`\`\`
           Publishing triggers post-release.yml (checks, consumer build against the tag, pins pull request).
           CMDS

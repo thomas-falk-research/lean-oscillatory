@@ -27,7 +27,9 @@ permissions:
   contents: read
 
 concurrency:
-  group: verify-${{ inputs.ref || github.event.pull_request.number || github.sha }}
+  # a release candidate's call has its own group, so it neither waits behind nor is replaced by the push or scheduled
+  # run of the same commit
+  group: verify-${{ inputs.ref && format('rc-{0}', inputs.ref) || github.event.pull_request.number || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:

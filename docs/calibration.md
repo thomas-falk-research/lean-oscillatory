@@ -9,9 +9,16 @@ planted statement error, and how often it raises a false alarm on an unmodified 
 
 | Round | Date | Statements | Planted (kinds) | Detected | Rate, 95% Clopper–Pearson | Controls | False alarms |
 |---|---|---|---|---|---|---|---|
-| 1 | 2026-11-05 | S1 (van der Corput) | 4 (quantifier, hypothesis, definition, weakened conclusion) | 4 | 1.00, [0.40, 1.00] | 2 | 0 (0/2, upper bound 0.84) |
-| 2 | 2026-11-06 | S2.1, S2.2, S3, S4.1 (325 lines) | 4 (same kinds), planted by a separate agent | 4 | 1.00, [0.40, 1.00] | 2 | 0 (0/2, upper bound 0.84) |
-| 1+2 pooled | | | 8 | 8 | 1.00, [0.63, 1.00] | 4 | 0 (0/4, upper bound 0.60) |
+| 1 | 2026-11-05 | S1 (van der Corput) | 4 (quantifier, hypothesis, definition, weakened conclusion) | 4 | 1.00, [0.397, 1.00] | 2 | 0 (0/2, upper bound 0.842) |
+| 2 | 2026-11-06 | S2.1, S2.2, S3, S4.1 (325 lines) | 4 (same kinds), planted by a separate agent | 4 | 1.00, [0.397, 1.00] | 2 | 0 (0/2, upper bound 0.842) |
+| 1+2 pooled | | | 8 | 8 | 1.00, [0.630, 1.00] | 4 | 0 (0/4, upper bound 0.603) |
+
+Correction, 2026-11-13 (external R3 packet, `review/2026-11-13-external-R3-answers.md`): the bounds in this table are now
+rounded outwards (lower bounds down, upper bounds up). Before, they were rounded to nearest, and three printed values
+were not bounds: 0.40 for the lower bound 0.3976, 0.84 for the upper bound 0.8419 and 0.60 for the pooled upper bound
+0.6024. The pre-registered and scored sections below keep their original text, where 0.398, 0.631 and 0.602 are also
+rounded to nearest in the unsafe direction (0.842 there is a valid upper bound). Exact values: (1/40)^{1/4} = 0.39764, 1 − (1/40)^{1/2} = 0.84189, (1/40)^{1/8} = 0.63058,
+1 − (1/40)^{1/4} = 0.60236 (`numerics/review/r3_packet_checks.py`). No reading changes.
 
 ## Round 1 protocol (pre-registered 2026-11-05, before any referee ran)
 

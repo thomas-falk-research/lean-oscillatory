@@ -1,0 +1,31 @@
+# numerics/review/r3_packet_checks.py, run 2026-11-13T22:18:56Z by the session-11 lead
+# HEAD 2cf118d56f82caa2a75b6b3bf7b59a847c9a5a9b with uncommitted record changes (this script is new); script sha256 d0ab93b8ba5b9d910f2b242c57776df03ae56b16299151e2719699ec7ba00e09
+# command: python3 -I numerics/review/r3_packet_checks.py (mpmath 1.3.0)
+runtime 3.13.18 Linux-6.18.44-fc-v445-x86_64-with-glibc2.39 mpmath 1.3.0
+PASS G1 direct grid average equals (1+(-r)^N)/(1-(-r)^N), N = 1..24 (to 1e-50) {}
+PASS G1 least N with |Q_N(0) - c_0| < 1e-6 is 21; error at 21 equals 2/2097153 {'err20': 1.9073504518036383e-06, 'err21': 9.53673861659116e-07}
+PASS G1 unsigned envelope 2r^21/(1-r^21) also below 1e-6 (so accuracy alone cannot see the sign) {'unsigned': 9.536747711538177e-07}
+PASS G2 N=3, c_3=1 gives -1; N=2, c_2=1 gives +1; N=2, c_1=1 gives 0 {}
+PASS G2 on the grid starting at 0 the same monomial gives +1 (origin matters) {}
+PASS G3 d=1 grid coefficient = signed alias sum (generic complex c, rho 0.55, |m|<=120) {'max_err': 8.968954170591299e-32, 'min_unsigned_miss_odd_N': 0.008728921813172273}
+PASS G3 d=2 grid coefficient = sum (-1)^(N(l1+l2)) c_(n+Nl) (N = 3, 4) {'max_err': 7.731725818510668e-31}
+PASS G4 T8.3c budget holds for all |n| < N and is attained at n = 0 by phase-aligned coefficients {}
+PASS G4 T8.3d budget holds on the max-norm window (N = 4, 7; R = 0, 1, 2); equality at R = 0, n = 0 up to 1e-50 relative {}
+PASS G5 transform of e^{-|x|}/2 at u=3 equals 1/(1+9) (convention exp(+iux)) {'quad_err': 1.966086780997224e-40}
+PASS G5 infinite sum = 1/2 + 1/(e^8 - 1) (Poisson, period L = 8), finite K = 16 error within the budget {'err': 0.02417113542456197, 'budget': 0.09939545017676157}
+PASS G5 alias budget dominates 2B sum_{m>=1} (1+mL-R)^(-q) at three parameter sets {}
+PASS G6 (1/2pi) int_{|u|>1} (1+|u|)^-2 = 1/(2pi) = A/(pi(p-1)) (1+T)^(1-p) at A=1,p=2,T=1 {}
+PASS G7 int_0^inf e^{-u} e^{4iu} = 1/(1-4i), |.| = 1/sqrt17 in (1/8, 1/2); triangle datum = 2/pi + i, |.| > 1 {'I4abs': 0.24253562503633297, 'tri_abs': 1.1854470610572836}
+PASS T7 normalised Hann transform = sin(pi u)/(pi u (1-u^2)); attained at u = 7/2; envelope 1/(pi u (u^2-1)) decreasing; max of samples on [3.5, 63.5] <= 8/(315 pi) {'value': 0.008084060601493097, 'dB': -41.84740878983582}
+PASS T10 C0 = C*/(2pi) = 4(1+sqrt7)/(3pi) = 1.5473049131..., C0^3/2 = 1.85224195868... {'C0': '1.547304913173', 'thr': '1.852241958679'}
+PASS T10 |J_16(8)| <= e^6/65536 (contour bound) << C0/2 (cube-root bound) {'J16': 7.800639546730827e-05, 'contour': 0.006155834861644518, 'cube': 0.7736524565862503}
+PASS T10 sampled max |J_n(x)| x^(1/3) (n <= 5, x <= 40) is below Landau's 0.7858 and below C0 {'sampled_max': 0.7856235853108696}
+PASS T5 CP lower endpoint for n/n is (alpha/2)^(1/n) (Beta quantile); 86/86 at 97.5% gives 0.9503 > 0.95, 85/85 gives < 0.95 {'n86': '0.950322576248', 'n85': '0.949753069966'}
+PASS T5 repository rounds: 4/4 -> 0.398, 8/8 -> 0.631, 0/2 -> 0.842, 0/4 -> 0.602 (docs/calibration.md) {}
+PASS T5 CP 95% coverage at p=1/2, n=86, squared, is about 0.9219 < 0.95 (why Bonferroni is used) {'coverage': '0.960146371439', 'joint': '0.921881054588'}
+PASS T2 thresholds (11025/16)^(6/5), (23275/16)^(4/3), (99225/64)^(3/2) lie in (2546,2547), (16482,16483), (61046,61047) {}
+PASS MINOR-1 at eps = 1e-6 the uniform condition, the unsigned envelope and the exact signed error all give least N = 21 (the packet's 'slightly better odd-grid threshold' sentence is false at this tolerance) {}
+PASS MINOR-2 85/86 at 97.5% gives lower endpoint 0.928 < 0.95: the pilot passes only on 172/172; pass probability p^172 is 0.178, 0.422, 0.842 at p = 0.99, 0.995, 0.999 {'lower_85_of_86': '0.928082'}
+PASS T5 pass probability at exactly the targets (0.95, 0.05) is 0.95^172 = 1.5e-4; one-sided 95% needs n = 59, one-sided Bonferroni 97.5% needs n = 72 {'p_at_targets': 0.00014738731582510518}
+PASS T2 thresholds with constants 8/18/38 are 2547/16483/61047; with the hand constant 6 (14, 30) they are lower {'with_6': (1334, 8196, 28723)}
+RESULT PASS 26/26

@@ -74,14 +74,20 @@ and `make quick` fails (found 2026-11-07; the strict count is the safety net, le
 Commit messages say what changed and what evidence was run. Releases follow `docs/policy.md`. Prepare a release
 in a pull request: bump `lakefile.toml`, `CITATION.cff`, `.zenodo.json` and `codemeta.json` together, add the CHANGELOG section
 `## vX.Y.Z`, and write `docs/release-notes/vX.Y.Z.md` with the SHA-256 rows of `stamps/statements.json` and
-`tools/oscint_check.py` (`tools/release_preflight.sh X.Y.Z` checks all of this locally and prints the exact rows).
-After it merges, the owner dispatches `release-candidate` on `main` with the version (Actions → release-candidate →
-Run workflow): it re-runs preflight and the full replay on that commit, builds the assets with `SHA256SUMS` and a
-Sigstore build-provenance attestation, and prints the exact commands; the owner creates the tag and the GitHub
-release with them (CI never writes tags or releases). Publishing triggers `post-release`: the tag must be on `main`
-and have a successful candidate run, the published assets must be the attested ones, `examples/consumer-release` is
-built against the tag, and a pull request records `docs/release-notes/vX.Y.Z.commit` and moves the pins. Zenodo
-then mints the version DOI.
+`tools/oscint_check.py`, a `## Statement changes` section that names every changed entry's label (also under
+`### Statement changes` in the CHANGELOG section), and the same date in `CITATION.cff`, `codemeta.json` and the
+CHANGELOG heading (`tools/release_preflight.sh X.Y.Z` checks all of this locally, against the previous release tag,
+and prints the exact rows). After it merges, the owner dispatches `release-candidate` on `main` with the version
+(Actions → release-candidate → Run workflow): it re-runs preflight, the full replay and `ci.yml` on that commit,
+builds the assets with `SHA256SUMS` and a Sigstore build-provenance attestation, and prints the command
+`tools/publish_release.sh vX.Y.Z <commit> <run id>`, to run from a checkout of the release commit, first with
+`--dry-run`: it checks the run, the assets, the release body and the attestations before anything is public, then
+creates the tag and the release, as a draft until its assets are checked (CI never writes tags or releases; never
+create them by hand). Publishing triggers `post-release`: the tag must be on `main` and have a
+successful candidate run, the published assets must be exactly the attested ones, `examples/consumer-release` is
+built against the tag and checks every proved statement, and a pull request records
+`docs/release-notes/vX.Y.Z.commit` and moves the pins (merge it when `ci` and `verify` are green). Zenodo then mints
+the version DOI; record it in `CITATION.cff` and the README.
 
 CI (`docs/decisions/2026-11-08-ci-release-review.md`): `ci.yml` (quick, tools, consumer) on every pull request and on
 `main`; `verify.yml` (the replay, in parallel jobs, verdict in `verify / verdict`) on pull requests to `main` that

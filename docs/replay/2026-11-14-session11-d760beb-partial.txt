@@ -1,0 +1,109 @@
+# PARTIAL, NOT AN ACCEPTANCE RECORD. make verify-all on d760beb278527216f346dbd31af6374bc44c0627 (clean tree, dirty=0 at
+# start), session-11 lead, 2026-11-14. Started 2026-11-14T11:24:21Z, detached (setsid nohup), with a once-a-minute
+# watcher of foreign Lean processes (snapshots 11:24:24Z to 11:29:25Z, each "0 foreign Lean process(es)").
+# Cut off by a container restart between 11:29:25Z and 12:32Z: the session machine came back with uptime 0 and
+# neither the replay nor the watcher running. The log below stops in the `lean` step (the axiom audit had started;
+# the build had completed). No verdict was reached. A new isolated replay is the acceptance record (lessons 49).
+#
+started 2026-11-14T11:24:21Z HEAD d760beb278527216f346dbd31af6374bc44c0627 dirty=0
+cd tools && cargo build --release --locked --quiet
+tools/target/release/verify_all 
+cd tools && cargo build --release --locked --quiet
+tools/target/release/toolchain .
+verify-toolchain: elan-init.sh: sha256 a620ff1641616222c8d37c54845492004bb84d6877cdbc944dd65c1aa685bf53 OK
+verify-toolchain: lean-4.35.0-linux.tar.zst: sha256 7289597a44543246c9227b8cae501767e095ce17f6d448b95fc4a8dc97268f6d OK
+verify-toolchain: installed toolchain /root/lean/lean-4.35.0-linux is byte-identical to lean-4.35.0-linux.tar.zst
+cd tools && cargo test --release --locked --quiet
+
+running 8 tests
+........
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 6 tests
+......
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+....
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+..
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 9 tests
+.........
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+
+running 5 tests
+.....
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+...
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+cd tools && cargo build --release --locked --quiet
+tools/target/release/guard .
+guard: ok: 146 file(s), 0 violations, 1307 theorem declaration(s)
+cd tools && cargo build --release --locked --quiet
+rm -f build/lean.ok
+lake build
+⚠ [9081/9194] Replayed OscInt.Cusp.Implicit4
+warning: OscInt/Cusp/Implicit4.lean:131:13: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: OscInt/Cusp/Implicit4.lean:131:13: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: OscInt/Cusp/Implicit4.lean:227:42: This simp argument is unused:
+  mul_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Y2, hY, hxy, hT, zero_mul, add_zero, sub_zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: OscInt/Cusp/Implicit4.lean:229:8: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: OscInt/Cusp/Implicit4.lean:229:4: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: OscInt/Cusp/Implicit4.lean:229:8: Unused tactic linter: `ring` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Build completed successfully (9194 jobs).
+mkdir -p build && lake env lean Axioms.lean > build/axioms.out
+# --- watcher log ---
+# 2026-11-14T11:24:24Z 0 foreign Lean process(es)
+# 2026-11-14T11:25:24Z 0 foreign Lean process(es)
+# 2026-11-14T11:26:24Z 0 foreign Lean process(es)
+# 2026-11-14T11:27:24Z 0 foreign Lean process(es)
+# 2026-11-14T11:28:24Z 0 foreign Lean process(es)
+# 2026-11-14T11:29:25Z 0 foreign Lean process(es)

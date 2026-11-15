@@ -65,7 +65,7 @@ C_final                                    Assembly.lean:105 (S2.2) / :88 (S3)  
                 │   ├── b = r/4, a = min(r,r')/4, μ = |q₀|/2, ν = |G(Q_{τ₀})(0)|/2      :510, :519, :523
                 │   ├── D = max(b, |Y1(0)|+1, |Y2(0)|+1, Σ_{i≤4}‖DⁱQ_{τ₀}(0)‖+1)        :524–525
                 │   └── ys = implicitCurve (Classical.epsilon)    Implicit.lean:148  (unique zero; no constant)
-                └── C_core (L6)                                  Core.lean:923–945
+                └── C_core (L6)                                  Core.lean:930–952
                     j=2: 64/(√ν√μ)·Y;  j=3: 144·ν^{-1/3}/√μ·Y
                     Y = (1+4b)(1+2a(1+24β⁶)),  β = max(1, D, 1/μ)          Core.lean:198, :925
                     └── S1.2 / S1.3 constants 8 and 18 (frozen, explicit)
@@ -177,12 +177,12 @@ benign data. That is the same kind of gap downstream reported.
    G3 Lipschitz bound (uses Λ₄) and the vdc3 branch.
 2. Statement shape. One phase, no Λ and no K':
    ```
-   ∀ Ψ K A M p m (Λ₂ Λ₃ Λ₄ η λ R ρ : ℝ) (k_c : ℝ × ℝ),
-     ContDiff ℝ 4 Ψ → K ⊆ closedBall k_c R → 0 < η → 0 < λ → 0 < ρ →
+   ∀ Ψ K A M p m (Λ₂ Λ₃ Λ₄ η lam R ρ : ℝ) (k_c : ℝ × ℝ),
+     ContDiff ℝ 4 Ψ → K ⊆ closedBall k_c R → 0 < η → 0 < lam → 0 < ρ →
      (∀ k, infDist k K ≤ ρ → ∀ j ∈ {2,3,4}, ‖iteratedFDeriv ℝ j Ψ k‖ ≤ Λⱼ) →
-     (∀ k ∈ K, GradLower Ψ p k λ ∨ η ≤ |hessDet Ψ k|) →
+     (∀ k ∈ K, GradLower Ψ p k lam ∨ η ≤ |hessDet Ψ k|) →
      AmpBound 2 K A M → 1 ≤ m →
-     ‖oscInt2 (fun k => m * (Ψ k + lin p k)) A‖ ≤ spConst Λ₂ Λ₃ Λ₄ η λ R ρ * M / m
+     ‖oscInt2 (fun k => m * (Ψ k + lin p k)) A‖ ≤ spConst Λ₂ Λ₃ Λ₄ η lam R ρ * M / m
    ```
    with `spConst` an explicit `noncomputable def` in the statement file, built from `max`, `+`, `*`, `/` and
    `Real.sqrt` (avoid `rpow`: η^{3/2} = η·√η), monotone in each argument, and stated with B = max 1 … so that it
@@ -194,6 +194,8 @@ benign data. That is the same kind of gap downstream reported.
    the frozen S2.2/S3 follow by a compactness argument for the margins (bridge theorems, cheap). Add sanity
    theorems per lesson 17 (generic data, a "bite" case where the margin fails) and a `norm_num` evaluation of f on a
    sample.
+   Correction (2026-11-14): this sketch first used `λ` as a binder name; `λ` is a Lean keyword, and the R4 packet
+   copied the error into its draft (`review/2026-11-14-external-R4-answers.md`). The binder is now `lam`.
 3. Interfaces to change (blueprint): `LocalBound` → a quantitative `LocalBoundAt (δ C)`; `CoreEstimateFacts` →
    formula; `NormalizedDataFacts` → (a, b, μ, ν, D) as formulas in (Λ̃, q₀, G(0)); `NormalFormFacts` → bounds on
    ‖L‖, ‖L⁻¹‖, |det L|; `PartitionFacts` → lattice partition with derivative bounds; `CoreHyps` → drop i = 0, 1 and

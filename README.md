@@ -4,7 +4,8 @@
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0001--9478--6061-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0001-9478-6061)
 
 Author: Thomas Falk III ([ORCID 0009-0001-9478-6061](https://orcid.org/0009-0001-9478-6061)). Cite via `CITATION.cff` or the Zenodo record: all versions
-[10.5281/zenodo.24021328](https://doi.org/10.5281/zenodo.24021328), v0.4.0
+[10.5281/zenodo.24021328](https://doi.org/10.5281/zenodo.24021328), v0.5.0
+[10.5281/zenodo.24205167](https://doi.org/10.5281/zenodo.24205167), v0.4.0
 [10.5281/zenodo.24088811](https://doi.org/10.5281/zenodo.24088811), v0.3.0
 [10.5281/zenodo.24045231](https://doi.org/10.5281/zenodo.24045231), v0.2.0
 [10.5281/zenodo.24021329](https://doi.org/10.5281/zenodo.24021329).
@@ -26,8 +27,9 @@ written, timestamped and reviewed blind before their proofs (the few exceptions 
 and every proof is replayed by six kernel checkers: Lean's own kernel in two modes and four independent
 implementations. A downstream project can check in CI that it depends on exactly the reviewed statements.
 
-- **63 pinned statements; 59 are machine-checked as stated.** The other four, batch LS (the free lattice Schrödinger
-  group on ℓ²(ℤ^d)), are stated, frozen and reviewed, with a refereed proof route, and are not yet proved.
+- **63 pinned statements; all 63 are machine-checked as stated.** The last four, batch LS (the free lattice
+  Schrödinger group on ℓ²(ℤ^d)), were proved in Lean on 2026-11-14 and are machine-checked as stated since the isolated
+  replay of 35dc5c0 (six kernels; `docs/replay/2026-11-14-session11-LS-final-verify-all.txt`).
 - **Entry point:** `import OscInt.API`. Which theorem to use: `docs/which-theorem.md`. Recipes: `docs/cookbook.md`.
   Machine-readable index: `docs/api.json`.
 - Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0).
@@ -50,7 +52,7 @@ assumption. The status of each statement, with its evidence: `docs/STATUS.md`.
 | **Front ends in Mathlib's idiom.** F1, F2; conversions C1–C10, C7′ (`iteratedFDeriv`, Hessian matrices, `Cubic.discr`, kernel and rank forms of the fold condition, norms, `HasCompactSupport`); FE-S2.1, FE-S2.2, FE-S3, FE-S4.1′; compact families S2.2F, S3c; local smoothness (…L forms) | `OscInt.API.*` | machine-checked as stated (front-end batch 3 under a one-time waiver, ratified by the owner 2026-11-09) |
 | **Global decay** from a pointwise classification (GD-C, GD, GD-F, GD-N), also for amplitudes in any complex Banach space (GD-…-V); sharpness (SH); torus unfolding (T1) | `OscInt.API.globalDecay`, … | machine-checked as stated |
 | **Lattice kernels.** T6, T6L: the 2D lattice Laplacian decays like t^{−2/3}, sharply (classical and separable). T0E, T6F, T6E: explicit but weak constants (content only for t > 518 and t > 1321). T0E′, T6E′: the cube-root constant 8(1 + √7)/3, within a factor 2 of the best, useful from t ≈ 3.70 (AI-assisted, disclosed). TdF, TdE′: the d-dimensional hypercubic kernel factorises and is bounded by (8(1 + √7)/3)^d t^{−d/3} | `OscInt.API.latticeLaplacianDecay`, `latticeKernel1CubeRoot`, `latticeLaplacianCubeRoot`, `hypercubicKernelFactor`, `hypercubicCubeRoot`, … | machine-checked as stated. The rates are classical (Stefanov–Kevrekidis 2005); the constants are new only through T0E′ (`docs/prior_art.md`) |
-| **Batch LS.** LS-E, LS-K, LS-D, LS-D′: existence of the free lattice Schrödinger group on ℓ²(ℤ^d), its kernel representation, uniqueness, and dispersive decay with explicit constants | `OscInt/Statements/LatticeGroup.lean` | **stated, frozen and reviewed; not proved.** Route `docs/proof-LS.md`, with a compiled assembly |
+| **Batch LS.** LS-E, LS-K, LS-D, LS-D′: existence of the free lattice Schrödinger group on ℓ²(ℤ^d), its kernel representation, uniqueness, and dispersive decay with explicit constants | `OscInt.API.latticeSchrodingerExists`, `latticeSchrodingerKernel`, `latticeSchrodingerDispersive`, `latticeSchrodingerDecay` | machine-checked as stated (replay of 35dc5c0). AI-drafted proofs, disclosed |
 
 Worked examples, which also check that the hypotheses can be met (`examples/consumer/`): the lattice Schrödinger
 kernel, single photons on a cosine-band lattice, cold-plasma waves, phase mixing, whistler waves, matrix-valued
@@ -68,8 +70,6 @@ name = "oscint"
 git = "https://github.com/thomas-falk-research/lean-oscillatory"
 rev = "v0.5.0"   # a release tag (pins and notes: docs/release-notes/v0.5.0.md)
 ```
-
-v0.5.0 is prepared (`docs/release-notes/v0.5.0.md`) and is published by the owner; until its tag exists, pin v0.4.0.
 
 v0.3.0 is the first release with `OscInt.API`, `stamps/statements.json` and `tools/oscint_check.py` (v0.2.0 has none
 of them). Published 2026-11-07 (GitHub release `v0.3.0`, tag on the release commit recorded in
@@ -193,7 +193,8 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 
 Cite the software through its concept DOI, which always resolves to the latest version
 ([10.5281/zenodo.24021328](https://doi.org/10.5281/zenodo.24021328)); to cite the exact version you used, take its
-version DOI from the [Zenodo record](https://doi.org/10.5281/zenodo.24021328) (v0.4.0:
+version DOI from the [Zenodo record](https://doi.org/10.5281/zenodo.24021328) (v0.5.0:
+[10.5281/zenodo.24205167](https://doi.org/10.5281/zenodo.24205167); v0.4.0:
 [10.5281/zenodo.24088811](https://doi.org/10.5281/zenodo.24088811); v0.3.0:
 [10.5281/zenodo.24045231](https://doi.org/10.5281/zenodo.24045231)). GitHub's "Cite this repository" button reads
 `CITATION.cff`, and `codemeta.json` carries the same metadata for software indexes.

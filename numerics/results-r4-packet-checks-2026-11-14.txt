@@ -1,0 +1,13 @@
+# numerics/review/r4_packet_checks.py, run 2026-11-14T11:05:16Z by the session-11 lead
+# HEAD 8e7e4845b2a1d513d3c8bb1d1e74e68a204cf64a with uncommitted record changes (this script is new); script sha256 c576afc8e1209ed3839706d151f7d8c66d79f231f217fbce2688729573c8f9b2
+# command: python3 -I numerics/review/r4_packet_checks.py (mpmath 1.3.0, sympy 1.14.0)
+runtime 3.13.18 Linux-6.18.44-fc-v470-x86_64-with-glibc2.39 mpmath 1.3.0 sympy 1.14.0
+PASS Q1 benchmark coefficient B = pi/sqrt(15) sqrt(||A||_2 ||ΔA||_2) lies in the packet's [1.858998723437, 1.858998723438] {'B': '1.85899872343768'}
+PASS Q2 incomplete-gamma moments agree with direct quadrature (k = 0, 2, 6) {'max_err': 6.681911775230489e-52}
+PASS Q3 bound/|I| on the saddle at m = 8 ... 8192 lies in the packet's [1.140113304341, 1.151319433660] and is >= 1 {'ratios': {8: '1.151319433659', 32: '1.141077274829', 128: '1.140233258105', 512: '1.140134909897', 2048: '1.140117278154', 8192: '1.140113304342'}}
+PASS Q4 (Q) holds on exact Gaussians with non-diagonal H and linear terms (max |I|/bound < 1) {'max_ratio': '0.94883212'}
+PASS Q5 the packet's first integers (2, 92, 663, 20, 77005541038) follow from its B values and T1 {}
+PASS Q6 (L1) holds on a datum with c = 1, L2 = 1 (max |I|/bound < 1) {'max_ratio': '0.0656229'}
+PASS MINOR-1 exact ||A_XY||_1 = ||a'||_1 ||b'||_1 = 4.0797 is below the Cauchy-Schwarz input 5.4191 the packet used (so the L6 rows are valid but loose by a factor 1.33) {'exact': '4.0797106', 'cauchy_schwarz': '5.4190538', 'factor': '1.32829'}
+PASS W1 ||f||^2 = 91 and ||Δf||^2 = 882 (direct) {}
+RESULT PASS 8/8

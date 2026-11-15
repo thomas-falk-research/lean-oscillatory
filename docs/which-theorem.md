@@ -63,8 +63,8 @@ Explicit constants, valid for every `t > 0`:
   `hypercubicCubeRoot` (TdE′, `(8(1 + √7)/3)^d t^{−d/3}`).
 
 These bound the kernel. The statements about solutions of the lattice Schrödinger equation on ℓ²(ℤ^d) (batch LS:
-existence, kernel representation, decay of solutions) are stated and reviewed but **not proved yet**
-(`docs/STATUS.md`). Worked examples: `examples/consumer/ConsumerPhotonLattice.lean` (T0E′), `ConsumerLattice.lean`
+existence, kernel representation, decay of solutions) are machine-checked as stated
+(`OscInt.API.latticeSchrodingerExists` and its three siblings; `docs/STATUS.md`). Worked examples: `examples/consumer/ConsumerPhotonLattice.lean` (T0E′), `ConsumerLattice.lean`
 (T6, T6L).
 
 ## 4. Families of phases
