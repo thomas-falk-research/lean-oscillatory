@@ -1,0 +1,7 @@
+/tmp/claude-0/-home-user/54a93ecd-bca7-517d-a02d-9367d35b845d/scratchpad/plants_out2/plant-P-neg.lean:125:27: error: unsolved goals
+h1 : ContDiff ℝ 4 (genCubic 1 2 (-3) (-5))
+h2 : genCubic 1 2 (-3) (-5) 0 = 0
+h3 : fderiv ℝ (genCubic 1 2 (-3) (-5)) 0 = 0
+h4 : ∀ (v w : ℝ × ℝ), dd (genCubic 1 2 (-3) (-5)) 0 v w = 0
+h5 : cubicCoeffs (genCubic 1 2 (-3) (-5)) = (1, 2, -3, -5)
+⊢ False

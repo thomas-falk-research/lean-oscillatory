@@ -1,0 +1,51 @@
+/tmp/claude-0/-home-user/54a93ecd-bca7-517d-a02d-9367d35b845d/scratchpad/plants_out2/plant-O-unbounded.lean:123:8: warning: Variable name `R` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _R
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+/tmp/claude-0/-home-user/54a93ecd-bca7-517d-a02d-9367d35b845d/scratchpad/plants_out2/plant-O-unbounded.lean:139:10: error: Function expected at
+  hT t ht (y t)
+but this term has type
+  ‖↑(t ^ (2 / 3)) * oscInt2 (fun κ => t * genCubic 1 2 3 5 κ + lin (y t) κ) (bumpC δ hδ) -
+        ↑(d4Constant (cubicCoeffs (genCubic 1 2 3 5))) * bumpC δ hδ 0‖ <
+    ε
+
+Note: Expected a function because this term is being applied to the argument
+  (hy t)
+/tmp/claude-0/-home-user/54a93ecd-bca7-517d-a02d-9367d35b845d/scratchpad/plants_out2/plant-O-unbounded.lean:131:45: error: unsolved goals
+h : P_D4LimitOffsetStatement
+δ : ℝ
+hδ : δ > 0
+hO :
+  ∀ (A : ℝ × ℝ → ℂ) (M : ℝ),
+    AmpBound 2 (Metric.closedBall 0 δ) A M →
+      ∀ (R ε : ℝ),
+        0 < ε →
+          ∃ T,
+            ∀ (t : ℝ),
+              T ≤ t →
+                ∀ (y : ℝ × ℝ),
+                  ‖↑(t ^ (2 / 3)) * oscInt2 (fun κ => t * genCubic 1 2 3 5 κ + lin y κ) A -
+                        ↑(d4Constant (cubicCoeffs (genCubic 1 2 3 5))) * A 0‖ <
+                    ε
+M : ℝ
+hM : AmpBound 2 (Metric.closedBall 0 δ) (bumpC δ hδ) M
+R : ℝ
+y : ℝ → ℝ × ℝ
+hy : ∀ (t : ℝ), ‖y t‖ ≤ R
+ε : ℝ
+hε : ε > 0
+T : ℝ
+hT :
+  ∀ (t : ℝ),
+    T ≤ t →
+      ∀ (y : ℝ × ℝ),
+        ‖↑(t ^ (2 / 3)) * oscInt2 (fun κ => t * genCubic 1 2 3 5 κ + lin y κ) (bumpC δ hδ) -
+              ↑(d4Constant (cubicCoeffs (genCubic 1 2 3 5))) * bumpC δ hδ 0‖ <
+          ε
+t : ℝ
+ht : t ≥ T
+⊢ dist (↑(t ^ (2 / 3)) * oscInt2 (fun κ => t * genCubic 1 2 3 5 κ + lin (y t) κ) (bumpC δ hδ))
+      ↑(d4Constant (1, 2, 3, 5)) <
+    ε

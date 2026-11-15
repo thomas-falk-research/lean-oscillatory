@@ -1,0 +1,6 @@
+/tmp/claude-0/-home-user/54a93ecd-bca7-517d-a02d-9367d35b845d/scratchpad/plants_out2/plant-ATB-no-budget.lean:124:9: error: Tactic `rcases` failed: `a✝ : ∀ (η : ℝ),
+  0 < η →
+    ∃ B,
+      B.Finite ∧
+        B ⊆ {fun x => 1} ∧
+          ∀ A ∈ {fun x => 1}, ∃ b ∈ B, AmpBound 2 (Metric.closedBall 0 1) (A - b) η` is not an inductive datatype

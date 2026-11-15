@@ -1,0 +1,7 @@
+/tmp/claude-0/-home-user/54a93ecd-bca7-517d-a02d-9367d35b845d/scratchpad/plants_out2/plant-U-not-uniform-seq.lean:133:9: error: Tactic `rcases` failed: `x✝ : ∀ A ∈ seqFamily δ hδ,
+  ∃ T,
+    ∀ (t : ℝ),
+      T ≤ t →
+        ‖↑(t ^ (2 / 3)) * oscInt2 (fun κ => t * genCubic 1 2 3 5 κ) A -
+              ↑(d4Constant (cubicCoeffs (genCubic 1 2 3 5))) * A 0‖ <
+          ε` is not an inductive datatype
