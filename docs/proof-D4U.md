@@ -2,13 +2,19 @@
 
 Lead, session 12, after the pre-proof reviews were answered (`review/2026-11-15-D4U-pre-proof-answers.md`) and stamped.
 - **Blueprint:** `Blueprint/D4Uniform.lean`, one `…Facts` proposition per part.
-- **Assembly:** compiled before any part was proved, first in the blueprint file at 378d5ae, then moved unchanged to
-  `OscInt/Front/D4UniformAssembly.lean` (the blueprint library holds definitions only):
+- **Assembly:** compiled before any part was proved, first in the blueprint file at 378d5ae, then moved to
+  `OscInt/Front/D4UniformAssembly.lean`, unchanged except for the namespace (`OscInt.Blueprint.D4Uniform` →
+  `OscInt.D4UniformAux`, so the full names changed); the blueprint library holds definitions only:
   - `d4LimitUniform_of (hR : CommonRadiusFacts) (hL : LinearFacts) : D4LimitUniformStatement`;
   - `d4LimitOffset_of (hU : D4LimitUniformStatement) (hM : ModulationFacts) : D4LimitOffsetStatement`.
 
-Disclosure (as in `docs/statements.md`, batch D4U): a hand proof of this shape existed before the freeze, in the
-external packet, and referee B outlined the same reduction. The route below is the lead's.
+Disclosure (as in `docs/statements.md`, batch D4U; record `review/2026-11-15-D4U-packet-answers.md`): a hand proof of
+this shape and unelaborated Lean drafts with a reduction to S4.1′ and S4.2 existed before the freeze, in the external
+packet, and the lead elaborated those drafts in scratch before writing the statements; referee B outlined the same
+reduction. The route below follows the packet's decomposition (the part names `CommonRadiusFacts` and
+`ModulationFacts` are the packet's); the lead's changes are `LinearFacts` in place of the packet's net part, the net
+argument in the assembly, and the compactness argument for P-mod. (Corrected after the post-proof reviews; the first
+version said "the route below is the lead's".)
 
 ## Why this route
 
@@ -81,7 +87,7 @@ continuity, the net), estimated 150–300 lines. Assembly: about 80 lines.
 ## Revision after the route referee
 
 One fresh-context route referee (a Claude instance, like the lead; prompt and report not recorded, lessons 46) read the
-route, the blueprint and the compiled assembly at 378d5ae, launched 13:50:47 UTC, run time 245.6 s; it ran small Lean
+route, the blueprint and the compiled assembly at 378d5ae, launched 13:50:47 UTC, finished about 13:54:53, run time 245.6 s; it ran small Lean
 probes of names and definitions in its own scratch directory and wrote no proof of a part; nothing was committed while
 it read. Verdict: SOUND, no BLOCKER or MAJOR; the findings, in the lead's words, and the answers:
 1. MINOR. In P-mod, `fun_prop` does not handle the coercion ℝ → ℂ: use `Complex.ofRealCLM.contDiff.comp` for it,
@@ -104,8 +110,10 @@ lambda target times out at the pin (unification of `f * f'` with the pointwise l
 
 `OscInt/Front/D4UniformParts.lean` (P-radius, P-linear; the lead, written in scratch while the route referee read and
 moved into the tree after its answers were committed), `OscInt/Front/D4UniformModulation.lean` (P-mod; a fresh proof
-agent of the lead, under a brief carrying the route referee's notes; the complex-valued slice identity as a local
+agent of the lead, launched after the route answers were committed at d952b77 (13:56:01 UTC), run time 118.0 s, file
+time 13:58:05; under a brief carrying the route referee's notes; the complex-valued slice identity as a local
 lemma, `OscInt/Front/FamilyC10.lean` unchanged), `OscInt/Front/D4UniformFinal.lean` (`OscInt.API.d4LimitUniform`,
 `OscInt.API.d4LimitOffset`). No deviation from the route. Checks by the lead: `make lean` (axiom audit 1352 of 1352
 clean; the two `#assert_type_is` lines in `StatementTypes.lean`), per-module `leanchecker` on the seven D4U modules
-(all exit 0), the guard.
+(all exit 0), the guard; record of a re-run on 07ff140:
+`docs/replay/2026-11-15-D4U-integration-checks.txt`.

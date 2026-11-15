@@ -954,16 +954,22 @@ Modelling choices and omissions.
 5. No rate and no effective T: both statements are qualitative, like S4.2.
 6. AI-use disclosure: the question and a hand proof (checked by a fresh-context referee of the lead: correct, minor
    findings only) came from an external research packet produced with an OpenAI model at the owner's request (version
-   not stated for this packet); the statements, the sanity layer and the plants here are the lead's.
+   not stated for this packet); the statements, the sanity layer and the plants here are the lead's. The packet, the
+   lead's scratch elaboration of its Lean drafts before the freeze and the referee check of its hand proof are recorded
+   in `review/2026-11-15-D4U-packet-answers.md` (added after the post-proof reviews); the route follows the packet's
+   decomposition (part names `CommonRadiusFacts`, `ModulationFacts`).
 
 Clarifications after the pre-proof reviews (2026-11-15; answers `review/2026-11-15-D4U-pre-proof-answers.md`; S4.2U, S4.2O
 FAITHFUL and TRUE ×2, no BLOCKER; the stamp `stamps/20261115T122915Z-33c56db38f65` stands):
 1. "Compact amplitude families" in the heading means C²-totally bounded families (`AmpTotallyBounded`): closedness is not
    required, so the statement covers more families than compact ones.
 2. Uniformity in the offset holds for each fixed R, not uniformly in R. Referee B's numerics (generic cubic, factorised
-   amplitude, t up to 1e7) show an error of about 0.61 R t^{−1/3} {referee numerics, not repository data} for ‖y‖ ≤ R; at
-   |y| ~ t^{1/3} the limit is a different Airy-type value (ratio about 0.59 to c_C A(0) at y = t^{1/3}(1, 0)), and at
-   |y| ~ t there is no stationary point. So the conclusion holds for |y| = o(t^{1/3}); only bounded y is stated.
+   amplitude, t up to 1e7) show an error of about 0.61 R t^{−1/3} {referee numerics, not repository data} for ‖y‖ ≤ R, and
+   at y = t^{1/3}(1, 0) a different Airy-type limit (ratio about 0.59 to c_C A(0)). For linear terms of size t the
+   critical point moves (modelling choice 3) and there is no c_C A(0) limit. That the uniform limit extends to
+   |y| = o(t^{1/3}) is CONJECTURED (rescaling heuristic and the referee's numerics), not proved; only bounded y is stated.
+   (Corrected 2026-11-15 after the post-proof reviews: the first version said that at |y| ~ t there is no stationary
+   point, which is false in general, and stated the o(t^{1/3}) range as a consequence.)
 3. For consumers: applied at a D4 point k₀ ≠ 0 after recentring, the integral picks up the unimodular factor
    e^{i(tφ(k₀) + y·k₀)}, which varies with t; it does not affect bounds on the modulus.
 4. The sanity layer now also tests a family that is not finite-dimensional (`seqFamily`, complex amplitude values), the

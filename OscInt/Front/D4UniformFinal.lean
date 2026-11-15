@@ -16,9 +16,11 @@ the three parts (`OscInt/Front/D4UniformParts.lean`: P-radius, P-linear, by the 
 `OscInt/Front/D4UniformModulation.lean`: P-mod, by a proof agent of the lead) and the assembly
 `OscInt/Front/D4UniformAssembly.lean`, which uses the proved S4.1′ (`OscInt.d4BoundNe`) and S4.2 (`OscInt.d4Limit`).
 
-Provenance: the question and a hand proof of the same shape came from an external research packet produced with an
-OpenAI model (AI-use disclosure in `docs/statements.md`, batch D4U); the statements, route and Lean proofs are the
-lead's and the lead's proof agent's.
+Provenance: the question, a hand proof of the same shape and unelaborated Lean drafts with the same decomposition came
+from an external research packet (AI-use disclosure in `docs/statements.md`, batch D4U; record
+`review/2026-11-15-D4U-packet-answers.md`). The statements were written fresh by the lead; the route follows the
+packet's decomposition; the Lean proofs in this repository are the lead's (assembly, P-radius, P-linear) and the lead's
+proof agent's (P-mod).
 -/
 
 namespace OscInt.API
@@ -33,8 +35,8 @@ theorem d4LimitUniform : D4LimitUniformStatement :=
   d4LimitUniform_of commonRadius linear
 
 /-- **S4.2O** (`D4LimitOffsetStatement`): the D4 limit with a bounded linear term,
-`t^{2/3} ∫ e^{i(tφ + y·κ)} A → c_C A(0)` uniformly for `‖y‖ ≤ R` (max norm), for every C² amplitude supported in
-`B̄(0, δ)`. -/
+`t^{2/3} ∫ e^{i(tφ + y·κ)} A → c_C A(0)` uniformly for `‖y‖ ≤ R` (max norm), for each fixed `R` (the threshold depends
+on `R`), for every C² amplitude supported in `B̄(0, δ)`. -/
 theorem d4LimitOffset : D4LimitOffsetStatement :=
   d4LimitOffset_of d4LimitUniform modulation
 

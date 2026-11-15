@@ -10,8 +10,8 @@ import Blueprint.D4Uniform
 /-!
 # Batch D4U: the assembly of S4.2U and S4.2O from the parts (route `docs/proof-D4U.md`)
 
-Compiled before any part was proved (first in `Blueprint/D4Uniform.lean` at 378d5ae; moved here unchanged, so that the
-blueprint library holds definitions only, as for the other batches).
+Compiled before any part was proved (first in `Blueprint/D4Uniform.lean` at 378d5ae; moved here unchanged except for the
+namespace, so that the blueprint library holds definitions only, as for the other batches).
 -/
 
 namespace OscInt.D4UniformAux

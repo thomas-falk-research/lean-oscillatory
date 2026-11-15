@@ -7,11 +7,19 @@ mathematics.
 - Their prompts and reports are not recorded (lessons 46). Each finding is restated below in the lead's words.
 - Referee A compiled small checks of the definitions (unfolding, the empty and singleton families, `lin 0`, linearity of
   `oscInt2` in the amplitude) in its own scratch directory; referee B ran no Lean. Nothing was committed while they read
-  the tree (lessons 16). Written by the session-12 lead.
+  the tree (lessons 16), but the tree did change while referee B's agent was still running: its report reached the lead
+  at about 13:08:12 UTC, and the lead then wrote the sanity-layer extension into the tree (file time 13:10:42, built at
+  13:11) while that agent ran on until about 13:12:13 on background work of its own. Its verdicts and findings were
+  already delivered by then; the departure from lessons 16 is recorded here (added 2026-11-15 after the post-proof
+  reviews). Written by the session-12 lead.
 - Disclosure (lessons 24): referee B's report outlines, as part of its evidence, a reduction of S4.2U to S4.1′ and S4.2
   (common radius, finite net, uniform bound on differences) and of S4.2O to S4.2U through the modulation family, without
-  writing a proof. Together with the external packet disclosed in `docs/statements.md` (batch D4U), the claim "no proof
-  before the reviews" holds for the repository and the lead's Lean, not for the mathematics.
+  writing a proof; referee A's compiled definition checks included the linearity of `oscInt2` in the amplitude, a
+  lemma of the later part P-linear. With the external packet (`review/2026-11-15-D4U-packet-answers.md`: a hand proof
+  and a Lean reduction that the lead elaborated in scratch before the freeze), the claim the record supports is "no
+  Lean proof in the repository before the reviews were answered and stamped". (Corrected 2026-11-15 after the
+  post-proof reviews, `review/2026-11-15-D4U-post-proof-answers.md`; the first version said the claim held "for the
+  repository and the lead's Lean", which overstated it.)
 
 | Referee | Launched at commit | Launched (UTC) | Finished (UTC) | Run time |
 |---|---|---|---|---|
@@ -107,6 +115,12 @@ prose. The statements and the stamp `stamps/20261115T122915Z-33c56db38f65` stand
 
 `OscInt/Front/D4UniformSanity.lean`, section "Added after the blind pre-proof reviews": `phase_elliptic`,
 `const_not_totallyBounded`, `seqFamily_totallyBounded`, `uniform_seq_sanity`. Planted controls, second run
-(`docs/replay/2026-11-15-D4U-sanity-plants.txt`): 9 plants; all unplanted copies accepted; 8 rejected, of which 6 are
-refuted by compiled witnesses (ATB-finite-seq at the definition level, U-conj, ATB-no-budget, P-neg, O-moving,
-O-unbounded) and 2 are true weakenings rejected on data (U-not-uniform-seq, O-forall-y); 1 NOT DETECTED (ATB-C0).
+(`docs/replay/2026-11-15-D4U-sanity-plants.txt`): 9 plants; all unplanted copies accepted. Counted by lessons 44 (a plant
+counts as rejected only if the planted claim is shown false): 3 rejected, the planted statement refuted by a compiled
+witness (U-conj, O-moving, O-unbounded); 3 with a compiled witness about the planted definition only, whose planted
+statements are true weakenings or are not refuted (ATB-finite-seq, P-neg: true weakenings; ATB-no-budget: the
+planted definition admits the constant 1, the falsity of the planted statement is not compiled); 2 true weakenings that
+the sanity data reject but no witness can refute (U-not-uniform-seq, O-forall-y); 1 NOT DETECTED (ATB-C0). In
+particular a plant that drops the uniformity, the batch's content, is a true weakening and cannot be detected
+semantically by any sanity layer; uniformity is pinned by the proofs. (Counts corrected 2026-11-15 after the post-proof
+reviews; the first version counted definition-level witnesses and data-only rejections as refutations.)
