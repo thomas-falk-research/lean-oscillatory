@@ -30,10 +30,11 @@ control (C⁰ in place of C² in the net) is NOT DETECTED; dropping uniformity i
 detect.
 
 **Next, in order:**
-1. Owner: publish v0.6.0. Owner decision 2026-11-15: batch D4U is part of v0.6.0. The notes
-   (`docs/release-notes/v0.6.0.md`) and the CHANGELOG section now name S4.2U and S4.2O, the `stamps/statements.json` pin
-   is recomputed, and the acceptance replay is the one of 720363d; `tools/release_preflight.sh 0.6.0` passes on the
-   branch. Publishing steps unchanged (the notes, "Publishing"). The downstream project needs this tag.
+1. Done: v0.6.0 is published (GitHub release 2026-11-15T22:06:53Z, tag on 12093c3, published with
+   `tools/publish_release.sh`; batch D4U is part of it, owner decision 2026-11-15). Its Zenodo version DOI is
+   `10.5281/zenodo.24263138` (read from the Zenodo API on 2026-11-15: version 0.6.0, concept DOI
+   `10.5281/zenodo.24021328`), recorded in `CITATION.cff` and the README. Its post-release pins pull request
+   [thomas-falk-research/lean-oscillatory#17](https://github.com/thomas-falk-research/lean-oscillatory/pull/17) is open.
 2. OpenTimestamps for both D4U stamps is pending (upgrade when the calendars confirm).
 3. The machine's disk allowance ran out during the replay (lessons 50-style cut-off): check `df` before a replay and
    keep at least 15 GB free.
