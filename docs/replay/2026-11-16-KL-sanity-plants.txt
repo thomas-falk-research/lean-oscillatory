@@ -1,0 +1,86 @@
+# Planted controls for batch KL (OscInt/Front/KusminLandauSanity.lean), session 13, run before the KL stamp and
+# before any Lean proof of a KL statement (docs/lessons.md, rules 8 and 9). Written by a sanity agent of the lead
+# (finished 2026-11-16 about 12:45Z); re-run by the lead with the committed generator
+# docs/replay/plants/2026-11-16-KL/plants_kl.py.txt from 2026-11-16T12:45:10Z to 12:47:05Z: the 34 generated Lean files are
+# byte-identical to the committed .lean.txt records and the summary is identical. Statement file SHA-256 at run time
+# 2a1ea6811e0d1783d6b0f28b5c344ada469bb32a3267653d5079003a17695a7d; sanity file SHA-256
+# 69b45823d3c5c594e7ba15a5c957d642eeac1903670e5e2ae5c2a13707229e4d.
+# Verdicts: DETECTED = a compiled proof of the negation of the planted statement; plant- rejections are script-level
+# only. 10 of 12 plants DETECTED, among them Cheng and Graham's printed bound 1/(pi lam) + 1 (KL-C-a, refuted by the
+# sequence 0, 1/6, 1/3, 1/2, 4/3, 13/6, 3 with |S| = sqrt 13). Two are TRUE WEAKENINGS (KL-D-g: one term fewer in the
+# sum; KL-F-c: the right end point excluded): each follows from the frozen statement, argued in prose in the summary,
+# not compiled. Not run: the opposite off-by-one, range (N + 2).
+#
+ok-KL-D-a: accepted (want accepted)
+plant-KL-D-a: rejected (recorded)
+    first error: plant-KL-D-a.lean:16:7: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-KL-D-a: accepted (want accepted)
+    verdict KL-D-a [bound -> 1 / sin(pi lam)]: DETECTED (compiled witness of the negation of the planted statement)
+ok-KL-D-b: accepted (want accepted)
+plant-KL-D-b: rejected (recorded)
+    first error: plant-KL-D-b.lean:16:7: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-KL-D-b: accepted (want accepted)
+    verdict KL-D-b [pi lam / 2 -> pi lam in the bound]: DETECTED (compiled witness of the negation of the planted
+      statement)
+ok-KL-D-c: accepted (want accepted)
+plant-KL-D-c: rejected (recorded)
+    first error: plant-KL-D-c.lean:18:9: error: Invalid `⟨...⟩` notation: The expected type
+witness-KL-D-c: accepted (want accepted)
+    verdict KL-D-c [monotonicity conjunct of DiffsMonotoneIn dropped]: DETECTED (compiled witness of the negation of
+      the planted statement)
+ok-KL-D-d: accepted (want accepted)
+plant-KL-D-d: rejected (recorded)
+    first error: plant-KL-D-d.lean:15:10: error: Function expected at
+witness-KL-D-d: accepted (want accepted)
+    verdict KL-D-d [lam <= 1/2 dropped]: DETECTED (compiled witness of the negation of the planted statement)
+ok-KL-D-e: accepted (want accepted)
+plant-KL-D-e: rejected (recorded)
+    first error: plant-KL-D-e.lean:15:10: error: Function expected at
+witness-KL-D-e: accepted (want accepted)
+    verdict KL-D-e [0 < lam dropped]: DETECTED (compiled witness of the negation of the planted statement)
+ok-KL-D-f: accepted (want accepted)
+plant-KL-D-f: rejected (recorded)
+    first error: plant-KL-D-f.lean:55:10: error: Invalid projection: Projections extract constructor fields for one-constructor inductive types. The expression
+witness-KL-D-f: accepted (want accepted)
+    verdict KL-D-f [upper end of the cell dropped]: DETECTED (compiled witness of the negation of the planted
+      statement)
+ok-KL-D-g: accepted (want accepted)
+plant-KL-D-g: rejected (recorded)
+    first error: plant-KL-D-g.lean:17:0: error: Not a definitional equality: the left-hand side
+    verdict KL-D-g [range (N + 1) -> range N in expSum]: TRUE WEAKENING (in fact an equivalent re-indexing); no
+      witness possible. The planted statement bounds the first N terms under the hypothesis on N differences. It
+      follows from the true statement: for N = 0 the sum is empty and 0 <= cot(pi lam/2); for N = M + 1 the
+      hypothesis at N restricts to the hypothesis at M, and the true statement at M bounds c 0..c M. Conversely,
+      extending a sequence by one more admissible difference (repeat the last one) gives the true statement from the
+      planted one. So no data can refute it; the rejection above is of the proof script only (the value lemma for
+      the three-term sum). Reasoned in prose, not compiled (no proof about the statements before review).
+ok-KL-C-a: accepted (want accepted)
+plant-KL-C-a: rejected (recorded)
+    first error: plant-KL-C-a.lean:16:2: error: Type mismatch: The rewritten hypothesis
+witness-KL-C-a: accepted (want accepted)
+    verdict KL-C-a [bound -> 1/(pi lam) + 1]: DETECTED (compiled witness of the negation of the planted statement)
+ok-KL-C-b: accepted (want accepted)
+plant-KL-C-b: rejected (recorded)
+    first error: plant-KL-C-b.lean:16:2: error: Type mismatch: The rewritten hypothesis
+witness-KL-C-b: accepted (want accepted)
+    verdict KL-C-b [bound -> 1/(pi lam)]: DETECTED (compiled witness of the negation of the planted statement)
+ok-KL-F-a: accepted (want accepted)
+plant-KL-F-a: rejected (recorded)
+    first error: plant-KL-F-a.lean:62:6: error: Tactic `constructor` failed: target is not an inductive datatype
+witness-KL-F-a: accepted (want accepted)
+    verdict KL-F-a [upper bound on f' dropped]: DETECTED (compiled witness of the negation of the planted statement)
+ok-KL-F-b: accepted (want accepted)
+plant-KL-F-b: rejected (recorded)
+    first error: plant-KL-F-b.lean:19:60: error: Application type mismatch: The argument
+witness-KL-F-b: accepted (want accepted)
+    verdict KL-F-b [monotonicity of f' dropped]: DETECTED (compiled witness of the negation of the planted
+      statement)
+ok-KL-F-c: accepted (want accepted)
+plant-KL-F-c: rejected (recorded)
+    first error: plant-KL-F-c.lean:27:63: error: invalid `▸` notation, the equality
+    verdict KL-F-c [Finset.Icc -> Finset.Ico in the sum]: TRUE WEAKENING; no witness possible. The planted sum runs
+      over ceil a <= n < floor b. It follows from the true statement applied on [a, floor b - 1] when ceil a <=
+      floor b - 1 (continuity, derivative, monotonicity and the cell all restrict to a subinterval, and floor(floor
+      b - 1) = floor b - 1), and the sum is empty, with 0 <= cot(pi lam/2), otherwise. (Conversely f can be
+      continued linearly beyond b with the limiting slope, so the two forms should be equivalent.) No data can
+      refute it; the rejection above is of the proof script only. Reasoned in prose, not compiled.

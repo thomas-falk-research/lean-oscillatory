@@ -25,6 +25,8 @@ import OscInt.Front.LatticeCubeRootSanity
 import OscInt.Front.HypercubicSanity
 import OscInt.Front.LatticeGroupSanity
 import OscInt.Front.D4UniformSanity
+import OscInt.Front.PeriodicAnalyticSanity
+import OscInt.Front.KusminLandauSanity
 import OscInt.Front.GlobalFinal
 import OscInt.Front.LatticeFinal
 import OscInt.Front.LatticeExplicitFinal

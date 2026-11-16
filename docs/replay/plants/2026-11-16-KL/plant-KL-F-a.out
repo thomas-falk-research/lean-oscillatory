@@ -1,0 +1,8 @@
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl/out/plant-KL-F-a.lean:62:6: error: Tactic `constructor` failed: target is not an inductive datatype
+
+h : P_KusminLandauDerivStatement
+hd : ∀ (x : ℝ), HasDerivAt (fun x => 3 / 4 * x - x ^ 2 / 8) (3 / 4 - x / 4) x
+x : ℝ
+h0 : 0 < x
+h2 : x < 2
+⊢ 0 + 1 / 4 ≤ 3 / 4 - x / 4

@@ -13,5 +13,7 @@ import Challenge.LatticeCubeRoot
 import Challenge.Hypercubic
 import Challenge.LatticeGroup
 import Challenge.D4Uniform
+import Challenge.PeriodicAnalytic
+import Challenge.KusminLandau
 
 /-! Root of the frozen challenge library. Never a default target, never imported. -/

@@ -1,0 +1,37 @@
+import OscInt.Front.KusminLandauSanity
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+
+namespace OscInt.API.KusminLandauSanity
+
+open OscInt.Statements Set
+
+def P_DiffsMonotoneIn (c : ℕ → ℝ) (N : ℕ) (k : ℤ) (lam : ℝ) : Prop :=
+  ∀ n < N, (k : ℝ) + lam ≤ c (n + 1) - c n ∧ c (n + 1) - c n ≤ (k : ℝ) + 1 - lam
+
+def P_KusminLandauStatement : Prop :=
+  ∀ (c : ℕ → ℝ) (N : ℕ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → P_DiffsMonotoneIn c N k lam →
+    ‖expSum c N‖ ≤ Real.cos (Real.pi * lam / 2) / Real.sin (Real.pi * lam / 2)
+
+theorem witness_not_P_KusminLandauStatement : ¬ P_KusminLandauStatement := by
+  intro h
+  have h1 := h cAlt 4 0 (1 / 4) (by norm_num) (by norm_num) cAlt_cell
+  rw [norm_expSum_cAlt, show Real.pi * (1 / 4) / 2 = Real.pi / 8 by ring] at h1
+  have hs : 0 < Real.sin (Real.pi / 8) :=
+    Real.sin_pos_of_pos_of_lt_pi (by positivity) (by linarith [Real.pi_pos])
+  have hc : 2 * Real.cos (Real.pi / 8) ^ 2 - 1 = Real.sqrt 2 / 2 := by
+    rw [← Real.cos_two_mul, show 2 * (Real.pi / 8) = Real.pi / 4 by ring, Real.cos_pi_div_four]
+  have hsc := Real.sin_sq_add_cos_sq (Real.pi / 8)
+  rw [le_div_iff₀ hs] at h1
+  have h13 : (3 : ℝ) < Real.sqrt 13 := by
+    rw [Real.lt_sqrt (by norm_num)]
+    norm_num
+  have h2 : Real.sqrt 2 < 8 / 5 := by
+    rw [Real.sqrt_lt' (by norm_num)]
+    norm_num
+  have h3s : 3 * Real.sin (Real.pi / 8) ≤ Real.cos (Real.pi / 8) := by
+    nlinarith [mul_pos (sub_pos.mpr h13) hs]
+  nlinarith [mul_le_mul h3s h3s (by positivity) (by linarith)]
+
+end OscInt.API.KusminLandauSanity

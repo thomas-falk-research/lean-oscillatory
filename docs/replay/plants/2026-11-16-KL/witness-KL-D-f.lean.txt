@@ -1,0 +1,28 @@
+import OscInt.Front.KusminLandauSanity
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+
+namespace OscInt.API.KusminLandauSanity
+
+open OscInt.Statements Set
+
+def P_DiffsMonotoneIn (c : ℕ → ℝ) (N : ℕ) (k : ℤ) (lam : ℝ) : Prop :=
+  ((∀ n, n + 1 < N → c (n + 1) - c n ≤ c (n + 2) - c (n + 1)) ∨
+      (∀ n, n + 1 < N → c (n + 2) - c (n + 1) ≤ c (n + 1) - c n)) ∧
+    ∀ n < N, (k : ℝ) + lam ≤ c (n + 1) - c n
+
+def P_KusminLandauStatement : Prop :=
+  ∀ (c : ℕ → ℝ) (N : ℕ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → P_DiffsMonotoneIn c N k lam →
+    ‖expSum c N‖ ≤ Real.cos (Real.pi * lam / 2) / Real.sin (Real.pi * lam / 2)
+
+theorem witness_not_P_KusminLandauStatement : ¬ P_KusminLandauStatement := by
+  intro h
+  have hd : P_DiffsMonotoneIn cInt 2 0 (1 / 2) :=
+    ⟨Or.inl fun n _ => by rw [cInt_diff n, show n + 2 = n + 1 + 1 from rfl, cInt_diff (n + 1)],
+      fun n _ => by rw [cInt_diff n]; norm_num⟩
+  have h1 := h cInt 2 0 (1 / 2) (by norm_num) le_rfl hd
+  rw [expSum_cInt, cot_half] at h1
+  norm_num at h1
+
+end OscInt.API.KusminLandauSanity

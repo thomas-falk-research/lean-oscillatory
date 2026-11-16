@@ -1,0 +1,41 @@
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl/out/plant-KL-F-b.lean:19:60: error: Application type mismatch: The argument
+  Or.inl monotoneOn_const
+has type
+  MonotoneOn (fun x => ?m.105) ?m.106 ∨ ?m.100
+but is expected to have type
+  ∀ x ∈ Ioo 0 1, ↑0 + 1 / 4 ≤ 1 / 4 ∧ 1 / 4 ≤ ↑0 + 1 - 1 / 4
+in the application
+  h (fun x => x / 4) (fun x => 1 / 4) 0 1 0 (1 / 4) ?m.80 ?m.81
+    ⟨?m.84, fun x x_1 => HasDerivAt.div_const (hasDerivAt_id x) 4⟩ (Or.inl monotoneOn_const)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl/out/plant-KL-F-b.lean:17:89: error: unsolved goals
+h : P_KusminLandauDerivStatement
+⊢ √2 ≤ Real.cos (Real.pi * (1 / 4) / 2) / Real.sin (Real.pi * (1 / 4) / 2)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl/out/plant-KL-F-b.lean:34:89: error: Application type mismatch: The argument
+  Or.inl monotoneOn_const
+has type
+  MonotoneOn (fun x => ?m.102) ?m.103 ∨ ?m.97
+but is expected to have type
+  ∀ x ∈ Ioo 0 1, ↑1 + 1 / 4 ≤ 5 / 4 ∧ 5 / 4 ≤ ↑1 + 1 - 1 / 4
+in the application
+  h (fun x => 5 * x / 4) (fun x => 5 / 4) 0 1 1 (1 / 4) ?m.87 ?m.88 ⟨?m.91, fun x x_1 => ?m.94⟩
+    (Or.inl monotoneOn_const)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl/out/plant-KL-F-b.lean:32:89: error: unsolved goals
+h : P_KusminLandauDerivStatement
+⊢ √2 ≤ Real.cos (Real.pi * (1 / 4) / 2) / Real.sin (Real.pi * (1 / 4) / 2)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl/out/plant-KL-F-b.lean:57:4: error: Application type mismatch: The argument
+  Or.inr fun x x_1 y x_2 hxy => ?m.414
+has type
+  ?m.406 ∨
+    ∀ (x : ?m.408) (x_1 : ?m.415 x) (y : ?m.416 x x_1) (x_2 : ?m.417 x x_1 y) (hxy : ?m.418 x x_1 y x_2),
+      ?m.419 x x_1 y x_2 hxy
+but is expected to have type
+  ∀ x ∈ Ioo 0 2, ↑0 + 1 / 4 ≤ 3 / 4 - x / 4 ∧ 3 / 4 - x / 4 ≤ ↑0 + 1 - 1 / 4
+in the application
+  h (fun x => 3 / 4 * x - x ^ 2 / 8) (fun x => 3 / 4 - x / 4) 0 2 0 (1 / 4) ?m.399 ?m.400 ⟨?m.403, fun x x_1 => hd x⟩
+    (Or.inr fun x x_1 y x_2 hxy => ?m.414)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl/out/plant-KL-F-b.lean:57:34: error: `simp` made no progress
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl/out/plant-KL-F-b.lean:48:77: error: unsolved goals
+h : P_KusminLandauDerivStatement
+hd : ∀ (x : ℝ), HasDerivAt (fun x => 3 / 4 * x - x ^ 2 / 8) (3 / 4 - x / 4) x
+⊢ ‖2 + Complex.exp (↑(2 * Real.pi * (5 / 8)) * Complex.I)‖ ≤
+    Real.cos (Real.pi * (1 / 4) / 2) / Real.sin (Real.pi * (1 / 4) / 2)

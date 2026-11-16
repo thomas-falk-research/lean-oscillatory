@@ -20,7 +20,3 @@ numerics/census/out/heldout_a.json  # held-out run output (prereg §2, step 7)
 numerics/census/out/heldout_verdict.txt  # same
 review/census-falsification         # post-run falsification pass (prereg §6)
 docs/release-notes/v0.6.0.commit    # written by post-release after v0.6.0 is tagged (docs/release-notes/v0.6.0.md)
-OscInt/Front/PeriodicAnalyticSanity.lean   # batch PA sanity layer, being written by the sanity agent (session 13); remove when committed
-docs/replay/plants/2026-11-16-PA           # batch PA planted controls, same
-OscInt/Front/KusminLandauSanity.lean       # batch KL sanity layer, written before the freeze (session 13); remove when committed
-docs/replay/plants/2026-11-16-KL           # batch KL planted controls, same

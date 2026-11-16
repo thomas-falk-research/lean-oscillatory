@@ -1,0 +1,28 @@
+import OscInt.Front.KusminLandauSanity
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+
+namespace OscInt.API.KusminLandauSanity
+
+open OscInt.Statements Set
+
+def P_KusminLandauDerivStatement : Prop :=
+  ∀ (f f' : ℝ → ℝ) (a b : ℝ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → HasDerivOn f f' a b →
+    (MonotoneOn f' (Ioo a b) ∨ AntitoneOn f' (Ioo a b)) →
+    (∀ x ∈ Ioo a b, (k : ℝ) + lam ≤ f' x) →
+    ‖∑ n ∈ Finset.Icc ⌈a⌉ ⌊b⌋, Complex.exp (↑(2 * Real.pi * f (n : ℝ)) * Complex.I)‖ ≤
+      Real.cos (Real.pi * lam / 2) / Real.sin (Real.pi * lam / 2)
+
+theorem witness_not_P_KusminLandauDerivStatement : ¬ P_KusminLandauDerivStatement := by
+  intro h
+  have h1 := h (fun x => x) (fun _ => 1) 0 2 0 (1 / 2) (by norm_num) le_rfl
+    ⟨continuousOn_id, fun x _ => hasDerivAt_id x⟩ (Or.inl monotoneOn_const) (fun x _ => by norm_num)
+  have hs : ∑ n ∈ Finset.Icc ⌈(0 : ℝ)⌉ ⌊(2 : ℝ)⌋, eTerm ((n : ℤ) : ℝ) = 3 := by
+    rw [Finset.sum_congr rfl (fun n _ => eTerm_int n), Icc_ceil_floor_zero_two]
+    simp
+  have h2 : ‖(3 : ℂ)‖ ≤ _ := hs ▸ h1
+  rw [cot_half] at h2
+  norm_num at h2
+
+end OscInt.API.KusminLandauSanity
