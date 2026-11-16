@@ -5,14 +5,17 @@ below it, and every rule is binding.
 
 ## Resume here (session 13, 2026-11-16; kept current at every checkpoint)
 
-- **Work item:** Phase 0 (grounding) of the unlock programme: read the records, verify the remote state, run
-  `make quick`, verify the EU funding call, then build the unlock map (a new file under `docs/design/`, not yet written).
-- **Last verified state:** 2c0e328 (= `origin/main`, pull request 18 merged): tree clean at session start; `make quick`
-  started at 11:42:25Z, result not yet recorded here. No Lean file, statement or status claim has changed in session 13.
-- **Running or was running** (see the session log; a launch with no recorded finish is dead and is relaunched):
-  the funding-call sweep agent (11:37:40Z) and literature sweeps A and B (11:43:40Z), all writing to scratch only.
-- **Exact next command:** `make quick` (after `lake exe cache get` in a fresh container; toolchain installed from
-  `toolchain.sha256` as `.github/actions/setup-lean/action.yml` does), then continue with the work item above.
+- **Work item:** Phase 1, the unlock map (a new file under `docs/design/`, not yet written); in parallel the
+  application drafts in `docs/funding/` for the EuroHPC cut-off of 1 December 2026, 10:00 CET
+  (`docs/funding/00-call-findings.md`; eligibility of an unaffiliated individual is the open owner question).
+- **Last verified state:** 2c0e328 (= `origin/main`): `make quick` exit code 0 at 11:55:56Z (session log). No Lean file,
+  statement or status claim has changed in session 13.
+- **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
+  literature sweeps A and B (11:43:40Z), writing to scratch only.
+- **Exact next command:** none pending for Lean; `make docs-check` before each docs-only push, `make quick` when a
+  Lean file or a status claim changes. In a fresh container first install the toolchain from `toolchain.sha256` (as
+  `.github/actions/setup-lean/action.yml` does) and run `lake exe cache get`.
+- **Disk:** 17 GB available after the build; a full replay needs cleaning first or it breaks the 15 GB rule.
 - **Session log:** `docs/progress/2026-11-16-session13-log.md`.
 
 ## Start here (session 12, 2026-11-15)
