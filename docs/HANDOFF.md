@@ -5,13 +5,15 @@ below it, and every rule is binding.
 
 ## Resume here (session 13, 2026-11-16; kept current at every checkpoint)
 
-- **Work item:** Phase 1, the unlock map (a new file under `docs/design/`, not yet written); in parallel the
+- **Work item:** `docs/design/unlock-map.md` is complete (sections 1–8; its section 8 is the plan). Next: the
+  statement batch for the periodic-analytic theorems (Fourier-coefficient decay in a strip, the trapezoidal-rule
+  theorem, the lattice light cone), and the Kusmin–Landau inequality if the prior-art check allows; in parallel the
   application drafts in `docs/funding/` for the EuroHPC cut-off of 1 December 2026, 10:00 CET
   (`docs/funding/00-call-findings.md`; eligibility of an unaffiliated individual is the open owner question).
 - **Last verified state:** 2c0e328 (= `origin/main`): `make quick` exit code 0 at 11:55:56Z (session log). No Lean file,
   statement or status claim has changed in session 13.
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
-  literature sweeps A and B (11:43:40Z), writing to scratch only.
+  sweep C, the targeted prior-art check (12:03:40Z), writing to scratch only.
 - **Exact next command:** none pending for Lean; `make docs-check` before each docs-only push, `make quick` when a
   Lean file or a status claim changes. In a fresh container first install the toolchain from `toolchain.sha256` (as
   `.github/actions/setup-lean/action.yml` does) and run `lake exe cache get`.

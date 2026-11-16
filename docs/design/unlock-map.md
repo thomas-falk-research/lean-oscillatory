@@ -268,4 +268,77 @@ Formalisation prior art that bears on the choice of work (sweep B, part 4; nothi
 | P4 | lattice dispersive estimates; uniform fold, cusp, umbilic bounds; k-th derivative van der Corput with constants | none found outside this repository and the van der Corput port it derives from |
 | P5 | Bessel's integral, Jacobi–Anger, the generating function | yes, outside Mathlib: `bjbraams/lean-DLMF` |
 
-Sections 6 onward: pending.
+## 6. Hardware and lab register
+
+Every predicted value is an enclosure from `numerics/review/unlock_register_values.py` (record
+`numerics/results-unlock-register-values-2026-11-16.txt`; ball arithmetic). Device facts are from sweep A, with its
+labels. Error-model numbers are assumptions, marked as such; no hardware has been run and none will be without the
+owner's approval.
+
+**The plain finding first.** No device found can test an OscInt *bound*: the machine-checked envelope is far above
+what any clean device shows, and laboratory precision is at the percent level. What a device can test is the
+*kernel*: site populations with certified enclosures. The physics of that test has been confirmed since 2008; a run
+would benchmark the device against a certified reference and exercise the trust chain end to end. It would not be a
+discovery.
+
+| # | Device and quantity | Machine-checked statement tested | Predicted value (certified) | Noise and error budget | Can the device resolve it? | Access and cost |
+|---|---|---|---|---|---|---|
+| A | coupled waveguide array, 21 or 89 guides, centre input; output intensity per guide at the published lengths, Bessel argument `x = 2κz` of 4.64, 7.8 and 11.0 | LS-K for the profile, LS-D for the envelope, both through K2; for 21 guides also ASSUMED(L4, the chain statement N3 is not proved, lead) | peak `J_n²`: 0.170896 at `\|n\| = 3`, 0.121299 at `\|n\| = 6`, 0.0953917 at `\|n\| = 9`. LS-D envelope: 0.8606, 0.6087, 0.4841. Envelope with Landau's constant: 0.2219, 0.1570, 0.1248. Probability beyond a 21-guide array in the infinite-lattice model: 5.8e-8, 1.0e-3, 0.1209 | published similarity to theory 0.90–0.98 (Peruzzo et al.; Meinecke et al., CITED-READ), about 10% chip coupling | the profile: yes, at a few percent. The LS-D envelope: no, it is 5 times above the peak. The envelope with Landau's constant: nearly (1.3 times above). At `x = 11.0` with 21 guides the infinite-lattice formula is wrong by 12% of the probability, so the finite chain must be used | no open route found; a partner laboratory. Cost unknown |
+| B | gate-based superconducting processor, an open chain of 9 qubits, one excitation at the centre, Trotterised exchange coupling; populations at `t = 1` and `t = 2` (units of the inverse hopping) and the second moment | LS-K through ASSUMED(L4, N3, lead), validated at L2 by check K5 | `t = 1`: centre 0.050127, neighbours 0.33261, next 0.12451; second moment 1.99939. `t = 2`: centre 0.15742, neighbours 0.0044817, ends 0.10904; second moment 7.68269 (the infinite line gives 8; the largest population difference from the infinite line is 0.0300) | Trotter error, exact in this sector: second order with step 1/4 gives at most 0.00698 (`t = 1`, 9 bond layers) and 0.00338 (`t = 2`, 17 bond layers); first order with the same step gives 0.0704. Hardware: median two-qubit error 1.2e-3 to 2.8e-3 on the public IBM list (CITED-READ, live values of 2026-11-16); 17 layers of 4 bonds at 2 two-qubit gates per bond (ASSUMED decomposition) is 136 gates, so an unmitigated circuit fidelity near `e^{−136·0.003} ≈ 0.66` (ASSUMED error model); shot noise at 4000 shots is about 0.01 per population | the profile: yes, PLAUSIBLY at 2–5% per population after post-selection on one excitation; published IBM-hardware chain experiments are only 4–5 sites, so this is not demonstrated. The chain-against-infinite-line difference at `t = 2` (0.03): borderline. Any bound: no | IBM Open Plan: free, 10 minutes per 28 days (CITED-READ), enough for a pilot of a few dozen circuits. EuroHPC Quantum Access Pilot, Euro-Q-Exa: 1 to 10 QPU hours, cut-off 1 December 2026 (`docs/funding/00-call-findings.md`); its calibration data has not been read |
+| C | programmable photonic interferometer of 12 modes (Quandela Ascella), `U = e^{−iHt}` entered as a matrix, one photon; output distribution with `t` a software parameter | as B | as B with 12 sites (not computed yet) | unitary fidelity 99.7 ± 0.08%, total efficiency about 8% (Maring et al., arXiv:2306.00874, CITED-READ) | yes for the profile; the front reaches the boundary at `2t ≈ 6` | the vendor's cloud (price NOT FOUND) or, PLAUSIBLY, the photonic system of the EuroHPC pilot (minimum request 10 QPU hours; whether it accepts a user unitary is NOT VERIFIED) |
+| D | analogue transmon arrays (7-site chain, 62-qubit array) | as B | — | published fidelity above 96% for the first 200 ns on 7 sites (Karamlou et al., CITED-READ) | yes, and it has been done | not user-accessible: **not feasible** without a partner |
+| E | NTT coherent Ising machine and similar optical optimisers | none | — | — | no: an Ising optimiser is not a programmable linear interferometer for amplitudes (PLAUSIBLE), and access is for research collaborators (page of 2020, CITED-READ) | **not feasible** |
+| F | two-dimensional waveguide lattices with diagonal coupling (49 × 49) | none: K3 needs nearest-neighbour coupling only | — | — | — | **not feasible today**: no OscInt statement applies |
+
+What would change the finding: the sharp constant (N6) brings the envelope within a factor 1.3 of the peak at
+published lengths, and disorder raises the peak (localisation), so with N6 and N3 the envelope becomes a usable
+certified test that a device is *not* localised. With the present constant it is not. CONJECTURED (the argument about
+disorder is physical reasoning, not computed here).
+
+## 7. Ranking by value per unit of effort
+
+Value is scored against the owner's four criteria: (1) new or newly machine-checked mathematics, (2) verified
+predictions that experiments test, (3) tools people use, (4) funding and partners. Effort is in sessions of this kind,
+including the three-hour replay for a statement batch. The ranking is the lead's judgement; the reasons are in the
+last column so that it can be overruled.
+
+| Rank | Item | Value | Effort | Why here |
+|---|---|---|---|---|
+| 1 | application drafts for the 1 December cut-off | (4); hardware access for (2) | under 1 | the only item with a deadline; each section is complete on its own |
+| 2 | the general periodic-analytic statements: Fourier-coefficient decay in a strip, and the trapezoidal-rule theorem with the constant 4π; the lattice light cone N1 as a corollary | (1): a theorem cited across numerical analysis, in no proof assistant; unlocks K7–K11 and the soundness of the certified evaluator | 1 | one mechanism behind four chains; short classical proofs; a general theorem instead of four special ones |
+| 3 | the Kusmin–Landau inequality with the sharp constant, in difference form | (1): the lemma whose wrong constant propagated for a decade (F8) | under 1, if the prior-art check P1 finds it is not already formalised | small, self-contained, and the one community that already publishes explicit constants |
+| 4 | certified evaluator, certificate format and the one checker (N8, N9), then the command-line tool and packages | (3); makes every explicit statement evaluable; the experiment protocol needs it | 1 | no stamp or replay needed; value on its own |
+| 5 | the quantum-walk protocol for a 9-qubit chain (N10): registered, simulated two ways, ready to run | (2), (4) | under 1 after item 4 | row B above; honest about being a benchmark |
+| 6 | ring and open-chain statements (N2, N3) | (1), and turns the ASSUMED bridge of rows A–C into a machine-checked one | 1 to 2 | needs item 2 first |
+| 7 | Rogers's constants: sharp 2 for k = 1 and 4.56 for k = 2 | (1); improves every constant derived from S1.1 and S1.2 | 1 | short proofs; a constant, not a new capability |
+| 8 | the ballistic identity N4; the partition bound N5 | (1), (2), small | under 1 each | cheap, but nobody is blocked on them |
+| 9 | Landau's theorem (N6) | (1); halves LS-D's constant per dimension and makes row A's envelope usable | 3 or more | high value, real difficulty: Sturm-type monotonicity and five certified comparisons |
+| 10 | general finite-range hopping (N7); an explicit two-dimensional constant (O3); a non-separable model (O4) | (1), (2) | 3 or more each | large; the two-dimensional items wait on explicit constants for G2 |
+| — | radar and waveform remainders (F3, F4), Pearcey restatement (O6) | (1), small audience for formal proofs | 1 each | need the leading-term work first |
+| — | machine learning; quasinormal modes; coherent Ising machines | none found | — | out of the ranking (sections 3.7, 4, 6) |
+
+## 8. Plan for session 13
+
+In this order, so that a stop at any point leaves finished pieces:
+1. This map (done with this section) and its one-page summary in chat.
+2. Statement batch for item 2, and for item 3 if P1 allows: statements, sanity layer with planted controls,
+   challenge and comparator files, stamp, blind pre-proof reviews. While the referees run the tree is frozen, so the
+   application sections (item 1) are written in scratch during those windows and committed when the referees end.
+3. Application sections committed one by one (`docs/funding/`).
+4. Route documents and blueprints with the assemblies compiled first; route referee; proof parts by proof agents;
+   integration; post-proof reviews; one isolated replay for both batches.
+5. During the replay (no Lean process allowed, tree frozen): item 4, the evaluator, certificate format and checker,
+   written in scratch and committed when the replay ends; then item 5.
+6. Items 6 onward are for later sessions unless time remains.
+
+Registered before starting, for the two batches: **time box** one session; **stop rule** a BLOCKER from a blind
+referee that cannot be answered by a new statement the same day, or a part that does not elaborate after two proof
+agents; **partial result worth keeping** a frozen, reviewed statement with a compiled assembly (as batch LS was in
+v0.5.0), or the Fourier-coefficient bound alone without the trapezoidal theorem.
+
+**The strongest case against this plan.** Items 2 and 3 are classical mathematics; the claim can only be
+"machine-checked", and a reader may ask why a library about oscillatory integrals proves a quadrature theorem and an
+exponential-sum inequality. The answer given here is that they are the two places found where practitioners rely on
+exactly this kind of estimate and where a check is missing or the literature was wrong; if the owner prefers depth in
+the existing subject, items 7 and 9 are the alternatives. The hardware item cannot produce a surprise. And the
+application may be ineligible (an unaffiliated individual), which only the owner can settle.
