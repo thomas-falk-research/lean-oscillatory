@@ -1,7 +1,7 @@
 //! J_n(x) for an integer order n and a rational x, from the power series
 //! with an alternating-series remainder bound.
 
-use crate::num::{CalcError, Fl, Iv, Res, MAX_RESULT_EXP};
+use crate::num::{CalcError, Fl, Iv, Res};
 use num_bigint::BigInt;
 use num_integer::Integer;
 use num_rational::BigRational;
@@ -75,9 +75,10 @@ fn series(n: u64, x: &BigRational, w: u64) -> Res<Iv> {
     if !term.lo.is_pos() {
         return Err(CalcError::Internal("first Bessel term not positive".into()));
     }
-    if term.hi.top() < -MAX_RESULT_EXP {
-        return Err(CalcError::Budget("|J_n(x)| is below 2^-1048576".into()));
-    }
+    // No lower limit on the size of the value: with a dyadic exponent the
+    // series costs the same for J_10000(10^-98), about 10^-1018660, as for
+    // any other argument, and the comparison with a claim never builds the
+    // value as a fraction (see `num::cmp_ratio_fl`).
     let mut sum = term.clone();
     let mut largest: Fl = term.hi.clone();
     let mut m: u64 = 0;
@@ -308,5 +309,45 @@ mod tests {
             bessel_j(&huge, &rat("1"), 64),
             Err(CalcError::Budget(_))
         ));
+    }
+
+    #[test]
+    fn tiny_arguments_and_tiny_values() {
+        // For 0 < x <= 2 the series alternates with decreasing terms, so
+        // s_0 - s_1 <= J_n(x) <= s_0 with s_0 = (x/2)^n / n! and
+        // s_1 = s_0 (x/2)^2 / (n + 1).
+        let w = 400u64;
+        let tiny = BigRational::new(BigInt::one(), num_traits::pow(BigInt::from(10u32), 98));
+        for n in [1u64, 2, 7, 100, 9_999, 10_000] {
+            for x in [tiny.clone(), rat("1/1000"), rat("3/2")] {
+                let v = bessel_j(&BigInt::from(n), &x, 256).expect("no lower limit on the value");
+                assert!(v.lo.is_pos(), "n = {n}");
+                assert!(v.rel_width_ok(256), "n = {n}");
+                let half = Iv::from_ratio(&(&x / BigRational::from_integer(BigInt::from(2))), w);
+                let mut s0 = Iv::one();
+                for j in 1..=n {
+                    s0 = s0.mul(&half, w).div_u(j, w).expect("div");
+                }
+                let s1 = s0.mul(&half.sqr(w), w).div_u(n + 1, w).expect("div");
+                let lower = s0.sub(&s1, w);
+                assert!(lower.lo.le(&v.hi) && v.lo.le(&s0.hi), "n = {n}, x = {x}");
+            }
+        }
+        // J_10000(10^-98) is about 10^-1018660: far below 2^-1048576, and computed
+        let v = bessel_j(&BigInt::from(10_000), &tiny, 256).expect("computed");
+        assert!(
+            v.lo.top() < -3_000_000 && v.lo.top() > -3_500_000,
+            "{}",
+            v.lo.top()
+        );
+        // the reflections
+        let minus = -tiny.clone();
+        let odd = bessel_j(&BigInt::from(9_999), &minus, 128).expect("computed");
+        assert!(odd.hi.is_neg());
+        let even = bessel_j(&BigInt::from(-10_000), &minus, 128).expect("computed");
+        assert!(even.lo.is_pos());
+        // and the square, for the population
+        let p = crate::quant::population(&BigInt::from(10_000), &tiny, 256).expect("computed");
+        assert!(p.lo.is_pos() && p.rel_width_ok(250));
     }
 }

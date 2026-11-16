@@ -7,7 +7,9 @@
 Usage: python3 tests/differential.py PYTHON_PKG_DIR RUST_BINARY STATEMENTS OUTDIR
   e.g. from python/:  python3 tests/differential.py . ../rust/oscint-cert/target/release/oscint-cert ../stamps/statements.json /tmp/corpus
 Certificates are produced by the reference `make` and then mutated; each is checked by both implementations
-through their command lines; statuses are compared. Fixed seed."""
+through their command lines. Compared: the status, the exit code, the set of verdict keys, `certificate_sha256`,
+`statements_sha256` and `statements_pinned`; then the command-line behaviour that gives no verdict (exit code 3 with
+an empty standard output). Fixed seed; the first 1429 certificates are those of the runs of revision 2."""
 import copy, json, os, random, subprocess, sys
 from fractions import Fraction as F
 
@@ -23,6 +25,7 @@ corpus = []  # (category, raw text)
 
 
 def add(cat, obj=None, raw=None):
+    """raw may be text or bytes."""
     corpus.append((cat, raw if raw is not None else json.dumps(obj)))
 
 
@@ -124,28 +127,79 @@ add("raw-nan-token", raw=good.replace('"producer"', '"z": NaN, "producer"', 1))
 add("raw-bom", raw="﻿" + good)
 
 
-def run_py(path):
-    r = subprocess.run([sys.executable, "-m", "oscint_cert", "check", path, "--statements", statements], cwd=pkg, capture_output=True, text=True)
+
+# cases added for revision 3 (after the first 1429, whose order is unchanged)
+def cert(kind, inputs, claim):
+    label, asm = C.KINDS[kind]
+    return {"format": C.CERT_FORMAT, "kind": kind, "statement": None if label is None else S(label), "inputs": inputs,
+            "claim": claim, "assumptions": asm, "producer": "c"}
+
+
+vb = {"holds": True, "bound": {"lo": "0", "hi": "1000000"}}
+add("raw-null", raw="null")
+add("raw-number", raw="3")
+add("raw-string", raw='"x"')
+add("raw-not-utf8", raw=b"\xff\xfe\x00")
+add("raw-latin1-in-producer", raw=good.encode().replace(b'"producer": "', b'"producer": "\xe9'))
+for n in (100, 101):
+    x = "1." + "0" * (n - 2)
+    add(f"numeral-x-{n}-chars", cert("bessel-j", {"n": 0, "x": x}, wide))
+    add(f"numeral-t-{n}-chars", cert("lattice-population", {"n": 1, "t": x}, {"lo": "0", "hi": "1"}))
+    add(f"numeral-envelope-t-{n}-chars", cert("lattice-envelope", {"d": 1, "t": x}, {"lo": "0", "hi": "1"}))
+    for key in ("a", "b", "mu", "t"):
+        inp = dict(base); inp[key] = {"a": "-0." + "5" + "0" * (n - 4), "b": "0.5" + "0" * (n - 3),
+                                      "mu": "0.8" + "0" * (n - 3), "t": "100." + "0" * (n - 4)}[key]
+        assert len(inp[key]) == n
+        add(f"numeral-vdc-{key}-{n}-chars", cert("vdc-hypothesis", inp, vb))
+for n in (101, 4000, 4001):
+    inp = dict(base); inp["phase"] = [{"amp": "1." + "0" * (n - 2), "freq": 1, "fn": "cos"}]
+    add(f"numeral-amp-{n}-chars", cert("vdc-hypothesis", inp, vb))
+tiny = "1/" + "9" * 98
+add("tiny-mu-claim-false", cert("vdc-hypothesis", dict(base, mu=tiny, t="1"), {"holds": True, "bound": {"lo": "0", "hi": "1"}}))
+add("tiny-mu-claim-true", cert("vdc-hypothesis", dict(base, mu=tiny, t="1"), {"holds": True, "bound": {"lo": "0", "hi": "1" + "0" * 51}}))
+add("tiny-t-envelope-is-one", cert("lattice-envelope", {"d": 64, "t": "1/1" + "0" * 97}, {"lo": "1", "hi": "1"}))
+add("tiny-t-envelope-false", cert("lattice-envelope", {"d": 64, "t": "1/1" + "0" * 97}, {"lo": "0", "hi": "1/2"}))
+add("huge-t-envelope", cert("lattice-envelope", {"d": 3, "t": "9" * 99}, {"lo": "0", "hi": "1/1" + "0" * 90}))
+add("fail-on-long-interval", cert("vdc-hypothesis", dict(base, a="0", b="20", mu="1/2"), vb))
+add("fail-on-long-interval-2", cert("vdc-hypothesis", dict(base, a="-64", b="64", mu="1/2"), vb))
+many = [{"amp": "1", "freq": (j % 7) + 1, "fn": "cos"} for j in range(64)]
+add("phase-64-terms", cert("vdc-hypothesis", dict(base, phase=many, a="0", b="9", mu="1/1000"), vb))
+add("phase-65-terms", cert("vdc-hypothesis", dict(base, phase=many + many[:1]), vb))
+add("bessel-large-order", cert("bessel-j", {"n": 10000, "x": "400"}, {"lo": "-1/1" + "0" * 30, "hi": "1/1" + "0" * 30}))
+add("bessel-order-10001", cert("bessel-j", {"n": 10001, "x": "1"}, wide))
+add("bessel-x-400", cert("bessel-j", {"n": 0, "x": "-400"}, {"lo": "-1", "hi": "1"}))
+
+import hashlib
+
+KEYS = {"format", "status", "kind", "reasons", "checker", "statements_sha256", "statement", "numeric_rung", "assumptions",
+        "recomputed", "hypothesis", "certificate_sha256", "statements_pinned"}
+CMD = {"python": [sys.executable, "-m", "oscint_cert"], "rust": [rust]}
+
+
+def run(who, args):
+    r = subprocess.run(CMD[who] + args, cwd=pkg if who == "python" else None, capture_output=True)
     try:
-        return json.loads(r.stdout)["status"], r.returncode
+        v = json.loads(r.stdout.decode("utf-8"))
+        return v["status"], r.returncode, v, r.stdout
     except Exception:
-        return f"EXIT{r.returncode}", r.returncode
+        return f"EXIT{r.returncode}", r.returncode, None, r.stdout
 
 
-def run_rs(path):
-    r = subprocess.run([rust, "check", path, "--statements", statements], capture_output=True, text=True)
-    try:
-        return json.loads(r.stdout)["status"], r.returncode
-    except Exception:
-        return f"EXIT{r.returncode}", r.returncode
-
-
-rows, table = [], {}
+EXIT = {"CERTIFIED": 0, "REJECTED": 1, "UNRESOLVED": 2}
+rows, table, defects = [], {}, []
 for i, (cat, raw) in enumerate(corpus):
     path = os.path.join(out, f"c{i:04d}.json")
-    open(path, "w", encoding="utf-8").write(raw)
-    a, _ = run_py(path)
-    b, _ = run_rs(path)
+    data = raw if isinstance(raw, bytes) else raw.encode("utf-8")
+    open(path, "wb").write(data)
+    h = hashlib.sha256(data).hexdigest()
+    res = {}
+    for who in ("python", "rust"):
+        st, rc, v, _ = run(who, ["check", path, "--statements", statements])
+        res[who] = st
+        if v is None or rc != EXIT.get(st) or set(v) != KEYS or v["certificate_sha256"] != h \
+                or v["statements_sha256"] != SHA or v["statements_pinned"] is not False:
+            defects.append((i, cat, who, st, rc, sorted(set(v) ^ KEYS) if v else None))
+    a, b = res["python"], res["rust"]
     table[(a, b)] = table.get((a, b), 0) + 1
     rows.append((i, cat, a, b))
 print(f"corpus: {len(corpus)} certificates")
@@ -163,4 +217,62 @@ unsafe = [r for r in rows if "CERTIFIED" in (r[2], r[3]) and r[2] != r[3]]
 print(f"disagreements in which exactly one side says CERTIFIED: {len(unsafe)}")
 for i, cat, a, b in unsafe[:20]:
     print(f"    c{i:04d} {cat}: python {a}, rust {b}")
+print(f"verdict-shape defects (exit code, key set, certificate hash, list hash, pin flag): {len(defects)}")
+for d in defects[:20]:
+    print(f"    c{d[0]:04d} {d[1]}: {d[2]} status {d[3]} exit {d[4]} key difference {d[5]}")
+print("revision-3 cases:")
+for i, cat, a, b in rows[1429:]:
+    print(f"    c{i:04d} {cat}: python {a}, rust {b}")
+
+# command-line behaviour: the pin option and unusable statement lists
+gp = os.path.join(out, "good.json")
+open(gp, "w").write(good)
+entry = '{"label": "LS-D", "name": "n", "commitment": "c", "proved_by": "trust me"}'
+lists = {"bare-array": "[]", "empty-object": "{}", "no-statements-key": '{"format": "oscint-statements 1"}',
+         "wrong-format": '{"format": "oscint-statements 2", "statements": []}',
+         "duplicate-label": '{"format": "oscint-statements 1", "statements": [%s, %s]}' % (entry, entry),
+         "entry-without-commitment": '{"format": "oscint-statements 1", "statements": [{"label": "LS-D", "name": "n"}]}',
+         "entry-with-empty-name": '{"format": "oscint-statements 1", "statements": [{"label": "LS-D", "name": "", "commitment": "c"}]}',
+         "not-json": "not json", "duplicate-key": '{"format": "oscint-statements 1", "format": "oscint-statements 1", "statements": []}'}
+cli = []
+for name, text in lists.items():
+    lp = os.path.join(out, f"list-{name}.json")
+    open(lp, "w").write(text)
+    cli.append((f"statement list: {name}", ["check", gp, "--statements", lp], 3, None))
+lp = os.path.join(out, "list-not-utf8.json")
+open(lp, "wb").write(b"\xff\xfe")
+cli.append(("statement list: not UTF-8", ["check", gp, "--statements", lp], 3, None))
+cli += [("pin: match", ["check", gp, "--statements", statements, "--expect-statements-sha256", SHA], 0, True),
+        ("pin: match, upper case", ["check", gp, "--statements", statements, "--expect-statements-sha256", SHA.upper()], 0, True),
+        ("pin: mismatch", ["check", gp, "--statements", statements, "--expect-statements-sha256", "0" * 64], 3, None),
+        ("no subcommand", [], 3, None), ("check without --statements", ["check", gp], 3, None),
+        ("missing certificate file", ["check", os.path.join(out, "nonexistent.json"), "--statements", statements], 3, None),
+        ("missing statement list", ["check", gp, "--statements", os.path.join(out, "nonexistent.json")], 3, None),
+        ("make: unknown kind", ["make", "no-such-kind", "--inputs", "{}", "--statements", statements], 3, None),
+        ("make: hypothesis fails", ["make", "vdc-hypothesis", "--inputs", json.dumps(dict(base, mu="9/10")), "--statements", statements], 3, None),
+        ("make: hypothesis undecided", ["make", "vdc-hypothesis", "--inputs", json.dumps(dict(base, b="100")), "--statements", statements], 3, None),
+        ("make: beyond the range", ["make", "bessel-j", "--inputs", '{"n": 0, "x": "401"}', "--statements", statements], 3, None),
+        ("make: outside the statement", ["make", "lattice-envelope", "--inputs", '{"d": 1, "t": "0"}', "--statements", statements], 3, None)]
+bad = 0
+print(f"command-line cases: {len(cli)}")
+for name, args, want_rc, want_pin in cli:
+    got = {}
+    for who in ("python", "rust"):
+        st, rc, v, stdout = run(who, args)
+        ok = rc == want_rc and ((want_rc == 3 and stdout == b"") or (want_rc != 3 and v is not None and v["statements_pinned"] is want_pin))
+        got[who] = "ok" if ok else f"NOT AS SPECIFIED (exit {rc}, {len(stdout)} bytes on standard output)"
+        bad += not ok
+    print(f"    {name}: expected exit {want_rc}; python {got['python']}; rust {got['rust']}")
+print(f"command-line cases not as specified: {bad}")
+# make on one side, check on the other
+cross = 0
+for kind, inp in [("lattice-envelope", {"d": 2, "t": "7/2"}), ("lattice-population", {"n": 3, "t": "1.16"}), ("bessel-j", {"n": -5, "x": "12.5"}), ("vdc-hypothesis", base)]:
+    for maker, checker in (("python", "rust"), ("rust", "python")):
+        _, rc, c, stdout = run(maker, ["make", kind, "--inputs", json.dumps(inp), "--statements", statements])
+        cp = os.path.join(out, f"cross-{maker}-{kind}.json")
+        open(cp, "wb").write(stdout)
+        st, rc2, v, _ = run(checker, ["check", cp, "--statements", statements])
+        cross += st != "CERTIFIED"
+        print(f"    made by {maker}, checked by {checker}, {kind}: {st}")
+print(f"cross make/check not CERTIFIED: {cross}")
 json.dump(rows, open(os.path.join(out, "results.json"), "w"))

@@ -32,8 +32,14 @@ impl CalcError {
 
 pub type Res<T> = Result<T, CalcError>;
 
-/// Longest accepted numeral (characters). Longer ones are a budget matter.
-pub const MAX_NUMERAL_LEN: usize = 100_000;
+/// Longest numeral (characters) that is turned into a number (contract,
+/// section 2). A longer one is beyond the supported range: UNRESOLVED.
+pub const MAX_NUMERAL_LEN: usize = 4000;
+
+/// Longest numeral (characters) among the `inputs` of a certificate, phase
+/// amplitudes excepted (contract, sections 2 and 4). The count is of the
+/// whole string: sign, digits, `/` and `.`.
+pub const MAX_INPUT_NUMERAL_LEN: usize = 100;
 
 /// Largest binary exponent (in modulus) the checker will turn into a
 /// rational for comparison and printing.
@@ -50,54 +56,113 @@ fn all_digits(b: &[u8]) -> bool {
     !b.is_empty() && b.iter().all(|c| c.is_ascii_digit())
 }
 
-fn digits_to_int(b: &[u8]) -> Result<BigInt, NumErr> {
-    BigInt::parse_bytes(b, 10).ok_or_else(|| NumErr::Malformed("not a decimal integer".into()))
+fn all_zeros(b: &[u8]) -> bool {
+    b.iter().all(|&c| c == b'0')
 }
 
-/// Parses the contract's exact rationals (section 2), strictly:
+fn digits_to_int(b: &[u8]) -> Result<BigInt, String> {
+    BigInt::parse_bytes(b, 10).ok_or_else(|| "not a decimal integer".to_string())
+}
+
+/// A numeral of the contract as read from its text.
+#[derive(Debug, Clone)]
+pub struct Numeral {
+    /// Number of characters of the numeral (all of them ASCII).
+    pub len: usize,
+    /// -1, 0 or 1: the sign of the value, read off the text.
+    pub sign: i8,
+    /// The exact value; `None` for a numeral longer than
+    /// [`MAX_NUMERAL_LEN`], which is never turned into a number.
+    pub value: Option<BigRational>,
+}
+
+/// Reads one of the contract's exact rationals (section 2), strictly:
 /// `-?D+`, `-?D+/D+` with a nonzero denominator, or `-?D+.D+`, where `D`
 /// is an ASCII digit. No sign `+`, no spaces, no exponent, no underscore,
 /// no sign on the denominator.
-pub fn parse_rational(s: &str) -> Result<BigRational, NumErr> {
-    if s.len() > MAX_NUMERAL_LEN {
-        return Err(NumErr::Budget(format!(
-            "a numeral of {} characters exceeds the budget of {}",
-            s.len(),
-            MAX_NUMERAL_LEN
-        )));
-    }
+///
+/// The form is examined first and on the text alone, so that a numeral
+/// that is both malformed and too long is malformed (rule 1 of the verdict
+/// comes before rule 2); the sign is read off the text too. Only a numeral
+/// of at most [`MAX_NUMERAL_LEN`] characters is converted.
+pub fn read_numeral(s: &str) -> Result<Numeral, String> {
     let b = s.as_bytes();
     let (neg, body) = match b.first() {
         Some(b'-') => (true, &b[1..]),
         _ => (false, b),
     };
-    let bad = || NumErr::Malformed(format!("{:?} is not an exact rational of the contract", short(s)));
-    let value = if let Some(pos) = body.iter().position(|&c| c == b'/') {
+    let bad = || format!("{:?} is not an exact rational of the contract", short(s));
+    enum Shape<'a> {
+        Fraction(&'a [u8], &'a [u8]),
+        Decimal(&'a [u8], &'a [u8]),
+        Integer(&'a [u8]),
+    }
+    let shape = if let Some(pos) = body.iter().position(|&c| c == b'/') {
         let (p, q) = (&body[..pos], &body[pos + 1..]);
         if !all_digits(p) || !all_digits(q) {
             return Err(bad());
         }
-        let q = digits_to_int(q)?;
-        if q.is_zero() {
-            return Err(NumErr::Malformed("zero denominator".into()));
+        if all_zeros(q) {
+            return Err("zero denominator".into());
         }
-        BigRational::new(digits_to_int(p)?, q)
+        Shape::Fraction(p, q)
     } else if let Some(pos) = body.iter().position(|&c| c == b'.') {
         let (i, f) = (&body[..pos], &body[pos + 1..]);
         if !all_digits(i) || !all_digits(f) {
             return Err(bad());
         }
-        let mut digits = i.to_vec();
-        digits.extend_from_slice(f);
-        let den = num_traits::pow(BigInt::from(10u32), f.len());
-        BigRational::new(digits_to_int(&digits)?, den)
+        Shape::Decimal(i, f)
     } else {
         if !all_digits(body) {
             return Err(bad());
         }
-        BigRational::from_integer(digits_to_int(body)?)
+        Shape::Integer(body)
     };
-    Ok(if neg { -value } else { value })
+    let zero = match shape {
+        Shape::Fraction(p, _) => all_zeros(p),
+        Shape::Decimal(i, f) => all_zeros(i) && all_zeros(f),
+        Shape::Integer(i) => all_zeros(i),
+    };
+    let sign = match (zero, neg) {
+        (true, _) => 0,
+        (false, true) => -1,
+        (false, false) => 1,
+    };
+    // every character is an ASCII digit, `-`, `/` or `.`: bytes are characters
+    let len = b.len();
+    if len > MAX_NUMERAL_LEN {
+        return Ok(Numeral {
+            len,
+            sign,
+            value: None,
+        });
+    }
+    let magnitude = match shape {
+        Shape::Fraction(p, q) => BigRational::new(digits_to_int(p)?, digits_to_int(q)?),
+        Shape::Decimal(i, f) => {
+            let mut digits = i.to_vec();
+            digits.extend_from_slice(f);
+            let den = num_traits::pow(BigInt::from(10u32), f.len());
+            BigRational::new(digits_to_int(&digits)?, den)
+        }
+        Shape::Integer(i) => BigRational::from_integer(digits_to_int(i)?),
+    };
+    Ok(Numeral {
+        len,
+        sign,
+        value: Some(if neg { -magnitude } else { magnitude }),
+    })
+}
+
+/// The value of a numeral of at most [`MAX_NUMERAL_LEN`] characters.
+pub fn parse_rational(s: &str) -> Result<BigRational, NumErr> {
+    let numeral = read_numeral(s).map_err(NumErr::Malformed)?;
+    numeral.value.ok_or_else(|| {
+        NumErr::Budget(format!(
+            "a numeral of {} characters exceeds the limit of {}",
+            numeral.len, MAX_NUMERAL_LEN
+        ))
+    })
 }
 
 fn short(s: &str) -> String {
@@ -285,6 +350,20 @@ impl Fl {
             e: self.e + s as i64,
         }
     }
+    /// Rounds to a multiple of 2^`min_e`, up or down (towards +inf or
+    /// -inf); a number whose exponent is at least `min_e` is unchanged.
+    pub fn round_to_exp(&self, min_e: i64, up: bool) -> Fl {
+        if self.m.is_zero() || self.e >= min_e {
+            return self.clone();
+        }
+        let s = (min_e - self.e) as u64;
+        let m = if up {
+            shr_ceil(&self.m, s)
+        } else {
+            shr_floor(&self.m, s)
+        };
+        Fl { m, e: min_e }
+    }
     /// Exact comparison.
     pub fn compare(&self, o: &Fl) -> Ordering {
         let sa = self.m.sign();
@@ -382,6 +461,38 @@ impl Fl {
             e: a.e - b.e - s,
         }
         .round(w, up))
+    }
+}
+
+/// Exact comparison of a rational with a dyadic number, without building
+/// the dyadic number as a rational (its exponent may be millions of bits
+/// below zero).
+pub fn cmp_ratio_fl(r: &BigRational, x: &Fl) -> Ordering {
+    let p = r.numer();
+    let q = r.denom(); // positive: num-rational keeps the sign in the numerator
+    let (sp, sm) = (p.sign(), x.m.sign());
+    if sp != sm {
+        return sp.cmp(&sm);
+    }
+    if sp == Sign::NoSign {
+        return Ordering::Equal;
+    }
+    let oriented = |mag: Ordering| if sp == Sign::Plus { mag } else { mag.reverse() };
+    // compare |p| with |m| q 2^e. With bits(m q) in {bits(m) + bits(q) - 1,
+    // bits(m) + bits(q)}, the bit lengths settle most cases.
+    let lhs_bits = p.bits() as i64;
+    let rhs_bits_hi = x.m.bits() as i64 + q.bits() as i64 + x.e;
+    if lhs_bits > rhs_bits_hi {
+        return oriented(Ordering::Greater);
+    }
+    if lhs_bits < rhs_bits_hi - 1 {
+        return oriented(Ordering::Less);
+    }
+    let rhs = &x.m * q;
+    if x.e >= 0 {
+        p.cmp(&(rhs << (x.e as u64)))
+    } else {
+        (p << ((-x.e) as u64)).cmp(&rhs)
     }
 }
 
@@ -885,5 +996,190 @@ mod tests {
                 }
             }
         }
+    }
+
+    #[test]
+    fn numerals_are_read_off_the_text() {
+        // sign and length, with and without a value
+        for (s, sign) in [
+            ("0", 0i8),
+            ("-0", 0),
+            ("000", 0),
+            ("0.000", 0),
+            ("-0.0", 0),
+            ("0/7", 0),
+            ("-00/123", 0),
+            ("7", 1),
+            ("-7", -1),
+            ("0.001", 1),
+            ("-0.001", -1),
+            ("1/3", 1),
+            ("-1/3", -1),
+            ("0010/0003", 1),
+        ] {
+            let n = read_numeral(s).expect("well formed");
+            assert_eq!(n.sign, sign, "{s}");
+            assert_eq!(n.len, s.len());
+            let v = n.value.expect("short enough");
+            let from_value = if v.is_zero() {
+                0
+            } else if v.is_negative() {
+                -1
+            } else {
+                1
+            };
+            assert_eq!(from_value, sign, "{s}");
+        }
+        // the limit: 4000 characters are converted, 4001 are not
+        let at = "7".repeat(MAX_NUMERAL_LEN);
+        let n = read_numeral(&at).expect("well formed");
+        assert_eq!((n.len, n.sign), (MAX_NUMERAL_LEN, 1));
+        assert!(n.value.is_some());
+        assert!(parse_rational(&at).is_ok());
+        for (long, sign) in [
+            ("7".repeat(MAX_NUMERAL_LEN + 1), 1i8),
+            (format!("-{}", "7".repeat(MAX_NUMERAL_LEN)), -1),
+            ("0".repeat(MAX_NUMERAL_LEN + 1), 0),
+            (format!("-0.{}", "0".repeat(MAX_NUMERAL_LEN)), 0),
+            (format!("-0.{}1", "0".repeat(MAX_NUMERAL_LEN)), -1),
+            (format!("0/{}", "9".repeat(MAX_NUMERAL_LEN)), 0),
+            (format!("{}/3", "1".repeat(1_000_000)), 1),
+        ] {
+            let n = read_numeral(&long).expect("well formed");
+            assert_eq!(n.len, long.len());
+            assert_eq!(n.sign, sign);
+            assert!(n.value.is_none());
+            assert!(matches!(parse_rational(&long), Err(NumErr::Budget(_))));
+        }
+        // the form is examined before the length
+        for long in [
+            format!("+{}", "7".repeat(5000)),
+            format!("{}x", "7".repeat(5000)),
+            format!("{}/", "7".repeat(5000)),
+            format!("1/{}", "0".repeat(5000)),
+            format!("{}.", "7".repeat(5000)),
+            format!("{} ", "7".repeat(5000)),
+            format!("{}e9", "7".repeat(5000)),
+        ] {
+            assert!(read_numeral(&long).is_err());
+            assert!(matches!(parse_rational(&long), Err(NumErr::Malformed(_))));
+        }
+        assert_eq!(MAX_NUMERAL_LEN, 4000);
+        assert_eq!(MAX_INPUT_NUMERAL_LEN, 100);
+    }
+
+    #[test]
+    fn rationals_are_compared_with_dyadic_numbers_exactly() {
+        let ratios = [
+            "-7/3",
+            "-1",
+            "-1/3",
+            "-1/1024",
+            "0",
+            "1/1024",
+            "1/3",
+            "0.3333",
+            "1",
+            "3/2",
+            "1000001/3",
+        ];
+        let dyadics = [
+            (0i64, 0i64),
+            (1, 0),
+            (-1, 0),
+            (1, -10),
+            (-1, -10),
+            (3, -1),
+            (-7, 2),
+            (5461, -14), // 0.33331...
+            (5462, -14),
+            (1365, -12), // 0.33325...
+            (333_333, 0),
+            (333_334, 0),
+            (1, 40),
+            (-1, 40),
+        ];
+        for r in ratios {
+            let rr = rat(r);
+            for (m, e) in dyadics {
+                let x = Fl {
+                    m: BigInt::from(m),
+                    e,
+                };
+                assert_eq!(
+                    cmp_ratio_fl(&rr, &x),
+                    rr.cmp(&x.to_ratio()),
+                    "{r} against {m} * 2^{e}"
+                );
+            }
+        }
+        // equality needs the exact comparison, at any exponent
+        for e in [-5000i64, -64, -1, 0, 1, 64, 5000] {
+            let x = Fl {
+                m: BigInt::from(12345),
+                e,
+            };
+            let exact = x.to_ratio();
+            assert_eq!(cmp_ratio_fl(&exact, &x), Ordering::Equal);
+            let ulp = Fl {
+                m: BigInt::one(),
+                e: e - 300,
+            }
+            .to_ratio();
+            assert_eq!(cmp_ratio_fl(&(&exact + &ulp), &x), Ordering::Greater);
+            assert_eq!(cmp_ratio_fl(&(&exact - &ulp), &x), Ordering::Less);
+            assert_eq!(cmp_ratio_fl(&-(&exact + &ulp), &x.neg()), Ordering::Less);
+            assert_eq!(cmp_ratio_fl(&-(&exact - &ulp), &x.neg()), Ordering::Greater);
+        }
+        // a number millions of bits below 1 is compared without being built
+        let tiny = Fl {
+            m: BigInt::from(3),
+            e: -4_000_000,
+        };
+        assert_eq!(cmp_ratio_fl(&rat("0"), &tiny), Ordering::Less);
+        assert_eq!(cmp_ratio_fl(&rat("1/1000000"), &tiny), Ordering::Greater);
+        assert_eq!(cmp_ratio_fl(&rat("-1/1000000"), &tiny), Ordering::Less);
+        assert_eq!(cmp_ratio_fl(&rat("0"), &tiny.neg()), Ordering::Greater);
+        assert_eq!(cmp_ratio_fl(&rat("-1/1000000"), &tiny.neg()), Ordering::Less);
+    }
+
+    #[test]
+    fn rounding_to_a_grid_is_outward() {
+        for m in [-1001i64, -1000, -1, 0, 1, 999, 1000, 1001, 123_456_789] {
+            for e in [-40i64, -13, -12, -11, 0, 5] {
+                let x = Fl {
+                    m: BigInt::from(m),
+                    e,
+                };
+                for min_e in [-12i64, -3, 0, 4] {
+                    let down = x.round_to_exp(min_e, false);
+                    let up = x.round_to_exp(min_e, true);
+                    assert!(down.le(&x) && x.le(&up), "{m} * 2^{e} to 2^{min_e}");
+                    // multiples of 2^min_e, less than one step apart
+                    assert!(down.is_zero() || down.e >= min_e);
+                    assert!(up.is_zero() || up.e >= min_e);
+                    let step = Fl {
+                        m: BigInt::one(),
+                        e: min_e,
+                    };
+                    assert!(up.sub(&down).le(&step));
+                    if e >= min_e {
+                        assert_eq!(down.compare(&x), Ordering::Equal);
+                        assert_eq!(up.compare(&x), Ordering::Equal);
+                    }
+                }
+            }
+        }
+        // a tiny positive number: [0, one step]; a tiny negative one: [-one step, 0]
+        let tiny = Fl {
+            m: BigInt::from(5),
+            e: -3_000_000,
+        };
+        assert!(tiny.round_to_exp(-100, false).is_zero());
+        let up = tiny.round_to_exp(-100, true);
+        assert_eq!((up.m.clone(), up.e), (BigInt::one(), -100));
+        assert!(tiny.neg().round_to_exp(-100, true).is_zero());
+        let down = tiny.neg().round_to_exp(-100, false);
+        assert_eq!((down.m.clone(), down.e), (BigInt::from(-1), -100));
     }
 }

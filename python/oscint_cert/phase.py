@@ -69,6 +69,8 @@ def check_lower_bound(terms, order: int, a: F, b: F, mu: F, digits: int = 20, ma
         raise ValueError("need a <= b, mu > 0, 0 <= order <= 16")
     if max(abs(a), abs(b)) * max((abs(f) for _, f, _ in terms), default=1) > 64:
         return "UNRESOLVED", {"reason": "frequency times interval end above 64"}
+    if len(terms) > 8:
+        max_pieces = max(64, max_pieces * 8 // len(terms))  # the work per piece grows with the number of terms
     d = derivative(terms, order)
     L = lipschitz(d)
     stack = [(a, b)]
@@ -79,7 +81,8 @@ def check_lower_bound(terms, order: int, a: F, b: F, mu: F, digits: int = 20, ma
         val = eval_point(d, m, digits)
         av = R.iabs(val)
         if av[1] < mu:
-            return "FAIL", {"point": R.fmt(m), "value_enclosure": [R.fmt(val[0]), R.fmt(val[1])]}
+            shown = R.round_out(val, 30)  # bounded size for printing; still an enclosure
+            return "FAIL", {"point": R.fmt(m), "value_enclosure": [R.fmt(shown[0]), R.fmt(shown[1])]}
         lower = av[0] - L * (v - u) / 2  # mean value inequality around the midpoint
         if lower >= mu:
             pieces.append((u, v))

@@ -127,10 +127,14 @@ def _iroot(n: int, k: int) -> int:
 
 
 def root(a, k: int, digits: int):
-    """Enclosure of the k-th root of a non-negative interval, to about `digits` decimal digits."""
+    """Enclosure of the k-th root of a non-negative interval, to about `digits` decimal digits after the point, and
+    to at least `digits` significant digits when the radicand is below 1."""
     if a[0] < 0:
         raise Unresolved("root of a negative number")
-    s = 10**digits
+    extra = 0
+    if 0 < a[0] < 1:  # a small radicand: keep `digits` significant digits, so that the lower end stays positive
+        extra = ((a[0].denominator.bit_length() - a[0].numerator.bit_length()) * 30103 // 100000) // k + 2
+    s = 10 ** (digits + extra)
 
     def lo(q):
         return F(_iroot((q.numerator * s**k) // q.denominator, k), s)
@@ -202,9 +206,15 @@ def sincos(x: F, digits: int):
     while abs(y) > 1:
         y /= 2
         k += 1
-    s, c = _sincos_point(y, digits + 2 * k + 2)
+    p = digits + 2 * k + 4
+    s, c = _sincos_point(y, p - 2)
+    # Each enclosure is rounded outward to multiples of 10^-p, so the fractions stay of bounded size (without this the
+    # denominators square at every doubling). A doubling multiplies the width by at most 4 and the rounding adds
+    # 2 * 10^-p, so k <= 6 doublings lose fewer than 2k + 2 digits.
+    s, c = round_out(s, p), round_out(c, p)
     for _ in range(k):
         s, c = mul(mul(iv(2), s), c), sub(mul(c, c), mul(s, s))
+        s, c = round_out(s, p), round_out(c, p)
         s = (max(s[0], F(-1)), min(s[1], F(1)))
         c = (max(c[0], F(-1)), min(c[1], F(1)))
     return s, c

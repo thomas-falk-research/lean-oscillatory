@@ -1,4 +1,4 @@
-# The certificate contract, version 0.1, revision 2 (experimental)
+# The certificate contract, version 0.1, revision 3 (experimental)
 
 One language-neutral contract between everything that produces an evaluated OscInt result and the one program that
 may call it CERTIFIED. Version 0.1 is experimental: it is versioned from the start, and it is frozen as version 1
@@ -6,8 +6,17 @@ only after consumers from two different domains have used it (`docs/ROADMAP.md`,
 refers to is `stamps/statements.json` (format `oscint-statements 1`). There are two implementations: the Python
 package under `python/oscint_cert/` (standard library only) and a Rust crate under `rust/oscint-cert/`, written by a
 separate agent from revision 1 of this page alone. Revision 2 (2026-11-16) closes the gaps that agent reported and
-that a differential test of the two confirmed (section 6); the format strings are unchanged because no certificate
-had left the repository.
+that a differential test of the two confirmed (section 6). Revision 3 (2026-11-16) answers a test by a reader who
+had only this page and the package's README (section 6): it adds two keys to the verdict, the option that pins the
+statement list, a limit on the length of input numerals, and the missing definitions. The format strings are
+unchanged because no certificate had left the repository.
+
+**Terms.** OscInt is a Lean 4 library of machine-checked estimates for oscillatory integrals. A *statement* is one
+frozen Lean proposition of that library, with a short label (LS-K, LS-D and S1.k below), a Lean name and a
+*commitment* (a hash of its kernel-level form); `docs/statements.md` gives each statement in ordinary mathematical
+notation. A *rung* says how a claim is supported: L0 typed code, L1 property or fuzz tests, L2 exact or certified
+computation, L3 a proof on paper, L4 a machine-checked proof. `ASSUMED(rung, reason, owner)` marks a step that
+has not reached the rung named, with the reason and who owns closing it.
 
 ## 1. Trust boundary
 
@@ -17,6 +26,16 @@ had left the repository.
   statement list it was given, and derives the list of assumptions from the certificate's kind.
 - **No floating point.** All arithmetic in the checker is exact rational interval arithmetic. A result that cannot
   be decided within the budget is UNRESOLVED; it is never rounded into a verdict.
+- **CERTIFIED is relative to the statement list the checker was given.** The checker cannot tell a genuine list from
+  a home-made one whose entries claim proofs. A reader who relies on a verdict must know which list was used: pass
+  `--expect-statements-sha256` with the SHA-256 of the list from a source they trust (the release notes of the
+  release they use, or `sha256sum stamps/statements.json` in a checkout whose `make statements-check` passes), or
+  compare the verdict's `statements_sha256` with that value. A verdict records whether the list was pinned
+  (`statements_pinned`). A verdict whose `statements_pinned` is `false` says "certified against the list with this
+  hash" and nothing about where that list came from. No fixed value is printed here because the list grows with
+  every batch of statements.
+- **A verdict is bound to its certificate by `certificate_sha256`**, the SHA-256 of the bytes checked; a verdict does
+  not repeat the inputs or the claim.
 - **What CERTIFIED means, and no more:** (a) the statement named is in the statement list, with the same name and
   commitment, and has a machine-checked proof there (`proved_by` is set); (b) the claimed enclosure contains the
   checker's own enclosure of the quantity; (c) the assumptions listed in the verdict are the only steps not covered
@@ -31,7 +50,9 @@ had left the repository.
 Every number is a JSON string holding an exact rational in one of three forms, ASCII digits only: an integer
 `-?D+`, a fraction `-?D+/D+` with a nonzero denominator, or a finite decimal `-?D+.D+`. No leading `+`, no spaces, no
 exponent, no sign on the denominator, no digit separators; leading zeros, `-0` and unreduced fractions are accepted.
-A numeral longer than 4000 characters is beyond the supported range (UNRESOLVED). Integers that index things (a site,
+A numeral longer than 4000 characters is beyond the supported range (UNRESOLVED), and so is a numeral of more than
+100 characters among the `inputs` other than a phase amplitude (the cost of the computation grows with the size of
+the inputs; the limit is the budget). Integers that index things (a site,
 a dimension, an order, a frequency) are JSON integers written without a fraction or an exponent (`1.0` and `1e0` are
 rejected, as are booleans); an integer of more than 300 digits is malformed. JSON floats, `NaN` and `Infinity` are
 rejected. An enclosure is an object with exactly the keys `lo` and `hi`, lo ≤ hi, meaning the closed interval.
@@ -59,19 +80,27 @@ phase term. An object with a duplicate key, at any depth, is malformed. The clai
 | Kind | Statement | Inputs | Quantity enclosed by the claim | Assumptions |
 |---|---|---|---|---|
 | `bessel-j` | none | `n` integer, `x` rational, \|x\| ≤ 400 | `J_n(x)` | none |
-| `lattice-population` | LS-K | `n` integer, `t` rational | `J_n(2t)²`: the probability at site n at time t for the lattice Schrödinger group on ℤ started at site 0 | `bessel-identification`, `single-site-datum` |
-| `lattice-envelope` | LS-D | `d` integer in 0…64, `t` rational, t ≠ 0 | `min{1, (C*/2π)^d (2\|t\|)^{−d/3}}`, `C* = 8(1 + √7)/3` | `unit-l1-datum` |
-| `vdc-hypothesis` | S1.k | `phase`, `order` integer k in 2…16, `a`, `b`, `mu`, `t` rationals with a ≤ b, mu > 0, t > 0 | claim `{"holds": true, "bound": enclosure}`: `\|ω^{(k)}\| ≥ mu` on [a, b], and the bound `(5·2^{k−1} − 2)(t·mu)^{−1/k}` | `amplitude-one` |
+| `lattice-population` | LS-K | `n` integer, `t` rational | `J_n(2t)²`: the probability at site n at time t for `i u′ = −Δu` on ℤ, `(Δu)(n) = u(n+1) + u(n−1) − 2u(n)`, started at site 0 | `bessel-identification`, `single-site-datum` |
+| `lattice-envelope` | LS-D | `d` integer in 0…64, `t` rational, t ≠ 0 | `min{1, (C*/2π)^d (2\|t\|)^{−d/3}}`, `C* = 8(1 + √7)/3`: a bound for the **amplitude** `\|u(t, x)\|` at every site, for a datum of ℓ¹ norm 1 | `unit-l1-datum` |
+| `vdc-hypothesis` | S1.k | `phase`, `order` integer k in 2…16, `a`, `b`, `mu`, `t` rationals with a ≤ b, mu > 0, t > 0 | claim `{"holds": true, "bound": enclosure}`: `\|ω^{(k)}\| ≥ mu` on [a, b], and the bound `(5·2^{k−1} − 2)(t·mu)^{−1/k}` for `\|∫_a^b e^{i(t·ω(k) + ξk)} dk\|`, every real ξ | `amplitude-one` |
 
 Inputs outside the table are of two sorts, and the two get different verdicts (section 5):
 
 | Input | Malformed or outside the statement's hypotheses: REJECTED | Valid, but beyond what the checker supports: UNRESOLVED |
 |---|---|---|
+| every kind | a numeral that is not of the forms of section 2 | an input numeral of more than 100 characters (phase amplitudes: 4000) |
 | `bessel-j`, `lattice-population` | `n` not a JSON integer | \|n\| > 10000; \|x\| > 400; \|2t\| > 400 |
 | `lattice-envelope` | d < 0; t = 0 | d > 64 |
 | `vdc-hypothesis` | order < 2; a > b; mu ≤ 0; t ≤ 0; an empty phase; a term with other keys or another `fn` | order > 16; more than 64 terms; \|freq\| > 1000; \|freq\| times an end of the interval above 64 |
 
 `lattice-population` accepts t = 0 (the value is exactly 1 or 0). A frequency 0 and an interval with a = b are valid.
+
+Units and reading. Time is in units of ħ divided by the hopping amplitude: for a tight-binding Hamiltonian with
+hopping amplitude κ between neighbours (`H = −κ Σ |n⟩⟨n+1| + h.c.`, any on-site constant), the `t` of this page is
+κ·(physical time)/ħ, and the population is `J_n(2κt_phys/ħ)²`. The envelope of `lattice-envelope` bounds an
+amplitude; the probability at a site is bounded by its square (and, since the envelope is at most 1, also by the
+envelope itself). The `vdc-hypothesis` bound is for an oscillatory integral with amplitude 1; it can exceed the
+trivial bound `b − a`, and then says nothing new.
 
 A `phase` is a list of 1 to 64 terms `{"amp": rational, "freq": integer with |freq| ≤ 1000, "fn": "cos" or "sin"}`,
 meaning `ω(k) = Σ amp · fn(freq · k)`. For `vdc-hypothesis` the frequency times either end of the interval must not
@@ -103,8 +132,11 @@ The checker prints a JSON object:
 | `assumptions` | the assumptions with their text |
 | `recomputed` | the checker's own enclosure |
 | `hypothesis` | for `vdc-hypothesis`: `{"status": "PASS", "FAIL" or "UNRESOLVED", "detail": …}`; a FAIL names a rational point of the interval where the hypothesis is violated |
+| `certificate_sha256` | SHA-256 (lower-case hexadecimal) of the bytes of the certificate that was checked |
+| `statements_pinned` | `true` if the statement list was required to have a given SHA-256 (`--expect-statements-sha256`) and has it; otherwise `false` |
 
-Every key of the table is present in every verdict; a value that does not apply is `null`.
+Every key of the table is present in every verdict; a value that does not apply, or was not reached, is `null`
+(for example `recomputed` in a verdict that was decided by the structure or by the hypothesis).
 
 Rules, applied in this order; the first that decides, decides:
 1. **Structure.** Anything that is not a certificate as specified in sections 2 to 4 gives REJECTED: text that is
@@ -124,23 +156,39 @@ Rules, applied in this order; the first that decides, decides:
 5. **Proof.** A statement whose `proved_by` in the list is not a non-empty string gives UNRESOLVED.
 6. Otherwise CERTIFIED.
 
-Conformance of two implementations is defined on claims that are either at least 1e-25 wide relative to
-`max(1, |value|)` or wrong by at least that much; inside that margin they may differ between UNRESOLVED and the
-other two statuses, never between CERTIFIED and REJECTED.
+Conformance of two implementations is defined on claims whose two end points are each at least
+`1e-25 · max(1, |value|)` away from the value (on either side); for a claim with an end point inside that margin they
+may differ between UNRESOLVED and the other two statuses, never between CERTIFIED and REJECTED. Where rule 1 and a
+length limit both apply to one numeral, rule 1 decides (a malformed numeral is REJECTED whatever its length).
+`statements_pinned` reports the pin, whatever the status.
 
 Command line of the reference implementation (run from `python/`): `python3 -m oscint_cert make <kind> --inputs
 '<json>' --statements ../stamps/statements.json` writes a certificate to standard output; `python3 -m oscint_cert
-check <file> --statements ../stamps/statements.json` writes a verdict. Exit codes: 0 CERTIFIED (or certificate
-written), 1 REJECTED, 2 UNRESOLVED, 3 for the command line, an unreadable file, an unusable statement list, or a
-`make` that cannot produce a certificate. A certificate with bad content is a REJECTED verdict with exit code 1, not
-an error. `statements_sha256` is the SHA-256 of the statement list's bytes. Implementations may differ in the digits
-of `recomputed` and in the wording of `reasons`.
+check <file> --statements ../stamps/statements.json [--expect-statements-sha256 <hex>]` writes a verdict (`-` as the
+file reads standard input).
+
+Exit codes of `check`: 0 CERTIFIED, 1 REJECTED, 2 UNRESOLVED; in these three cases, and only in these, a verdict is
+on standard output. Exit code 3, with a message on standard error and nothing on standard output: a wrong command
+line, an unreadable file, a statement list that is unusable (not strict JSON, not of the format `oscint-statements
+1`, an entry without a non-empty string `label`, `name` and `commitment`, or two entries with one label), or a
+statement list whose SHA-256 is not the expected one (compared without regard to letter case). A certificate with
+bad content (also `null`, an empty file, bytes that are not UTF-8) is a REJECTED verdict with exit code 1, not an
+error. Exit codes of `make`: 0 and a certificate on standard output; 3 and a message on standard error in every
+other case (an input outside the tables of section 4, in either column; a hypothesis that fails, in which case the
+message names the point, or that is undecided). With the default precision on both sides, `make` writes only
+certificates that `check` certifies against the same statement list; the one exception is a statement without a
+proof in that list (UNRESOLVED).
+
+`statements_sha256` is the SHA-256 of the statement list's bytes. Implementations may differ in the digits of
+`recomputed`, in the wording of `reasons` and in the shape of `detail`. The reference prints enclosures rounded
+outward to at most 80 decimal digits, as fractions (`"lo": "447213595…/500000000…"`); a consumer converts them with
+exact rational arithmetic. The reference's option `--digits` (10 to 200, default 30) sets the working precision of
+rule 4; the conformance statement below is for the default.
 
 ## 6. Evidence
 
-**The Python implementation.** `python/tests/test_cert.py` (23 tests, run on 2026-11-16 with Python 3.13.18 and, for
-the differential tests against Arb, python-flint 0.9.0 with FLINT 3.6.0; all pass; without python-flint four are
-skipped):
+**The Python implementation** (version 0.2.1). `python/tests/test_cert.py`: 32 tests, run on 2026-11-16 with Python
+3.13.18 and, for the differential tests against Arb, python-flint 0.9.0 with FLINT 3.6.0; all pass in about 5 s:
 - properties on random inputs with a fixed seed: root, π and sine/cosine enclosures; populations sum to at most 1;
   the LS-D envelope dominates every population (200 random sites and times);
 - differential tests against Arb: sine and cosine at 300 points, Bessel values at 250 points with orders up to 60 and
@@ -151,39 +199,68 @@ skipped):
 - adversarial certificates: every single-key deletion, an extra key, a wrong format, altered assumptions, a swapped
   kind, floats, NaN, infinities, booleans, nulls and containers in inputs and claims, a shifted claim (REJECTED), a
   point claim (not CERTIFIED), a wrong commitment, name or label (REJECTED), a statement whose proof is removed from
-  the list (UNRESOLVED), inputs out of range (UNRESOLVED): none is CERTIFIED.
+  the list (UNRESOLVED), inputs out of range (UNRESOLVED): none is CERTIFIED;
+- the command line (added in 0.2.1): files that are not certificates, the statement-list pin, unusable statement
+  lists, exit codes, the keys of every verdict, the failing-hypothesis path on a long interval, the budgets.
 
-**The second implementation.** `rust/oscint-cert/` (Rust, exact big rationals, no floating point, no `unsafe`;
-dependencies pinned exactly: num-bigint 0.4.8, num-integer 0.1.47, num-rational 0.4.2, num-traits 0.2.19,
-serde_json 1.0.154). It was written by a fresh-context agent of the lead that was allowed to read only revision 1 of
-this page and the statement list (its own statement; the lead did not audit its file accesses). Its agent reports 58
-tests passing, a clean `cargo audit` (cargo-audit 0.23.0, 1509 advisories loaded, 17 crates scanned) and cross-checks
-against mpmath; the lead re-ran its build and tests (record below). Both implementations are by AI agents of one
-model family: independent in code, not in kind.
+**The second implementation** (version 0.2.0). `rust/oscint-cert/` (Rust, exact big rationals, no floating point, no
+`unsafe`; dependencies pinned exactly: num-bigint 0.4.8, num-integer 0.1.47, num-rational 0.4.2, num-traits 0.2.19,
+serde_json 1.0.154). It was written by a fresh-context agent of the lead from revision 1 of this page and the
+statement list alone, and brought to revision 3 by another such agent from revisions 2 and 3 alone, in a copy of
+the crate outside the repository (their own statements; the lead did not audit their file accesses). The lead
+re-ran its build and tests (85 pass) and `cargo audit` (exit code 0, 17 crates scanned). Both implementations are
+by AI agents of one model family: independent in code, not in kind.
 
-**The differential test** (`python/tests/differential.py`, 1429 certificates from a fixed seed: 160 valid ones over
-the four kinds, their mutations, range and edge cases, and six raw-text cases; each checked by both command lines):
-- First run, Python 0.1.0 against the Rust checker: **86 disagreements**. None had one side CERTIFIED for a false
-  claim, but 82 had Python CERTIFIED where Rust said REJECTED: Python accepted the numerals `"1/-2"`, `".5"`,
-  `"+1"`, `" 1"` and `"5."` (81 cases) and a duplicate key (1 case). In 4 cases Python said REJECTED where UNRESOLVED was right (an
-  order, a dimension, a frequency and a Bessel order beyond the supported range), one of them through a crash on
-  printing an integer of more than 4300 digits.
-- Revision 2 of this page states the rules that settle each case; the Python checker was changed to follow them
-  (version 0.2.0; five regression tests in `test_strictness_found_by_the_differential_test`).
-- Second run, Python 0.2.0 against the unchanged Rust checker: **0 disagreements in 1429**; both certify all 160
-  valid certificates. Record: `python/tests/differential-2026-11-16.txt`.
+**The differential tests** (`python/tests/differential.py`; a corpus from a fixed seed, each certificate checked by
+both command lines):
+- First run, Python 0.1.0 against the Rust checker, 1429 certificates: **86 disagreements**. None had one side
+  CERTIFIED for a false claim, but 82 had Python CERTIFIED where Rust said REJECTED: Python accepted the numerals
+  `"1/-2"`, `".5"`, `"+1"`, `" 1"` and `"5."` (81 cases) and a duplicate key (1 case). In 4 cases Python said REJECTED
+  where UNRESOLVED was right (an order, a dimension, a frequency and a Bessel order beyond the supported range), one
+  of them through a crash on printing an integer of more than 4300 digits. Revision 2 states the rules that settle
+  each case; Python 0.2.0 follows them.
+- Second run, Python 0.2.0 against the unchanged Rust checker: 0 disagreements in 1429. Record:
+  `python/tests/differential-2026-11-16.txt`.
+- Third run, Python 0.2.1 against Rust 0.2.0, both at revision 3: 1463 certificates (the 1429 and 34 new ones: files
+  that are not certificates, numerals of 100 and 101 characters, tiny and huge arguments, a failing hypothesis on a
+  long interval, 64 and 65 terms, the largest supported order). **0 disagreements**; compared this time are the
+  status, the exit code, the set of verdict keys, the certificate hash, the list hash and the pin flag. 22
+  command-line cases without a verdict (unusable statement lists, the pin, wrong command lines, `make` failures):
+  both as specified. 8 certificates made by one implementation and checked by the other: all CERTIFIED. Record:
+  `python/tests/differential-2026-11-16-revision3.txt`.
 
-The Rust agent listed twenty ambiguities of revision 1. Revision 2 answers the ones that change a status: the claim
-shape (section 3), malformed against unsupported inputs (section 4), the order of the rules, the starting precision
-and point claims (section 5), number and integer syntax (section 2), duplicate keys (section 3), the exit code of a
-bad certificate (section 5). Left open: the exact shape of `detail`, the text of `reasons`, and the hypothesis method.
+**A test by a reader with the documentation only** (2026-11-16). A fresh-context agent of the lead was given
+revision 2 of this page, the README and the Python package, and four tasks (two uses, an attempt to obtain a false
+CERTIFIED, hostile inputs). It completed them without reading source code. In more than 300 hand-made attempts
+against the shipped statement list it obtained no CERTIFIED for a false claim. It found these defects, all fixed in
+Python 0.2.1 and stated in revision 3: CERTIFIED is only as good as the statement list given, and the documents
+named no way to pin it (section 1; the option `--expect-statements-sha256`); the failing-hypothesis path crashed
+on long intervals with a false reason; no budget on time (a 64-term phase and a 200-digit Bessel argument ran for
+minutes); tracebacks for `null`, non-UTF-8 files and a bare-array statement list; verdict keys omitted instead of
+`null`; exit code 2 for wrong command lines; missing definitions and units. The same tests now run in 5 s where
+they took 451 s (enclosures are rounded outward inside the sine and cosine doubling). A probe of worst-case inputs
+by the lead then found two more defects of one kind (the root of a tiny number had lower end 0, so two decidable
+cases came out UNRESOLVED): fixed, with a regression test.
+
+The agents that wrote and updated the Rust checker listed ambiguities of revisions 1 and 3. Answered in the text:
+the claim shape (section 3), malformed against unsupported inputs (section 4), the order of the rules, the
+starting precision and point claims (section 5), number and integer syntax (section 2), duplicate keys (section 3),
+exit codes, the conformance margin and the precedence of rule 1 over length limits (section 5). Left to the
+implementation: the exact shape of `detail`, the text of `reasons`, the hypothesis method, the working precision,
+options beyond those named here.
+
+Performance on one machine (4 cores, virtual): ordinary inputs well under a second in both. Worst cases the limits
+allow: Python (the lead's probe), Bessel values and populations at an argument near 400 written with 100
+characters, 32 s to 76 s; Rust (its agent's measurements, not repeated by the lead), the same in 0.01 s by a
+different method, and at most about 28 s on 64-term phases with 4000-digit amplitudes (UNRESOLVED by its
+arithmetic budget).
 
 Dependencies: the Python runtime has none beyond the standard library. Its build and test dependencies are pinned in
 `python/pyproject.toml` (setuptools 84.2.1, python-flint 0.9.0); `pip-audit` 2.10.1 reported "No known
 vulnerabilities found" for both on 2026-11-16 (pins by version, not yet by hash).
 
-Not yet done, and so not claimed: a run of a worked example by someone who has seen only this page; a published
-package or crate (publication needs the owner's approval); a C interface.
+Not yet done, and so not claimed: a published package or crate (publication needs the owner's approval); a C
+interface; a consumer from a second domain; a proof of either checker's arithmetic.
 
 ## 7. The strongest case against relying on a verdict
 
@@ -191,7 +268,12 @@ A `vdc-hypothesis` certificate binds its bound to `order`, `t` and `mu` only; th
 through the hypothesis alone, so two different phases that both satisfy it carry the same bound. That is what the
 statement says, and a reader should not take the bound as a property of the phase.
 
-The checker is about 700 lines of tested, unverified Python, and its second implementation is unverified Rust. Its numbers agree with an independent ball-arithmetic
+A verdict is relative to the statement list given to the checker, and a verdict whose `statements_pinned` is
+`false` says nothing about where that list came from (section 1). The verdict carries the hash of the certificate,
+not its content: whoever relies on a verdict must hold the certificate too.
+
+The checker is about 750 lines of tested, unverified Python, and its second implementation is about 4800 lines of
+unverified Rust. Its numbers agree with an independent ball-arithmetic
 library at every point tested, but agreement is not proof. The statements it cites are machine-checked, but they are
 statements about ideal, infinite systems, and one identification (the Bessel form of the kernel) is a paper step.
 The envelope it evaluates is not the best known: at lattice sites Landau's constant 0.7857 replaces 1.5473

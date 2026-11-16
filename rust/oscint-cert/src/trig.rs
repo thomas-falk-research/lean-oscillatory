@@ -115,11 +115,14 @@ impl Trig {
     /// An enclosure, at scale 2^-q, of cos y for every y with
     /// ylo <= y * 2^q <= yhi. Requires |y| < 256.
     ///
-    /// Argument reduction: r = y / 2^m with |r| < 1/16, then m applications
-    /// of cos 2a = 2 cos^2 a - 1. Each doubling at most quadruples the
-    /// width (|d(2c^2-1)/dc| = 4|c| <= 4), hence the 2m + 16 guard bits;
-    /// the rigour does not depend on that count, because every step is
-    /// carried out on an interval with outward rounding.
+    /// Argument reduction: r = y / 2^m with |r| < 2^-s, s about sqrt(q) and
+    /// at least 4, then m applications of cos 2a = 2 cos^2 a - 1. (With s
+    /// near sqrt(q) the series needs about sqrt(q)/2 terms and there are
+    /// about sqrt(q) doublings, which is what makes a cosine at 14000 bits
+    /// affordable.) Each doubling at most quadruples the width
+    /// (|d(2c^2-1)/dc| = 4|c| <= 4), hence the 2m + 16 guard bits; the
+    /// rigour does not depend on that count, nor on s, because every step
+    /// is carried out on an interval with outward rounding.
     ///
     /// Series: cos r = sum_{j=0}^{N} (-1)^j r^(2j)/(2j)! + R_N with
     /// |R_N| <= r^(2N+2)/(2N+2)!, by Taylor's theorem with the Lagrange
@@ -139,8 +142,13 @@ impl Trig {
                 "argument of a cosine or sine of modulus 256 or more".into(),
             ));
         }
-        // amax < 2^bits, so amax / 2^m < 2^(q-4): |r| < 1/16
-        let m = amax.bits().saturating_sub(q - 4);
+        // s = max(4, floor(sqrt(q))) <= q / 2 because q >= 8
+        let mut s: u64 = 4;
+        while (s + 1) * (s + 1) <= q {
+            s += 1;
+        }
+        // amax < 2^bits, so amax / 2^m < 2^(q-s): |r| < 2^-s
+        let m = amax.bits().saturating_sub(q - s);
         let g = q + 2 * m + 16;
         let unit = BigInt::one() << g;
         // r * 2^g = y * 2^q * 2^(g - q - m), exactly
@@ -393,5 +401,62 @@ mod tests {
         assert!(t.cos(&Iv::from_i64(127)).is_ok());
         assert!(matches!(t.cos(&Iv::from_i64(128)), Err(CalcError::Budget(_))));
         assert!(matches!(t.sin(&Iv::from_i64(-1000)), Err(CalcError::Budget(_))));
+    }
+
+    #[test]
+    fn precision_from_8_to_14000_bits() {
+        // The argument reduction depends on the precision (about sqrt(q)
+        // halvings); the enclosures at all precisions must contain the same
+        // number, be nested in width, and satisfy sin^2 + cos^2 = 1.
+        let x = rat("-577/13"); // about -44.4, several turns
+        let known_cos = "0.54030230586813971740093660744297660373231"; // cos 1
+        let mut prev: Option<(Iv, Iv)> = None;
+        for q in [
+            8u64, 9, 15, 16, 17, 24, 25, 26, 63, 64, 100, 257, 1000, 4096, 14_000,
+        ] {
+            let t = Trig::new(q);
+            let w = q + 40;
+            let xi = Iv::from_ratio(&x, w);
+            let c = t.cos(&xi).expect("cos");
+            let s = t.sin(&xi).expect("sin");
+            // absolute width about 2^-q: at most 2^-(q - 6) here
+            let bound = Fl {
+                m: BigInt::one(),
+                e: 6 - q as i64,
+            };
+            assert!(c.width().le(&bound), "cos width at q = {q}");
+            assert!(s.width().le(&bound), "sin width at q = {q}");
+            let one = c.sqr(w).add(&s.sqr(w), w);
+            assert!(
+                one.lo.le(&Fl::one()) && Fl::one().le(&one.hi),
+                "pythagoras at q = {q}"
+            );
+            assert!(one.width().le(&bound.shift(3)), "pythagoras width at q = {q}");
+            if let Some((pc, ps)) = &prev {
+                assert!(c.lo.le(&pc.hi) && pc.lo.le(&c.hi), "cos disjoint at q = {q}");
+                assert!(s.lo.le(&ps.hi) && ps.lo.le(&s.hi), "sin disjoint at q = {q}");
+            }
+            prev = Some((c, s));
+            if q >= 160 {
+                assert_close(&t.cos(&Iv::from_i64(1)).expect("cos"), known_cos, 38);
+            }
+        }
+        // cos(3x) = 4 cos^3 x - 3 cos x at 14000 bits, through another reduction
+        let q = 14_000u64;
+        let w = q + 40;
+        let t = Trig::new(q);
+        let y = rat("1234567/100000");
+        let c1 = t.cos(&Iv::from_ratio(&y, w)).expect("cos");
+        let c3 = t.cos(&Iv::from_ratio(&(&y * rat("3")), w)).expect("cos");
+        let alt = c1
+            .powu(3, w)
+            .mul_int(&BigInt::from(4), w)
+            .sub(&c1.mul_int(&BigInt::from(3), w), w);
+        assert!(alt.lo.le(&c3.hi) && c3.lo.le(&alt.hi));
+        let bound = Fl {
+            m: BigInt::one(),
+            e: 12 - q as i64,
+        };
+        assert!(alt.width().le(&bound) && c3.width().le(&bound));
     }
 }

@@ -102,6 +102,7 @@ SPDX-License-Identifier = "LicenseRef-PublicCertificate"
 [[annotations]]
 path = [
   "rust/oscint-cert/**", "experiments/ctqw-chain/*.json", "python/tests/differential-2026-11-16.txt",
+  "python/tests/differential-2026-11-16-revision3.txt",
 ]
 SPDX-FileCopyrightText = "2026 Thomas Falk III <research@thomas-falk-research.com>"
 SPDX-License-Identifier = "Apache-2.0"

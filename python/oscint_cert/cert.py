@@ -7,6 +7,7 @@ Trust boundary: `check` is the only function whose verdict may be CERTIFIED. It 
 recomputes every number with exact rational arithmetic, looks the statement up in the statement list it is given, and
 derives the list of assumptions itself. A producer, a wrapper or a display layer can never confer CERTIFIED.
 """
+import copy
 import hashlib
 import json
 from fractions import Fraction as F
@@ -58,30 +59,51 @@ def loads_strict(text):
 
 
 def load_statements(path):
+    """The statement list as {label: entry} and the SHA-256 of the file's bytes. Any defect is a CertError."""
     raw = open(path, "rb").read()
-    data = loads_strict(raw.decode("utf-8"))
-    if data.get("format") != "oscint-statements 1":
-        raise CertError("unknown statement-list format")
-    return {s["label"]: s for s in data["statements"]}, hashlib.sha256(raw).hexdigest()
+    try:
+        data = loads_strict(raw.decode("utf-8"))
+        if not isinstance(data, dict) or data.get("format") != "oscint-statements 1":
+            raise CertError("unknown statement-list format")
+        out = {}
+        for s in data["statements"]:
+            if not all(isinstance(s.get(k), str) and s.get(k) for k in ("label", "name", "commitment")):
+                raise CertError("a statement entry lacks label, name or commitment")
+            if s["label"] in out:
+                raise CertError(f"duplicate statement label {s['label']!r}")
+            out[s["label"]] = s
+    except (ValueError, KeyError, TypeError, AttributeError) as e:
+        if isinstance(e, CertError):
+            raise
+        raise CertError(f"unusable statement list: {e}") from None
+    return out, hashlib.sha256(raw).hexdigest()
+
+
+BIG = 10**300  # integers beyond this are refused as malformed
 
 
 def _int(v, name, lo, hi, soft_hi=None):
     """A JSON integer. Below lo or above hi: malformed (REJECTED). Between soft_hi and hi: a valid input beyond the
     checker's supported range (UNRESOLVED)."""
     if isinstance(v, bool) or not isinstance(v, int) or not lo <= v <= hi:
-        raise CertError(f"{name}: an integer in [{lo}, {hi}] is required")
+        lo_txt = "" if lo == -BIG else f", at least {lo}"
+        raise CertError(f"{name}: a JSON integer is required{lo_txt}, of at most 300 digits")
     if soft_hi is not None and abs(v) > soft_hi:
         raise R.Unresolved(f"{name}: beyond the supported range (|{name}| <= {soft_hi})")
     return v
 
 
-def _rat(v, name):
+def _rat(v, name, max_len=4000):
     if not isinstance(v, str):
         raise CertError(f"{name}: a string holding an exact rational is required")
+    if len(v) > max_len:
+        raise R.Unresolved(f"{name}: numeral longer than {max_len} characters (computation budget)")
     return R.parse_rational(v)
 
 
-BIG = 10**300  # integers beyond this are refused as malformed
+INPUT_LEN = 100  # input numerals longer than this are beyond the computation budget (UNRESOLVED)
+
+
 
 
 def _enc(i, digits=80):
@@ -108,16 +130,16 @@ def _compute(kind, inputs, digits):
             if set(inputs) != {"n", "x"}:
                 raise CertError("bessel-j inputs: exactly n, x")
             return {"enclosure": kernels.bessel_j(_int(inputs["n"], "n", -BIG, BIG, kernels.MAX_ORDER),
-                                                  _rat(inputs["x"], "x"), digits)}
+                                                  _rat(inputs["x"], "x", INPUT_LEN), digits)}
         if kind == "lattice-population":
             if set(inputs) != {"n", "t"}:
                 raise CertError("lattice-population inputs: exactly n, t")
             return {"enclosure": kernels.population(_int(inputs["n"], "n", -BIG, BIG, kernels.MAX_ORDER),
-                                                    _rat(inputs["t"], "t"), digits)}
+                                                    _rat(inputs["t"], "t", INPUT_LEN), digits)}
         if kind == "lattice-envelope":
             if set(inputs) != {"d", "t"}:
                 raise CertError("lattice-envelope inputs: exactly d, t")
-            t = _rat(inputs["t"], "t")
+            t = _rat(inputs["t"], "t", INPUT_LEN)
             d = _int(inputs["d"], "d", 0, BIG, 64)
             if t == 0:
                 raise CertError("lattice-envelope: t = 0 is excluded by the statement")
@@ -126,8 +148,8 @@ def _compute(kind, inputs, digits):
             if set(inputs) != {"phase", "order", "a", "b", "mu", "t"}:
                 raise CertError("vdc-hypothesis inputs: exactly phase, order, a, b, mu, t")
             order = _int(inputs["order"], "order", 2, BIG, 16)
-            a, b = _rat(inputs["a"], "a"), _rat(inputs["b"], "b")
-            mu, t = _rat(inputs["mu"], "mu"), _rat(inputs["t"], "t")
+            a, b = _rat(inputs["a"], "a", INPUT_LEN), _rat(inputs["b"], "b", INPUT_LEN)
+            mu, t = _rat(inputs["mu"], "mu", INPUT_LEN), _rat(inputs["t"], "t", INPUT_LEN)
             if not a <= b or mu <= 0 or t <= 0:
                 raise CertError("vdc-hypothesis: need a <= b, mu > 0, t > 0")
             terms = phase.parse_phase(inputs["phase"])
@@ -155,13 +177,16 @@ def make(kind, inputs, statements, digits=30):
     if label is not None:
         s = statements[label]
         stmt = {"label": label, "name": s["name"], "commitment": s["commitment"]}
-    return {"format": CERT_FORMAT, "kind": kind, "statement": stmt, "inputs": inputs, "claim": claim,
+    return {"format": CERT_FORMAT, "kind": kind, "statement": stmt, "inputs": copy.deepcopy(inputs), "claim": claim,
             "assumptions": list(assumptions), "producer": PRODUCER}
 
 
 def _verdict(status, cert, reasons, extra=None):
-    v = {"format": VERDICT_FORMAT, "status": status, "kind": cert.get("kind") if isinstance(cert, dict) else None,
-         "reasons": reasons, "checker": PRODUCER}
+    kind = cert.get("kind") if isinstance(cert, dict) else None
+    v = {"format": VERDICT_FORMAT, "status": status, "kind": kind if isinstance(kind, str) else None,
+         "reasons": reasons, "checker": PRODUCER, "statements_sha256": None, "statement": None,
+         "numeric_rung": None, "assumptions": None, "recomputed": None, "hypothesis": None,
+         "certificate_sha256": None, "statements_pinned": False}
     v.update(extra or {})
     return v
 
@@ -169,7 +194,7 @@ def _verdict(status, cert, reasons, extra=None):
 def check(cert, statements, statements_sha256, digits=30):
     """The checker. Returns a verdict object whose status is CERTIFIED, REJECTED or UNRESOLVED."""
     if not isinstance(cert, dict):
-        return _verdict("REJECTED", {}, ["certificate is not an object"])
+        return _verdict("REJECTED", {}, ["certificate is not an object"], {"statements_sha256": statements_sha256})
     try:
         if set(cert) != TOP_KEYS:
             raise CertError(f"top-level keys must be exactly {sorted(TOP_KEYS)}")
@@ -224,7 +249,8 @@ def check(cert, statements, statements_sha256, digits=30):
                 if res["hypothesis"] == "FAIL":
                     return _verdict("REJECTED", cert, ["the hypothesis fails at an exhibited point"], extra)
                 if res["hypothesis"] != "PASS":
-                    return _verdict("UNRESOLVED", cert, ["the hypothesis could not be decided"], extra)
+                    why = res["detail"].get("reason", "no reason recorded")
+                    return _verdict("UNRESOLVED", cert, [f"the hypothesis could not be decided: {why}"], extra)
             else:
                 claimed = _dec(cert["claim"], "claim")
             extra["recomputed"] = _enc(res["enclosure"])
@@ -238,6 +264,6 @@ def check(cert, statements, statements_sha256, digits=30):
         # the claim cuts through the true value's enclosure at both precisions: it is too narrow to be confirmed
         return _verdict("UNRESOLVED", cert, [last], extra)
     except R.Unresolved as e:
-        return _verdict("UNRESOLVED", cert, [str(e)])
+        return _verdict("UNRESOLVED", cert, [str(e)], {"statements_sha256": statements_sha256})
     except (CertError, ValueError, KeyError, TypeError) as e:
-        return _verdict("REJECTED", cert, [f"malformed certificate: {e}"])
+        return _verdict("REJECTED", cert, [f"malformed certificate: {e}"], {"statements_sha256": statements_sha256})

@@ -3,14 +3,14 @@
 //! decision of the hypothesis |omega^(k)| >= mu on [a, b].
 
 use crate::bessel::bessel_j;
-use crate::num::{fmt_ratio, CalcError, Fl, Iv, Res, MAX_RESULT_EXP};
+use crate::num::{fmt_ratio, iroot, CalcError, Fl, Iv, Res, MAX_RESULT_EXP};
 use crate::trig::{pi_iv, Trig};
 use num_bigint::BigInt;
 use num_rational::BigRational;
 use num_traits::{One, Signed, Zero};
 use serde_json::{json, Value};
 use std::cmp::Ordering;
-use std::collections::BinaryHeap;
+use std::collections::{BTreeMap, BinaryHeap};
 
 /// J_n(2t)^2, relative width about 2^-(t_bits - 2).
 pub fn population(n: &BigInt, t: &BigRational, t_bits: u64) -> Res<Iv> {
@@ -79,6 +79,33 @@ pub fn vdc_bound(k: u32, t: &BigRational, mu: &BigRational, t_bits: u64) -> Res<
     Ok(v)
 }
 
+/// The bound (5 * 2^(k-1) - 2) (t mu)^(-1/k) as an exact rational, when it
+/// is one: that is when 1/(t mu), in lowest terms p/q, has p and q both
+/// perfect k-th powers (a root of a rational in lowest terms is rational
+/// only then). `None` otherwise.
+///
+/// With it a claim that ends exactly at such a value (the bound 8/3 for
+/// k = 2 and t mu = 9, say) is decided; an interval with dyadic end points
+/// could only ever straddle it.
+pub fn vdc_bound_exact(k: u32, t: &BigRational, mu: &BigRational) -> Res<Option<BigRational>> {
+    if !(2..=16).contains(&k) || !t.is_positive() || !mu.is_positive() {
+        return Err(CalcError::Internal(
+            "van der Corput bound outside its domain".into(),
+        ));
+    }
+    let inv = BigRational::one() / (t * mu); // lowest terms, positive
+    let (rp, p_exact) = iroot(inv.numer(), k)?;
+    if !p_exact {
+        return Ok(None);
+    }
+    let (rq, q_exact) = iroot(inv.denom(), k)?;
+    if !q_exact {
+        return Ok(None);
+    }
+    let constant = BigInt::from(5) * (BigInt::one() << (k - 1)) - BigInt::from(2);
+    Ok(Some(BigRational::new(constant * rp, rq)))
+}
+
 /// One term amp * fn(freq * x) of a phase.
 #[derive(Debug, Clone)]
 pub struct PhaseTerm {
@@ -113,18 +140,39 @@ pub struct HypResult {
 pub const PIECE_BUDGET: usize = 4096;
 /// Largest working precision for the hypothesis, in bits.
 const HYP_W_CAP: u64 = 16_384;
+/// The budget of arithmetic for one hypothesis. An evaluation of g and g'
+/// at a point costs (number of frequencies) * max(w, 1024)^2 units at a
+/// working precision of w bits (a cosine costs somewhat more than
+/// quadratically in the precision; the square is the simple, deterministic
+/// stand-in). The budget is what 64 frequencies, 4096 pieces and the two
+/// end points cost at 1024 bits, so up to 1024 bits it never bites before
+/// the budget of pieces does; it shortens the search only when
+/// coefficients more than about 10^260 times mu force a higher precision.
+/// It is a count, not a clock: the same input gives the same verdict on
+/// every machine.
+const WORK_BUDGET: u64 = 64 * 4098 * WORK_BASE_BITS * WORK_BASE_BITS;
+const WORK_BASE_BITS: u64 = 1024;
 
-/// One term c * T(f x) of g = omega^(k), with the matching term of g'.
+/// The cost of one evaluation at `w` bits with `frequencies` frequencies,
+/// in the units of [`WORK_BUDGET`].
+fn evaluation_cost(frequencies: usize, w: u64) -> u64 {
+    let bits = w.max(WORK_BASE_BITS);
+    (frequencies as u64).max(1) * bits * bits
+}
+
+/// The part of g = omega^(k) at one frequency f > 0:
+/// A cos(f x) + B sin(f x), with the matching part of g',
+/// f B cos(f x) - f A sin(f x).
 struct GTerm {
     f: BigInt,
-    /// coefficient in g
-    c: Iv,
-    /// g uses cos (true) or sin (false)
-    g_cos: bool,
-    /// coefficient in g'
-    dc: Iv,
-    /// g' uses cos (true) or sin (false)
-    d_cos: bool,
+    /// A, the coefficient of cos(f x) in g
+    a: Iv,
+    /// B, the coefficient of sin(f x) in g
+    b: Iv,
+    /// f B, the coefficient of cos(f x) in g'
+    da: Iv,
+    /// -f A, the coefficient of sin(f x) in g'
+    db: Iv,
 }
 
 struct Problem {
@@ -133,12 +181,13 @@ struct Problem {
     w: u64,
     /// an enclosure of mu
     mu: Iv,
-    /// an upper bound for sup |g''|, namely sum |c_j| f_j^2
+    /// an upper bound for sup |g''|, namely sum (|A_f| + |B_f|) f^2
     s2: Iv,
 }
 
 impl Problem {
-    /// Enclosures of g(x) and g'(x) at a rational point x.
+    /// Enclosures of g(x) and g'(x) at a rational point x: one cosine and
+    /// one sine for each frequency.
     fn eval(&self, x: &BigRational) -> Res<(Iv, Iv)> {
         let w = self.w;
         let mut g = Iv::zero();
@@ -147,8 +196,8 @@ impl Problem {
             let arg = Iv::from_ratio(&(BigRational::from_integer(t.f.clone()) * x), w);
             let co = self.trig.cos(&arg)?;
             let si = self.trig.sin(&arg)?;
-            g = g.add(&t.c.mul(if t.g_cos { &co } else { &si }, w), w);
-            d = d.add(&t.dc.mul(if t.d_cos { &co } else { &si }, w), w);
+            g = g.add(&t.a.mul(&co, w), w).add(&t.b.mul(&si, w), w);
+            d = d.add(&t.da.mul(&co, w), w).add(&t.db.mul(&si, w), w);
         }
         Ok((g, d))
     }
@@ -219,8 +268,10 @@ fn log2_upper(r: &BigRational) -> u64 {
 ///
 /// PASS is a proof by interval arithmetic on a finite cover of [a, b];
 /// FAIL exhibits a rational point of [a, b] with a certified |omega^(k)| <
-/// mu; anything else is UNRESOLVED. The caller has checked 2 <= k <= 16,
-/// a <= b, mu > 0 and |freq * a|, |freq * b| <= 64.
+/// mu; anything else is UNRESOLVED: `budget` pieces examined without a
+/// decision, or the budget of arithmetic ([`WORK_BUDGET`]) spent, which
+/// can only happen above 1024 bits of working precision. The caller has
+/// checked 2 <= k <= 16, a <= b, mu > 0 and |freq * a|, |freq * b| <= 64.
 ///
 /// With g = omega^(k) = sum c_j T_j(f_j x), T_j in {cos, sin}:
 ///  * g'(x) = sum c_j f_j T_j'(f_j x) and |g''(x)| <= S2 := sum |c_j| f_j^2.
@@ -239,7 +290,7 @@ pub fn decide_hypothesis(
     mu: &BigRational,
     budget: usize,
 ) -> HypResult {
-    match decide_inner(phase, k, a, b, mu, budget) {
+    match decide_inner(phase, k, a, b, mu, budget, WORK_BUDGET) {
         Ok(r) => r,
         Err(e) => unresolved(e.message(), 0),
     }
@@ -252,21 +303,19 @@ fn decide_inner(
     b: &BigRational,
     mu: &BigRational,
     budget: usize,
+    work_budget: u64,
 ) -> Res<HypResult> {
     if !mu.is_positive() || a > b || k == 0 {
         return Err(CalcError::Internal("hypothesis outside its domain".into()));
     }
     // The k-th derivative of fn(f x) is f^k fn^(k)(f x), and the derivatives
     // of cos cycle through cos, -sin, -cos, sin; those of sin through
-    // sin, cos, -sin, -cos.
-    struct Exact {
-        f: BigInt,
-        c: BigRational,
-        g_cos: bool,
-    }
-    let mut exact: Vec<Exact> = Vec::new();
-    let mut s0 = BigRational::zero(); // sum |c_j|
-    let mut s2 = BigRational::zero(); // sum |c_j| f_j^2
+    // sin, cos, -sin, -cos. A negative frequency is folded into a positive
+    // one (cos is even, sin is odd), and the terms of one frequency are
+    // added exactly, so that
+    //   g(x) = sum over f > 0 of A_f cos(f x) + B_f sin(f x).
+    // A frequency 0 contributes nothing to a derivative of order k >= 1.
+    let mut by_freq: BTreeMap<BigInt, (BigRational, BigRational)> = BTreeMap::new();
     for t in phase {
         let (sign, g_cos) = match (t.is_cos, k % 4) {
             (true, 0) => (1, true),
@@ -279,17 +328,29 @@ fn decide_inner(
             (false, _) => (-1, true),
         };
         let fk = BigRational::from_integer(t.freq.pow(k) * BigInt::from(sign));
-        let c = &t.amp * fk;
+        let mut c = &t.amp * fk;
         if c.is_zero() {
             continue;
         }
-        s0 += c.abs();
-        s2 += c.abs() * BigRational::from_integer(&t.freq * &t.freq);
-        exact.push(Exact {
-            f: t.freq.clone(),
-            c,
-            g_cos,
-        });
+        if t.freq.is_negative() && !g_cos {
+            c = -c; // sin(f x) = -sin(|f| x)
+        }
+        let slot = by_freq
+            .entry(t.freq.abs())
+            .or_insert_with(|| (BigRational::zero(), BigRational::zero()));
+        if g_cos {
+            slot.0 += c;
+        } else {
+            slot.1 += c;
+        }
+    }
+    by_freq.retain(|_, (a, b)| !a.is_zero() || !b.is_zero());
+    let mut s0 = BigRational::zero(); // sum |A_f| + |B_f|, a bound for |g|
+    let mut s2 = BigRational::zero(); // sum (|A_f| + |B_f|) f^2, a bound for |g''|
+    for (f, (a, b)) in &by_freq {
+        let size = a.abs() + b.abs();
+        s2 += &size * BigRational::from_integer(f * f);
+        s0 += size;
     }
     // Working precision: the absolute error of an evaluation of g is about
     // S0 * 2^-w, to be small against mu.
@@ -301,21 +362,22 @@ fn decide_inner(
             0,
         ));
     }
-    let terms: Vec<GTerm> = exact
+    let terms: Vec<GTerm> = by_freq
         .iter()
-        .map(|e| {
-            let f = BigRational::from_integer(e.f.clone());
-            // (c cos(f x))' = -c f sin(f x); (c sin(f x))' = c f cos(f x)
-            let dc = if e.g_cos { -(&e.c * &f) } else { &e.c * &f };
+        .map(|(f, (a, b))| {
+            let fr = BigRational::from_integer(f.clone());
+            // (A cos(f x) + B sin(f x))' = f B cos(f x) - f A sin(f x)
             GTerm {
-                f: e.f.clone(),
-                c: Iv::from_ratio(&e.c, w),
-                g_cos: e.g_cos,
-                dc: Iv::from_ratio(&dc, w),
-                d_cos: !e.g_cos,
+                f: f.clone(),
+                a: Iv::from_ratio(a, w),
+                b: Iv::from_ratio(b, w),
+                da: Iv::from_ratio(&(b * &fr), w),
+                db: Iv::from_ratio(&(-(a * &fr)), w),
             }
         })
         .collect();
+    let cost = evaluation_cost(terms.len(), w);
+    let mut work: u64 = 0;
     let p = Problem {
         terms,
         trig: Trig::new(w),
@@ -333,6 +395,7 @@ fn decide_inner(
             "reason": "the enclosure of the derivative at this point lies strictly inside (-mu, mu)",
         }),
     };
+    work += cost;
     let (ga, _) = p.eval(a)?;
     if p.violates(&ga) {
         return Ok(fail(a, &ga, 0));
@@ -350,6 +413,7 @@ fn decide_inner(
             )
         });
     }
+    work += cost;
     let (gb, _) = p.eval(b)?;
     if p.violates(&gb) {
         return Ok(fail(b, &gb, 0));
@@ -374,6 +438,16 @@ fn decide_inner(
                 examined,
             ));
         }
+        if work + cost > work_budget {
+            return Ok(unresolved(
+                format!(
+                    "the budget of arithmetic is exhausted after {examined} pieces at {w} bits and {} frequencies",
+                    p.terms.len()
+                ),
+                examined,
+            ));
+        }
+        work += cost;
         examined += 1;
         let mid = (&piece.l + &piece.r) / &two;
         let (gm, dm) = p.eval(&mid)?;
@@ -519,8 +593,10 @@ mod tests {
         assert!(matches!(envelope(65, &rat("1"), 64), Err(CalcError::Budget(_))));
         assert!(envelope(1, &rat("0"), 64).is_err());
         // an astronomically small envelope is a budget matter, not a value
-        let big = format!("1{}", "0".repeat(20_000));
-        assert!(matches!(envelope(64, &rat(&big), 64), Err(CalcError::Budget(_))));
+        // (t = 10^20000, built directly: a numeral of 20001 characters is
+        // beyond the 4000 that `parse_rational` converts)
+        let big = BigRational::from_integer(num_traits::pow(BigInt::from(10u32), 20_000));
+        assert!(matches!(envelope(64, &big, 64), Err(CalcError::Budget(_))));
     }
 
     #[test]
@@ -738,9 +814,139 @@ mod tests {
         assert_eq!(decide(&ph, 2, "0", "1", "1").status, HypStatus::Pass);
         let ph = [term("0.000000000000000000000000000001", 1, true)];
         assert_eq!(decide(&ph, 2, "0", "1", "1").status, HypStatus::Fail);
-        let tiny = format!("0.{}1", "0".repeat(6000));
+        // mu = 10^-6001, built directly: a numeral of 6003 characters is
+        // beyond the 4000 that `parse_rational` converts
+        let tiny = BigRational::new(BigInt::one(), num_traits::pow(BigInt::from(10u32), 6001));
         let ph = [term("1", 1, true)];
-        let r = decide(&ph, 2, "0", "1", &tiny);
+        let r = decide_hypothesis(&ph, 2, &rat("0"), &rat("1"), &tiny, PIECE_BUDGET);
         assert_eq!(r.status, HypStatus::Unresolved);
+    }
+
+    #[test]
+    fn exact_bounds() {
+        // (5 * 2^(k-1) - 2) (t mu)^(-1/k) is rational exactly when 1/(t mu) is a k-th power
+        let cases = [
+            (2u32, "9", "1", Some("8/3")),
+            (2, "36", "1/4", Some("8/3")),
+            (2, "1/2", "1/2", Some("16")),
+            (2, "25/9", "1", Some("24/5")),
+            (2, "8", "1", None),
+            (2, "1/3", "1", None),
+            (3, "9", "3/8", Some("12")),
+            (3, "1/27", "1", Some("54")),
+            (3, "4", "1", None),
+            (4, "1/16", "1", Some("76")),
+            (4, "81/16", "1", Some("76/3")),
+            (4, "1/4", "1", None),
+            (16, "1", "1", Some("163838")),
+            (16, "1/65536", "1", Some("327676")),
+            (16, "1/256", "1", None),
+        ];
+        for (k, t, mu, expected) in cases {
+            let exact = vdc_bound_exact(k, &rat(t), &rat(mu)).expect("in the domain");
+            assert_eq!(exact, expected.map(rat), "k = {k}, t = {t}, mu = {mu}");
+            // the interval enclosure agrees with it
+            let iv = vdc_bound(k, &rat(t), &rat(mu), 128).expect("bound");
+            let (lo, hi) = iv.to_ratios().expect("ok");
+            match exact {
+                Some(v) => assert!(lo <= v && v <= hi),
+                None => assert!(lo < hi),
+            }
+        }
+        // tiny and huge radicands
+        let tiny = BigRational::new(BigInt::one(), num_traits::pow(BigInt::from(10u32), 98));
+        let v = vdc_bound_exact(2, &tiny, &rat("1")).expect("in the domain");
+        assert_eq!(v, Some(rat(&format!("8{}", "0".repeat(49)))));
+        let near = BigRational::new(
+            BigInt::one(),
+            num_traits::pow(BigInt::from(10u32), 98) - BigInt::one(),
+        );
+        assert_eq!(vdc_bound_exact(2, &rat("1"), &near).expect("in the domain"), None);
+        let iv = vdc_bound(2, &rat("1"), &near, 512).expect("bound");
+        let (lo, hi) = iv.to_ratios().expect("ok");
+        let top = rat(&format!("8{}", "0".repeat(49)));
+        assert!(lo < hi && hi < top && lo > &top - rat("1"));
+        assert!(iv.rel_width_ok(500));
+        assert!(vdc_bound_exact(1, &rat("1"), &rat("1")).is_err());
+        assert!(vdc_bound_exact(2, &rat("0"), &rat("1")).is_err());
+        assert!(vdc_bound_exact(2, &rat("1"), &rat("-1")).is_err());
+    }
+
+    #[test]
+    fn hypothesis_terms_of_one_frequency_are_added_exactly() {
+        // negative frequencies: cos is even, sin is odd
+        // omega = cos(-x): omega'' = -cos x; omega = sin(-x) = -sin x: omega'' = sin x
+        let ph = [term("1", -1, true)];
+        assert_eq!(decide(&ph, 2, "0", "1", "0.54").status, HypStatus::Pass);
+        assert_eq!(decide(&ph, 2, "0", "1", "0.5404").status, HypStatus::Fail);
+        let ph = [term("1", -1, false)];
+        assert_eq!(decide(&ph, 2, "1/2", "1", "0.479").status, HypStatus::Pass); // sin(1/2) = 0.4794
+        assert_eq!(decide(&ph, 2, "1/2", "1", "0.48").status, HypStatus::Fail);
+        // odd order: omega = sin(-2x), omega''' = 8 cos 2x; on [0, 1/2] at least 8 cos 1 = 4.32
+        let ph = [term("1", -2, false)];
+        assert_eq!(decide(&ph, 3, "0", "1/2", "4.32").status, HypStatus::Pass);
+        assert_eq!(decide(&ph, 3, "0", "1/2", "4.33").status, HypStatus::Fail);
+
+        // terms that cancel exactly leave the rest: with 10^3000 cos x and
+        // -10^3000 cos x added, omega = cos x, at an ordinary precision
+        let big = format!("1{}", "0".repeat(3000));
+        let ph = [
+            term(&big, 1, true),
+            term("1", 1, true),
+            term(&format!("-{big}"), 1, true),
+        ];
+        let r = decide(&ph, 2, "0", "1", "0.54");
+        assert_eq!(r.status, HypStatus::Pass, "{}", r.detail);
+        assert!(r.detail["precision_bits"].as_u64().expect("bits") < 200);
+        assert_eq!(decide(&ph, 2, "0", "1", "0.5404").status, HypStatus::Fail);
+        // the same through a negative frequency: sin(x) + sin(-x) = 0
+        let ph = [term("5", 3, false), term("5", -3, false), term("1", 1, true)];
+        assert_eq!(decide(&ph, 2, "0", "1", "0.54").status, HypStatus::Pass);
+        // everything cancels: the derivative is 0, and the hypothesis fails
+        let ph = [term("5", 3, false), term("5", -3, false)];
+        assert_eq!(decide(&ph, 2, "0", "1", "1/1000").status, HypStatus::Fail);
+        // cos(3x) and cos(-3x) add: omega = 2 cos 3x, omega'' = -18 cos 3x; 18 cos(3/4) = 13.17
+        let ph = [term("1", 3, true), term("1", -3, true)];
+        assert_eq!(decide(&ph, 2, "0", "1/4", "13.1").status, HypStatus::Pass);
+        assert_eq!(decide(&ph, 2, "0", "1/4", "13.2").status, HypStatus::Fail);
+    }
+
+    #[test]
+    fn hypothesis_arithmetic_budget() {
+        // coefficients 10^3999 times mu force about 13400 bits; what one
+        // piece decides is decided all the same
+        let big = format!("1{}", "0".repeat(3999));
+        let ph = [term(&big, 1, true)];
+        let r = decide(&ph, 2, "0", "1", "1");
+        assert_eq!(r.status, HypStatus::Pass, "{}", r.detail);
+        assert!(r.detail["precision_bits"].as_u64().expect("bits") > 13_000);
+        // a zero of omega'' = -10^3999 cos x inside [1, 2], and mu = 1: a
+        // witness would take about 13000 bisections. The budget of
+        // arithmetic stops the search (here a budget of ten evaluations, to
+        // keep the test short), and the answer is UNRESOLVED, never PASS.
+        let w = r.detail["precision_bits"].as_u64().expect("bits");
+        let cost = evaluation_cost(1, w);
+        assert_eq!(cost, w * w);
+        let r =
+            decide_inner(&ph, 2, &rat("1"), &rat("2"), &rat("1"), PIECE_BUDGET, 10 * cost).expect("no error");
+        assert_eq!(r.status, HypStatus::Unresolved, "{}", r.detail);
+        assert_eq!(r.detail["pieces"], json!(8)); // two of the ten are the end points
+        assert!(r.detail["reason"]
+            .as_str()
+            .expect("reason")
+            .contains("budget of arithmetic"));
+        // the default budget allows some 1500 evaluations at that precision
+        // with one frequency, and 24 with 64 frequencies
+        assert!((1400..1600).contains(&(WORK_BUDGET / cost)));
+        assert_eq!(WORK_BUDGET / evaluation_cost(64, w), 23);
+        // up to 1024 bits the budget of pieces is the only budget
+        for bits in [128, 500, 1024] {
+            assert_eq!(WORK_BUDGET / evaluation_cost(64, bits), PIECE_BUDGET as u64 + 2);
+        }
+        assert!(WORK_BUDGET / evaluation_cost(64, 1025) < PIECE_BUDGET as u64 + 2);
+        // with an ordinary amplitude the same zero is found
+        let ph = [term("1000", 1, true)];
+        let r = decide(&ph, 2, "1", "2", "1");
+        assert_eq!(r.status, HypStatus::Fail, "{}", r.detail);
     }
 }

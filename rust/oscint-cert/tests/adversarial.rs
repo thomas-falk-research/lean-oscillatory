@@ -3,8 +3,8 @@
 //! `stamps/statements.json` that the contract's kinds cite.
 
 use oscint_cert::check::{
-    check, check_guarded, compute, kind_spec, load_statements, make, read_inputs, Findings, StatementList,
-    Status, CERT_FORMAT, VERDICT_FORMAT,
+    check, check_guarded, check_staged, compute, kind_spec, load_statements, load_statements_expecting, make,
+    read_inputs, Findings, Stage, StatementList, Status, CERT_FORMAT, VERDICT_FORMAT,
 };
 use oscint_cert::json;
 use oscint_cert::num::fmt_ratio;
@@ -150,6 +150,7 @@ fn good_certificates_are_certified() {
             keys,
             vec![
                 "assumptions",
+                "certificate_sha256",
                 "checker",
                 "format",
                 "hypothesis",
@@ -158,10 +159,18 @@ fn good_certificates_are_certified() {
                 "reasons",
                 "recomputed",
                 "statement",
+                "statements_pinned",
                 "statements_sha256",
                 "status"
             ]
         );
+        // revision 3: the verdict names the bytes checked and says whether
+        // the statement list was pinned
+        assert_eq!(
+            verdict["certificate_sha256"],
+            json!(sha256_hex(cert.to_string().as_bytes()))
+        );
+        assert_eq!(verdict["statements_pinned"], json!(false));
         if kind == "bessel-j" {
             assert_eq!(verdict["statement"], Value::Null);
             assert_eq!(verdict["assumptions"], json!([]));
@@ -1038,7 +1047,7 @@ fn hypothesis_decides_before_the_bound() {
     let (st, v) = run(&set(&base, "/inputs/mu", json!("0.500000000001")), &stmts());
     assert_eq!(st, Status::Rejected, "{v}");
     assert_eq!(v["hypothesis"]["status"], json!("FAIL"));
-    // a passing hypothesis with a wrong bound is REJECTED by rule 2
+    // a passing hypothesis with a wrong bound is REJECTED by rule 4
     let wrong = set(&base, "/claim/bound", json!({"lo": "0", "hi": "1"}));
     let (st, v) = run(&wrong, &stmts());
     assert_eq!(st, Status::Rejected, "{v}");
@@ -1219,4 +1228,1188 @@ fn a_statement_list_is_named_by_its_bytes() {
         run(&cert, &b).1["statements_sha256"],
         json!(sha256_hex(spaced.as_bytes()))
     );
+}
+
+// ---------------------------------------------------------------------------
+// Revision 3 of the contract
+// ---------------------------------------------------------------------------
+
+/// The keys of the verdict table of section 5, sorted.
+const VERDICT_KEYS: [&str; 13] = [
+    "assumptions",
+    "certificate_sha256",
+    "checker",
+    "format",
+    "hypothesis",
+    "kind",
+    "numeric_rung",
+    "reasons",
+    "recomputed",
+    "statement",
+    "statements_pinned",
+    "statements_sha256",
+    "status",
+];
+
+/// omega = -cos x + cos(2x)/8 on [-1, 3/2], order 2: the minimum of
+/// |omega''| is 1/2, attained at 0 only (see `hypothesis_decides_before_the_bound`).
+fn near_degenerate(mu: &str) -> String {
+    format!(
+        r#"{{"phase": [{{"amp": "-1", "freq": 1, "fn": "cos"}}, {{"amp": "1/8", "freq": 2, "fn": "cos"}}], "order": 2, "a": "-1", "b": "3/2", "mu": "{mu}", "t": "2"}}"#
+    )
+}
+
+fn assert_verdict_shape(bytes: &[u8], list: &StatementList, st: Status, v: &Value) {
+    let keys: Vec<&str> = v
+        .as_object()
+        .expect("object")
+        .keys()
+        .map(String::as_str)
+        .collect();
+    assert_eq!(keys, VERDICT_KEYS, "{v}");
+    assert_eq!(v["format"], json!(VERDICT_FORMAT));
+    assert_eq!(v["status"], json!(st.as_str()));
+    assert!(v["kind"].is_null() || v["kind"].is_string());
+    assert_eq!(
+        v["reasons"].as_array().map(Vec::is_empty),
+        Some(st == Status::Certified)
+    );
+    assert!(v["checker"].is_string() && v["numeric_rung"].is_string());
+    assert_eq!(v["statements_sha256"], json!(list.sha256));
+    assert!(v["assumptions"].is_array());
+    assert!(v["statement"].is_null() || v["statement"].is_object());
+    let digest = v["certificate_sha256"].as_str().expect("certificate_sha256");
+    assert_eq!(digest, sha256_hex(bytes));
+    assert_eq!(digest.len(), 64);
+    assert!(digest
+        .bytes()
+        .all(|c| c.is_ascii_digit() || (b'a'..=b'f').contains(&c)));
+    assert_eq!(v["statements_pinned"], json!(list.pinned));
+}
+
+#[test]
+fn every_key_is_in_every_verdict() {
+    let plain = stmts();
+    let digest = sha256_hex(STATEMENTS.as_bytes());
+    let pinned = load_statements_expecting(STATEMENTS.as_bytes(), Some(&digest)).expect("pinned list");
+    assert!(pinned.pinned && !plain.pinned);
+    let unproved = stmts_with(|v| {
+        for s in v["statements"].as_array_mut().expect("array") {
+            s["proved_by"] = Value::Null;
+        }
+    });
+
+    // (bytes, expected status, expected rule, recomputed must be null)
+    let mut cases: Vec<(Vec<u8>, Status, Stage, bool)> = vec![
+        (b"".to_vec(), Status::Rejected, Stage::Structure, true),
+        (b"null".to_vec(), Status::Rejected, Stage::Structure, true),
+        (b"{}".to_vec(), Status::Rejected, Stage::Structure, true),
+        (b"[1, 2".to_vec(), Status::Rejected, Stage::Structure, true),
+        (
+            vec![0xff, 0xfe, b'{', b'}'],
+            Status::Rejected,
+            Stage::Structure,
+            true,
+        ),
+        (
+            b"\xef\xbb\xbf{}".to_vec(),
+            Status::Rejected,
+            Stage::Structure,
+            true,
+        ),
+    ];
+    for (kind, inputs) in all_kinds() {
+        let cert = good(kind, inputs);
+        cases.push((
+            cert.to_string().into_bytes(),
+            Status::Certified,
+            Stage::Certified,
+            false,
+        ));
+        // a claim that is plainly wrong: decided by rule 4, which was reached
+        let wrong = set(&cert, claim_slot(kind), json!({"lo": "-2", "hi": "-1"}));
+        cases.push((
+            wrong.to_string().into_bytes(),
+            Status::Rejected,
+            Stage::Claim,
+            false,
+        ));
+        // a missing key: decided by the structure
+        let cut = remove(&cert, "", "producer");
+        cases.push((
+            cut.to_string().into_bytes(),
+            Status::Rejected,
+            Stage::Structure,
+            true,
+        ));
+    }
+    // an input beyond the supported range: nothing is compared
+    let far = with_inputs("bessel-j", BESSEL, "/inputs/x", "\"401\"");
+    cases.push((far.into_bytes(), Status::Unresolved, Stage::Range, true));
+    // decided by the hypothesis: FAIL and UNRESOLVED
+    let base = good("vdc-hypothesis", &near_degenerate("0.499999999999"));
+    let fail = set(&base, "/inputs/mu", json!("0.6"));
+    cases.push((
+        fail.to_string().into_bytes(),
+        Status::Rejected,
+        Stage::Hypothesis,
+        true,
+    ));
+    let undecided = set(&base, "/inputs/mu", json!("1/2"));
+    cases.push((
+        undecided.to_string().into_bytes(),
+        Status::Unresolved,
+        Stage::Hypothesis,
+        true,
+    ));
+
+    for (bytes, expected, stage, recomputed_null) in &cases {
+        for list in [&plain, &pinned] {
+            let (st, v, decided_by) = check_staged(bytes, list);
+            assert_eq!(st, *expected, "{v}");
+            assert_eq!(decided_by, *stage, "{v}");
+            assert_verdict_shape(bytes, list, st, &v);
+            assert_eq!(v["recomputed"].is_null(), *recomputed_null, "{v}");
+            // check and check_guarded give the same verdict
+            assert_eq!(check(bytes, list), (st, v.clone()));
+            assert_eq!(check_guarded(bytes, list), (st, v));
+        }
+    }
+    // rule 5 is reached only after the claim was confirmed: recomputed is there
+    for (kind, inputs) in all_kinds() {
+        let cert = good(kind, inputs).to_string();
+        let (st, v, stage) = check_staged(cert.as_bytes(), &unproved);
+        assert_verdict_shape(cert.as_bytes(), &unproved, st, &v);
+        if kind == "bessel-j" {
+            assert_eq!((st, stage), (Status::Certified, Stage::Certified));
+        } else {
+            assert_eq!((st, stage), (Status::Unresolved, Stage::Proof), "{v}");
+            assert!(v["recomputed"]["lo"].is_string());
+        }
+    }
+    // values that do not apply are null, and the kind is null when it could not be read
+    let (_, v) = check(b"null", &plain);
+    for key in ["kind", "statement", "recomputed", "hypothesis"] {
+        assert_eq!(v[key], Value::Null, "{key}");
+    }
+    assert_eq!(v["assumptions"], json!([]));
+    let (_, v) = check(good("bessel-j", BESSEL).to_string().as_bytes(), &plain);
+    assert_eq!(v["hypothesis"], Value::Null);
+    assert_eq!(v["statement"], Value::Null);
+}
+
+#[test]
+fn the_verdict_is_bound_to_the_bytes_checked() {
+    // digests computed outside this crate (sha256sum)
+    let vectors: [(&[u8], &str); 4] = [
+        (
+            b"",
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        ),
+        (
+            b"null",
+            "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        ),
+        (
+            b"\xff\xfe{}",
+            "604ee178ad94b07584aa5c3cd91a5b0b1444bfb7040eedcea14179d377282647",
+        ),
+        (
+            b"\xef\xbb\xbf{}",
+            "aa25e978046d680ef8740d837e6de5bc1e2a2dc6089dbda1012544b538d53f65",
+        ),
+    ];
+    for (bytes, digest) in vectors {
+        let (st, v) = check(bytes, &stmts());
+        assert_eq!(st, Status::Rejected);
+        assert_eq!(v["certificate_sha256"], json!(digest));
+    }
+    // the same certificate with other white space is another sequence of bytes
+    let cert = good("bessel-j", BESSEL).to_string();
+    let spaced = format!("{cert}\n");
+    let (a, va) = check(cert.as_bytes(), &stmts());
+    let (b, vb) = check(spaced.as_bytes(), &stmts());
+    assert_eq!((a, b), (Status::Certified, Status::Certified));
+    assert_ne!(va["certificate_sha256"], vb["certificate_sha256"]);
+    assert_eq!(vb["certificate_sha256"], json!(sha256_hex(spaced.as_bytes())));
+}
+
+#[test]
+fn certificates_with_bad_content_are_rejected_verdicts() {
+    let good_text = good("lattice-envelope", ENVELOPE).to_string();
+    let mut with_mark = b"\xef\xbb\xbf".to_vec();
+    with_mark.extend_from_slice(good_text.as_bytes());
+    // a byte that is not UTF-8 inside the producer's name
+    let not_utf8 = {
+        let marked = set(&good("lattice-envelope", ENVELOPE), "/producer", json!("@@P@@")).to_string();
+        let at = marked.find("@@P@@").expect("marker");
+        let mut bytes = marked.into_bytes();
+        bytes[at] = 0xff;
+        bytes
+    };
+    let utf16 = {
+        let mut bytes = vec![0xff, 0xfe];
+        for unit in good_text.encode_utf16() {
+            bytes.extend_from_slice(&unit.to_le_bytes());
+        }
+        bytes
+    };
+    let cases: Vec<(&str, Vec<u8>)> = vec![
+        ("null", b"null".to_vec()),
+        ("empty", Vec::new()),
+        ("white space", b" \n\t".to_vec()),
+        ("byte-order mark", with_mark),
+        ("not UTF-8", not_utf8),
+        ("UTF-16", utf16),
+        ("a lone 0x80", vec![0x80]),
+    ];
+    for (name, bytes) in cases {
+        let (st, v) = check(&bytes, &stmts());
+        assert_eq!(st, Status::Rejected, "{name}");
+        assert_verdict_shape(&bytes, &stmts(), st, &v);
+        assert_eq!(v["kind"], Value::Null, "{name}");
+        assert_eq!(v["recomputed"], Value::Null, "{name}");
+        assert_eq!(v["hypothesis"], Value::Null, "{name}");
+    }
+    assert_eq!(status_text(&good_text), Status::Certified);
+}
+
+#[test]
+fn pinned_statement_lists() {
+    let bytes = STATEMENTS.as_bytes();
+    let digest = sha256_hex(bytes);
+    assert!(!load_statements(bytes).expect("list").pinned);
+    assert!(!load_statements_expecting(bytes, None).expect("list").pinned);
+    // the expected digest, in any letter case
+    let upper = digest.to_uppercase();
+    let mixed: String = digest
+        .chars()
+        .enumerate()
+        .map(|(i, c)| if i % 2 == 0 { c.to_ascii_uppercase() } else { c })
+        .collect();
+    assert_ne!(upper, digest);
+    for expected in [&digest, &upper, &mixed] {
+        let list = load_statements_expecting(bytes, Some(expected)).expect("matching digest");
+        assert!(list.pinned);
+        assert_eq!(list.sha256, digest); // always printed in lower case
+    }
+    // another digest: no list at all
+    let mut other: Vec<char> = digest.chars().collect();
+    other[10] = if other[10] == '0' { '1' } else { '0' };
+    let other: String = other.into_iter().collect();
+    let err = load_statements_expecting(bytes, Some(&other)).expect_err("mismatch");
+    assert!(err.contains(&digest) && err.contains(&other), "{err}");
+    let spaced = format!("{STATEMENTS}\n");
+    assert!(load_statements_expecting(spaced.as_bytes(), Some(&digest)).is_err());
+    // values that are not a SHA-256
+    let prefixed = format!("0x{}", &digest[2..]);
+    let padded = format!(" {}", &digest[1..]);
+    let longer = format!("{digest}0");
+    let not_hex = "g".repeat(64);
+    for bad in ["", "abc", &digest[..63], &longer, &prefixed, &padded, &not_hex] {
+        assert!(load_statements_expecting(bytes, Some(bad)).is_err(), "{bad:?}");
+    }
+    // the digest of an unusable list does not make it usable
+    let unusable = b"[]";
+    assert!(load_statements_expecting(unusable, Some(&sha256_hex(unusable))).is_err());
+
+    // the verdict records the pin, whatever the status
+    let pinned = load_statements_expecting(bytes, Some(&upper)).expect("pinned");
+    let cert = good("lattice-population", POPULATION);
+    let wrong = set(&cert, "/claim", json!({"lo": "2", "hi": "3"}));
+    let far = set(&cert, "/inputs/t", json!("1000"));
+    for (c, expected) in [
+        (&cert, Status::Certified),
+        (&wrong, Status::Rejected),
+        (&far, Status::Unresolved),
+    ] {
+        let (st, v) = run(c, &pinned);
+        assert_eq!(st, expected);
+        assert_eq!(v["statements_pinned"], json!(true));
+        assert_eq!(v["statements_sha256"], json!(digest));
+        let (st, v) = run(c, &stmts());
+        assert_eq!(st, expected);
+        assert_eq!(v["statements_pinned"], json!(false));
+        assert_eq!(v["statements_sha256"], json!(digest));
+    }
+    let (_, v) = check(b"null", &pinned);
+    assert_eq!(v["statements_pinned"], json!(true));
+}
+
+#[test]
+fn unusable_statement_lists_of_revision_3() {
+    let entry = r#"{"label": "A", "name": "n", "commitment": "c", "proved_by": "p"}"#;
+    let list = |entries: &str| format!(r#"{{"format": "oscint-statements 1", "statements": [{entries}]}}"#);
+    let unusable: Vec<(&str, String)> = vec![
+        ("a bare array", format!("[{entry}]")),
+        ("an empty bare array", "[]".into()),
+        ("no statements", r#"{"format": "oscint-statements 1"}"#.into()),
+        (
+            "statements under another name",
+            format!(r#"{{"format": "oscint-statements 1", "entries": [{entry}]}}"#),
+        ),
+        (
+            "statements null",
+            r#"{"format": "oscint-statements 1", "statements": null}"#.into(),
+        ),
+        (
+            "statements an object",
+            format!(r#"{{"format": "oscint-statements 1", "statements": {{"A": {entry}}}}}"#),
+        ),
+        ("no format", format!(r#"{{"statements": [{entry}]}}"#)),
+        (
+            "another format",
+            format!(r#"{{"format": "oscint-statements 2", "statements": [{entry}]}}"#),
+        ),
+        (
+            "format not a string",
+            format!(r#"{{"format": 1, "statements": [{entry}]}}"#),
+        ),
+        ("a duplicate label", list(&format!("{entry}, {entry}"))),
+        (
+            "a duplicate label with other content",
+            list(&format!(
+                r#"{entry}, {{"label": "A", "name": "m", "commitment": "d"}}"#
+            )),
+        ),
+        (
+            "an entry without commitment",
+            list(r#"{"label": "A", "name": "n"}"#),
+        ),
+        (
+            "an empty commitment",
+            list(r#"{"label": "A", "name": "n", "commitment": ""}"#),
+        ),
+        (
+            "a commitment that is null",
+            list(r#"{"label": "A", "name": "n", "commitment": null}"#),
+        ),
+        (
+            "a commitment that is a number",
+            list(r#"{"label": "A", "name": "n", "commitment": 7}"#),
+        ),
+        (
+            "an entry without name",
+            list(r#"{"label": "A", "commitment": "c"}"#),
+        ),
+        (
+            "an empty name",
+            list(r#"{"label": "A", "name": "", "commitment": "c"}"#),
+        ),
+        (
+            "an entry without label",
+            list(r#"{"name": "n", "commitment": "c"}"#),
+        ),
+        (
+            "an empty label",
+            list(r#"{"label": "", "name": "n", "commitment": "c"}"#),
+        ),
+        ("an entry that is a string", list(r#""A""#)),
+        ("an entry that is null", list("null")),
+        (
+            "the second entry without commitment",
+            list(&format!(r#"{entry}, {{"label": "B", "name": "n"}}"#)),
+        ),
+        ("a byte-order mark", format!("\u{feff}{}", list(entry))),
+        ("text after the list", format!("{} x", list(entry))),
+        ("a trailing comma", list(&format!("{entry},"))),
+        (
+            "a duplicate key in an entry",
+            list(r#"{"label": "A", "label": "A", "name": "n", "commitment": "c"}"#),
+        ),
+        (
+            "NaN",
+            list(r#"{"label": "A", "name": "n", "commitment": "c", "x": NaN}"#),
+        ),
+        ("null", "null".into()),
+        ("empty", String::new()),
+    ];
+    for (name, text) in &unusable {
+        assert!(load_statements(text.as_bytes()).is_err(), "{name}: {text}");
+        // and no digest makes it usable
+        let digest = sha256_hex(text.as_bytes());
+        assert!(
+            load_statements_expecting(text.as_bytes(), Some(&digest)).is_err(),
+            "{name}, pinned"
+        );
+    }
+    assert!(load_statements(&[0xff, 0xfe, b'{', b'}']).is_err(), "not UTF-8");
+    let mut inside = list(entry).into_bytes();
+    let at = inside.iter().position(|&c| c == b'A').expect("label");
+    inside[at] = 0xe9; // Latin-1, not UTF-8
+    assert!(load_statements(&inside).is_err(), "not UTF-8 inside a string");
+
+    // usable: other keys, no proof, no entries
+    let usable = [
+        list(entry),
+        list(r#"{"label": "A", "name": "n", "commitment": "c"}"#),
+        list(r#"{"label": "A", "name": "n", "commitment": "c", "proved_by": null, "file": "f"}"#),
+        list(&format!(
+            r#"{entry}, {{"label": "B", "name": "n", "commitment": "c"}}"#
+        )),
+        list(""),
+        format!(r#"{{"statements": [{entry}], "package": "p", "format": "oscint-statements 1"}}"#),
+    ];
+    for text in &usable {
+        assert!(load_statements(text.as_bytes()).is_ok(), "{text}");
+    }
+}
+
+/// Pads a numeral with zeros after its sign to `len` characters; the value is unchanged.
+fn pad(numeral: &str, len: usize) -> String {
+    let (sign, body) = match numeral.strip_prefix('-') {
+        Some(rest) => ("-", rest),
+        None => ("", numeral),
+    };
+    assert!(numeral.len() <= len);
+    let padded = format!("{sign}{}{body}", "0".repeat(len - numeral.len()));
+    assert_eq!(padded.chars().count(), len);
+    padded
+}
+
+#[test]
+fn input_numerals_of_100_and_of_101_characters() {
+    let slots = [
+        ("bessel-j", BESSEL, vec!["/inputs/x"]),
+        ("lattice-population", POPULATION, vec!["/inputs/t"]),
+        ("lattice-envelope", ENVELOPE, vec!["/inputs/t"]),
+        (
+            "vdc-hypothesis",
+            VDC,
+            vec!["/inputs/a", "/inputs/b", "/inputs/mu", "/inputs/t"],
+        ),
+    ];
+    for (kind, inputs, pointers) in slots {
+        let cert = good(kind, inputs);
+        for pointer in pointers {
+            let original = cert.pointer(pointer).and_then(Value::as_str).expect("numeral");
+            // 100 characters: read, and the certificate stands (the value is the same)
+            let at_limit = set(&cert, pointer, json!(pad(original, 100)));
+            let (st, v) = run(&at_limit, &stmts());
+            assert_eq!(st, Status::Certified, "{kind} {pointer}: {v}");
+            assert!(make(kind, &at_limit["inputs"].to_string(), &stmts(), 96).is_ok());
+            // 101 characters: beyond the supported range, nothing is computed
+            let beyond = set(&cert, pointer, json!(pad(original, 101)));
+            let (st, v, stage) = check_staged(beyond.to_string().as_bytes(), &stmts());
+            assert_eq!(
+                (st, stage),
+                (Status::Unresolved, Stage::Range),
+                "{kind} {pointer}: {v}"
+            );
+            assert_eq!(v["recomputed"], Value::Null);
+            assert_eq!(v["hypothesis"], Value::Null);
+            assert!(
+                v["reasons"][0]
+                    .as_str()
+                    .is_some_and(|r| r.contains("101 characters")),
+                "{v}"
+            );
+            assert!(make(kind, &beyond["inputs"].to_string(), &stmts(), 96).is_err());
+            // far beyond
+            let far = set(&cert, pointer, json!(pad(original, 4001)));
+            assert_eq!(status(&far), Status::Unresolved, "{kind} {pointer}");
+        }
+    }
+    // the limit counts every character: sign, digits, point and slash
+    let nines = "9".repeat(96);
+    let cases = [
+        (format!("399.{nines}"), 100, true),
+        (format!("-399.{}", &nines[1..]), 100, true),
+        (format!("-399.{nines}"), 101, false),
+        (format!("399.{nines}9"), 101, false),
+        (format!("1/{}", "7".repeat(98)), 100, true),
+        (format!("1/{}", "7".repeat(99)), 101, false),
+        (format!("-1/{}", "7".repeat(97)), 100, true),
+        (format!("-1/{}", "7".repeat(98)), 101, false),
+        ("3".repeat(100), 100, false), // read, but |x| > 400
+    ];
+    for (x, len, supported) in cases {
+        assert_eq!(x.len(), len);
+        let inputs = format!(r#"{{"n": 2, "x": "{x}"}}"#);
+        let made = make("bessel-j", &inputs, &stmts(), 96);
+        assert_eq!(made.is_ok(), supported, "x of {len} characters: {x}");
+        match made {
+            Ok(cert) => assert_eq!(status(&cert), Status::Certified, "x = {x}"),
+            Err(_) => {
+                let cert = set(&good("bessel-j", BESSEL), "/inputs/x", json!(x));
+                assert_eq!(status(&cert), Status::Unresolved, "x = {x}");
+            }
+        }
+    }
+}
+
+#[test]
+fn phase_amplitudes_and_claims_of_4000_and_of_4001_characters() {
+    // a phase amplitude is not under the limit of 100
+    let cert = good("vdc-hypothesis", VDC);
+    for pointer in ["/inputs/phase/0/amp", "/inputs/phase/1/amp"] {
+        let original = cert.pointer(pointer).and_then(Value::as_str).expect("amp");
+        for len in [100, 101, 1000, 4000] {
+            let c = set(&cert, pointer, json!(pad(original, len)));
+            let (st, v) = run(&c, &stmts());
+            assert_eq!(st, Status::Certified, "{pointer} with {len} characters: {v}");
+        }
+        let c = set(&cert, pointer, json!(pad(original, 4001)));
+        let (st, v, stage) = check_staged(c.to_string().as_bytes(), &stmts());
+        assert_eq!((st, stage), (Status::Unresolved, Stage::Range), "{v}");
+        assert_eq!(v["hypothesis"], Value::Null);
+        assert!(make("vdc-hypothesis", &c["inputs"].to_string(), &stmts(), 96).is_err());
+    }
+    // an amplitude with 4000 significant digits is used as it is: omega =
+    // 10^3999 cos x has |omega''| >= 10^3999 cos 1 on [0, 1]
+    let huge = format!("1{}", "0".repeat(3999));
+    let inputs = |mu: &str| {
+        format!(
+            r#"{{"phase": [{{"amp": "{huge}", "freq": 1, "fn": "cos"}}], "order": 2, "a": "0", "b": "1", "mu": "{mu}", "t": "5"}}"#
+        )
+    };
+    let c = good("vdc-hypothesis", &inputs("0.54"));
+    let (st, v) = run(&c, &stmts());
+    assert_eq!(st, Status::Certified, "{v}");
+    assert_eq!(v["hypothesis"]["status"], json!("PASS"));
+    // the largest mu an input can state is still far below it
+    let c = good("vdc-hypothesis", &inputs(&"9".repeat(100)));
+    assert_eq!(status(&c), Status::Certified);
+
+    // a claim may have numerals of 4000 characters, not of 4001
+    for (kind, inputs) in all_kinds() {
+        let cert = good(kind, inputs);
+        for end in ["lo", "hi"] {
+            let pointer = format!("{}/{end}", claim_slot(kind));
+            let original = cert.pointer(&pointer).and_then(Value::as_str).expect("end");
+            let c = set(&cert, &pointer, json!(pad(original, 4000)));
+            assert_eq!(status(&c), Status::Certified, "{kind} {pointer}");
+            let c = set(&cert, &pointer, json!(pad(original, 4001)));
+            let (st, v, stage) = check_staged(c.to_string().as_bytes(), &stmts());
+            assert_eq!(
+                (st, stage),
+                (Status::Unresolved, Stage::Range),
+                "{kind} {pointer}: {v}"
+            );
+            assert_eq!(v["recomputed"], Value::Null);
+        }
+    }
+}
+
+#[test]
+fn rule_1_decides_before_the_length_of_a_numeral() {
+    let ones = |n: usize| "1".repeat(n);
+    let zeros = |n: usize| "0".repeat(n);
+    let (rejected, unresolved) = (Status::Rejected, Status::Unresolved);
+    let cases: Vec<(&str, &str, &str, String, Status)> = vec![
+        // too long and not a numeral: malformed
+        (
+            "bessel-j",
+            BESSEL,
+            "/inputs/x",
+            format!("+{}", ones(150)),
+            rejected,
+        ),
+        (
+            "bessel-j",
+            BESSEL,
+            "/inputs/x",
+            format!("{}x", ones(5000)),
+            rejected,
+        ),
+        (
+            "bessel-j",
+            BESSEL,
+            "/inputs/x",
+            format!("1/{}", zeros(150)),
+            rejected,
+        ),
+        (
+            "bessel-j",
+            BESSEL,
+            "/inputs/x",
+            format!("1/{}", zeros(5000)),
+            rejected,
+        ),
+        (
+            "bessel-j",
+            BESSEL,
+            "/inputs/x",
+            format!("{}.", ones(150)),
+            rejected,
+        ),
+        (
+            "bessel-j",
+            BESSEL,
+            "/inputs/x",
+            format!("{}e5", ones(150)),
+            rejected,
+        ),
+        (
+            "bessel-j",
+            BESSEL,
+            "/claim/lo",
+            format!("-{}/", ones(5000)),
+            rejected,
+        ),
+        // too long and well formed: beyond the supported range
+        ("bessel-j", BESSEL, "/inputs/x", ones(150), unresolved),
+        ("bessel-j", BESSEL, "/inputs/x", ones(5000), unresolved),
+        (
+            "bessel-j",
+            BESSEL,
+            "/inputs/x",
+            format!("0.{}", zeros(5000)),
+            unresolved,
+        ),
+        (
+            "bessel-j",
+            BESSEL,
+            "/claim/lo",
+            format!("-{}", ones(5000)),
+            unresolved,
+        ),
+        (
+            "lattice-population",
+            POPULATION,
+            "/inputs/t",
+            format!("0.{}", zeros(150)),
+            unresolved,
+        ),
+        // too long and outside the hypotheses of the statement: rule 1 first
+        (
+            "lattice-envelope",
+            ENVELOPE,
+            "/inputs/t",
+            format!("0.{}", zeros(150)),
+            rejected,
+        ),
+        (
+            "lattice-envelope",
+            ENVELOPE,
+            "/inputs/t",
+            format!("-{}", zeros(5000)),
+            rejected,
+        ),
+        (
+            "lattice-envelope",
+            ENVELOPE,
+            "/inputs/t",
+            format!("0/{}", ones(5000)),
+            rejected,
+        ),
+        (
+            "lattice-envelope",
+            ENVELOPE,
+            "/inputs/t",
+            format!("0.{}1", zeros(150)),
+            unresolved,
+        ),
+        (
+            "vdc-hypothesis",
+            VDC,
+            "/inputs/mu",
+            format!("-0.{}1", zeros(150)),
+            rejected,
+        ),
+        (
+            "vdc-hypothesis",
+            VDC,
+            "/inputs/mu",
+            format!("-{}", ones(5000)),
+            rejected,
+        ),
+        ("vdc-hypothesis", VDC, "/inputs/mu", zeros(5000), rejected),
+        (
+            "vdc-hypothesis",
+            VDC,
+            "/inputs/mu",
+            format!("0.{}1", zeros(150)),
+            unresolved,
+        ),
+        (
+            "vdc-hypothesis",
+            VDC,
+            "/inputs/t",
+            format!("-{}", ones(200)),
+            rejected,
+        ),
+        (
+            "vdc-hypothesis",
+            VDC,
+            "/inputs/t",
+            format!("0.{}", zeros(4000)),
+            rejected,
+        ),
+        ("vdc-hypothesis", VDC, "/inputs/t", ones(200), unresolved),
+        // a > b, where it can be told: from the values up to 4000
+        // characters, from the signs beyond (here a = 0 and b = 1/4)
+        ("vdc-hypothesis", VDC, "/inputs/a", ones(150), rejected),
+        ("vdc-hypothesis", VDC, "/inputs/a", ones(5000), unresolved),
+        (
+            "vdc-hypothesis",
+            VDC,
+            "/inputs/b",
+            format!("-{}", ones(5000)),
+            rejected,
+        ),
+        ("vdc-hypothesis", VDC, "/inputs/b", ones(5000), unresolved),
+        // lo > hi in a claim, likewise
+        (
+            "vdc-hypothesis",
+            VDC,
+            "/claim/bound/hi",
+            format!("-{}", ones(5000)),
+            rejected,
+        ),
+        ("vdc-hypothesis", VDC, "/claim/bound/hi", ones(5000), unresolved),
+    ];
+    for (kind, base, pointer, numeral, expected) in cases {
+        let cert = set(&good(kind, base), pointer, json!(numeral));
+        let (st, v) = run(&cert, &stmts());
+        let shown: String = numeral.chars().take(12).collect();
+        assert_eq!(
+            st,
+            expected,
+            "{kind}: {pointer} = {shown}... ({} characters): {}",
+            numeral.len(),
+            v["reasons"]
+        );
+        assert_eq!(v["recomputed"], Value::Null);
+    }
+}
+
+#[test]
+fn integers_of_300_and_of_301_digits() {
+    let digits = |n: usize| format!("1{}", "0".repeat(n - 1));
+    let (rejected, unresolved) = (Status::Rejected, Status::Unresolved);
+    let cases: Vec<(&str, &str, &str, String, Status)> = vec![
+        // 300 digits: an integer, far outside the supported range
+        ("bessel-j", BESSEL, "/inputs/n", digits(300), unresolved),
+        (
+            "bessel-j",
+            BESSEL,
+            "/inputs/n",
+            format!("-{}", digits(300)),
+            unresolved,
+        ),
+        (
+            "lattice-population",
+            POPULATION,
+            "/inputs/n",
+            digits(300),
+            unresolved,
+        ),
+        ("lattice-envelope", ENVELOPE, "/inputs/d", digits(300), unresolved),
+        ("vdc-hypothesis", VDC, "/inputs/order", digits(300), unresolved),
+        (
+            "vdc-hypothesis",
+            VDC,
+            "/inputs/phase/0/freq",
+            digits(300),
+            unresolved,
+        ),
+        // 301 digits and more: malformed
+        ("bessel-j", BESSEL, "/inputs/n", digits(301), rejected),
+        (
+            "bessel-j",
+            BESSEL,
+            "/inputs/n",
+            format!("-{}", digits(301)),
+            rejected,
+        ),
+        ("bessel-j", BESSEL, "/inputs/n", digits(305), rejected),
+        ("bessel-j", BESSEL, "/inputs/n", digits(400), rejected),
+        ("bessel-j", BESSEL, "/inputs/n", digits(5000), rejected),
+        (
+            "lattice-population",
+            POPULATION,
+            "/inputs/n",
+            digits(301),
+            rejected,
+        ),
+        ("lattice-envelope", ENVELOPE, "/inputs/d", digits(301), rejected),
+        ("vdc-hypothesis", VDC, "/inputs/order", digits(301), rejected),
+        (
+            "vdc-hypothesis",
+            VDC,
+            "/inputs/phase/0/freq",
+            digits(301),
+            rejected,
+        ),
+        (
+            "vdc-hypothesis",
+            VDC,
+            "/inputs/phase/1/freq",
+            format!("-{}", digits(301)),
+            rejected,
+        ),
+        // outside the hypotheses whatever the length
+        (
+            "lattice-envelope",
+            ENVELOPE,
+            "/inputs/d",
+            format!("-{}", digits(300)),
+            rejected,
+        ),
+        (
+            "vdc-hypothesis",
+            VDC,
+            "/inputs/order",
+            format!("-{}", digits(300)),
+            rejected,
+        ),
+    ];
+    for (kind, base, pointer, replacement, expected) in cases {
+        let text = with_inputs(kind, base, pointer, &replacement);
+        let (st, v) = check(text.as_bytes(), &stmts());
+        assert_eq!(
+            st,
+            expected,
+            "{kind}: {pointer} with {} characters: {}",
+            replacement.len(),
+            v["reasons"]
+        );
+    }
+}
+
+fn rat(s: &str) -> num_rational::BigRational {
+    oscint_cert::num::parse_rational(s).unwrap_or_else(|e| panic!("{s}: {e:?}"))
+}
+
+fn numeral_lengths(v: &Value, out: &mut Vec<usize>) {
+    match v {
+        Value::String(s) => out.push(s.len()),
+        Value::Array(items) => items.iter().for_each(|x| numeral_lengths(x, out)),
+        Value::Object(m) => m.values().for_each(|x| numeral_lengths(x, out)),
+        _ => {}
+    }
+}
+
+#[test]
+fn tiny_radicands_are_decided() {
+    // order 2, t = 1, mu = 1/(10^98 - 1): the bound is 8 sqrt(10^98 - 1),
+    // which is 8 * 10^49 less about 4 * 10^-49
+    let mu = format!("1/{}", "9".repeat(98));
+    assert_eq!(mu.len(), 100);
+    let inputs = format!(
+        r#"{{"phase": [{{"amp": "1", "freq": 1, "fn": "cos"}}], "order": 2, "a": "0", "b": "1", "mu": "{mu}", "t": "1"}}"#
+    );
+    let cert = good("vdc-hypothesis", &inputs);
+    let (st, v) = run(&cert, &stmts());
+    assert_eq!(st, Status::Certified, "{v}");
+    assert_eq!(v["hypothesis"]["status"], json!("PASS"));
+    let top = format!("8{}", "0".repeat(49));
+    let below = format!("7{}", "9".repeat(49));
+    let (lo, hi) = (
+        rat(v["recomputed"]["lo"].as_str().expect("lo")),
+        rat(v["recomputed"]["hi"].as_str().expect("hi")),
+    );
+    // (at 256 bits the upper end is 8 * 10^49 itself: the value is closer to it than 2^-320)
+    assert!(rat(&below) < lo && lo < hi && hi <= rat(&top), "{v}");
+    let bound = |a: &str, b: &str| set(&cert, "/claim/bound", json!({"lo": a, "hi": b}));
+    assert_eq!(status(&bound(&below, &top)), Status::Certified);
+    assert_eq!(status(&bound("0", &top)), Status::Certified);
+    // false by 4 * 10^-49 in 8 * 10^49, a relative 5 * 10^-99: refuted, at the second pass
+    let above = format!("8{}1", "0".repeat(48));
+    let (st, v) = run(&bound(&top, &above), &stmts());
+    assert_eq!(st, Status::Rejected, "{v}");
+    assert!(
+        rat(v["recomputed"]["hi"].as_str().expect("hi")) < rat(&top),
+        "{v}"
+    );
+    assert_eq!(status(&bound("0", &below)), Status::Rejected);
+    assert_eq!(
+        status(&bound(&above, &format!("9{}", "0".repeat(49)))),
+        Status::Rejected
+    );
+    assert_eq!(status(&bound("0", "1")), Status::Rejected);
+
+    // d = 64, t = 10^-97: (C*/2 pi)^64 (2 * 10^-97)^(-64/3) is far above 1,
+    // so the envelope is exactly 1
+    for t in [
+        format!("0.{}1", "0".repeat(96)),
+        format!("-0.{}1", "0".repeat(96)),
+        format!("1/1{}", "0".repeat(97)),
+        format!("1/{}", "9".repeat(98)),
+    ] {
+        assert!(t.len() <= 100);
+        let cert = good("lattice-envelope", &format!(r#"{{"d": 64, "t": "{t}"}}"#));
+        assert_eq!(cert["claim"], json!({"lo": "1", "hi": "1"}), "t = {t}");
+        let (st, v) = run(&cert, &stmts());
+        assert_eq!(st, Status::Certified, "{v}");
+        assert_eq!(v["recomputed"], json!({"lo": "1", "hi": "1"}));
+        let claim = |a: &str, b: &str| set(&cert, "/claim", json!({"lo": a, "hi": b}));
+        assert_eq!(status(&claim("1", "2")), Status::Certified);
+        assert_eq!(status(&claim("0", "1")), Status::Certified);
+        assert_eq!(status(&claim("1/2", "0.999999")), Status::Rejected);
+        assert_eq!(
+            status(&claim(
+                "1.0000000000000000000000000000000000000000000000000000000000000001",
+                "2"
+            )),
+            Status::Rejected
+        );
+    }
+    // the other end: d = 64 and the largest t an input can state
+    let cert = good(
+        "lattice-envelope",
+        &format!(r#"{{"d": 64, "t": "{}"}}"#, "9".repeat(100)),
+    );
+    let (st, v) = run(&cert, &stmts());
+    assert_eq!(st, Status::Certified, "{v}");
+    let hi = rat(v["recomputed"]["hi"].as_str().expect("hi"));
+    assert!(hi > rat("0") && hi < rat(&format!("1/1{}", "0".repeat(2000))));
+}
+
+#[test]
+fn tiny_values_of_bessel_functions_are_decided() {
+    let e25 = format!("1/1{}", "0".repeat(25));
+    let minus_e25 = format!("-{e25}");
+    let e3990 = format!("1/1{}", "0".repeat(3990));
+    let tiny_x = format!("0.{}1", "0".repeat(97)); // 10^-98, 100 characters
+    assert_eq!(tiny_x.len(), 100);
+    let near_400 = format!("399.{}", "9".repeat(96));
+    // J_n(x) > 0 for 0 < x < n; (-1)^n J_n(x) for the reflections. All of
+    // these are positive, and far below 10^-3990.
+    let positive: Vec<(&str, String)> = vec![
+        ("bessel-j", format!(r#"{{"n": 10000, "x": "{tiny_x}"}}"#)),
+        (
+            "bessel-j",
+            format!(r#"{{"n": -10000, "x": "-0.{}1"}}"#, "0".repeat(96)),
+        ),
+        ("bessel-j", format!(r#"{{"n": 10000, "x": "{near_400}"}}"#)),
+        (
+            "bessel-j",
+            format!(r#"{{"n": 9999, "x": "1/{}"}}"#, "9".repeat(98)),
+        ),
+        (
+            "lattice-population",
+            format!(r#"{{"n": 10000, "t": "{tiny_x}"}}"#),
+        ),
+        (
+            "lattice-population",
+            format!(r#"{{"n": -9999, "t": "-1/{}"}}"#, "9".repeat(97)),
+        ),
+        ("lattice-population", r#"{"n": 10000, "t": "200"}"#.to_string()),
+    ];
+    for (kind, inputs) in &positive {
+        let cert = good(kind, inputs);
+        let mut lengths = Vec::new();
+        numeral_lengths(&cert["claim"], &mut lengths);
+        assert!(lengths.iter().all(|&l| l <= 4000), "{kind} {inputs}: {lengths:?}");
+        let (st, v) = run(&cert, &stmts());
+        assert_eq!(st, Status::Certified, "{kind} {inputs}: {}", v["reasons"]);
+        let mut lengths = Vec::new();
+        numeral_lengths(&v["recomputed"], &mut lengths);
+        assert!(lengths.iter().all(|&l| l <= 4000), "{kind} {inputs}: {lengths:?}");
+        // what is printed is an enclosure: it can serve as a claim
+        assert_eq!(
+            status(&set(&cert, "/claim", v["recomputed"].clone())),
+            Status::Certified
+        );
+        let claim = |a: &str, b: &str| set(&cert, "/claim", json!({"lo": a, "hi": b}));
+        for (a, b, expected) in [
+            ("0", e25.as_str(), Status::Certified),
+            (minus_e25.as_str(), e25.as_str(), Status::Certified),
+            ("0", e3990.as_str(), Status::Certified),
+            ("0", "1", Status::Certified),
+            // the value is not 0, and it is positive
+            ("0", "0", Status::Rejected),
+            (minus_e25.as_str(), "0", Status::Rejected),
+            (e3990.as_str(), "1", Status::Rejected),
+            (e25.as_str(), "1", Status::Rejected),
+        ] {
+            let (st, v) = run(&claim(a, b), &stmts());
+            let shown: String = a.chars().take(10).collect();
+            assert_eq!(st, expected, "{kind} {inputs}: [{shown}.., ..]: {}", v["reasons"]);
+        }
+    }
+    // an odd order and a negative argument: negative
+    let cert = good(
+        "bessel-j",
+        &format!(r#"{{"n": 9999, "x": "-1/{}"}}"#, "9".repeat(97)),
+    );
+    assert_eq!(status(&cert), Status::Certified);
+    let claim = |a: &str, b: &str| set(&cert, "/claim", json!({"lo": a, "hi": b}));
+    assert_eq!(status(&claim(&minus_e25, "0")), Status::Certified);
+    assert_eq!(status(&claim("0", &e25)), Status::Rejected);
+    assert_eq!(status(&claim("0", "0")), Status::Rejected);
+}
+
+#[test]
+fn rational_van_der_corput_bounds_are_exact() {
+    use num_bigint::BigInt;
+    use num_rational::BigRational;
+    // omega = cos x: |omega''| = cos x >= 1/4 on [0, 1]. Order 2 and
+    // t mu = 9 give (5 * 2 - 2) * 9^(-1/2) = 8/3, which no dyadic interval
+    // can end at.
+    let inputs = |mu: &str, t: &str| {
+        format!(
+            r#"{{"phase": [{{"amp": "1", "freq": 1, "fn": "cos"}}], "order": 2, "a": "0", "b": "1", "mu": "{mu}", "t": "{t}"}}"#
+        )
+    };
+    let cert = good("vdc-hypothesis", &inputs("1/4", "36"));
+    // make still writes an interval around the value
+    let (lo, hi) = (
+        rat(cert["claim"]["bound"]["lo"].as_str().expect("lo")),
+        rat(cert["claim"]["bound"]["hi"].as_str().expect("hi")),
+    );
+    assert!(lo < rat("8/3") && rat("8/3") < hi);
+    let (st, v) = run(&cert, &stmts());
+    assert_eq!(st, Status::Certified, "{v}");
+    assert_eq!(v["recomputed"], json!({"lo": "8/3", "hi": "8/3"}));
+    let bound = |a: &str, b: &str| set(&cert, "/claim/bound", json!({"lo": a, "hi": b}));
+    let just_above = format!("2.{}7", "6".repeat(80));
+    let just_below = format!("2.{}", "6".repeat(80));
+    for (a, b, expected) in [
+        ("8/3", "8/3", Status::Certified),
+        ("16/6", just_above.as_str(), Status::Certified),
+        (just_below.as_str(), "8/3", Status::Certified),
+        ("8/3", "3", Status::Certified),
+        ("2", "8/3", Status::Certified),
+        ("2.67", "3", Status::Rejected),
+        ("2", "2.66", Status::Rejected),
+        (just_above.as_str(), "3", Status::Rejected),
+        ("2", just_below.as_str(), Status::Rejected),
+        (just_below.as_str(), just_below.as_str(), Status::Rejected),
+    ] {
+        let (st, v) = run(&bound(a, b), &stmts());
+        assert_eq!(st, expected, "[{a}, {b}]: {v}");
+    }
+    // order 3: omega''' = sin x >= 3/8 on [1/2, 1]; t mu = 27/8 gives
+    // (5 * 4 - 2) * (8/27)^(1/3) = 12
+    let inputs3 = r#"{"phase": [{"amp": "1", "freq": 1, "fn": "cos"}], "order": 3, "a": "1/2", "b": "1", "mu": "3/8", "t": "9"}"#;
+    let cert3 = good("vdc-hypothesis", inputs3);
+    let (st, v) = run(&cert3, &stmts());
+    assert_eq!(st, Status::Certified, "{v}");
+    assert_eq!(v["recomputed"], json!({"lo": "12", "hi": "12"}));
+    let point = set(&cert3, "/claim/bound", json!({"lo": "12", "hi": "12"}));
+    assert_eq!(status(&point), Status::Certified);
+    let off = set(
+        &cert3,
+        "/claim/bound",
+        json!({"lo": "12.000001", "hi": "12.000001"}),
+    );
+    assert_eq!(status(&off), Status::Rejected);
+    // a bound that is not rational is never a point: t mu = 8 gives 8 / sqrt 8
+    let cert = good("vdc-hypothesis", &inputs("1/4", "32"));
+    let (st, v) = run(&cert, &stmts());
+    assert_eq!(st, Status::Certified, "{v}");
+    let (lo, hi) = (
+        rat(v["recomputed"]["lo"].as_str().expect("lo")),
+        rat(v["recomputed"]["hi"].as_str().expect("hi")),
+    );
+    assert!(lo < hi);
+    // the square of the bound is 8
+    let eight = BigRational::from_integer(BigInt::from(8));
+    assert!(&lo * &lo < eight && eight < &hi * &hi);
+    let mid = (&lo + &hi) / BigRational::from_integer(BigInt::from(2));
+    let point = set(
+        &cert,
+        "/claim/bound",
+        json!({"lo": fmt_ratio(&mid), "hi": fmt_ratio(&mid)}),
+    );
+    assert_ne!(status(&point), Status::Certified);
+}
+
+#[test]
+fn make_writes_only_what_check_certifies() {
+    let s = stmts();
+    let unproved = stmts_with(|v| {
+        for st in v["statements"].as_array_mut().expect("array") {
+            st["proved_by"] = Value::Null;
+        }
+    });
+    let tiny = format!("0.{}1", "0".repeat(97));
+    let large = "9".repeat(100);
+    let cases: Vec<(&str, String)> = vec![
+        ("bessel-j", r#"{"n": 0, "x": "0"}"#.into()),
+        ("bessel-j", r#"{"n": -0, "x": "-0"}"#.into()),
+        ("bessel-j", r#"{"n": 7, "x": "400"}"#.into()),
+        ("bessel-j", r#"{"n": -10000, "x": "-400"}"#.into()),
+        ("bessel-j", format!(r#"{{"n": 10000, "x": "{tiny}"}}"#)),
+        ("bessel-j", format!(r#"{{"n": 1, "x": "{tiny}"}}"#)),
+        ("lattice-population", r#"{"n": 10000, "t": "-200"}"#.into()),
+        ("lattice-population", format!(r#"{{"n": 3, "t": "{tiny}"}}"#)),
+        ("lattice-population", r#"{"n": 0, "t": "0"}"#.into()),
+        ("lattice-envelope", r#"{"d": 0, "t": "1"}"#.into()),
+        ("lattice-envelope", format!(r#"{{"d": 64, "t": "{tiny}"}}"#)),
+        (
+            "lattice-envelope",
+            format!(r#"{{"d": 64, "t": "-{}"}}"#, &large[1..]),
+        ),
+        ("lattice-envelope", format!(r#"{{"d": 1, "t": "{large}"}}"#)),
+        (
+            "vdc-hypothesis",
+            format!(
+                r#"{{"phase": [{{"amp": "{large}", "freq": -1, "fn": "sin"}}], "order": 16, "a": "1/2", "b": "1", "mu": "{tiny}", "t": "{tiny}"}}"#
+            ),
+        ),
+        (
+            "vdc-hypothesis",
+            format!(
+                r#"{{"phase": [{{"amp": "1", "freq": 1, "fn": "cos"}}], "order": 2, "a": "1", "b": "1", "mu": "0.54", "t": "{large}"}}"#
+            ),
+        ),
+        ("vdc-hypothesis", VDC.into()),
+    ];
+    for (kind, inputs) in &cases {
+        for bits in [8, 96, 240] {
+            let cert = make(kind, inputs, &s, bits).unwrap_or_else(|e| panic!("{kind} {inputs}: {e}"));
+            let (st, v) = run(&cert, &s);
+            assert_eq!(st, Status::Certified, "{kind} {inputs} at {bits} bits: {v}");
+            let mut lengths = Vec::new();
+            numeral_lengths(&cert["claim"], &mut lengths);
+            assert!(lengths.iter().all(|&l| l <= 4000), "{kind} {inputs}: {lengths:?}");
+            // the one exception: a statement without a proof in the list
+            let cert = make(kind, inputs, &unproved, bits).expect("certificate");
+            let (st, _, stage) = check_staged(cert.to_string().as_bytes(), &unproved);
+            if *kind == "bessel-j" {
+                assert_eq!(st, Status::Certified);
+            } else {
+                assert_eq!((st, stage), (Status::Unresolved, Stage::Proof), "{kind} {inputs}");
+            }
+        }
+    }
+    // an integer written -0 is the integer 0
+    let cert = make("bessel-j", r#"{"n": -0, "x": "1/3"}"#, &s, 96).expect("certificate");
+    assert_eq!(cert["inputs"]["n"].to_string(), "0");
+    assert_eq!(status(&cert), Status::Certified);
+
+    // no certificate: either column of section 4, and the hypothesis
+    let cos_on = |b: &str, mu: &str| {
+        format!(
+            r#"{{"phase": [{{"amp": "1", "freq": 1, "fn": "cos"}}], "order": 2, "a": "0", "b": "{b}", "mu": "{mu}", "t": "5"}}"#
+        )
+    };
+    let refused: Vec<(&str, String)> = vec![
+        ("bessel-j", r#"{"n": 1, "x": "401"}"#.into()),
+        ("bessel-j", r#"{"n": 10001, "x": "1"}"#.into()),
+        ("bessel-j", r#"{"n": 1.0, "x": "1"}"#.into()),
+        ("bessel-j", format!(r#"{{"n": 1, "x": "{}"}}"#, pad("1", 101))),
+        ("lattice-population", r#"{"n": 1, "t": "200.5"}"#.into()),
+        ("lattice-envelope", r#"{"d": 65, "t": "1"}"#.into()),
+        ("lattice-envelope", r#"{"d": -1, "t": "1"}"#.into()),
+        ("lattice-envelope", r#"{"d": 1, "t": "0.0"}"#.into()),
+        ("vdc-hypothesis", cos_on("1", "0")),
+        ("vdc-hypothesis", cos_on("-1", "0.1")),
+        ("vdc-hypothesis", cos_on("65", "0.1")),
+        (
+            "vdc-hypothesis",
+            cos_on("1", "0.1").replace("\"order\": 2", "\"order\": 17"),
+        ),
+        (
+            "vdc-hypothesis",
+            cos_on("1", "0.1").replace("\"order\": 2", "\"order\": 1"),
+        ),
+        ("vdc-hypothesis", cos_on("1", "0.1").replace("\"cos\"", "\"tan\"")),
+    ];
+    for (kind, inputs) in &refused {
+        assert!(make(kind, inputs, &s, 96).is_err(), "{kind} {inputs}");
+    }
+    assert!(make("vdc-hypothesis", &cos_on("1", "0.1"), &s, 96).is_ok());
+    // a hypothesis that fails: the message names the point
+    let err = make("vdc-hypothesis", &cos_on("1", "0.5404"), &s, 96).expect_err("fails at 1");
+    assert!(err.contains("fails at the point 1:"), "{err}");
+    let err = make("vdc-hypothesis", &cos_on("2", "0.001"), &s, 96).expect_err("a zero inside");
+    assert!(err.contains("fails at the point "), "{err}");
+    // a hypothesis that is undecided
+    let err = make("vdc-hypothesis", &near_degenerate("1/2"), &s, 96).expect_err("undecided");
+    assert!(err.contains("undecided"), "{err}");
 }

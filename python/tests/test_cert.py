@@ -7,6 +7,7 @@ against Arb (python-flint, a development dependency only; those tests are skippe
 Run from the python/ directory:  python3 -m unittest -v tests.test_cert
 """
 import copy
+import hashlib
 import json
 import os
 import random
@@ -78,6 +79,18 @@ class Rational(unittest.TestCase):
         self.assertTrue(lo <= ref_hi and ref_lo <= hi)  # the enclosure meets [ref_lo, ref_hi], which contains pi
         self.assertLess(hi - lo, F(1, 10**58))
         self.assertEqual(R.root(R.iv(1), 3, 20), (F(1), F(1)))  # exact on perfect powers
+
+    def test_root_of_a_tiny_number_has_a_positive_lower_end(self):
+        """Found by a worst-case probe (2026-11-16): with absolute precision the lower end was 0 and every bound that
+        divides by the root came out UNRESOLVED at the default precision."""
+        for k in (2, 3, 16):
+            q = F(1, 10**98 - 1)
+            lo, hi = R.root(R.iv(q), k, 12)
+            self.assertTrue(0 < lo and lo**k <= q <= hi**k)
+            self.assertLess((hi - lo) / lo, F(1, 10**10))
+        self.assertEqual(kernels.ls_d_envelope(64, F(1, 10**97)), (F(1), F(1)))
+        b = phase.vdc_bound(2, F(1, 10**98 - 1), F(1), 30)
+        self.assertTrue(b[0] > 10**49)
         self.assertEqual(R.sqrt(R.iv(F(9, 4)), 20), (F(3, 2), F(3, 2)))
 
     @unittest.skipIf(flint is None, "python-flint not installed: differential tests against Arb skipped")
@@ -348,6 +361,113 @@ class Certificates(unittest.TestCase):
         c = copy.deepcopy(self.certs[2])
         c["inputs"]["t"] = "0"
         self.assertEqual(self.status(c), "REJECTED")
+
+
+class CommandLine(unittest.TestCase):
+    """Defects found by a reader who had only the documentation (2026-11-16), as regression tests."""
+    STATEMENTS_PATH = os.path.join(HERE, "..", "..", "stamps", "statements.json")
+    KEYS = {"format", "status", "kind", "reasons", "checker", "statements_sha256", "statement", "numeric_rung",
+            "assumptions", "recomputed", "hypothesis", "statements_pinned", "certificate_sha256"}
+
+    def run_cli(self, argv, stdin_bytes=None):
+        import contextlib
+        import io
+        import tempfile
+        from oscint_cert.__main__ import main
+        out, err = io.StringIO(), io.StringIO()
+        if stdin_bytes is not None:
+            f = tempfile.NamedTemporaryFile(suffix=".json", delete=False)
+            f.write(stdin_bytes)
+            f.close()
+            argv = [x if x != "@FILE" else f.name for x in argv]
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            try:
+                rc = main(argv)
+            except SystemExit as e:
+                rc = e.code
+        return rc, out.getvalue(), err.getvalue()
+
+    def check_bytes(self, data, extra=()):
+        rc, out, err = self.run_cli(["check", "@FILE", "--statements", self.STATEMENTS_PATH, *extra], data)
+        return rc, (json.loads(out) if out.strip() else None), err
+
+    def test_bad_certificate_files_give_verdicts_not_tracebacks(self):
+        for data in [b"null", b"\xff\xfe\x00", b"", b"[]", b"3", b'"x"', b"{", b"\xef\xbb\xbf{}"]:
+            rc, v, err = self.check_bytes(data)
+            self.assertEqual((rc, v["status"]), (1, "REJECTED"), data)
+            self.assertEqual(set(v), self.KEYS, data)
+
+    def test_every_verdict_has_every_key(self):
+        for kind, inputs in EXAMPLES:
+            c = C.make(kind, inputs, STATEMENTS, 15)
+            rc, v, _ = self.check_bytes(json.dumps(c).encode())
+            self.assertEqual((rc, v["status"]), (0, "CERTIFIED"))
+            self.assertEqual(set(v), self.KEYS)
+            self.assertIs(v["statements_pinned"], False)
+            self.assertEqual(v["certificate_sha256"], hashlib.sha256(json.dumps(c).encode()).hexdigest())
+            self.assertEqual(set(C.check(c, STATEMENTS, SHA)), self.KEYS)  # the library call has the same keys
+
+    def test_statement_list_pin(self):
+        c = json.dumps(C.make(*EXAMPLES[2], STATEMENTS, 15)).encode()
+        rc, v, _ = self.check_bytes(c, ["--expect-statements-sha256", SHA])
+        self.assertEqual((rc, v["statements_pinned"]), (0, True))
+        rc, v, err = self.check_bytes(c, ["--expect-statements-sha256", "0" * 64])
+        self.assertEqual(rc, 3)
+        self.assertIsNone(v)
+
+    def test_unusable_statement_lists_exit_3(self):
+        import tempfile
+        c = json.dumps(C.make(*EXAMPLES[2], STATEMENTS, 15)).encode()
+        entry = '{"label": "LS-D", "name": "n", "commitment": "c", "proved_by": "trust me"}'
+        for bad in ["[]", "{}", '{"format": "oscint-statements 1"}',
+                    '{"format": "oscint-statements 1", "statements": [%s, %s]}' % (entry, entry),
+                    '{"format": "oscint-statements 1", "statements": [{"label": "LS-D"}]}', "not json"]:
+            f = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False)
+            f.write(bad)
+            f.close()
+            rc, out, err = self.run_cli(["check", "@FILE", "--statements", f.name], c)
+            self.assertEqual(rc, 3, bad)
+            self.assertEqual(out, "", bad)
+
+    def test_usage_errors_exit_3_not_2(self):
+        for argv in [[], ["check"], ["make", "no-such-kind", "--inputs", "{}", "--statements", self.STATEMENTS_PATH],
+                     ["check", "/nonexistent/file", "--statements", self.STATEMENTS_PATH]]:
+            rc, out, err = self.run_cli(argv)
+            self.assertEqual(rc, 3, argv)
+
+    def test_make_failures_exit_3(self):
+        base = ["make", "--statements", self.STATEMENTS_PATH]
+        for kind, inputs in [("vdc-hypothesis", dict(EXAMPLES[3][1], mu="9/10")),      # hypothesis fails
+                             ("vdc-hypothesis", dict(EXAMPLES[3][1], b="100")),        # undecided
+                             ("bessel-j", {"n": 0, "x": "401"}),                       # beyond the range
+                             ("lattice-envelope", {"d": 1, "t": "0"})]:                # outside the statement
+            rc, out, err = self.run_cli(base[:1] + [kind, "--inputs", json.dumps(inputs)] + base[1:])
+            self.assertEqual((rc, out), (3, ""), (kind, inputs))
+            self.assertIn("oscint_cert: error:", err)
+
+    def test_fail_path_on_a_long_interval_exhibits_a_point(self):
+        """Version 0.2.0 answered REJECTED here with a false reason (an integer-printing limit)."""
+        c = C.make(*EXAMPLES[3], STATEMENTS, 15)
+        c["inputs"].update({"a": "0", "b": "20", "mu": "1/2"})
+        rc, v, _ = self.check_bytes(json.dumps(c).encode())
+        self.assertEqual((rc, v["status"], v["hypothesis"]["status"]), (1, "REJECTED", "FAIL"))
+        self.assertTrue(0 <= R.parse_rational(v["hypothesis"]["detail"]["point"]) <= 20)
+        self.assertNotIn("malformed", " ".join(v["reasons"]))
+
+    def test_budgets_give_unresolved(self):
+        c = C.make(*EXAMPLES[0], STATEMENTS, 15)
+        c["inputs"]["x"] = "399." + "9" * 150
+        c["claim"] = {"lo": "-1", "hi": "1"}
+        rc, v, _ = self.check_bytes(json.dumps(c).encode())
+        self.assertEqual((rc, v["status"]), (2, "UNRESOLVED"))
+        many = [{"amp": "1", "freq": (j % 7) + 1, "fn": "cos"} for j in range(64)]
+        c = C.make(*EXAMPLES[3], STATEMENTS, 15)
+        c["inputs"].update({"phase": many, "a": "0", "b": "9", "mu": "1/1000"})
+        import time
+        t0 = time.time()
+        rc, v, _ = self.check_bytes(json.dumps(c).encode())
+        self.assertIn(v["status"], ("UNRESOLVED", "REJECTED"))
+        self.assertLess(time.time() - t0, 60)
 
 
 if __name__ == "__main__":

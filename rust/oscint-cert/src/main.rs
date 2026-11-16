@@ -1,21 +1,38 @@
-//! Command line of the checker.
+//! Command line of the checker (contract, section 5).
 //!
 //!   oscint-cert check <certificate.json|-> --statements <statements.json>
+//!                     [--expect-statements-sha256 <hex>]
 //!   oscint-cert make <kind> --inputs '<json>' --statements <statements.json> [--claim-bits N]
 //!
-//! Exit codes: 0 CERTIFIED (or certificate written), 1 REJECTED,
-//! 2 UNRESOLVED, 3 usage or input error.
+//! `check`: exit code 0 CERTIFIED, 1 REJECTED, 2 UNRESOLVED, each with a
+//! verdict on standard output. Exit code 3, with a message on standard
+//! error and nothing on standard output: a wrong command line, an
+//! unreadable file, an unusable statement list, or a statement list whose
+//! SHA-256 is not the expected one. A certificate with bad content is a
+//! REJECTED verdict, not an error.
+//!
+//! `make`: exit code 0 and a certificate on standard output; 3 and a
+//! message on standard error in every other case.
 
 #![forbid(unsafe_code)]
 
-use oscint_cert::check::{check_guarded, load_statements, make, StatementList};
+use oscint_cert::check::{check_guarded, load_statements_expecting, make, StatementList};
 use std::io::{Read, Write};
 use std::process::ExitCode;
 
-const USAGE: &str = "usage:\n  oscint-cert check <certificate.json|-> --statements <statements.json>\n  oscint-cert make <kind> --inputs '<json>' --statements <statements.json> [--claim-bits N]";
+const USAGE: &str = "usage:\n  oscint-cert check <certificate.json|-> --statements <statements.json> [--expect-statements-sha256 <hex>]\n  oscint-cert make <kind> --inputs '<json>' --statements <statements.json> [--claim-bits N]";
 
+/// A wrong command line: the message and the usage on standard error, exit code 3.
 fn usage_error(message: &str) -> ExitCode {
     eprintln!("oscint-cert: {message}\n{USAGE}");
+    ExitCode::from(3)
+}
+
+/// An unreadable file, an unusable or unexpected statement list, a
+/// certificate that cannot be made: the message on standard error, exit
+/// code 3, nothing on standard output.
+fn input_error(message: &str) -> ExitCode {
+    eprintln!("oscint-cert: {message}");
     ExitCode::from(3)
 }
 
@@ -50,10 +67,10 @@ fn option<'a>(named: &'a [(String, String)], key: &str) -> Option<&'a str> {
     named.iter().find(|(k, _)| k == key).map(|(_, v)| v.as_str())
 }
 
-fn read_statements(path: Option<&str>) -> Result<StatementList, String> {
-    let path = path.ok_or_else(|| "--statements <statements.json> is required".to_string())?;
+/// Reads the statement list; with `expected`, it must have that SHA-256.
+fn read_statements(path: &str, expected: Option<&str>) -> Result<StatementList, String> {
     let bytes = std::fs::read(path).map_err(|e| format!("cannot read {path}: {e}"))?;
-    load_statements(&bytes)
+    load_statements_expecting(&bytes, expected)
 }
 
 fn print_json(value: &serde_json::Value) -> Result<(), String> {
@@ -74,34 +91,38 @@ fn main() -> ExitCode {
     };
     match command.as_str() {
         "check" => {
-            let (positional, named) = match split_args(&args[1..], &["--statements"]) {
-                Ok(r) => r,
-                Err(e) => return usage_error(&e),
-            };
+            let (positional, named) =
+                match split_args(&args[1..], &["--statements", "--expect-statements-sha256"]) {
+                    Ok(r) => r,
+                    Err(e) => return usage_error(&e),
+                };
             if positional.len() != 1 {
                 return usage_error("check takes exactly one certificate path (or -)");
             }
-            let stmts = match read_statements(option(&named, "--statements")) {
+            let Some(list) = option(&named, "--statements") else {
+                return usage_error("--statements <statements.json> is required");
+            };
+            let stmts = match read_statements(list, option(&named, "--expect-statements-sha256")) {
                 Ok(s) => s,
-                Err(e) => return usage_error(&e),
+                Err(e) => return input_error(&e),
             };
             let path = positional[0].as_str();
             let cert = if path == "-" {
                 let mut buffer = Vec::new();
                 match std::io::stdin().lock().read_to_end(&mut buffer) {
                     Ok(_) => buffer,
-                    Err(e) => return usage_error(&format!("cannot read standard input: {e}")),
+                    Err(e) => return input_error(&format!("cannot read standard input: {e}")),
                 }
             } else {
                 match std::fs::read(path) {
                     Ok(b) => b,
-                    Err(e) => return usage_error(&format!("cannot read {path}: {e}")),
+                    Err(e) => return input_error(&format!("cannot read {path}: {e}")),
                 }
             };
             let (status, verdict) = check_guarded(&cert, &stmts);
             match print_json(&verdict) {
                 Ok(()) => ExitCode::from(status.exit_code()),
-                Err(e) => usage_error(&format!("cannot write the verdict: {e}")),
+                Err(e) => input_error(&format!("cannot write the verdict: {e}")),
             }
         }
         "make" => {
@@ -123,24 +144,21 @@ fn main() -> ExitCode {
                     _ => return usage_error("--claim-bits must be an integer from 8 to 240"),
                 },
             };
-            let stmts = match read_statements(option(&named, "--statements")) {
+            let Some(list) = option(&named, "--statements") else {
+                return usage_error("--statements <statements.json> is required");
+            };
+            let stmts = match read_statements(list, None) {
                 Ok(s) => s,
-                Err(e) => return usage_error(&e),
+                Err(e) => return input_error(&e),
             };
             let made = std::panic::catch_unwind(|| make(&positional[0], inputs, &stmts, claim_bits));
             match made {
                 Ok(Ok(cert)) => match print_json(&cert) {
                     Ok(()) => ExitCode::SUCCESS,
-                    Err(e) => usage_error(&format!("cannot write the certificate: {e}")),
+                    Err(e) => input_error(&format!("cannot write the certificate: {e}")),
                 },
-                Ok(Err(e)) => {
-                    eprintln!("oscint-cert: no certificate made: {e}");
-                    ExitCode::from(3)
-                }
-                Err(_) => {
-                    eprintln!("oscint-cert: internal error while making the certificate");
-                    ExitCode::from(3)
-                }
+                Ok(Err(e)) => input_error(&format!("no certificate made: {e}")),
+                Err(_) => input_error("internal error while making the certificate"),
             }
         }
         "--help" | "-h" | "help" => {
