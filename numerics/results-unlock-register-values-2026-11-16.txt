@@ -1,0 +1,17 @@
+# numerics/review/unlock_register_values.py, run 2026-11-16T12:04:48Z (python-flint from a scratch virtual environment)
+# sha256 of the script: 227de21ecad76f1cf298fe65a77055460efdce53a1acf042eeab13e85eac6e4b
+A. waveguide arrays (infinite line), x = 2 kappa z
+  x = 4.64: peak J_n^2 at |n| = 3: [0.170896 +/- 1.83e-7]; LS-D envelope [0.860610 +/- 2.00e-7] (min with 1 applies if above 1); with Landau's constant [0.221932 +/- 3.71e-8]; probability at |n| >= 11: [5.761e-8 +/- 4.77e-12]
+  x = 7.8: peak J_n^2 at |n| = 6: [0.121299 +/- 2.35e-7]; LS-D envelope [0.608726 +/- 3.12e-7] (min with 1 applies if above 1); with Landau's constant [0.156977 +/- 1.60e-7]; probability at |n| >= 11: [0.0009997 +/- 4.40e-8]
+  x = 11.0: peak J_n^2 at |n| = 9: [0.0953917 +/- 2.00e-8]; LS-D envelope [0.484050 +/- 2.30e-7] (min with 1 applies if above 1); with Landau's constant [0.124826 +/- 4.39e-7]; probability at |n| >= 11: [0.1209 +/- 3.07e-6]
+B. open chain, M = 9, excitation at the centre site 5
+  t = 1: populations sites 1..9: [0.0012389 +/- 9.68e-9], [0.016581 +/- 2.77e-7], [0.12451 +/- 2.50e-6], [0.33261 +/- 1.35e-6], [0.050127 +/- 3.07e-7], [0.33261 +/- 1.35e-6], [0.12451 +/- 2.50e-6], [0.016581 +/- 2.77e-7], [0.0012389 +/- 9.68e-9]
+          largest |p_chain - J^2|: [8.32e-5 +/- 7.3e-10]; second moment [1.99939 +/- 4.57e-6] against 2 t^2 = 2.00
+  t = 2: populations sites 1..9: [0.10904 +/- 3.13e-6], [0.17222 +/- 2.01e-6], [0.13554 +/- 4.06e-6], [0.0044817 +/- 2.30e-8], [0.15742 +/- 1.72e-6], [0.0044817 +/- 2.30e-8], [0.13554 +/- 4.06e-6], [0.17222 +/- 2.01e-6], [0.10904 +/- 3.13e-6]
+          largest |p_chain - J^2|: [0.0300 +/- 9.58e-6]; second moment [7.68269 +/- 1.87e-6] against 2 t^2 = 8.00
+C. Trotter error on that chain (largest population error over sites), times t = 1, 2
+  order 1, step 0.25: t = 1: 4 steps, 8 bond layers, error [0.0704 +/- 6.14e-6]; t = 2: 8 steps, 16 bond layers, error [0.0473 +/- 8.32e-6]
+  order 1, step 0.125: t = 1: 8 steps, 16 bond layers, error [0.0331 +/- 4.49e-5]; t = 2: 16 steps, 32 bond layers, error [0.0235 +/- 4.07e-5]
+  order 2, step 0.25: t = 1: 4 steps, 9 bond layers, error [0.00698 +/- 3.20e-6]; t = 2: 8 steps, 17 bond layers, error [0.00338 +/- 3.28e-6]
+  order 2, step 0.125: t = 1: 8 steps, 17 bond layers, error [0.00174 +/- 4.70e-6]; t = 2: 16 steps, 33 bond layers, error [0.000852 +/- 4.95e-7]
+python 3.13.18, python-flint 0.9.0, FLINT 3.6.0, working precision 200 bits
