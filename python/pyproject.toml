@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+[build-system]
+requires = ["setuptools==84.2.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oscint-cert"
+version = "0.1.0"
+description = "Certificates for evaluated OscInt statements, and the checker that alone may say CERTIFIED (experimental)"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+dependencies = []
+
+[project.optional-dependencies]
+# differential tests only; the checker itself has no third-party dependency
+test = ["python-flint==0.9.0"]
+
+[tool.setuptools]
+packages = ["oscint_cert"]

@@ -1,0 +1,22 @@
+import OscInt.Front.PeriodicAnalyticSanity
+
+namespace OscInt.API.PeriodicAnalyticSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+
+def P_TrapezoidalRuleStatement : Prop :=
+  ∀ (v : ℂ → ℂ) (a M : ℝ) (N : ℕ), 0 < a → PeriodicAnalyticOn v a M →
+    ‖trapezoidalSum v N - ∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ)‖ ≤
+      4 * Real.pi * M / (Real.exp (a * (N : ℝ)) - 1)
+
+theorem witness_not_TrapezoidalRuleStatement : ¬ P_TrapezoidalRuleStatement :=
+  by
+  intro h
+  have h1 := h expDatum 1 (Real.sqrt 13 * Real.exp 1 + 5) 0 (by norm_num)
+    (expDatum_periodicAnalyticOn 1 (by norm_num))
+  have ht : trapezoidalSum expDatum 0 = 0 := by simp [trapezoidalSum]
+  rw [ht, integral_expDatum, zero_sub, norm_neg, norm_mul_pi, Complex.norm_ofNat, Nat.cast_zero, mul_zero,
+    Real.exp_zero, sub_self, div_zero] at h1
+  linarith [Real.pi_pos]
+
+end OscInt.API.PeriodicAnalyticSanity

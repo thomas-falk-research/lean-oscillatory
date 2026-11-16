@@ -1,0 +1,25 @@
+import OscInt.Front.PeriodicAnalyticSanity
+
+namespace OscInt.API.PeriodicAnalyticSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+
+def P_LatticeKernel1LightConeStatement : Prop :=
+  ∀ (t η : ℝ) (n : ℤ), 0 ≤ η →
+    ‖latticeKernel1 t (n : ℝ)‖ ≤ 2 * Real.pi * Real.exp (|t| * η - |(n : ℝ)| * η)
+
+theorem witness_not_LatticeKernel1LightConeStatement : ¬ P_LatticeKernel1LightConeStatement :=
+  by
+  intro h
+  have h1 := h (1 / 4) 8 1 (by norm_num)
+  rw [Int.cast_one, abs_one, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 4),
+    show (1 / 4 : ℝ) * 8 - 1 * 8 = -6 by norm_num] at h1
+  have hl := latticeKernel1_quarter_one_lower
+  have hy : Real.exp (-6) * Real.exp 6 = 1 := by rw [← Real.exp_add]; norm_num
+  have he := hundred_lt_exp_six
+  have hy0 := Real.exp_pos (-6)
+  have hy6 : Real.exp (-6) ≤ 1 / 100 := by nlinarith
+  have hpi := Real.pi_pos
+  nlinarith [mul_le_mul_of_nonneg_left hy6 hpi.le]
+
+end OscInt.API.PeriodicAnalyticSanity

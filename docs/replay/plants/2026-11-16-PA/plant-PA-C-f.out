@@ -1,0 +1,39 @@
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-C-f.lean:14:48: error: Application type mismatch: The argument
+  ha
+has type
+  0 < a
+but is expected to have type
+  PeriodicAnalyticOn cos3 a (7 * Real.cosh (3 * a))
+in the application
+  h cos3 a (7 * Real.cosh (3 * a)) 3 ha
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-C-f.lean:13:81: error: unsolved goals
+h : P_FourierCoeffStripStatement
+a : ℝ
+ha : 0 < a
+⊢ 7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * 3))
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-C-f.lean:20:51: error: Application type mismatch: The argument
+  ha
+has type
+  0 < a
+but is expected to have type
+  PeriodicAnalyticOn cos3 a (7 * Real.cosh (3 * a))
+in the application
+  h cos3 a (7 * Real.cosh (3 * a)) (-3) ha
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-C-f.lean:19:81: error: unsolved goals
+h : P_FourierCoeffStripStatement
+a : ℝ
+ha : 0 < a
+⊢ 7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * 3))
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-C-f.lean:27:60: error: Application type mismatch: The argument
+  ha
+has type
+  0 < a
+but is expected to have type
+  PeriodicAnalyticOn expDatum a (√13 * Real.exp a + 5)
+in the application
+  h expDatum a (√13 * Real.exp a + 5) 1 ha
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-C-f.lean:26:104: error: unsolved goals
+h : P_FourierCoeffStripStatement
+a : ℝ
+ha : 0 < a
+⊢ 2 * Real.pi * √13 ≤ 2 * Real.pi * (√13 * Real.exp a + 5) * Real.exp (-(a * 1))

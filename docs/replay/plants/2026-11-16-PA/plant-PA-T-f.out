@@ -1,0 +1,36 @@
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-T-f.lean:14:48: error: Application type mismatch: The argument
+  ha
+has type
+  (0 : ℝ) < a
+but is expected to have type
+  (0 : ℕ) < 3
+in the application
+  h cos3 a (7 * Real.cosh (3 * a)) 3 ha
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-T-f.lean:14:52: error: unsolved goals
+h : P_TrapezoidalRuleStatement
+a : ℝ
+ha : 0 < a
+⊢ PeriodicAnalyticOn cos3 a (7 * Real.cosh (3 * a))
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-T-f.lean:13:85: error: unsolved goals
+h : P_TrapezoidalRuleStatement
+a : ℝ
+ha : 0 < a
+⊢ 14 * Real.pi ≤ 4 * Real.pi * (7 * Real.cosh (3 * a)) / (Real.exp (a * 3) - 1)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-T-f.lean:20:60: error: Application type mismatch: The argument
+  ha
+has type
+  (0 : ℝ) < a
+but is expected to have type
+  (0 : ℕ) < 1
+in the application
+  h expDatum a (√13 * Real.exp a + 5) 1 ha
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-T-f.lean:20:64: error: unsolved goals
+h : P_TrapezoidalRuleStatement
+a : ℝ
+ha : 0 < a
+⊢ PeriodicAnalyticOn expDatum a (√13 * Real.exp a + 5)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-T-f.lean:19:107: error: unsolved goals
+h : P_TrapezoidalRuleStatement
+a : ℝ
+ha : 0 < a
+⊢ 2 * Real.pi * √13 ≤ 4 * Real.pi * (√13 * Real.exp a + 5) / (Real.exp (a * 1) - 1)

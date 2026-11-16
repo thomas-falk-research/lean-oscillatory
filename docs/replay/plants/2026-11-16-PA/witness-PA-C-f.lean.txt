@@ -1,0 +1,19 @@
+import OscInt.Front.PeriodicAnalyticSanity
+
+namespace OscInt.API.PeriodicAnalyticSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+
+def P_FourierCoeffStripStatement : Prop :=
+  ∀ (v : ℂ → ℂ) (a M : ℝ) (k : ℤ), PeriodicAnalyticOn v a M →
+    ‖∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ) * Complex.exp (↑(-((k : ℝ) * θ)) * Complex.I)‖ ≤
+      2 * Real.pi * M * Real.exp (-(a * |(k : ℝ)|))
+
+theorem witness_not_FourierCoeffStripStatement : ¬ P_FourierCoeffStripStatement :=
+  by
+  intro h
+  have h1 := h cos3 (-1) 0 3 (periodicAnalyticOn_of_nonpos cos3 (-1) 0 (by norm_num))
+  rw [integral_cos3_three, norm_mul_pi, Complex.norm_ofNat, mul_zero, zero_mul] at h1
+  linarith [Real.pi_pos]
+
+end OscInt.API.PeriodicAnalyticSanity

@@ -1,0 +1,30 @@
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-LC-d.lean:13:13: error: Function expected at
+  h 1 2 5
+but this term has type
+  ‖latticeKernel1 1 ↑5‖ ≤ 2 * Real.pi * Real.exp (|1| * Real.sinh 2 - |↑5| * 2)
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-LC-d.lean:12:72: error: unsolved goals
+h : P_LatticeKernel1LightConeStatement
+⊢ ‖latticeKernel1 1 5‖ ≤ 2 * Real.pi * Real.exp (Real.sinh 2 - 10)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-LC-d.lean:20:13: error: Function expected at
+  h (-1) 2 (-5)
+but this term has type
+  ‖latticeKernel1 (-1) ↑(-5)‖ ≤ 2 * Real.pi * Real.exp (|(-1)| * Real.sinh 2 - |↑(-5)| * 2)
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-LC-d.lean:19:78: error: unsolved goals
+h : P_LatticeKernel1LightConeStatement
+⊢ ‖latticeKernel1 (-1) (-5)‖ ≤ 2 * Real.pi * Real.exp (Real.sinh 2 - 10)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-LC-d.lean:26:13: error: Function expected at
+  h 0 0 0
+but this term has type
+  ‖latticeKernel1 0 ↑0‖ ≤ 2 * Real.pi * Real.exp (|0| * Real.sinh 0 - |↑0| * 0)
+
+Note: Expected a function because this term is being applied to the argument
+  le_rfl
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-LC-d.lean:25:108: error: unsolved goals
+h : P_LatticeKernel1LightConeStatement
+⊢ ‖latticeKernel1 0 0‖ ≤ 2 * Real.pi

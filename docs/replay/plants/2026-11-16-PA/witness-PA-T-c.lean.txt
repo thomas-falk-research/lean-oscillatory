@@ -1,0 +1,27 @@
+import OscInt.Front.PeriodicAnalyticSanity
+
+namespace OscInt.API.PeriodicAnalyticSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+
+def P_PeriodicAnalyticOn (v : ℂ → ℂ) (a M : ℝ) : Prop :=
+  (∀ z ∈ openStrip a, v (z + ((2 * Real.pi : ℝ) : ℂ)) = v z) ∧
+    ∀ z ∈ openStrip a, ‖v z‖ ≤ M
+
+def P_TrapezoidalRuleStatement : Prop :=
+  ∀ (v : ℂ → ℂ) (a M : ℝ) (N : ℕ), 0 < a → 0 < N → P_PeriodicAnalyticOn v a M →
+    ‖trapezoidalSum v N - ∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ)‖ ≤
+      4 * Real.pi * M / (Real.exp (a * (N : ℝ)) - 1)
+
+theorem witness_not_TrapezoidalRuleStatement : ¬ P_TrapezoidalRuleStatement :=
+  by
+  intro h
+  have h1 := h cosRe3 1 7 3 (by norm_num) (by norm_num) ⟨fun z _ => cosRe3_periodic z, fun z _ => norm_cosRe3_le z⟩
+  rw [trapezoidalSum_cosRe3, integral_cosRe3, sub_zero, norm_mul_pi, Complex.norm_ofNat, Nat.cast_ofNat,
+    one_mul] at h1
+  have he : (4 : ℝ) ≤ Real.exp 3 := by linarith [Real.add_one_le_exp (3 : ℝ)]
+  have hpi := Real.pi_pos
+  rw [le_div_iff₀ (by linarith)] at h1
+  nlinarith [mul_le_mul_of_nonneg_left he hpi.le]
+
+end OscInt.API.PeriodicAnalyticSanity
