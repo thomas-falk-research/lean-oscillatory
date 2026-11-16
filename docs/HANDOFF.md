@@ -1,6 +1,7 @@
 # Hand-off
 
-For a reader who saw nothing. Read `docs/lessons.md` first (52 entries); every rule in it is binding.
+For a reader who saw nothing. Read "Rules in force" at the top of `docs/lessons.md` first; it distils the 52 entries
+below it, and every rule is binding.
 
 ## Start here (session 12, 2026-11-15)
 
