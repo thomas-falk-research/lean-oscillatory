@@ -4,6 +4,43 @@ Versions follow semantic versioning from v0.3.0 (`docs/policy.md`): before 1.0.0
 statements and says so under "Statement changes"; a patch (0.y.Z) changes no statement, commitment, statement file
 or `proved_by` name. Every release lists its statement changes, even when there are none.
 
+## Unreleased (after v0.6.0)
+
+Not a release. Statement changes since v0.6.0, for the next minor release:
+
+### Statement changes
+
+Batch PA (`OscInt/Statements/PeriodicAnalytic.lean`, stamp `stamps/20261116T130956Z-276d8d7f9605`): three new entries,
+- PA-C `FourierCoeffStripStatement` (`proved_by` `OscInt.API.fourierCoeffStrip`);
+- PA-T `TrapezoidalRuleStatement` (`proved_by` `OscInt.API.trapezoidalRule`);
+- LC-1 `LatticeKernel1LightConeStatement` (`proved_by` `OscInt.API.latticeKernel1LightCone`).
+
+Batch KL (`OscInt/Statements/KusminLandau.lean`, same stamp): three new entries,
+- KL-D `KusminLandauStatement` (`proved_by` `OscInt.API.kusminLandau`);
+- KL-C `KusminLandauTwoOverPiStatement` (`proved_by` `OscInt.API.kusminLandauTwoOverPi`);
+- KL-F `KusminLandauDerivStatement` (`proved_by` `OscInt.API.kusminLandauDeriv`).
+
+No existing statement's text, file, commitment or stamp changed. The six are proved in Lean (build, axiom audit,
+statement types, kernel re-check per module); their isolated replay and post-proof reviews are pending, so
+`docs/STATUS.md` does not yet call them machine-checked as stated.
+
+### Proofs
+
+Statement-first, as before: frozen and stamped, sanity layers with planted controls, blind pre-proof reviews
+(answers stamped `stamps/20261116T152412Z-9c9a8767b806`), routes `docs/proof-PA.md` and `docs/proof-KL.md` with
+blueprints and assemblies compiled before any part, one route referee per batch
+(`review/2026-11-16-PA-KL-route-answers.md`), then the parts by proof agents. Lead, referees and provers are AI
+agents of one model family.
+
+### Added
+
+- Tools, experimental and not published: the certificate contract `docs/contract/certificate-v0.md`, a Python
+  checker `python/oscint_cert/` and an independent Rust checker `rust/oscint-cert/`.
+- A registered, not run, protocol for a continuous-time quantum walk on a qubit chain
+  (`docs/prereg/2026-11-16-CTQW-chain.md`, `experiments/ctqw-chain/`).
+- `docs/design/unlock-map.md`, `docs/funding/` (a draft application package), `docs/design/batch-FR-draft.md` (draft
+  statements for finite rings and open chains; not frozen).
+
 ## v0.6.0 — 2026-11-15
 
 A minor release. Before 1.0.0 a minor release may change statements; this one changes no existing statement's text,

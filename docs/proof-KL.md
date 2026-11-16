@@ -85,3 +85,18 @@ The text above is unchanged; the corrections and additions are these.
    boundary-heavy sequences, Landau's sequences (ratio 1 at λ = 1/3, 1/5, 1/7, 3/7, 1/2) and a check J5 of the
    derivative form with its own control: 17 of 17 checks pass (the section above says 13 of 13, the count before
    this revision).
+
+## Parts as integrated (2026-11-16)
+
+Launched and handled as the parts of batch PA (`docs/proof-PA.md`, same section; launch record in the session log,
+15:57:32Z).
+
+| Part | File | Lines | SHA-256 of the file as delivered | Deviations from the route (agent's report, in the lead's words) |
+|---|---|---|---|---|
+| K-core `KLCoreFacts` | `OscInt/Front/KusminLandauCore.lean` | 244 | 84df815bb2719e7f3f24213e469371824ca026e22afe8ad74cec0c7f5ee67a6e | the weight is defined by its closed form −1/2 − (cot(πx)/2)·i and ζ·(e(x) − 1) = 1 is verified (no inverse, no proof that e(x) ≠ 1); the half-angle identities are never stated: the two brackets are compared with cos(πλ/2)/sin(πλ/2) directly by double-angle formulas; the second bracket follows from the first by x ↦ 1 − x; the file has two auxiliary definitions besides its 13 theorems |
+| K-deriv `KLDerivFacts` | `OscInt/Front/KusminLandauDeriv.lean` | 125 | bccee2904dcd1f30ec5519650dfc27e85aae23544dca08a9c6d61ee657f60bab | none in the mathematics; no choice function for the mean-value points (two points are obtained per index); reindexing by `Int.Icc_eq_finset_map` |
+
+Final theorems: `OscInt/Front/KusminLandauFinal.lean`. Checks by the lead at integration: `lake build` completed;
+`#print axioms` of `OscInt.API.kusminLandau`, `kusminLandauTwoOverPi`, `kusminLandauDeriv`: propext, Classical.choice,
+Quot.sound; `StatementTypes.lean` asserts the three types; `leanchecker` on each of the four KL modules and on the
+blueprint module: exit code 0. Not yet done at this point: the post-proof reviews and the isolated replay.

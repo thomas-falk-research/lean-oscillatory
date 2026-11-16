@@ -37,8 +37,8 @@ import OscInt.Front.LatticeCubeRootFinal
 import OscInt.Front.HypercubicFinal
 import OscInt.Front.LatticeGroupFinal
 import OscInt.Front.D4UniformFinal
-import OscInt.Front.PeriodicAnalyticAssembly
-import OscInt.Front.KusminLandauAssembly
+import OscInt.Front.PeriodicAnalyticFinal
+import OscInt.Front.KusminLandauFinal
 
 /-!
 # OscInt public API

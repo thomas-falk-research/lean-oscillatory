@@ -118,3 +118,23 @@ unchanged; the corrections and additions are these.
 7. Feasibility notes from the referee, for the parts: P-shift needs care only with casts (ℤ to ℝ to ℂ on the left,
    ℤ to ℂ on the right) and an `add_comm` on the vertical sides; P-series has the normalisation frictions listed in
    the proof brief (precedent: `Mathlib/Analysis/Fourier/PoissonSummation.lean`); P-lc is easy.
+
+## Parts as integrated (2026-11-16)
+
+Five proof agents (AI agents of the same model family as the lead), one per part, were launched together after the
+route answers were committed (launch record with the SHA-256 of each brief: session log, 15:57:32Z). Each worked in
+the lead's scratch from the blueprint, this route with its revision section and its brief, and wrote one Lean file;
+none wrote in the repository. The lead recompiled each file, checked that its last theorem has the blueprint
+proposition as its type, printed its axioms, and copied it in unchanged.
+
+| Part | File | Lines | SHA-256 of the file as delivered | Deviations from the route (agent's report, in the lead's words) |
+|---|---|---|---|---|
+| P-shift `ContourShiftFacts` | `OscInt/Front/PeriodicAnalyticShift.lean` | 97 | 58d7685ab4973e4ce4d13aa5e873205872dbc87781b1d2d5feb70a7a8650ed16 | none in the mathematics; Cauchy on the rectangle and the cancellation are proved for a general periodic function and specialised at the end |
+| P-series `FourierSeriesFacts` | `OscInt/Front/PeriodicAnalyticSeries.lean` | 106 | 691cc582938b538e5481a296e469cc21f0f2e4526cf184d0487f04682c31d57b | `M ≥ 0` is not needed (a summable majorant suffices); the coefficient lemma is stated for any periodic function |
+| P-alias `AliasBoundFacts`, P-lc `KernelIntegrandFacts` | `OscInt/Front/PeriodicAnalyticAlias.lean` | 258 | d77c56234256554f109bd559a7271bf5474fb24890286fef8cdc3bcefc7146f8 | the roots-of-unity sum is used only off the multiples of N (`mul_geom_sum`, as the referee advised); the split of ℤ is made on the real majorant only; `M ≥ 0` is not needed; the periodic-analytic property of the kernel integrand holds for every real η |
+
+Final theorems: `OscInt/Front/PeriodicAnalyticFinal.lean`. Checks by the lead at integration: `lake build` completed;
+`#print axioms` of `OscInt.API.fourierCoeffStrip`, `trapezoidalRule`, `latticeKernel1LightCone`: propext,
+Classical.choice, Quot.sound; `StatementTypes.lean` asserts the three types; `leanchecker` on each of the five PA
+modules and on the blueprint module: exit code 0. Not yet done at this point: the post-proof reviews and the
+isolated replay.

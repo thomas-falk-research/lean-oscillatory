@@ -269,26 +269,26 @@ example : D4LimitOffsetStatement := OscInt.API.d4LimitOffset
 
 /-! ### PA-C: Fourier coefficients of a periodic function analytic in a strip decay exponentially: `|∫_0^{2π} v(θ) e^{−ikθ} dθ| ≤ 2π M e^{−a|k|}`. -/
 
-example (h : FourierCoeffStripStatement) := OscInt.API.PeriodicAnalyticSanity.fourierCoeff_cos3 h
+example : FourierCoeffStripStatement := OscInt.API.fourierCoeffStrip
 
 /-! ### PA-T: The trapezoidal rule converges exponentially for a periodic function analytic in a strip: `|I_N − ∫_0^{2π} v| ≤ 4πM / (e^{aN} − 1)` for every `N ≥ 1` (Trefethen–Weideman 2014, Theorem 3.2). -/
 
-example (h : TrapezoidalRuleStatement) := OscInt.API.PeriodicAnalyticSanity.trapezoid_cos3 h
+example : TrapezoidalRuleStatement := OscInt.API.trapezoidalRule
 
 /-! ### LC-1: Light-cone bound for the 1D lattice kernel: `|I(t, n)| ≤ 2π e^{|t| sinh η − |n| η}` for every real `t`, integer `n` and `η ≥ 0`. -/
 
-example (h : LatticeKernel1LightConeStatement) := OscInt.API.PeriodicAnalyticSanity.lightCone_five h
+example : LatticeKernel1LightConeStatement := OscInt.API.latticeKernel1LightCone
 
 /-! ### KL-D: The Kusmin–Landau inequality in Landau's sharp form, on differences: `|Σ_{n=0}^{N} e(c_n)| ≤ cot(πλ/2)`. -/
 
-example (h : KusminLandauStatement) := OscInt.API.KusminLandauSanity.kl_third h
+example : KusminLandauStatement := OscInt.API.kusminLandau
 
 /-! ### KL-C: The Kusmin–Landau inequality with the constant `2/π`: `|Σ_{n=0}^{N} e(c_n)| ≤ 2/(πλ)`. -/
 
-example (h : KusminLandauTwoOverPiStatement) := OscInt.API.KusminLandauSanity.klc_six h
+example : KusminLandauTwoOverPiStatement := OscInt.API.kusminLandauTwoOverPi
 
 /-! ### KL-F: The Kusmin–Landau inequality in its textbook form: `f′` monotone on `(a, b)` with values in `[k + λ, k + 1 − λ]` gives `|Σ_{a ≤ n ≤ b} e(f(n))| ≤ cot(πλ/2)`. -/
 
-example (h : KusminLandauDerivStatement) := OscInt.API.KusminLandauSanity.klf_quarter h
+example : KusminLandauDerivStatement := OscInt.API.kusminLandauDeriv
 
 end OscIntSnippets

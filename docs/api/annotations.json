@@ -1053,8 +1053,8 @@
     "PA-T",
     "LC-1"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : FourierCoeffStripStatement) := OscInt.API.PeriodicAnalyticSanity.fourierCoeff_cos3 h"
+   "snippet_kind": "type",
+   "snippet": "example : FourierCoeffStripStatement := OscInt.API.fourierCoeffStrip"
   },
   "PA-T": {
    "hypotheses": [
@@ -1069,8 +1069,8 @@
     "PA-C",
     "LC-1"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : TrapezoidalRuleStatement) := OscInt.API.PeriodicAnalyticSanity.trapezoid_cos3 h"
+   "snippet_kind": "type",
+   "snippet": "example : TrapezoidalRuleStatement := OscInt.API.trapezoidalRule"
   },
   "LC-1": {
    "hypotheses": [
@@ -1086,8 +1086,8 @@
     "T0E′",
     "LS-K"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : LatticeKernel1LightConeStatement) := OscInt.API.PeriodicAnalyticSanity.lightCone_five h"
+   "snippet_kind": "type",
+   "snippet": "example : LatticeKernel1LightConeStatement := OscInt.API.latticeKernel1LightCone"
   },
   "KL-D": {
    "hypotheses": [
@@ -1103,8 +1103,8 @@
     "KL-F",
     "S1.k"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : KusminLandauStatement) := OscInt.API.KusminLandauSanity.kl_third h"
+   "snippet_kind": "type",
+   "snippet": "example : KusminLandauStatement := OscInt.API.kusminLandau"
   },
   "KL-C": {
    "hypotheses": [
@@ -1118,8 +1118,8 @@
     "KL-D",
     "KL-F"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : KusminLandauTwoOverPiStatement) := OscInt.API.KusminLandauSanity.klc_six h"
+   "snippet_kind": "type",
+   "snippet": "example : KusminLandauTwoOverPiStatement := OscInt.API.kusminLandauTwoOverPi"
   },
   "KL-F": {
    "hypotheses": [
@@ -1136,8 +1136,8 @@
     "KL-C",
     "S1.1"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : KusminLandauDerivStatement) := OscInt.API.KusminLandauSanity.klf_quarter h"
+   "snippet_kind": "type",
+   "snippet": "example : KusminLandauDerivStatement := OscInt.API.kusminLandauDeriv"
   }
  },
  "helpers": [

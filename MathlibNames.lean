@@ -261,3 +261,19 @@ import Mathlib
 #check @Real.cos_half
 #check @Real.tan_pi_div_two_sub
 #check @Complex.exp_sub
+
+-- Batches PA and KL: names from the route revisions after the route referees and from the integrated parts.
+#check @HasSum.of_add_one_of_neg_add_one
+#check @Complex.exp_eq_one_iff
+#check @HasSum.norm_le_of_bounded
+#check @Summable.of_norm_bounded
+#check @Int.Icc_eq_finset_map
+#check @Finset.sum_map
+#check @Real.sin_sub
+#check @Real.sin_two_mul
+#check @Real.cos_two_mul
+#check @Real.strictMonoOn_tan
+#check @Complex.cos_eq
+#check @Function.Periodic.lift_coe
+#check @continuous_coinduced_dom
+#check @Finset.sum_range_sub

@@ -1605,7 +1605,7 @@
   {
    "label": "PA-C",
    "name": "OscInt.Statements.FourierCoeffStripStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.fourierCoeffStrip",
    "summary": "Fourier coefficients of a periodic function analytic in a strip decay exponentially: `|∫_0^{2π} v(θ) e^{−ikθ} dθ| ≤ 2π M e^{−a|k|}`.",
    "file": "OscInt/Statements/PeriodicAnalytic.lean",
    "commitment": "ce659a0d4cd324ccd1227f413b8eabc7c2225bab08b4db1e836b338ee7795aee",
@@ -1623,13 +1623,13 @@
     "PA-T",
     "LC-1"
    ],
-   "snippet": "example (h : FourierCoeffStripStatement) := OscInt.API.PeriodicAnalyticSanity.fourierCoeff_cos3 h",
+   "snippet": "example : FourierCoeffStripStatement := OscInt.API.fourierCoeffStrip",
    "status": "see docs/STATUS.md (row PA-C)"
   },
   {
    "label": "PA-T",
    "name": "OscInt.Statements.TrapezoidalRuleStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.trapezoidalRule",
    "summary": "The trapezoidal rule converges exponentially for a periodic function analytic in a strip: `|I_N − ∫_0^{2π} v| ≤ 4πM / (e^{aN} − 1)` for every `N ≥ 1` (Trefethen–Weideman 2014, Theorem 3.2).",
    "file": "OscInt/Statements/PeriodicAnalytic.lean",
    "commitment": "43b9ccbf8f0c5c83f2dd626994fb49b3a088fbffa0101ea35460acf9af42f894",
@@ -1647,13 +1647,13 @@
     "PA-C",
     "LC-1"
    ],
-   "snippet": "example (h : TrapezoidalRuleStatement) := OscInt.API.PeriodicAnalyticSanity.trapezoid_cos3 h",
+   "snippet": "example : TrapezoidalRuleStatement := OscInt.API.trapezoidalRule",
    "status": "see docs/STATUS.md (row PA-T)"
   },
   {
    "label": "LC-1",
    "name": "OscInt.Statements.LatticeKernel1LightConeStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.latticeKernel1LightCone",
    "summary": "Light-cone bound for the 1D lattice kernel: `|I(t, n)| ≤ 2π e^{|t| sinh η − |n| η}` for every real `t`, integer `n` and `η ≥ 0`.",
    "file": "OscInt/Statements/PeriodicAnalytic.lean",
    "commitment": "3d315f36f71b58f6677886bc355b1565c617a563d5f19acfab5ed4f067afeec0",
@@ -1672,13 +1672,13 @@
     "T0E′",
     "LS-K"
    ],
-   "snippet": "example (h : LatticeKernel1LightConeStatement) := OscInt.API.PeriodicAnalyticSanity.lightCone_five h",
+   "snippet": "example : LatticeKernel1LightConeStatement := OscInt.API.latticeKernel1LightCone",
    "status": "see docs/STATUS.md (row LC-1)"
   },
   {
    "label": "KL-D",
    "name": "OscInt.Statements.KusminLandauStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.kusminLandau",
    "summary": "The Kusmin–Landau inequality in Landau's sharp form, on differences: `|Σ_{n=0}^{N} e(c_n)| ≤ cot(πλ/2)`.",
    "file": "OscInt/Statements/KusminLandau.lean",
    "commitment": "29d5e7f157f3570acba574fd1d701945037d0c323dac1cc22f6e7e9bb4d80247",
@@ -1697,13 +1697,13 @@
     "KL-F",
     "S1.k"
    ],
-   "snippet": "example (h : KusminLandauStatement) := OscInt.API.KusminLandauSanity.kl_third h",
+   "snippet": "example : KusminLandauStatement := OscInt.API.kusminLandau",
    "status": "see docs/STATUS.md (row KL-D)"
   },
   {
    "label": "KL-C",
    "name": "OscInt.Statements.KusminLandauTwoOverPiStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.kusminLandauTwoOverPi",
    "summary": "The Kusmin–Landau inequality with the constant `2/π`: `|Σ_{n=0}^{N} e(c_n)| ≤ 2/(πλ)`.",
    "file": "OscInt/Statements/KusminLandau.lean",
    "commitment": "9ebcc71d1c2390b0449a3af651872b55e6dbc13d914c13810bcee7ea5481381a",
@@ -1720,13 +1720,13 @@
     "KL-D",
     "KL-F"
    ],
-   "snippet": "example (h : KusminLandauTwoOverPiStatement) := OscInt.API.KusminLandauSanity.klc_six h",
+   "snippet": "example : KusminLandauTwoOverPiStatement := OscInt.API.kusminLandauTwoOverPi",
    "status": "see docs/STATUS.md (row KL-C)"
   },
   {
    "label": "KL-F",
    "name": "OscInt.Statements.KusminLandauDerivStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.kusminLandauDeriv",
    "summary": "The Kusmin–Landau inequality in its textbook form: `f′` monotone on `(a, b)` with values in `[k + λ, k + 1 − λ]` gives `|Σ_{a ≤ n ≤ b} e(f(n))| ≤ cot(πλ/2)`.",
    "file": "OscInt/Statements/KusminLandau.lean",
    "commitment": "8660f13263c6aac898d4cba87ffc941904dbb8d2d1d27de7a03e513771802818",
@@ -1746,7 +1746,7 @@
     "KL-C",
     "S1.1"
    ],
-   "snippet": "example (h : KusminLandauDerivStatement) := OscInt.API.KusminLandauSanity.klf_quarter h",
+   "snippet": "example : KusminLandauDerivStatement := OscInt.API.kusminLandauDeriv",
    "status": "see docs/STATUS.md (row KL-F)"
   }
  ]
