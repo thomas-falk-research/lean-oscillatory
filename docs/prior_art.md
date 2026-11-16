@@ -124,6 +124,41 @@ Same sweep, same day (CITED-READ by the sweep agent, not re-read by the lead):
   (`TauCetiProject/TauCeti`, `Robertboy18/PDEAtlas`, `Crotalus/ai-formalized`, `zblore/csd-lean4`); none is a lattice
   estimate.
 
+## Batches PA and KL: prior art found before the freeze (2026-11-16, session 13)
+
+A targeted check by a fresh-context agent of the lead (128 searches and page reads; repositories cloned and grepped
+by the agent, none built or audited; the lead read its report, not the sources). Labels are the agent's.
+
+**Batch KL (Kusmin–Landau). Verdict: ANTICIPATED with a weaker constant; the sharp form was not found formalised.**
+- `dbsanfte/RiemannGaussian` (read as vendored in `TomasOrtega/Sidon` at 735de6d, files
+  `FiniteKuzminLandau.lean`, `FirstDerivativeTest.lean`; no `sorry` in the files read):
+  `RiemannGaussian.FiniteKuzminLandau.bound`, increments of a phase sequence monotone in `[η, 2π − η]` give a sum of
+  norm at most `2π/η`, which is `1/λ` in the normalisation `e(x) = e^{2πix}`; `FirstDerivativeTest.bound` is the
+  derivative form with the same constant; second- and higher-derivative tests for sums are there too. CITED-READ.
+- `inozemtsev/formal-math` at 43f0988, `Green64/Library/Sieve/Foundation/Lemma9/Part005.lean`:
+  `Salt.ExpSum.kusmin_landau`, differences nondecreasing in `[m + δ, m + 1 − δ]`, bound `1/δ`; its docstring makes the
+  same point as modelling choice 2 of batch KL (one cell, not distance to ℤ). CITED-READ.
+- Not in Mathlib master (2b80d47), not in `AlexKontorovich/PrimeNumberTheoremAnd`, not in `teorth/IEANTN` (d60421f).
+  In the last, the node for Cheng and Graham's paper is a deliberate stub that names the corrected lemmas as what to
+  add first: an unfilled, named dependency of a live community project. CITED-READ.
+- What batch KL adds, if proved: Landau's bound `cot(πλ/2)` and the constant `2/π` (the two existing formalisations
+  have `1/λ`, which is a factor π/2 above `2/(πλ)` and cannot settle the `1/π` against `2/π` question), with data on
+  which the bound is attained. The claim is "machine-checked sharp form"; the inequality itself is not new in Lean.
+- Sources for the mathematics: `docs/statements.md`, Batch KL. Kuzmin 1927, Landau 1928, Mordell 1958 and
+  Graham–Kolesnik were not opened by anyone in this session; two secondary quotations of Graham–Kolesnik's Theorem 2.1
+  disagree on whether it prints `cot(πθ/2)` or `≪ λ^{−1}`.
+
+**Batch PA (periodic-analytic statements). Verdict: not found formalised (PLAUSIBLE-not-formalised).**
+- Trefethen and Weideman's Theorem 3.2, the decay `|c_k| ≤ M e^{−a|k|}` of Fourier coefficients for a function
+  analytic in a strip, the aliasing identity for the trapezoidal rule, and Kapteyn's inequality: none found in Lean,
+  Isabelle's AFP (titles only) or Coq. Nearest: Mathlib's `O(N^{−2})` trapezoidal error
+  (`Mathlib/MeasureTheory/Integral/IntervalIntegral/TrapezoidalRule.lean`), its contour-shift lemmas for q-expansions
+  on the half-plane, and Bernstein-ellipse analogues in `TSGut/LeanFun`. Open Mathlib pull requests and the Lean
+  Zulip archive were not searched.
+- The mathematics is classical and the paper says so: its Theorem 3.2 "is essentially" Theorem 1 of Davis (1959).
+  The agent flags one sentence of the paper's proof sketch (after its (3.18)) as naming the wrong direction of the
+  contour shift for negative indices; the route for PA-C takes the direction from the formula, not from that sentence.
+
 ## Singularities of lattice dispersion relations (CENSUS prior art; added 2026-11-09)
 
 Logged sweep: `review/2026-11-09-CENSUS-prior-art-sweep.md` (244 queries, `review/2026-11-09-CENSUS-prior-art-querylog.tsv`;

@@ -976,3 +976,130 @@ FAITHFUL and TRUE ×2, no BLOCKER; the stamp `stamps/20261115T122915Z-33c56db38f
    budget conjunct (bite `const_not_totallyBounded`) and the elliptic umbilic (`phase_elliptic`); planted controls,
    second run, in `docs/replay/2026-11-15-D4U-sanity-plants.txt` (one plant, C⁰ in place of C² in the net, is NOT
    DETECTED and is pinned by the proof).
+
+## Batch PA: periodic functions analytic in a strip; the trapezoidal rule; the lattice light cone (session 13, 2026-11-16)
+
+Order. As batches LS and D4U: statements, `OscInt/Statements/PeriodicAnalytic.lean`, sanity theorems with planted
+controls (`OscInt/Front/PeriodicAnalyticSanity.lean`, record under `docs/replay/plants/2026-11-16-PA/`), challenge
+`Challenge/PeriodicAnalytic.lean` and `comparator-PA.json`, frozen and stamped before the blind pre-proof reviews; no
+Lean proof of these statements exists, in the repository or in scratch, before the reviews are answered and stamped.
+The sanity layer and the plants were written by an agent of the lead under a brief that forbids proving the
+statements.
+
+Why. Four chains of `docs/design/unlock-map.md` (section 2.2: the light cone of the lattice kernel, the ring of N
+sites, the open chain, a certified evaluator by a plain sum) are one mechanism: the Fourier coefficients of a periodic
+function analytic in a strip decay exponentially, and sampling at N points folds them onto each other. The general
+statements are classical. PA-T is Theorem 3.2 of L. N. Trefethen and J. A. C. Weideman, *The exponentially convergent
+trapezoidal rule*, SIAM Review 56 (2014) 385–458 (theorem statement read by two sweep agents of the lead on
+2026-11-16, not by the lead: "v 2π-periodic, analytic with |v| ≤ M in the strip −a < Im θ < a; then for any N ≥ 1,
+|I_N − I| ≤ 4πM/(e^{aN} − 1), and the constant 4π is as small as possible"). LC-1 is Kapteyn's inequality for Bessel
+functions of integer order in a parametrised form (compare DLMF 10.14.5 and 10.14.8; not re-read by the lead). No
+formalisation of any of the three was found by the logged sweep (`docs/prior_art.md`, disclosure of 2026-11-16):
+PLAUSIBLE-not-formalised. The claim, if proved, is "machine-checked", not new mathematics.
+
+Notation. For a > 0 the open strip is S_a = {z ∈ ℂ : |Im z| < a} (Lean `openStrip a`). A function v : ℂ → ℂ is
+**periodic-analytic on S_a with bound M** (Lean `PeriodicAnalyticOn v a M`) if it is complex-differentiable on S_a,
+v(z + 2π) = v(z) for every z ∈ S_a, and |v(z)| ≤ M for every z ∈ S_a. Nothing is assumed outside S_a. The N-point
+trapezoidal sum is I_N(v) = (2π/N) Σ_{j=0}^{N−1} v(2πj/N) (Lean `trapezoidalSum v N`); for a periodic function the
+trapezoidal and the rectangle rule are the same sum. I(t, ξ) = ∫_{−π}^{π} e^{i(t cos k + ξk)} dk is the 1D lattice
+kernel of batch LE (`latticeKernel1`).
+
+**PA-C (Fourier coefficients decay exponentially).** For every a > 0, every M, every v periodic-analytic on S_a with
+bound M and every integer k: |∫_0^{2π} v(θ) e^{−ikθ} dθ| ≤ 2π M e^{−a|k|}.
+
+**PA-T (the trapezoidal rule converges exponentially).** For every a > 0, every M, every v periodic-analytic on S_a
+with bound M and every natural number N ≥ 1: |I_N(v) − ∫_0^{2π} v(θ) dθ| ≤ 4πM / (e^{aN} − 1).
+
+**LC-1 (light cone of the 1D lattice kernel).** For every real t, every integer n and every η ≥ 0:
+|I(t, n)| ≤ 2π e^{|t| sinh η − |n| η}.
+
+Modelling choices and omissions.
+1. v is a function on all of ℂ, constrained only on the open strip. A function given only on the strip is extended
+   arbitrarily; the integrals and the sum use real arguments only, which lie in the strip.
+2. Periodicity is assumed on the strip, not only on the real axis. For a function analytic on the strip the two are
+   equivalent (identity theorem); the statement asks for the stronger form so that no such argument is part of it.
+3. The bound is on the open strip, as in Trefethen and Weideman. No continuity up to the boundary is assumed.
+4. PA-C is stated for the unnormalised integral, so the Fourier coefficient c_k = (2π)^{−1}∫ satisfies
+   |c_k| ≤ M e^{−a|k|}. The sign of k in the exponential is immaterial, since the bound depends on |k| only.
+5. PA-T does not state that 4π is the best constant. It is, as a supremum and not as an attained value: the paper's
+   example for its Theorem 2.2, transplanted to the strip, is v(z) = 2 cos(Nz), for which the ratio of the two sides
+   tends to 1 as aN → ∞ (the sanity layer uses 7 cos(3z) as a datum). Nor does it state the half-plane version with
+   2π (their Theorem 3.1) or the version on the real line.
+5a. The paper's sum is over the nodes 2πk/N, k = 1, …, N; `trapezoidalSum` uses j = 0, …, N − 1. For a 2π-periodic
+   function these are the same sum. History, from the paper's section 11 (quoted by the sweep agent): its Theorem 3.2
+   "is essentially" Theorem 1 of P. J. Davis, *On the numerical integration of periodic analytic functions* (1959),
+   who called the result "folklore"; the idea goes back to Poisson in the 1820s. Davis's paper was not opened.
+6. LC-1 is for integer n only. For non-integer ξ the integrand is not periodic and the bound fails in general: the
+   kernel then decays only like 1/|ξ| as |ξ| → ∞ (an endpoint term). η is a free parameter: for |n| > |t| the best
+   choice is cosh η = |n|/|t|, which gives Kapteyn's bound; η = 0 gives the trivial bound 2π.
+7. LC-1 bounds the kernel, not solutions. With LS-K and TdF it gives, on paper, for a solution u of the lattice
+   Schrödinger equation with ℓ¹ datum f: |u(t, x)| ≤ e^{2d|t| sinh η} Σ_y e^{−η|x − y|₁} |f(y)|. That consequence is not
+   stated in this batch.
+8. Numerical truth checks by the lead before the freeze, in ball arithmetic: PA-C at 195 and PA-T at 105 parameter
+   points on five functions, with ratios of the two sides up to 1.000000 and 0.999877 (the bounds are attained in the
+   limit), four altered statements rejected (`numerics/results-pa-statement-checks-2026-11-16.txt`); LC-1 at 462
+   points (`numerics/results-unlock-chain-checks-2026-11-16.txt`, check K3). These are tooling, not evidence.
+
+## Batch KL: the Kusmin–Landau inequality for exponential sums (session 13, 2026-11-16)
+
+Order. As batch PA: statements, `OscInt/Statements/KusminLandau.lean`, sanity theorems with planted controls
+(`OscInt/Front/KusminLandauSanity.lean`, record under `docs/replay/plants/2026-11-16-KL/`), challenge
+`Challenge/KusminLandau.lean` and `comparator-KL.json`, frozen and stamped before the blind pre-proof reviews; no Lean
+proof of these statements exists, in the repository or in scratch, before the reviews are answered and stamped.
+
+Why. Explicit analytic number theory rests on exponential-sum lemmas with explicit constants. One of them, Lemma 2 of
+Y. F. Cheng and S. W. Graham (Rocky Mountain J. Math. 34 (2004)), stated the bound 1/(πθ) + 1 where 2/(πθ) is
+correct. G. A. Hiary, D. Patel and A. Yang (arXiv:2207.02366, read in full by a sweep agent of the lead on
+2026-11-16, not by the lead) write that "the incorrect constant 1/π has impacted all published explicit subconvex
+bounds on |ζ(1/2 + it)|" and that the episode "points to the need for a more automated approach in the future to
+verify explicit theoretical results". The correct inequality is classical: R. Kuzmin (1927) and E. Landau,
+*Über eine trigonometrische Summe*, Nachr. Ges. Wiss. Göttingen (1928) 21–24, with Landau's sharp bound cot(πθ/2)
+(neither original was opened; the statements below follow J. Arias de Reyna, *On Kuzmin–Landau Lemma*,
+arXiv:2002.05982, Lemma 2, and N. Elkies's lecture notes for Harvard Math 229, both read in full by the sweep agent).
+The claim, if proved, is "machine-checked", not new mathematics. Formalisation prior art, found before the freeze
+(`docs/prior_art.md`, section of 2026-11-16 on batches PA and KL): the inequality is already formalised in Lean 4 in
+two public repositories, in difference form, with the weaker constant 1/λ in place of cot(πλ/2); no formalisation
+with the constant 2/π or with Landau's sharp bound was found.
+
+Notation. e(x) = e^{2πix}. For a real sequence c_0, …, c_N the differences are d_n = c_{n+1} − c_n, 0 ≤ n < N. They
+are **monotone in [k + λ, k + 1 − λ]** (Lean `DiffsMonotoneIn c N k lam`) if d_0 ≤ d_1 ≤ … ≤ d_{N−1} or
+d_0 ≥ d_1 ≥ … ≥ d_{N−1}, and k + λ ≤ d_n ≤ k + 1 − λ for every n < N, with k an integer. The sum is
+S = Σ_{n=0}^{N} e(c_n) (Lean `expSum c N`, N + 1 terms).
+
+**KL-D (Landau's form, on differences).** For every real sequence c, every N ≥ 0, every integer k and every λ with
+0 < λ ≤ 1/2: if the differences of c_0, …, c_N are monotone in [k + λ, k + 1 − λ], then |S| ≤ cot(πλ/2).
+
+**KL-C (the constant 2/π).** Under the same hypotheses, |S| ≤ 2/(πλ).
+
+**KL-F (the textbook form).** Let f be continuous on [a, b] with derivative f′ on (a, b), f′ monotone on (a, b), and
+k + λ ≤ f′(x) ≤ k + 1 − λ for every x ∈ (a, b), with k an integer and 0 < λ ≤ 1/2. Then
+|Σ_{n ∈ ℤ, a ≤ n ≤ b} e(f(n))| ≤ cot(πλ/2).
+
+Modelling choices and omissions.
+1. KL-D asks nothing of a function between the integers: only the N differences matter. It is the form of Arias de
+   Reyna's Lemma 2(a) (increasing differences in [θ, 1 − θ]) with Elkies's two additions: either direction of
+   monotonicity, and an integer shift k (which changes no term of the sum).
+2. The hypothesis is "the differences lie in one cell [k + λ, k + 1 − λ]", not "each difference is at distance at
+   least λ from the integers". For a sequence the second is weaker and the inequality fails for it: the differences
+   1/4, 3/4, 5/4, 7/4 are increasing and at distance 1/4 from ℤ, but lie in two cells, and the sum for
+   c = (0, 1/4, 1, 9/4, 4) is 3 + 2i, of modulus √13 > cot(π/8) (the same five terms as control C3 of the numerical
+   checks). For a monotone continuous derivative the two agree, which is why textbooks state the second.
+3. λ ≤ 1/2 is assumed. It follows from the cell condition when N ≥ 1; for N = 0 (one term, |S| = 1) it is what makes
+   cot(πλ/2) ≥ 1.
+4. cot(πλ/2) is written as cos(πλ/2)/sin(πλ/2); sin(πλ/2) > 0 for 0 < λ ≤ 1/2.
+5. KL-F takes the derivative as in S1 (`HasDerivOn`): f continuous on [a, b], differentiable on (a, b). Neither
+   continuity of f′ nor differentiability at the end points is assumed, which is weaker than the textbook's
+   "continuously differentiable". The sum is over `Finset.Icc ⌈a⌉ ⌊b⌋`; it is empty, and the bound trivial, when no
+   integer lies in [a, b]. The bound holds for every sub-interval, so the choice of end points (sources use [a, b],
+   [a, b) and (a, b]) does not matter.
+6. Not stated: Landau's sharpness results (the bound is attained exactly for λ = 1/2 and for fractions with odd
+   numerator and denominator, and is a supremum for every λ; Arias de Reyna, Lemma 2(b)–(d)). The sanity layer uses
+   the attaining sequences 0, 1/3, 1 (|S| = √3 = cot(π/6)) and 0, 1/5, 2/5, 6/5, 2 (|S| = cot(π/10) ≈ 3.0777, above
+   Cheng and Graham's 1/(πθ) + 1 ≈ 2.5915) as data. Also not stated: the asymmetric form (U + V)/π of Hiary, Patel
+   and Yang, and the second- and third-derivative tests for sums.
+7. In the derivative form the bound is not attained by the sequences of item 6 (PLAUSIBLE: a difference equal to λ
+   forces f′ = λ on a whole unit interval, and a derivative cannot jump). KL-F therefore claims the bound only.
+8. Numerical truth checks by the lead before the freeze: KL-D and KL-C on 4000 random rational sequences with no
+   certified violation; five of Landau's sequences attain the bound to 40 digits; KL-F on 20 quadratic phases; five
+   altered statements, among them Cheng and Graham's bound, rejected
+   (`numerics/results-kl-statement-checks-2026-11-16.txt`). Tooling, not evidence.
