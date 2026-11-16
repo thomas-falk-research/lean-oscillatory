@@ -59,3 +59,29 @@ Parts for proof agents: `KLCoreFacts` (agent 1), `KLDerivFacts` (agent 2).
 `numerics/review/pa_kl_interface_checks.py`, results `numerics/results-pa-kl-interface-checks-2026-11-16.txt`: each
 blueprint proposition tested on samples in the shape the blueprint states it, in ball arithmetic, with three
 controls that must fail. 13 of 13 checks pass. They test the propositions, not their proofs (L2 on samples).
+
+## Revision after the route referee (2026-11-16)
+
+One fresh-context route referee (an AI agent of the same model family as the lead; its brief and report are not
+recorded verbatim, rule 19) read this route, the blueprint and the assembly in a snapshot, before any part was
+proved. Verdict: sound after corrections; no BLOCKER, no MAJOR; answers `review/2026-11-16-PA-KL-route-answers.md`.
+The text above is unchanged; the corrections and additions are these.
+1. K-deriv, empty sum (m > M): this case is not an instance of KL-D (`expSum` always has at least one term). The bound
+   is then `0 ≤ cos(πλ/2)/sin(πλ/2)`, true because `0 < πλ/2 ≤ π/4`. One extra branch in Lean.
+2. K-weights and K-abel, feasibility. Mathlib at the pin has no monotonicity lemma for `Real.cot` and no half-angle
+   lemma in the form `1/sin x ± cot x`. The part therefore works with `cos/sin` throughout (the frozen right-hand
+   side is written that way): the two brackets are `(1 + cos πd)/(2 sin πd)` and `(1 − cos πd)/(2 sin πd)`; signs of
+   differences come from `cos x / sin x − cos y / sin y = sin(y − x)/(sin x · sin y)` (`Real.sin_sub`); the final
+   comparisons from `Real.sin_two_mul`, `Real.cos_two_mul` at half the angle, or through `Real.strictMonoOn_tan` and
+   `Real.tan_pi_div_two_sub`. For the weight, `Re ζ = −1/2` and `Im ζ = −cos πx/(2 sin πx)` follow from
+   `ζ · (e(x) − 1) = 1`. The summation by parts is proved by induction, stated for `N + 1` so that no natural
+   subtraction appears; `Finset.sum_range_by_parts` is in a scalar-action, partial-sum form that fits badly.
+3. K-deriv, reindexing: `Int.Icc_eq_finset_map` turns `Finset.Icc m M` into the image of
+   `Finset.range (M + 1 − m).toNat` under `j ↦ m + j`, then `Finset.sum_map`; only `ξ_n ≤ ξ_{n+1}` for `n + 1 < N` is
+   needed for `DiffsMonotoneIn`.
+4. K-two: the end-point remark (x = π/2) is not used; `x = πλ/2 ≤ π/4`.
+5. Interface checks: the referee found that the first version tested the core proposition and its internal lemmas
+   but not `KLDerivFacts`, and never sampled the ends of the cell, where the bound is attained. The script now has
+   boundary-heavy sequences, Landau's sequences (ratio 1 at λ = 1/3, 1/5, 1/7, 3/7, 1/2) and a check J5 of the
+   derivative form with its own control: 17 of 17 checks pass (the section above says 13 of 13, the count before
+   this revision).

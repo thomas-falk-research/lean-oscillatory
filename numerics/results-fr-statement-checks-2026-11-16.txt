@@ -1,0 +1,18 @@
+line kernel: Bessel form against the integral of the definition: PASS  36 points, 0 failures
+FR-K equation, unit datum, period: PASS  642 points, 0 failures; central difference agrees within 5.3e-24
+FR-U ring kernel against exp(itL) of the ring: PASS  1360 entries, 0 failures
+FR-U control (ring kernel against the open chain must differ): PASS  all entries equal: False
+FR-S coset sum (|m| <= 60) against the ring kernel, within the certified tail: PASS  120 points, 0 failures
+FR-P finite-size inequality: PASS  1764 comparisons, 0 violations, largest ratio 1.000000
+FR-P control (without the factor 2 must fail somewhere): PASS  68 certified violations
+FR-P control (e^{|t| sinh} must fail somewhere): PASS  113 certified violations
+FC-K walls and unit datum; FC-U chain kernel against exp(itL) of the open chain: PASS  720 checks, 0 failures
+FC-U control (even reflection must differ): PASS  all entries equal: False
+FC-P finite-size inequality: PASS  2130 comparisons, 0 violations, largest ratio 0.355150
+FC-P control (without the wall term must fail somewhere): PASS  314 certified violations
+  chain M = 9, x = y = 5, t = 1: |C - G| = [5.03077e-7 +/- 2.57e-13]; FC-P bound [3.98518e-6 +/- 4.51e-12] at eta = [2.30 +/- 3e-7]
+  chain M = 9, x = y = 5, t = 2: |C - G| = [0.000390081 +/- 1.11e-10]; FC-P bound [0.00301372 +/- 2.45e-9] at eta = [1.60 +/- 3e-7]
+  chain M = 5, x = y = 3, t = 1: |C - G| = [0.00240486 +/- 1.81e-9]; FC-P bound [0.0146622 +/- 1.94e-8] at eta = [1.80 +/- 3e-7]
+  chain M = 5, x = y = 3, t = 2: |C - G| = [0.0981877 +/- 2.08e-8]; FC-P bound [0.546858 +/- 5.88e-8] at eta = 1.00
+summary: 12 of 12 checks pass
+python 3.13.18, python-flint 0.9.0, FLINT 3.6.0, working precision 700 bits, seed 20261116

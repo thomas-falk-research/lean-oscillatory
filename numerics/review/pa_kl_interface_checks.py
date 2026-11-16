@@ -21,15 +21,24 @@ KL  J1  the weights zeta(x) = 1/(e(x) - 1): |zeta| = |1 + zeta| = 1/(2 sin pi x)
         zeta(x) - zeta(y) = (i/2)(cot pi y - cot pi x), 50 rational points.
     J2  the summation-by-parts identity for random unit vectors E_n with E_n = zeta_n (E_{n+1} - E_n).
     J3  the half-angle identities 1/sin x + cot x = cot(x/2), 1/sin x - cot x = tan(x/2), and cot x <= 1/x.
-    J4  KLCoreFacts (k = 0) on 300 random monotone difference sequences.
+    J4  KLCoreFacts (k = 0) on 300 random monotone difference sequences, on 300 sequences whose differences sit
+        at the ends lam and 1 - lam and on a grid between them, and on Landau's sequences (j differences lam, then
+        j differences 1 - lam) at lam = 1/3, 1/5, 1/7, 3/7, 1/2, where the bound is attained.
+    J5  KLDerivFacts in the shape of KL-F: f'(x) = k + u + (v - u)((x - a)/(b - a))^p on (a, b), f its integral,
+        lam <= u, v <= 1 - lam, p in {1/5, 1/2, 1, 2, 5}, integer and non-integer ends, a = b included; the sum over
+        the integers of [a, b] against cot(pi lam/2).
 Controls (each must fail): I1 with a height outside the strip of f3 (b = -0.8 > log 2 in modulus); I3 with the
-bound M/(e^{aN} - 1) on the extremal sequence; J4 with cot(pi lam) in place of cot(pi lam/2) on the extremal
-sequence of lam = 1/3.
+bound M/(e^{aN} - 1) on the extremal sequence; J4 with cot(pi lam) in place of cot(pi lam/2) on the two-term
+sequence c = (0, 1/3) at lam = 1/3; J5 with a derivative that leaves the cell (u = lam/2).
+Added after the route referee of batch KL (2026-11-16): the boundary and extremal sequences of J4, J5 and its
+control, and the corrected name of the J4 control (the referee's findings F1 and F5).
 
 Usage: python3 -I numerics/review/pa_kl_interface_checks.py
 """
+import math
 import platform
 import random
+from fractions import Fraction
 
 import flint
 from flint import acb, arb, ctx
@@ -206,9 +215,75 @@ for _ in range(300):
     bad += not le(lhs, rhs + TOL)
     worst = max(worst, float((lhs / rhs).mid()))
 report("J4 core inequality, k = 0", bad == 0, f"{n} sequences, {bad} violations, largest ratio {worst:.6f}")
+n = bad = 0
+worst = 0.0
+for _ in range(300):
+    lam = arb(rng.randint(1, 500)) / 1000
+    N = rng.randint(1, 30)
+    grid = [lam, 1 - lam, lam, 1 - lam, (lam + (1 - lam)) / 2, lam + (1 - 2 * lam) / 3, lam + 2 * (1 - 2 * lam) / 3]
+    ds = sorted((rng.choice(grid) for _ in range(N)), key=lambda z: float(z.mid()), reverse=rng.random() < 0.5)
+    c = [arb(0)]
+    for x in ds:
+        c.append(c[-1] + x)
+    lhs = abs(sum((e(x) for x in c), acb(0)))
+    rhs = cot(PI * lam / 2)
+    n += 1
+    bad += bool(lhs > rhs)
+    worst = max(worst, float((lhs / rhs).mid()))
+report("J4 core inequality on boundary-heavy sequences (no certified violation)", bad == 0, f"{n} sequences, {bad} certified violations, largest ratio {worst:.9f}")
+att = []
+for num, den in ((1, 3), (1, 5), (1, 7), (3, 7), (1, 2)):
+    lam = arb(num) / den
+    best = arb(0)
+    for j in range(1, 2 * den + 1):
+        c = [arb(0)]
+        for x in [lam] * j + [1 - lam] * j:
+            c.append(c[-1] + x)
+        r = abs(sum((e(x) for x in c), acb(0))) / cot(PI * lam / 2)
+        if bool(r > best) or not bool(r < best):
+            best = r if float(r.mid()) > float(best.mid()) else best
+    att.append((num, den, best))
+ok = all(b.contains(1) and bool(abs(b - 1).upper() < TOL) for _, _, b in att)
+report("J4 Landau's sequences attain the bound", ok, "; ".join(f"lam={a}/{b}: ratio {r.str(12)}" for a, b, r in att))
+
 lam = arb(1) / 3
 lhs = abs(sum((e(lam * j) for j in range(2)), acb(0)))  # c = (0, 1/3): |1 + e(1/3)| = 1
 report("J4 control (cot(pi lam) must fail at lam = 1/3)", not bool(lhs <= cot(PI * lam)), f"|S| = {lhs.str(8)}, cot(pi/3) = {cot(PI * lam).str(8)}, cot(pi/6) = {cot(PI * lam / 2).str(8)}")
+
+
+
+# J5
+def klf_sum(a, b, k, u, v, p):
+    """|sum over integers n in [a, b] of e(f(n))|, f(x) = (k + u)(x - a) + (v - u)(b - a)((x - a)/(b - a))^(p+1)/(p+1)."""
+    lo, hi = math.ceil(a), math.floor(b)  # a, b are exact fractions
+    a, b = arb(a.numerator) / a.denominator, arb(b.numerator) / b.denominator
+    tot = acb(0)
+    for m in range(lo, hi + 1):
+        s = arb(m) - a
+        f = (k + u) * s + ((v - u) * (b - a) * (s / (b - a)) ** (p + 1) / (p + 1) if bool(b - a > 0) and bool(s > 0) else 0)
+        tot += e(f)
+    return abs(tot)
+
+
+n = bad = 0
+worst = 0.0
+ctrl = 0
+for i in range(600):
+    lam = arb(rng.randint(1, 500)) / 1000
+    k = rng.randint(-3, 3)
+    a = Fraction(rng.randint(-40, 40), rng.choice([1, 1, 4, 7]))
+    b = a + Fraction(rng.randint(0, 120), rng.choice([1, 4, 7]))
+    u = lam + (1 - 2 * lam) * arb(rng.choice([0, 0, 250, 500, 1000, rng.randint(0, 1000)])) / 1000
+    v = lam + (1 - 2 * lam) * arb(rng.choice([0, 1000, 1000, 500, rng.randint(0, 1000)])) / 1000
+    p = arb(rng.choice(["0.2", "0.5", "1", "2", "5"]))
+    lhs = klf_sum(a, b, k, u, v, p)
+    rhs = cot(PI * lam / 2)
+    n += 1
+    bad += bool(lhs > rhs)
+    worst = max(worst, float((lhs / rhs).mid()))
+    ctrl += bool(klf_sum(a, b, k, lam / 2, lam / 2, p) > rhs)
+report("J5 derivative form on sample phases (no certified violation)", bad == 0, f"{n} phases, {bad} certified violations, largest ratio {worst:.6f}")
+report("J5 control (a derivative outside the cell must violate the bound somewhere)", ctrl > 0, f"{ctrl} certified violations")
 
 npass = sum(ok for _, ok in results)
 print(f"summary: {npass} of {len(results)} checks pass")

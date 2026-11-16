@@ -64,9 +64,11 @@ answers use plain `-answers`. External reviews are `<date>-external-<topic>-answ
 - `2026-11-15-D4U-post-proof-answers.md`
 - `2026-11-16-PA-pre-proof-answers.md`
 - `2026-11-16-KL-pre-proof-answers.md`
+- `2026-11-16-PA-KL-route-answers.md`
 
 ## Calibration test data
 
 - `calibration/round1/`: six planted statement variants (`V*-Statements.lean.txt`) and `key.json`.
 - `calibration/round2/`: six planted variants, the base statements, the statement prose and `key.json`.
 - `calibration/round3/`: the script that built the two planted snapshots of batches PA and KL (four plants each; the plants are in the script).
+- `calibration/round4/`: the two routes of batches PA and KL with eight planted errors (`proof-*-planted.md.txt`) and the key (`key.txt`), for the route referees.

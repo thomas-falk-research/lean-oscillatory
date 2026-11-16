@@ -1,0 +1,8 @@
+PA-1 shift direction: +sgn(k) b gives growth e^{+|k|b}, not decay
+PA-2 geometric tail: sum from m = 1 is r/(1-r), and 1/(1-r) is not 1/(e^{aN}-1)
+PA-3 modulus of e^{it cos z}: the exponent is t sin x sinh y, not t cos x sinh y
+PA-4 AliasBoundFacts with M instead of 2M: false (both tails m >= 1 and m <= -1 contribute), and inconsistent with 4 pi M in PA-T
+KL-1 weight difference: factor i/2, not i (and the modulus stated next contradicts it)
+KL-2 half-angle identities swapped
+KL-3 mean value point in the closed interval: the hypotheses on f' hold only on the open interval (a, b), so an endpoint xi = a or b is not covered
+KL-4 cot x <= 1/x derived from x <= sin x, which is false (sin x <= x); the right fact is x <= tan x

@@ -14,6 +14,7 @@ planted statement error, and how often it raises a false alarm on an unmodified 
 | 1+2 pooled | | | 8 | 8 | 1.00, [0.630, 1.00] | 4 | 0 (0/4, upper bound 0.603) |
 | 3 | 2026-11-16 | batches PA and KL (six statements) | 8 (definition ×3, hypothesis ×2, conclusion ×2, precedence), planted by the lead's script in text-only snapshots | 8 | 1.00, [0.630, 1.00] | 2 (the genuine reviews) | 0 (0/2, upper bound 0.842) |
 | 1+2+3 pooled | | | 16 | 16 | 1.00, [0.794, 1.00] | 6 | 0 (0/6, upper bound 0.460) |
+| 4 (route referee; not pooled) | 2026-11-16 | the routes of batches PA and KL | 8 (a wrong direction, wrong constants ×2, a wrong identity ×2, a false cited fact, an interval closed where it must be open, a wrong factor in a blueprint proposition), planted by the lead | 8 | 1.00, [0.630, 1.00] | 5 sound rows of the referee's own table | 0 (0/5, upper bound 0.522) |
 
 Correction, 2026-11-13 (external R3 packet, `review/2026-11-13-external-R3-answers.md`): the bounds in this table are now
 rounded outwards (lower bounds down, upper bounds up). Before, they were rounded to nearest, and three printed values
@@ -187,3 +188,27 @@ What this round does and does not show.
   hypothesis, an operator-precedence slip, a floor/ceiling swap); they are not a random sample of possible errors.
 - Both calibration referees also raised findings against the unplanted sanity layer that the genuine referees raised
   independently (the monotonicity guard, the node positions); those are answered in the review answers.
+
+## Round 4 (2026-11-16, session 13; route referees of batches PA and KL)
+
+A different task from rounds 1 to 3: the referee reads a proof on paper (a route), not a Lean statement, and looks
+for wrong steps. It is therefore reported on its own line and not pooled.
+
+Design. Copies of `docs/proof-PA.md` and `docs/proof-KL.md` as committed in 4ff92c3, with eight single-line errors put
+in by the lead (four each), the interface-check sections removed, and one remark of the PA route removed because it
+would have contradicted a plant. The packet had the statements but not the blueprint Lean files. The referee got
+the same brief as the two genuine route referees (the three briefs differ only in packet name and paths); every
+brief said that packets may contain planted errors and asked for every error. The key was written before launch,
+SHA-256 `053f8e6d30663a7f3c0dd7c3c428d64499af8ed263542e3c018c8a51fb369a4a` (`review/calibration/round4/key.txt`; the
+planted routes are next to it as `proof-PA-planted.md.txt` and `proof-KL-planted.md.txt`).
+
+Result. 8 of 8 planted errors found, each with the right correction (table in
+`review/2026-11-16-PA-KL-route-answers.md`); 95% Clopper–Pearson interval [0.630, 1.00] (exact lower bound
+(1/40)^{1/8} = 0.63058, rounded down). No sound part was reported as wrong: 0 of the 5 rows the referee itself marked
+sound; upper bound 1 − (1/40)^{1/5} = 0.52182, rounded up to 0.522. The referee graded the false blueprint bound as a
+BLOCKER and gave a counterexample; it graded two wrong citations as MAJOR and five slips as MINOR.
+
+Limits. One referee and one run; eight plants, all single-line, chosen by the same lead who wrote the routes; the
+key was sealed by a hash in the session log, not by a timestamp authority; the genuine referees saw more material
+(blueprint and assembly) than the calibration referee. A referee that finds planted single-line errors may still
+miss a structural gap, and referees and lead are of one model family.

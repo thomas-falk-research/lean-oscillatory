@@ -90,3 +90,31 @@ controls that must fail. 13 of 13 checks pass. They test the propositions, not t
   Fourier series, by the residue-free "discrete orthogonality" argument on trigonometric partial sums, is NOT
   available (it needs the series). No cheaper fallback is known; if P-series stalls, PA-C and LC-1 still stand.
 - `IsPrimitiveRoot` API names for the geometric sum must be `#check`ed.
+
+## Revision after the route referee (2026-11-16)
+
+One fresh-context route referee (an AI agent of the same model family as the lead; its brief and report are not
+recorded verbatim, rule 19) read this route, the blueprint and the assembly in a snapshot, before any part was
+proved. Verdict: sound; no BLOCKER, no MAJOR; answers `review/2026-11-16-PA-KL-route-answers.md`. The text above is
+unchanged; the corrections and additions are these.
+1. P-alias, roots of unity: `IsPrimitiveRoot.geom_sum_eq_zero` does NOT fit. For ζ = e^{2πik/N} with
+   1 < gcd(k, N) < N (for example N = 4, k = 2, ζ = −1) the order of ζ is N/gcd(k, N), and that lemma sums over
+   `range` of the order, not over `range N`. Use `geom_sum_eq` or `mul_geom_sum` with ζ^N = 1 and the case split
+   ζ = 1 or ζ ≠ 1. Only one implication is needed: ζ = 1 implies N ∣ k (`Complex.exp_eq_one_iff`), because a majorant
+   supported on the nonzero multiples of N dominates in either case.
+2. P-alias, the split of the sum over ℤ: "`hasSum_int_iff…`" is not a Mathlib name. The lemma with the route's shape
+   is `HasSum.of_add_one_of_neg_add_one` (from the sums over n + 1 and over −(n + 1) to the sum over ℤ with the term
+   at 0). `tsum_geometric_of_lt_one` is the sum from n = 0, so the shift to r/(1 − r) is one more step.
+3. P-coeff, the limit b ↑ a: the lemma that applies is `ge_of_tendsto` (the assembly uses it), not `le_of_tendsto`.
+4. Header: "Mathlib names are `#check`ed" was too strong for the two names this revision corrects; the names of
+   items 1 and 2, as the referee confirmed them in the Mathlib sources, are added to `MathlibNames.lean` when the
+   parts are integrated.
+5. Interface checks: of the checks in the script, eight are for this batch (I1 to I4, two of them controls); the
+   rest are for batch KL. I2 tests a truncated sum against a geometric tail: a proxy for `FourierSeriesFacts`, since a
+   `HasSum` cannot be sampled. After the KL referee's findings the script has 17 checks; all pass.
+6. Risks, first item, restated: there is no fallback for P-series. The alias identity needs pointwise convergence
+   of the Fourier series at the nodes (or a residue theorem, which Mathlib does not have in usable form). If
+   P-series stalls, PA-T stalls with it; PA-C and LC-1 do not depend on it.
+7. Feasibility notes from the referee, for the parts: P-shift needs care only with casts (ℤ to ℝ to ℂ on the left,
+   ℤ to ℂ on the right) and an `add_comm` on the vertical sides; P-series has the normalisation frictions listed in
+   the proof brief (precedent: `Mathlib/Analysis/Fourier/PoissonSummation.lean`); P-lc is easy.
