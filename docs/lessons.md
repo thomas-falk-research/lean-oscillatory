@@ -1,6 +1,6 @@
 # Lessons
 
-Read "Rules in force" at the start of every session. It distils the 52 numbered entries below it, which keep the
+Read "Rules in force" at the start of every session. It distils the 57 numbered entries below it, which keep the
 history and evidence behind each rule (what happened, why it mattered, the check). Records elsewhere cite entries by
 number ("lessons 44"); the numbers do not change. When a rule's reason no longer holds, propose a change to the owner
 rather than ignoring it.
@@ -32,9 +32,12 @@ credible, and it rests on stamps and records, not on commit order.
 6. Start the replay detached and keep the session busy with a background wait on the replay log's `finished` line,
    re-armed at the harness's two-hour limit; a container is reclaimed soon after the session goes idle. Record a
    cut-off run as partial. (49, 50)
-7. Before a build or replay, check `df` and keep at least 15 GB free (a session-12 attempt died on a full disk,
-   `docs/replay/2026-11-15-session12-D4U-partial.txt`); unshallow the clone before `stamp-verify` or `verify-all`.
-   (21, 32)
+7. Before a replay, `tools/replay_preflight.py check` must pass (`make verify-all` runs it first): free space of at
+   least the part of the replay's measured footprint that is not on disk yet, plus 5 GB; it names what to delete
+   (the regenerable exports under `build/`, which git ignores). While the replay runs, `tools/replay_preflight.py
+   watch` logs the free space and every foreign Lean process once a minute and stops the replay below 3 GB.
+   Unshallow the clone before `stamp-verify` or `verify-all`. (21, 32, 53; owner decision 2026-11-16, replacing a
+   fixed floor of 15 GB)
 
 **Sanity layers and planted controls.** A sanity layer is the only test of the frozen text itself, so its data must be
 able to fail.
@@ -67,13 +70,31 @@ able to fail.
 **Sessions, pushes and CI.**
 17. First action of a session: read the remote state (`git fetch`, the releases, the latest CI run on `main`) and
     record any difference from the hand-off. (31)
-18. Run `make quick` before every push. Run every new CI command line locally, verbatim, before pushing the workflow.
-    Read the CI result of each push before the next claim. (9, 35, 37, 40, 41)
+18. Before every push run what `tools/push_gate.py` prints (`make push-gate RUN=1` runs it): `make quick` for
+    everything that is not plain documentation, which includes every status claim (STATUS, README, CHANGELOG, the
+    statement prose, the API index) and every path the gate does not know; `make docs-check` for prose and records;
+    the component's own tests for the two certificate checkers. Keep a pull request open for the working branch, so
+    that CI runs on every push, and read the CI result of each push before the next claim (a draft pull request
+    gets `ci.yml` only: the clean-runner replay needs a manual dispatch of `verify.yml` or a pull request marked
+    ready). Run every new CI command line locally, verbatim, before pushing the workflow. (9, 35, 37, 40, 41, 54;
+    owner decision 2026-11-16)
 
 **Privacy (owner rule).**
 19. No chats, prompts or verbatim AI-conversation text in the repository or its history: record external reviews and
     referee reports only as the lead's answers, in the lead's words. Name an external tool only in an AI-use
     disclosure. (46)
+
+**Status words, anchors, long runs (owner decisions 2026-11-16).**
+20. A STATUS row with a proving theorem says "proved in Lean" while its Replay cell says pending, and
+    "machine-checked as stated" only once a replay record is cited; `make docs-check` enforces both directions. (55)
+21. Stamp directories are never rewritten. The Bitcoin anchors of their OpenTimestamps proofs are upgraded copies
+    under `anchors/ots/`, made and checked by `tools/ots_anchor.py` (`make anchors`), a day after a stamp at the
+    latest. Every new stamp covers all earlier stamp directories, since its manifest lists every tracked file:
+    stamp at least once a year, and before the earliest certificate in the authorities' chains expires (DigiCert
+    Trusted Root G4, 2031-11-09, as read from the tokens on 2026-11-16). (56)
+22. A detached replay lives only while the session is busy. Keep a harness background task waiting on its log; make
+    each wait end by itself before the harness limit (110 minutes) and start the next one at once. A scheduled
+    message does not keep the session alive. (50, 57)
 
 **Lean and Mathlib facts at this pin** (not cautions, just facts):
 - `ContDiff ℝ ⊤` means analytic; write `∞` with `open scoped ContDiff`, or a numeral. (12)
@@ -82,7 +103,7 @@ able to fail.
 - `HasCompactSupport.mul_left` against a pointwise lambda times out; use `tsupport_mul_subset_right` with
   `IsCompact.of_isClosed_subset`. (52)
 
-## History and evidence (entries 1–52)
+## History and evidence (entries 1–57)
 
 ## 1. The brief's Mathlib names were wrong at the pin (2026-11-05)
 `exists_smooth_zero_one_of_isClosed`, `fourierIntegral_gaussian_pi` and the import `Mathlib.Data.Real.Basic` do not
@@ -480,3 +501,34 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     `isDefEq` (unifying `f * f'` with the lambda), in a file importing the whole library. Rule: derive it from
     `tsupport_mul_subset_right` (stated for the lambda) and `IsCompact.of_isClosed_subset`. Check:
     `OscInt.D4UniformAux.integrable_osc` (`OscInt/Front/D4UniformParts.lean`).
+53. **A fixed number of free gigabytes is not the invariant.** Rule 7 asked for 15 GB free before a replay. The
+    session machine has a 30 GB disk; after a stamp it had 11 to 12 GB free and the replay's own exports take 4 GB,
+    so the rule could not be kept and was recorded as a deviation each time (session 13). What the rule protects is
+    that a replay never dies on a full disk (32). Rule: require the part of the measured footprint that is not on
+    disk yet plus a margin, check it by program, and log free space during the run. Check:
+    `tools/replay_preflight.py --self-test`; `make verify-all` runs the preflight first.
+54. **Twenty-six commits on a working branch were checked by no second machine.** `ci.yml` and `verify.yml` run on
+    pull requests and on `main` only, and the session's instructions said no pull request unless asked; rule 18's
+    "read the CI result of each push" could not be met and nobody noticed until a referee asked what a stranger
+    could reproduce (session 13). Separately, the lead decided by judgement whether a push was "docs only", and once
+    pushed with a failing docs-check. Rule: the gate script decides from the changed paths, a status claim counts
+    as code, and the branch has a (draft) pull request from its first push. Check: `tools/push_gate.py --self-test`
+    (13 planted cases); the CI run on the pull request's head.
+55. **The status column said "machine-checked" before the replay.** The documentation check required that prefix
+    for every row with a proving theorem, so rows that were only proved carried the stronger word, qualified in
+    the cell and explained in a paragraph; the adversarial referee found it could mislead (session 13, batches PA
+    and KL; the same wording had been used for batch D4U in session 12). Rule: two words for two kinds of evidence,
+    enforced both ways by the check. Check: `tools/check_docs.py --self-test` ("status follows the replay evidence,
+    both ways").
+56. **Twenty-seven stamps had only pending OpenTimestamps proofs, some for eleven days.** A pending proof shows
+    submission to a calendar server and depends on that server; upgrading it in place would rewrite files in stamp
+    directories, which are history, so it was never done. Rule: upgraded copies out of place, checked against two
+    block explorers, originals untouched. Check: `anchors/ots/LOG.txt` (54 proofs anchored, 2026-11-16);
+    `tools/ots_anchor.py --self-test` (six planted defects).
+57. **A replay died after two hours because the lead replaced the keep-alive by a scheduled message.** Session 13:
+    the harness stopped the background task that waited on the replay's log at its two-hour limit, with a note not
+    to restart a command that had the longest timeout. The lead scheduled a check-in instead of re-arming, the
+    session went idle, the container was suspended about three minutes later and every process was gone
+    (`docs/replay/2026-11-16-session13-PA-KL-partial.txt`). Entry 50 had already said to re-arm at once. Rule: the
+    waits are built to end by themselves before the limit, so that nothing is "restarted", and the next wait starts
+    in the same turn. Check: the watcher log of the replay of record has no gap longer than two minutes.

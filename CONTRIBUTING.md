@@ -8,7 +8,7 @@ first; each rule there is binding.
 ```bash
 lake exe cache get          # once: Mathlib binaries
 make quick                  # build, guard, axiom audit, statement types, Gamma-free check (minutes)
-make verify-all             # the full replay (about two hours on 4 cores); CI runs it on main and weekly
+make verify-all             # the full replay (three hours or more on 4 cores); CI runs it on main and weekly
 make verify-all ONLY=guard  # one step of verify-all, with the same pass/skip rules
 ```
 Use `nice -n 10 lake env lean -DautoImplicit=false <file>` to iterate on one file (`lake env lean` does not apply

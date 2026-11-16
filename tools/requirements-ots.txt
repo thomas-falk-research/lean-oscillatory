@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Hash-pinned environment for tools/ots_anchor.py (the OpenTimestamps client and library and everything they
+# install), for CPython 3.13 on x86_64 Linux. Install into a virtual environment of its own:
+#   python3 -m venv .venv-ots && .venv-ots/bin/pip install --require-hashes -r tools/requirements-ots.txt
+# Generated on 2026-11-16 by `pip download opentimestamps-client==0.8.0` and `pip hash` of each downloaded file
+# (the hash of the one distribution pip chose for this platform, not of every file PyPI serves); audited with
+# pip-audit 2.10.1 on the same day (result in the session log). Not used by `make quick` or by CI.
+gitdb==4.0.12 --hash=sha256:67073e15955400952c6565cc3e707c554a4eea2e428946f7a4c162fab9bd9bcf
+GitPython==3.2.1 --hash=sha256:d66b0832aa8755c1a84892937282df0befb16c97e5a64aeebd68be9c5e323f53
+opentimestamps==0.5.0 --hash=sha256:bbe386274469292b54bb1d2e3af29b3e17f30025f12516bfc4aea3474b12e848
+opentimestamps-client==0.8.0 --hash=sha256:dff3e7a0a6c22ce9ef841a51edc9251580c0c829aee4581c43107f4e428a8154
+platformdirs==4.14.5 --hash=sha256:8e778c6fa421516f4d3369449f8df3b0e1b72c0e0005fe88e3ec772d0a14e750
+pycryptodomex==3.24.2 --hash=sha256:e340408a601003f235b50117cd16f87b2a5b4760765aafe93340eeaadeb0414d
+PySocks==1.7.1 --hash=sha256:2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5
+python-bitcoinlib==0.12.2 --hash=sha256:2f29a9f475f21c12169b3a6cc8820f34f11362d7ff1200a5703dce3e4e903a44
+smmap==5.0.3 --hash=sha256:c106e05d5a61449cf6ba9a1e650227ecfb141590d2a98412103ff35d89fc7b2f

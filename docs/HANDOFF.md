@@ -14,18 +14,27 @@ below it, and every rule is binding.
   "Parts as integrated").
   Post-proof reviews answered (`review/2026-11-16-PA-KL-post-proof-answers.md`: FAITHFUL ×6, SOUND ×6, no failing
   regime; no BLOCKER; three MAJOR against the records, answered).
-  **Not yet machine-checked as stated:** one isolated `make verify-all` is pending. The answers commit is stamped
-  (`stamps/20261116T170623Z-3c97ab18ac07`). Next, in order: (1) done; (2) `df` (the 15 GB floor cannot be kept during a
-  replay on this 30 GB disk: record free space before and after), then `make verify-all` detached and isolated
-  (about two hours by the Makefile's estimate; no agent and no other Lean process may run); (3) replay record
-  under `docs/replay/`, STATUS rows to "machine-checked as stated", README counts 71 of 71, CHANGELOG.
+  **Not yet machine-checked as stated:** one isolated `make verify-all` is pending. A first attempt died after two
+  hours when the session's container was suspended (`docs/replay/2026-11-16-session13-PA-KL-partial.txt`; rule 22).
+  The lead did not relaunch it at once: new statements come first, and one replay at the end of the session covers
+  batches PA and KL and whatever is proved by then (three to three and a half hours, detached, isolated, with
+  `tools/replay_preflight.py watch` and a harness background task that keeps the session busy, each wait at most
+  110 minutes, re-armed at once). Then: replay record under `docs/replay/`, STATUS rows to "machine-checked as
+  stated", README counts, CHANGELOG. The clean-runner replay on GitHub is a manual dispatch of `verify.yml` on the
+  branch (the pull request is a draft, which skips it); its result is in the session log.
 - **Last verified state:** the integration commit (the one that adds this paragraph): `make quick` exit code 0
   (time in the session log). 71 pinned statements; 65 machine-checked as stated; 6 proved, replay pending.
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
-  `make verify-all`, detached, launched right after this commit was pushed (launch record: session log, 17:08). In the lead's scratch, not in the tree: the sanity layer and planted controls
+  nothing local at the time of this commit; on GitHub, a dispatched `verify.yml` run on the branch head. In the lead's scratch, not in the tree: the sanity layer and planted controls
   of the draft batch FR (an agent's work; if lost, redo from `docs/design/batch-FR-draft.md`).
 - **Exact next command:** read the session log's last rows. If a `make verify-all` start is recorded without a
   result, the run is dead: record it as a partial under `docs/replay/` and start it again on a clean tree.
+- **Owner decisions of 2026-11-16, done:** rules 7, 18, 20, 21, 22 (`docs/lessons.md`) with their tools
+  (`tools/push_gate.py`, `tools/replay_preflight.py`, the status rule in `tools/check_docs.py`, `tools/ots_anchor.py`
+  and `anchors/ots/`); draft pull request 19. **Parked by the owner on 2026-11-16:** the hardware run on IBM Quantum (Addendum 1 of
+  `docs/prereg/2026-11-16-CTQW-chain.md` is written and must be stamped before any job; IBM accepts only a one-hour
+  token made from the owner's API key, and making it did not work on the owner's side; the run script and the
+  dress rehearsal are not written; the simpler route is a script the owner runs locally).
 - **Next batch, drafted only:** `docs/design/batch-FR-draft.md` (finite ring and open chain, seven statements, not
   frozen). Its freeze needs a sanity layer with planted controls, a challenge file, a second prior-art pass.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);

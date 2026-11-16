@@ -97,6 +97,18 @@ path = ["stamps/*/manifest.a.pool.ots", "stamps/*/manifest.b.pool.ots"]
 SPDX-FileCopyrightText = "OpenTimestamps calendar servers a.pool.opentimestamps.org and b.pool.opentimestamps.org"
 SPDX-License-Identifier = "LicenseRef-PublicCertificate"
 
+# Upgraded copies of those proofs with their Bitcoin attestations (tools/ots_anchor.py; docs/lessons.md, rule 21), and
+# the log of the check, which is a record of the software.
+[[annotations]]
+path = "anchors/ots/*/*.ots"
+SPDX-FileCopyrightText = "OpenTimestamps calendar servers (alice.btc.calendar.opentimestamps.org, bob.btc.calendar.opentimestamps.org and others named in each proof)"
+SPDX-License-Identifier = "LicenseRef-PublicCertificate"
+
+[[annotations]]
+path = "anchors/ots/LOG.txt"
+SPDX-FileCopyrightText = "2026 Thomas Falk III <research@thomas-falk-research.com>"
+SPDX-License-Identifier = "Apache-2.0"
+
 # The second certificate checker (Rust), written from the contract alone by an agent of the lead (session 13); the
 # experiment package's generated data; the differential-test record: Apache-2.0, as the rest of the software.
 [[annotations]]

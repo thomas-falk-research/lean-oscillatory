@@ -2,7 +2,8 @@
 
 Registered 2026-11-16 (session 13), before any hardware data exists; the registration is the commit that adds this
 file, and the stamp that follows it bounds its time. Status: **REGISTERED, NOT RUN.** A run on real hardware needs
-the owner's approval and account. After the first hardware run only the run log at the end of this file changes; any
+the owner's approval and account (given on 2026-11-16 for a no-cost plan of IBM Quantum: Addendum 1, written before
+any run). After the first hardware run only the run log at the end of this file changes; any
 other change is a deviation and is recorded as one.
 
 ## 1. What is tested, and what is not
@@ -118,6 +119,40 @@ device is as good as the assumed noise level, a fail shows that it is not, and n
 tolerance is tied to a simulated noise model that the lead chose. What the experiment does give is a public,
 certified reference for a family of circuits, an exactly computed algorithmic error, and one end-to-end exercise of
 the chain from a frozen statement to raw data.
+
+## Addendum 1 (registered before any hardware run): the first run, on IBM Quantum
+
+Added on 2026-11-16 after the owner approved a run on a no-cost plan of IBM Quantum with the owner's account. It
+fixes what sections 2 and 6 left to "the device" and changes nothing else; the registered circuits, shots,
+tolerances, analysis and decision rule stand. The commit that adds this addendum is stamped before the first job is
+submitted; the stamp directory is named in the run log.
+
+1. **Cost.** Only an instance on IBM's no-cost plan is used. The run script reads the plan of the instance and
+   refuses to submit on any other plan. Every job carries a limit on its execution time.
+2. **Device.** Among the operational, non-simulator devices of that instance with at least 9 qubits, the one with
+   the fewest pending jobs at the moment of the first submission. All five repetitions run on that device. The
+   list of candidates with their queue lengths at that moment is recorded.
+3. **Qubits and compilation.** As registered: the device's transpiler at optimisation level 3 with seed 20261116
+   chooses the qubits and compiles to the device's native gates; the layout and the two-qubit gate counts are
+   recorded. If the native two-qubit gate is not `cz`, the counts of section 4 are compared with the counts of the
+   device's own two-qubit gate.
+4. **Primitive and options.** The Sampler primitive (version 2), 4000 shots per circuit, with dynamical decoupling,
+   gate twirling and measurement twirling switched off explicitly, and no error mitigation of any kind.
+5. **Repetitions.** Five jobs, each holding the eight circuits once (repetition r = 1, …, 5), submitted at least
+   one hour apart if the plan's allowance and the queue permit, otherwise as the queue permits; the submission and
+   completion times are recorded, and whether the device's calibration changed between repetitions is read from
+   the calibration data recorded with each job.
+6. **Failures.** A job that is rejected before it executes may be resubmitted unchanged and the rejection is
+   recorded. A job that executed is never repeated: its counts are the data of that repetition, whatever they are.
+   If the allowance ends before five repetitions exist, the run is INVALID by the registered rule and is reported
+   as such with the data obtained.
+7. **Dress rehearsal (not data).** Before the first job, the same script runs the same circuits on a simulator that
+   uses a published calibration snapshot of an IBM device. Its result is reported as a rehearsal of the pipeline. It
+   cannot change a tolerance or the decision rule.
+8. **What is recorded** (section 6, made concrete): the device name and its reported version, the calibration
+   data as returned by the service at each submission, the job identifiers, the SDK versions, the transpiler seed,
+   the layout, the raw counts as returned, and the bit order used to convert them to "site 0 left-most". The
+   instance identifier and any account detail are not recorded in the repository.
 
 ## Run log
 

@@ -68,6 +68,8 @@ jobs:
           tools/check_release_pin.sh "https://github.com/${{ github.repository }}"
       - name: API index generator self-test (6 planted defects) and drift check
         run: tools/test_gen_api.sh && python3 -I tools/gen_api.py --check .
+      - name: Push gate and replay preflight self-tests (planted cases)
+        run: python3 -I tools/push_gate.py --self-test && python3 -I tools/replay_preflight.py --self-test
       - name: REUSE 3.3 licensing information (reuse lint) and CITATION.cff schema (cffconvert)
         run: |
           python3 -m venv /tmp/meta

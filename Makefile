@@ -11,7 +11,7 @@ SKIP = mkdir -p $(B)/skipped && touch $(B)/skipped/$@
 UNSKIP = mkdir -p $(B)/skipped && rm -f $(B)/skipped/$@
 LATEST_STAMP = $(lastword $(sort $(wildcard stamps/2*/)))
 
-.PHONY: api api-check docs-check stamp-preflight challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics \
+.PHONY: push-gate anchors api api-check docs-check stamp-preflight challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics \
 	quick statements statements-check release-pin entry-point
 
 tools:
@@ -69,11 +69,23 @@ stamp-verify: tools
 
 # `make verify-all ONLY="lean guard"` runs only those steps (reported as a partial run, never as a full PASS).
 verify-all: tools
+	python3 -I tools/replay_preflight.py --self-test && python3 -I tools/replay_preflight.py check .
 	$(T)/verify_all $(foreach s,$(ONLY),--only $(s))
+
+# Which checks a push needs, from the paths it changes (docs/lessons.md, rule 18): `make push-gate` prints them,
+# `make push-gate RUN=1` runs them.
+push-gate:
+	python3 -I tools/push_gate.py --self-test > /dev/null && python3 -I tools/push_gate.py $(if $(RUN),--run) .
+
+# Bitcoin anchors of the stamps' OpenTimestamps proofs, out of place under anchors/ots/ (docs/lessons.md, rule 21).
+# Needs the network and the pinned environment of tools/requirements-ots.txt: `make anchors OTS_PYTHON=.venv-ots/bin/python`.
+OTS_PYTHON ?= python3
+anchors:
+	$(OTS_PYTHON) -I tools/ots_anchor.py --self-test && $(OTS_PYTHON) -I tools/ots_anchor.py upgrade . && $(OTS_PYTHON) -I tools/ots_anchor.py check .
 
 # The fast local loop and the pull-request CI job: build, guard, axiom audit, statement types, Mathlib names,
 # Gamma-free check, statement list, documentation checks. Minutes with a warm cache; `verify-all` adds the kernel
-# replay, commitments, comparator and stamps (about two hours on a 4-core machine).
+# replay, commitments, comparator and stamps (three to three and a half hours on the 4-core session machine: 3 h 04 min in session 12; a run of session 13 was at comparator configuration 10 of 20 after 2 h 03 min).
 quick: guard statements-check api-check docs-check
 	$(MAKE) --no-print-directory lean
 	$(MAKE) --no-print-directory entry-point

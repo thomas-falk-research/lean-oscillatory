@@ -32,6 +32,18 @@ blueprints and assemblies compiled before any part, one route referee per batch
 (`review/2026-11-16-PA-KL-route-answers.md`), then the parts by proof agents. Lead, referees and provers are AI
 agents of one model family.
 
+### Process and tooling (owner decisions of 2026-11-16)
+
+- `tools/push_gate.py` (`make push-gate`): which checks a push needs, from the paths it changes; a status claim
+  counts as code (`docs/lessons.md`, rule 18).
+- `tools/replay_preflight.py`: disk preflight for `make verify-all` (footprint not yet on disk plus 5 GB, replacing
+  the fixed 15 GB floor) and a watcher for free space and foreign Lean processes (rule 7).
+- `tools/check_docs.py`: a STATUS row with a proving theorem says "proved in Lean" until a replay is recorded and
+  "machine-checked as stated" only after; both directions enforced (rule 20).
+- `tools/ots_anchor.py` (`make anchors`) and `anchors/ots/`: Bitcoin anchors of all 27 stamps' OpenTimestamps
+  proofs as upgraded copies, the stamp directories untouched; 54 proofs checked at two block explorers (rule 21).
+- A draft pull request for the working branch, so that CI runs on every push.
+
 ### Added
 
 - Tools, experimental and not published: the certificate contract `docs/contract/certificate-v0.md`, a Python
