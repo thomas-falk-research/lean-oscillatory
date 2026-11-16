@@ -35,8 +35,12 @@ below it, and every rule is binding.
   `docs/prereg/2026-11-16-CTQW-chain.md` is written and must be stamped before any job; IBM accepts only a one-hour
   token made from the owner's API key, and making it did not work on the owner's side; the run script and the
   dress rehearsal are not written; the simpler route is a script the owner runs locally).
-- **Next batch, drafted only:** `docs/design/batch-FR-draft.md` (finite ring and open chain, seven statements, not
-  frozen). Its freeze needs a sanity layer with planted controls, a challenge file, a second prior-art pass.
+- **Batch FR (finite ring, open chain; seven statements FR-K, FR-U, FR-S, FR-P, FC-K, FC-U, FC-P):** in the tree
+  for its freeze: `OscInt/Statements/FiniteRing.lean`, sanity layer `OscInt/Front/FiniteRingSanity.lean` with planted
+  controls (`docs/replay/2026-11-16-FR-sanity-plants.txt`), `Challenge/FiniteRing.lean`, `comparator-FR.json`, prose in
+  `docs/statements.md`. Order from here: statements commit, `make stamp`, freeze commit (pins, statement list, API
+  annotations, STATUS rows), blind pre-proof reviews A and B, answers, stamp of the answers, and only then routes,
+  blueprint, assembly and parts (rule 1). The session log's last rows say how far this got.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
   the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;
   a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;

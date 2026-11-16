@@ -1,0 +1,12 @@
+plant-FC-U-a.lean:136:31: error: Application type mismatch: The argument
+  chainMode_walls c
+has type
+  ∀ (t : ℝ), chainMode c t 0 = 0 ∧ chainMode c t (↑1 + 1) = 0
+but is expected to have type
+  ∀ (t : ℝ) (x : ℤ),
+    1 ≤ x →
+      x ≤ ↑1 →
+        HasDerivAt (fun s => chainMode c s x)
+          (Complex.I * (chainMode c t (x + 1) + chainMode c t (x - 1) - 2 * chainMode c t x)) t
+in the application
+  h 1 (chainMode c) (chainMode_walls c)

@@ -1,0 +1,4 @@
+{"challenge_module": "Challenge", "solution_module": "OscInt",
+ "theorem_names": ["OscInt.API.ringKernelSolves", "OscInt.API.ringUnique", "OscInt.API.ringCosetSum", "OscInt.API.ringFiniteSize", "OscInt.API.chainKernelSolves", "OscInt.API.chainUnique", "OscInt.API.chainFiniteSize"],
+ "definition_names": [],
+ "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]}

@@ -1163,3 +1163,100 @@ clarifications after the post-proof reviews:
    arithmetic: f′ = 1/5 on [0, 2], linear up to 4/5 on [2, 2.01], 4/5 after, integers 0 to 4: |S| = 3.0681 against
    1/(π/5) + 1 = 2.5915, and below cot(π/10) = 3.0777). The sanity layer records that mutation of KL-F as not
    detected; the proof excludes it.
+
+## Batch FR: the Schrödinger group on a ring of N sites and on an open chain of M sites (session 13, 2026-11-16)
+
+Order. As batches PA and KL: statements, `OscInt/Statements/FiniteRing.lean`, sanity theorems with planted controls
+(`OscInt/Front/FiniteRingSanity.lean`, record under `docs/replay/plants/2026-11-16-FR/`), challenge
+`Challenge/FiniteRing.lean` and `comparator-FR.json`, frozen and stamped before the blind pre-proof reviews. What that
+claim is worth, said at the strength the facts have (post-proof review of batches PA and KL, finding F1): no Lean
+proof of these statements is in the repository history before the stamp of the review answers; the lead states
+that none exists in scratch either, which a reader cannot check. A proof plan on paper does predate the freeze: one
+paragraph of dependencies in `docs/design/batch-FR-draft.md`, committed in 0302925, and the derivation of the two
+finite-size bounds, which the lead worked out while drafting (it is how the first form of FR-P was found not to be
+sharp). The sanity layer and the plants were written by an agent of the lead under a brief that forbids proving the
+statements, against the draft text; that text entered the repository unchanged (SHA-256 of the statement file
+33cbb55f1348163eb0395b7509b09db13ce110aa1e27d5ff4d56293c5717d26b).
+
+Why. Every lattice statement of OscInt so far is about the infinite lattice ℤ^d. A device is finite: a ring of N
+coupled sites, or, far more often, an open chain of M sites (a waveguide array, a line of qubits). Two classical
+facts connect them, and `docs/design/unlock-map.md` (nodes N2, N3; chains K8, K9) names them as the missing link
+between the proved estimates and a prediction a laboratory can test: the propagator on a ring is the propagator on
+the line summed over the images r + Nℤ (periodisation), and the propagator on an open chain with identical sites
+is the odd part of the propagator on a ring of 2(M + 1) sites (reflection). With the light-cone bound LC-1 of batch
+PA the images are small until the wave reaches a wall, with an explicit bound. The mathematics is classical (method
+of images; discrete sine transform); the claim, if proved, is "machine-checked", not new mathematics. Formalisation
+prior art (`docs/prior_art.md`, section of 2026-11-16 on batch FR; four web searches and a reading of Mathlib): no
+formalisation of these propagators, of the method of images or of a finite-size bound was found;
+PLAUSIBLE-not-formalised. The explicit bounds FR-P and FC-P were not looked for in print in this explicit form; they
+follow in a few lines from classical facts, and no claim is made that they are new.
+
+Notation. The equation is i u′ + Δu = 0 with (Δu)(x) = u(x + 1) + u(x − 1) − 2u(x), as in batch LS with d = 1.
+- **Line.** G(t, n) = (2π)^{−1} e^{−2it} I(2t, n) for n ∈ ℤ (Lean `lineKernel t n`), with I the 1D lattice kernel of batch
+  LE. By LS-K and TdF with d = 1 it is the kernel of the group on ℓ²(ℤ); on paper G(t, n) = e^{−2it} i^n J_n(2t).
+- **Ring of N ≥ 1 sites.** A function on the ring is a function on ℤ of period N.
+  R_N(t, r) = N^{−1} Σ_{j=0}^{N−1} e^{i(2t(cos k_j − 1) + r k_j)}, k_j = 2πj/N (Lean `ringKernel N t r`).
+- **Open chain of M sites.** The sites are 1, …, M; the walls are 0 and M + 1, where u = 0 (every site, including the
+  two end sites, has the diagonal term −2: "identical sites").
+  C_M(t; x, y) = R_{2(M+1)}(t, x − y) − R_{2(M+1)}(t, x + y) (Lean `chainKernel M t x y`).
+
+**FR-K (the ring kernel).** For every N ≥ 1, real t and integer r: s ↦ R_N(s, r) has derivative
+i (R_N(t, r + 1) + R_N(t, r − 1) − 2 R_N(t, r)) at t; R_N(0, r) is 1 if N divides r and 0 otherwise;
+R_N(t, r + N) = R_N(t, r).
+
+**FR-U (it is the propagator of the ring).** For every N ≥ 1 and every u : ℝ → ℤ → ℂ with u(t, x + N) = u(t, x) and
+∂_t u(t, x) = i (u(t, x + 1) + u(t, x − 1) − 2u(t, x)) for all t and x: u(t, x) = Σ_{y=0}^{N−1} R_N(t, x − y) u(0, y).
+
+**FR-S (method of images).** For every N ≥ 1, real t and integer r, the series Σ_{m ∈ ℤ} G(t, r + mN) converges
+unconditionally and its sum is R_N(t, r).
+
+**FR-P (finite-size error of the ring).** For every N ≥ 1, real t, integer r and η > 0:
+|R_N(t, r) − G(t, r)| ≤ 2 e^{2|t| sinh η} cosh(rη) / (e^{ηN} − 1).
+
+**FC-K (the chain kernel).** For every M, real t, integers x, y with 1 ≤ y ≤ M: s ↦ C_M(s; x, y) has derivative
+i (C_M(t; x + 1, y) + C_M(t; x − 1, y) − 2 C_M(t; x, y)) at t; C_M(t; 0, y) = 0 and C_M(t; M + 1, y) = 0; and for
+1 ≤ x ≤ M, C_M(0; x, y) is 1 if x = y and 0 otherwise.
+
+**FC-U (it is the propagator of the chain).** For every M and every u : ℝ → ℤ → ℂ with u(t, 0) = u(t, M + 1) = 0 for
+all t and ∂_t u(t, x) = i (u(t, x + 1) + u(t, x − 1) − 2u(t, x)) for all t and 1 ≤ x ≤ M:
+u(t, x) = Σ_{y=1}^{M} C_M(t; x, y) u(0, y) for all t and 1 ≤ x ≤ M.
+
+**FC-P (finite-size error of the chain).** For every M, real t, η > 0 and sites 1 ≤ x, y ≤ M:
+|C_M(t; x, y) − G(t, x − y)| ≤ e^{2|t| sinh η} ( e^{−(x+y)η} + 2 (cosh((x − y)η) + cosh((x + y)η)) / (e^{2(M+1)η} − 1) ).
+
+Modelling choices and omissions.
+1. One dimension only. Rings and boxes in ℤ^d factorise (TdF), but that is not stated here.
+2. A function on the ring is a periodic function on ℤ, not a function on `ZMod N`; a function on the chain is a
+   function on ℤ of which only the values at 0, …, M + 1 are constrained. This keeps the statements free of
+   coercions between `ZMod N`, `Fin N` and ℤ; the price is that FR-U and FC-U quantify over u : ℝ → ℤ → ℂ.
+3. Time derivatives are taken site by site. For finitely many sites this is the derivative of the vector.
+4. N = 1 and N = 2 are included. For N = 1 the "ring" is one site with Δ = 0 and R_1 = 1. For N = 2 the two
+   neighbours of a site coincide, so Δu(x) = 2(u(x + 1) − u(x)): a double bond, which is what the formula gives and
+   not what a two-site device with one bond does (that device is the open chain with M = 2).
+5. M = 0 is included and vacuous in FC-K and FC-P (no y with 1 ≤ y ≤ 0); in FC-U it says nothing.
+6. The chain has Dirichlet walls and the same diagonal −2 at every site. A chain whose end sites have diagonal −1
+   (free ends, the graph Laplacian of a path) is the EVEN reflection and is not covered; its kernel is
+   R_{2M}(t, x − y) + R_{2M}(t, x + y − 1). In the physical normalisation H = −κ Σ (|x⟩⟨x+1| + h.c.) with identical
+   on-site energies, the diagonal is a constant and only changes a global phase: that device is this chain.
+7. FR-P and FC-P have a free parameter η > 0, as LC-1. They say nothing useful once the wave has reached a wall
+   (roughly 2|t| ≥ distance to the nearest image). FR-P is sharp as a supremum: at t = 0, r = N the left side is 1 and the
+   right side is (e^{Nη} + e^{−Nη})/(e^{Nη} − 1), which tends to 1 as η → ∞; no constant smaller than 2 is true (a
+   control with constant 1 fails). A first draft had e^{|r|η} in place of cosh(rη); a planted control ("without the factor 2") did not fail
+   on it, which showed that draft was not sharp, and the statement was sharpened before the freeze.
+8. FC-P keeps three images: the wall at 0 (the term e^{−(x+y)η}), and through the ring bound the wall at M + 1 and all
+   further ones. It is not sharp (largest observed ratio of the two sides 0.36).
+9. Populations: the probability at site x for a unit datum at y is |C_M(t; x, y)|². The statements bound amplitudes;
+   ||a|² − |b|²| ≤ |a − b| (|a| + |b|) ≤ 2|a − b| for amplitudes of modulus at most 1 turns FC-P into a bound for
+   populations. That step is not stated in this batch.
+10. Numerical truth checks by the lead before the freeze, in ball arithmetic, by two methods that share no formula
+   (the kernels as defined against the matrix exponential of the graph Laplacian):
+   `numerics/review/fr_statement_checks.py`, results `numerics/results-fr-statement-checks-2026-11-16.txt`, 12 of 12
+   checks pass and five altered statements are rejected. These are tooling, not evidence.
+11. Not stated, and CONJECTURED only: FR-P may hold without the "− 1" in its denominator. A certified scan by the lead
+   found no violation in 159003 comparisons (N ≤ 13, 0 ≤ t ≤ 8, |r| ≤ 2N, thirteen values of η; largest ratio of the
+   two sides 1.0), and the sanity layer has no datum against it (plant FR-P-e, NOT DETECTED). The route to FR-P
+   (the images bounded one by one with LC-1) gives the "− 1" form and not the stronger one.
+12. The sanity layer: `docs/replay/2026-11-16-FR-sanity-plants.txt`. 26 planted mutations; 23 are refuted by compiled
+   witnesses, 1 is equivalent to the statement (FC-U with the sum from 0 instead of 1), 2 are not detected by any
+   datum (the "− 1" of FR-P; the wall term of FC-P) and rest on the reviews and on the proof. FC-P has no exact datum
+   with a nonzero left side in this layer. FR-K, FC-K and the kernels are tested at N ≤ 4 and M ≤ 2 only.

@@ -1,0 +1,26 @@
+plant-FR-U-a.lean:149:38: error: Application type mismatch: The argument
+  piMode_periodic
+has type
+  ∀ (t : ℝ) (x : ℤ), piMode t (x + ↑2) = piMode t x
+but is expected to have type
+  ∀ (t : ℝ) (x : ℤ),
+    HasDerivAt (fun s => piMode s x) (Complex.I * (piMode t (x + 1) + piMode t (x - 1) - 2 * piMode t x)) t
+in the application
+  h 2 piMode ?m.49 piMode_periodic
+plant-FR-U-a.lean:148:51: error: unsolved goals
+h : P_RingUniqueStatement
+t : ℝ
+x : ℤ
+⊢ (if Even x then 1 else -1) * Complex.exp (↑(-(4 * t)) * Complex.I) = ringKernel 2 t x - ringKernel 2 t (x - 1)
+plant-FR-U-a.lean:154:58: error: Type mismatch
+  rfl
+has type
+  ?m.18 = ?m.18
+but is expected to have type
+  HasDerivAt (fun s => 1) (Complex.I * (1 + 1 - 2 * 1)) x✝¹
+plant-FR-U-a.lean:155:63: error: No goals to be solved
+plant-FR-U-a.lean:153:92: error: unsolved goals
+h : P_RingUniqueStatement
+t : ℝ
+x : ℤ
+⊢ ringKernel 1 t x = 1

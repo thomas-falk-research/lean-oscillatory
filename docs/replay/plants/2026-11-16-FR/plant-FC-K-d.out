@@ -1,0 +1,9 @@
+plant-FC-K-d.lean:173:74: error: unsolved goals
+t : ℝ
+⊢ ringKernel 3 t 0 - ringKernel 3 t 2 = ringKernel 4 t 0 - ringKernel 4 t 2
+plant-FC-K-d.lean:178:77: error: unsolved goals
+t : ℝ
+⊢ ringKernel 3 t (-1) - ringKernel 3 t 1 = ringKernel 4 t (-1) - ringKernel 4 t 1
+plant-FC-K-d.lean:183:74: error: unsolved goals
+t : ℝ
+⊢ ringKernel 3 t 1 - ringKernel 3 t 3 = ringKernel 4 t 1 - ringKernel 4 t 3

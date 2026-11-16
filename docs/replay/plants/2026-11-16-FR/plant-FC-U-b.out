@@ -1,0 +1,10 @@
+plant-FC-U-b.lean:137:20: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  Finset.Icc ?a ?a
+in the target expression
+  chainMode c t 1 = ∑ y ∈ Finset.Icc 0 1, chainKernel 1 t 1 y * chainMode c 0 y
+
+h : P_ChainUniqueStatement
+t : ℝ
+c : ℂ
+h1 : chainMode c t 1 = ∑ y ∈ Finset.Icc 0 1, chainKernel 1 t 1 y * chainMode c 0 y
+⊢ c * Complex.exp (↑(-(2 * t)) * Complex.I) = chainKernel 1 t 1 1 * c

@@ -1,0 +1,6 @@
+plant-FR-S-b.lean:149:2: error: Type mismatch: After simplification, term
+  h1
+ has type
+  ∑' (b : ℤ), lineKernel 0 (1 + b * 2) = 1
+but is expected to have type
+  ∑' (m : ℤ), lineKernel 0 (1 + m * 2) = 0

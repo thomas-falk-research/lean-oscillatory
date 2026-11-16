@@ -1,0 +1,179 @@
+import OscInt.Statements.PeriodicAnalytic
+import OscInt.Front.PeriodicAnalyticSanity
+
+namespace OscInt.Statements
+
+/-- The kernel of `i u′ + Δu = 0` on the line `ℤ`: `G(t, n) = (2π)^{−1} e^{−2it} I(2t, n)`. -/
+noncomputable def lineKernel (t : ℝ) (n : ℤ) : ℂ :=
+  ((2 * Real.pi : ℝ) : ℂ)⁻¹ * Complex.exp (↑(-(2 * t)) * Complex.I) * latticeKernel1 (2 * t) (n : ℝ)
+
+/-- The kernel on the ring of `N` sites: `R_N(t, r) = N^{−1} Σ_{j<N} e^{i(2t(cos k_j − 1) + r k_j)}`, `k_j = 2πj/N`. -/
+noncomputable def ringKernel (N : ℕ) (t : ℝ) (r : ℤ) : ℂ :=
+  ((N : ℝ) : ℂ)⁻¹ * ∑ j ∈ Finset.range N,
+    Complex.exp (↑(2 * t * (Real.cos (2 * Real.pi * (j : ℝ) / (N : ℝ)) - 1) +
+      (r : ℝ) * (2 * Real.pi * (j : ℝ) / (N : ℝ))) * Complex.I)
+
+/-- The kernel on the open chain of the sites `1, …, M`: the odd reflection of the ring of `2(M + 1)` sites,
+`C_M(t; x, y) = R_{2(M+1)}(t, x − y) − R_{2(M+1)}(t, x + y)`. -/
+noncomputable def chainKernel (M : ℕ) (t : ℝ) (x y : ℤ) : ℂ :=
+  ringKernel (2 * (M + 1)) t (x - y) - ringKernel (2 * (M + 1)) t (x + y)
+
+/-- **FR-K** The ring kernel solves `i ∂_t R + ΔR = 0` in the site variable, equals the unit datum of the ring at
+`t = 0` (1 on `Nℤ`, 0 elsewhere) and has period `N`. -/
+def RingKernelStatement : Prop :=
+  ∀ (N : ℕ) (t : ℝ) (r : ℤ), 0 < N →
+    HasDerivAt (fun s : ℝ => ringKernel N s r)
+      (Complex.I * (ringKernel N t (r + 1) + ringKernel N t (r - 1) - 2 * ringKernel N t r)) t ∧
+    ringKernel N 0 r = (if (N : ℤ) ∣ r then 1 else 0) ∧
+    ringKernel N t (r + (N : ℤ)) = ringKernel N t r
+
+theorem statement_pin_RingKernel : RingKernelStatement = RingKernelStatement := rfl
+
+/-- **FR-U** Every solution of period `N` of `i u′ + Δu = 0` is the kernel sum of its datum over one period:
+`u(t, x) = Σ_{y<N} R_N(t, x − y) u(0, y)`. -/
+def RingUniqueStatement : Prop :=
+  ∀ (N : ℕ) (u : ℝ → ℤ → ℂ), 0 < N → (∀ (t : ℝ) (x : ℤ), u t (x + (N : ℤ)) = u t x) →
+    (∀ (t : ℝ) (x : ℤ), HasDerivAt (fun s : ℝ => u s x) (Complex.I * (u t (x + 1) + u t (x - 1) - 2 * u t x)) t) →
+    ∀ (t : ℝ) (x : ℤ), u t x = ∑ y ∈ Finset.range N, ringKernel N t (x - (y : ℤ)) * u 0 (y : ℤ)
+
+theorem statement_pin_RingUnique : RingUniqueStatement = RingUniqueStatement := rfl
+
+/-- **FR-S** Method of images: the ring kernel is the line kernel summed over the coset `r + Nℤ`. -/
+def RingCosetSumStatement : Prop :=
+  ∀ (N : ℕ) (t : ℝ) (r : ℤ), 0 < N →
+    HasSum (fun m : ℤ => lineKernel t (r + m * (N : ℤ))) (ringKernel N t r)
+
+theorem statement_pin_RingCosetSum : RingCosetSumStatement = RingCosetSumStatement := rfl
+
+/-- **FR-P** Finite-size error of the ring: `|R_N(t, r) − G(t, r)| ≤ 2 e^{2|t| sinh η} cosh(rη) / (e^{ηN} − 1)` for every
+`η > 0`. -/
+def RingFiniteSizeStatement : Prop :=
+  ∀ (N : ℕ) (t η : ℝ) (r : ℤ), 0 < N → 0 < η →
+    ‖ringKernel N t r - lineKernel t r‖ ≤
+      2 * Real.exp (2 * |t| * Real.sinh η) * Real.cosh ((r : ℝ) * η) / (Real.exp (η * (N : ℝ)) - 1)
+
+theorem statement_pin_RingFiniteSize : RingFiniteSizeStatement = RingFiniteSizeStatement := rfl
+
+/-- **FC-K** The chain kernel solves the equation in the site variable, vanishes at the walls `x = 0` and
+`x = M + 1`, and is the unit datum at `t = 0` on the sites `1, …, M`. -/
+def ChainKernelStatement : Prop :=
+  ∀ (M : ℕ) (t : ℝ) (x y : ℤ), 1 ≤ y → y ≤ (M : ℤ) →
+    HasDerivAt (fun s : ℝ => chainKernel M s x y)
+      (Complex.I * (chainKernel M t (x + 1) y + chainKernel M t (x - 1) y - 2 * chainKernel M t x y)) t ∧
+    chainKernel M t 0 y = 0 ∧ chainKernel M t ((M : ℤ) + 1) y = 0 ∧
+    (1 ≤ x → x ≤ (M : ℤ) → chainKernel M 0 x y = (if x = y then 1 else 0))
+
+theorem statement_pin_ChainKernel : ChainKernelStatement = ChainKernelStatement := rfl
+
+/-- **FC-U** Every solution of `i u′ + Δu = 0` on the open chain `1, …, M` with `u = 0` at the walls `0` and `M + 1`
+is the kernel sum of its datum: `u(t, x) = Σ_{y=1}^{M} C_M(t; x, y) u(0, y)`. -/
+def ChainUniqueStatement : Prop :=
+  ∀ (M : ℕ) (u : ℝ → ℤ → ℂ), (∀ t : ℝ, u t 0 = 0 ∧ u t ((M : ℤ) + 1) = 0) →
+    (∀ (t : ℝ) (x : ℤ), 1 ≤ x → x ≤ (M : ℤ) →
+      HasDerivAt (fun s : ℝ => u s x) (Complex.I * (u t (x + 1) + u t (x - 1) - 2 * u t x)) t) →
+    ∀ (t : ℝ) (x : ℤ), 1 ≤ x → x ≤ (M : ℤ) →
+      u t x = ∑ y ∈ Finset.Icc (1 : ℤ) (M : ℤ), chainKernel M t x y * u 0 y
+
+theorem statement_pin_ChainUnique : ChainUniqueStatement = ChainUniqueStatement := rfl
+
+/-- **FC-P** Finite-size error of the open chain: for sites `1 ≤ x, y ≤ M` and every `η > 0`,
+`|C_M(t; x, y) − G(t, x − y)| ≤ e^{2|t| sinh η} (e^{−(x+y)η} + 2 (cosh((x−y)η) + cosh((x+y)η)) / (e^{2(M+1)η} − 1))`. -/
+def ChainFiniteSizeStatement : Prop :=
+  ∀ (M : ℕ) (t η : ℝ) (x y : ℤ), 0 < η → 1 ≤ x → x ≤ (M : ℤ) → 1 ≤ y → y ≤ (M : ℤ) →
+    ‖chainKernel M t x y - lineKernel t (x - y)‖ ≤
+      Real.exp (2 * |t| * Real.sinh η) *
+        (Real.exp (-(((x + y : ℤ) : ℝ) * η)) +
+          2 * (Real.cosh (((x - y : ℤ) : ℝ) * η) + Real.cosh (((x + y : ℤ) : ℝ) * η)) /
+            (Real.exp (2 * ((M : ℝ) + 1) * η) - 1))
+
+theorem statement_pin_ChainFiniteSize : ChainFiniteSizeStatement = ChainFiniteSizeStatement := rfl
+
+end OscInt.Statements
+
+namespace OscInt.API.FiniteRingSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+
+/-- One mode of a ring kernel: with `cos θ = c` and `e^{iθ} = z`, the summand `e^{i(2t(cos θ − 1) + rθ)}` is
+`zʳ e^{2it(c − 1)}`. A fact about the exponential; no kernel is mentioned. -/
+theorem exp_mode (t θ c : ℝ) (r : ℤ) (z : ℂ) (hc : Real.cos θ = c) (hz : Complex.exp (↑θ * Complex.I) = z) :
+    Complex.exp (↑(2 * t * (Real.cos θ - 1) + (r : ℝ) * θ) * Complex.I) =
+      z ^ r * Complex.exp (↑(2 * t * (c - 1)) * Complex.I) := by
+  rw [← hz, ← Complex.exp_int_mul, ← Complex.exp_add, hc]
+  congr 1; push_cast; ring
+
+/-- `(−1)ʳ` as a case distinction on the parity of the integer `r`. -/
+theorem neg_one_zpow_ite (r : ℤ) : (-1 : ℂ) ^ r = if Even r then 1 else -1 := by
+  split_ifs with he
+  · exact he.neg_one_zpow
+  · exact (Int.not_even_iff_odd.mp he).neg_one_zpow
+
+/-- **Datum, ring of 2 sites.** `R₂(t, r) = (1 + (−1)ʳ e^{−4it}) / 2`: the modes `k = 0` and `k = π`. -/
+theorem ringKernel_two (t : ℝ) (r : ℤ) :
+    ringKernel 2 t r = (1 + (if Even r then 1 else -1) * Complex.exp (↑(-(4 * t)) * Complex.I)) / 2 := by
+  have hθ : 2 * Real.pi * ((1 : ℕ) : ℝ) / ((2 : ℕ) : ℝ) = Real.pi := by push_cast; ring
+  have h1 := exp_mode t Real.pi (-1) r (-1) Real.cos_pi Complex.exp_pi_mul_I
+  rw [show 2 * t * ((-1 : ℝ) - 1) = -(4 * t) by ring, neg_one_zpow_ite] at h1
+  rw [ringKernel, Finset.sum_range_succ, Finset.sum_range_one, hθ, h1]
+  simp
+  ring
+
+/-- **Datum at a nonzero time: ring of 2 sites against the line**, `t = 1/4`, `r = 0`:
+`|R₂ − G| ≥ |G| − |R₂| ≥ (1 − t²) − cos 2t ≥ 0.059`, from `‖I(1/2, 0)‖ ≥ 2π(1 − 1/16)` and
+`R₂(t, 0) = e^{−2it} cos 2t`. -/
+theorem ring_two_sub_line_lower : 59 / 1000 ≤ ‖ringKernel 2 (1 / 4) 0 - lineKernel (1 / 4) 0‖ := by
+  have hG : 15 / 16 ≤ ‖lineKernel (1 / 4) 0‖ := by
+    have hl := latticeKernel1_zero_freq_lower (1 / 2)
+    rw [lineKernel, norm_mul, norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, norm_inv, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos (by positivity), Int.cast_zero, show (2 : ℝ) * (1 / 4) = 1 / 2 by norm_num,
+      le_inv_mul_iff₀ (by positivity)]
+    nlinarith [Real.pi_pos]
+  have hR : ‖ringKernel 2 (1 / 4) 0‖ ≤ 8783 / 10000 := by
+    have h1 : Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) * Complex.exp (↑(1 / 2 : ℝ) * Complex.I) = 1 := by
+      rw [← Complex.exp_add]; simp
+    have h2 : Complex.exp (↑(-(4 * (1 / 4 : ℝ))) * Complex.I) =
+        Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) := by
+      rw [← Complex.exp_add]; congr 1; push_cast; ring
+    have e : ringKernel 2 (1 / 4) 0 =
+        Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) * ((Real.cos (1 / 2) : ℝ) : ℂ) := by
+      rw [ringKernel_two, ite_eq_left Even.zero, one_mul, h2, Complex.ofReal_cos, Complex.cos,
+        show -(((1 / 2 : ℝ) : ℂ)) * Complex.I = ↑(-(1 / 2 : ℝ)) * Complex.I by push_cast; ring]
+      linear_combination (-1 / 2 : ℂ) * h1
+    have hc := abs_le.mp (Real.cos_bound (x := 1 / 2) (by rw [abs_of_pos (by norm_num)]; norm_num))
+    rw [abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)] at hc
+    rw [e, norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos (by linarith [hc.1])]
+    linarith [hc.2]
+  have h3 := norm_sub_norm_le (lineKernel (1 / 4) 0) (ringKernel 2 (1 / 4) 0)
+  rw [norm_sub_rev] at h3
+  linarith
+
+/-- **Bite: the time enters the bound of FR-P as `2|t|`.** At `N = 2`, `r = 0`, `t = 1/4`, `η = log 16` the bound
+with `|t|` in place of `2|t|` is `2 e^{sinh(log 16)/4} / 255 < 2e²/255 < 0.058`, below the left side `≥ 0.059`. -/
+theorem ringP_half_time_false :
+    ¬ ‖ringKernel 2 (1 / 4) 0 - lineKernel (1 / 4) 0‖ ≤
+      2 * Real.exp (|(1 / 4 : ℝ)| * Real.sinh (Real.log 16)) * Real.cosh (((0 : ℤ) : ℝ) * Real.log 16) /
+        (Real.exp (Real.log 16 * ((2 : ℕ) : ℝ)) - 1) := by
+  intro h
+  have h16 : Real.exp (Real.log 16) = 16 := Real.exp_log (by norm_num)
+  have hs : |(1 / 4 : ℝ)| * Real.sinh (Real.log 16) ≤ 1 + 1 := by
+    rw [abs_of_pos (by norm_num), Real.sinh_eq, Real.exp_neg, h16]; norm_num
+  have he : Real.exp (|(1 / 4 : ℝ)| * Real.sinh (Real.log 16)) ≤ 739 / 100 := by
+    refine (Real.exp_le_exp.mpr hs).trans ?_
+    rw [Real.exp_add]
+    nlinarith [Real.exp_one_lt_d9, Real.exp_pos 1]
+  rw [Int.cast_zero, zero_mul, Real.cosh_zero, mul_one, Nat.cast_ofNat,
+    show Real.log 16 * 2 = Real.log 16 + Real.log 16 by ring, Real.exp_add, h16,
+    le_div_iff₀ (by norm_num)] at h
+  linarith [ring_two_sub_line_lower]
+
+def P_RingFiniteSizeStatement : Prop :=
+  ∀ (N : ℕ) (t η : ℝ) (r : ℤ), 0 < N → 0 < η →
+    ‖ringKernel N t r - lineKernel t r‖ ≤
+      2 * Real.exp (|t| * Real.sinh η) * Real.cosh ((r : ℝ) * η) / (Real.exp (η * (N : ℝ)) - 1)
+
+theorem witness_not_RingFiniteSizeStatement : ¬ P_RingFiniteSizeStatement :=
+  fun h =>
+    ringP_half_time_false (h 2 (1 / 4) (Real.log 16) 0 (by norm_num) (Real.log_pos (by norm_num)))
+
+end OscInt.API.FiniteRingSanity

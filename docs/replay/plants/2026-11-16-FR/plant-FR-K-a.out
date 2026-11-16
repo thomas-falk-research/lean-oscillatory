@@ -1,0 +1,14 @@
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+plant-FR-K-a.lean:129:100: error: unsolved goals
+h : P_RingKernelStatement
+t : ℝ
+h1 :
+  HasDerivAt (fun s => ringKernel 2 s 0)
+    (Complex.I * (ringKernel 2 t (0 + 1) + ringKernel 2 t (0 - 1) - ringKernel 2 t 0)) t
+⊢ Complex.I * (1 / 2) + Complex.I * Complex.exp (-(Complex.I * ↑t * 4)) * (-3 / 2) =
+    -(Complex.I * Complex.exp (-(Complex.I * ↑t * 4)) * 2)

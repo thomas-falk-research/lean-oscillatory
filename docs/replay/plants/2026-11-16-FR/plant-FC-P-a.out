@@ -1,0 +1,14 @@
+plant-FC-P-a.lean:179:25: error: Application type mismatch: The argument
+  hη
+has type
+  0 < η
+but is expected to have type
+  1 ≤ 1
+in the application
+  h 1 t η 1 1 hη
+plant-FC-P-a.lean:178:88: error: unsolved goals
+h : P_ChainFiniteSizeStatement
+t η : ℝ
+hη : 0 < η
+⊢ ‖Complex.exp (↑(-(2 * t)) * Complex.I) - lineKernel t 0‖ ≤
+    Real.exp (2 * |t| * Real.sinh η) * (Real.exp (-(2 * η)) + 2 * (1 + Real.cosh (2 * η)) / (Real.exp (4 * η) - 1))

@@ -248,3 +248,38 @@ nonpositive sum, so `∫ cos(v − θ) ρ` is at most the integral over the firs
 is at most `Re(e^{−iθ} ∫_0^{v₁} e^{iv} E) ≤ m`, and if it starts at `v₀ > 0` it is at most
 `∫_0^π sin(s) E(v₀ + s) ds ≤ ∫_0^π sin(s) E(s) ds = Im ∫_0^π e^{iv} E ≤ m`. Equality for `ρ = E` cut at the maximising
 phase, that is, for a quadratic phase on a symmetric interval.
+
+## Batch FR (finite ring, open chain): prior art found before the freeze (2026-11-16)
+
+The mathematics is classical: the propagator of a ring is the propagator of the line summed over images, and the
+open chain with identical sites is the odd part of a ring of twice the size plus two (the discrete sine transform).
+Nothing in the batch is claimed as new mathematics. What was looked for is a formalisation, and the explicit
+finite-size inequalities were not searched for in print.
+
+First pass (lead, two web searches; results pages only, no repository or paper opened):
+- Query 1: Lean 4 / Mathlib formalisation of the continuous-time quantum walk on a cycle, propagator, Bessel, method
+  of images, periodisation. Closest hit: github.com/emberian/graphplay (Lean 4; equitable-partition quotients of
+  quantum walks, perfect state transfer, continuous-time search on K_n; per the search summary no cycle graph, Bessel
+  function or images). Also inQWIRE/LeanQuantum (quantum information; not graph walks).
+- Query 2: Lean / Isabelle / Coq, discrete Schrödinger equation on a finite chain with Dirichlet ends, sine transform,
+  reflection. No formalisation found; analytic papers only (arXiv:2008.03698, arXiv:2608.05338, arXiv:2411.14397).
+- Mathlib has the discrete Fourier transform on ZMod N (read in the second pass, below).
+Label after the first pass: PLAUSIBLE-not-formalised (absence of a hit in two searches is not evidence of novelty).
+Not done in either pass: the Lean Zulip archive was not searched, and the graphplay repository was not opened.
+
+Second pass (2026-11-16, lead, during the replay; two more standard web searches, results pages only; Mathlib
+sources read at the pin):
+- Query 3: Isabelle AFP, circulant matrices, eigenvalues, discrete Fourier transform, cycle-graph spectrum: no
+  formalisation among the results (mathematical papers only).
+- Query 4: the repository emberian/graphplay: per the search summary of its README, "the equitable-partition quotient
+  of quantum walks, formalized in Lean 4", with perfect-state-transfer criteria; the summary found no cycle or path
+  graph in it. The repository itself was not opened (outside this session's GitHub scope); its self-reported build
+  status is not verified.
+- Mathlib at the pin (read by the lead): `Mathlib/Analysis/Fourier/ZMod.lean` has the discrete Fourier transform on
+  `ZMod N` as a linear equivalence with its inversion formula (`ZMod.dft`, `ZMod.dft_dft`);
+  `Mathlib/LinearAlgebra/Matrix/Circulant.lean` has circulant matrices; `Mathlib/Combinatorics/SimpleGraph/Circulant.lean`
+  circulant graphs. None states a propagator, a method of images or a finite-size bound. FR-K's unit datum is a
+  special case of orthogonality of characters, which `ZMod.dft_dft` contains in another form.
+Label unchanged: PLAUSIBLE-not-formalised. The mathematics is classical; nothing in batch FR is claimed as new
+mathematics. One open point recorded as CONJECTURED, not claimed: FR-P without the "− 1" in its denominator (no
+certified violation in 159003 comparisons by the lead; not proved; not in the batch).
