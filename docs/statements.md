@@ -1260,3 +1260,69 @@ Modelling choices and omissions.
    witnesses, 1 is equivalent to the statement (FC-U with the sum from 0 instead of 1), 2 are not detected by any
    datum (the "− 1" of FR-P; the wall term of FC-P) and rest on the reviews and on the proof. FC-P has no exact datum
    with a nonzero left side in this layer. FR-K, FC-K and the kernels are tested at N ≤ 4 and M ≤ 2 only.
+
+## Batch VC2: the second-derivative van der Corput bound with its sharp constant (session 13, 2026-11-16)
+
+Order. As batch FR: statements, `OscInt/Statements/SecondDerivSharp.lean`, sanity theorems with planted controls
+(`OscInt/Front/SecondDerivSharpSanity.lean`, record under `docs/replay/plants/2026-11-16-VC2/`), challenge
+`Challenge/SecondDerivSharp.lean` and `comparator-VC2.json`, frozen and stamped before the blind pre-proof reviews.
+What differs from the earlier batches, said plainly: a complete proof on paper of VC2-S and VC2-A predates the
+freeze. The lead wrote it on 2026-11-16 before drafting these statements (it is how the form of VC2-S was found), a
+fresh referee read it step by step (verdict: correct after the listed repairs; two minor repairs made, not
+re-refereed), and it is in `docs/prior_art.md` in outline. No Lean proof of these statements is in the repository
+history before the stamp of the review answers. The sanity layer and the plants were written by an agent of the
+lead under a brief that forbids proving the statements, against the draft text, which entered the repository
+unchanged (SHA-256 of the statement file b0f5814eabf7541158b81697bf66cd55b01c70177252c6e35d045506b474eabb).
+
+Why. S1.2 (and S1.k at k = 2) has Stein's constant 8. The best constant has been known since Kershner (1935, 1938;
+`docs/prior_art.md`; the lead has not read Kershner's papers): it is the largest modulus of a Fresnel partial
+integral, 3.3643175781…. Every explicit bound of this library that passes through the second-derivative test
+carries the factor 8/3.364… = 2.38 for no reason. The theorem is classical; the claim, if proved, is "machine-checked,
+sharp constant", not new mathematics. The session's map had called the constant open on the word of one paper
+and was corrected the same day (session log, 2026-11-16).
+
+Notation. A(w) = 2 ∫_0^{√(2w)} sin(w − u²/2) du for w ≥ 0 (Lean `vdc2Profile w`). With F(V) = 2 ∫_0^{√(2V)} e^{iu²/2} du
+one has A(w) = Im(e^{iw} · conj F(w)) (substitute v = u²/2), so A(w) ≤ |F(w)|. "f′ increases at rate at least λ on (a, b)" means f′(y) − f′(x) ≥ λ (y − x) for all a < x ≤ y < b (Lean
+`DerivIncreasesAtRate f' a b lam`); it holds if f″ ≥ λ and needs no second derivative.
+
+**VC2-S (sharp second-derivative bound).** For all a ≤ b, λ > 0 and every f continuous on [a, b] with derivative f′ on
+(a, b) that increases at rate at least λ: there is w ∈ [0, π] with |∫_a^b e^{if(x)} dx| ≤ A(w)/√λ.
+
+**VC2-A (attained).** For every w ≥ 0: A(w) ≤ |∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx|. (The right side is |F(w)|; the phase
+x²/2 on a symmetric interval satisfies the hypotheses of VC2-S with λ = 1. So sup_{[0,π]} A is the best constant.)
+
+**VC2-N (a number).** A(w) ≤ 7/2 for 0 ≤ w ≤ π. (The supremum is 3.3643175781…, at w = 2.2974…)
+
+**VC2-K (the test with amplitude, constant 7/2).** As S1.2 with 7/2 in place of 8: for φ with derivatives φ′, φ″ on
+[a, b] in the sense of S1, |φ″| ≥ μ > 0 on (a, b), every real p and every ψ with the amplitude hypothesis of S1:
+|∫_a^b e^{i(φ(x) + px)} ψ(x) dx| ≤ (7/2) μ^{−1/2} A(ψ; a, b).
+
+Modelling choices and omissions.
+1. VC2-S is stated with the profile A and an existential w, not with a supremum: the statement then contains no
+   `sSup` (whose value in Lean for an unbounded or empty set would need a side condition) and is strictly stronger
+   than the bound with the constant sup A. The constant itself enters through VC2-N.
+2. VC2-S assumes only that f is continuous on [a, b] and differentiable inside, with the increment condition on f′;
+   f′ may be unbounded at the ends. VC2-K keeps the hypotheses of S1.2 (φ′ continuous up to the ends, a second
+   derivative), so that it can replace S1.2 where S1.2 is used; a derivative of constant sign follows from |φ″| ≥ μ
+   by Darboux's theorem.
+3. VC2-N is a bound for a number defined by an integral; 7/2 is 4 % above the supremum. A tighter rational
+   (for instance 3.3644) would need a certified evaluation in Lean and is not stated.
+4. The uniqueness of the extremal phase and the first-derivative test with its sharp constant 2 (which the same
+   method gives) are not stated.
+5. Numerical truth checks by the lead before the freeze: `numerics/review/vc2_statement_checks.py`, results
+   `numerics/results-vc2-statement-checks-2026-11-16.txt`, 11 lines, all pass: the maximum of A on [0, π] is
+   3.3643175781559 at w = 2.297439574; A ≤ |F| on a grid and equality at the maximiser; 60000 random phases with
+   piecewise constant second derivative ≥ λ (two methods for the integral: Fresnel closed forms and adaptive
+   quadrature) reach at most 3.363688 √λ^{−1}; 1500 random instances of VC2-K reach the ratio 2.41 against 7/2; three
+   altered statements are rejected. The proof's referee ran a linear programme over nonincreasing densities
+   (supremum 3.36039, from below). Floating point and quadrature: tooling, not evidence.
+6. The sanity layer: `docs/replay/2026-11-16-VC2-sanity-plants.txt`. 62 declarations, 13 through a statement constant.
+   Certified data: 33/10 ≤ A(441/200) and 33/10 ≤ |∫_{−21/10}^{21/10} e^{ix²/2} dx| (so 7/2 is within 6 % of a value of
+   A, and no constant below 33/10 is true in VC2-S, VC2-N or VC2-K). 15 planted mutations: 12 are refuted by compiled
+   witnesses; 2 are true weakenings (the increment condition with an absolute value, which is equivalent to the
+   statement by Darboux's theorem and conjugation, so "increasing" in VC2-S is a normalisation and the decreasing
+   case is the conjugate one; VC2-K with φ″ in place of |φ″|); 1 is not detected and is apparently a true
+   strengthening (VC2-N on [0, 2π]: numerically A ≤ 3.3643… on all of [0, ∞); the statement keeps [0, π], which is
+   what VC2-S needs). The layer proves no upper bound: the instances of VC2-S, VC2-N and VC2-K at the certified data
+   are consistent with it (33/10 ≤ … ≤ 7/2) and not decided by it, and the instance of VC2-A at w = 441/200 (true gap
+   0.0074) is not decided either.

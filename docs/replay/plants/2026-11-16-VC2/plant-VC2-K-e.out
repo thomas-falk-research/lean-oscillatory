@@ -1,0 +1,7 @@
+plant-VC2-K-e.lean:205:86: error: unsolved goals
+h : P_SecondDerivSevenHalvesStatement
+c : ℝ
+hc : 0 ≤ c
+x : ℝ
+x✝ : x ∈ Ioo (-c) c
+⊢ 1 ≤ 0

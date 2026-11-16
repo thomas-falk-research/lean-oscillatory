@@ -1,0 +1,8 @@
+plant-VC2-A-b.lean:307:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  √(2 * (441 / 200))
+in the target expression
+  vdc2Profile (441 / 200) ≤ ‖∫ (x : ℝ) in -√(441 / 200)..√(441 / 200), Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖
+
+h : P_SecondDerivAttainedStatement
+h1 : vdc2Profile (441 / 200) ≤ ‖∫ (x : ℝ) in -√(441 / 200)..√(441 / 200), Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖
+⊢ 33 / 10 ≤ ‖∫ (x : ℝ) in -(21 / 10)..21 / 10, Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖

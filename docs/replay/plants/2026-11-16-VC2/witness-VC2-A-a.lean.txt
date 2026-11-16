@@ -1,0 +1,123 @@
+import OscInt.Statements.VanDerCorput
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
+import Mathlib.Analysis.Real.Pi.Bounds
+
+namespace OscInt.Statements
+
+open Set
+
+/-- `A(w) = 2 ∫_0^{√(2w)} sin(w − u²/2) du`: the largest real part, over rotations, that the quadratic phase can reach
+when its positive arc ends at phase `w`. Its maximum over `[0, π]` is van der Corput's constant. -/
+noncomputable def vdc2Profile (w : ℝ) : ℝ :=
+  2 * ∫ u in (0 : ℝ)..Real.sqrt (2 * w), Real.sin (w - u ^ 2 / 2)
+
+/-- `f′` increases at rate at least `lam` on the open interval `(a, b)`. -/
+def DerivIncreasesAtRate (f' : ℝ → ℝ) (a b lam : ℝ) : Prop :=
+  ∀ x ∈ Ioo a b, ∀ y ∈ Ioo a b, x ≤ y → lam * (y - x) ≤ f' y - f' x
+
+/-- **VC2-S** The second-derivative van der Corput bound with its sharp constant: if `f′` increases at rate at least
+`λ > 0`, then `|∫_a^b e^{if}| ≤ A(w)/√λ` for some `w ∈ [0, π]`. -/
+def SecondDerivSharpStatement : Prop :=
+  ∀ (f f' : ℝ → ℝ) (a b lam : ℝ), a ≤ b → 0 < lam → HasDerivOn f f' a b → DerivIncreasesAtRate f' a b lam →
+    ∃ w ∈ Icc (0 : ℝ) Real.pi,
+      ‖∫ x in a..b, Complex.exp (((f x : ℝ) : ℂ) * Complex.I)‖ ≤ vdc2Profile w / Real.sqrt lam
+
+theorem statement_pin_SecondDerivSharp : SecondDerivSharpStatement = SecondDerivSharpStatement := rfl
+
+/-- **VC2-A** The bound of VC2-S is attained by the quadratic phase: `A(w) ≤ |∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx|`. -/
+def SecondDerivAttainedStatement : Prop :=
+  ∀ w : ℝ, 0 ≤ w →
+    vdc2Profile w ≤
+      ‖∫ x in (-Real.sqrt (2 * w))..(Real.sqrt (2 * w)), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖
+
+theorem statement_pin_SecondDerivAttained : SecondDerivAttainedStatement = SecondDerivAttainedStatement := rfl
+
+/-- **VC2-N** An explicit bound for the sharp constant: `A(w) ≤ 7/2` for `0 ≤ w ≤ π`. -/
+def Vdc2ProfileBoundStatement : Prop :=
+  ∀ w ∈ Icc (0 : ℝ) Real.pi, vdc2Profile w ≤ 7 / 2
+
+theorem statement_pin_Vdc2ProfileBound : Vdc2ProfileBoundStatement = Vdc2ProfileBoundStatement := rfl
+
+/-- **VC2-K** The second-derivative test with amplitude and a linear term, constant `7/2`:
+`|∫_a^b e^{i(φ(x) + px)} ψ(x) dx| ≤ (7/2) μ^{−1/2} (|ψ(b)| + ∫_a^b |ψ′|)` when `|φ″| ≥ μ > 0` on `(a, b)`. -/
+def SecondDerivSevenHalvesStatement : Prop :=
+  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →
+    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b → (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) → AmplitudeOn ψ ψ' a b →
+    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ (7 / 2 : ℝ) * μ ^ (-(1 : ℝ) / 2) * ampNorm ψ ψ' a b
+
+theorem statement_pin_SecondDerivSevenHalves :
+    SecondDerivSevenHalvesStatement = SecondDerivSevenHalvesStatement := rfl
+
+end OscInt.Statements
+
+namespace OscInt.API.SecondDerivSharpSanity
+
+open OscInt.Statements Set
+
+/-- The real part of the interval integral of a continuous complex function. -/
+theorem re_intervalIntegral {F : ℝ → ℂ} (hF : Continuous F) (a b : ℝ) :
+    (∫ x in a..b, F x).re = ∫ x in a..b, (F x).re :=
+  (Complex.reCLM.intervalIntegral_comp_comm (hF.intervalIntegrable a b)).symm
+
+/-- `7/8 ≤ cos (1/2)`. -/
+theorem cos_half_lower : 7 / 8 ≤ Real.cos (1 / 2) := by
+  have h := Real.one_sub_sq_div_two_le_cos (x := 1 / 2)
+  norm_num at h
+  linarith
+
+/-- `√(2w) = 1` at `w = 1/2`. -/
+theorem sqrt_two_mul_half : Real.sqrt (2 * (1 / 2)) = 1 := by
+  rw [show (2 * (1 / 2) : ℝ) = 1 by norm_num]
+  exact Real.sqrt_one
+
+/-- `A(1/2) ≤ 1` (the true value is `0.64781…`): `sin(1/2 − u²/2) ≤ 1/2` on `[0, 1]`. -/
+theorem vdc2Profile_half_le : vdc2Profile (1 / 2) ≤ 1 := by
+  have h := intervalIntegral.integral_mono_on (μ := MeasureTheory.volume)
+    (f := fun u => Real.sin (1 / 2 - u ^ 2 / 2)) (g := fun _ => (1 / 2 : ℝ)) (a := 0) (b := 1) zero_le_one
+    ((by fun_prop : Continuous fun u : ℝ => Real.sin (1 / 2 - u ^ 2 / 2)).intervalIntegrable _ _)
+    (continuous_const.intervalIntegrable _ _)
+    (fun u hu => (Real.sin_le (by nlinarith [hu.1, hu.2])).trans (by nlinarith [hu.1, hu.2]))
+  rw [intervalIntegral.integral_const] at h
+  unfold vdc2Profile
+  rw [sqrt_two_mul_half]
+  norm_num at h
+  linarith
+
+/-- **Small interval.** `2 cos(1/2) ≤ |∫_{−1}^{1} e^{ix²/2} dx|` (real part; `1.7551…` against the true `1.9778…`). -/
+theorem quad_one_lower :
+    2 * Real.cos (1 / 2) ≤ ‖∫ x in (-1 : ℝ)..1, Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ := by
+  refine le_trans ?_ (Complex.re_le_norm _)
+  rw [re_intervalIntegral (by fun_prop)]
+  simp only [Complex.exp_ofReal_mul_I_re]
+  have h := intervalIntegral.integral_mono_on (μ := MeasureTheory.volume) (f := fun _ => Real.cos (1 / 2))
+    (g := fun x => Real.cos (x ^ 2 / 2)) (a := -1) (b := 1) (by norm_num) (continuous_const.intervalIntegrable _ _)
+    ((by fun_prop : Continuous fun x : ℝ => Real.cos (x ^ 2 / 2)).intervalIntegrable _ _)
+    (fun x hx => Real.cos_le_cos_of_nonneg_of_le_pi (by positivity) (by linarith [Real.pi_gt_three])
+      (by nlinarith [hx.1, hx.2]))
+  rw [intervalIntegral.integral_const] at h
+  norm_num at h
+  linarith
+
+/-- The instance of VC2-A at `w = 1/2` is true: `A(1/2) ≤ 1 < 2 cos(1/2) ≤ |∫_{−1}^{1} e^{ix²/2} dx|`, with a strict
+gap (unconditional; used against the plant that reverses the inequality). -/
+theorem attained_half_check :
+    vdc2Profile (1 / 2) + 3 / 4 ≤ ‖∫ x in (-1 : ℝ)..1, Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ := by
+  linarith [vdc2Profile_half_le, quad_one_lower, cos_half_lower]
+
+/-- PLANTED copy of `SecondDerivAttainedStatement`: ≤ reversed. -/
+def P_SecondDerivAttainedStatement : Prop :=
+  ∀ w : ℝ, 0 ≤ w →
+    ‖∫ x in (-Real.sqrt (2 * w))..(Real.sqrt (2 * w)), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤
+      vdc2Profile w
+
+/-- Witness: the planted copy is false (w = 1/2: A(1/2) ≤ 1 < 7/4 ≤ |∫_{−1}^{1} e^{ix²/2} dx| (attained_half_check)).
+-/
+theorem witness_not_SecondDerivAttainedStatement : ¬ P_SecondDerivAttainedStatement := by
+  intro h
+  have h1 := h (1 / 2) (by norm_num)
+  rw [sqrt_two_mul_half] at h1
+  linarith [attained_half_check]
+
+end OscInt.API.SecondDerivSharpSanity

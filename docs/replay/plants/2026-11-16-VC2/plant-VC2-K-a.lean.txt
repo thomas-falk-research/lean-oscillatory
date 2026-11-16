@@ -1,0 +1,231 @@
+import OscInt.Statements.VanDerCorput
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
+import Mathlib.Analysis.Real.Pi.Bounds
+
+namespace OscInt.Statements
+
+open Set
+
+/-- `A(w) = 2 ∫_0^{√(2w)} sin(w − u²/2) du`: the largest real part, over rotations, that the quadratic phase can reach
+when its positive arc ends at phase `w`. Its maximum over `[0, π]` is van der Corput's constant. -/
+noncomputable def vdc2Profile (w : ℝ) : ℝ :=
+  2 * ∫ u in (0 : ℝ)..Real.sqrt (2 * w), Real.sin (w - u ^ 2 / 2)
+
+/-- `f′` increases at rate at least `lam` on the open interval `(a, b)`. -/
+def DerivIncreasesAtRate (f' : ℝ → ℝ) (a b lam : ℝ) : Prop :=
+  ∀ x ∈ Ioo a b, ∀ y ∈ Ioo a b, x ≤ y → lam * (y - x) ≤ f' y - f' x
+
+/-- **VC2-S** The second-derivative van der Corput bound with its sharp constant: if `f′` increases at rate at least
+`λ > 0`, then `|∫_a^b e^{if}| ≤ A(w)/√λ` for some `w ∈ [0, π]`. -/
+def SecondDerivSharpStatement : Prop :=
+  ∀ (f f' : ℝ → ℝ) (a b lam : ℝ), a ≤ b → 0 < lam → HasDerivOn f f' a b → DerivIncreasesAtRate f' a b lam →
+    ∃ w ∈ Icc (0 : ℝ) Real.pi,
+      ‖∫ x in a..b, Complex.exp (((f x : ℝ) : ℂ) * Complex.I)‖ ≤ vdc2Profile w / Real.sqrt lam
+
+theorem statement_pin_SecondDerivSharp : SecondDerivSharpStatement = SecondDerivSharpStatement := rfl
+
+/-- **VC2-A** The bound of VC2-S is attained by the quadratic phase: `A(w) ≤ |∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx|`. -/
+def SecondDerivAttainedStatement : Prop :=
+  ∀ w : ℝ, 0 ≤ w →
+    vdc2Profile w ≤
+      ‖∫ x in (-Real.sqrt (2 * w))..(Real.sqrt (2 * w)), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖
+
+theorem statement_pin_SecondDerivAttained : SecondDerivAttainedStatement = SecondDerivAttainedStatement := rfl
+
+/-- **VC2-N** An explicit bound for the sharp constant: `A(w) ≤ 7/2` for `0 ≤ w ≤ π`. -/
+def Vdc2ProfileBoundStatement : Prop :=
+  ∀ w ∈ Icc (0 : ℝ) Real.pi, vdc2Profile w ≤ 7 / 2
+
+theorem statement_pin_Vdc2ProfileBound : Vdc2ProfileBoundStatement = Vdc2ProfileBoundStatement := rfl
+
+/-- **VC2-K** The second-derivative test with amplitude and a linear term, constant `7/2`:
+`|∫_a^b e^{i(φ(x) + px)} ψ(x) dx| ≤ (7/2) μ^{−1/2} (|ψ(b)| + ∫_a^b |ψ′|)` when `|φ″| ≥ μ > 0` on `(a, b)`. -/
+def SecondDerivSevenHalvesStatement : Prop :=
+  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →
+    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b → (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) → AmplitudeOn ψ ψ' a b →
+    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ (7 / 2 : ℝ) * μ ^ (-(1 : ℝ) / 2) * ampNorm ψ ψ' a b
+
+theorem statement_pin_SecondDerivSevenHalves :
+    SecondDerivSevenHalvesStatement = SecondDerivSevenHalvesStatement := rfl
+
+end OscInt.Statements
+
+namespace OscInt.API.SecondDerivSharpSanity
+
+open OscInt.Statements Set
+
+/-- The derivative of the monomial `c x^{n+1}`, in the shape used for the explicit antiderivatives below. -/
+theorem hasDerivAt_monomial (c : ℝ) (n : ℕ) (x : ℝ) :
+    HasDerivAt (fun x : ℝ => c * x ^ (n + 1)) (c * ((n + 1 : ℝ) * x ^ n)) x := by
+  have h := (hasDerivAt_pow (n + 1) x).const_mul c
+  simpa using h
+
+/-- If `P ≤ g` on `[a, b]` and `F` is an antiderivative of `P`, then `F b − F a ≤ ∫_a^b g`. -/
+theorem sub_le_integral_of_le {F P g : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b) (hF : ∀ x, HasDerivAt F (P x) x)
+    (hP : Continuous P) (hg : Continuous g) (h : ∀ x ∈ Icc a b, P x ≤ g x) : F b - F a ≤ ∫ x in a..b, g x := by
+  rw [← intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hF x) (hP.intervalIntegrable a b)]
+  exact intervalIntegral.integral_mono_on hab (hP.intervalIntegrable a b) (hg.intervalIntegrable a b) h
+
+/-- The real part of the interval integral of a continuous complex function. -/
+theorem re_intervalIntegral {F : ℝ → ℂ} (hF : Continuous F) (a b : ℝ) :
+    (∫ x in a..b, F x).re = ∫ x in a..b, (F x).re :=
+  (Complex.reCLM.intervalIntegral_comp_comm (hF.intervalIntegrable a b)).symm
+
+/-- `7/8 ≤ cos (1/2)`. -/
+theorem cos_half_lower : 7 / 8 ≤ Real.cos (1 / 2) := by
+  have h := Real.one_sub_sq_div_two_le_cos (x := 1 / 2)
+  norm_num at h
+  linarith
+
+/-- `√100 = 10`. -/
+theorem sqrt_hundred : Real.sqrt 100 = 10 := by
+  rw [show (100 : ℝ) = 10 ^ 2 by norm_num]
+  exact Real.sqrt_sq (by norm_num)
+
+/-- `100^{−1/2} = 1/10`, in the shape of VC2-K. -/
+theorem rpow_neg_half_hundred : (100 : ℝ) ^ (-(1 : ℝ) / 2) = 1 / 10 := by
+  rw [show (-(1 : ℝ) / 2) = -(1 / 2) by ring, Real.rpow_neg (by norm_num), ← Real.sqrt_eq_rpow, sqrt_hundred]
+  norm_num
+
+/-- The scaled quadratic datum `x ↦ λ x²/2` has derivative `x ↦ λ x` on every interval. -/
+theorem scaled_hasDerivOn (lam a b : ℝ) : HasDerivOn (fun x => lam * x ^ 2 / 2) (fun x => lam * x) a b := by
+  have hd : ∀ x : ℝ, HasDerivAt (fun x : ℝ => lam * x ^ 2 / 2) (lam * x) x := fun x => by
+    have h := ((hasDerivAt_pow 2 x).const_mul lam).div_const 2
+    convert h using 1
+    norm_num
+    ring
+  exact ⟨fun x _ => (hd x).continuousAt.continuousWithinAt, fun x _ => hd x⟩
+
+/-- `x ↦ λ x` has derivative `λ` on every interval. -/
+theorem scaledLinear_hasDerivOn (lam a b : ℝ) : HasDerivOn (fun x => lam * x) (fun _ => lam) a b := by
+  have hd : ∀ x : ℝ, HasDerivAt (fun x : ℝ => lam * x) lam x := fun x => by
+    simpa using (hasDerivAt_id' x).const_mul lam
+  exact ⟨fun x _ => (hd x).continuousAt.continuousWithinAt, fun x _ => hd x⟩
+
+/-- The quadratic datum `x ↦ x²/2` has derivative `x ↦ x` on every interval. -/
+theorem quad_hasDerivOn (a b : ℝ) : HasDerivOn (fun x => x ^ 2 / 2) (fun x => x) a b := by
+  have h := scaled_hasDerivOn 1 a b
+  simpa using h
+
+/-- `x ↦ x` has derivative `1` on every interval. -/
+theorem id_hasDerivOn (a b : ℝ) : HasDerivOn (fun x => x) (fun _ => 1) a b := by
+  have h := scaledLinear_hasDerivOn 1 a b
+  simpa using h
+
+/-- The concave datum `x ↦ −x²/2` has derivative `x ↦ −x` on every interval. -/
+theorem negQuad_hasDerivOn (a b : ℝ) : HasDerivOn (fun x => -(x ^ 2 / 2)) (fun x => -x) a b := by
+  have hd : ∀ x : ℝ, HasDerivAt (fun x : ℝ => -(x ^ 2 / 2)) (-x) x := fun x => by
+    have h := ((hasDerivAt_pow 2 x).div_const 2).fun_neg
+    convert h using 1
+    norm_num
+  exact ⟨fun x _ => (hd x).continuousAt.continuousWithinAt, fun x _ => hd x⟩
+
+/-- `x ↦ −x` has derivative `−1` on every interval. -/
+theorem negId_hasDerivOn (a b : ℝ) : HasDerivOn (fun x => -x) (fun _ => -1) a b := by
+  have hd : ∀ x : ℝ, HasDerivAt (fun x : ℝ => -x) (-1) x := fun x => (hasDerivAt_id' x).fun_neg
+  exact ⟨fun x _ => (hd x).continuousAt.continuousWithinAt, fun x _ => hd x⟩
+
+/-- The scaled datum: `(2/10) cos(1/2) ≤ |∫_{−1/10}^{1/10} e^{i·100x²/2} dx|` (true value `0.19778…`). -/
+theorem scaled_tenth_lower :
+    2 / 10 * Real.cos (1 / 2) ≤
+      ‖∫ x in (-(1 / 10 : ℝ))..(1 / 10), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ := by
+  refine le_trans ?_ (Complex.re_le_norm _)
+  rw [re_intervalIntegral (by fun_prop)]
+  simp only [Complex.exp_ofReal_mul_I_re]
+  have h := intervalIntegral.integral_mono_on (μ := MeasureTheory.volume) (f := fun _ => Real.cos (1 / 2))
+    (g := fun x => Real.cos (100 * x ^ 2 / 2)) (a := -(1 / 10)) (b := 1 / 10) (by norm_num)
+    (continuous_const.intervalIntegrable _ _)
+    ((by fun_prop : Continuous fun x : ℝ => Real.cos (100 * x ^ 2 / 2)).intervalIntegrable _ _)
+    (fun x hx => Real.cos_le_cos_of_nonneg_of_le_pi (by positivity) (by linarith [Real.pi_gt_three])
+      (by nlinarith [hx.1, hx.2]))
+  rw [intervalIntegral.integral_const] at h
+  norm_num at h
+  linarith
+
+/-- The ramp amplitude `ψ(x) = 1 − x` on `[0, 1]`, which vanishes at the right end point. -/
+theorem ramp_amplitudeOn : AmplitudeOn (fun x => ((1 - x : ℝ) : ℂ)) (fun _ => -1) 0 1 := by
+  refine ⟨by fun_prop, fun x _ => ?_, continuous_const.intervalIntegrable _ _⟩
+  have h := ((hasDerivAt_const x (1 : ℝ)).fun_sub (hasDerivAt_id' x)).ofReal_comp
+  simpa using h
+
+/-- `|ψ(1)| + ∫_0^1 |ψ′| = 1` for the ramp. -/
+theorem ampNorm_ramp : ampNorm (fun x => ((1 - x : ℝ) : ℂ)) (fun _ => -1) 0 1 = 1 := by
+  simp [ampNorm]
+
+/-- `7/16 ≤ |∫_0^1 e^{ix²/2} (1 − x) dx|` (true value `0.49757…`): the real part is at least `(7/8) ∫_0^1 (1 − x)`. -/
+theorem ramp_lower : 7 / 16 ≤ ‖oscInt (fun x => x ^ 2 / 2 + 0 * x) (fun x => ((1 - x : ℝ) : ℂ)) 0 1‖ := by
+  refine le_trans ?_ (Complex.re_le_norm _)
+  unfold oscInt
+  rw [re_intervalIntegral (by fun_prop)]
+  simp only [Complex.re_mul_ofReal, Complex.exp_ofReal_mul_I_re, zero_mul, add_zero]
+  have hF : ∀ x : ℝ, HasDerivAt (fun x : ℝ => 7 / 8 * x - 7 / 16 * x ^ 2) (7 / 8 * (1 - x)) x := by
+    intro x
+    have h := (hasDerivAt_monomial (7 / 8) 0 x).fun_add (hasDerivAt_monomial (-7 / 16) 1 x)
+    convert h using 1
+    · funext s
+      ring
+    · push_cast
+      ring
+  have h := sub_le_integral_of_le (F := fun x : ℝ => 7 / 8 * x - 7 / 16 * x ^ 2) (P := fun x => 7 / 8 * (1 - x))
+    (g := fun x => Real.cos (x ^ 2 / 2) * (1 - x)) (a := 0) (b := 1) zero_le_one hF (by fun_prop)
+    (by fun_prop) (fun x hx => mul_le_mul_of_nonneg_right (cos_half_lower.trans
+      (Real.cos_le_cos_of_nonneg_of_le_pi (by nlinarith [hx.1]) (by linarith [Real.pi_gt_three])
+        (by nlinarith [hx.1, hx.2]))) (by linarith [hx.2]))
+  norm_num at h
+  linarith
+
+/-- PLANTED copy of `SecondDerivSevenHalvesStatement`: constant 7/2 ↦ 3. -/
+def P_SecondDerivSevenHalvesStatement : Prop :=
+  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →
+    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b → (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) → AmplitudeOn ψ ψ' a b →
+    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ (3 : ℝ) * μ ^ (-(1 : ℝ) / 2) * ampNorm ψ ψ' a b
+
+/-- **VC2-K at the quadratic phase** (`φ = x²/2`, `μ = 1`, `p = 0`, `ψ = 1`): `|∫_{−c}^{c} e^{ix²/2} dx| ≤ 7/2`. -/
+theorem P_sevenHalves_quadratic (h : P_SecondDerivSevenHalvesStatement) (c : ℝ) (hc : 0 ≤ c) :
+    ‖∫ x in (-c)..c, Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤ 7 / 2 := by
+  have h1 := h (fun x => x ^ 2 / 2) (fun x => x) (fun _ => 1) (fun _ => 1) (fun _ => 0) (-c) c 1 0 (by linarith)
+    one_pos (quad_hasDerivOn _ _) (id_hasDerivOn _ _) (fun x _ => by simp) (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, Real.one_rpow] at h1
+  simpa [oscInt] using h1
+
+/-- **VC2-K with a linear term** (`p = 3`): `|∫_{−c}^{c} e^{i(x²/2 + 3x)} dx| ≤ 7/2`. -/
+theorem P_sevenHalves_linear (h : P_SecondDerivSevenHalvesStatement) (c : ℝ) (hc : 0 ≤ c) :
+    ‖∫ x in (-c)..c, Complex.exp (((x ^ 2 / 2 + 3 * x : ℝ) : ℂ) * Complex.I)‖ ≤ 7 / 2 := by
+  have h1 := h (fun x => x ^ 2 / 2) (fun x => x) (fun _ => 1) (fun _ => 1) (fun _ => 0) (-c) c 1 3 (by linarith)
+    one_pos (quad_hasDerivOn _ _) (id_hasDerivOn _ _) (fun x _ => by simp) (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, Real.one_rpow] at h1
+  simpa [oscInt] using h1
+
+/-- **VC2-K with `φ″ = −1`** (`φ = −x²/2`; tests the absolute value): `|∫_{−c}^{c} e^{−ix²/2} dx| ≤ 7/2`. -/
+theorem P_sevenHalves_neg (h : P_SecondDerivSevenHalvesStatement) (c : ℝ) (hc : 0 ≤ c) :
+    ‖∫ x in (-c)..c, Complex.exp (((-(x ^ 2 / 2) : ℝ) : ℂ) * Complex.I)‖ ≤ 7 / 2 := by
+  have h1 := h (fun x => -(x ^ 2 / 2)) (fun x => -x) (fun _ => -1) (fun _ => 1) (fun _ => 0) (-c) c 1 0
+    (by linarith) one_pos (negQuad_hasDerivOn _ _) (negId_hasDerivOn _ _) (fun x _ => by simp)
+    (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, Real.one_rpow] at h1
+  simpa [oscInt] using h1
+
+/-- **VC2-K at the scaled phase** (`φ = 100x²/2`, `μ = 100`, `[−1/10, 1/10]`): the bound is `7/20` (tests the power
+of `μ`; the left side is at least `(2/10) cos(1/2) ≥ 0.175` by `scaled_tenth_lower`). -/
+theorem P_sevenHalves_scaled (h : P_SecondDerivSevenHalvesStatement) :
+    ‖∫ x in (-(1 / 10 : ℝ))..(1 / 10), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤ 7 / 20 := by
+  have h1 := h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (fun _ => 100) (fun _ => 1) (fun _ => 0) (-(1 / 10))
+    (1 / 10) 100 0 (by norm_num) (by norm_num) (scaled_hasDerivOn _ _ _) (scaledLinear_hasDerivOn _ _ _)
+    (fun x _ => by simp) (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, rpow_neg_half_hundred] at h1
+  have h2 : (7 / 2 : ℝ) * (1 / 10) * 1 = 7 / 20 := by norm_num
+  rw [h2] at h1
+  simpa [oscInt] using h1
+
+/-- **VC2-K with the ramp amplitude** (`ψ(x) = 1 − x` on `[0, 1]`, `ψ(1) = 0`, `∫|ψ′| = 1`; tests `ampNorm`): the
+bound is `7/2` (and the left side is at least `7/16` by `ramp_lower`). -/
+theorem P_sevenHalves_ramp (h : P_SecondDerivSevenHalvesStatement) :
+    ‖oscInt (fun x => x ^ 2 / 2 + 0 * x) (fun x => ((1 - x : ℝ) : ℂ)) 0 1‖ ≤ 7 / 2 := by
+  have h1 := h (fun x => x ^ 2 / 2) (fun x => x) (fun _ => 1) (fun x => ((1 - x : ℝ) : ℂ)) (fun _ => -1) 0 1 1 0
+    zero_le_one one_pos (quad_hasDerivOn _ _) (id_hasDerivOn _ _) (fun x _ => by simp) ramp_amplitudeOn
+  rw [ampNorm_ramp, Real.one_rpow] at h1
+  linarith
+
+end OscInt.API.SecondDerivSharpSanity

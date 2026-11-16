@@ -45,6 +45,12 @@ below it, and every rule is binding.
   scratch; if lost, redo from the findings in the session log), answers (a file `2026-11-16-FR-pre-proof-answers.md` under `review/`, not yet written),
   stamp of the answers, and only then routes, blueprint, assembly and parts (rule 1). A route on paper exists in the
   lead's scratch. The session log's last rows say how far this got.
+- **Batch VC2 (sharp second-derivative van der Corput bound; four statements VC2-S, VC2-A, VC2-N, VC2-K):** in the
+  tree for its freeze (`OscInt/Statements/SecondDerivSharp.lean`, sanity layer, plants, challenge,
+  `comparator-VC2.json`, prose). **Not stamped, not pinned yet**: `make statements` reports INCOMPLETE until the next
+  stamp, which is to cover this batch, the answers to the FR reviews and (if its sanity layer is back) a draft batch
+  on the Hadamard walk that exists only in the lead's scratch. A proof on paper exists and was refereed (session
+  log); a route for Lean that avoids inverse functions is in the lead's scratch. Classical theorem; nothing new.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
   the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;
   a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;

@@ -249,6 +249,13 @@ is at most `Re(e^{−iθ} ∫_0^{v₁} e^{iv} E) ≤ m`, and if it starts at `v�
 `∫_0^π sin(s) E(v₀ + s) ds ≤ ∫_0^π sin(s) E(s) ds = Im ∫_0^π e^{iv} E ≤ m`. Equality for `ρ = E` cut at the maximising
 phase, that is, for a quadratic phase on a symmetric interval.
 
+Addendum of the same day (batch VC2). The bound is now stated for a freeze as batch VC2 (`docs/statements.md`),
+in a form with the profile A(w) and no supremum. The lead's proof was read step by step by a fresh referee (same
+model family): correct after two minor repairs, which were made and not re-refereed (the attainment of the maximum
+now rests on a hand bound for |F(2)|, at least √(144/25 + 1600/441) > √(2π); the remark on the first-derivative test
+needs a reflection when the derivative decreases). Label of the theorem: classical, CITED. Label of this proof:
+PROVEN on paper, one fresh referee; not machine-checked. Nothing is claimed as new.
+
 ## Batch FR (finite ring, open chain): prior art found before the freeze (2026-11-16)
 
 The mathematics is classical: the propagator of a ring is the propagator of the line summed over images, and the

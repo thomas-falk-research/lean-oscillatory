@@ -16,5 +16,6 @@ import Challenge.D4Uniform
 import Challenge.PeriodicAnalytic
 import Challenge.KusminLandau
 import Challenge.FiniteRing
+import Challenge.SecondDerivSharp
 
 /-! Root of the frozen challenge library. Never a default target, never imported. -/

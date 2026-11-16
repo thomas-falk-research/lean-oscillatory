@@ -1,0 +1,6 @@
+plant-VC2-N-a.lean:217:2: error: Type mismatch
+  h (441 / 200) ⟨?m.29, ?m.30⟩
+has type
+  vdc2Profile (441 / 200) ≤ 3
+but is expected to have type
+  vdc2Profile (441 / 200) ≤ 7 / 2

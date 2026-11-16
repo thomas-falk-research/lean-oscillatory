@@ -1,0 +1,72 @@
+plant-VC2-K-c.lean:189:54: error: Application type mismatch: The argument
+  fun x x_1 => ?m.107
+has type
+  (x : ?m.104) → (x_1 : ?m.108 x) → ?m.109 x x_1
+but is expected to have type
+  AmplitudeOn (fun x => 1) (fun x => 0) (-c) c
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) (fun x => 1) (fun x => 1) (fun x => 0) (-c) c 1 0 ?m.93 one_pos
+    (quad_hasDerivOn (-c) c) (id_hasDerivOn (-c) c) fun x x_1 => ?m.107
+plant-VC2-K-c.lean:189:69: error: `simp` made no progress
+plant-VC2-K-c.lean:187:81: error: unsolved goals
+h : P_SecondDerivSevenHalvesStatement
+c : ℝ
+hc : 0 ≤ c
+⊢ ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖ ≤ 7 / 2
+plant-VC2-K-c.lean:197:54: error: Application type mismatch: The argument
+  fun x x_1 => ?m.119
+has type
+  (x : ?m.116) → (x_1 : ?m.120 x) → ?m.121 x x_1
+but is expected to have type
+  AmplitudeOn (fun x => 1) (fun x => 0) (-c) c
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) (fun x => 1) (fun x => 1) (fun x => 0) (-c) c 1 3 ?m.105 one_pos
+    (quad_hasDerivOn (-c) c) (id_hasDerivOn (-c) c) fun x x_1 => ?m.119
+plant-VC2-K-c.lean:197:69: error: `simp` made no progress
+plant-VC2-K-c.lean:195:89: error: unsolved goals
+h : P_SecondDerivSevenHalvesStatement
+c : ℝ
+hc : 0 ≤ c
+⊢ ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2 + 3 * x) * Complex.I)‖ ≤ 7 / 2
+plant-VC2-K-c.lean:205:74: error: Application type mismatch: The argument
+  fun x x_1 => ?m.117
+has type
+  (x : ?m.114) → (x_1 : ?m.118 x) → ?m.119 x x_1
+but is expected to have type
+  AmplitudeOn (fun x => 1) (fun x => 0) (-c) c
+in the application
+  h (fun x => -(x ^ 2 / 2)) (fun x => -x) (fun x => -1) (fun x => 1) (fun x => 0) (-c) c 1 0 ?m.103 one_pos
+    (negQuad_hasDerivOn (-c) c) (negId_hasDerivOn (-c) c) fun x x_1 => ?m.117
+plant-VC2-K-c.lean:205:89: error: `simp` made no progress
+plant-VC2-K-c.lean:203:84: error: unsolved goals
+h : P_SecondDerivSevenHalvesStatement
+c : ℝ
+hc : 0 ≤ c
+⊢ ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(-(x ^ 2 / 2)) * Complex.I)‖ ≤ 7 / 2
+plant-VC2-K-c.lean:216:4: error: Application type mismatch: The argument
+  fun x x_1 => ?m.156
+has type
+  (x : ?m.153) → (x_1 : ?m.157 x) → ?m.158 x x_1
+but is expected to have type
+  AmplitudeOn (fun x => 1) (fun x => 0) (-(1 / 10)) (1 / 10)
+in the application
+  h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (fun x => 100) (fun x => 1) (fun x => 0) (-(1 / 10)) (1 / 10) 100 0
+    ?m.145 ?m.146 (scaled_hasDerivOn 100 (-(1 / 10)) (1 / 10)) (scaledLinear_hasDerivOn 100 (-(1 / 10)) (1 / 10))
+    fun x x_1 => ?m.156
+plant-VC2-K-c.lean:216:19: error: `simp` made no progress
+plant-VC2-K-c.lean:213:106: error: unsolved goals
+h : P_SecondDerivSevenHalvesStatement
+⊢ ‖∫ (x : ℝ) in -(1 / 10)..1 / 10, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ 7 / 20
+plant-VC2-K-c.lean:227:66: error: Application type mismatch: The argument
+  fun x x_1 => ?m.132
+has type
+  (x : ?m.129) → (x_1 : ?m.133 x) → ?m.134 x x_1
+but is expected to have type
+  AmplitudeOn (fun x => ↑(1 - x)) (fun x => -1) 0 1
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) (fun x => 1) (fun x => ↑(1 - x)) (fun x => -1) 0 1 1 0 zero_le_one one_pos
+    (quad_hasDerivOn 0 1) (id_hasDerivOn 0 1) fun x x_1 => ?m.132
+plant-VC2-K-c.lean:227:81: error: `simp` made no progress
+plant-VC2-K-c.lean:225:86: error: unsolved goals
+h : P_SecondDerivSevenHalvesStatement
+⊢ ‖oscInt (fun x => x ^ 2 / 2 + 0 * x) (fun x => ↑(1 - x)) 0 1‖ ≤ 7 / 2

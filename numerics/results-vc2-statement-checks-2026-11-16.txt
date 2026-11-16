@@ -1,0 +1,12 @@
+PASS VC2-N: max of A on [0, pi] (2001 points) below 7/2  max 3.36431708727 at w = 2.29808; refined 3.3643175781559 at 2.297439574
+PASS control: A exceeds 33/10 somewhere (so 33/10 is not a bound)
+PASS VC2-A: A(w) <= |int_{-sqrt(2w)}^{sqrt(2w)} e^{i x^2/2}| for w = 0, 0.1, ..., 7.9  largest A - |F| = 0.0
+PASS VC2-A is tight at the maximiser (|F(w*)| - A(w*) small)  3.9443e-31
+PASS A stays below its maximum on [pi, 40] (step 1/50)  largest 2.983427038
+PASS VC2-S with the constant max A: sqrt(lam) |int e^{if}| <= max A, random piecewise-quadratic phases  60000 phases, largest 3.363688474, max A = 3.364317578
+PASS Fresnel closed form against adaptive quadrature (30 phases)  max diff 1.48e-14
+PASS the symmetric quadratic at w* reaches the constant  3.364317578156
+PASS control: nearly zero curvature on [0, 6] with lam = 1 exceeds the bound  6.000000
+PASS control: constant 33/10 is exceeded by the symmetric quadratic
+PASS VC2-K: sqrt(mu) |int e^{i(phi + p x)} psi| / ampNorm <= 7/2, random data  1500 cases, largest ratio 2.409889
+ALL PASS

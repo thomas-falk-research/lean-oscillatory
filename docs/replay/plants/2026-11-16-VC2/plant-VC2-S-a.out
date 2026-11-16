@@ -1,0 +1,35 @@
+plant-VC2-S-a.lean:291:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  √1
+in the target expression
+  ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / 1
+
+h : P_SecondDerivSharpStatement
+c : ℝ
+hc : 0 ≤ c
+w : ℝ
+hw : w ∈ Icc 0 Real.pi
+hle : ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / 1
+⊢ ∃ w ∈ Icc 0 Real.pi, ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w
+plant-VC2-S-a.lean:300:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  √100
+in the target expression
+  ‖∫ (x : ℝ) in -(c / 10)..c / 10, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / 100
+
+h : P_SecondDerivSharpStatement
+c : ℝ
+hc : 0 ≤ c
+w : ℝ
+hw : w ∈ Icc 0 Real.pi
+hle : ‖∫ (x : ℝ) in -(c / 10)..c / 10, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / 100
+⊢ ∃ w ∈ Icc 0 Real.pi,
+    ‖∫ (x : ℝ) in -(c / 10)..c / 10, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / 10
+plant-VC2-S-a.lean:308:49: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  √1
+in the target expression
+  0 ≤ vdc2Profile w / 1
+
+h : P_SecondDerivSharpStatement
+a w : ℝ
+hw : w ∈ Icc 0 Real.pi
+hle : 0 ≤ vdc2Profile w / 1
+⊢ ∃ w ∈ Icc 0 Real.pi, 0 ≤ vdc2Profile w

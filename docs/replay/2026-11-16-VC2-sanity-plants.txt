@@ -1,0 +1,80 @@
+# Batch VC2: planted controls of the sanity layer (docs/lessons.md, rules 8 and 9). Written by an agent of the lead on
+# 2026-11-16 against the draft statement text, under a brief that forbids proving the statements; re-run by the lead
+# (the agent's generator, a fresh directory, 21:53:26Z to 21:56:13Z, exit code 0): all 42 Lean files byte-identical to
+# the agent's, the summary identical, the 42 compiler outputs identical once directory names are removed. Directory:
+# docs/replay/plants/2026-11-16-VC2/ (compiler outputs stored with directory names removed; generator
+# plants_vc2.py.txt). 15 planted mutations: 12 DETECTED (a compiled proof of the negation of the planted statement),
+# 1 NOT DETECTED (VC2-N-b, the range of w enlarged: apparently a true strengthening), 2 TRUE WEAKENING (VC2-S-e, the
+# sign of the curvature, equivalent to the statement; VC2-K-e, implied by the statement). All 15 unplanted copies
+# compile; 14 planted copies are rejected by the copied scripts and 1 (VC2-N-b) is accepted.
+ok-VC2-S-a: accepted (want accepted)
+plant-VC2-S-a: rejected (recorded)
+    first error: plant-VC2-S-a.lean:291:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-VC2-S-a: accepted (want accepted)
+  VC2-S-a [/ √λ ↦ / λ; witness: λ = 100, f = 100x²/2 on [−1/10, 1/10]: left side ≥ (2/10)·(7/8) = 0.175, planted bound A(w)/100 ≤ 0.052]: DETECTED (witness compiled: ¬ planted statement)
+ok-VC2-S-b: accepted (want accepted)
+plant-VC2-S-b: rejected (recorded)
+    first error: plant-VC2-S-b.lean:290:4: error: Application type mismatch: The argument
+witness-VC2-S-b: accepted (want accepted)
+  VC2-S-b [0 < λ dropped; witness: λ = 0, f = 0 on [0, 1] (left side 1, bound A(w)/√0 = 0 in Lean)]: DETECTED (witness compiled: ¬ planted statement)
+ok-VC2-S-c: accepted (want accepted)
+plant-VC2-S-c: rejected (recorded)
+    first error: plant-VC2-S-c.lean:292:12: error: Application type mismatch: The argument
+witness-VC2-S-c: accepted (want accepted)
+  VC2-S-c [range of w: [0, π] ↦ [0, 1]; witness: f = x²/2 on [−21/10, 21/10], λ = 1: left side ≥ 33/10, and A(w) ≤ 2√(2w) ≤ 3 for w ≤ 1]: DETECTED (witness compiled: ¬ planted statement)
+ok-VC2-S-d: accepted (want accepted)
+plant-VC2-S-d: rejected (recorded)
+    first error: plant-VC2-S-d.lean:289:25: error: Function expected at
+witness-VC2-S-d: accepted (want accepted)
+  VC2-S-d [rate hypothesis dropped; witness: f = 0 on [0, 6], λ = 1: left side 6, and A(w) ≤ 26/5 for w ≤ π]: DETECTED (witness compiled: ¬ planted statement)
+ok-VC2-S-e: accepted (want accepted)
+plant-VC2-S-e: rejected (recorded)
+    first error: plant-VC2-S-e.lean:283:18: error: unsolved goals
+  VC2-S-e [f′(y) − f′(x) ↦ |f′(y) − f′(x)| in DerivIncreasesAtRate (the sign of the curvature)]: TRUE WEAKENING: the planted statement is equivalent to the draft one, so no datum can refute it. It has the weaker hypothesis |f′(y) − f′(x)| ≥ λ(y − x), so it implies the draft statement; conversely it follows from the draft statement: f′ is a derivative on (a, b), hence has the intermediate value property (Darboux), and the planted hypothesis makes it injective, so f′ is strictly monotone on (a, b); if it increases, the draft hypothesis holds for f; if it decreases, it holds for −f (derivative −f′, continuous on [a, b]), and ∫ e^{−if} is the conjugate of ∫ e^{if}, with the same modulus. Not proved in Lean (an implication between statements for general f is outside this layer). So the sign of the curvature in VC2-S is a normalization, not a restriction; whether the statement should say so is a fidelity question against docs/statements.md. The rejection of the copied scripts is script-only: the copied proofs of scaled_increases and quad_increases are by `ring` and do not close y − x = |y − x|; the planted rate lemmas themselves are true.
+ok-VC2-S-f: accepted (want accepted)
+plant-VC2-S-f: rejected (recorded)
+    first error: plant-VC2-S-f.lean:292:16: error: Application type mismatch: The argument
+witness-VC2-S-f: accepted (want accepted)
+  VC2-S-f [A(w) ↦ A(w)/2; witness: f = x²/2 on [−21/10, 21/10], λ = 1: left side ≥ 33/10, and A(w)/2 ≤ 13/5 for w ≤ π]: DETECTED (witness compiled: ¬ planted statement)
+ok-VC2-A-a: accepted (want accepted)
+plant-VC2-A-a: rejected (recorded)
+    first error: plant-VC2-A-a.lean:308:32: error: Application type mismatch: The argument
+witness-VC2-A-a: accepted (want accepted)
+  VC2-A-a [≤ reversed; witness: w = 1/2: A(1/2) ≤ 1 < 7/4 ≤ |∫_{−1}^{1} e^{ix²/2} dx| (attained_half_check)]: DETECTED (witness compiled: ¬ planted statement)
+ok-VC2-A-b: accepted (want accepted)
+plant-VC2-A-b: rejected (recorded)
+    first error: plant-VC2-A-b.lean:307:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-VC2-A-b: accepted (want accepted)
+  VC2-A-b [limits ±√(2w) ↦ ±√w; witness: w = 441/200: 33/10 ≤ A(w), and the planted integral is at most 2√w ≤ 3 (quad_sqrt_norm_le)]: DETECTED (witness compiled: ¬ planted statement)
+ok-VC2-N-a: accepted (want accepted)
+plant-VC2-N-a: rejected (recorded)
+    first error: plant-VC2-N-a.lean:217:2: error: Type mismatch
+witness-VC2-N-a: accepted (want accepted)
+  VC2-N-a [constant 7/2 ↦ 3; witness: w = 441/200 (33/10 ≤ A(w))]: DETECTED (witness compiled: ¬ planted statement)
+ok-VC2-N-b: accepted (want accepted)
+plant-VC2-N-b: accepted (recorded)
+  VC2-N-b [range of w: [0, π] ↦ [0, 2π]]: NOT DETECTED: no witness, and none can exist if the planted statement is true, which it appears to be: it is a strengthening of the draft statement (a larger range of w). Floating-point evidence (scratch/numerics.py and scratch/numerics2.py, unregistered): the maximum of A over a grid of 4001 points of [0, 2π] is 3.364317 at w = 2.2981, the same as on [0, π]; on [π, 2π] the largest value on a grid of 1001 points is A(π) = 2.5310, and A falls to −1.916 at w = 5.51; over [0, 40] (grid of 2001 points) the maximum is again 3.3643 at w = 2.30. On paper, A(w) = Im(e^{iw} conj ∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx) is at most the modulus of the quadratic integral, whose supremum over all symmetric intervals is 3.3643… (grid: 3.364314 at c = 2.145), so A ≤ 3.3643… < 7/2 on all of [0, ∞). The copied scripts are accepted by the planted copy for the same reason (441/200 ≤ 2π). That the range in VC2-N is [0, π] and not larger therefore rests on the fidelity review against docs/statements.md; the data cannot see it.
+ok-VC2-K-a: accepted (want accepted)
+plant-VC2-K-a: rejected (recorded)
+    first error: plant-VC2-K-a.lean:191:2: error: Type mismatch: After simplification, term
+witness-VC2-K-a: accepted (want accepted)
+  VC2-K-a [constant 7/2 ↦ 3; witness: φ = x²/2 on [−21/10, 21/10], μ = 1, ψ = 1 (left side ≥ 33/10)]: DETECTED (witness compiled: ¬ planted statement)
+ok-VC2-K-b: accepted (want accepted)
+plant-VC2-K-b: rejected (recorded)
+    first error: plant-VC2-K-b.lean:217:36: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-VC2-K-b: accepted (want accepted)
+  VC2-K-b [μ^{−1/2} ↦ μ^{−1}; witness: φ = 100x²/2 on [−1/10, 1/10], μ = 100, ψ = 1: left side ≥ 0.175, planted bound 7/200]: DETECTED (witness compiled: ¬ planted statement)
+ok-VC2-K-c: accepted (want accepted)
+plant-VC2-K-c: rejected (recorded)
+    first error: plant-VC2-K-c.lean:189:54: error: Application type mismatch: The argument
+witness-VC2-K-c: accepted (want accepted)
+  VC2-K-c [lower bound for |φ″| dropped; witness: φ = 0 on [0, 1], μ = 100, ψ = 1 (left side 1, bound 7/20)]: DETECTED (witness compiled: ¬ planted statement)
+ok-VC2-K-d: accepted (want accepted)
+plant-VC2-K-d: rejected (recorded)
+    first error: plant-VC2-K-d.lean:190:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-VC2-K-d: accepted (want accepted)
+  VC2-K-d [ampNorm ↦ |ψ(b)|; witness: φ = x²/2, ψ(x) = 1 − x on [0, 1], μ = 1 (left side ≥ 7/16, planted bound 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-VC2-K-e: accepted (want accepted)
+plant-VC2-K-e: rejected (recorded)
+    first error: plant-VC2-K-e.lean:205:86: error: unsolved goals
+  VC2-K-e [|φ″| ↦ φ″ in the hypothesis]: TRUE WEAKENING: the planted hypothesis μ ≤ φ″(x) implies the draft hypothesis μ ≤ |φ″(x)| (x ≤ |x|), so the planted statement is implied by the draft one and no datum can refute it. It is strictly weaker in content: it says nothing about concave phases, which the unplanted sanity theorem sevenHalves_neg (φ = −x²/2) uses; in the planted copy that script cannot supply 1 ≤ −1.

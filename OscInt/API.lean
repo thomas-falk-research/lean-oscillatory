@@ -30,6 +30,7 @@ import OscInt.Front.KusminLandauSanity
 import OscInt.Front.PeriodicAnalyticSanity2
 import OscInt.Front.KusminLandauSanity2
 import OscInt.Front.FiniteRingSanity
+import OscInt.Front.SecondDerivSharpSanity
 import OscInt.Front.GlobalFinal
 import OscInt.Front.LatticeFinal
 import OscInt.Front.LatticeExplicitFinal

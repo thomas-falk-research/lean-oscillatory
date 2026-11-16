@@ -1,0 +1,26 @@
+plant-VC2-S-d.lean:289:25: error: Function expected at
+  h (fun x => x ^ 2 / 2) (fun x => x) (-c) c 1 ?m.87 one_pos (quad_hasDerivOn (-c) c)
+but this term has type
+  ∃ w ∈ Icc 0 Real.pi, ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / √1
+
+Note: Expected a function because this term is being applied to the argument
+  (quad_increases _ _)
+plant-VC2-S-d.lean:289:9: error: Tactic `rcases` failed: `x✝ : ?m.97` is not an inductive datatype
+plant-VC2-S-d.lean:298:25: error: Function expected at
+  h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (-(c / 10)) (c / 10) 100 ?m.143 ?m.144
+    (scaled_hasDerivOn 100 (-(c / 10)) (c / 10))
+but this term has type
+  ∃ w ∈ Icc 0 Real.pi,
+    ‖∫ (x : ℝ) in -(c / 10)..c / 10, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / √100
+
+Note: Expected a function because this term is being applied to the argument
+  (scaled_increases _ _ _)
+plant-VC2-S-d.lean:298:9: error: Tactic `rcases` failed: `x✝ : ?m.149` is not an inductive datatype
+plant-VC2-S-d.lean:306:25: error: Function expected at
+  h (fun x => x ^ 2 / 2) (fun x => x) a a 1 le_rfl one_pos (quad_hasDerivOn a a)
+but this term has type
+  ∃ w ∈ Icc 0 Real.pi, ‖∫ (x : ℝ) in a..a, Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / √1
+
+Note: Expected a function because this term is being applied to the argument
+  (quad_increases _ _)
+plant-VC2-S-d.lean:306:9: error: Tactic `rcases` failed: `x✝ : ?m.49` is not an inductive datatype
