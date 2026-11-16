@@ -12,18 +12,20 @@ below it, and every rule is binding.
   `kusminLandauTwoOverPi`, `kusminLandauDeriv` (files `OscInt/Front/PeriodicAnalyticFinal.lean`,
   `OscInt/Front/KusminLandauFinal.lean` and the parts they import; records in `docs/proof-PA.md`, `docs/proof-KL.md`,
   "Parts as integrated").
-  **Not yet machine-checked as stated:** the post-proof reviews (A fidelity, B soundness, C adversarial) and one
-  isolated `make verify-all` are pending. Next, in order: (1) the three post-proof reviews on the integration
-  commit, tree frozen; (2) answers; (3) `df` (15 GB free needed; clean the exports under `build/` first), then
-  `make verify-all` detached and isolated (about three hours; nothing else may run); (4) replay record under
-  `docs/replay/`, STATUS rows to "machine-checked as stated", README counts 71 of 71, CHANGELOG.
+  Post-proof reviews answered (`review/2026-11-16-PA-KL-post-proof-answers.md`: FAITHFUL ×6, SOUND ×6, no failing
+  regime; no BLOCKER; three MAJOR against the records, answered).
+  **Not yet machine-checked as stated:** one isolated `make verify-all` is pending. Next, in order: (1) `make stamp`
+  on the answers commit and a commit that records the stamp; (2) `df` (the 15 GB floor cannot be kept during a
+  replay on this 30 GB disk: record free space before and after), then `make verify-all` detached and isolated
+  (about two hours by the Makefile's estimate; no agent and no other Lean process may run); (3) replay record
+  under `docs/replay/`, STATUS rows to "machine-checked as stated", README counts 71 of 71, CHANGELOG.
 - **Last verified state:** the integration commit (the one that adds this paragraph): `make quick` exit code 0
   (time in the session log). 71 pinned statements; 65 machine-checked as stated; 6 proved, replay pending.
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
-  two scratch-only agents (the Rust checker update; the sanity layer of the draft batch FR). Neither writes in the
-  tree; if lost, redo from the contract and from `docs/design/batch-FR-draft.md`.
-- **Exact next command:** read the session log's last rows; if no post-proof review is recorded, launch A, B, C on
-  the integration commit; if they are answered, run the replay as in step (3).
+  nothing at the time of this commit. In the lead's scratch, not in the tree: the sanity layer and planted controls
+  of the draft batch FR (an agent's work; if lost, redo from `docs/design/batch-FR-draft.md`).
+- **Exact next command:** read the session log's last rows. If a `make verify-all` start is recorded without a
+  result, the run is dead: record it as a partial under `docs/replay/` and start it again on a clean tree.
 - **Next batch, drafted only:** `docs/design/batch-FR-draft.md` (finite ring and open chain, seven statements, not
   frozen). Its freeze needs a sanity layer with planted controls, a challenge file, a second prior-art pass.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
@@ -31,10 +33,7 @@ below it, and every rule is binding.
   a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;
   `docs/funding/` (the application package for the EuroHPC cut-off of 1 December 2026, 10:00 CET; the owner must
   settle eligibility and copy the portal's form fields); `docs/contract/certificate-v0.md` with the reference checker
-  `python/oscint_cert/` (22 tests pass); the prior-art disclosure of 2026-11-16 in `docs/prior_art.md`.
-- **In the lead's scratch, not in the tree yet (lost if the container is reclaimed):** version 0.2.1 of the Python
-  checker and revision 3 of the contract (fixes after the outsider test; they wait for the Rust checker's update and
-  a new differential run).
+  `python/oscint_cert/` (version 0.2.1, 32 tests pass; revision 3 of the contract; third differential run 0 of 1463); the prior-art disclosure of 2026-11-16 in `docs/prior_art.md`.
 - **Disk:** 16 GB available; a full replay needs cleaning first or it breaks the 15 GB rule.
 - **Session log:** `docs/progress/2026-11-16-session13-log.md`.
 

@@ -1058,6 +1058,14 @@ LC-1 FAITHFUL, no counterexample found, no BLOCKER; the stamp `stamps/20261116T1
    `docs/replay/2026-11-16-PA-sanity-plants-second.txt`): node positions, integrality of n and k, the bound off the
    real axis, a datum at k = 0. The statement file is unchanged.
 
+Proved (2026-11-16). `OscInt.API.fourierCoeffStrip`, `OscInt.API.trapezoidalRule` and
+`OscInt.API.latticeKernel1LightCone` have exactly these three statements as their types (route `docs/proof-PA.md`;
+post-proof reviews `review/2026-11-16-PA-KL-post-proof-answers.md`). The sentence under "Order" above, "no Lean proof
+of these statements exists, in the repository or in scratch, before the reviews are answered and stamped", is, as
+far as the scratch is concerned, the lead's statement and cannot be checked by a reader; what can be checked, and
+the one disclosed exception (a proof plan on paper older than the freeze), is in `docs/STATUS.md`, paragraph
+"Batches PA and KL (2026-11-16), what the rows rest on".
+
 ## Batch KL: the Kusmin–Landau inequality for exponential sums (session 13, 2026-11-16)
 
 Order. As batch PA: statements, `OscInt/Statements/KusminLandau.lean`, sanity theorems with planted controls
@@ -1140,3 +1148,18 @@ KL-F FAITHFUL, no counterexample found, no BLOCKER; the stamp `stamps/20261116T1
    `docs/replay/2026-11-16-KL-sanity-plants-second.txt`): the last monotonicity comparison, one cell for all
    differences, a negative k, data at λ = 1/2, non-integer end points, the interval of the derivative hypothesis.
    The statement file is unchanged.
+
+Proved (2026-11-16). `OscInt.API.kusminLandau`, `OscInt.API.kusminLandauTwoOverPi` and `OscInt.API.kusminLandauDeriv`
+have exactly these three statements as their types (route `docs/proof-KL.md`; post-proof reviews
+`review/2026-11-16-PA-KL-post-proof-answers.md`). The order claim under "Order" above carries the same limit as for
+batch PA (`docs/STATUS.md`, paragraph "Batches PA and KL (2026-11-16), what the rows rest on"). Further
+clarifications after the post-proof reviews:
+1. Where the statements have no content: the bound cot(πλ/2) exceeds the trivial bound N + 1 whenever
+   N + 1 ≤ cot(πλ/2) (for example every sum of up to 63 terms at λ = 1/100); KL-C is weaker than KL-D everywhere.
+2. "Landau's sharp form": that cot(πλ/2) is best possible for every λ is Landau's result as reported by the
+   expositions quoted in "Why"; it is not machine-checked. In Lean the bound is shown attained at λ = 1/3, and data
+   exist at λ = 1/2.
+3. A rational witness against Cheng and Graham's printed bound in the derivative form exists (referee C, certified
+   arithmetic: f′ = 1/5 on [0, 2], linear up to 4/5 on [2, 2.01], 4/5 after, integers 0 to 4: |S| = 3.0681 against
+   1/(π/5) + 1 = 2.5915, and below cot(π/10) = 3.0777). The sanity layer records that mutation of KL-F as not
+   detected; the proof excludes it.

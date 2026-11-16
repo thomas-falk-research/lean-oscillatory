@@ -24,9 +24,11 @@ estimates that dispersive PDE, semiclassical analysis and lattice dynamics rest 
 
 The bounds at degenerate points and the global bounds are uniform over all linear terms of the phase, which is what
 dispersive estimates need; stationary phase and the fold bound are uniform over compact sets of linear terms. Statements are
-written, timestamped and reviewed blind before their proofs (the few exceptions are disclosed in `docs/STATUS.md`),
-and every proof is replayed by six kernel checkers: Lean's own kernel in two modes and four independent
-implementations. A downstream project can check in CI that it depends on exactly the reviewed statements.
+written, timestamped and reviewed blind before their Lean proofs (the few exceptions are disclosed in
+`docs/STATUS.md`; for classical theorems a proof on paper is of course older than the statement file, and where the
+lead had sketched one before a freeze the batch says so), and every proof of a statement that `docs/STATUS.md` calls
+machine-checked as stated has been replayed by six kernel checkers: Lean's own kernel in two modes and four
+independent implementations (six further statements are proved and await that replay; next item). A downstream project can check in CI that it depends on exactly the reviewed statements.
 
 - **71 pinned statements; 65 are machine-checked as stated; 6 more are proved in Lean, with their replay and
   post-proof reviews pending** (batches PA and KL, frozen, blind-reviewed and proved on 2026-11-16: the exponentially

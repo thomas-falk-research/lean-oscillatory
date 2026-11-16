@@ -1615,7 +1615,7 @@
     "v holomorphic, 2π-periodic and bounded by M on the open strip |Im z| < a (PeriodicAnalyticOn v a M), a > 0",
     "k ∈ ℤ"
    ],
-   "conclusion": "|∫_0^{2π} v(θ) e^{−ikθ} dθ| ≤ 2π M e^{−a|k|} (the Fourier coefficients c_k satisfy |c_k| ≤ M e^{−a|k|}; attained in the limit a → ∞ by v = cos(kz))",
+   "conclusion": "|∫_0^{2π} v(θ) e^{−ikθ} dθ| ≤ 2π M e^{−a|k|} (the Fourier coefficients c_k satisfy |c_k| ≤ M e^{−a|k|}; attained exactly by v = c·e^{ikz} with M = |c| e^{a|k|})",
    "rate": "e^{−a|k|} (explicit constant)",
    "uniform_over": "k ∈ ℤ, every v with the same a and M",
    "smoothness": "holomorphic on the strip",
@@ -1663,8 +1663,8 @@
     "t ∈ ℝ, n ∈ ℤ",
     "η ≥ 0"
    ],
-   "conclusion": "|∫_{−π}^{π} e^{i(t cos k + nk)} dk| ≤ 2π e^{|t| sinh η − |n| η} (light cone of the 1D lattice kernel; with cosh η = |n|/|t| this is Kapteyn's bound; integer n only)",
-   "rate": "superexponential in |n| outside the cone |n| > |t|",
+   "conclusion": "|∫_{−π}^{π} e^{i(t cos k + nk)} dk| ≤ 2π e^{|t| sinh η − |n| η} (light cone of the 1D lattice kernel; for t ≠ 0 and |n| ≥ |t| the choice cosh η = |n|/|t| gives the right side of DLMF 10.14.5, Siegel's bound; integer n only)",
+   "rate": "e^{−η|n|} for each fixed η and t; exponential in |n| along rays |n| = c|t|, c > 1, with a rate that tends to 0 as c → 1",
    "uniform_over": "t ∈ ℝ, n ∈ ℤ, η ≥ 0",
    "smoothness": "—",
    "see_also": [
@@ -1688,8 +1688,8 @@
     "c : ℕ → ℝ, N ∈ ℕ, k ∈ ℤ, 0 < λ ≤ 1/2",
     "the N differences c_{n+1} − c_n are monotone and lie in [k + λ, k + 1 − λ] (DiffsMonotoneIn c N k λ)"
    ],
-   "conclusion": "|Σ_{n=0}^{N} e^{2πi c_n}| ≤ cot(πλ/2) (Kusmin–Landau in Landau's sharp form; attained for λ = 1/3 by c = 0, 1/3, 1)",
-   "rate": "bounded independently of N (explicit, sharp constant)",
+   "conclusion": "|Σ_{n=0}^{N} e^{2πi c_n}| ≤ cot(πλ/2) (Kusmin–Landau with Landau's constant; attained for λ = 1/3 by c = 0, 1/3, 1; that the constant is best possible for every λ is Landau's result, not machine-checked here)",
+   "rate": "bounded independently of N (explicit constant)",
    "uniform_over": "N, k, every admissible sequence",
    "smoothness": "—",
    "see_also": [

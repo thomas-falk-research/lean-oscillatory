@@ -212,3 +212,8 @@ Limits. One referee and one run; eight plants, all single-line, chosen by the sa
 key was sealed by a hash in the session log, not by a timestamp authority; the genuine referees saw more material
 (blueprint and assembly) than the calibration referee. A referee that finds planted single-line errors may still
 miss a structural gap, and referees and lead are of one model family.
+
+Two limits of round 3 that this page did not state (post-proof referee C, 2026-11-16): its eight plants went to two
+referees, four each, so they are not eight independent trials and the pooled interval [0.794, 1.00] is nominal; and
+its two "controls" are the genuine reviews of the statements under test, so "0 false alarms of 2" assumes that
+those statements are faithful, which is the thing being measured.

@@ -40,6 +40,9 @@ agents of one model family.
   (`docs/prereg/2026-11-16-CTQW-chain.md`, `experiments/ctqw-chain/`).
 - `docs/design/unlock-map.md`, `docs/funding/` (a draft application package), `docs/design/batch-FR-draft.md` (draft
   statements for finite rings and open chains; not frozen).
+- `examples/consumer/ConsumerPeriodicAnalytic.lean`, `examples/consumer/ConsumerKusminLandau.lean`: unconditional
+  uses of the six new theorems (normalised Fourier coefficients, a stopping rule for the trapezoidal rule, the light
+  cone at one e-folding per site, exponential sums with a linear phase); compiled by `make quick`.
 
 ## v0.6.0 — 2026-11-15
 
