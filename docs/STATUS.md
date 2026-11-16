@@ -85,6 +85,10 @@ requires every row of the trust chain (README) for that statement.
 | FC-K the kernel of the open chain of M sites solves the equation, vanishes at the walls, is the unit datum | none yet (challenge `OscInt.API.chainKernelSolves`) | yes, same stamp | pre: pending | no | — | stated and frozen; blind review pending, not proved |
 | FC-U every solution on the open chain with Dirichlet walls is the chain-kernel sum of its datum | none yet (challenge `OscInt.API.chainUnique`) | yes, same stamp | pre: pending | no | — | stated and frozen; blind review pending, not proved |
 | FC-P finite-size error of the open chain against the line: the nearest images, explicit | none yet (challenge `OscInt.API.chainFiniteSize`) | yes, same stamp | pre: pending | no | — | stated and frozen; blind review pending, not proved |
+| VC2-S sharp second-derivative van der Corput bound: f′ increasing at rate λ gives \|∫ e^{if}\| ≤ A(w)/√λ for some w ∈ [0, π] (classical constant sup A = 3.3643…) | none yet (challenge `OscInt.API.secondDerivSharp`) | yes, stamp `20261116T222541Z-5b72549117b1` (pinned) | pre: pending | no | — | stated and frozen; blind review pending, not proved |
+| VC2-A the bound of VC2-S is attained by the quadratic phase on a symmetric interval | none yet (challenge `OscInt.API.secondDerivAttained`) | yes, same stamp | pre: pending | no | — | stated and frozen; blind review pending, not proved |
+| VC2-N the profile A is at most 7/2 on [0, π] | none yet (challenge `OscInt.API.vdc2ProfileBound`) | yes, same stamp | pre: pending | no | — | stated and frozen; blind review pending, not proved |
+| VC2-K second-derivative test with amplitude and linear term, constant 7/2 in place of 8 | none yet (challenge `OscInt.API.secondDerivSevenHalves`) | yes, same stamp | pre: pending | no | — | stated and frozen; blind review pending, not proved |
 
 T6, T6L prior art (2026-11-08, session 7): both are classical, because the 2D kernel factorises into two 1D Bessel
 kernels; the rows above are unchanged (the proofs are unaffected), but they claim "machine-checked", not new

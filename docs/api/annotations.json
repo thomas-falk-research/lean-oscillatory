@@ -1254,6 +1254,74 @@
    ],
    "snippet_kind": "unproved",
    "snippet": "example (h : ChainFiniteSizeStatement) := OscInt.API.FiniteRingSanity.chainP_one h"
+  },
+  "VC2-S": {
+   "hypotheses": [
+    "a ≤ b; λ > 0",
+    "f continuous on [a, b], differentiable on (a, b) with derivative f′",
+    "f′(y) − f′(x) ≥ λ (y − x) for a < x ≤ y < b (for instance f″ ≥ λ)"
+   ],
+   "conclusion": "there is w ∈ [0, π] with |∫_a^b e^{if}| ≤ A(w)/√λ, where A(w) = 2 ∫_0^{√(2w)} sin(w − u²/2) du: the second-derivative van der Corput bound with its sharp constant sup A = 3.3643… (classical: Kershner)",
+   "rate": "λ^{-1/2}",
+   "uniform_over": "f, a, b (no amplitude, no second derivative needed)",
+   "smoothness": "f differentiable on (a, b); f′ may be unbounded at the ends",
+   "see_also": [
+    "VC2-A",
+    "VC2-N",
+    "VC2-K",
+    "S1.2"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : SecondDerivSharpStatement) := OscInt.API.SecondDerivSharpSanity.sharp_profile_large h"
+  },
+  "VC2-A": {
+   "hypotheses": [
+    "w ≥ 0"
+   ],
+   "conclusion": "A(w) ≤ |∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx|: the quadratic phase on a symmetric interval reaches the profile, so no constant below sup_{[0, π]} A is true in VC2-S",
+   "rate": "— (sharpness)",
+   "uniform_over": "w",
+   "smoothness": "—",
+   "see_also": [
+    "VC2-S",
+    "VC2-N"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : SecondDerivAttainedStatement) := OscInt.API.SecondDerivSharpSanity.attained_at h"
+  },
+  "VC2-N": {
+   "hypotheses": [
+    "0 ≤ w ≤ π"
+   ],
+   "conclusion": "A(w) ≤ 7/2 (the supremum is 3.3643175781…; 7/2 is 4 % above it)",
+   "rate": "— (a number)",
+   "uniform_over": "w ∈ [0, π]",
+   "smoothness": "—",
+   "see_also": [
+    "VC2-S",
+    "VC2-K"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : Vdc2ProfileBoundStatement) := OscInt.API.SecondDerivSharpSanity.profile_within h"
+  },
+  "VC2-K": {
+   "hypotheses": [
+    "|φ″| ≥ μ > 0 on (a, b)",
+    "amplitude ψ with integrable ψ′",
+    "any linear term p x"
+   ],
+   "conclusion": "|∫_a^b e^{i(φ+px)} ψ| ≤ (7/2) μ^{-1/2} (|ψ(b)| + ∫|ψ′|): S1.2 with the constant 7/2 in place of 8",
+   "rate": "μ^{-1/2}",
+   "uniform_over": "the linear term p",
+   "smoothness": "φ C² on [a, b] (as S1.2)",
+   "see_also": [
+    "S1.2",
+    "S1.k",
+    "VC2-S",
+    "VC2-N"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : SecondDerivSevenHalvesStatement) := OscInt.API.SecondDerivSharpSanity.sevenHalves_ramp h"
   }
  },
  "helpers": [

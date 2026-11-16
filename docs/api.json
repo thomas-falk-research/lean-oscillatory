@@ -1920,6 +1920,106 @@
    ],
    "snippet": "example (h : ChainFiniteSizeStatement) := OscInt.API.FiniteRingSanity.chainP_one h",
    "status": "see docs/STATUS.md (row FC-P)"
+  },
+  {
+   "label": "VC2-S",
+   "name": "OscInt.Statements.SecondDerivSharpStatement",
+   "proved_by": null,
+   "summary": "The second-derivative van der Corput bound with its sharp constant: if `f′` increases at rate at least `λ > 0`, then `|∫_a^b e^{if}| ≤ A(w)/√λ` for some `w ∈ [0, π]`.",
+   "file": "OscInt/Statements/SecondDerivSharp.lean",
+   "commitment": "5e300a10f677af923adcff29d30ecb69f70caf77b58ecd17b7f6c48da5ee78c6",
+   "stamp": "stamps/20261116T222541Z-5b72549117b1",
+   "lean_statement": "def SecondDerivSharpStatement : Prop :=\n  ∀ (f f' : ℝ → ℝ) (a b lam : ℝ), a ≤ b → 0 < lam → HasDerivOn f f' a b → DerivIncreasesAtRate f' a b lam →\n    ∃ w ∈ Icc (0 : ℝ) Real.pi,\n      ‖∫ x in a..b, Complex.exp (((f x : ℝ) : ℂ) * Complex.I)‖ ≤ vdc2Profile w / Real.sqrt lam",
+   "hypotheses": [
+    "a ≤ b; λ > 0",
+    "f continuous on [a, b], differentiable on (a, b) with derivative f′",
+    "f′(y) − f′(x) ≥ λ (y − x) for a < x ≤ y < b (for instance f″ ≥ λ)"
+   ],
+   "conclusion": "there is w ∈ [0, π] with |∫_a^b e^{if}| ≤ A(w)/√λ, where A(w) = 2 ∫_0^{√(2w)} sin(w − u²/2) du: the second-derivative van der Corput bound with its sharp constant sup A = 3.3643… (classical: Kershner)",
+   "rate": "λ^{-1/2}",
+   "uniform_over": "f, a, b (no amplitude, no second derivative needed)",
+   "smoothness": "f differentiable on (a, b); f′ may be unbounded at the ends",
+   "see_also": [
+    "VC2-A",
+    "VC2-N",
+    "VC2-K",
+    "S1.2"
+   ],
+   "snippet": "example (h : SecondDerivSharpStatement) := OscInt.API.SecondDerivSharpSanity.sharp_profile_large h",
+   "status": "see docs/STATUS.md (row VC2-S)"
+  },
+  {
+   "label": "VC2-A",
+   "name": "OscInt.Statements.SecondDerivAttainedStatement",
+   "proved_by": null,
+   "summary": "The bound of VC2-S is attained by the quadratic phase: `A(w) ≤ |∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx|`.",
+   "file": "OscInt/Statements/SecondDerivSharp.lean",
+   "commitment": "93b1e48a43ba0cddd9948f13746f10a8167557a4fd7cef10b720875ec9bc1fa4",
+   "stamp": "stamps/20261116T222541Z-5b72549117b1",
+   "lean_statement": "def SecondDerivAttainedStatement : Prop :=\n  ∀ w : ℝ, 0 ≤ w →\n    vdc2Profile w ≤\n      ‖∫ x in (-Real.sqrt (2 * w))..(Real.sqrt (2 * w)), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖",
+   "hypotheses": [
+    "w ≥ 0"
+   ],
+   "conclusion": "A(w) ≤ |∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx|: the quadratic phase on a symmetric interval reaches the profile, so no constant below sup_{[0, π]} A is true in VC2-S",
+   "rate": "— (sharpness)",
+   "uniform_over": "w",
+   "smoothness": "—",
+   "see_also": [
+    "VC2-S",
+    "VC2-N"
+   ],
+   "snippet": "example (h : SecondDerivAttainedStatement) := OscInt.API.SecondDerivSharpSanity.attained_at h",
+   "status": "see docs/STATUS.md (row VC2-A)"
+  },
+  {
+   "label": "VC2-N",
+   "name": "OscInt.Statements.Vdc2ProfileBoundStatement",
+   "proved_by": null,
+   "summary": "An explicit bound for the sharp constant: `A(w) ≤ 7/2` for `0 ≤ w ≤ π`.",
+   "file": "OscInt/Statements/SecondDerivSharp.lean",
+   "commitment": "54c821111f5c3df622b30d27356fbc246ef977086831e487063b1bdf584972e1",
+   "stamp": "stamps/20261116T222541Z-5b72549117b1",
+   "lean_statement": "def Vdc2ProfileBoundStatement : Prop :=\n  ∀ w ∈ Icc (0 : ℝ) Real.pi, vdc2Profile w ≤ 7 / 2",
+   "hypotheses": [
+    "0 ≤ w ≤ π"
+   ],
+   "conclusion": "A(w) ≤ 7/2 (the supremum is 3.3643175781…; 7/2 is 4 % above it)",
+   "rate": "— (a number)",
+   "uniform_over": "w ∈ [0, π]",
+   "smoothness": "—",
+   "see_also": [
+    "VC2-S",
+    "VC2-K"
+   ],
+   "snippet": "example (h : Vdc2ProfileBoundStatement) := OscInt.API.SecondDerivSharpSanity.profile_within h",
+   "status": "see docs/STATUS.md (row VC2-N)"
+  },
+  {
+   "label": "VC2-K",
+   "name": "OscInt.Statements.SecondDerivSevenHalvesStatement",
+   "proved_by": null,
+   "summary": "The second-derivative test with amplitude and a linear term, constant `7/2`: `|∫_a^b e^{i(φ(x) + px)} ψ(x) dx| ≤ (7/2) μ^{−1/2} (|ψ(b)| + ∫_a^b |ψ′|)` when `|φ″| ≥ μ > 0` on `(a, b)`.",
+   "file": "OscInt/Statements/SecondDerivSharp.lean",
+   "commitment": "76b19164173b360ecfefc3bd945404158cfeedf389d7b0a83d5dd6e1d3c959a6",
+   "stamp": "stamps/20261116T222541Z-5b72549117b1",
+   "lean_statement": "def SecondDerivSevenHalvesStatement : Prop :=\n  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →\n    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b → (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) → AmplitudeOn ψ ψ' a b →\n    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ (7 / 2 : ℝ) * μ ^ (-(1 : ℝ) / 2) * ampNorm ψ ψ' a b",
+   "hypotheses": [
+    "|φ″| ≥ μ > 0 on (a, b)",
+    "amplitude ψ with integrable ψ′",
+    "any linear term p x"
+   ],
+   "conclusion": "|∫_a^b e^{i(φ+px)} ψ| ≤ (7/2) μ^{-1/2} (|ψ(b)| + ∫|ψ′|): S1.2 with the constant 7/2 in place of 8",
+   "rate": "μ^{-1/2}",
+   "uniform_over": "the linear term p",
+   "smoothness": "φ C² on [a, b] (as S1.2)",
+   "see_also": [
+    "S1.2",
+    "S1.k",
+    "VC2-S",
+    "VC2-N"
+   ],
+   "snippet": "example (h : SecondDerivSevenHalvesStatement) := OscInt.API.SecondDerivSharpSanity.sevenHalves_ramp h",
+   "status": "see docs/STATUS.md (row VC2-K)"
   }
  ]
 }

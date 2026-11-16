@@ -23,7 +23,7 @@ below it, and every rule is binding.
   stated", README counts, CHANGELOG. The clean-runner replay on GitHub is a manual dispatch of `verify.yml` on the
   branch (the pull request is a draft, which skips it); its result is in the session log.
 - **Last verified state:** the integration commit (the one that adds this paragraph): `make quick` exit code 0
-  (time in the session log). 78 pinned statements; 65 machine-checked as stated; 6 proved, replay pending; 7 stated and frozen (batch FR).
+  (time in the session log). 82 pinned statements; 65 machine-checked as stated; 6 proved, replay pending; 11 stated and frozen (batches FR and VC2).
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
   nothing local in the tree at the time of this commit; the dispatched `verify.yml` run on 880b537 ended with
   success (clean-runner replay of PA and KL; session log). In the lead's scratch, not in the tree: the sanity layer and planted controls
@@ -47,9 +47,9 @@ below it, and every rule is binding.
   lead's scratch. The session log's last rows say how far this got.
 - **Batch VC2 (sharp second-derivative van der Corput bound; four statements VC2-S, VC2-A, VC2-N, VC2-K):** in the
   tree for its freeze (`OscInt/Statements/SecondDerivSharp.lean`, sanity layer, plants, challenge,
-  `comparator-VC2.json`, prose). **Not stamped, not pinned yet**: `make statements` reports INCOMPLETE until the next
-  stamp, which is to cover this batch, the answers to the FR reviews and (if its sanity layer is back) a draft batch
-  on the Hadamard walk that exists only in the lead's scratch. A proof on paper exists and was refereed (session
+  `comparator-VC2.json`, prose). **Frozen**: stamp `stamps/20261116T222541Z-5b72549117b1`, pinned. Next for this batch: blind pre-proof
+  reviews A and B, answers, stamp of the answers, and only then proof code (rule 1). A draft batch on the Hadamard
+  walk exists only in the lead's scratch. A proof on paper exists and was refereed (session
   log); a route for Lean that avoids inverse functions is in the lead's scratch. Classical theorem; nothing new.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
   the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;

@@ -101,3 +101,8 @@ OscInt.Statements.ChainKernelStatement stamps/20261116T205833Z-0748dde3c341
 OscInt.Statements.ChainUniqueStatement stamps/20261116T205833Z-0748dde3c341
 OscInt.Statements.ChainFiniteSizeStatement stamps/20261116T205833Z-0748dde3c341
 challenge:comparator-FR.json stamps/20261116T205833Z-0748dde3c341
+OscInt.Statements.SecondDerivSharpStatement stamps/20261116T222541Z-5b72549117b1
+OscInt.Statements.SecondDerivAttainedStatement stamps/20261116T222541Z-5b72549117b1
+OscInt.Statements.Vdc2ProfileBoundStatement stamps/20261116T222541Z-5b72549117b1
+OscInt.Statements.SecondDerivSevenHalvesStatement stamps/20261116T222541Z-5b72549117b1
+challenge:comparator-VC2.json stamps/20261116T222541Z-5b72549117b1
