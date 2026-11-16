@@ -16,31 +16,44 @@ class Unresolved(Exception):
     """The computation is outside the supported range or budget; the caller reports UNRESOLVED, never a number."""
 
 
+_NUM = None
+
+
 def parse_rational(s) -> F:
-    """Parse "p/q", an integer or a finite decimal string exactly. Floats, NaN, Inf and exponents are rejected."""
+    """Parse an exact rational written as "-?D+", "-?D+/D+" (nonzero denominator) or "-?D+.D+", ASCII digits only
+    (contract section 2). No leading "+", no spaces, no exponent, no sign on the denominator. A JSON integer is
+    accepted where the caller passes one. Anything else raises ValueError."""
+    global _NUM
     if isinstance(s, bool) or not isinstance(s, (str, int)):
         raise ValueError(f"expected a string or integer, got {type(s).__name__}")
     if isinstance(s, int):
         return F(s)
-    t = s.strip()
-    if not t or len(t) > 4000:
-        raise ValueError("empty or oversized number")
-    allowed = set("0123456789+-/.")
-    if any(ch not in allowed for ch in t):
+    if len(s) > 4000:
+        raise Unresolved("numeral longer than 4000 characters")
+    if _NUM is None:
+        import re
+        _NUM = re.compile(r"-?[0-9]+(?:/[0-9]+|\.[0-9]+)?", re.ASCII)
+    if not _NUM.fullmatch(s):
         raise ValueError(f"not an exact rational: {s!r}")
-    if "/" in t:
-        num, _, den = t.partition("/")
-        if "." in num or "." in den or "/" in den:
-            raise ValueError(f"not an exact rational: {s!r}")
+    if "/" in s:
+        num, _, den = s.partition("/")
         d = int(den)
         if d == 0:
             raise ValueError("zero denominator")
         return F(int(num), d)
-    return F(t)
+    return F(s)
 
 
 def fmt(q: F) -> str:
     return str(q.numerator) if q.denominator == 1 else f"{q.numerator}/{q.denominator}"
+
+
+def round_out(a, digits: int):
+    """The interval rounded outward to multiples of 10^-digits (bounded size for printing)."""
+    s = 10**digits
+    lo = F((a[0].numerator * s) // a[0].denominator, s)
+    hi = F(-((-a[1].numerator * s) // a[1].denominator), s)
+    return (lo, hi)
 
 
 def iv(q) -> Interval:

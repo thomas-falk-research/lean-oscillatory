@@ -23,18 +23,21 @@ must be filled in before the circuit counts below are final).
 
 | WP | When | Content | Output |
 |---|---|---|---|
-| 0 | before access | protocol registered and time-stamped: predictions with enclosures, tolerance, noise budget, analysis script, decision rule; simulation of the full pipeline by two implementations that share no code, with a noise model | a registration in `docs/prereg/` and its ledger line; a ready-to-run package |
+| 0 | done 2026-11-16 | protocol registered and time-stamped: predictions with enclosures, tolerance, noise budget, analysis script, decision rule; simulation of the full pipeline by two implementations that share no code, with a noise model | a registration in `docs/prereg/` and its ledger line; a ready-to-run package |
 | 1 | weeks 1–3 | device characterisation on the chosen qubits: readout assignment matrix, single- and two-qubit error from the system's own calibration data, a two-qubit pilot of the exchange rotation | calibration record; go or no-go on the qubit selection, by a rule fixed in WP 0 |
 | 2 | weeks 3–8 | the registered runs: 2 chain lengths × 4 times × 5 repetitions on different days, 4000 shots each, plus readout-calibration circuits | raw counts with back-end metadata |
 | 3 | weeks 8–10 | analysis exactly as registered; no change of metric or threshold after the first run | analysis record; deviations, if any, listed |
 | 4 | weeks 10–12 | final report to EuroHPC; public release of raw data, code and the reference table | report; data deposit with a DOI |
 
-## 2.3 Decision rule (to be fixed in the registration, sketched here)
+## 2.3 Decision rule (registered)
 
-For each chain and time, the total-variation distance between the measured post-selected distribution and the
-certified reference is compared with a tolerance computed in WP 0 from the device's published error rates and the shot
-noise. "Consistent with the reference" requires the distance to be within the tolerance in at least 4 of the 5
-repetitions. The registered envelope `p_max(t) ≤ min{1, (C*/2π)² (2t)^{−2/3}}` is reported, but it is not a test:
+WP 0 is done: the protocol is `docs/prereg/2026-11-16-CTQW-chain.md` (registered 2026-11-16, not run), with the
+package under `experiments/ctqw-chain/`. For each chain and time, the total-variation distance between the measured
+post-selected distribution and the certified reference is compared with a registered tolerance (0.025 to 0.049,
+from a simulated noise model at 4000 shots). "Consistent with the reference" requires the distance to be within the
+tolerance in at least 4 of the 5 repetitions. In simulation the registered circuit for 9 qubits at t = 2 has 136
+two-qubit gates on a line; at the nominal noise level no run of 30 exceeded its tolerance, and at a three times
+worse level at least 26 of 30 did for every circuit with t ≥ 1 (the protocol's section 4). The registered envelope `p_max(t) ≤ min{1, (C*/2π)² (2t)^{−2/3}}` is reported, but it is not a test:
 at these times it is far above any clean device's peak (`docs/design/unlock-map.md`, section 6), and the registration
 says so.
 

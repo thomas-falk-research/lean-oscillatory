@@ -50,9 +50,14 @@ class Rational(unittest.TestCase):
 
     def test_parse_rejects_inexact_or_hostile(self):
         for bad in ["nan", "NaN", "inf", "-Infinity", "1e5", "0x10", "", " ", "1/0", "1/2/3", "1.5/2", "²", "1_000",
-                    1.5, float("nan"), float("inf"), True, None, [1], {"x": 1}, "9" * 5000]:
+                    "+1", " 1", "1 ", "1/-2", ".5", "5.", "--1", "-", "1/", "/2", "٣", "1\n",
+                    1.5, float("nan"), float("inf"), True, None, [1], {"x": 1}]:
             with self.assertRaises((ValueError, ZeroDivisionError), msg=repr(bad)):
                 R.parse_rational(bad)
+        with self.assertRaises(R.Unresolved):
+            R.parse_rational("9" * 5000)
+        for good, val in [("01", F(1)), ("-0", F(0)), ("2/4", F(1, 2)), ("-3/6", F(-1, 2)), ("0.50", F(1, 2))]:
+            self.assertEqual(R.parse_rational(good), val)
 
     def test_roots_bracket(self):
         for _ in range(300):
@@ -107,8 +112,10 @@ class Kernels(unittest.TestCase):
             kernels.bessel_j(0, F(401))
         lo, hi = kernels.bessel_j(-3, F(-2))  # J_{-3}(-2) = J_3(2) > 0
         self.assertTrue(0 < lo <= hi)
-        lo, hi = kernels.bessel_j(100000, F(1, 2), 10)  # far outside the light cone: tiny, and still an enclosure
+        lo, hi = kernels.bessel_j(10000, F(1, 2), 10)  # far outside the light cone: tiny, and still an enclosure
         self.assertTrue(lo <= hi and abs(hi) < F(1, 10**100))
+        with self.assertRaises(R.Unresolved):
+            kernels.bessel_j(10001, F(1, 2), 10)
 
     def test_population_sums_to_at_most_one(self):
         for t in [F(1, 10), F(1), F(5, 2), F(7)]:
@@ -304,6 +311,35 @@ class Certificates(unittest.TestCase):
         self.assertEqual(self.status(c), "UNRESOLVED")
         with self.assertRaises(C.CertError):
             C.make("vdc-hypothesis", dict(EXAMPLES[3][1], mu="9/10"), STATEMENTS)
+
+    def test_strictness_found_by_the_differential_test(self):
+        """Each case below was accepted or mislabelled by version 0.1.0 and found by the second implementation."""
+        c = self.certs[0]
+        for lo in ["+0", " 0", "1/-2"]:
+            m = copy.deepcopy(c); m["claim"]["lo"] = lo
+            self.assertEqual(self.status(m), "REJECTED", lo)
+        m = copy.deepcopy(c); m["producer"] = 7
+        self.assertEqual(self.status(m), "REJECTED")
+        with self.assertRaises(C.CertError):
+            C.loads_strict('{"a": 1, "a": 1}')
+        with self.assertRaises(C.CertError):
+            C.loads_strict('{"a": NaN}')
+        m = copy.deepcopy(c); m["inputs"]["n"] = 20000; m["claim"] = {"lo": "-1", "hi": "1"}
+        self.assertEqual(self.status(m), "UNRESOLVED")
+        m = copy.deepcopy(c); m["inputs"]["n"] = 10000; m["inputs"]["x"] = "1"; m["claim"] = {"lo": "-1", "hi": "1"}
+        self.assertEqual(self.status(m), "CERTIFIED")  # huge integers inside the computation no longer break printing
+        m = copy.deepcopy(self.certs[2]); m["inputs"]["d"] = 65; m["claim"] = {"lo": "0", "hi": "1"}
+        self.assertEqual(self.status(m), "UNRESOLVED")
+        m = copy.deepcopy(self.certs[2]); m["inputs"]["d"] = -1
+        self.assertEqual(self.status(m), "REJECTED")
+        m = copy.deepcopy(self.certs[3]); m["inputs"]["order"] = 17
+        self.assertEqual(self.status(m), "UNRESOLVED")
+        m = copy.deepcopy(self.certs[3]); m["inputs"]["order"] = 1
+        self.assertEqual(self.status(m), "REJECTED")
+        m = copy.deepcopy(self.certs[3]); m["inputs"]["phase"] = [{"amp": "1", "freq": 1001, "fn": "cos"}]
+        self.assertEqual(self.status(m), "UNRESOLVED")
+        m = copy.deepcopy(self.certs[3]); m["inputs"]["phase"] = [{"amp": "1", "freq": 1, "fn": "cos", "x": 1}]
+        self.assertEqual(self.status(m), "REJECTED")
 
     def test_out_of_range_inputs_are_unresolved_not_wrong(self):
         c = copy.deepcopy(self.certs[0])

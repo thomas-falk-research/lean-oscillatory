@@ -32,7 +32,8 @@ field list, and submits. This branch is public: the drafts contain only public f
    quantum pilot's rule says "users residing, established or located in" an eligible country).
 2. Log in to the access portal, open call 61, and copy the form's fields and length limits; cut the sections to fit.
 3. Re-read the systems table on the call page (it was read once, from an image) and fill `[CALIBRATION-DATA]`.
-4. Approve or change the experiment (`docs/funding/02-work-plan.md`); the protocol is registered before any run.
+4. Approve or change the experiment (`docs/funding/02-work-plan.md`). The protocol is registered
+   (`docs/prereg/2026-11-16-CTQW-chain.md`); a change before the first run is a new registration, not an edit.
 
 ## Rules these drafts follow
 

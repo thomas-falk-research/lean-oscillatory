@@ -39,28 +39,61 @@ class CertError(ValueError):
     pass
 
 
+def _no_duplicates(pairs):
+    d = {}
+    for k, v in pairs:
+        if k in d:
+            raise CertError(f"duplicate key {k!r}")
+        d[k] = v
+    return d
+
+
+def _no_constants(name):
+    raise CertError(f"{name} is not allowed")
+
+
+def loads_strict(text):
+    """JSON with duplicate keys, NaN and Infinity refused (contract section 3)."""
+    return json.loads(text, object_pairs_hook=_no_duplicates, parse_constant=_no_constants)
+
+
 def load_statements(path):
     raw = open(path, "rb").read()
-    data = json.loads(raw)
+    data = loads_strict(raw.decode("utf-8"))
     if data.get("format") != "oscint-statements 1":
         raise CertError("unknown statement-list format")
     return {s["label"]: s for s in data["statements"]}, hashlib.sha256(raw).hexdigest()
 
 
-def _int(v, name, lo, hi):
+def _int(v, name, lo, hi, soft_hi=None):
+    """A JSON integer. Below lo or above hi: malformed (REJECTED). Between soft_hi and hi: a valid input beyond the
+    checker's supported range (UNRESOLVED)."""
     if isinstance(v, bool) or not isinstance(v, int) or not lo <= v <= hi:
         raise CertError(f"{name}: an integer in [{lo}, {hi}] is required")
+    if soft_hi is not None and abs(v) > soft_hi:
+        raise R.Unresolved(f"{name}: beyond the supported range (|{name}| <= {soft_hi})")
     return v
 
 
-def _enc(i):
-    return {"lo": R.fmt(i[0]), "hi": R.fmt(i[1])}
+def _rat(v, name):
+    if not isinstance(v, str):
+        raise CertError(f"{name}: a string holding an exact rational is required")
+    return R.parse_rational(v)
+
+
+BIG = 10**300  # integers beyond this are refused as malformed
+
+
+def _enc(i, digits=80):
+    """An enclosure for printing: rounded outward to multiples of 10^-digits, so its size is bounded."""
+    r = R.round_out(i, digits)
+    return {"lo": R.fmt(r[0]), "hi": R.fmt(r[1])}
 
 
 def _dec(obj, name):
     if not isinstance(obj, dict) or set(obj) != {"lo", "hi"}:
         raise CertError(f"{name}: an object with exactly 'lo' and 'hi' is required")
-    lo, hi = R.parse_rational(obj["lo"]), R.parse_rational(obj["hi"])
+    lo, hi = _rat(obj["lo"], name + ".lo"), _rat(obj["hi"], name + ".hi")
     if lo > hi:
         raise CertError(f"{name}: lo exceeds hi")
     return (lo, hi)
@@ -74,29 +107,30 @@ def _compute(kind, inputs, digits):
         if kind == "bessel-j":
             if set(inputs) != {"n", "x"}:
                 raise CertError("bessel-j inputs: exactly n, x")
-            return {"enclosure": kernels.bessel_j(_int(inputs["n"], "n", -100000, 100000),
-                                                  R.parse_rational(inputs["x"]), digits)}
+            return {"enclosure": kernels.bessel_j(_int(inputs["n"], "n", -BIG, BIG, kernels.MAX_ORDER),
+                                                  _rat(inputs["x"], "x"), digits)}
         if kind == "lattice-population":
             if set(inputs) != {"n", "t"}:
                 raise CertError("lattice-population inputs: exactly n, t")
-            return {"enclosure": kernels.population(_int(inputs["n"], "n", -100000, 100000),
-                                                    R.parse_rational(inputs["t"]), digits)}
+            return {"enclosure": kernels.population(_int(inputs["n"], "n", -BIG, BIG, kernels.MAX_ORDER),
+                                                    _rat(inputs["t"], "t"), digits)}
         if kind == "lattice-envelope":
             if set(inputs) != {"d", "t"}:
                 raise CertError("lattice-envelope inputs: exactly d, t")
-            t = R.parse_rational(inputs["t"])
+            t = _rat(inputs["t"], "t")
+            d = _int(inputs["d"], "d", 0, BIG, 64)
             if t == 0:
                 raise CertError("lattice-envelope: t = 0 is excluded by the statement")
-            return {"enclosure": kernels.ls_d_envelope(_int(inputs["d"], "d", 0, 64), t, digits)}
+            return {"enclosure": kernels.ls_d_envelope(d, t, digits)}
         if kind == "vdc-hypothesis":
             if set(inputs) != {"phase", "order", "a", "b", "mu", "t"}:
                 raise CertError("vdc-hypothesis inputs: exactly phase, order, a, b, mu, t")
-            terms = phase.parse_phase(inputs["phase"])
-            order = _int(inputs["order"], "order", 2, 16)
-            a, b = R.parse_rational(inputs["a"]), R.parse_rational(inputs["b"])
-            mu, t = R.parse_rational(inputs["mu"]), R.parse_rational(inputs["t"])
+            order = _int(inputs["order"], "order", 2, BIG, 16)
+            a, b = _rat(inputs["a"], "a"), _rat(inputs["b"], "b")
+            mu, t = _rat(inputs["mu"], "mu"), _rat(inputs["t"], "t")
             if not a <= b or mu <= 0 or t <= 0:
                 raise CertError("vdc-hypothesis: need a <= b, mu > 0, t > 0")
+            terms = phase.parse_phase(inputs["phase"])
             status, detail = phase.check_lower_bound(terms, order, a, b, mu, min(digits, 24))
             return {"hypothesis": status, "detail": detail, "enclosure": phase.vdc_bound(order, mu, t, digits)}
     except ValueError as e:
@@ -112,11 +146,11 @@ def make(kind, inputs, statements, digits=30):
         raise CertError(f"unknown kind {kind!r}")
     label, assumptions = KINDS[kind]
     res = _compute(kind, inputs, digits)
-    claim = dict(_enc(res["enclosure"]))
+    claim = dict(_enc(res["enclosure"], digits))
     if kind == "vdc-hypothesis":
         if res["hypothesis"] != "PASS":
             raise CertError(f"hypothesis not established: {res['hypothesis']} {json.dumps(res['detail'])}")
-        claim = {"holds": True, "bound": _enc(res["enclosure"])}
+        claim = {"holds": True, "bound": _enc(res["enclosure"], digits)}
     stmt = None
     if label is not None:
         s = statements[label]
@@ -141,6 +175,8 @@ def check(cert, statements, statements_sha256, digits=30):
             raise CertError(f"top-level keys must be exactly {sorted(TOP_KEYS)}")
         if cert["format"] != CERT_FORMAT:
             raise CertError(f"format must be {CERT_FORMAT!r}")
+        if not isinstance(cert["producer"], str):
+            raise CertError("producer must be a string")
         kind = cert["kind"]
         if not isinstance(kind, str) or kind not in KINDS:
             raise CertError(f"unknown kind {kind!r}")
@@ -161,13 +197,14 @@ def check(cert, statements, statements_sha256, digits=30):
                 raise CertError(f"statement {label} is not in the statement list")
             if not isinstance(st, dict) or set(st) != {"label", "name", "commitment"}:
                 raise CertError("statement: exactly label, name, commitment")
-            if (st["label"], st["name"], st["commitment"]) != (label, s["name"], s["commitment"]):
+            if not all(isinstance(st[k], str) for k in st) or \
+                    (st["label"], st["name"], st["commitment"]) != (label, s["name"], s["commitment"]):
                 raise CertError("statement label, name or commitment does not match the statement list")
             extra["statement"] = {"label": label, "name": s["name"], "commitment": s["commitment"],
                                   "proved_by": s.get("proved_by"), "rung": "L4 (machine-checked; fidelity "
                                   "reviewed by AI referees, not yet by a human expert)" if s.get("proved_by")
                                   else "stated, not proved"}
-            if not s.get("proved_by"):
+            if not (isinstance(s.get("proved_by"), str) and s.get("proved_by")):
                 unproved = f"statement {label} has no machine-checked proof in this statement list"
         res = None
         last = None
@@ -176,6 +213,8 @@ def check(cert, statements, statements_sha256, digits=30):
                 res = _compute(kind, cert["inputs"], dg)
             except R.Unresolved as e:
                 return _verdict("UNRESOLVED", cert, [str(e)], extra)
+            except RecursionError:
+                return _verdict("UNRESOLVED", cert, ["computation budget exceeded"], extra)
             if kind == "vdc-hypothesis":
                 c = cert["claim"]
                 if not isinstance(c, dict) or set(c) != {"holds", "bound"} or c["holds"] is not True:
@@ -198,5 +237,7 @@ def check(cert, statements, statements_sha256, digits=30):
             last = "the claimed enclosure neither contains nor is disjoint from the recomputed one"
         # the claim cuts through the true value's enclosure at both precisions: it is too narrow to be confirmed
         return _verdict("UNRESOLVED", cert, [last], extra)
+    except R.Unresolved as e:
+        return _verdict("UNRESOLVED", cert, [str(e)])
     except (CertError, ValueError, KeyError, TypeError) as e:
         return _verdict("REJECTED", cert, [f"malformed certificate: {e}"])

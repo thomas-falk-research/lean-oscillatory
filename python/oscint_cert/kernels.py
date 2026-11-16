@@ -7,14 +7,15 @@ from math import factorial
 
 from . import rational as R
 
+MAX_ORDER = 10000
 MAX_ARG = 400  # |x| above this is reported UNRESOLVED (the exact series becomes expensive), never approximated
 
 
 def bessel_j(n: int, x: F, digits: int = 30):
     """Enclosure of J_n(x), integer n, rational x, from the power series
     J_n(x) = sum_m (-1)^m (x/2)^(2m+n) / (m! (m+n)!) with the alternating-series remainder."""
-    if abs(x) > MAX_ARG or abs(n) > 100000:
-        raise R.Unresolved(f"Bessel argument or order outside the supported range (|x| <= {MAX_ARG})")
+    if abs(x) > MAX_ARG or abs(n) > MAX_ORDER:
+        raise R.Unresolved(f"Bessel argument or order outside the supported range (|x| <= {MAX_ARG}, |n| <= {MAX_ORDER})")
     sign = 1
     if n < 0:
         n, sign = -n, (-1) ** (n % 2)
@@ -52,8 +53,10 @@ def cstar_over_two_pi(digits: int = 30):
 
 def ls_d_envelope(d: int, t: F, digits: int = 30):
     """Enclosure of min{1, (C*/(2 pi))^d (2|t|)^(-d/3)}, the bound of statement LS-D for a datum of l^1 norm 1."""
-    if d < 0 or d > 64:
-        raise R.Unresolved("dimension outside 0..64")
+    if d < 0:
+        raise ValueError("the dimension is a natural number")
+    if d > 64:
+        raise R.Unresolved("dimension above 64")
     if t == 0:
         raise ValueError("LS-D excludes t = 0")
     c = R.ipow(cstar_over_two_pi(digits), d)

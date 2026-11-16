@@ -3,7 +3,7 @@ SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
 
 SPDX-License-Identifier: CC-BY-4.0
 -->
-# oscint_cert (experimental, version 0.1.0; not published)
+# oscint_cert (experimental, version 0.2.0; not published)
 
 Certificates for evaluated OscInt statements and the one checker that may say CERTIFIED. The contract is
 `docs/contract/certificate-v0.md`. Standard library only; Python 3.11 or later.

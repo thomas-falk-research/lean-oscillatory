@@ -37,14 +37,14 @@ def main(argv=None):
             raise C.CertError("--digits must be between 10 and 200")
         statements, sha = C.load_statements(a.statements)
         if a.cmd == "make":
-            print(json.dumps(C.make(a.kind, json.loads(a.inputs), statements, a.digits), indent=1, sort_keys=True))
+            print(json.dumps(C.make(a.kind, C.loads_strict(a.inputs), statements, a.digits), indent=1, sort_keys=True))
             return 0
         raw = sys.stdin.read() if a.certificate == "-" else open(a.certificate, encoding="utf-8").read()
         try:
-            cert = json.loads(raw)
-        except json.JSONDecodeError as e:
+            cert = C.loads_strict(raw)
+        except (ValueError, C.CertError, RecursionError) as e:  # JSONDecodeError is a ValueError
             cert = None
-            v = C._verdict("REJECTED", {}, [f"not JSON: {e.msg}"])
+            v = C._verdict("REJECTED", {}, [f"not strict JSON: {e}"])
         if cert is not None:
             v = C.check(cert, statements, sha, a.digits)
         print(json.dumps(v, indent=1, sort_keys=True))

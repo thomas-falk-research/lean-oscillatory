@@ -5,6 +5,6 @@
 
 Contract: docs/contract/certificate-v0.md in the OscInt repository. Standard library only.
 """
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 CERT_FORMAT = "oscint-certificate/0.1"
 VERDICT_FORMAT = "oscint-verdict/0.1"

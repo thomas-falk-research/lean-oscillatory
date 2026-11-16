@@ -17,14 +17,20 @@ from . import rational as R
 
 def parse_phase(terms):
     out = []
-    if not isinstance(terms, list) or not terms or len(terms) > 64:
-        raise ValueError("phase: a non-empty list of at most 64 terms is required")
+    if not isinstance(terms, list) or not terms:
+        raise ValueError("phase: a non-empty list of terms is required")
+    if len(terms) > 64:
+        raise R.Unresolved("phase: more than 64 terms")
     for t in terms:
-        if not isinstance(t, dict) or t.get("fn") not in ("cos", "sin"):
-            raise ValueError("phase term: fn must be 'cos' or 'sin'")
+        if not isinstance(t, dict) or set(t) != {"amp", "freq", "fn"} or t.get("fn") not in ("cos", "sin"):
+            raise ValueError("phase term: exactly amp, freq, fn; fn must be 'cos' or 'sin'")
         f = t.get("freq")
-        if isinstance(f, bool) or not isinstance(f, int) or abs(f) > 1000:
-            raise ValueError("phase term: freq must be an integer with |freq| <= 1000")
+        if isinstance(f, bool) or not isinstance(f, int):
+            raise ValueError("phase term: freq must be an integer")
+        if abs(f) > 1000:
+            raise R.Unresolved("phase term: |freq| above 1000")
+        if isinstance(t.get("amp"), int):
+            raise ValueError("phase term: amp must be a string")
         out.append((R.parse_rational(t.get("amp")), f, t["fn"]))
     return out
 
