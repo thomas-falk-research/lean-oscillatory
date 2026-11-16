@@ -25,7 +25,8 @@ below it, and every rule is binding.
 - **Last verified state:** the integration commit (the one that adds this paragraph): `make quick` exit code 0
   (time in the session log). 78 pinned statements; 65 machine-checked as stated; 6 proved, replay pending; 7 stated and frozen (batch FR).
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
-  nothing local at the time of this commit; on GitHub, a dispatched `verify.yml` run on the branch head. In the lead's scratch, not in the tree: the sanity layer and planted controls
+  nothing local in the tree at the time of this commit; the dispatched `verify.yml` run on 880b537 ended with
+  success (clean-runner replay of PA and KL; session log). In the lead's scratch, not in the tree: the sanity layer and planted controls
   of the draft batch FR (an agent's work; if lost, redo from `docs/design/batch-FR-draft.md`).
 - **Exact next command:** read the session log's last rows. If a `make verify-all` start is recorded without a
   result, the run is dead: record it as a partial under `docs/replay/` and start it again on a clean tree.
@@ -39,9 +40,11 @@ below it, and every rule is binding.
   for its freeze: `OscInt/Statements/FiniteRing.lean`, sanity layer `OscInt/Front/FiniteRingSanity.lean` with planted
   controls (`docs/replay/2026-11-16-FR-sanity-plants.txt`), `Challenge/FiniteRing.lean`, `comparator-FR.json`, prose in
   `docs/statements.md`. **Frozen**: stamp `stamps/20261116T205833Z-0748dde3c341` on the statements commit 0748dde, pinned.
-  Order from here: blind pre-proof reviews A and B on the freeze commit, answers, stamp of the answers, and only then
-  routes, blueprint, assembly and parts (rule 1). A route on paper exists in the lead's scratch. The session log's
-  last rows say how far this got.
+  Blind pre-proof reviews A and B are in (2026-11-16, session log): all seven FAITHFUL, no counterexample, no
+  BLOCKER; three MAJOR against the sanity layer. Order from here: second sanity layer (an agent's work in the lead's
+  scratch; if lost, redo from the findings in the session log), answers (a file `2026-11-16-FR-pre-proof-answers.md` under `review/`, not yet written),
+  stamp of the answers, and only then routes, blueprint, assembly and parts (rule 1). A route on paper exists in the
+  lead's scratch. The session log's last rows say how far this got.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
   the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;
   a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;
