@@ -206,3 +206,45 @@ King's graph, lattice wave equation).
 
 S1 must cite roos-j/lean-oscillatory and PR #39406. Building it again from scratch would duplicate open
 upstream work; the decision how to proceed with M1 is the owner's (see `docs/HANDOFF.md`).
+
+## The sharp constant of the second-derivative test is classical (found 2026-11-16, session 13)
+
+What happened. While choosing the next mathematics the lead found a short argument that, for `f″ ≥ λ > 0` on
+`[a, b]`, `|∫_a^b e^{if}| ≤ m/√λ` with `m = max_b 2|∫_0^b e^{iu²/2} du|`, attained by a quadratic phase on a symmetric
+interval. The session's own map (`docs/design/unlock-map.md`, row O1) called this constant open, on the word of
+K. Rogers's paper (arXiv:math/0311013), which proves `3^{3/4}·2 ≈ 4.56` and says that numerical experiments suggest
+3.3643. A short proof of a problem called open is a warning sign, so the lead ran a logged search before anything
+else.
+
+What the search found (log: `numerics/results-vdc2-prior-art-search-2026-11-16.txt`, 14 queries on arXiv, zbMATH Open,
+MathOverflow, Crossref and the OEIS, with positive controls):
+- R. Kershner, *Determination of a van der Corput–Landau absolute constant*, Amer. J. Math. 57 (1935), and
+  *Determination of a van der Corput absolute constant*, Amer. J. Math. 60 (1938) (zbMATH 0012.34801 and 0019.10902;
+  titles and years from zbMATH and Crossref; **neither paper was read**).
+- OEIS A143305, "Decimal expansion of van der Corput's constant", 3.3643175781…, with the formula
+  `2√2 ∫_0^{√(π/2 − c)} cos(x² + c) dx` and the reference S. Finch, *Mathematical Constants* (2003), pp. 245–246 (the
+  OEIS entry was read through its API; Finch's pages were not).
+- Nothing among the ten papers that zbMATH lists as citing Rogers resolves the question differently, and
+  MathOverflow returned no hit for two formulations.
+
+What the lead computed: `m = 3.36431757815589910606…` by two methods that share no code (adaptive quadrature of the
+defining integral with a root search for the maximum; the Fresnel functions C and S), equal to each other to 29
+digits and to the OEIS value to the digits it prints.
+
+Labels. That the sharp constant is 3.3643… and that Kershner determined it: CITED from titles, the OEIS entry and
+the lead's memory of the literature, originals unread (FOLKLORE until someone reads Kershner). That Rogers did not
+know it: his LaTeX source, read by the lead, does not cite Kershner. The lead's argument: a proof on paper,
+unrefereed, of a known theorem; whether it differs from Kershner's is unknown. **Nothing here is claimed as new.**
+What remains worth doing is a machine check of the classical sharp theorem, which would replace the constant 8 of
+S1.2 by 3.3643… everywhere downstream; no formalisation of it was searched for yet.
+
+The lead's argument, for the record (not a statement of OscInt, not refereed). Let `x₀` be the point of `[a, b]`
+where the increasing function `f′` changes sign (an end point if it does not). On each side of `x₀` take the phase
+`v = f(x) − f(x₀) ≥ 0` as the variable: `∫_a^b e^{if} = e^{if(x₀)} ∫_0^∞ e^{iv} ρ(v) dv`, where `ρ` is the sum over the two
+sides of `1/|f′|` at the point of phase `v` (zero beyond the phase of each end point). Because `f′(y) − f′(x) ≥ y − x`,
+each summand is nonincreasing in `v` and at most `1/√(2v)`, so `ρ` is nonincreasing and `ρ(v) ≤ √(2/v) =: E(v)`. For
+such `ρ` and any angle θ, pairing each arc where `cos(v − θ) < 0` with the following arc where it is positive gives a
+nonpositive sum, so `∫ cos(v − θ) ρ` is at most the integral over the first positive arc; if that arc starts at 0 it
+is at most `Re(e^{−iθ} ∫_0^{v₁} e^{iv} E) ≤ m`, and if it starts at `v₀ > 0` it is at most
+`∫_0^π sin(s) E(v₀ + s) ds ≤ ∫_0^π sin(s) E(s) ds = Im ∫_0^π e^{iv} E ≤ m`. Equality for `ρ = E` cut at the maximising
+phase, that is, for a quadratic phase on a symmetric interval.
