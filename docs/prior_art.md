@@ -81,6 +81,49 @@ Consequences:
   points (`docs/design/vector-amplitudes.md` §6), so no proved theorem applies to it; no non-separable symbol satisfying
   the GD hypotheses has been found yet.
 
+## An explicit, smaller constant for the lattice ℓ¹ → ℓ^∞ estimate is in print (disclosure added 2026-11-16, session 13)
+
+Found by a literature sweep of session 13 and confirmed by a second, separate read of the paper's text. **Severity
+MEDIUM (novelty wording; no proof and no statement is affected).**
+
+E. L. Korotyaev and J. S. Møller, *Weighted estimates for the discrete Laplacian on the cubic lattice*,
+arXiv:1701.03605 (v1 13 January 2017, v2 3 May 2017; journal reference not on the arXiv page), take
+`(Δf)(n) = ½ Σ_j (f(n + e_j) + f(n − e_j))`, whose group has the kernel `∏_j J_{n_j}(t)` up to a unimodular factor
+(their (1.26), (1.27)), and state in the proof of their Lemma 2.1: "‖e^{itΔ}f‖_∞ ⩽ C_Lan^d t^{−d/3} ‖f‖_1", with
+"C_Lan < 4/5" (Theorem 1.1(a)) "one of Landaus optimal constants" (CITED-READ: the arXiv abstract page and the first
+third of the HTML rendering, verbatim; their appendix and bibliography were not readable in this session). In the
+normalisation of batch LS (hopping 1, kernel `J_n(2t)`) that is
+
+    ‖u(t)‖_∞ ≤ (0.7857…)^d (2|t|)^{−d/3} ‖f‖₁     against LS-D's     (1.5473…)^d (2|t|)^{−d/3} ‖f‖₁.
+
+Consequences for the claims in this file and in the release notes:
+- The rows for TdF/TdE′ and for LS-E, LS-K, LS-D, LS-D′ say the explicit constants are "new only through T0E′". That
+  wording is too strong. For lattice sites (integer ξ) an explicit and smaller constant was published in 2017. What
+  remains true: T0E′ holds for every real ξ, which Landau's theorem on `J_ν`, ν ≥ 0, does not cover (the integral at a
+  non-integer ξ is not a Bessel function of the first kind); and the OscInt statements are machine-checked, while
+  Landau's proof has, by his own survey (Electron. J. Differ. Equ. Conf. 04 (2000) 147–154, read in session 13 by the
+  sweep agent), a step that rests on five computed table values. Whether the journal paper controls that step
+  rigorously was not checked (only its abstract page was read).
+- LS-D's constant is therefore not the best known for lattice sites, by a factor 1.9692 per dimension (computed in ball arithmetic as the ratio of
+  the two numbers above). Texts must not call it sharp or best known. The frozen rows above are not edited; this
+  section is the correction.
+- The sharp constant `sup_{n ∈ ℤ, t > 0} t^{1/3} |J_n(t)| = 0.7857…` is a formalisation target, not an open problem
+  (`docs/design/unlock-map.md`, node N6).
+
+Same sweep, same day (CITED-READ by the sweep agent, not re-read by the lead):
+- Mathlib's master branch has gained `Mathlib/Analysis/SpecialFunctions/Bessel.lean` (2026): `besselJ`, parity,
+  analyticity, a recurrence; no bound, no integral representation. It is not in the Mathlib commit OscInt pins.
+- `bjbraams/lean-DLMF` has Bessel's integral (`besselJ_int_eq_integral_exp`), the generating function, Jacobi–Anger
+  and `|J_n| ≤ 1`; its README reports 820 admissions project-wide. With it, the identification
+  `latticeKernel1 t n = 2π iⁿ J_n(t)`, which OscInt does not formalise, is PLAUSIBLY available outside Mathlib.
+- No formalisation was found of a Landau-type `x^{−1/3}` Bessel bound, of a lattice dispersive estimate, of uniform
+  fold, cusp or umbilic estimates, of the k-th derivative van der Corput lemma with constants, or of the exponential
+  convergence of the trapezoidal rule. Absence of a found result is PLAUSIBLE-not-novel. No repository was built or
+  audited, and zbMATH and the Lean Zulip archive were not queried.
+- Continuum (ℝⁿ) dispersive and Strichartz estimates and two Lieb–Robinson developments exist in Lean
+  (`TauCetiProject/TauCeti`, `Robertboy18/PDEAtlas`, `Crotalus/ai-formalized`, `zblore/csd-lean4`); none is a lattice
+  estimate.
+
 ## Singularities of lattice dispersion relations (CENSUS prior art; added 2026-11-09)
 
 Logged sweep: `review/2026-11-09-CENSUS-prior-art-sweep.md` (244 queries, `review/2026-11-09-CENSUS-prior-art-querylog.tsv`;
