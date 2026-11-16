@@ -106,3 +106,8 @@ OscInt.Statements.SecondDerivAttainedStatement stamps/20261116T222541Z-5b7254911
 OscInt.Statements.Vdc2ProfileBoundStatement stamps/20261116T222541Z-5b72549117b1
 OscInt.Statements.SecondDerivSevenHalvesStatement stamps/20261116T222541Z-5b72549117b1
 challenge:comparator-VC2.json stamps/20261116T222541Z-5b72549117b1
+OscInt.Statements.HadamardKernelStatement stamps/20261116T225756Z-5792039264f0
+OscInt.Statements.HadamardKernelBoundStatement stamps/20261116T225756Z-5792039264f0
+OscInt.Statements.HadamardDecayStatement stamps/20261116T225756Z-5792039264f0
+OscInt.Statements.HadamardDispersiveStatement stamps/20261116T225756Z-5792039264f0
+challenge:comparator-HW.json stamps/20261116T225756Z-5792039264f0

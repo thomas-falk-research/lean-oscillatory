@@ -30,11 +30,12 @@ lead had sketched one before a freeze the batch says so), and every proof of a s
 machine-checked as stated has been replayed by six kernel checkers: Lean's own kernel in two modes and four
 independent implementations (six further statements are proved and await that replay; next item). A downstream project can check in CI that it depends on exactly the reviewed statements.
 
-- **82 pinned statements; 65 are machine-checked as stated; 6 more are proved in Lean and await their replay; 11
-  are stated and frozen but not proved** (the 11: batch FR, frozen on 2026-11-16, the Schrödinger group on a ring of
-  N sites and on an open chain of M sites with explicit finite-size bounds against the infinite line; and batch VC2,
-  frozen the same day, the second-derivative van der Corput bound with its sharp classical constant 3.3643…, of
-  which a refereed proof on paper exists and no Lean proof. The 6:
+- **86 pinned statements; 65 are machine-checked as stated; 6 more are proved in Lean and await their replay; 15
+  are stated and frozen but not proved** (the 15, all frozen on 2026-11-16: batch FR, the Schrödinger group on a
+  ring of N sites and on an open chain of M sites with explicit finite-size bounds against the infinite line; batch
+  VC2, the second-derivative van der Corput bound with its sharp classical constant 3.3643…, of which a refereed
+  proof on paper exists and no Lean proof; and batch HW, the Hadamard walk on the line with an explicit, not sharp,
+  t^{−1/3} bound for its amplitudes. The 6:
   batches PA and KL, frozen, blind-reviewed and proved on 2026-11-16: the exponentially
   convergent trapezoidal rule with its Fourier-coefficient bound, the light cone of the lattice kernel, and the
   Kusmin–Landau inequality in Landau's sharp form; build, axiom audit, statement types and a kernel re-check per
@@ -72,6 +73,7 @@ assumption. The status of each statement, with its evidence: `docs/STATUS.md`.
 | **Batch KL.** KL-D, KL-C, KL-F: the Kusmin–Landau inequality for exponential sums, with Landau's sharp bound cot(πλ/2) on differences, the constant 2/π, and the textbook derivative form | `OscInt.API.kusminLandau`, `kusminLandauTwoOverPi`, `kusminLandauDeriv` | proved in Lean (2026-11-16; same checks); replay and post-proof reviews pending. Classical mathematics; a weaker-constant form exists in Lean elsewhere (`docs/prior_art.md`); AI-written proofs, disclosed |
 | **Batch FR.** FR-K, FR-U, FR-S, FR-P, FC-K, FC-U, FC-P: the kernel of i u′ + Δu = 0 on a ring of N sites and on an open chain of M identical sites; each is the propagator (uniqueness); the ring kernel is the line kernel summed over images; explicit finite-size bounds against the infinite line | none yet (challenges `OscInt.API.ringKernelSolves`, `ringUnique`, `ringCosetSum`, `ringFiniteSize`, `chainKernelSolves`, `chainUnique`, `chainFiniteSize`) | stated and frozen (stamp `20261116T205833Z-0748dde3c341`); blind-reviewed (FAITHFUL, no counterexample found); not proved. Classical mathematics |
 | **Batch VC2.** VC2-S, VC2-A, VC2-N, VC2-K: the second-derivative van der Corput bound with its sharp constant (the largest modulus of a Fresnel partial integral, 3.3643…; classical), its attainment by the quadratic phase, the number 7/2, and the test with amplitude with 7/2 in place of 8 | none yet (challenges `OscInt.API.secondDerivSharp`, `secondDerivAttained`, `vdc2ProfileBound`, `secondDerivSevenHalves`) | stated and frozen (stamp `20261116T222541Z-5b72549117b1`); blind review pending; not proved in Lean (a refereed proof on paper exists). Classical mathematics |
+| **Batch HW.** HW-R, HW-K, HW-D, HW-L: the Hadamard walk on the line; its amplitudes from a point state through one scalar kernel, the kernel bound 7 t^{−1/2} + 12 t^{−1/3}, the decay 39 (\|a\| + \|b\|) t^{−1/3} of every amplitude, and the dispersive estimate ℓ¹ → ℓ^∞ (the rate is known, with implicit constants in print; these constants are explicit and not sharp) | none yet (challenges `OscInt.API.hadamardKernelFormula`, `hadamardKernelBound`, `hadamardDecay`, `hadamardDispersive`) | stated and frozen (stamp `20261116T225756Z-5792039264f0`); blind review pending; not proved. Known mathematics |
 
 Worked examples, which also check that the hypotheses can be met (`examples/consumer/`): the lattice Schrödinger
 kernel, single photons on a cosine-band lattice, cold-plasma waves, phase mixing, whistler waves, matrix-valued

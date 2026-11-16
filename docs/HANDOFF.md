@@ -23,7 +23,7 @@ below it, and every rule is binding.
   stated", README counts, CHANGELOG. The clean-runner replay on GitHub is a manual dispatch of `verify.yml` on the
   branch (the pull request is a draft, which skips it); its result is in the session log.
 - **Last verified state:** the integration commit (the one that adds this paragraph): `make quick` exit code 0
-  (time in the session log). 82 pinned statements; 65 machine-checked as stated; 6 proved, replay pending; 11 stated and frozen (batches FR and VC2).
+  (time in the session log). 86 pinned statements; 65 machine-checked as stated; 6 proved, replay pending; 15 stated and frozen (batches FR, VC2 and HW).
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
   nothing local in the tree at the time of this commit; the dispatched `verify.yml` run on 880b537 ended with
   success (clean-runner replay of PA and KL; session log). In the lead's scratch, not in the tree: the sanity layer and planted controls
@@ -42,9 +42,8 @@ below it, and every rule is binding.
   `docs/statements.md`. **Frozen**: stamp `stamps/20261116T205833Z-0748dde3c341` on the statements commit 0748dde, pinned.
   Blind pre-proof reviews A and B: all seven FAITHFUL, no counterexample, no BLOCKER; three MAJOR against the
   sanity layer, answered by `OscInt/Front/FiniteRingSanity2.lean` and a second plant run
-  (`review/2026-11-16-FR-pre-proof-answers.md`, `docs/replay/2026-11-16-FR-sanity-plants-second.txt`). Order from
-  here: stamp of the answers (the session log says whether it exists), and only then routes, blueprint, assembly
-  and parts (rule 1). A route on paper exists in the lead's scratch; if lost, the dependencies are in
+  (`review/2026-11-16-FR-pre-proof-answers.md`, `docs/replay/2026-11-16-FR-sanity-plants-second.txt`). The answers are stamped
+  (`stamps/20261116T225756Z-5792039264f0`). Order from here: routes, blueprint, assembly (compiled before any part), route referee, parts. A route on paper exists in the lead's scratch; if lost, the dependencies are in
   `docs/design/batch-FR-draft.md`.
 - **Batch VC2 (sharp second-derivative van der Corput bound; four statements VC2-S, VC2-A, VC2-N, VC2-K):** in the
   tree for its freeze (`OscInt/Statements/SecondDerivSharp.lean`, sanity layer, plants, challenge,
@@ -53,9 +52,8 @@ below it, and every rule is binding.
   log); a route for Lean that avoids inverse functions is in the lead's scratch. Classical theorem; nothing new.
 - **Batch HW (the Hadamard walk on the line, explicit t^{−1/3} bound; four statements HW-R, HW-K, HW-D, HW-L):** in
   the tree for its freeze (`OscInt/Statements/HadamardWalk.lean`, sanity layer, plants, challenge,
-  `comparator-HW.json`, prose with the route). **Not stamped, not pinned** until the next stamp (the one that also
-  covers the FR answers); until then `make statements` reports INCOMPLETE. Then: blind reviews, answers, stamp,
-  proof code. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
+  `comparator-HW.json`, prose with the route). **Frozen**: stamp `stamps/20261116T225756Z-5792039264f0`, pinned; the same stamp is the stamp of the FR
+  review answers. Then: blind reviews, answers, stamp, proof code. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
   the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;
   a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;

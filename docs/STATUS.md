@@ -89,6 +89,10 @@ requires every row of the trust chain (README) for that statement.
 | VC2-A the bound of VC2-S is attained by the quadratic phase on a symmetric interval | none yet (challenge `OscInt.API.secondDerivAttained`) | yes, same stamp | pre: pending | no | — | stated and frozen; blind review pending, not proved |
 | VC2-N the profile A is at most 7/2 on [0, π] | none yet (challenge `OscInt.API.vdc2ProfileBound`) | yes, same stamp | pre: pending | no | — | stated and frozen; blind review pending, not proved |
 | VC2-K second-derivative test with amplitude and linear term, constant 7/2 in place of 8 | none yet (challenge `OscInt.API.secondDerivSevenHalves`) | yes, same stamp | pre: pending | no | — | stated and frozen; blind review pending, not proved |
+| HW-R the Hadamard walk on ℤ from a point state in terms of a scalar kernel K(t, x) (Fourier integral over ω(k) = arcsin(sin k/√2)) | none yet (challenge `OscInt.API.hadamardKernelFormula`) | yes, stamp `20261116T225756Z-5792039264f0` (pinned) | pre: pending | no | — | stated and frozen; blind review pending, not proved |
+| HW-K the kernel bound \|K(t, x)\| ≤ 7 t^{−1/2} + 12 t^{−1/3}, t ≥ 1, every site (not sharp) | none yet (challenge `OscInt.API.hadamardKernelBound`) | yes, same stamp | pre: pending | no | — | stated and frozen; blind review pending, not proved |
+| HW-D each amplitude of the Hadamard walk from a point state (a, b) is at most 39 (\|a\| + \|b\|) t^{−1/3}, t ≥ 1 (not sharp) | none yet (challenge `OscInt.API.hadamardDecay`) | yes, same stamp | pre: pending | no | — | stated and frozen; blind review pending, not proved |
+| HW-L dispersive estimate ℓ¹ → ℓ^∞ of the Hadamard walk with the constant 39, finite support | none yet (challenge `OscInt.API.hadamardDispersive`) | yes, same stamp | pre: pending | no | — | stated and frozen; blind review pending, not proved |
 
 T6, T6L prior art (2026-11-08, session 7): both are classical, because the 2D kernel factorises into two 1D Bessel
 kernels; the rows above are unchanged (the proofs are unaffected), but they claim "machine-checked", not new
