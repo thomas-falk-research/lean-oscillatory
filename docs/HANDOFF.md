@@ -34,7 +34,8 @@ detect.
    `tools/publish_release.sh`; batch D4U is part of it, owner decision 2026-11-15). Its Zenodo version DOI is
    `10.5281/zenodo.24263138` (read from the Zenodo API on 2026-11-15: version 0.6.0, concept DOI
    `10.5281/zenodo.24021328`), recorded in `CITATION.cff` and the README. Its post-release pins pull request
-   [thomas-falk-research/lean-oscillatory#17](https://github.com/thomas-falk-research/lean-oscillatory/pull/17) is open.
+   [thomas-falk-research/lean-oscillatory#17](https://github.com/thomas-falk-research/lean-oscillatory/pull/17) is merged
+   (2026-11-16T00:07:32Z, 1a71395).
 2. OpenTimestamps for both D4U stamps is pending (upgrade when the calendars confirm).
 3. The machine's disk allowance ran out during the replay (lessons 50-style cut-off): check `df` before a replay and
    keep at least 15 GB free.
