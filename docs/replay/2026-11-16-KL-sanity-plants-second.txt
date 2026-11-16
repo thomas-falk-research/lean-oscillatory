@@ -1,0 +1,82 @@
+# Planted controls for batch KL, second run (OscInt/Front/KusminLandauSanity2.lean), session 13, after the blind
+# pre-proof reviews and before any Lean proof of a KL statement. It answers the referees' findings
+# (review/2026-11-16-KL-pre-proof-answers.md). Written by a sanity agent of the lead; re-run by the lead with the
+# committed generator docs/replay/plants/2026-11-16-KL-second/plants_kl2.py.txt from 2026-11-16T14:51:15Z to 14:52:52Z:
+# the 27 generated Lean files are byte-identical to the committed records and the summary is identical.
+# Statement file SHA-256 2a1ea6811e0d1783d6b0f28b5c344ada469bb32a3267653d5079003a17695a7d (unchanged);
+# second sanity file SHA-256 e85895bf271dd76993bce2af5db1cb03284918a793f906dc2130c1173d4cdd0e.
+# 10 plants: 7 DETECTED by a compiled witness (three of them are accepted by every sanity script, so only the
+# witness detects them: KL-C-c, KL-F-d, KL-F-g), 2 TRUE WEAKENINGS (KL-D-j, KL-C-d: restrictions), 1 NOT DETECTED
+# (KL-F-h: Cheng and Graham's bound substituted in KL-F; a referee's numerical ramp refutes it, no exact witness).
+#
+ok-KL-D-h: accepted (want accepted)
+plant-KL-D-h: rejected (recorded)
+    first error: plant-KL-D-h.lean:72:17: error: unsolved goals
+witness-KL-D-h: accepted (want accepted)
+    verdict KL-D-h [monotonicity guard n + 1 < N -> n + 2 < N in DiffsMonotoneIn (both disjuncts)]: DETECTED
+      (compiled witness of the negation of the planted statement)
+ok-KL-D-i: accepted (want accepted)
+plant-KL-D-i: rejected (recorded)
+    first error: plant-KL-D-i.lean:23:2: error: unsolved goals
+witness-KL-D-i: accepted (want accepted)
+    verdict KL-D-i [one cell for all differences -> a cell per difference (exists k under the quantifier over n)]:
+      DETECTED (compiled witness of the negation of the planted statement)
+ok-KL-D-j: accepted (want accepted)
+plant-KL-D-j: rejected (recorded)
+    first error: plant-KL-D-j.lean:37:20: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+    verdict KL-D-j [k : Int -> k : Nat in KL-D]: TRUE WEAKENING (a restriction; in fact equivalent); no witness
+      possible. The planted statement is the true statement restricted to the cells with k >= 0 (a natural number k
+      is cast to the integer k in DiffsMonotoneIn), so it follows from the true statement and no data can refute it.
+      (Conversely, replacing c n by c n + m n for a natural number m changes no term e(c n) and moves the cell from
+      k to k + m, so the restricted form should give the full one.) The rejection above is of the proof script only:
+      kl_neg applies the statement at k = -1, and -1 is not a natural number (no instance Neg Nat); the other five
+      KL-D theorems (k = 0 or 1) are still accepted. Reasoned in prose, not compiled (no proof about the statements
+      before review).
+ok-KL-C-c: accepted (want accepted)
+plant-KL-C-c: accepted (recorded)
+witness-KL-C-c: accepted (want accepted)
+    verdict KL-C-c [0 < lam -> 0 <= lam in KL-C]: DETECTED (compiled witness of the negation of the planted
+      statement). The planted copy of the sanity theorems is ACCEPTED (every datum has lam > 0 and `by norm_num`
+      also proves 0 <= lam): the evidence is the witness alone.
+ok-KL-C-d: accepted (want accepted)
+plant-KL-C-d: rejected (recorded)
+    first error: plant-KL-C-d.lean:23:43: error: Application type mismatch: The argument
+    verdict KL-C-d [lam <= 1/2 -> lam < 1/2 in KL-C]: TRUE WEAKENING (a restriction; in fact equivalent); no witness
+      possible. The planted statement is the true statement restricted to lam < 1/2, so it follows from the true
+      statement and no data can refute it. (Conversely, DiffsMonotoneIn at lam = 1/2 gives it at every 0 < lam' <
+      1/2, and 2/(pi lam') tends to 4/pi, so the restricted form should give the case lam = 1/2.) The rejection
+      above is of the proof script only: klc_one_half applies the statement at lam = 1/2 and le_rfl does not prove
+      1/2 < 1/2; klc_six and klc_third are still accepted. Reasoned in prose, not compiled.
+ok-KL-F-d: accepted (want accepted)
+plant-KL-F-d: accepted (recorded)
+witness-KL-F-d: accepted (want accepted)
+    verdict KL-F-d [HasDerivOn f f' a b -> HasDerivOn f f' b a]: DETECTED (compiled witness of the negation of the
+      planted statement). The planted copy of the sanity theorems is ACCEPTED (every datum is differentiable on the
+      whole line, so its script also proves HasDerivOn f f' b a): the evidence is the witness alone.
+ok-KL-F-e: accepted (want accepted)
+plant-KL-F-e: rejected (recorded)
+    first error: plant-KL-F-e.lean:20:4: error: Invalid `⟨...⟩` notation: The expected type
+witness-KL-F-e: accepted (want accepted)
+    verdict KL-F-e [HasDerivOn hypothesis dropped]: DETECTED (compiled witness of the negation of the planted
+      statement)
+ok-KL-F-f: accepted (want accepted)
+plant-KL-F-f: rejected (recorded)
+    first error: plant-KL-F-f.lean:27:63: error: invalid `▸` notation, the equality
+witness-KL-F-f: accepted (want accepted)
+    verdict KL-F-f [Finset.Icc (ceil a) (floor b) -> Finset.Icc (floor a) (ceil b)]: DETECTED (compiled witness of
+      the negation of the planted statement)
+ok-KL-F-g: accepted (want accepted)
+plant-KL-F-g: accepted (recorded)
+witness-KL-F-g: accepted (want accepted)
+    verdict KL-F-g [0 < lam -> 0 <= lam in KL-F]: DETECTED (compiled witness of the negation of the planted
+      statement). The planted copy of the sanity theorems is ACCEPTED (every datum has lam > 0): the evidence is the
+      witness alone.
+ok-KL-F-h: accepted (want accepted)
+plant-KL-F-h: rejected (recorded)
+    first error: plant-KL-F-h.lean:30:2: error: Type mismatch
+    verdict KL-F-h [bound of KL-F -> 1/(pi lam) + 1]: NOT DETECTED (script-only rejection). No witness attempted (as
+      instructed). The six KL-F data cannot refute it: at lam = 1/2 the planted bound is 2/pi + 1 > 1 (klf_half,
+      klf_empty) and at lam = 1/4 it is 4/pi + 1 > 2.27, above sqrt 2 (klf_quarter, klf_quarter_shift,
+      klf_fractional) and above |2 + e(5/8)| < 1.48 (klf_antitone). A referee reports a numerical ramp at lam = 1/5
+      with |S| ~ 2.76 > 2.5915 = 5/pi + 1, which has no exact closed form; it is not reproduced here. The rejection
+      above is of the proof script only (the literal of the bound changed).

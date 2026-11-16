@@ -1,0 +1,38 @@
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl2/out/plant-KL-F-h.lean:30:2: error: Type mismatch
+  h2
+has type
+  √2 ≤ 4 * Real.pi⁻¹ + 1
+but is expected to have type
+  √2 ≤ Real.cos (Real.pi * (1 / 4) / 2) / Real.sin (Real.pi * (1 / 4) / 2)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl2/out/plant-KL-F-h.lean:45:2: error: Type mismatch
+  h2
+has type
+  √2 ≤ 4 * Real.pi⁻¹ + 1
+but is expected to have type
+  √2 ≤ Real.cos (Real.pi * (1 / 4) / 2) / Real.sin (Real.pi * (1 / 4) / 2)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl2/out/plant-KL-F-h.lean:68:13: error: Type mismatch
+  h1
+has type
+  ‖∑ n ∈ Finset.Icc ⌈0⌉ ⌊2⌋, Complex.exp (↑(2 * Real.pi * (3 / 4 * ↑n - ↑n ^ 2 / 8)) * Complex.I)‖ ≤
+    1 / (Real.pi * (1 / 4)) + 1
+but is expected to have type
+  ‖∑ n ∈ Finset.Icc ⌈0⌉ ⌊2⌋, eTerm (3 / 4 * ↑n - ↑n ^ 2 / 8)‖ ≤
+    Real.cos (Real.pi * (1 / 4) / 2) / Real.sin (Real.pi * (1 / 4) / 2)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl2/out/plant-KL-F-h.lean:76:2: error: Type mismatch: The rewritten hypothesis
+  h2
+has type
+  1 ≤ 1 / (Real.pi * (1 / 2)) + 1
+but is expected to have type
+  1 ≤ Real.cos (Real.pi * (1 / 2) / 2) / Real.sin (Real.pi * (1 / 2) / 2)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl2/out/plant-KL-F-h.lean:91:2: error: Type mismatch
+  h2
+has type
+  √2 ≤ 4 * Real.pi⁻¹ + 1
+but is expected to have type
+  √2 ≤ Real.cos (Real.pi * (1 / 4) / 2) / Real.sin (Real.pi * (1 / 4) / 2)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl2/out/plant-KL-F-h.lean:98:2: error: Type mismatch: The rewritten hypothesis
+  h1
+has type
+  0 ≤ 1 / (Real.pi * (1 / 2)) + 1
+but is expected to have type
+  0 ≤ Real.cos (Real.pi * (1 / 2) / 2) / Real.sin (Real.pi * (1 / 2) / 2)

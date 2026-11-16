@@ -12,6 +12,8 @@ planted statement error, and how often it raises a false alarm on an unmodified 
 | 1 | 2026-11-05 | S1 (van der Corput) | 4 (quantifier, hypothesis, definition, weakened conclusion) | 4 | 1.00, [0.397, 1.00] | 2 | 0 (0/2, upper bound 0.842) |
 | 2 | 2026-11-06 | S2.1, S2.2, S3, S4.1 (325 lines) | 4 (same kinds), planted by a separate agent | 4 | 1.00, [0.397, 1.00] | 2 | 0 (0/2, upper bound 0.842) |
 | 1+2 pooled | | | 8 | 8 | 1.00, [0.630, 1.00] | 4 | 0 (0/4, upper bound 0.603) |
+| 3 | 2026-11-16 | batches PA and KL (six statements) | 8 (definition ×3, hypothesis ×2, conclusion ×2, precedence), planted by the lead's script in text-only snapshots | 8 | 1.00, [0.630, 1.00] | 2 (the genuine reviews) | 0 (0/2, upper bound 0.842) |
+| 1+2+3 pooled | | | 16 | 16 | 1.00, [0.794, 1.00] | 6 | 0 (0/6, upper bound 0.460) |
 
 Correction, 2026-11-13 (external R3 packet, `review/2026-11-13-external-R3-answers.md`): the bounds in this table are now
 rounded outwards (lower bounds down, upper bounds up). Before, they were rounded to nearest, and three printed values
@@ -146,3 +148,42 @@ the real `sanity_Fold_hyps` uses the same set for `K` and `K'`, so it cannot det
 `sanity_D4_hyps` has `b = c = 0`, so it cannot detect a wrong mixed coefficient (V5; answered by
 `OscInt/D4/Sanity.lean`, coefficients (1, 2, 3, 5)); the real S2.2 sanity theorem states the hypothesis in its own
 words rather than through the statement (V2; lesson 11). See `docs/lessons.md` 17.
+
+## Round 3 (2026-11-16, session 13; batches PA and KL)
+
+Protocol, fixed before the referees were launched (the planting script's SHA-256
+80e5c5525272592f55ec44fcd39a90049c4c4d031ef63cf750834556529dcac3 is in the session log entry that precedes the
+launch; the script is committed as `review/calibration/round3/make_snapshots.py.txt`). Two text-only snapshots of the
+freeze commit acc035d were built, one per batch: the prose, the statement file, the sanity file and the plant
+summary. In each statement file four fidelity errors were planted; nothing else was changed, so docstrings, prose,
+sanity file and plant summary still described the unplanted text. Each snapshot went to one fresh-context referee
+under the same brief as the genuine fidelity review of that batch (brief SHA-256 af41be7c…, session log); the
+referee was not told that anything was planted. The two genuine fidelity reviews of the unplanted batches, under the
+same brief, are the controls. Scoring rule: a plant is detected if the report names the planted line and what is
+wrong with it, at any severity; a false alarm is a BLOCKER or an UNFAITHFUL verdict against an unplanted statement.
+
+| Batch | Plant | Kind | Detected | How the report rated it |
+|---|---|---|---|---|
+| PA | nodes of the trapezoidal sum at πj/N instead of 2πj/N | definition | yes | BLOCKER, with a counterexample |
+| PA | `0 < N` dropped from PA-T | hypothesis | yes | BLOCKER, with a counterexample |
+| PA | the bound of `PeriodicAnalyticOn` required on the real axis only | hypothesis | yes | BLOCKER, with a counterexample |
+| PA | `sinh η` replaced by `cosh η` in LC-1 | weakened conclusion | yes | BLOCKER (UNFAITHFUL-weaker) |
+| KL | the last monotonicity comparison dropped (`n + 2 < N`) in one branch | definition | yes | BLOCKER, with a counterexample |
+| KL | KL-D bound `cot(πλ)` instead of `cot(πλ/2)` | conclusion | yes | BLOCKER, with a counterexample |
+| KL | `⌊a⌋`, `⌈b⌉` swapped in the sum of KL-F | definition | yes | BLOCKER, with a counterexample |
+| KL | `2 / π * lam` instead of `2 / (π * lam)` in KL-C | precedence | yes | BLOCKER, with a counterexample |
+
+Result: 8 of 8 detected; exact (Clopper–Pearson) 95% interval for the detection rate [0.630, 1.00]. Controls: 2
+(the genuine reviews), false alarms 0 of 2 (upper bound 0.842): both returned FAITHFUL for every statement and no
+BLOCKER. Pooled over rounds 1 to 3: 16 of 16, [0.794, 1.00]; false alarms 0 of 6, upper bound 0.460.
+
+What this round does and does not show.
+- It was an easy test in one respect: only the Lean text was mutated, so each plant contradicted the docstring a few
+  lines above it, the prose and the sanity file. Both referees noticed that mismatch as a finding of its own. An error
+  made consistently in the prose and the Lean text, which is the realistic failure, is not measured here.
+- One referee per snapshot; the same model family planted, reviewed and scored. The scoring is by the lead, who knew
+  the plants.
+- The planted kinds were chosen by the lead from errors that occur in practice (a cast or node slip, a dropped
+  hypothesis, an operator-precedence slip, a floor/ceiling swap); they are not a random sample of possible errors.
+- Both calibration referees also raised findings against the unplanted sanity layer that the genuine referees raised
+  independently (the monotonicity guard, the node positions); those are answered in the review answers.

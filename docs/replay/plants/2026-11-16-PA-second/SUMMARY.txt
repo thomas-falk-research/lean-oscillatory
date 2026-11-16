@@ -1,0 +1,47 @@
+ok-PA-T-g: accepted (want accepted)
+plant-PA-T-g: rejected (recorded)
+    first error: plant-PA-T-g.lean:16:74: error: unsolved goals
+witness-PA-T-g: accepted (want accepted)
+  PA-T-g [nodes 2πj/N ↦ πj/N in trapezoidalSum; witness: cos3, N = 6, a = 1 (planted I_6 = 7π/3, I = 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-T-h: accepted (want accepted)
+plant-PA-T-h: rejected (recorded)
+    first error: plant-PA-T-h.lean:16:74: error: unsolved goals
+witness-PA-T-h: accepted (want accepted)
+  PA-T-h [nodes 2πj/N ↦ ((j / N : ℕ) : ℝ) = 0 in trapezoidalSum; witness: cos3, N = 4, a = 1 (planted I_4 = 14π, I = 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-T-i: accepted (want accepted)
+plant-PA-T-i: rejected (recorded)
+    first error: plant-PA-T-i.lean:19:65: error: Application type mismatch: The argument
+witness-PA-T-i: accepted (want accepted)
+  PA-T-i [bound of PeriodicAnalyticOn required on the real axis only; witness: cos3, M = 7, N = 3, a = 1]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-C-g: accepted (want accepted)
+plant-PA-C-g: rejected (recorded)
+    first error: plant-PA-C-g.lean:19:51: error: Application type mismatch: The argument
+witness-PA-C-g: accepted (want accepted)
+  PA-C-g [bound of PeriodicAnalyticOn required on the real axis only; witness: cos3, M = 7, k = 3, a = 1]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-C-h: accepted (want accepted)
+plant-PA-C-h: rejected (recorded)
+    first error: plant-PA-C-h.lean:16:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-PA-C-h: accepted (want accepted)
+  PA-C-h [k : ℤ ↦ k : ℝ; witness: v = 1, k = 1/2, a = 2, M = 1 (coefficient −4i)]: DETECTED (witness compiled: ¬ planted statement)
+ok-LC-e: accepted (want accepted)
+plant-LC-e: rejected (recorded)
+    first error: plant-LC-e.lean:15:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-LC-e: accepted (want accepted)
+  LC-e [n : ℤ ↦ n : ℝ; witness: t = 0, n = 1/2, η = 2 (I(0, 1/2) = 4)]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-T-j: accepted (want accepted)
+plant-PA-T-j: rejected (recorded)
+    first error: plant-PA-T-j.lean:17:2: error: Type mismatch
+  PA-T-j [denominator e^{aN} − 1 ↦ e^{aN}]: NOT DETECTED (no compiled witness): no witness attempted (as instructed). The planted statement is reported FALSE by a pre-proof referee (numerical counterexample: a trigonometric polynomial of degree 6 at a = ln 3, N = 1, margin 1%), but no exact witness is known and no sanity datum refutes it: at cos3, N = 3 the planted bound is 14π(1 + e^{−6a}) ≥ 14π, at expDatum, N = 1 it is 4π(√13 + 5e^{−a}) ≥ 2π√13, and at N = 4, 6 the left side is 0. The rejection of the copied scripts is script-only (the closing `exact` no longer matches).
+ok-LC-f: accepted (want accepted)
+plant-LC-f: rejected (recorded)
+    first error: plant-LC-f.lean:15:31: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  LC-f [|t| ↦ |t|/2]: NOT DETECTED (no compiled witness): no witness attempted (over the line budget). The planted statement is FALSE, numerically: at t = 1/2, n = 2, cosh η = 8, |I| = 2π J_2(1/2) ≈ 2π · 0.03060 against the planted 2π · 0.02864. It fails only for |n| ≥ 2 (for n = 1 a scan of 0 < t ≤ 20 gives |J_1(t)| ≤ 0.74 × the planted bound minimised over η; for n = 0 take η = 0), and at n = 2 by at most a factor 8/e² ≈ 1.083 (the limit t → 0). A witness therefore needs a second-order expansion of I(t, 2) with a cubic remainder at small t (new integral lemmas, about 90 lines); the first-order `latticeKernel1_one_approx` (n = 1) cannot refute this plant. The rejection of the copied scripts is script-only.
+ok-PA-C-i: accepted (want accepted)
+plant-PA-C-i: rejected (recorded)
+    first error: plant-PA-C-i.lean:19:51: error: Application type mismatch: The argument
+witness-PA-C-i: accepted (want accepted)
+  PA-C-i [DifferentiableOn on openStrip a ↦ on openStrip (a/2); witness: stripExp (e^{iz} for |Im z| < 1, else 0), k = 1, a = 2, M = e]: DETECTED (witness compiled: ¬ planted statement)
+ok-LC-g: accepted (want accepted)
+plant-LC-g: rejected (recorded)
+    first error: plant-LC-g.lean:15:40: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  LC-g [|n| ↦ n]: TRUE WEAKENING: the planted bound 2π e^{|t| sinh η − nη} equals the frozen one for n ≥ 0 and is larger for n < 0 (η ≥ 0), so the frozen statement implies the planted one and no datum can refute it. The rejection of the copied scripts is script-only (a rewrite of |·| finds no pattern); the only sanity instance whose content changes is n = −5, where the plant gives the bound with e^{+10}.

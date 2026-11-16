@@ -1,0 +1,100 @@
+import OscInt.Front.KusminLandauSanity2
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+
+namespace OscInt.API.KusminLandauSanity2
+
+open OscInt.Statements OscInt.API.KusminLandauSanity Set
+
+def P_KusminLandauDerivStatement : Prop :=
+  ∀ (f f' : ℝ → ℝ) (a b : ℝ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → HasDerivOn f f' a b →
+    (MonotoneOn f' (Ioo a b) ∨ AntitoneOn f' (Ioo a b)) →
+    (∀ x ∈ Ioo a b, (k : ℝ) + lam ≤ f' x ∧ f' x ≤ (k : ℝ) + 1 - lam) →
+    ‖∑ n ∈ Finset.Icc ⌈a⌉ ⌊b⌋, Complex.exp (↑(2 * Real.pi * f (n : ℝ)) * Complex.I)‖ ≤
+      Real.cos (Real.pi * lam / 2) / Real.sin (Real.pi * lam / 2)
+
+theorem P_klf_quarter (h : P_KusminLandauDerivStatement) :
+    Real.sqrt 2 ≤ Real.cos (Real.pi * (1 / 4) / 2) / Real.sin (Real.pi * (1 / 4) / 2) := by
+  have h1 := h (fun x => x / 4) (fun _ => 1 / 4) 0 1 0 (1 / 4) (by norm_num) (by norm_num)
+    ⟨by fun_prop, fun x _ => (hasDerivAt_id x).div_const 4⟩ (Or.inl monotoneOn_const)
+    (fun x _ => by norm_num)
+  have hs : ∑ n ∈ Finset.Icc ⌈(0 : ℝ)⌉ ⌊(1 : ℝ)⌋, eTerm ((n : ℝ) / 4) =
+      ((1 : ℝ) : ℂ) + ((1 : ℝ) : ℂ) * Complex.I := by
+    rw [Icc_ceil_floor_zero_one, Finset.sum_pair (by norm_num)]
+    rw [Int.cast_zero, Int.cast_one, zero_div, eTerm_zero, eTerm_quarter]
+    simp
+  have h2 : ‖((1 : ℝ) : ℂ) + ((1 : ℝ) : ℂ) * Complex.I‖ ≤ _ := hs ▸ h1
+  rw [Complex.norm_add_mul_I] at h2
+  norm_num at h2
+  exact h2
+
+theorem P_klf_quarter_shift (h : P_KusminLandauDerivStatement) :
+    Real.sqrt 2 ≤ Real.cos (Real.pi * (1 / 4) / 2) / Real.sin (Real.pi * (1 / 4) / 2) := by
+  have h1 := h (fun x => 5 * x / 4) (fun _ => 5 / 4) 0 1 1 (1 / 4) (by norm_num) (by norm_num)
+    ⟨by fun_prop, fun x _ => by simpa using ((hasDerivAt_id x).const_mul 5).div_const 4⟩ (Or.inl monotoneOn_const)
+    (fun x _ => by norm_num)
+  have hs : ∑ n ∈ Finset.Icc ⌈(0 : ℝ)⌉ ⌊(1 : ℝ)⌋, eTerm (5 * (n : ℝ) / 4) =
+      ((1 : ℝ) : ℂ) + ((1 : ℝ) : ℂ) * Complex.I := by
+    rw [Icc_ceil_floor_zero_one, Finset.sum_pair (by norm_num)]
+    rw [Int.cast_zero, Int.cast_one, mul_zero, zero_div, mul_one, eTerm_zero, eTerm_five_quarters]
+    simp
+  have h2 : ‖((1 : ℝ) : ℂ) + ((1 : ℝ) : ℂ) * Complex.I‖ ≤ _ := hs ▸ h1
+  rw [Complex.norm_add_mul_I] at h2
+  norm_num at h2
+  exact h2
+
+theorem P_klf_antitone (h : P_KusminLandauDerivStatement) :
+    ‖2 + Complex.exp (↑(2 * Real.pi * (5 / 8)) * Complex.I)‖ ≤
+      Real.cos (Real.pi * (1 / 4) / 2) / Real.sin (Real.pi * (1 / 4) / 2) := by
+  have hd : ∀ x : ℝ, HasDerivAt (fun x : ℝ => 3 / 4 * x - x ^ 2 / 8) (3 / 4 - x / 4) x := by
+    intro x
+    have h0 : HasDerivAt (fun x : ℝ => 3 / 4 * x - x ^ 2 / 8)
+        (3 / 4 * 1 - ((2 : ℕ) : ℝ) * x ^ (2 - 1) / 8) x :=
+      ((hasDerivAt_id x).const_mul (3 / 4 : ℝ)).sub ((hasDerivAt_pow 2 x).div_const 8)
+    exact h0.congr_deriv (by norm_num; ring)
+  have h1 := h (fun x => 3 / 4 * x - x ^ 2 / 8) (fun x => 3 / 4 - x / 4) 0 2 0 (1 / 4) (by norm_num)
+    (by norm_num) ⟨by fun_prop, fun x _ => hd x⟩
+    (Or.inr fun x _ y _ hxy => by simp only; linarith)
+    (fun x hx => by
+      obtain ⟨h0, h2⟩ := hx
+      simp only [Int.cast_zero]
+      constructor <;> linarith)
+  have hs : ∑ n ∈ Finset.Icc ⌈(0 : ℝ)⌉ ⌊(2 : ℝ)⌋, eTerm (3 / 4 * (n : ℝ) - (n : ℝ) ^ 2 / 8) =
+      2 + eTerm (5 / 8) := by
+    rw [Icc_ceil_floor_zero_two, Finset.sum_insert (by decide), Finset.sum_pair (by norm_num)]
+    norm_num [eTerm_zero, eTerm_one]
+    ring
+  exact hs ▸ h1
+
+theorem P_klf_half (h : P_KusminLandauDerivStatement) :
+    (1 : ℝ) ≤ Real.cos (Real.pi * (1 / 2) / 2) / Real.sin (Real.pi * (1 / 2) / 2) := by
+  have h1 := h (fun x => x / 2) (fun _ => 1 / 2) 0 2 0 (1 / 2) (by norm_num) le_rfl
+    ⟨by fun_prop, fun x _ => (hasDerivAt_id x).div_const 2⟩ (Or.inl monotoneOn_const)
+    (fun x _ => by norm_num)
+  have h2 : ‖(1 : ℂ)‖ ≤ _ := klf_half_sum ▸ h1
+  rwa [norm_one] at h2
+
+theorem P_klf_fractional (h : P_KusminLandauDerivStatement) :
+    Real.sqrt 2 ≤ Real.cos (Real.pi * (1 / 4) / 2) / Real.sin (Real.pi * (1 / 4) / 2) := by
+  have h1 := h (fun x => x / 4) (fun _ => 1 / 4) (-1 / 2) (3 / 2) 0 (1 / 4) (by norm_num) (by norm_num)
+    ⟨by fun_prop, fun x _ => (hasDerivAt_id x).div_const 4⟩ (Or.inl monotoneOn_const)
+    (fun x _ => by norm_num)
+  have hs : ∑ n ∈ Finset.Icc ⌈(-1 / 2 : ℝ)⌉ ⌊(3 / 2 : ℝ)⌋, eTerm ((n : ℝ) / 4) =
+      ((1 : ℝ) : ℂ) + ((1 : ℝ) : ℂ) * Complex.I := by
+    rw [Icc_ceil_floor_neg_half_three_halves, Finset.sum_pair (by norm_num)]
+    rw [Int.cast_zero, Int.cast_one, zero_div, eTerm_zero, eTerm_quarter]
+    simp
+  have h2 : ‖((1 : ℝ) : ℂ) + ((1 : ℝ) : ℂ) * Complex.I‖ ≤ _ := hs ▸ h1
+  rw [Complex.norm_add_mul_I] at h2
+  norm_num at h2
+  exact h2
+
+theorem P_klf_empty (h : P_KusminLandauDerivStatement) :
+    (0 : ℝ) ≤ Real.cos (Real.pi * (1 / 2) / 2) / Real.sin (Real.pi * (1 / 2) / 2) := by
+  have h1 := h (fun x => x / 2) (fun _ => 1 / 2) (1 / 2) (1 / 2) 0 (1 / 2) (by norm_num) le_rfl
+    ⟨by fun_prop, fun x _ => (hasDerivAt_id x).div_const 2⟩ (Or.inl monotoneOn_const)
+    (fun x _ => by norm_num)
+  rwa [Icc_ceil_floor_half_half, Finset.sum_empty, norm_zero] at h1
+
+end OscInt.API.KusminLandauSanity2

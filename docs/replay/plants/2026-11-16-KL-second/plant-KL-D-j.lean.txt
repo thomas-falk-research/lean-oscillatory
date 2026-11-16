@@ -1,0 +1,40 @@
+import OscInt.Front.KusminLandauSanity2
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+
+namespace OscInt.API.KusminLandauSanity2
+
+open OscInt.Statements OscInt.API.KusminLandauSanity Set
+
+def P_KusminLandauStatement : Prop :=
+  ∀ (c : ℕ → ℝ) (N : ℕ) (k : ℕ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → DiffsMonotoneIn c N k lam →
+    ‖expSum c N‖ ≤ Real.cos (Real.pi * lam / 2) / Real.sin (Real.pi * lam / 2)
+
+theorem P_kl_third (h : P_KusminLandauStatement) : ‖expSum cThird 2‖ ≤ Real.sqrt 3 := by
+  have := h cThird 2 0 (1 / 3) (by norm_num) (by norm_num) diffs_cThird
+  rwa [cot_third] at this
+
+theorem P_kl_anti (h : P_KusminLandauStatement) : ‖expSum cAnti 2‖ ≤ Real.sqrt 3 := by
+  have := h cAnti 2 0 (1 / 3) (by norm_num) (by norm_num) diffs_cAnti
+  rwa [cot_third] at this
+
+theorem P_kl_shift (h : P_KusminLandauStatement) : ‖expSum cShift 2‖ ≤ Real.sqrt 3 := by
+  have := h cShift 2 1 (1 / 3) (by norm_num) (by norm_num) diffs_cShift
+  rwa [cot_third] at this
+
+theorem P_kl_six (h : P_KusminLandauStatement) :
+    Real.sqrt 13 ≤ Real.cos (Real.pi * (1 / 6) / 2) / Real.sin (Real.pi * (1 / 6) / 2) := by
+  have := h cSix 6 0 (1 / 6) (by norm_num) (by norm_num) diffs_cSix
+  rwa [norm_expSum_cSix] at this
+
+theorem P_kl_one_half (h : P_KusminLandauStatement) :
+    (1 : ℝ) ≤ Real.cos (Real.pi * (1 / 2) / 2) / Real.sin (Real.pi * (1 / 2) / 2) := by
+  have := h cOne 0 0 (1 / 2) (by norm_num) le_rfl (diffs_cOne 0 (1 / 2))
+  rwa [expSum_cOne, norm_one] at this
+
+theorem P_kl_neg (h : P_KusminLandauStatement) : ‖expSum cNeg 2‖ ≤ Real.sqrt 3 := by
+  have := h cNeg 2 (-1) (1 / 3) (by norm_num) (by norm_num) diffs_cNeg
+  rwa [cot_third] at this
+
+end OscInt.API.KusminLandauSanity2

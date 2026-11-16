@@ -1,0 +1,21 @@
+import OscInt.Front.PeriodicAnalyticSanity2
+
+namespace OscInt.API.PeriodicAnalyticSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity
+
+def P_FourierCoeffStripStatement : Prop :=
+  ∀ (v : ℂ → ℂ) (a M : ℝ) (k : ℝ), 0 < a → PeriodicAnalyticOn v a M →
+    ‖∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ) * Complex.exp (↑(-(k * θ)) * Complex.I)‖ ≤
+      2 * Real.pi * M * Real.exp (-(a * |k|))
+
+theorem witness_not_FourierCoeffStripStatement : ¬ P_FourierCoeffStripStatement :=
+  by
+  intro h
+  have h1 := h (fun _ => 1) 2 1 (1 / 2) (by norm_num)
+    ⟨differentiableOn_const 1, fun _ _ => rfl, fun _ _ => by simp⟩
+  rw [norm_halfMode_integral] at h1
+  exact fourierCoeff_nonInteger_false h1
+
+end OscInt.API.PeriodicAnalyticSanity2

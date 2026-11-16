@@ -1,0 +1,44 @@
+import OscInt.Front.PeriodicAnalyticSanity2
+
+namespace OscInt.API.PeriodicAnalyticSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity
+
+def P_PeriodicAnalyticOn (v : ℂ → ℂ) (a M : ℝ) : Prop :=
+  DifferentiableOn ℂ v (openStrip a) ∧ (∀ z ∈ openStrip a, v (z + ((2 * Real.pi : ℝ) : ℂ)) = v z) ∧
+    ∀ z ∈ openStrip a, ‖v z‖ ≤ M
+
+def P_FourierCoeffStripStatement : Prop :=
+  ∀ (v : ℂ → ℂ) (a M : ℝ) (k : ℤ), 0 < a → P_PeriodicAnalyticOn v a M →
+    ‖∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ) * Complex.exp (↑(-((k : ℝ) * θ)) * Complex.I)‖ ≤
+      2 * Real.pi * M * Real.exp (-(a * |(k : ℝ)|))
+
+theorem P_fourierCoeff_cos3 (h : P_FourierCoeffStripStatement) (a : ℝ) (ha : 0 < a) :
+    7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * 3)) := by
+  have h1 := h cos3 a (7 * Real.cosh (3 * a)) 3 ha (cos3_periodicAnalyticOn a ha)
+  rw [integral_cos3_three, norm_mul_pi, Complex.norm_ofNat, Int.cast_ofNat, abs_of_pos (by norm_num)] at h1
+  exact h1
+
+theorem P_fourierCoeff_cos3_neg (h : P_FourierCoeffStripStatement) (a : ℝ) (ha : 0 < a) :
+    7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * 3)) := by
+  have h1 := h cos3 a (7 * Real.cosh (3 * a)) (-3) ha (cos3_periodicAnalyticOn a ha)
+  rw [integral_cos3_neg_three, norm_mul_pi, Complex.norm_ofNat, Int.cast_neg, Int.cast_ofNat, abs_neg,
+    abs_of_pos (by norm_num)] at h1
+  exact h1
+
+theorem P_fourierCoeff_expDatum (h : P_FourierCoeffStripStatement) (a : ℝ) (ha : 0 < a) :
+    2 * Real.pi * Real.sqrt 13 ≤ 2 * Real.pi * (Real.sqrt 13 * Real.exp a + 5) * Real.exp (-(a * 1)) := by
+  have h1 := h expDatum a (Real.sqrt 13 * Real.exp a + 5) 1 ha (expDatum_periodicAnalyticOn a ha)
+  rw [integral_expDatum_one,
+    show 2 * (Real.pi : ℂ) * (2 + 3 * Complex.I) = 2 * (2 + 3 * Complex.I) * (Real.pi : ℂ) by ring,
+    norm_mul_pi, norm_mul, norm_two_add_three_I, Complex.norm_ofNat, Int.cast_one, abs_one] at h1
+  linarith
+
+theorem P_fourierCoeff_expDatum_zero (h : P_FourierCoeffStripStatement) (a : ℝ) (ha : 0 < a) :
+    10 * Real.pi ≤ 2 * Real.pi * (Real.sqrt 13 * Real.exp a + 5) * Real.exp (-(a * 0)) := by
+  have h1 := h expDatum a (Real.sqrt 13 * Real.exp a + 5) 0 ha (expDatum_periodicAnalyticOn a ha)
+  rw [integral_expDatum_zero, norm_mul_pi, Complex.norm_ofNat, Int.cast_zero, abs_zero] at h1
+  exact h1
+
+end OscInt.API.PeriodicAnalyticSanity2

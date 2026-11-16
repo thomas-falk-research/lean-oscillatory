@@ -1,0 +1,66 @@
+import OscInt.Front.PeriodicAnalyticSanity2
+
+namespace OscInt.API.PeriodicAnalyticSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity
+
+noncomputable def P_trapezoidalSum (v : ℂ → ℂ) (N : ℕ) : ℂ :=
+  ((2 * Real.pi / (N : ℝ) : ℝ) : ℂ) * ∑ j ∈ Finset.range N, v ((2 * Real.pi * (j : ℝ) / (N : ℝ) : ℝ) : ℂ)
+
+def P_TrapezoidalRuleStatement : Prop :=
+  ∀ (v : ℂ → ℂ) (a M : ℝ) (N : ℕ), 0 < a → 0 < N → PeriodicAnalyticOn v a M →
+    ‖P_trapezoidalSum v N - ∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ)‖ ≤
+      4 * Real.pi * M / (Real.exp (a * (N : ℝ)) - 1)
+
+theorem P_trapezoidalSum_cos3 : P_trapezoidalSum cos3 3 = 14 * Real.pi := by
+  simp only [P_trapezoidalSum, cos3_node, Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+  push_cast; ring
+
+theorem P_trapezoidalSum_expDatum : P_trapezoidalSum expDatum 1 = 2 * Real.pi * (7 + 3 * Complex.I) := by
+  simp only [P_trapezoidalSum, expDatum, Finset.sum_range_one]
+  norm_num; ring
+
+theorem P_trapezoidalSum_cos3_six : P_trapezoidalSum cos3 6 = 0 := by
+  simp only [P_trapezoidalSum, cos3_node_six, Finset.sum_range_succ, Finset.sum_range_zero]
+  norm_num
+
+theorem P_trapezoidalSum_cos3_four : P_trapezoidalSum cos3 4 = 0 := by
+  have h0 : cos3 ((2 * Real.pi * ((0 : ℕ) : ℝ) / ((4 : ℕ) : ℝ) : ℝ) : ℂ) = 7 * (-1) ^ 0 :=
+    cos3_of_mul_pi _ 0 (by push_cast; ring)
+  have h1 : cos3 ((2 * Real.pi * ((1 : ℕ) : ℝ) / ((4 : ℕ) : ℝ) : ℝ) : ℂ) = 0 :=
+    cos3_of_odd_mul_half_pi _ 1 (by push_cast; ring)
+  have h2 : cos3 ((2 * Real.pi * ((2 : ℕ) : ℝ) / ((4 : ℕ) : ℝ) : ℝ) : ℂ) = 7 * (-1) ^ 3 :=
+    cos3_of_mul_pi _ 3 (by push_cast; ring)
+  have h3 : cos3 ((2 * Real.pi * ((3 : ℕ) : ℝ) / ((4 : ℕ) : ℝ) : ℝ) : ℂ) = 0 :=
+    cos3_of_odd_mul_half_pi _ 4 (by push_cast; ring)
+  simp only [P_trapezoidalSum, Finset.sum_range_succ, Finset.sum_range_zero, h0, h1, h2, h3]
+  norm_num
+
+theorem P_trapezoid_cos3 (h : P_TrapezoidalRuleStatement) (a : ℝ) (ha : 0 < a) :
+    14 * Real.pi ≤ 4 * Real.pi * (7 * Real.cosh (3 * a)) / (Real.exp (a * 3) - 1) := by
+  have h1 := h cos3 a (7 * Real.cosh (3 * a)) 3 ha (by norm_num) (cos3_periodicAnalyticOn a ha)
+  rw [P_trapezoidalSum_cos3, integral_cos3, sub_zero, norm_mul_pi, Complex.norm_ofNat, Nat.cast_ofNat] at h1
+  exact h1
+
+theorem P_trapezoid_expDatum (h : P_TrapezoidalRuleStatement) (a : ℝ) (ha : 0 < a) :
+    2 * Real.pi * Real.sqrt 13 ≤ 4 * Real.pi * (Real.sqrt 13 * Real.exp a + 5) / (Real.exp (a * 1) - 1) := by
+  have h1 := h expDatum a (Real.sqrt 13 * Real.exp a + 5) 1 ha (by norm_num) (expDatum_periodicAnalyticOn a ha)
+  rw [P_trapezoidalSum_expDatum, integral_expDatum,
+    show 2 * (Real.pi : ℂ) * (7 + 3 * Complex.I) - 10 * Real.pi = 2 * (2 + 3 * Complex.I) * (Real.pi : ℂ) by ring,
+    norm_mul_pi, norm_mul, norm_two_add_three_I, Complex.norm_ofNat, Nat.cast_one] at h1
+  linarith
+
+theorem P_trapezoid_cos3_six (h : P_TrapezoidalRuleStatement) (a : ℝ) (ha : 0 < a) :
+    (0 : ℝ) ≤ 4 * Real.pi * (7 * Real.cosh (3 * a)) / (Real.exp (a * 6) - 1) := by
+  have h1 := h cos3 a (7 * Real.cosh (3 * a)) 6 ha (by norm_num) (cos3_periodicAnalyticOn a ha)
+  rw [P_trapezoidalSum_cos3_six, integral_cos3, sub_zero, norm_zero, Nat.cast_ofNat] at h1
+  exact h1
+
+theorem P_trapezoid_cos3_four (h : P_TrapezoidalRuleStatement) (a : ℝ) (ha : 0 < a) :
+    (0 : ℝ) ≤ 4 * Real.pi * (7 * Real.cosh (3 * a)) / (Real.exp (a * 4) - 1) := by
+  have h1 := h cos3 a (7 * Real.cosh (3 * a)) 4 ha (by norm_num) (cos3_periodicAnalyticOn a ha)
+  rw [P_trapezoidalSum_cos3_four, integral_cos3, sub_zero, norm_zero, Nat.cast_ofNat] at h1
+  exact h1
+
+end OscInt.API.PeriodicAnalyticSanity2

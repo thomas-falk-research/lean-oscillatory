@@ -1,0 +1,38 @@
+import OscInt.Front.PeriodicAnalyticSanity2
+
+namespace OscInt.API.PeriodicAnalyticSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity
+
+noncomputable def P_trapezoidalSum (v : ℂ → ℂ) (N : ℕ) : ℂ :=
+  ((2 * Real.pi / (N : ℝ) : ℝ) : ℂ) * ∑ j ∈ Finset.range N, v ((Real.pi * (j : ℝ) / (N : ℝ) : ℝ) : ℂ)
+
+def P_TrapezoidalRuleStatement : Prop :=
+  ∀ (v : ℂ → ℂ) (a M : ℝ) (N : ℕ), 0 < a → 0 < N → PeriodicAnalyticOn v a M →
+    ‖P_trapezoidalSum v N - ∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ)‖ ≤
+      4 * Real.pi * M / (Real.exp (a * (N : ℝ)) - 1)
+
+theorem witness_not_TrapezoidalRuleStatement : ¬ P_TrapezoidalRuleStatement :=
+  by
+  intro h
+  have h1 := h cos3 1 (7 * Real.cosh (3 * 1)) 6 (by norm_num) (by norm_num)
+    (cos3_periodicAnalyticOn 1 (by norm_num))
+  have ht : P_trapezoidalSum cos3 6 = ((7 * Real.pi / 3 : ℝ) : ℂ) := by
+    simp only [P_trapezoidalSum, sum_cos3_half_nodes_six]; push_cast; ring
+  have e6 : Real.exp 6 = Real.exp 3 * Real.exp 3 := by rw [← Real.exp_add]; norm_num
+  rw [ht, integral_cos3, sub_zero, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity), Nat.cast_ofNat,
+    mul_one, one_mul, e6, Real.cosh_eq] at h1
+  have hu : (17 / 2 : ℝ) ≤ Real.exp 3 := by
+    have := Real.quadratic_le_exp_of_nonneg (x := 3) (by norm_num)
+    linarith
+  have hy : Real.exp (-3) * Real.exp 3 = 1 := by rw [← Real.exp_add]; norm_num
+  have hy0 := Real.exp_pos (-3)
+  have hy1 : Real.exp (-3) ≤ 1 := by nlinarith
+  have hpi := Real.pi_pos
+  rw [le_div_iff₀ (by nlinarith)] at h1
+  have h2 : Real.pi * (Real.exp 3 * Real.exp 3 - 1) ≤ Real.pi * (6 * (Real.exp 3 + Real.exp (-3))) := by linarith
+  have h3 := le_of_mul_le_mul_left h2 hpi
+  nlinarith
+
+end OscInt.API.PeriodicAnalyticSanity2

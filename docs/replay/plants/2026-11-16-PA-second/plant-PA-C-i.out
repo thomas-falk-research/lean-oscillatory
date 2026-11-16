@@ -1,0 +1,32 @@
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/pa2/plants/final/plant-PA-C-i.lean:19:51: error: Application type mismatch: The argument
+  cos3_periodicAnalyticOn a ha
+has type
+  PeriodicAnalyticOn cos3 a (7 * Real.cosh (3 * a))
+but is expected to have type
+  P_PeriodicAnalyticOn cos3 a (7 * Real.cosh (3 * a))
+in the application
+  h cos3 a (7 * Real.cosh (3 * a)) 3 ha (cos3_periodicAnalyticOn a ha)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/pa2/plants/final/plant-PA-C-i.lean:25:54: error: Application type mismatch: The argument
+  cos3_periodicAnalyticOn a ha
+has type
+  PeriodicAnalyticOn cos3 a (7 * Real.cosh (3 * a))
+but is expected to have type
+  P_PeriodicAnalyticOn cos3 a (7 * Real.cosh (3 * a))
+in the application
+  h cos3 a (7 * Real.cosh (3 * a)) (-3) ha (cos3_periodicAnalyticOn a ha)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/pa2/plants/final/plant-PA-C-i.lean:32:63: error: Application type mismatch: The argument
+  expDatum_periodicAnalyticOn a ha
+has type
+  PeriodicAnalyticOn expDatum a (√13 * Real.exp a + 5)
+but is expected to have type
+  P_PeriodicAnalyticOn expDatum a (√13 * Real.exp a + 5)
+in the application
+  h expDatum a (√13 * Real.exp a + 5) 1 ha (expDatum_periodicAnalyticOn a ha)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/pa2/plants/final/plant-PA-C-i.lean:40:63: error: Application type mismatch: The argument
+  expDatum_periodicAnalyticOn a ha
+has type
+  PeriodicAnalyticOn expDatum a (√13 * Real.exp a + 5)
+but is expected to have type
+  P_PeriodicAnalyticOn expDatum a (√13 * Real.exp a + 5)
+in the application
+  h expDatum a (√13 * Real.exp a + 5) 0 ha (expDatum_periodicAnalyticOn a ha)

@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+"""Build two text-only snapshots of the frozen commit with planted fidelity errors in the Lean statement files
+(calibration of referee A; the referee is not told). Usage: make_snapshots.py REPO COMMIT OUT"""
+import os, subprocess, sys
+repo, commit, out = sys.argv[1:4]
+FILES = {
+ "PA": ["docs/statements.md", "OscInt/Statements/PeriodicAnalytic.lean", "OscInt/Statements/LatticeExplicit.lean",
+        "OscInt/Front/PeriodicAnalyticSanity.lean", "docs/replay/plants/2026-11-16-PA/SUMMARY.txt"],
+ "KL": ["docs/statements.md", "OscInt/Statements/KusminLandau.lean", "OscInt/Statements/VanDerCorput.lean",
+        "OscInt/Front/KusminLandauSanity.lean", "docs/replay/plants/2026-11-16-KL/SUMMARY.txt"],
+}
+PLANTS = {
+ "PA": ("OscInt/Statements/PeriodicAnalytic.lean", [
+   ("P1 nodes on half the period", "v ((2 * Real.pi * (j : ℝ) / (N : ℝ) : ℝ) : ℂ)", "v ((Real.pi * (j : ℝ) / (N : ℝ) : ℝ) : ℂ)"),
+   ("P2 0 < N dropped", "0 < a → 0 < N → PeriodicAnalyticOn v a M →", "0 < a → PeriodicAnalyticOn v a M →"),
+   ("P3 bound on the real axis only", "∀ z ∈ openStrip a, ‖v z‖ ≤ M", "∀ z ∈ openStrip a, z.im = 0 → ‖v z‖ ≤ M"),
+   ("P4 sinh replaced by cosh", "Real.exp (|t| * Real.sinh η - |(n : ℝ)| * η)", "Real.exp (|t| * Real.cosh η - |(n : ℝ)| * η)"),
+ ]),
+ "KL": ("OscInt/Statements/KusminLandau.lean", [
+   ("K1 last comparison dropped", "(∀ n, n + 1 < N → c (n + 1) - c n ≤ c (n + 2) - c (n + 1))", "(∀ n, n + 2 < N → c (n + 1) - c n ≤ c (n + 2) - c (n + 1))"),
+   ("K2 KL-D bound cot(pi lam)", "DiffsMonotoneIn c N k lam →\n    ‖expSum c N‖ ≤ Real.cos (Real.pi * lam / 2) / Real.sin (Real.pi * lam / 2)", "DiffsMonotoneIn c N k lam →\n    ‖expSum c N‖ ≤ Real.cos (Real.pi * lam) / Real.sin (Real.pi * lam)"),
+   ("K3 floor and ceiling swapped", "Finset.Icc ⌈a⌉ ⌊b⌋, Complex.exp", "Finset.Icc ⌊a⌋ ⌈b⌉, Complex.exp"),
+   ("K4 precedence in 2/(pi lam)", "‖expSum c N‖ ≤ 2 / (Real.pi * lam)", "‖expSum c N‖ ≤ 2 / Real.pi * lam"),
+ ]),
+}
+for batch, files in FILES.items():
+    root = os.path.join(out, batch)
+    for f in files:
+        data = subprocess.run(["git", "-C", repo, "show", f"{commit}:{f}"], check=True, capture_output=True).stdout
+        os.makedirs(os.path.dirname(os.path.join(root, f)), exist_ok=True)
+        open(os.path.join(root, f), "wb").write(data)
+    target, plants = PLANTS[batch]
+    p = os.path.join(root, target)
+    s = open(p, encoding="utf-8").read()
+    for name, old, new in plants:
+        assert s.count(old) == 1, (batch, name, s.count(old))
+        s = s.replace(old, new)
+        print(batch, "planted:", name)
+    open(p, "w", encoding="utf-8").write(s)

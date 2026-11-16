@@ -6,26 +6,26 @@ below it, and every rule is binding.
 ## Resume here (session 13, 2026-11-16; kept current at every checkpoint)
 
 - **Work item:** batches PA and KL (six statements: PA-C, PA-T, LC-1; KL-D, KL-C, KL-F; `docs/statements.md`). They
-  are **frozen** (stamp `stamps/20261116T130956Z-276d8d7f9605` on commit 276d8d7; pinned) and **not proved**. Next:
-  the blind pre-proof reviews (two referees per batch, briefs in the lead's scratch only; plus one calibration
-  referee per batch on a copy with four planted fidelity errors), their answers under `review/`, a stamp of the
-  answers, and only then the route documents, blueprints and proofs (rule 1: no proof code before that, in the tree
-  or in scratch).
-- **Last verified state:** the freeze commit (the one that adds this paragraph): `make quick` exit code 0, see the
-  session log. 71 pinned statements, 65 machine-checked as stated, 6 stated and frozen.
-- **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched): the
-  Rust-checker agent (12:44:50Z), writing to scratch only. Its brief and all others are in the lead's scratch and are
-  lost with the container; their SHA-256 are in the session log.
-- **Exact next command:** none pending for Lean. If the blind referees are not recorded as launched in the session
-  log, launch them on the freeze commit; if launched without a recorded finish, relaunch them and record the cut-off
-  attempt as partial.
+  are **frozen** (stamp `stamps/20261116T130956Z-276d8d7f9605` on commit 276d8d7; pinned), **blind-reviewed** (answers
+  `review/2026-11-16-PA-pre-proof-answers.md`, `review/2026-11-16-KL-pre-proof-answers.md`: FAITHFUL, no counterexample,
+  no BLOCKER; second sanity layers added) and **not proved**. Next, in order: (1) `make stamp` on the answers commit
+  and a commit that records that stamp; (2) only then the route documents (`docs/proof-PA.md`, `docs/proof-KL.md`; drafts
+  exist only in the lead's scratch), the blueprints with the assemblies compiled before any part, the route referee,
+  the proof parts, integration, post-proof reviews and one isolated `make verify-all`.
+- **Last verified state:** the answers commit (the one that adds this paragraph): `make quick` exit code 0 at
+  15:09:16Z (session log). 71 pinned statements, 65 machine-checked as stated, 6 stated, frozen and reviewed.
+- **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
+  nothing. If the session log shows a `make stamp` start without a result for the answers commit, run it again.
+- **Exact next command:** `make stamp` on a clean tree at the answers commit (about 15 minutes; needs the toolchain
+  and network), then record the stamp directory in a commit.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
+  the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;
+  a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;
   `docs/funding/` (the application package for the EuroHPC cut-off of 1 December 2026, 10:00 CET; the owner must
   settle eligibility and copy the portal's form fields); `docs/contract/certificate-v0.md` with the reference checker
   `python/oscint_cert/` (22 tests pass); the prior-art disclosure of 2026-11-16 in `docs/prior_art.md`.
 - **In the lead's scratch, not in the tree yet (lost if the container is reclaimed):** paper routes for both batches;
-  the quantum-walk experiment package (certified reference, circuits, simulators, registered analysis) and its
-  protocol; they are committed when the blind referees have ended, before the stamp of the review answers.
+  fixes to the Python checker after the outsider test (tracebacks on malformed files, a statement-list pin, budgets).
 - **Disk:** 16 GB available; a full replay needs cleaning first or it breaks the 15 GB rule.
 - **Session log:** `docs/progress/2026-11-16-session13-log.md`.
 

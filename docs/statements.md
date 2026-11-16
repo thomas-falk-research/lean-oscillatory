@@ -1040,6 +1040,24 @@ Modelling choices and omissions.
    limit), four altered statements rejected (`numerics/results-pa-statement-checks-2026-11-16.txt`); LC-1 at 462
    points (`numerics/results-unlock-chain-checks-2026-11-16.txt`, check K3). These are tooling, not evidence.
 
+Clarifications after the pre-proof reviews (2026-11-16; answers `review/2026-11-16-PA-pre-proof-answers.md`; PA-C, PA-T,
+LC-1 FAITHFUL, no counterexample found, no BLOCKER; the stamp `stamps/20261116T130956Z-276d8d7f9605` stands):
+1. The words in quotation marks after "Theorem 3.2" in "Why" are a condensed paraphrase of the theorem, not the
+   paper's sentence. The paper's sum runs over the nodes 2πk/N, k = 1, …, N (modelling choice 5a).
+2. In modelling choice 6, "cosh η = |n|/|t|" needs t ≠ 0. With that choice LC-1 is the right side of DLMF 10.14.5
+   (Siegel's bound, which the referee compared to 1e-39); DLMF 10.14.8 is the inequality named after Kapteyn.
+3. Modelling choice 8 says both bounds are "attained in the limit". PA-C is attained exactly, by `v = c·e^{ikz}` with
+   `M = |c| e^{a|k|}`; LC-1 is attained exactly at t = 0, n = 0; only PA-T's constant is a supremum. No strict form and
+   no smaller constant is true for PA-C or LC-1.
+4. Where the statements have no content: PA-T for `aN ≤ ln 2` (the right side exceeds the trivial bound); LC-1 inside
+   the light cone `|n| ≤ |t|` and at η = 0; PA-C at k = 0; all three for M < 0 (vacuous) and M = 0 (v = 0).
+5. The "− 1" in PA-T's denominator is not protected by any exact datum of the sanity layer: with `e^{aN}` in its
+   place the statement is false (a referee certified a counterexample in ball arithmetic, ratio 1.00779 at `e^a = 2`,
+   N = 1), but functions of the form c·cos(Nz) satisfy both. It rests on the review and on the proof.
+6. The sanity layer was extended after the reviews (`OscInt/Front/PeriodicAnalyticSanity2.lean`; second plant run
+   `docs/replay/2026-11-16-PA-sanity-plants-second.txt`): node positions, integrality of n and k, the bound off the
+   real axis, a datum at k = 0. The statement file is unchanged.
+
 ## Batch KL: the Kusmin–Landau inequality for exponential sums (session 13, 2026-11-16)
 
 Order. As batch PA: statements, `OscInt/Statements/KusminLandau.lean`, sanity theorems with planted controls
@@ -1103,3 +1121,22 @@ Modelling choices and omissions.
    certified violation; five of Landau's sequences attain the bound to 40 digits; KL-F on 20 quadratic phases; five
    altered statements, among them Cheng and Graham's bound, rejected
    (`numerics/results-kl-statement-checks-2026-11-16.txt`). Tooling, not evidence.
+
+Clarifications after the pre-proof reviews (2026-11-16; answers `review/2026-11-16-KL-pre-proof-answers.md`; KL-D, KL-C,
+KL-F FAITHFUL, no counterexample found, no BLOCKER; the stamp `stamps/20261116T130956Z-276d8d7f9605` stands):
+1. Modelling choice 6 names the sequence 0, 1/5, 2/5, 6/5, 2 as a datum of the sanity layer. That is wrong: the
+   layer uses 0, 1/6, 1/3, 1/2, 4/3, 13/6, 3 (λ = 1/6, |S| = √13 ≈ 3.606, above Cheng and Graham's 6/π + 1 ≈ 2.910 and
+   below cot(π/12) ≈ 3.732), whose terms are exact with √3 only. The sequence at λ = 1/5 is used in the numerical
+   checks (`numerics/results-kl-statement-checks-2026-11-16.txt`), not in Lean.
+2. Modelling choice 7 is wrong at λ = 1/2: there the derivative form does attain the bound (f′ constant equal to
+   k + 1/2 with an odd number of integers in [a, b]; for example f(x) = x/2 on [0, 2], sum 1 = cot(π/4)). For λ < 1/2
+   a referee found ratios up to 1 − 1.2·10⁻⁶⁵ and no equality; that the bound is a supremum and not attained there is
+   CONJECTURED from that search.
+3. In KL-F the hypothesis `lam ≤ 1/2` matters only when (a, b) is empty and a single integer lies in [a, b]
+   (a = b ∈ ℤ); otherwise the cell condition implies it. KL-F does not ask for a ≤ b: for a > b the sum is empty.
+4. KL-C is a corollary of KL-D (cot x ≤ 1/x on (0, π/2]). "The textbook form" for KL-F means the derivative form of
+   the sources quoted in "Why"; the sources differ in end points and in whether f′ is assumed continuous.
+5. The sanity layer was extended after the reviews (`OscInt/Front/KusminLandauSanity2.lean`; second plant run
+   `docs/replay/2026-11-16-KL-sanity-plants-second.txt`): the last monotonicity comparison, one cell for all
+   differences, a negative k, data at λ = 1/2, non-integer end points, the interval of the derivative hypothesis.
+   The statement file is unchanged.
