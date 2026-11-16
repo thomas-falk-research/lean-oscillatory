@@ -7,17 +7,18 @@ below it, and every rule is binding.
 
 - **Work item:** batches PA and KL (six statements: PA-C, PA-T, LC-1; KL-D, KL-C, KL-F; `docs/statements.md`). They
   are **frozen** (stamp `stamps/20261116T130956Z-276d8d7f9605` on commit 276d8d7; pinned), **blind-reviewed** (answers
-  `review/2026-11-16-PA-pre-proof-answers.md`, `review/2026-11-16-KL-pre-proof-answers.md`: FAITHFUL, no counterexample,
-  no BLOCKER; second sanity layers added) and **not proved**. Next, in order: (1) `make stamp` on the answers commit
-  and a commit that records that stamp; (2) only then the route documents (`docs/proof-PA.md`, `docs/proof-KL.md`; drafts
-  exist only in the lead's scratch), the blueprints with the assemblies compiled before any part, the route referee,
-  the proof parts, integration, post-proof reviews and one isolated `make verify-all`.
-- **Last verified state:** the answers commit (the one that adds this paragraph): `make quick` exit code 0 at
-  15:09:16Z (session log). 71 pinned statements, 65 machine-checked as stated, 6 stated, frozen and reviewed.
+  `review/2026-11-16-PA-pre-proof-answers.md`, `review/2026-11-16-KL-pre-proof-answers.md`), the answers are
+  **stamped** (`stamps/20261116T152412Z-9c9a8767b806` on commit 9c9a876, 15:24:19Z) and they are **not proved**.
+  Proof code is allowed from that stamp on. Next, in order: (1) the route documents (proof-PA and
+  proof-KL under docs/) and the blueprints with the assemblies compiled before any part; (2) one route referee per
+  batch; (3) the proof parts; (4) integration, post-proof reviews A, B, C; (5) one isolated `make verify-all`.
+- **Last verified state:** the commit that adds this paragraph: `make quick` exit code 0 (time in the session log).
+  71 pinned statements, 65 machine-checked as stated, 6 stated, frozen, reviewed and with stamped answers.
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
-  nothing. If the session log shows a `make stamp` start without a result for the answers commit, run it again.
-- **Exact next command:** `make stamp` on a clean tree at the answers commit (about 15 minutes; needs the toolchain
-  and network), then record the stamp directory in a commit.
+  an agent that updates the Rust checker in the lead's scratch (not in the tree; if lost, the committed crate at
+  revision 2 of the contract stands and the update is redone).
+- **Exact next command:** read the session log's last rows; if no route document for batch PA exists under docs/, the routes were
+  lost with the scratch and are rewritten from `docs/statements.md` (orientation paragraphs of batches PA and KL).
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
   the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;
   a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;
