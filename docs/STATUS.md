@@ -246,7 +246,9 @@ on paper (both routes, with the names of the blueprint propositions) was written
 Mathlib names for it at 12:10Z; the statement files were committed as drafts at 12:30:15Z, in their final form at
 12:55:02Z, and stamped at 13:10:03Z. So the plan is older than the freeze; lines of it are in `docs/proof-PA.md`
 unchanged. So "statement-first" holds here for Lean proof text, not for the idea of the proof,
-which for these classical theorems is in the literature anyway. The sanity layers pin each bound at a few
+which for these classical theorems is in the literature anyway. The commit with the post-proof answers (3c97ab1) is stamped:
+`stamps/20261116T170623Z-3c97ab18ac07` (three authorities, 17:06:31Z), which bounds from above the time of the
+proofs and of these records. The sanity layers pin each bound at a few
 parameter points only; referee C exhibited six further false variants of the statements that contradict no sanity
 datum (`review/2026-11-16-PA-KL-post-proof-answers.md`). The proofs exclude every false variant; that the frozen text
 is not weaker than intended rests on the fidelity reviews and on the data where the bounds are attained.

@@ -14,15 +14,15 @@ below it, and every rule is binding.
   "Parts as integrated").
   Post-proof reviews answered (`review/2026-11-16-PA-KL-post-proof-answers.md`: FAITHFUL ×6, SOUND ×6, no failing
   regime; no BLOCKER; three MAJOR against the records, answered).
-  **Not yet machine-checked as stated:** one isolated `make verify-all` is pending. Next, in order: (1) `make stamp`
-  on the answers commit and a commit that records the stamp; (2) `df` (the 15 GB floor cannot be kept during a
+  **Not yet machine-checked as stated:** one isolated `make verify-all` is pending. The answers commit is stamped
+  (`stamps/20261116T170623Z-3c97ab18ac07`). Next, in order: (1) done; (2) `df` (the 15 GB floor cannot be kept during a
   replay on this 30 GB disk: record free space before and after), then `make verify-all` detached and isolated
   (about two hours by the Makefile's estimate; no agent and no other Lean process may run); (3) replay record
   under `docs/replay/`, STATUS rows to "machine-checked as stated", README counts 71 of 71, CHANGELOG.
 - **Last verified state:** the integration commit (the one that adds this paragraph): `make quick` exit code 0
   (time in the session log). 71 pinned statements; 65 machine-checked as stated; 6 proved, replay pending.
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
-  nothing at the time of this commit. In the lead's scratch, not in the tree: the sanity layer and planted controls
+  `make verify-all`, detached, launched right after this commit was pushed (launch record: session log, 17:08). In the lead's scratch, not in the tree: the sanity layer and planted controls
   of the draft batch FR (an agent's work; if lost, redo from `docs/design/batch-FR-draft.md`).
 - **Exact next command:** read the session log's last rows. If a `make verify-all` start is recorded without a
   result, the run is dead: record it as a partial under `docs/replay/` and start it again on a clean tree.
