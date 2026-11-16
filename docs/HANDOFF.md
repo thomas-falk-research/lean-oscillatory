@@ -3,6 +3,18 @@
 For a reader who saw nothing. Read "Rules in force" at the top of `docs/lessons.md` first; it distils the 52 entries
 below it, and every rule is binding.
 
+## Resume here (session 13, 2026-11-16; kept current at every checkpoint)
+
+- **Work item:** Phase 0 (grounding) of the unlock programme: read the records, verify the remote state, run
+  `make quick`, verify the EU funding call, then build the unlock map (a new file under `docs/design/`, not yet written).
+- **Last verified state:** 2c0e328 (= `origin/main`, pull request 18 merged): tree clean at session start; `make quick`
+  started at 11:42:25Z, result not yet recorded here. No Lean file, statement or status claim has changed in session 13.
+- **Running or was running** (see the session log; a launch with no recorded finish is dead and is relaunched):
+  the funding-call sweep agent (11:37:40Z) and literature sweeps A and B (11:43:40Z), all writing to scratch only.
+- **Exact next command:** `make quick` (after `lake exe cache get` in a fresh container; toolchain installed from
+  `toolchain.sha256` as `.github/actions/setup-lean/action.yml` does), then continue with the work item above.
+- **Session log:** `docs/progress/2026-11-16-session13-log.md`.
+
 ## Start here (session 12, 2026-11-15)
 
 **State.** 65 pinned statements; all 65 machine-checked as stated. The last two, batch D4U (S4.2U, S4.2O: the D4
