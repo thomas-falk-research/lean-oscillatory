@@ -22,5 +22,6 @@ import Blueprint.Vector
 import Blueprint.D4Uniform
 import Blueprint.PeriodicAnalytic
 import Blueprint.KusminLandau
+import Blueprint.FiniteRing
 
 /-! Root of the blueprint library: intermediate propositions (definitions only, no proofs). -/

@@ -277,3 +277,13 @@ import Mathlib
 #check @Function.Periodic.lift_coe
 #check @continuous_coinduced_dom
 #check @Finset.sum_range_sub
+#check @Real.two_pi_pos
+#check @HasDerivAt.fun_sum
+#check @HasDerivAt.mul_const
+#check @HasDerivAt.sub
+#check @Int.eq_zero_of_abs_lt_dvd
+#check @Finset.sum_ite_eq
+#check @Finset.sum_sub_distrib
+#check @inv_mul_cancel₀
+#check @norm_sub_le
+#check @Real.exp_add

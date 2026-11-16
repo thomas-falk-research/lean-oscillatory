@@ -1,0 +1,6 @@
+PASS RingEvenFacts: R_N(t, -r) = R_N(t, r), N = 0..9, 120 points  max diff 2.37e-39
+PASS RingDatumFacts: sum over one period of [N | x - y] f(y) = f(x), N = 1..12  528 cases
+PASS ImageSumFacts: |S - g(r)| <= 2A cosh(r eta)/(e^{eta N} - 1)  1896 cases, largest ratio 1.0
+PASS control: constant 1 in place of 2 fails (extremal g, N = 3, r = 1)
+PASS control: cosh(r eta) replaced by 1 fails (extremal g, N = 3, r = 2)
+ALL PASS

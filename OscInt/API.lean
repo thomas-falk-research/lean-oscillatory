@@ -31,6 +31,7 @@ import OscInt.Front.PeriodicAnalyticSanity2
 import OscInt.Front.KusminLandauSanity2
 import OscInt.Front.FiniteRingSanity
 import OscInt.Front.FiniteRingSanity2
+import OscInt.Front.FiniteRingAssembly
 import OscInt.Front.SecondDerivSharpSanity
 import OscInt.Front.HadamardWalkSanity
 import OscInt.Front.GlobalFinal

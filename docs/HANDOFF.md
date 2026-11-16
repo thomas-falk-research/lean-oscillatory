@@ -25,7 +25,9 @@ below it, and every rule is binding.
 - **Last verified state:** the integration commit (the one that adds this paragraph): `make quick` exit code 0
   (time in the session log). 86 pinned statements; 65 machine-checked as stated; 6 proved, replay pending; 15 stated and frozen (batches FR, VC2 and HW).
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
-  nothing local in the tree at the time of this commit; the dispatched `verify.yml` run on 880b537 ended with
+  launched right after this commit (see the launch record at the end of the session log): the FR route referee,
+  four blind referees (VC2 and HW), then five FR proof agents in scratch; if the session log has no row with their
+  results, they are dead and are relaunched from the briefs' descriptions in the log. Otherwise nothing local; the dispatched `verify.yml` run on 880b537 ended with
   success (clean-runner replay of PA and KL; session log). In the lead's scratch, not in the tree: the sanity layer and planted controls
   of the draft batch FR (an agent's work; if lost, redo from `docs/design/batch-FR-draft.md`).
 - **Exact next command:** read the session log's last rows. If a `make verify-all` start is recorded without a
@@ -43,7 +45,9 @@ below it, and every rule is binding.
   Blind pre-proof reviews A and B: all seven FAITHFUL, no counterexample, no BLOCKER; three MAJOR against the
   sanity layer, answered by `OscInt/Front/FiniteRingSanity2.lean` and a second plant run
   (`review/2026-11-16-FR-pre-proof-answers.md`, `docs/replay/2026-11-16-FR-sanity-plants-second.txt`). The answers are stamped
-  (`stamps/20261116T225756Z-5792039264f0`). Order from here: routes, blueprint, assembly (compiled before any part), route referee, parts. A route on paper exists in the lead's scratch; if lost, the dependencies are in
+  (`stamps/20261116T225756Z-5792039264f0`). Route `docs/proof-FR.md`, blueprint `Blueprint/FiniteRing.lean` and the lead's assembly
+  `OscInt/Front/FiniteRingAssembly.lean` are in the tree and compile; no part is proved. Order from here: route
+  referee, then five parts (table in the route), integration, post-proof reviews. A route on paper exists in the lead's scratch; if lost, the dependencies are in
   `docs/design/batch-FR-draft.md`.
 - **Batch VC2 (sharp second-derivative van der Corput bound; four statements VC2-S, VC2-A, VC2-N, VC2-K):** in the
   tree for its freeze (`OscInt/Statements/SecondDerivSharp.lean`, sanity layer, plants, challenge,
