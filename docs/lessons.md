@@ -103,7 +103,7 @@ able to fail.
 - `HasCompactSupport.mul_left` against a pointwise lambda times out; use `tsupport_mul_subset_right` with
   `IsCompact.of_isClosed_subset`. (52)
 
-## History and evidence (entries 1–57)
+## History and evidence (entries 1–58)
 
 ## 1. The brief's Mathlib names were wrong at the pin (2026-11-05)
 `exists_smooth_zero_one_of_isClosed`, `fourierIntegral_gaussian_pi` and the import `Mathlib.Data.Real.Basic` do not
@@ -532,3 +532,8 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     (`docs/replay/2026-11-16-session13-PA-KL-partial.txt`). Entry 50 had already said to re-arm at once. Rule: the
     waits are built to end by themselves before the limit, so that nothing is "restarted", and the next wait starts
     in the same turn. Check: the watcher log of the replay of record has no gap longer than two minutes.
+58. **A new script went up without its licence header; only the CI job `tools` runs `reuse lint`.** Session 13:
+    `numerics/review/vc2_statement_checks.py` was pushed without the two SPDX lines, `make quick` and
+    `make docs-check` passed locally, and the job failed on GitHub ("Files with copyright information: 1567 / 1568").
+    Fixed in the next commit (header added, `reuse lint` run locally: compliant). Check before pushing a new file
+    that is not covered by a `REUSE.toml` pattern: `reuse lint` in a throw-away environment, as the job does.

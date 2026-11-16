@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
 """Checks of the batch VC2 statements as written (docs/statements.md, "Batch VC2"). Floating point and mpmath
 quadrature: searches and consistency checks, not certificates. Two methods for the oscillatory integrals: Fresnel
 closed forms piece by piece (scipy.special.fresnel) and adaptive quadrature (scipy.integrate.quad).
