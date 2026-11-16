@@ -1,0 +1,69 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- Datum for FC-U: on the chain of 2 sites, the solution with the datum `(1, 0)`,
+`u(s, 1) = e^{−2is} cos s`, `u(s, 2) = i e^{−2is} sin s`, `u = 0` elsewhere. It is not an eigenvector of the site
+swap, and its datum distinguishes the two sites. -/
+noncomputable def twoSiteMode (s : ℝ) (x : ℤ) : ℂ :=
+  if x = 1 then Complex.exp (↑(-(2 * s)) * Complex.I) * ((Real.cos s : ℝ) : ℂ)
+  else if x = 2 then Complex.I * Complex.exp (↑(-(2 * s)) * Complex.I) * ((Real.sin s : ℝ) : ℂ) else 0
+
+/-- `twoSiteMode` at the first site. -/
+theorem twoSiteMode_one (s : ℝ) :
+    twoSiteMode s 1 = Complex.exp (↑(-(2 * s)) * Complex.I) * ((Real.cos s : ℝ) : ℂ) := by
+  simp [twoSiteMode]
+
+/-- `twoSiteMode` at the second site. -/
+theorem twoSiteMode_two (s : ℝ) :
+    twoSiteMode s 2 = Complex.I * Complex.exp (↑(-(2 * s)) * Complex.I) * ((Real.sin s : ℝ) : ℂ) := by
+  simp [twoSiteMode]
+
+/-- `twoSiteMode` vanishes at the walls `0` and `3`. -/
+theorem twoSiteMode_walls (t : ℝ) : twoSiteMode t 0 = 0 ∧ twoSiteMode t (((2 : ℕ) : ℤ) + 1) = 0 := by
+  norm_num [twoSiteMode]
+
+/-- `twoSiteMode` solves the equation at the two sites of the chain. -/
+theorem twoSiteMode_hasDerivAt (t : ℝ) (x : ℤ) (h1 : 1 ≤ x) (h2 : x ≤ ((2 : ℕ) : ℤ)) :
+    HasDerivAt (fun s : ℝ => twoSiteMode s x)
+      (Complex.I * (twoSiteMode t (x + 1) + twoSiteMode t (x - 1) - 2 * twoSiteMode t x)) t := by
+  have hc : HasDerivAt (fun s : ℝ => ((Real.cos s : ℝ) : ℂ)) ((-Real.sin t : ℝ) : ℂ) t :=
+    (Real.hasDerivAt_cos t).ofReal_comp
+  have hs : HasDerivAt (fun s : ℝ => ((Real.sin s : ℝ) : ℂ)) ((Real.cos t : ℝ) : ℂ) t :=
+    (Real.hasDerivAt_sin t).ofReal_comp
+  obtain ⟨w0, w3⟩ := twoSiteMode_walls t
+  have hx : x = 1 ∨ x = 2 := by push_cast at h2; omega
+  rcases hx with rfl | rfl
+  · rw [show (1 : ℤ) + 1 = 2 by norm_num, show (1 : ℤ) - 1 = 0 by norm_num, twoSiteMode_two, w0,
+      twoSiteMode_one, funext twoSiteMode_one]
+    convert (hasDerivAt_exp_neg 2 t).mul hc using 1
+    push_cast
+    linear_combination (Complex.exp (-(2 * (t : ℂ)) * Complex.I) * Complex.sin (t : ℂ)) * Complex.I_mul_I
+  · rw [show (2 : ℤ) + 1 = ((2 : ℕ) : ℤ) + 1 by norm_num, w3, show (2 : ℤ) - 1 = 1 by norm_num,
+      twoSiteMode_one, twoSiteMode_two, funext twoSiteMode_two]
+    convert ((hasDerivAt_exp_neg 2 t).const_mul Complex.I).mul hs using 1
+    push_cast; ring
+
+def P_ChainUniqueStatement : Prop :=
+  ∀ (M : ℕ) (u : ℝ → ℤ → ℂ), (∀ t : ℝ, u t 0 = 0 ∧ u t ((M : ℤ) + 1) = 0) →
+    ∀ (t : ℝ) (x : ℤ), 1 ≤ x → x ≤ (M : ℤ) →
+      u t x = ∑ y ∈ Finset.Icc (1 : ℤ) (M : ℤ), chainKernel M t x y * u 0 y
+
+theorem P_chainU_one (h : P_ChainUniqueStatement) (t : ℝ) (c : ℂ) :
+    c * Complex.exp (↑(-(2 * t)) * Complex.I) = chainKernel 1 t 1 1 * c := by
+  have h1 := h 1 (chainMode c) (chainMode_walls c) (chainMode_hasDerivAt c) t 1 le_rfl (by norm_num)
+  rw [Nat.cast_one, Finset.Icc_self, Finset.sum_singleton] at h1
+  simpa [chainMode] using h1
+
+theorem P_chainU_two (h : P_ChainUniqueStatement) (t : ℝ) :
+    Complex.I * Complex.exp (↑(-(2 * t)) * Complex.I) * ((Real.sin t : ℝ) : ℂ) =
+      chainKernel 2 t 2 1 * twoSiteMode 0 1 + chainKernel 2 t 2 2 * twoSiteMode 0 2 := by
+  have h1 := h 2 twoSiteMode twoSiteMode_walls twoSiteMode_hasDerivAt t 2 (by norm_num) (by norm_num)
+  have hI : Finset.Icc (1 : ℤ) ((2 : ℕ) : ℤ) = {1, 2} := by decide
+  rw [hI, Finset.sum_pair (by norm_num), twoSiteMode_two] at h1
+  exact h1
+
+end OscInt.API.FiniteRingSanity2

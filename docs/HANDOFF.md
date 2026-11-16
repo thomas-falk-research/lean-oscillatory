@@ -40,17 +40,22 @@ below it, and every rule is binding.
   for its freeze: `OscInt/Statements/FiniteRing.lean`, sanity layer `OscInt/Front/FiniteRingSanity.lean` with planted
   controls (`docs/replay/2026-11-16-FR-sanity-plants.txt`), `Challenge/FiniteRing.lean`, `comparator-FR.json`, prose in
   `docs/statements.md`. **Frozen**: stamp `stamps/20261116T205833Z-0748dde3c341` on the statements commit 0748dde, pinned.
-  Blind pre-proof reviews A and B are in (2026-11-16, session log): all seven FAITHFUL, no counterexample, no
-  BLOCKER; three MAJOR against the sanity layer. Order from here: second sanity layer (an agent's work in the lead's
-  scratch; if lost, redo from the findings in the session log), answers (a file `2026-11-16-FR-pre-proof-answers.md` under `review/`, not yet written),
-  stamp of the answers, and only then routes, blueprint, assembly and parts (rule 1). A route on paper exists in the
-  lead's scratch. The session log's last rows say how far this got.
+  Blind pre-proof reviews A and B: all seven FAITHFUL, no counterexample, no BLOCKER; three MAJOR against the
+  sanity layer, answered by `OscInt/Front/FiniteRingSanity2.lean` and a second plant run
+  (`review/2026-11-16-FR-pre-proof-answers.md`, `docs/replay/2026-11-16-FR-sanity-plants-second.txt`). Order from
+  here: stamp of the answers (the session log says whether it exists), and only then routes, blueprint, assembly
+  and parts (rule 1). A route on paper exists in the lead's scratch; if lost, the dependencies are in
+  `docs/design/batch-FR-draft.md`.
 - **Batch VC2 (sharp second-derivative van der Corput bound; four statements VC2-S, VC2-A, VC2-N, VC2-K):** in the
   tree for its freeze (`OscInt/Statements/SecondDerivSharp.lean`, sanity layer, plants, challenge,
   `comparator-VC2.json`, prose). **Frozen**: stamp `stamps/20261116T222541Z-5b72549117b1`, pinned. Next for this batch: blind pre-proof
-  reviews A and B, answers, stamp of the answers, and only then proof code (rule 1). A draft batch on the Hadamard
-  walk exists only in the lead's scratch. A proof on paper exists and was refereed (session
+  reviews A and B, answers, stamp of the answers, and only then proof code (rule 1).  A proof on paper exists and was refereed (session
   log); a route for Lean that avoids inverse functions is in the lead's scratch. Classical theorem; nothing new.
+- **Batch HW (the Hadamard walk on the line, explicit t^{−1/3} bound; four statements HW-R, HW-K, HW-D, HW-L):** in
+  the tree for its freeze (`OscInt/Statements/HadamardWalk.lean`, sanity layer, plants, challenge,
+  `comparator-HW.json`, prose with the route). **Not stamped, not pinned** until the next stamp (the one that also
+  covers the FR answers); until then `make statements` reports INCOMPLETE. Then: blind reviews, answers, stamp,
+  proof code. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
   the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;
   a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;

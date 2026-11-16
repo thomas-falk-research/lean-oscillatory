@@ -1,0 +1,521 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the draft batch-HW statements against copies of their sanity theorems.
+
+As the batch-FR generator (docs/replay/plants/2026-11-16-FR/plants_fr.py.txt). The batch is not yet a module of the
+library, so every generated file is self-contained: imports, the statement text copied verbatim from
+HadamardWalk-statements.lean, the unconditional data lemmas of HadamardWalkSanity.lean that the file needs (copied
+verbatim, selected by name closure), then, under the prefix P_, a copy of one statement, of every definition of the
+statement file between the mutated one and the statement (hadamardStep, hadamardWalk, hadamardDispersion,
+hadamardKernel), of the data lemmas and checks of the sanity file that mention a copied name, and of the sanity
+theorems that go through the statement constant. Exactly one mutation (one textual pattern, replaced at each of its
+recorded occurrences, or one exchange of two patterns) is applied to one copied def. The unplanted copy (ok-) must
+compile. Witness files (docs/lessons.md, rule 9): a compiled proof of the negation of the planted statement from
+unconditional data lemmas and from data at t <= 2 of the planted definitions, proved inside the witness.
+No file proves, or uses a proof of, a statement of the batch.
+Verdicts: DETECTED (witness compiled), NOT DETECTED (no witness), TRUE WEAKENING (cannot be refuted).
+Usage: plants_hw.py REPO SANITY_DIR OUTDIR SCRATCHDIR [plant ids]
+"""
+import os, re, subprocess, sys
+
+REPO, SDIR, OUT, SCR = sys.argv[1:5]
+os.makedirs(OUT, exist_ok=True)
+os.makedirs(SCR, exist_ok=True)
+STMT_TEXT = open(os.path.join(SDIR, 'HadamardWalk-statements.lean')).read()
+i0, i1 = STMT_TEXT.index('namespace OscInt.Statements'), STMT_TEXT.index('end OscInt.Statements')
+STMT_TEXT = STMT_TEXT[i0:i1] + 'end OscInt.Statements\n'
+STMT = STMT_TEXT.split('\n')
+SAN_ALL = open(os.path.join(SDIR, 'HadamardWalkSanity.lean')).read()
+assert STMT_TEXT in SAN_ALL, 'the sanity file does not carry the statement text verbatim'
+SAN_BODY = SAN_ALL[SAN_ALL.index('namespace OscInt.API.HadamardWalkSanity'):]
+SAN = SAN_BODY.split('\n')
+R, K, D, L = ('HadamardKernelStatement', 'HadamardKernelBoundStatement', 'HadamardDecayStatement',
+              'HadamardDispersiveStatement')
+STEP, DISP, KER = 'hadamardStep', 'hadamardDispersion', 'hadamardKernel'
+STMT_DEFS = [STEP, 'hadamardWalk', 'pointState', DISP, KER, R, K, D, L]
+# Sanity theorems through each statement constant, and the unconditional checks of the same instances.
+THMS = {R: ['hwR_zero', 'hwR_zero_table', 'hwR_one', 'hwR_one_table'],
+        K: ['hwK_one', 'hwK_one_simplified', 'hwK_two', 'hwK_eight', 'hwK_eight_simplified'],
+        D: ['hwD_one', 'hwD_two'], L: ['hwL_point', 'hwL_two_site', 'hwL_five']}
+CHECKS = {R: ['hwR_zero_check', 'hwR_one_check'], K: ['hwK_check', 'hwK_zero_time_true'],
+          D: ['hwD_one_check', 'hwD_two_check', 'hwD_zero_time_false'],
+          L: ['hwL_two_site_check', 'hwL_const_false']}
+DECL = re.compile(r'^(?:noncomputable )?(theorem|def) ([A-Za-z_0-9\']+)')
+WORD = re.compile(r"[A-Za-z_][A-Za-z_0-9']*")
+
+
+def block(lines, name):
+    """The declaration `name` without its docstring, up to the next blank line."""
+    for i, l in enumerate(lines):
+        m = DECL.match(l)
+        if m and m.group(2) == name:
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {name}')
+
+
+def data_blocks():
+    """All declarations of the sanity file with docstrings, in file order: name -> (index, text)."""
+    res, cur = {}, []
+    for l in SAN[1:] + ['']:
+        if l.strip() == '':
+            for c in cur:
+                m = DECL.match(c)
+                if m:
+                    res[m.group(2)] = (len(res), '\n'.join(cur))
+                    break
+            cur = []
+        else:
+            cur.append(l)
+    return res
+
+
+DATA = data_blocks()
+TEXT = {d: block(STMT, d) for d in STMT_DEFS}
+TEXT.update({n: block(SAN, n) for n in DATA})
+ORDER = STMT_DEFS + sorted(DATA, key=lambda n: DATA[n][0])
+
+
+def words(text):
+    return set(WORD.findall(text))
+
+
+def dependents(target):
+    """Every statement def and sanity declaration that mentions `target`, transitively (with `target`)."""
+    res, grew = {target}, True
+    while grew:
+        grew = False
+        for n in ORDER:
+            if n not in res and words(TEXT[n]) & res:
+                res.add(n)
+                grew = True
+    return res
+
+
+def cone(names):
+    """`names` and every statement def and sanity declaration they mention, transitively."""
+    res, todo = set(), list(names)
+    while todo:
+        n = todo.pop()
+        if n in res:
+            continue
+        res.add(n)
+        todo += [w for w in words(TEXT[n]) if w in TEXT and w not in res]
+    return res
+
+
+def closure(text, exclude):
+    """Unconditional declarations of the sanity file used by `text`, transitively, verbatim, in file order."""
+    need, todo = set(), [text]
+    while todo:
+        t = todo.pop()
+        for w in words(t):
+            if w in DATA and w not in need:
+                assert w not in exclude, f'the text uses {w}, which depends on the mutated definition'
+                need.add(w)
+                todo.append(DATA[w][1])
+    return [DATA[n][1] for n in sorted(need, key=lambda n: DATA[n][0])]
+
+
+HEADER = """import OscInt.Statements.Cusp
+import OscInt.Front.GlobalSanity
+
+"""
+OPEN = """
+namespace OscInt.API.HadamardWalkSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity
+"""
+
+
+def mutate(text, mut):
+    """Apply the replacements of one mutation in order; each pattern must occur exactly `count` times."""
+    for old, new, count in mut:
+        assert text.count(old) == count, (old, text.count(old))
+        text = text.replace(old, new)
+    return text
+
+
+def make(stmt, target, mut, planted, witness=None):
+    dep = dependents(target)
+    if witness is None:
+        keep = cone(THMS[stmt] + (CHECKS[stmt] if target != stmt else [])) | {stmt}
+    else:
+        keep = cone([stmt])
+    renamed = [n for n in ORDER if n in dep and n in keep]
+    assert target in renamed and stmt in renamed
+    parts = []
+    for n in renamed:
+        t = TEXT[n]
+        if planted and n == target:
+            t = mutate(t, mut)
+        parts.append(t)
+    if witness is not None:
+        parts.append(f'theorem witness_not_{stmt} : ¬ {stmt} :=\n  {witness}')
+    text = '\n\n'.join(parts)
+    for n in sorted(renamed, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r"(?![\w'])", 'P_' + n, text)
+    data = closure(text, dep)
+    return (HEADER + STMT_TEXT + OPEN + '\n' + '\n\n'.join(data + [text]) + '\n\nend OscInt.API.HadamardWalkSanity\n')
+
+
+def run(tag, text):
+    src = os.path.join(SCR, tag + '.lean')
+    open(src, 'w').write(text)
+    open(os.path.join(OUT, tag + '.lean.txt'), 'w').write(text)
+    r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                       cwd=REPO, capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+    errs = [l for l in out.split('\n') if ': error' in l]
+    return ('accepted' if r.returncode == 0 and not errs else 'rejected'), errs
+
+
+# Table of planted controls for the draft batch HW (read by plants_hw.py).
+# (id, statement, def to mutate, [(old, new, number of textual occurrences), ...], witness proof of ¬ P_<statement>
+#  or None, note). In a witness the names of the copied defs are written without the prefix; the generator adds it.
+
+S2 = '((Real.sqrt 2 : ℝ) : ℂ)'
+
+W_Ra = '''by
+  intro h
+  have h1 := congrArg Prod.fst (h 1 0 0 (-1))
+  simp [hadamardWalk_point_one, hadamardKernel_one, hadamardKernel_zero] at h1'''
+
+W_Rb = '''by
+  intro h
+  have h1 := congrArg Prod.snd (h 0 1 0 1)
+  simp [hadamardWalk_point_one, hadamardKernel_one, hadamardKernel_zero] at h1
+  exact inv_ne_zero sqrt_two_ne_zero (by linear_combination (-1 / 2 : ℂ) * h1)'''
+
+W_Rc = '''by
+  intro h
+  have h1 := congrArg Prod.fst (h 1 0 1 0)
+  rw [one_add_one_eq_two, hadamardWalk_point_two, hadamardKernel_two, hadamardKernel_one] at h1
+  norm_num at h1
+  rw [inv_sqrt_two_mul_self] at h1
+  norm_num at h1'''
+
+W_Rd = '''by
+  intro h
+  have h1 := congrArg Prod.fst (h 1 0 0 1)
+  have e : hadamardWalk (pointState 1 0) (0 + 1) 1 = hadamardStep (pointState 1 0) 1 := rfl
+  rw [e] at h1
+  simp [hadamardStep, pointState, hadamardKernel_one, hadamardKernel_zero] at h1'''
+
+W_Re = '''by
+  intro h
+  have h1 := congrArg Prod.fst (h 0 1 0 (-1))
+  have e : hadamardWalk (pointState 0 1) (0 + 1) (-1) = hadamardStep (pointState 0 1) (-1) := rfl
+  rw [e] at h1
+  simp [hadamardStep, pointState, hadamardKernel_one, hadamardKernel_zero] at h1
+  exact inv_ne_zero sqrt_two_ne_zero (by linear_combination (-1 / 2 : ℂ) * h1)'''
+
+W_Rf = '''by
+  intro h
+  have h1 := congrArg Prod.fst (h 1 0 0 (-1))
+  have e : hadamardWalk (pointState 1 0) (0 + 1) (-1) = hadamardStep (pointState 1 0) (-1) := rfl
+  rw [e] at h1
+  simp [hadamardStep, pointState, hadamardKernel_one, hadamardKernel_zero] at h1'''
+
+W_Rg = '''by
+  intro h
+  have k0 : hadamardKernel 0 (-1) = 0 := by simp [hadamardKernel]
+  have k1 : hadamardKernel 1 0 = 0 := by
+    rw [hadamardKernel, integral_odd, mul_zero]
+    intro k
+    simp only [hadamardDispersion_neg, Real.cos_neg, Int.cast_zero, zero_mul, neg_zero, Complex.ofReal_zero,
+      Complex.exp_zero, mul_one, Nat.cast_one, one_mul, neg_neg]
+    ring
+  have h1 := congrArg Prod.fst (h 1 0 0 (-1))
+  rw [zero_add, hadamardWalk_point_one, ite_eq_left rfl, k0] at h1
+  norm_num [k1] at h1'''
+
+W_Rh = '''by
+  intro h
+  have e : ∀ (m : ℤ) (k : ℝ), Complex.exp (↑((m : ℝ) * k) * Complex.I) *
+      Complex.exp (↑(((1 : ℤ) : ℝ) * k) * Complex.I) = Complex.exp (↑(((m + 1 : ℤ) : ℝ) * k) * Complex.I) := by
+    intro m k
+    rw [← Complex.exp_add]; congr 1; push_cast; ring
+  have k1 : hadamardKernel 1 0 = 1 := by
+    have h0 := fourier_unit 0
+    rw [ite_eq_left rfl] at h0
+    rw [hadamardKernel]
+    simp only [kernel_quotient_one, one_mul]
+    exact h0
+  have k2 : hadamardKernel 2 1 = 1 / ((Real.sqrt 2 : ℝ) : ℂ) := by
+    have h0 := fourier_pair (-(1 / ((Real.sqrt 2 : ℝ) : ℂ))) (1 / ((Real.sqrt 2 : ℝ) : ℂ)) (1 + 1) (-1 + 1)
+    rw [hadamardKernel]
+    simp only [kernel_quotient_two, add_mul, mul_assoc, e]
+    rw [h0]
+    norm_num
+  have h1 := congrArg Prod.fst (h 1 0 1 0)
+  rw [one_add_one_eq_two, hadamardWalk_point_two, zero_add, k1, k2] at h1
+  norm_num at h1
+  rw [inv_sqrt_two_mul_self] at h1
+  norm_num at h1'''
+
+W_Ri = '''by
+  intro h
+  have hpi : ((Real.pi : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
+  have k0 : hadamardKernel 0 (-1) = 0 := by simp [hadamardKernel]
+  have k1 : hadamardKernel 1 0 = 2 := by
+    rw [hadamardKernel]
+    simp only [kernel_quotient_one, one_mul]
+    rw [integral_site_zero]
+    push_cast
+    field_simp
+  have h1 := congrArg Prod.fst (h 1 0 0 (-1))
+  rw [zero_add, neg_add_cancel, hadamardWalk_point_one, ite_eq_left rfl, k0, k1] at h1
+  exact inv_ne_zero sqrt_two_ne_zero (by linear_combination (-1 : ℂ) * h1)'''
+
+W_Rj = '''by
+  intro h
+  have hpi : ((2 * Real.pi : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (by positivity : (2 * Real.pi : ℝ) ≠ 0)
+  have q : ∀ k : ℝ, (Complex.exp (↑(-(((1 : ℕ) : ℝ) * hadamardDispersion k)) * Complex.I) -
+      (-1 : ℂ) ^ 1 * Complex.exp (↑(((1 : ℕ) : ℝ) * hadamardDispersion k) * Complex.I)) /
+        ((Real.sqrt (1 + Real.cos k ^ 2) : ℝ) : ℂ) = ((Real.sqrt 2 : ℝ) : ℂ) := by
+    intro k
+    have hd : ((Real.sqrt (1 + Real.cos k ^ 2) : ℝ) : ℂ) ≠ 0 :=
+      Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr (by positivity)).ne'
+    rw [pow_one, neg_one_mul, sub_neg_eq_add, exp_neg_add_exp, Nat.cast_one, one_mul, two_cos_hadamardDispersion,
+      sqrt_two_mul_amplitude, Complex.ofReal_mul, mul_div_assoc, div_self hd, mul_one]
+  have k0 : hadamardKernel 0 (-1) = 0 := by simp [hadamardKernel]
+  have k1 : hadamardKernel 1 0 = ((Real.sqrt 2 : ℝ) : ℂ) := by
+    rw [hadamardKernel]
+    simp only [q]
+    rw [intervalIntegral.integral_const_mul, integral_site_zero]
+    field_simp
+  have h1 := congrArg Prod.fst (h 1 0 0 (-1))
+  rw [zero_add, neg_add_cancel, hadamardWalk_point_one, ite_eq_left rfl, k0, k1] at h1
+  have h2 : (1 : ℂ) / ((Real.sqrt 2 : ℝ) : ℂ) * 1 = 1 / ((Real.sqrt 2 : ℝ) : ℂ) * ((Real.sqrt 2 : ℝ) : ℂ) := by
+    linear_combination h1
+  have h3 := mul_left_cancel₀ (div_ne_zero one_ne_zero sqrt_two_ne_zero) h2
+  have h4 := sqrt_two_mul_self
+  rw [← h3] at h4
+  norm_num at h4'''
+
+W_Rk = '''by
+  intro h
+  have hcos : ∀ k : ℝ, 2 * Real.cos (hadamardDispersion k) = Real.sqrt (4 - Real.sin k ^ 2) := by
+    intro k
+    rw [hadamardDispersion, Real.cos_arcsin,
+      show (4 : ℝ) - Real.sin k ^ 2 = 2 ^ 2 * (1 - (Real.sin k / 2) ^ 2) by ring, Real.sqrt_mul (by positivity),
+      Real.sqrt_sq (by norm_num)]
+  have hq : ∀ k : ℝ, (Complex.exp (↑(-(((1 : ℕ) : ℝ) * hadamardDispersion k)) * Complex.I) -
+      (-1 : ℂ) ^ 1 * Complex.exp (↑(((1 : ℕ) : ℝ) * hadamardDispersion k) * Complex.I)) /
+        ((Real.sqrt (2 * (1 + Real.cos k ^ 2)) : ℝ) : ℂ) * Complex.exp (↑(-(((0 : ℤ) : ℝ) * k)) * Complex.I) =
+      ((Real.sqrt (4 - Real.sin k ^ 2) / Real.sqrt (2 * (1 + Real.cos k ^ 2)) : ℝ) : ℂ) := by
+    intro k
+    rw [pow_one, neg_one_mul, sub_neg_eq_add, exp_neg_add_exp, Nat.cast_one, one_mul, hcos]
+    simp
+  have k0 : hadamardKernel 0 (-1) = 0 := by simp [hadamardKernel]
+  have k1 : hadamardKernel 1 0 = (((2 * Real.pi)⁻¹ * ∫ k in (-Real.pi)..Real.pi,
+      Real.sqrt (4 - Real.sin k ^ 2) / Real.sqrt (2 * (1 + Real.cos k ^ 2)) : ℝ) : ℂ) := by
+    rw [hadamardKernel]
+    simp only [hq]
+    rw [intervalIntegral.integral_ofReal]
+    push_cast
+    ring
+  have hc : Continuous fun k : ℝ => Real.sqrt (4 - Real.sin k ^ 2) / Real.sqrt (2 * (1 + Real.cos k ^ 2)) :=
+    Continuous.div (by fun_prop) (by fun_prop) fun k => (Real.sqrt_pos.mpr (by positivity)).ne'
+  have hge : ∀ k : ℝ, 1 ≤ Real.sqrt (4 - Real.sin k ^ 2) / Real.sqrt (2 * (1 + Real.cos k ^ 2)) := by
+    intro k
+    rw [one_le_div (Real.sqrt_pos.mpr (by positivity))]
+    exact Real.sqrt_le_sqrt (by nlinarith [Real.sin_sq_add_cos_sq k, sq_nonneg (Real.sin k)])
+  have hlt : (∫ _ in (-Real.pi)..Real.pi, (1 : ℝ)) < ∫ k in (-Real.pi)..Real.pi,
+      Real.sqrt (4 - Real.sin k ^ 2) / Real.sqrt (2 * (1 + Real.cos k ^ 2)) := by
+    refine intervalIntegral.integral_lt_integral_of_continuousOn_of_le_of_exists_lt (by linarith [Real.pi_pos])
+      continuousOn_const hc.continuousOn (fun k _ => hge k)
+      ⟨Real.pi / 2, ⟨by linarith [Real.pi_pos], by linarith [Real.pi_pos]⟩, ?_⟩
+    rw [Real.sin_pi_div_two, Real.cos_pi_div_two, lt_div_iff₀ (Real.sqrt_pos.mpr (by norm_num)), one_mul]
+    exact Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
+  have h1 := congrArg Prod.fst (h 1 0 0 (-1))
+  rw [zero_add, neg_add_cancel, hadamardWalk_point_one, ite_eq_left rfl, k0, k1] at h1
+  have h2 : (1 : ℂ) / ((Real.sqrt 2 : ℝ) : ℂ) * 1 = 1 / ((Real.sqrt 2 : ℝ) : ℂ) *
+      (((2 * Real.pi)⁻¹ * ∫ k in (-Real.pi)..Real.pi,
+        Real.sqrt (4 - Real.sin k ^ 2) / Real.sqrt (2 * (1 + Real.cos k ^ 2)) : ℝ) : ℂ) := by
+    linear_combination h1
+  have h3 := Complex.ofReal_injective (mul_left_cancel₀ (div_ne_zero one_ne_zero sqrt_two_ne_zero) h2)
+  rw [eq_inv_mul_iff_mul_eq₀ (by positivity)] at h3
+  rw [intervalIntegral.integral_const, smul_eq_mul] at hlt
+  linarith'''
+
+W_Kb = '''by
+  intro h
+  have h1 := h 1 0 le_rfl
+  rw [hadamardKernel_one, ite_eq_left rfl, norm_one, Nat.cast_one, Real.one_rpow, Real.one_rpow] at h1
+  norm_num at h1'''
+
+W_Da = '''fun h => hwD_zero_time_false (h 1 0 0 0).1'''
+
+W_Db = '''by
+  intro h
+  have h1 := (h 1 0 1 (-1) le_rfl).1
+  rw [hadamardWalk_point_one, ite_eq_left rfl, add_zero, norm_one_div_sqrt_two, norm_one, norm_zero, Nat.cast_one,
+    Real.one_rpow, div_le_iff₀ (Real.sqrt_pos.mpr (by norm_num))] at h1
+  have h2 : Real.sqrt 2 < 2 := by
+    rw [Real.sqrt_lt' (by norm_num)]; norm_num
+  linarith'''
+
+W_Dc = '''by
+  intro h
+  have h1 := (h 0 1 1 (-1) le_rfl).1
+  rw [hadamardWalk_point_one, ite_eq_left rfl, zero_add, norm_one_div_sqrt_two, norm_zero, mul_zero, zero_mul] at h1
+  have h2 : 0 < 1 / Real.sqrt 2 := by positivity
+  linarith'''
+
+W_La = '''fun h => hwL_const_false 0 (h constState 1 0 le_rfl).1'''
+
+W_Lb = '''by
+  intro h
+  have h1 := (h (pointState 1 0) 0 0 (pointState_finite 1 0)).1
+  rw [hadamardWalk_point_zero, zero_rpow_neg_third, mul_zero] at h1
+  norm_num [pointState] at h1'''
+
+W_Lc = '''by
+  intro h
+  have h1 := (h (pointState 0 1) 1 (-1) (pointState_finite 0 1) le_rfl).1
+  have hz : ∑ᶠ y : ℤ, ‖(pointState 0 1 y).1‖ = 0 := by
+    refine finsum_eq_zero_of_forall_eq_zero fun y => ?_
+    by_cases hy : y = 0 <;> simp [pointState, hy]
+  rw [hadamardWalk_point_one, ite_eq_left rfl, zero_add, norm_one_div_sqrt_two, hz, mul_zero, zero_mul] at h1
+  have h2 : 0 < 1 / Real.sqrt 2 := by positivity
+  linarith'''
+
+W_Ld = '''by
+  intro h
+  have h1 := (h fiveState 1 4 fiveState_finite le_rfl).1
+  have hz : ‖(fiveState 0).1‖ + ‖(fiveState 0).2‖ = 0 := by norm_num [fiveState]
+  rw [fiveState_walk_one, norm_one_div_sqrt_two, hz, mul_zero, zero_mul] at h1
+  have h2 : 0 < 1 / Real.sqrt 2 := by positivity
+  linarith'''
+
+PLANTS = [
+    ('HW-R-a', R, R, [('(x + 1)', '@@', 1), ('(x - 1)', '(x + 1)', 1), ('@@', '(x - 1)', 1)], W_Ra,
+     'K(t+1, x+1) and K(t+1, x−1) exchanged between the components; witness: t = 0, x = −1, (a, b) = (1, 0) '
+     '(1/√2 = 0)'),
+    ('HW-R-b', R, R, [('(a - b) / ' + S2, '(a + b) / ' + S2, 1)], W_Rb,
+     '(a − b) ↦ (a + b) in the second component; witness: t = 0, x = 1, (a, b) = (0, 1) (−1/√2 = 1/√2)'),
+    ('HW-R-c', R, R, [('+ a * hadamardKernel t x', '+ b * hadamardKernel t x', 1)], W_Rc,
+     'a K(t, x) ↦ b K(t, x) in the first component; witness: t = 1, x = 0, (a, b) = (1, 0) (1/2 = −1/2)'),
+    ('HW-R-d', R, STEP, [('(ψ (x + 1))', '@@', 2), ('(ψ (x - 1))', '(ψ (x + 1))', 2), ('@@', '(ψ (x - 1))', 2)],
+     W_Rd,
+     'hadamardStep: the two shifts exchanged (first component from x − 1); witness: t = 0, x = 1, (a, b) = (1, 0) '
+     '(1/√2 = 0)'),
+    ('HW-R-e', R, STEP, [('(ψ (x + 1)).1 + (ψ (x + 1)).2', '(ψ (x + 1)).1 - (ψ (x + 1)).2', 1),
+                         ('(ψ (x - 1)).1 - (ψ (x - 1)).2', '(ψ (x - 1)).1 + (ψ (x - 1)).2', 1)], W_Re,
+     'hadamardStep: the coin signs + and − exchanged; witness: t = 0, x = −1, (a, b) = (0, 1) (−1/√2 = 1/√2)'),
+    ('HW-R-f', R, STEP, [(' / ' + S2, '', 2)], W_Rf,
+     'hadamardStep: no division by √2; witness: t = 0, x = −1, (a, b) = (1, 0) (1 = 1/√2)'),
+    ('HW-R-g', R, KER, [('(-1 : ℂ) ^ t', '(1 : ℂ)', 1)], W_Rg,
+     'hadamardKernel: (−1)^t ↦ 1; witness: t = 0, x = −1, (a, b) = (1, 0); the planted K(1, 0) is the integral of an '
+     'odd function, 0 (1/√2 = 0)'),
+    ('HW-R-h', R, KER, [('↑(-((x : ℝ) * k))', '↑((x : ℝ) * k)', 1)], W_Rh,
+     'hadamardKernel: e^{−ixk} ↦ e^{ixk}; witness: t = 1, x = 0, (a, b) = (1, 0); the planted K(2, 1) is 1/√2 '
+     '(1/2 = 3/2)'),
+    ('HW-R-i', R, KER, [('((2 * Real.pi : ℝ) : ℂ)⁻¹', '((Real.pi : ℝ) : ℂ)⁻¹', 1)], W_Ri,
+     'hadamardKernel: (2π)^{−1} ↦ π^{−1}; witness: t = 0, x = −1, (a, b) = (1, 0); the planted K(1, 0) is 2 '
+     '(1/√2 = 2/√2)'),
+    ('HW-R-j', R, KER, [('Real.sqrt (2 * (1 + Real.cos k ^ 2))', 'Real.sqrt (1 + Real.cos k ^ 2)', 1)], W_Rj,
+     'hadamardKernel: denominator √(2 (1 + cos² k)) ↦ √(1 + cos² k); witness: t = 0, x = −1, (a, b) = (1, 0); the '
+     'planted K(1, 0) is √2 (1/√2 = 1)'),
+    ('HW-R-k', R, DISP, [('Real.sin k / Real.sqrt 2', 'Real.sin k / 2', 1)], W_Rk,
+     'hadamardDispersion: sin k / √2 ↦ sin k / 2; witness: t = 0, x = −1, (a, b) = (1, 0); the planted K(1, 0) is '
+     '(2π)^{−1} ∫ √(4 − sin² k)/√(2 (1 + cos² k)) dk > 1 (integrand ≥ 1, and √3/√2 at π/2)'),
+    ('HW-K-a', K, K, [(' 1 ≤ t →', '', 1)], None, '1 ≤ t dropped'),
+    ('HW-K-b', K, K, [('7 * ', '1 / 4 * ', 1), ('12 * ', '1 / 4 * ', 1)], W_Kb,
+     'constants 7, 12 ↦ 1/4, 1/4; witness: t = 1, x = 0 (1 ≤ 1/2)'),
+    ('HW-K-c', K, K, [('12 * (t : ℝ) ^ (-(1 : ℝ) / 3)', '12 * (t : ℝ) ^ (-(1 : ℝ) / 2)', 1)], None,
+     'exponent −1/3 ↦ −1/2 (so 19 t^{−1/2})'),
+    ('HW-K-d', K, K, [('12 * ', '0 * ', 1)], None, 'constant 12 ↦ 0 (so 7 t^{−1/2} alone)'),
+    ('HW-D-a', D, D, [(' 1 ≤ t →', '', 1)], W_Da,
+     '1 ≤ t dropped; witness: t = 0, x = 0, (a, b) = (1, 0) (1 ≤ 39 · 1 · 0^{−1/3} = 0)'),
+    ('HW-D-b', D, D, [('39 * ', '1 / 2 * ', 2)], W_Db,
+     'constant 39 ↦ 1/2 (both components); witness: t = 1, x = −1, (a, b) = (1, 0) (1/√2 ≤ 1/2)'),
+    ('HW-D-c', D, D, [('(‖a‖ + ‖b‖)', '‖a‖', 2)], W_Dc,
+     '(|a| + |b|) ↦ |a| (both components); witness: t = 1, x = −1, (a, b) = (0, 1) (1/√2 ≤ 0)'),
+    ('HW-D-d', D, D, [('(-(1 : ℝ) / 3)', '(-(1 : ℝ))', 2)], None, 'exponent −1/3 ↦ −1 (both components)'),
+    ('HW-L-a', L, L, [(' {y : ℤ | ψ₀ y ≠ (0, 0)}.Finite →', '', 1)], W_La,
+     'finite support dropped; witness: the constant state (1, 1), t = 1, x = 0 (√2 ≤ 39 · 0 · 1, the ∑ᶠ is 0)'),
+    ('HW-L-b', L, L, [(' 1 ≤ t →', '', 1)], W_Lb,
+     '1 ≤ t dropped; witness: the point state (1, 0), t = 0, x = 0 (1 ≤ 0)'),
+    ('HW-L-c', L, L, [('(‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)', '‖(ψ₀ y).1‖', 2)], W_Lc,
+     'summand |ψ₁| + |ψ₂| ↦ |ψ₁| (both components); witness: the point state (0, 1), t = 1, x = −1 (1/√2 ≤ 0)'),
+    ('HW-L-d', L, L, [('(∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖))', '(‖(ψ₀ 0).1‖ + ‖(ψ₀ 0).2‖)', 2)], W_Ld,
+     '∑ᶠ over all sites ↦ the term at y = 0 (both components); witness: the state (1, 0) at the site 5, t = 1, '
+     'x = 4 (1/√2 ≤ 0)'),
+]
+TRUE_WEAKENING = {
+    'HW-K-a': 'the planted statement adds to the draft one only the instances at t = 0. There the left side is '
+              '|K(0, x)| = 0 (hadamardKernel_zero: the two exponentials cancel) and the right side is '
+              '7 · 0^{−1/2} + 12 · 0^{−1/3} = 0 in Lean, so the added instance is true: it is the compiled datum '
+              'hwK_zero_time_true. The planted statement is therefore equivalent to the draft one and no datum can '
+              'refute it; in HW-K the hypothesis 1 ≤ t carries no content (unlike HW-D and HW-L, plants HW-D-a and '
+              'HW-L-b). The implication draft ⟹ planted is not compiled here (a conclusion for every t is outside '
+              'this layer). The rejection of the copied scripts is script-only (one argument too many). Note: the '
+              'header of the draft statement file says that at t = 0 the bounds of HW-K and HW-D are false; for HW-K '
+              'that sentence is not accurate.',
+}
+NOT_DETECTED = {
+    'HW-K-c': 'no witness. The copied scripts are rejected by the form of the conclusion only. The exact data of '
+              'this layer are |K(1, 0)| = 1 and |K(2, ±1)| = 1/√2, where the planted bound 19 t^{−1/2} holds (19 and '
+              '13.4). Exploratory floating-point scan (explore_hw.py.txt, unregistered; kernel by FFT): '
+              'sup_x |K(t, x)| t^{1/3} lies between 0.95 and 0.96 for the sampled t from 500 to 2·10^5, so the planted '
+              'bound should fail only for t^{1/6} > 19/0.954, t above about 6·10^7 (10^7.8); no violation at the '
+              'sampled t ≤ 2·10^5. A witness needs a lower bound |K(t, x)| > 19 t^{−1/2} at one such t near the '
+              'caustic x ≈ t/√2, an asymptotic statement about the kernel that no datum of this layer gives. The '
+              'exponent −1/3 of the second term rests on the fidelity review and on the proof.',
+    'HW-K-d': 'no witness, as HW-K-c. The planted bound 7 t^{−1/2} holds at the data (7 and 4.95). In the scan '
+              '(explore_hw.py.txt, unregistered) it holds at t = 10^5 (sup_x |K| ≈ 0.02055 against 0.02214) and '
+              'fails at t = 2·10^5 (0.01631 against 0.01565); with sup_x |K| ≈ 0.954 t^{−1/3} the first failure is '
+              'near t ≈ 1.6·10^5. A witness needs a lower bound for |K(t, x)| at one site for one t of that size; '
+              'K(t, ·) is a finite computation there, but not one that data at t ≤ 2 or a short proof can supply. '
+              'The term 12 t^{−1/3} rests on the fidelity review and on the proof.',
+    'HW-D-d': 'no witness. The copied scripts are rejected by the form of the conclusion only. The data of this layer '
+              'have t ≤ 2, where the planted bound 39 (|a| + |b|)/t holds (39 and 19.5 against 1/√2 and 1/2); it '
+              'is at least |a| + |b|, more than any component can be for a unitary step, up to t = 39, so no value '
+              'of the walk violates it before. Exact integer iteration of the step '
+              '(explore_hw_exact.py.txt, unregistered; (√2)^t ψ_t is integer valued): from the point state (1, 0) '
+              'the first violation is at t = 126, first component at the site x = −86, '
+              'ψ = 2857838189219694731 / 2^63 ≈ 0.30985 > 39/126 ≈ 0.30952 (floating-point scan: t = 208 for '
+              '(1, ±1), t = 308 for (1, i)). A witness needs that one value of the walk after 126 steps, i.e. either '
+              '126 step lemmas or a lemma about the walk at a general time (the integer recursion), both outside '
+              'this layer. The exponent of HW-D rests on the fidelity review and on the proof.',
+}
+
+ONLY = sys.argv[5:]
+jobs = []
+for pid, stmt, target, mut, witness, note in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    if not os.environ.get('HW_WITNESS_ONLY'):  # development switch; the recorded run does not set it
+        jobs.append((pid, 'ok-' + pid, make(stmt, target, mut, False), 'accepted'))
+        jobs.append((pid, 'plant-' + pid, make(stmt, target, mut, True), None))
+    if witness:
+        jobs.append((pid, 'witness-' + pid, make(stmt, target, mut, True, witness), 'accepted'))
+results = [run(j[1], j[2]) for j in jobs]
+
+by_pid = {}
+for (pid, tag, _, w), (verdict, errs) in zip(jobs, results):
+    line = f"{tag}: {verdict}" + (f" (want {w}){'' if verdict == w else '  <-- MISMATCH'}" if w else ' (recorded)')
+    if errs:
+        line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+    by_pid.setdefault(pid, {})[tag.split('-')[0]] = (verdict, line)
+lines = []
+for pid, stmt, target, mut, witness, note in PLANTS:
+    if pid not in by_pid:
+        continue
+    r = by_pid[pid]
+    lines += [r[k][1] for k in ('ok', 'plant', 'witness') if k in r]
+    if witness:
+        v = ('DETECTED (witness compiled: ¬ planted statement)' if r['witness'][0] == 'accepted'
+             else 'WITNESS FAILED  <-- MISMATCH')
+    elif pid in TRUE_WEAKENING:
+        v = 'TRUE WEAKENING: ' + TRUE_WEAKENING[pid]
+    else:
+        v = 'NOT DETECTED: ' + NOT_DETECTED[pid]
+    lines.append(f'  {pid} [{note}]: {v}')
+open(os.path.join(OUT, 'SUMMARY.txt' if not ONLY else 'SUMMARY-partial.txt'), 'w').write('\n'.join(lines) + '\n')
+print('\n'.join(lines))

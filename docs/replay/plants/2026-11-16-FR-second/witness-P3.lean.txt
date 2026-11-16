@@ -1,0 +1,70 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- **Datum at a negative time**: `‖G(−1/4, 1)‖ ≤ 1/2`, from `‖I(−1/2, 1) + iπ/2‖ ≤ π/2` (batch PA sanity). -/
+theorem lineKernel_neg_quarter_one_le : ‖lineKernel (-1 / 4) 1‖ ≤ 1 / 2 := by
+  have h := latticeKernel1_one_approx (-1 / 2) (by rw [abs_le]; constructor <;> norm_num)
+  have h2 := norm_le_norm_add_norm_sub' (latticeKernel1 (-1 / 2) 1)
+    ((Real.pi : ℂ) * ((-1 / 2 : ℝ) : ℂ) * Complex.I)
+  have h3 : ‖(Real.pi : ℂ) * ((-1 / 2 : ℝ) : ℂ) * Complex.I‖ = Real.pi / 2 := by
+    rw [norm_mul, norm_mul, Complex.norm_I, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
+      Real.norm_eq_abs, abs_of_pos Real.pi_pos, abs_of_neg (by norm_num)]
+    ring
+  have h4 : 2 * Real.pi * (-1 / 2 : ℝ) ^ 2 = Real.pi / 2 := by ring
+  rw [h3] at h2
+  rw [h4] at h
+  rw [lineKernel, norm_mul, norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, norm_inv, Complex.norm_real,
+    Real.norm_eq_abs, abs_of_pos (by positivity), Int.cast_one, show (2 : ℝ) * (-1 / 4) = -1 / 2 by norm_num,
+    inv_mul_le_iff₀ (by positivity)]
+  linarith
+
+/-- **Datum at a negative time: ring of 1 site against the line**, `t = −1/4`, `r = 1`:
+`|R₁ − G| ≥ 1 − |G| ≥ 1/2`. The witness datum of the planted control P3. -/
+theorem ring_one_sub_line_lower : 1 / 2 ≤ ‖ringKernel 1 (-1 / 4) 1 - lineKernel (-1 / 4) 1‖ := by
+  have h := norm_sub_norm_le (1 : ℂ) (lineKernel (-1 / 4) 1)
+  rw [norm_one] at h
+  rw [ringKernel_one]
+  linarith [lineKernel_neg_quarter_one_le]
+
+/-- **Bite: the time enters the bound of FR-P as `|t|`.** At `N = 1`, `r = 1`, `t = −1/4`, `η = 3` the bound with
+`t` in place of `|t|` is `2 e^{−sinh(3)/2} cosh 3 / (e³ − 1) < 0.01`, below the left side `≥ 1/2`. -/
+theorem ringP_signed_time_false :
+    ¬ ‖ringKernel 1 (-1 / 4) 1 - lineKernel (-1 / 4) 1‖ ≤
+      2 * Real.exp (2 * (-1 / 4 : ℝ) * Real.sinh 3) * Real.cosh (((1 : ℤ) : ℝ) * 3) /
+        (Real.exp (3 * ((1 : ℕ) : ℝ)) - 1) := by
+  intro h
+  have hx : (17 / 2 : ℝ) ≤ Real.exp 3 := by
+    have := Real.quadratic_le_exp_of_nonneg (x := 3) (by norm_num)
+    linarith
+  have hy : Real.exp (-3) * Real.exp 3 = 1 := by rw [← Real.exp_add]; norm_num
+  have hy0 := Real.exp_pos (-3)
+  have hy1 : Real.exp (-3) ≤ 1 := by nlinarith
+  have hs : 2 * (-1 / 4 : ℝ) * Real.sinh 3 ≤ -(15 / 8) := by rw [Real.sinh_eq]; linarith
+  have hq : (4 : ℝ) ≤ Real.exp (15 / 8) := by
+    have := Real.quadratic_le_exp_of_nonneg (x := 15 / 8) (by norm_num)
+    norm_num at this
+    linarith
+  have hz : Real.exp (-(15 / 8)) * Real.exp (15 / 8) = 1 := by rw [← Real.exp_add]; norm_num
+  have hz0 := Real.exp_pos (-(15 / 8))
+  have hE : Real.exp (2 * (-1 / 4 : ℝ) * Real.sinh 3) ≤ 1 / 4 := by
+    refine (Real.exp_le_exp.mpr hs).trans ?_
+    nlinarith
+  have hE0 := Real.exp_pos (2 * (-1 / 4 : ℝ) * Real.sinh 3)
+  have h1 := ring_one_sub_line_lower.trans h
+  rw [Int.cast_one, one_mul, Nat.cast_one, mul_one, le_div_iff₀ (by linarith), Real.cosh_eq] at h1
+  have h2 := mul_le_mul_of_nonneg_right hE (by linarith : (0 : ℝ) ≤ Real.exp 3 + Real.exp (-3))
+  linarith
+
+def P_RingFiniteSizeStatement : Prop :=
+  ∀ (N : ℕ) (t η : ℝ) (r : ℤ), 0 < N → 0 < η →
+    ‖ringKernel N t r - lineKernel t r‖ ≤
+      2 * Real.exp (2 * t * Real.sinh η) * Real.cosh ((r : ℝ) * η) / (Real.exp (η * (N : ℝ)) - 1)
+
+theorem witness_not_RingFiniteSizeStatement : ¬ P_RingFiniteSizeStatement :=
+  fun h => ringP_signed_time_false (h 1 (-1 / 4) 3 1 (by norm_num) (by norm_num))
+
+end OscInt.API.FiniteRingSanity2

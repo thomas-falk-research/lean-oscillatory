@@ -1,0 +1,111 @@
+ok-HW-R-a: accepted (want accepted)
+plant-HW-R-a: rejected (recorded)
+    first error: plant-HW-R-a.lean:276:2: error: Type mismatch
+witness-HW-R-a: accepted (want accepted)
+  HW-R-a [K(t+1, x+1) and K(t+1, x−1) exchanged between the components; witness: t = 0, x = −1, (a, b) = (1, 0) (1/√2 = 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-R-b: accepted (want accepted)
+plant-HW-R-b: rejected (recorded)
+    first error: plant-HW-R-b.lean:276:2: error: Type mismatch
+witness-HW-R-b: accepted (want accepted)
+  HW-R-b [(a − b) ↦ (a + b) in the second component; witness: t = 0, x = 1, (a, b) = (0, 1) (−1/√2 = 1/√2)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-R-c: accepted (want accepted)
+plant-HW-R-c: rejected (recorded)
+    first error: plant-HW-R-c.lean:274:87: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-HW-R-c: accepted (want accepted)
+  HW-R-c [a K(t, x) ↦ b K(t, x) in the first component; witness: t = 1, x = 0, (a, b) = (1, 0) (1/2 = −1/2)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-R-d: accepted (want accepted)
+plant-HW-R-d: rejected (recorded)
+    first error: plant-HW-R-d.lean:283:2: error: unsolved goals
+witness-HW-R-d: accepted (want accepted)
+  HW-R-d [hadamardStep: the two shifts exchanged (first component from x − 1); witness: t = 0, x = 1, (a, b) = (1, 0) (1/√2 = 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-R-e: accepted (want accepted)
+plant-HW-R-e: rejected (recorded)
+    first error: plant-HW-R-e.lean:283:2: error: unsolved goals
+witness-HW-R-e: accepted (want accepted)
+  HW-R-e [hadamardStep: the coin signs + and − exchanged; witness: t = 0, x = −1, (a, b) = (0, 1) (−1/√2 = 1/√2)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-R-f: accepted (want accepted)
+plant-HW-R-f: rejected (recorded)
+    first error: plant-HW-R-f.lean:283:2: error: unsolved goals
+witness-HW-R-f: accepted (want accepted)
+  HW-R-f [hadamardStep: no division by √2; witness: t = 0, x = −1, (a, b) = (1, 0) (1 = 1/√2)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-R-g: accepted (want accepted)
+plant-HW-R-g: rejected (recorded)
+    first error: plant-HW-R-g.lean:257:2: error: Type mismatch
+witness-HW-R-g: accepted (want accepted)
+  HW-R-g [hadamardKernel: (−1)^t ↦ 1; witness: t = 0, x = −1, (a, b) = (1, 0); the planted K(1, 0) is the integral of an odd function, 0 (1/√2 = 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-R-h: accepted (want accepted)
+plant-HW-R-h: rejected (recorded)
+    first error: plant-HW-R-h.lean:257:2: error: Type mismatch
+witness-HW-R-h: accepted (want accepted)
+  HW-R-h [hadamardKernel: e^{−ixk} ↦ e^{ixk}; witness: t = 1, x = 0, (a, b) = (1, 0); the planted K(2, 1) is 1/√2 (1/2 = 3/2)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-R-i: accepted (want accepted)
+plant-HW-R-i: rejected (recorded)
+    first error: plant-HW-R-i.lean:257:2: error: Type mismatch
+witness-HW-R-i: accepted (want accepted)
+  HW-R-i [hadamardKernel: (2π)^{−1} ↦ π^{−1}; witness: t = 0, x = −1, (a, b) = (1, 0); the planted K(1, 0) is 2 (1/√2 = 2/√2)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-R-j: accepted (want accepted)
+plant-HW-R-j: rejected (recorded)
+    first error: plant-HW-R-j.lean:256:2: error: `simp` made no progress
+witness-HW-R-j: accepted (want accepted)
+  HW-R-j [hadamardKernel: denominator √(2 (1 + cos² k)) ↦ √(1 + cos² k); witness: t = 0, x = −1, (a, b) = (1, 0); the planted K(1, 0) is √2 (1/√2 = 1)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-R-k: accepted (want accepted)
+plant-HW-R-k: rejected (recorded)
+    first error: plant-HW-R-k.lean:205:2: error: Type mismatch
+witness-HW-R-k: accepted (want accepted)
+  HW-R-k [hadamardDispersion: sin k / √2 ↦ sin k / 2; witness: t = 0, x = −1, (a, b) = (1, 0); the planted K(1, 0) is (2π)^{−1} ∫ √(4 − sin² k)/√(2 (1 + cos² k)) dk > 1 (integrand ≥ 1, and √3/√2 at π/2)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-K-a: accepted (want accepted)
+plant-HW-K-a: rejected (recorded)
+    first error: plant-HW-K-a.lean:229:13: error: Function expected at
+  HW-K-a [1 ≤ t dropped]: TRUE WEAKENING: the planted statement adds to the draft one only the instances at t = 0. There the left side is |K(0, x)| = 0 (hadamardKernel_zero: the two exponentials cancel) and the right side is 7 · 0^{−1/2} + 12 · 0^{−1/3} = 0 in Lean, so the added instance is true: it is the compiled datum hwK_zero_time_true. The planted statement is therefore equivalent to the draft one and no datum can refute it; in HW-K the hypothesis 1 ≤ t carries no content (unlike HW-D and HW-L, plants HW-D-a and HW-L-b). The implication draft ⟹ planted is not compiled here (a conclusion for every t is outside this layer). The rejection of the copied scripts is script-only (one argument too many). Note: the header of the draft statement file says that at t = 0 the bounds of HW-K and HW-D are false; for HW-K that sentence is not accurate.
+ok-HW-K-b: accepted (want accepted)
+plant-HW-K-b: rejected (recorded)
+    first error: plant-HW-K-b.lean:231:2: error: Type mismatch
+witness-HW-K-b: accepted (want accepted)
+  HW-K-b [constants 7, 12 ↦ 1/4, 1/4; witness: t = 1, x = 0 (1 ≤ 1/2)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-K-c: accepted (want accepted)
+plant-HW-K-c: rejected (recorded)
+    first error: plant-HW-K-c.lean:231:2: error: Type mismatch
+  HW-K-c [exponent −1/3 ↦ −1/2 (so 19 t^{−1/2})]: NOT DETECTED: no witness. The copied scripts are rejected by the form of the conclusion only. The exact data of this layer are |K(1, 0)| = 1 and |K(2, ±1)| = 1/√2, where the planted bound 19 t^{−1/2} holds (19 and 13.4). Exploratory floating-point scan (explore_hw.py.txt, unregistered; kernel by FFT): sup_x |K(t, x)| t^{1/3} lies between 0.95 and 0.96 for the sampled t from 500 to 2·10^5, so the planted bound should fail only for t^{1/6} > 19/0.954, t above about 6·10^7 (10^7.8); no violation at the sampled t ≤ 2·10^5. A witness needs a lower bound |K(t, x)| > 19 t^{−1/2} at one such t near the caustic x ≈ t/√2, an asymptotic statement about the kernel that no datum of this layer gives. The exponent −1/3 of the second term rests on the fidelity review and on the proof.
+ok-HW-K-d: accepted (want accepted)
+plant-HW-K-d: rejected (recorded)
+    first error: plant-HW-K-d.lean:231:2: error: Type mismatch
+  HW-K-d [constant 12 ↦ 0 (so 7 t^{−1/2} alone)]: NOT DETECTED: no witness, as HW-K-c. The planted bound 7 t^{−1/2} holds at the data (7 and 4.95). In the scan (explore_hw.py.txt, unregistered) it holds at t = 10^5 (sup_x |K| ≈ 0.02055 against 0.02214) and fails at t = 2·10^5 (0.01631 against 0.01565); with sup_x |K| ≈ 0.954 t^{−1/3} the first failure is near t ≈ 1.6·10^5. A witness needs a lower bound for |K(t, x)| at one site for one t of that size; K(t, ·) is a finite computation there, but not one that data at t ≤ 2 or a short proof can supply. The term 12 t^{−1/3} rests on the fidelity review and on the proof.
+ok-HW-D-a: accepted (want accepted)
+plant-HW-D-a: rejected (recorded)
+    first error: plant-HW-D-a.lean:126:14: error: Function expected at
+witness-HW-D-a: accepted (want accepted)
+  HW-D-a [1 ≤ t dropped; witness: t = 0, x = 0, (a, b) = (1, 0) (1 ≤ 39 · 1 · 0^{−1/3} = 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-D-b: accepted (want accepted)
+plant-HW-D-b: rejected (recorded)
+    first error: plant-HW-D-b.lean:130:9: error: Application type mismatch: The argument
+witness-HW-D-b: accepted (want accepted)
+  HW-D-b [constant 39 ↦ 1/2 (both components); witness: t = 1, x = −1, (a, b) = (1, 0) (1/√2 ≤ 1/2)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-D-c: accepted (want accepted)
+plant-HW-D-c: rejected (recorded)
+    first error: plant-HW-D-c.lean:130:9: error: Application type mismatch: The argument
+witness-HW-D-c: accepted (want accepted)
+  HW-D-c [(|a| + |b|) ↦ |a| (both components); witness: t = 1, x = −1, (a, b) = (0, 1) (1/√2 ≤ 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-D-d: accepted (want accepted)
+plant-HW-D-d: rejected (recorded)
+    first error: plant-HW-D-d.lean:130:9: error: Application type mismatch: The argument
+  HW-D-d [exponent −1/3 ↦ −1 (both components)]: NOT DETECTED: no witness. The copied scripts are rejected by the form of the conclusion only. The data of this layer have t ≤ 2, where the planted bound 39 (|a| + |b|)/t holds (39 and 19.5 against 1/√2 and 1/2); it is at least |a| + |b|, more than any component can be for a unitary step, up to t = 39, so no value of the walk violates it before. Exact integer iteration of the step (explore_hw_exact.py.txt, unregistered; (√2)^t ψ_t is integer valued): from the point state (1, 0) the first violation is at t = 126, first component at the site x = −86, ψ = 2857838189219694731 / 2^63 ≈ 0.30985 > 39/126 ≈ 0.30952 (floating-point scan: t = 208 for (1, ±1), t = 308 for (1, i)). A witness needs that one value of the walk after 126 steps, i.e. either 126 step lemmas or a lemma about the walk at a general time (the integer recursion), both outside this layer. The exponent of HW-D rests on the fidelity review and on the proof.
+ok-HW-L-a: accepted (want accepted)
+plant-HW-L-a: rejected (recorded)
+    first error: plant-HW-L-a.lean:169:40: error: Application type mismatch: The argument
+witness-HW-L-a: accepted (want accepted)
+  HW-L-a [finite support dropped; witness: the constant state (1, 1), t = 1, x = 0 (√2 ≤ 39 · 0 · 1, the ∑ᶠ is 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-L-b: accepted (want accepted)
+plant-HW-L-b: rejected (recorded)
+    first error: plant-HW-L-b.lean:169:14: error: Function expected at
+witness-HW-L-b: accepted (want accepted)
+  HW-L-b [1 ≤ t dropped; witness: the point state (1, 0), t = 0, x = 0 (1 ≤ 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-L-c: accepted (want accepted)
+plant-HW-L-c: rejected (recorded)
+    first error: plant-HW-L-c.lean:171:47: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-HW-L-c: accepted (want accepted)
+  HW-L-c [summand |ψ₁| + |ψ₂| ↦ |ψ₁| (both components); witness: the point state (0, 1), t = 1, x = −1 (1/√2 ≤ 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-L-d: accepted (want accepted)
+plant-HW-L-d: rejected (recorded)
+    first error: plant-HW-L-d.lean:171:47: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-HW-L-d: accepted (want accepted)
+  HW-L-d [∑ᶠ over all sites ↦ the term at y = 0 (both components); witness: the state (1, 0) at the site 5, t = 1, x = 4 (1/√2 ≤ 0)]: DETECTED (witness compiled: ¬ planted statement)

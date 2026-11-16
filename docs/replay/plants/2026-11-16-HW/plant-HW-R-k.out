@@ -1,0 +1,13 @@
+plant-HW-R-k.lean:205:2: error: Type mismatch
+  Real.sin_arcsin (sin_div_sqrt_two_mem k).left (sin_div_sqrt_two_mem k).right
+has type
+  Real.sin (Real.arcsin (Real.sin k / √2)) = Real.sin k / √2
+but is expected to have type
+  Real.sin (P_hadamardDispersion k) = Real.sin k / √2
+plant-HW-R-k.lean:209:45: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (Real.sin ?k / √2) ^ 2
+in the target expression
+  √(1 - (Real.sin k / 2) ^ 2) = √(1 - Real.sin k ^ 2 / 2)
+
+k : ℝ
+⊢ √(1 - (Real.sin k / 2) ^ 2) = √(1 - Real.sin k ^ 2 / 2)

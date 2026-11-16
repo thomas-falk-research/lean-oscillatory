@@ -1,0 +1,40 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- **Datum: ring of 2 sites against the line at time 0**, `r = 2`: `R₂(0, 2) − G(0, 2) = 1 − 0`. -/
+theorem ring_two_sub_line_zero : ringKernel 2 0 2 - lineKernel 0 2 = 1 := by
+  rw [ringKernel_two, lineKernel_zero, ite_eq_left (by decide), ite_eq_right (by norm_num)]
+  norm_num
+
+/-- **Bite: `2 cosh 2 < e⁴ − 1`**, so `1 ≤ 2 cosh 2 / (e⁴ − 1)` is false: the bound of FR-P at `N = 2`, `t = 0`,
+`r = 2` with `e^{ηN²}` in place of `e^{ηN}` at `η = 1` (plant P1), and with `cosh η` in place of `cosh(rη)` at `η = 2`
+(plant P2). -/
+theorem two_cosh_two_lt : 2 * Real.cosh 2 < Real.exp 4 - 1 := by
+  have he : (3 : ℝ) ≤ Real.exp 2 := by linarith [Real.add_one_le_exp (2 : ℝ)]
+  have h4 : Real.exp 4 = Real.exp 2 * Real.exp 2 := by rw [← Real.exp_add]; norm_num
+  have hy : Real.exp (-2) * Real.exp 2 = 1 := by rw [← Real.exp_add]; norm_num
+  have hy0 := Real.exp_pos (-2)
+  have hy1 : Real.exp (-2) ≤ 1 := by nlinarith
+  rw [h4, Real.cosh_eq]
+  nlinarith
+
+def P_RingFiniteSizeStatement : Prop :=
+  ∀ (N : ℕ) (t η : ℝ) (r : ℤ), 0 < N → 0 < η →
+    ‖ringKernel N t r - lineKernel t r‖ ≤
+      2 * Real.exp (2 * |t| * Real.sinh η) * Real.cosh ((r : ℝ) * η) / (Real.exp (η * (N : ℝ) ^ 2) - 1)
+
+theorem witness_not_RingFiniteSizeStatement : ¬ P_RingFiniteSizeStatement :=
+  by
+  intro h
+  have h1 := h 2 0 1 2 (by norm_num) (by norm_num)
+  rw [ring_two_sub_line_zero, norm_one] at h1
+  norm_num at h1
+  have h2 := two_cosh_two_lt
+  rw [le_div_iff₀ (by linarith [Real.cosh_pos 2])] at h1
+  linarith
+
+end OscInt.API.FiniteRingSanity2

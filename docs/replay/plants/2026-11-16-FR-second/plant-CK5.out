@@ -1,0 +1,83 @@
+plant-CK5.lean:187:30: error: Function expected at
+  h 1 t 1 1 le_rfl
+but this term has type
+  HasDerivAt (fun s => chainKernel 1 s 1 1)
+      (Complex.I * (chainKernel 1 t (1 + 1) 1 + chainKernel 1 t (1 - 1) 1 - 2 * chainKernel 1 t 1 1)) t ∧
+    chainKernel 1 t 0 1 = 0 ∧
+      chainKernel 1 t (↑1 + 1) 1 = 0 ∧ (1 ≤ 1 → 1 ≤ ↑1 → chainKernel 1 0 1 1 = if 1 = 1 then 1 else 0)
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-CK5.lean:187:9: error: Tactic `rcases` failed: `x✝ : ?m.52` is not an inductive datatype
+plant-CK5.lean:194:26: error: Function expected at
+  h 1 0 1 1 le_rfl
+but this term has type
+  HasDerivAt (fun s => chainKernel 1 s 1 1)
+      (Complex.I * (chainKernel 1 0 (1 + 1) 1 + chainKernel 1 0 (1 - 1) 1 - 2 * chainKernel 1 0 1 1)) 0 ∧
+    chainKernel 1 0 0 1 = 0 ∧
+      chainKernel 1 0 (↑1 + 1) 1 = 0 ∧ (1 ≤ 1 → 1 ≤ ↑1 → chainKernel 1 0 1 1 = if 1 = 1 then 1 else 0)
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-CK5.lean:194:9: error: Tactic `rcases` failed: `x✝ : ?m.25` is not an inductive datatype
+plant-CK5.lean:198:26: error: Function expected at
+  h 2 0 1 2 ?m.21
+but this term has type
+  HasDerivAt (fun s => chainKernel 2 s 1 2)
+      (Complex.I * (chainKernel 2 0 (1 + 1) 2 + chainKernel 2 0 (1 - 1) 2 - 2 * chainKernel 2 0 1 2)) 0 ∧
+    chainKernel 2 0 0 2 = 0 ∧
+      chainKernel 2 0 (↑2 + 1) 2 = 0 ∧ (1 ≤ 1 → 1 ≤ ↑2 → chainKernel 2 0 1 2 = if 1 = 2 then 1 else 0)
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-CK5.lean:198:9: error: Tactic `rcases` failed: `x✝ : ?m.23` is not an inductive datatype
+plant-CK5.lean:205:14: error: Function expected at
+  h 1 t 2 1 le_rfl
+but this term has type
+  HasDerivAt (fun s => chainKernel 1 s 2 1)
+      (Complex.I * (chainKernel 1 t (2 + 1) 1 + chainKernel 1 t (2 - 1) 1 - 2 * chainKernel 1 t 2 1)) t ∧
+    chainKernel 1 t 0 1 = 0 ∧
+      chainKernel 1 t (↑1 + 1) 1 = 0 ∧ (1 ≤ 2 → 2 ≤ ↑1 → chainKernel 1 0 2 1 = if 2 = 1 then 1 else 0)
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-CK5.lean:204:57: error: unsolved goals
+h : P_ChainKernelStatement
+t : ℝ
+⊢ HasDerivAt (fun s => chainKernel 1 s 2 1) 0 t
+plant-CK5.lean:212:26: error: Function expected at
+  h 2 0 2 1 ?m.24
+but this term has type
+  HasDerivAt (fun s => chainKernel 2 s 2 1)
+      (Complex.I * (chainKernel 2 0 (2 + 1) 1 + chainKernel 2 0 (2 - 1) 1 - 2 * chainKernel 2 0 2 1)) 0 ∧
+    chainKernel 2 0 0 1 = 0 ∧
+      chainKernel 2 0 (↑2 + 1) 1 = 0 ∧ (1 ≤ 2 → 2 ≤ ↑2 → chainKernel 2 0 2 1 = if 2 = 1 then 1 else 0)
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-CK5.lean:212:36: error: Application type mismatch: The argument
+  le_rfl
+has type
+  ?m.23 ≤ ?m.23
+but is expected to have type
+  1 ≤ ↑2
+in the application
+  h 2 0 2 1 le_rfl
+plant-CK5.lean:221:14: error: Function expected at
+  h 2 t 1 1 ?m.62
+but this term has type
+  HasDerivAt (fun s => chainKernel 2 s 1 1)
+      (Complex.I * (chainKernel 2 t (1 + 1) 1 + chainKernel 2 t (1 - 1) 1 - 2 * chainKernel 2 t 1 1)) t ∧
+    chainKernel 2 t 0 1 = 0 ∧
+      chainKernel 2 t (↑2 + 1) 1 = 0 ∧ (1 ≤ 1 → 1 ≤ ↑2 → chainKernel 2 0 1 1 = if 1 = 1 then 1 else 0)
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-CK5.lean:221:24: error: Application type mismatch: The argument
+  le_rfl
+has type
+  ?m.61 ≤ ?m.61
+but is expected to have type
+  1 ≤ ↑2
+in the application
+  h 2 t 1 1 le_rfl

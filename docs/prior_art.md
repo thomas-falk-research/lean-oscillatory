@@ -290,3 +290,28 @@ sources read at the pin):
 Label unchanged: PLAUSIBLE-not-formalised. The mathematics is classical; nothing in batch FR is claimed as new
 mathematics. One open point recorded as CONJECTURED, not claimed: FR-P without the "− 1" in its denominator (no
 certified violation in 159003 comparisons by the lead; not proved; not in the batch).
+
+## Batch HW (the Hadamard walk on the line): prior art found before the freeze (2026-11-16)
+
+Logged sweep: `numerics/results-hw-prior-art-search-2026-11-16.txt` (12 queries on arXiv, zbMATH Open, Crossref and
+MathOverflow, 20:46Z to 21:36Z; the two Crossref free-text queries returned nothing usable).
+- The rate. A. Nayak and A. Vishwanath, arXiv:quant-ph/0010117 (CITED-READ, full text): the wave function "goes as
+  t^{−1/3}" near the two peaks; the appendices sketch proofs. T. Sunada and T. Tate, arXiv:1108.1878 (CITED-READ,
+  sections 1 and 3): asymptotics of one-dimensional quantum walks, Airy behaviour at the walls, implicit constants.
+  H. A. Carteret, B. Richmond and N. M. Temme, *Evanescence in coined quantum walks* (2005; found by title in zbMATH,
+  CITED-NOT-READ): uniform asymptotics.
+- The dispersive estimate. M. Maeda, H. Sasaki, E. Segawa, A. Suzuki and K. Suzuki, *Dispersive estimates for quantum
+  walks on 1D lattice*, arXiv:1808.05714 (CITED-READ in LaTeX source, section on the constant coin): the estimate
+  ‖U^t u‖_{ℓ^∞} ≲ t^{−1/3} ‖u‖_{ℓ¹} for a constant coin is "a direct consequence of van der Corput lemma", by "dividing
+  the integral in the region" where the second or the third derivative of the dispersion relation is bounded below;
+  the constant is implicit and the result is credited there to Sunada and Tate. This is the route of batch HW.
+  S. Richard and R. Tiedra de Aldecoa, *Decay estimates for unitary representations with applications to continuous-
+  and discrete-time models* (2023; found by title in zbMATH, CITED-NOT-READ).
+- Formalisation: no formal proof of a decay or dispersive estimate for a quantum walk was found (one query in this
+  sweep; the searches of the batch-FR section found a Lean development of quantum walks on graphs without such
+  estimates).
+Labels. The rate t^{−1/3} and the dispersive estimate with an implicit constant: known (CITED). An explicit constant
+for the Hadamard walk: not found in this sweep; PLAUSIBLE-not-in-print, with the stated search limits (no Google
+Scholar, no subscription database, two papers known by title only). The constants of batch HW are far from sharp
+(`docs/statements.md`, Batch HW, choice 3). **Nothing in batch HW is claimed as new mathematics**; the claim, if
+proved, is "machine-checked, explicit constants".

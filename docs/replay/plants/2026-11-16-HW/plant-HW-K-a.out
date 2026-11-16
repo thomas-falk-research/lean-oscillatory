@@ -1,0 +1,27 @@
+plant-HW-K-a.lean:229:13: error: Function expected at
+  h 1 0
+but this term has type
+  ‖hadamardKernel 1 0‖ ≤ 7 * ↑1 ^ (-1 / 2) + 12 * ↑1 ^ (-1 / 3)
+
+Note: Expected a function because this term is being applied to the argument
+  le_rfl
+plant-HW-K-a.lean:228:90: error: unsolved goals
+h : P_HadamardKernelBoundStatement
+⊢ 1 ≤ 7 * ↑1 ^ (-1 / 2) + 12 * ↑1 ^ (-1 / 3)
+plant-HW-K-a.lean:240:13: error: Function expected at
+  h 2 (-1)
+but this term has type
+  ‖hadamardKernel 2 (-1)‖ ≤ 7 * ↑2 ^ (-1 / 2) + 12 * ↑2 ^ (-1 / 3)
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-HW-K-a.lean:239:98: error: unsolved goals
+h : P_HadamardKernelBoundStatement
+⊢ 1 / √2 ≤ 7 * ↑2 ^ (-1 / 2) + 12 * ↑2 ^ (-1 / 3)
+plant-HW-K-a.lean:246:2: error: Function expected at
+  h 8 x
+but this term has type
+  ‖hadamardKernel 8 x‖ ≤ 7 * ↑8 ^ (-1 / 2) + 12 * ↑8 ^ (-1 / 3)
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)

@@ -1261,6 +1261,36 @@ Modelling choices and omissions.
    datum (the "− 1" of FR-P; the wall term of FC-P) and rest on the reviews and on the proof. FC-P has no exact datum
    with a nonzero left side in this layer. FR-K, FC-K and the kernels are tested at N ≤ 4 and M ≤ 2 only.
 
+Clarifications added after the freeze of batch FR (2026-11-16, from the blind pre-proof reviews; the stamped text
+above and the Lean file are unchanged; `review/2026-11-16-FR-pre-proof-answers.md`).
+a. Item 7, "FR-P is sharp". The supremum 1 of the ratio of the two sides is approached at t = 0, r = ±N (η → ∞), where
+   the ring site is the source and the line site is not; it is not attained. It is nearly attained along the whole
+   family r = ±N with t small and N large (certified by referee B: 0.99990 at N = 10⁵, t = 1/100; 0.9858 at N = 400,
+   t = 1/10), so neither the constant 2 nor the factor cosh(rη) has slack there. This is sharpness of the statement
+   as quantified over all integers r, not of the finite-size error where one uses it: R_N(t, ·) has period N and the
+   bound does not, so take the representative with |r| ≤ N/2. For |r| ≤ N/2 the largest ratio found is 1/e
+   (0.36787943 at N = 2, r = 1, t → 0, referee A, 40 digits); with |r| < N and t ≠ 0 the largest certified ratio is
+   0.5809 (N = 5000, r = 4999, t = 37/40, referee B).
+b. Item 8, "largest observed ratio 0.36". That number holds for M ≤ 8 only (0.3666 certified at M = 8). The ratio
+   grows with M at a site next to a wall: 0.4288 (M = 24), 0.4678 (M = 100), 0.4854 (M = 2500, x = y = 2500, t = 61/40,
+   η = 197/100000; all certified by referee B), apparently towards sup |J₂| ≈ 0.4865. "Not sharp" stands.
+c. Item 8 and the header of the Lean file. "FC-P keeps three images" and "up to the two nearest images" are both
+   loose. The statement compares C_M with G(t, x − y) alone and bounds every image: one term for the image in the
+   wall at 0, and the ring bound for the image in the wall at M + 1 and all further ones.
+d. Item 9 uses |C_M(t; x, y)| ≤ 1. That is true (the group on the chain is unitary) and is not a statement of this
+   batch; the definition alone gives |C_M| ≤ 2.
+e. Item 6, physical normalisation: the identification with H = −κ Σ (|x⟩⟨x+1| + h.c.) also rescales time by κ.
+f. FR-U and FC-U are representation formulas for a given solution. Existence of a solution for a given datum is not
+   a separate statement; it follows from FR-K and FC-K by a finite linear combination.
+g. Hypotheses that are present and not needed. In FC-K the derivative clause and the two wall clauses hold for every
+   integer y; only the unit datum needs 1 ≤ y ≤ M (and 1 ≤ x ≤ M). In FC-P referee A found no violation with
+   the four site hypotheses removed (M ≤ 6, all integers |x|, |y| ≤ 3M + 4, floating point; largest ratio 1.000). The statements are
+   weaker than they could be there, as the prose is; they are not changed.
+h. Variants of FC-P that no datum and no scan distinguishes from the frozen text (referee A, floating point, M ≤ 9):
+   the constant 2 of the ring term replaced by 1, the "− 1" removed, cosh((x − y)η) dropped, the wall coefficient
+   1 replaced by 1/2. Whether any of them is true is not known to the lead; the frozen constants are those of the
+   derivation (the images bounded one by one with LC-1), not of a fit.
+
 ## Batch VC2: the second-derivative van der Corput bound with its sharp constant (session 13, 2026-11-16)
 
 Order. As batch FR: statements, `OscInt/Statements/SecondDerivSharp.lean`, sanity theorems with planted controls
@@ -1326,3 +1356,102 @@ Modelling choices and omissions.
    what VC2-S needs). The layer proves no upper bound: the instances of VC2-S, VC2-N and VC2-K at the certified data
    are consistent with it (33/10 ≤ … ≤ 7/2) and not decided by it, and the instance of VC2-A at w = 441/200 (true gap
    0.0074) is not decided either.
+
+## Batch HW: the Hadamard walk on the line, an explicit t^{−1/3} bound (session 13, 2026-11-16)
+
+Order. As batch FR: statements, `OscInt/Statements/HadamardWalk.lean`, sanity theorems with planted controls
+(`OscInt/Front/HadamardWalkSanity.lean`, record under `docs/replay/plants/2026-11-16-HW/`), challenge
+`Challenge/HadamardWalk.lean` and `comparator-HW.json`, frozen and stamped before the blind pre-proof reviews. No Lean
+proof of these statements is in the repository history before the stamp of the review answers. A proof plan on paper
+does predate the freeze, and the constants of HW-K and HW-D are the constants of that plan rounded up: the plan is the
+paragraph "Route" below, written by the lead while drafting. The sanity layer and the plants were written by an agent
+of the lead under a brief that forbids proving the statements, against the draft text; the namespace body of that text
+entered the repository unchanged (the lead removed a copyright header, which statement files do not carry, and
+changed the module comment; SHA-256 of the statement file 2d18f64ff8426c7521542ae0f9d4ba2a5c0dec2dc9e5dd946ef507784c67b319,
+of the draft the agent received 068de485c7c41692cbf0a25a9286c7f01ca58b91dbd72885e4126bf39458d7b9).
+
+Why. `docs/design/unlock-map.md` (row F1 and the applications table) records a statement that algorithm papers quote
+and no paper in the sweep proves with a constant: the amplitudes of the Hadamard walk on the line decay like t^{−1/3},
+so the largest probability at a site decays like t^{−2/3}. Nayak and Vishwanath (arXiv:quant-ph/0010117) give the rate
+with sketched proofs; Sunada and Tate (arXiv:1108.1878) prove Airy asymptotics with implicit constants; Maeda, Sasaki,
+Segawa, Suzuki and Suzuki (arXiv:1808.05714, section 3) state the dispersive estimate for a constant coin as "a direct
+consequence of van der Corput lemma", splitting where the second or the third derivative of the dispersion relation is
+bounded below, with an implicit constant. This batch is that classical argument with every constant written out, for
+the Hadamard coin, as a statement about the walk as it is defined on the lattice (no Fourier transform in the
+definition of the walk). The mathematics is known; the claim, if proved, is "machine-checked, explicit constants",
+not new mathematics. Prior art for the explicit constant (`docs/prior_art.md`, section on batch HW; a logged sweep of
+12 queries, `numerics/results-hw-prior-art-search-2026-11-16.txt`): no explicit constant for this bound was found;
+PLAUSIBLE-not-in-print, and nothing rests on it.
+
+Notation. A state is ψ : ℤ → ℂ², ψ(x) = (ψ₁(x), ψ₂(x)). One step of the walk (Lean `hadamardStep`):
+
+  (Uψ)(x) = ( (ψ₁(x + 1) + ψ₂(x + 1))/√2 , (ψ₁(x − 1) − ψ₂(x − 1))/√2 ),
+
+that is: the coin H = [[1, 1], [1, −1]]/√2 at every site, then the first component moves one site to the left and the
+second one site to the right. ψ_t = U^t ψ₀ (Lean `hadamardWalk ψ₀ t`); δ_{a,b} is the state (a, b) at the origin and 0
+elsewhere (Lean `pointState a b`). ω(k) = arcsin(sin k/√2) (Lean `hadamardDispersion`); at quasi-momentum k the step
+has the eigenvalues e^{−iω(k)} and −e^{iω(k)}. The scalar kernel (Lean `hadamardKernel t x`), for t ∈ ℕ and x ∈ ℤ:
+
+  K(t, x) = (2π)^{−1} ∫_{−π}^{π} (e^{−itω(k)} − (−1)^t e^{itω(k)}) / √(2(1 + cos² k)) · e^{−ixk} dk.
+
+**HW-R (the walk in terms of the kernel).** For all complex a, b, every t ≥ 0 and every site x:
+U^{t+1} δ_{a,b} (x) = ( (a + b)/√2 · K(t + 1, x + 1) + a K(t, x) , (a − b)/√2 · K(t + 1, x − 1) + b K(t, x) ).
+
+**HW-K (the kernel bound).** For every t ≥ 1 and every site x: |K(t, x)| ≤ 7 t^{−1/2} + 12 t^{−1/3}.
+
+**HW-D (decay from a point state).** For all complex a, b, every t ≥ 1 and every site x, each component of
+U^t δ_{a,b} (x) has modulus at most 39 (|a| + |b|) t^{−1/3}.
+
+**HW-L (dispersive estimate, ℓ¹ → ℓ^∞).** For every ψ₀ with finite support, every t ≥ 1 and every site x, each
+component of U^t ψ₀ (x) has modulus at most 39 t^{−1/3} Σ_y (|ψ₀,₁(y)| + |ψ₀,₂(y)|).
+
+Route (for the reviewers' orientation only; no Lean proof exists when this is frozen).
+HW-R: in Fourier variables the step is multiplication by the matrix Û(k) = [[e^{−ik}, e^{−ik}], [e^{ik}, −e^{ik}]]/√2,
+of trace τ = −i√2 sin k and determinant −1, so Û² = τÛ + 1 and Û^t = α_t Û + α_{t−1} with α_0 = 0, α_1 = 1,
+α_{t+1} = τ α_t + α_{t−1}; α_t = (λ₊^t − λ₋^t)/(λ₊ − λ₋) with λ₊ = e^{−iω}, λ₋ = −e^{iω}, λ₊ − λ₋ = 2 cos ω =
+√(2(1 + cos² k)). K(t, ·) is the sequence of Fourier coefficients of α_t. In Lean the plan is an induction on t on
+the lattice: K(0, x) = 0, K(1, x) = δ_{x,0}, K(t + 2, x) = (K(t + 1, x + 1) − K(t + 1, x − 1))/√2 + K(t, x) (the
+recursion of α under the integral), and the same three facts for the walk.
+HW-K: K(t, x) is 0 when t + x is even and otherwise π^{−1} ∫ g(k) e^{−i(tω(k) + xk)} dk over a period, with
+g = 1/√(2(1 + cos² k)); both exponentials are bounded the same way. ω′ = cos k (1 + cos² k)^{−1/2},
+ω″ = −sin k (1 + cos² k)^{−3/2}, ω‴ = −cos k (4 − 2cos² k)(1 + cos² k)^{−5/2}. Split a period into four arcs of
+length π/2. Where |sin k| ≥ 1/√2: |ω″| ≥ 2/(3√3), and S1.k with k = 2 gives 8 (2t/(3√3))^{−1/2} A with
+A = |g(end)| + ∫|g′| = √2 − 1/√3. Where |cos k| ≥ 1/√2: |ω‴| ≥ 2^{−3/2}, and S1.k with k = 3 gives
+18 (2^{−3/2} t)^{−1/3} A with A = √3 − 1. Two arcs of each kind, two exponentials, divided by 2π:
+6.8700 t^{−1/2} + 11.8634 t^{−1/3} (`numerics/results-hw-statement-checks-2026-11-16.txt`), rounded up to 7 and 12.
+HW-D: from HW-R and HW-K; for t ≥ 2, (t − 1)^{−1/3} ≤ 2^{1/3} t^{−1/3} and t^{−1/2} ≤ t^{−1/3}, which gives the constant
+(7 + 12)/√2 + 7√2 + 12·2^{1/3} = 38.4536 ≤ 39; t = 1 directly. HW-L: linearity and translation invariance of the step.
+
+Modelling choices and omissions.
+1. The Hadamard coin only, and one handedness (first component to the left). Other coins have the same structure
+   with another dispersion relation; not stated.
+2. Time is a natural number and the site an integer; t^{−1/2}, t^{−1/3} are real powers of the cast. At t = 0 Lean's
+   0^{−1/3} is 0 and the bounds HW-D, HW-L would be false: the hypothesis t ≥ 1 carries content there. In HW-K it does
+   not (K(0, ·) = 0); it is kept for uniformity.
+3. The constants are not sharp, by a wide margin, and the statements do not say otherwise. Numerically (exact
+   recursion, t ≤ 3000) sup_x |K(t, x)| t^{1/3} stays below 1.0 (0.955 at t = 3000) against 12, and the largest
+   component from a point state with |a| + |b| = 1 is about 1.61 t^{−1/3} against 39 t^{−1/3}. The right side of HW-K is
+   below 1 (the value of |K(1, 0)|) only from t = 2674, and the right side of HW-D is below |a| + |b| only for
+   t > 39³ = 59319.
+   The loss is in the constants 8 and 18 of S1.k, in counting every arc at its worst, and in the amplitude norm. A
+   bound within a small factor of the truth needs the method of batch LE2 (as T0E′ improved T0E); not done here.
+4. Only an upper bound. That the rate t^{−1/3} is attained (a lower bound near x = ±t/√2) is not stated.
+5. HW-L is for finite support; the extension to ℓ¹ is a limit argument, not stated.
+6. Unitarity of the step (conservation of Σ_x |ψ(x)|²) is not a statement of the batch; it is checked numerically
+   only (item 7).
+7. Numerical truth checks by the lead before the freeze, two methods that share no formula (the step recursion on
+   the lattice against the kernel integral of the definition by the trapezoidal rule, itself checked against adaptive
+   quadrature): `numerics/review/hw_statement_checks.py`, results
+   `numerics/results-hw-statement-checks-2026-11-16.txt`, 18 lines, all pass; two altered forms of HW-R (shifts
+   exchanged; the sign of b) are rejected. Floating point, not certified: tooling, not evidence.
+8. The sanity layer: `docs/replay/2026-11-16-HW-sanity-plants.txt`. 76 declarations, 14 through a statement constant.
+   Exact data at t ≤ 2 only: the walk after one and two steps from a point state at every site; K(0, ·) = 0,
+   K(1, ·) = δ, K(2, ∓1) = ±1/√2; the identities of the dispersion relation. HW-R is tested at t = 0 and t = 1 at
+   every site (this pins the handedness, the coin signs, the sign of x and the normalisation of the kernel).
+   23 planted mutations: 19 are refuted by compiled witnesses (all eleven of HW-R, including the three mutations of
+   the kernel and one of the dispersion relation); 1 is a true weakening (HW-K without t ≥ 1, see choice 2); 3 are
+   not detected: HW-K with 19 t^{−1/2}, HW-K with 7 t^{−1/2} alone, HW-D with 39 t^{−1}. No datum lies where a bound
+   beats the trivial one, so the constants 7, 12, 39 are tested only against 1, 1/√2 and 1/2, and the exponents rest
+   on the reviews and on the proof. Found by the sanity agent with exact integer arithmetic, outside Lean: the
+   mutation of HW-D with 39/t first fails at t = 126 (first component at x = −86 from the state (1, 0):
+   2857838189219694731/2⁶³ ≈ 0.30985 against 39/126 ≈ 0.30952).

@@ -17,5 +17,6 @@ import Challenge.PeriodicAnalytic
 import Challenge.KusminLandau
 import Challenge.FiniteRing
 import Challenge.SecondDerivSharp
+import Challenge.HadamardWalk
 
 /-! Root of the frozen challenge library. Never a default target, never imported. -/

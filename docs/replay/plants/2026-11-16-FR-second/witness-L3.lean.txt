@@ -1,0 +1,66 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- **Data for the planted controls L2 and L3**: `‖I(1/4, 1)‖ ≤ 3π/8` and `‖I(−1/2, 1) + iπ/2‖ ≤ π/2`, both from
+`latticeKernel1_one_approx` (batch PA sanity). -/
+theorem latticeKernel1_one_bounds :
+    ‖latticeKernel1 (1 / 4) 1‖ ≤ 3 * Real.pi / 8 ∧
+      ‖latticeKernel1 (-(1 / 2)) 1 + ((2 * Real.pi : ℝ) : ℂ) * ((1 / 4 : ℝ) : ℂ) * Complex.I‖ ≤ Real.pi / 2 := by
+  constructor
+  · have h := latticeKernel1_one_approx (1 / 4) (by rw [abs_of_pos (by norm_num)]; norm_num)
+    have h2 := norm_le_norm_add_norm_sub' (latticeKernel1 (1 / 4) 1)
+      ((Real.pi : ℂ) * ((1 / 4 : ℝ) : ℂ) * Complex.I)
+    have h3 : ‖(Real.pi : ℂ) * ((1 / 4 : ℝ) : ℂ) * Complex.I‖ = Real.pi / 4 := by
+      rw [norm_mul, norm_mul, Complex.norm_I, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
+        Real.norm_eq_abs, abs_of_pos Real.pi_pos, abs_of_pos (by norm_num)]
+      ring
+    have h4 : 2 * Real.pi * (1 / 4 : ℝ) ^ 2 = Real.pi / 8 := by ring
+    rw [h3] at h2
+    rw [h4] at h
+    linarith
+  · have h := latticeKernel1_one_approx (-(1 / 2)) (by rw [abs_le]; constructor <;> norm_num)
+    have h4 : 2 * Real.pi * (-(1 / 2) : ℝ) ^ 2 = Real.pi / 2 := by ring
+    have e : latticeKernel1 (-(1 / 2)) 1 + ((2 * Real.pi : ℝ) : ℂ) * ((1 / 4 : ℝ) : ℂ) * Complex.I =
+        latticeKernel1 (-(1 / 2)) 1 - (Real.pi : ℂ) * ((-(1 / 2) : ℝ) : ℂ) * Complex.I := by
+      push_cast; ring
+    rw [e]
+    rw [h4] at h
+    exact h
+
+noncomputable def P_lineKernel (t : ℝ) (n : ℤ) : ℂ :=
+  ((2 * Real.pi : ℝ) : ℂ)⁻¹ * Complex.exp (↑(-(2 * t)) * Complex.I) * latticeKernel1 (-(2 * t)) (n : ℝ)
+
+theorem witness_L3 :
+    ¬ ‖P_lineKernel (1 / 4) 1 - (1 / 4 : ℝ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)‖ ≤ 1 / 8 := by
+  intro h
+  have hpi : ((2 * Real.pi : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (by positivity : (2 * Real.pi : ℝ) ≠ 0)
+  have hc : ((2 * Real.pi : ℝ) : ℂ)⁻¹ * ((2 * Real.pi : ℝ) : ℂ) = 1 := inv_mul_cancel₀ hpi
+  have e : P_lineKernel (1 / 4) 1 + ((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) =
+      ((2 * Real.pi : ℝ) : ℂ)⁻¹ * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) *
+        (latticeKernel1 (-(1 / 2)) 1 + ((2 * Real.pi : ℝ) : ℂ) * ((1 / 4 : ℝ) : ℂ) * Complex.I) := by
+    rw [P_lineKernel, show (2 : ℝ) * (1 / 4) = 1 / 2 by norm_num, Int.cast_one]
+    linear_combination (-(((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I))) * hc
+  have hs : ‖P_lineKernel (1 / 4) 1 +
+      ((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)‖ ≤ 1 / 4 := by
+    rw [e, norm_mul, norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, norm_inv, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos (by positivity), inv_mul_le_iff₀ (by positivity)]
+    linarith [latticeKernel1_one_bounds.2, Real.pi_pos]
+  have hn : ‖((2 : ℝ) : ℂ) * (((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I))‖ =
+      1 / 2 := by
+    rw [norm_mul, norm_mul, norm_mul, Complex.norm_exp_ofReal_mul_I, Complex.norm_I, Complex.norm_real,
+      Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos (by norm_num), abs_of_pos (by norm_num)]
+    norm_num
+  have h3 := norm_sub_le
+    (P_lineKernel (1 / 4) 1 + ((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I))
+    (P_lineKernel (1 / 4) 1 - ((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I))
+  rw [show P_lineKernel (1 / 4) 1 + ((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) -
+      (P_lineKernel (1 / 4) 1 - ((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)) =
+      ((2 : ℝ) : ℂ) * (((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)) by
+    push_cast; ring, hn] at h3
+  linarith
+
+end OscInt.API.FiniteRingSanity2

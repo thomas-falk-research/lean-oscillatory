@@ -1,0 +1,110 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- `w = e^{iπ/3}`, the primitive sixth root of unity: the modes of the ring of 6 sites are `1, w, w², −1, −w, −w²`. -/
+noncomputable def sixRoot : ℂ := Complex.exp (↑(Real.pi / 3) * Complex.I)
+
+/-- The modes `k = 2π/3, 4π/3, 5π/3` of the ring of 6 sites: `e^{ik} = w², −w, −w²`. -/
+theorem sixRoot_modes :
+    Complex.exp (↑(2 * (Real.pi / 3)) * Complex.I) = sixRoot ^ 2 ∧
+      Complex.exp (↑(4 * (Real.pi / 3)) * Complex.I) = -sixRoot ∧
+      Complex.exp (↑(5 * (Real.pi / 3)) * Complex.I) = -sixRoot ^ 2 := by
+  have h2 : Complex.exp (↑(2 * (Real.pi / 3)) * Complex.I) = sixRoot ^ 2 := by
+    rw [sixRoot, ← Complex.exp_nat_mul]; congr 1; push_cast; ring
+  refine ⟨h2, ?_, ?_⟩
+  · rw [show (↑(4 * (Real.pi / 3)) : ℂ) * Complex.I = ↑Real.pi * Complex.I + ↑(Real.pi / 3) * Complex.I by
+      push_cast; ring, Complex.exp_add, Complex.exp_pi_mul_I, sixRoot]
+    ring
+  · rw [show (↑(5 * (Real.pi / 3)) : ℂ) * Complex.I = ↑Real.pi * Complex.I + ↑(2 * (Real.pi / 3)) * Complex.I by
+      push_cast; ring, Complex.exp_add, Complex.exp_pi_mul_I, h2]
+    ring
+
+/-- `cos(2π/3) = cos(4π/3) = −1/2` and `cos(5π/3) = 1/2`. -/
+theorem cos_third_pi_multiples :
+    Real.cos (2 * (Real.pi / 3)) = -1 / 2 ∧ Real.cos (4 * (Real.pi / 3)) = -1 / 2 ∧
+      Real.cos (5 * (Real.pi / 3)) = 1 / 2 := by
+  refine ⟨?_, ?_, ?_⟩
+  · rw [Real.cos_two_mul, Real.cos_pi_div_three]; norm_num
+  · rw [show 4 * (Real.pi / 3) = Real.pi / 3 + Real.pi by ring, Real.cos_add_pi, Real.cos_pi_div_three]; norm_num
+  · rw [show 5 * (Real.pi / 3) = 2 * Real.pi - Real.pi / 3 by ring, Real.cos_two_pi_sub, Real.cos_pi_div_three]
+
+/-- `e^{inπ} = (−1)ⁿ` for an integer `n`. No kernel is mentioned. -/
+theorem exp_int_mul_pi (n : ℤ) : Complex.exp (↑((n : ℝ) * Real.pi) * Complex.I) = (-1) ^ n := by
+  rw [← Complex.exp_pi_mul_I, ← Complex.exp_int_mul]; congr 1; push_cast; ring
+
+noncomputable def P_ringKernel (N : ℕ) (t : ℝ) (r : ℤ) : ℂ :=
+  ((N : ℝ) : ℂ)⁻¹ * ∑ j ∈ Finset.range N,
+    Complex.exp (↑(2 * t * (Real.cos (2 * Real.pi * (j : ℝ) / (N : ℝ)) - 1) +
+      (r : ℝ) * (2 * Real.pi * (j : ℝ) / (N : ℝ))) * Complex.I)
+
+theorem P_ringKernel_one (t : ℝ) (r : ℤ) : P_ringKernel 1 t r = 1 := by
+  simp [P_ringKernel]
+
+theorem P_ringKernel_two (t : ℝ) (r : ℤ) :
+    P_ringKernel 2 t r = (1 + (if Even r then 1 else -1) * Complex.exp (↑(-(4 * t)) * Complex.I)) / 2 := by
+  have hθ : 2 * Real.pi * ((1 : ℕ) : ℝ) / ((2 : ℕ) : ℝ) = Real.pi := by push_cast; ring
+  have h1 := exp_mode t Real.pi (-1) r (-1) Real.cos_pi Complex.exp_pi_mul_I
+  rw [show 2 * t * ((-1 : ℝ) - 1) = -(4 * t) by ring, neg_one_zpow_ite] at h1
+  rw [P_ringKernel, Finset.sum_range_succ, Finset.sum_range_one, hθ, h1]
+  simp
+  ring
+
+theorem P_ringKernel_four (t : ℝ) (r : ℤ) :
+    P_ringKernel 4 t r = (1 + (Complex.I ^ r + (-Complex.I) ^ r) * Complex.exp (↑(-(2 * t)) * Complex.I) +
+      (-1) ^ r * Complex.exp (↑(-(4 * t)) * Complex.I)) / 4 := by
+  have hθ1 : 2 * Real.pi * ((1 : ℕ) : ℝ) / ((4 : ℕ) : ℝ) = Real.pi / 2 := by push_cast; ring
+  have hθ2 : 2 * Real.pi * ((2 : ℕ) : ℝ) / ((4 : ℕ) : ℝ) = Real.pi := by push_cast; ring
+  have hθ3 : 2 * Real.pi * ((3 : ℕ) : ℝ) / ((4 : ℕ) : ℝ) = 3 * Real.pi / 2 := by push_cast; ring
+  have h1 := exp_mode t (Real.pi / 2) 0 r Complex.I Real.cos_pi_div_two exp_half_pi
+  have h2 := exp_mode t Real.pi (-1) r (-1) Real.cos_pi Complex.exp_pi_mul_I
+  have h3 := exp_mode t (3 * Real.pi / 2) 0 r (-Complex.I) cos_three_half_pi exp_three_half_pi
+  rw [show 2 * t * ((0 : ℝ) - 1) = -(2 * t) by ring] at h1 h3
+  rw [show 2 * t * ((-1 : ℝ) - 1) = -(4 * t) by ring] at h2
+  rw [P_ringKernel, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one,
+    hθ1, hθ2, hθ3, h1, h2, h3]
+  simp
+  ring
+
+theorem P_ringKernel_six (t : ℝ) (r : ℤ) :
+    P_ringKernel 6 t r = (1 + (sixRoot ^ r + (-sixRoot ^ 2) ^ r) * Complex.exp (↑(-t) * Complex.I) +
+      ((sixRoot ^ 2) ^ r + (-sixRoot) ^ r) * Complex.exp (↑(-(3 * t)) * Complex.I) +
+      (-1) ^ r * Complex.exp (↑(-(4 * t)) * Complex.I)) / 6 := by
+  have hθ1 : 2 * Real.pi * ((1 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = Real.pi / 3 := by push_cast; ring
+  have hθ2 : 2 * Real.pi * ((2 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 2 * (Real.pi / 3) := by push_cast; ring
+  have hθ3 : 2 * Real.pi * ((3 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = Real.pi := by push_cast; ring
+  have hθ4 : 2 * Real.pi * ((4 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 4 * (Real.pi / 3) := by push_cast; ring
+  have hθ5 : 2 * Real.pi * ((5 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 5 * (Real.pi / 3) := by push_cast; ring
+  obtain ⟨z2, z4, z5⟩ := sixRoot_modes
+  obtain ⟨c2, c4, c5⟩ := cos_third_pi_multiples
+  have h1 := exp_mode t (Real.pi / 3) (1 / 2) r sixRoot Real.cos_pi_div_three rfl
+  have h2 := exp_mode t (2 * (Real.pi / 3)) (-1 / 2) r (sixRoot ^ 2) c2 z2
+  have h3 := exp_mode t Real.pi (-1) r (-1) Real.cos_pi Complex.exp_pi_mul_I
+  have h4 := exp_mode t (4 * (Real.pi / 3)) (-1 / 2) r (-sixRoot) c4 z4
+  have h5 := exp_mode t (5 * (Real.pi / 3)) (1 / 2) r (-sixRoot ^ 2) c5 z5
+  rw [show 2 * t * ((1 / 2 : ℝ) - 1) = -t by ring] at h1 h5
+  rw [show 2 * t * ((-1 / 2 : ℝ) - 1) = -(3 * t) by ring] at h2 h4
+  rw [show 2 * t * ((-1 : ℝ) - 1) = -(4 * t) by ring] at h3
+  rw [P_ringKernel, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
+    Finset.sum_range_succ, Finset.sum_range_one, hθ1, hθ2, hθ3, hθ4, hθ5, h1, h2, h3, h4, h5]
+  simp
+  ring
+
+theorem P_ringKernel_six_site_zero (t : ℝ) :
+    P_ringKernel 6 t 0 = (1 + 2 * Complex.exp (↑(-t) * Complex.I) + 2 * Complex.exp (↑(-(3 * t)) * Complex.I) +
+      Complex.exp (↑(-(4 * t)) * Complex.I)) / 6 := by
+  rw [P_ringKernel_six]; simp only [zpow_zero]; ring
+
+theorem P_ringKernel_six_four_pi : P_ringKernel 6 (4 * Real.pi) 0 = 1 := by
+  have h1 := exp_int_mul_pi (-4)
+  have h3 := exp_int_mul_pi (-12)
+  have h4 := exp_int_mul_pi (-16)
+  rw [P_ringKernel_six_site_zero, show -(4 * Real.pi) = ((-4 : ℤ) : ℝ) * Real.pi by push_cast; ring,
+    show -(3 * (4 * Real.pi)) = ((-12 : ℤ) : ℝ) * Real.pi by push_cast; ring,
+    show -(4 * (4 * Real.pi)) = ((-16 : ℤ) : ℝ) * Real.pi by push_cast; ring, h1, h3, h4]
+  norm_num
+
+end OscInt.API.FiniteRingSanity2

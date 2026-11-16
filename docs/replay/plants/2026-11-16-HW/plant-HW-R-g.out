@@ -1,0 +1,20 @@
+plant-HW-R-g.lean:257:2: error: Type mismatch
+  h
+has type
+  (↑(2 * Real.pi))⁻¹ * ∫ (k : ℝ) in -Real.pi..Real.pi, Complex.exp (↑(-(↑x * k)) * Complex.I) = if x = 0 then 1 else 0
+but is expected to have type
+  (↑(2 * Real.pi))⁻¹ *
+      ∫ (k : ℝ) in -Real.pi..Real.pi,
+        (Complex.exp (↑(-(↑1 * hadamardDispersion k)) * Complex.I) -
+              Complex.exp (↑(↑1 * hadamardDispersion k) * Complex.I)) /
+            ↑√(2 * (1 + Real.cos k ^ 2)) *
+          Complex.exp (↑(-(↑x * k)) * Complex.I) =
+    if x = 0 then 1 else 0
+plant-HW-R-g.lean:256:13: warning: This simp argument is unused:
+  kernel_quotient_one
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [one_mul]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+plant-HW-R-g.lean:264:2: error: `simp` made no progress

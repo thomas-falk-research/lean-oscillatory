@@ -1,0 +1,44 @@
+plant-CP6.lean:287:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  2 * (↑1 + 1) * η
+in the target expression
+  ‖Complex.exp (↑(-(2 * t)) * Complex.I) - lineKernel t 0‖ ≤
+    Real.exp (2 * |t| * Real.sinh η) *
+      (Real.exp (-(↑2 * η)) + 2 * (Real.cosh (↑0 * η) + Real.cosh (↑2 * η)) / (Real.exp (2 * (↑1 + 2) * η) - 1))
+
+h : P_ChainFiniteSizeStatement
+t η : ℝ
+hη : 0 < η
+h1 :
+  ‖Complex.exp (↑(-(2 * t)) * Complex.I) - lineKernel t 0‖ ≤
+    Real.exp (2 * |t| * Real.sinh η) *
+      (Real.exp (-(↑2 * η)) + 2 * (Real.cosh (↑0 * η) + Real.cosh (↑2 * η)) / (Real.exp (2 * (↑1 + 2) * η) - 1))
+⊢ ‖Complex.exp (↑(-(2 * t)) * Complex.I) - lineKernel t 0‖ ≤
+    Real.exp (2 * |t| * Real.sinh η) * (Real.exp (-(2 * η)) + 2 * (1 + Real.cosh (2 * η)) / (Real.exp (4 * η) - 1))
+plant-CP6.lean:303:39: error: Application type mismatch: The argument
+  h1
+has type
+  ‖chainKernel 2 (1 / 4) 1 1 - lineKernel (1 / 4) 0‖ ≤
+    Real.exp (2 * |1 / 4| * Real.sinh η) *
+      (Real.exp (-(↑(1 + 1) * η)) +
+        2 * (Real.cosh (↑(1 - 1) * η) + Real.cosh (↑(1 + 1) * η)) / (Real.exp (2 * (↑2 + 2) * η) - 1))
+but is expected to have type
+  ‖chainKernel 2 (1 / 4) 1 1 - lineKernel (1 / 4) 0‖ ≤
+    Real.exp (2 * |1 / 4| * Real.sinh η) *
+      (Real.exp (-(↑(1 + 1) * η)) +
+        2 * (Real.cosh (↑(1 - 1) * η) + Real.cosh (↑(1 + 1) * η)) / (Real.exp (2 * (↑2 + 1) * η) - 1))
+in the application
+  LE.le.trans chain_two_sub_line_lower h1
+plant-CP6.lean:312:43: error: Application type mismatch: The argument
+  h1
+has type
+  ‖chainKernel 2 (1 / 4) 2 2 - lineKernel (1 / 4) 0‖ ≤
+    Real.exp (2 * |1 / 4| * Real.sinh η) *
+      (Real.exp (-(↑(2 + 2) * η)) +
+        2 * (Real.cosh (↑(2 - 2) * η) + Real.cosh (↑(2 + 2) * η)) / (Real.exp (2 * (↑2 + 2) * η) - 1))
+but is expected to have type
+  ‖chainKernel 2 (1 / 4) 2 2 - lineKernel (1 / 4) 0‖ ≤
+    Real.exp (2 * |1 / 4| * Real.sinh η) *
+      (Real.exp (-(↑(2 + 2) * η)) +
+        2 * (Real.cosh (↑(2 - 2) * η) + Real.cosh (↑(2 + 2) * η)) / (Real.exp (2 * (↑2 + 1) * η) - 1))
+in the application
+  LE.le.trans chain_two_sub_line_lower_two h1

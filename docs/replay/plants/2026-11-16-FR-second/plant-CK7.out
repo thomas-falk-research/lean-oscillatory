@@ -1,0 +1,29 @@
+plant-CK7.lean:195:14: error: Function expected at
+  hu le_rfl
+but this term has type
+  chainKernel 1 0 1 1 = if 1 = 1 then 1 else 0
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-CK7.lean:199:13: error: Function expected at
+  hu le_rfl
+but this term has type
+  chainKernel 2 0 1 2 = if 1 = 2 then 1 else 0
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-CK7.lean:197:87: error: unsolved goals
+h : P_ChainKernelStatement
+hu : 1 ≤ 1 → chainKernel 2 0 1 2 = if 1 = 2 then 1 else 0
+⊢ chainKernel 2 0 1 2 = 0
+plant-CK7.lean:213:13: error: Function expected at
+  hu ?m.53
+but this term has type
+  chainKernel 2 0 2 1 = if 2 = 1 then 1 else 0
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-CK7.lean:211:93: error: unsolved goals
+h : P_ChainKernelStatement
+hu : 1 ≤ 2 → chainKernel 2 0 2 1 = if 2 = 1 then 1 else 0
+⊢ chainKernel 2 0 2 1 = 0

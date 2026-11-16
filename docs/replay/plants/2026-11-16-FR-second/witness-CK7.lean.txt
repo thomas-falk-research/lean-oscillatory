@@ -1,0 +1,35 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- `R₄(t, 4) = (1 + 2 e^{−2it} + e^{−4it}) / 4`. -/
+theorem ringKernel_four_four (t : ℝ) :
+    ringKernel 4 t 4 =
+      (1 + 2 * Complex.exp (↑(-(2 * t)) * Complex.I) + Complex.exp (↑(-(4 * t)) * Complex.I)) / 4 := by
+  rw [ringKernel_four]; norm_num [zpow_ofNat, Complex.I_pow_four]
+
+/-- **Datum, chain of 1 site, the site beyond the right wall.** `C₁(t; 3, 1) = R₄(t, 2) − R₄(t, 4) = −e^{−2it}`: the
+odd reflection of `C₁(t; 1, 1)` in the wall `x = 2`. -/
+theorem chainKernel_one_three (t : ℝ) : chainKernel 1 t 3 1 = -Complex.exp (↑(-(2 * t)) * Complex.I) := by
+  have h : chainKernel 1 t 3 1 = ringKernel 4 t 2 - ringKernel 4 t 4 := by
+    rw [chainKernel]; norm_num
+  rw [h, ringKernel_four_two, ringKernel_four_four]; ring
+
+def P_ChainKernelStatement : Prop :=
+  ∀ (M : ℕ) (t : ℝ) (x y : ℤ), 1 ≤ y → y ≤ (M : ℤ) →
+    HasDerivAt (fun s : ℝ => chainKernel M s x y)
+      (Complex.I * (chainKernel M t (x + 1) y + chainKernel M t (x - 1) y - 2 * chainKernel M t x y)) t ∧
+    chainKernel M t 0 y = 0 ∧ chainKernel M t ((M : ℤ) + 1) y = 0 ∧
+    (1 ≤ x → chainKernel M 0 x y = (if x = y then 1 else 0))
+
+theorem witness_not_ChainKernelStatement : ¬ P_ChainKernelStatement :=
+  by
+  intro h
+  have h1 := (h 1 0 3 1 le_rfl (by norm_num)).2.2.2 (by norm_num)
+  rw [chainKernel_one_three, ite_eq_right (by norm_num)] at h1
+  norm_num at h1
+
+end OscInt.API.FiniteRingSanity2

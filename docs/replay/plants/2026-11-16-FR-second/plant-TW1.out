@@ -1,0 +1,22 @@
+plant-TW1.lean:66:2: error: Type mismatch
+  h1
+has type
+  1 ≤ 2 * Real.exp (2 * |0| * Real.sinh η) * Real.cosh (↑2 * η) / (Real.exp η - 1)
+but is expected to have type
+  1 ≤ 2 * Real.exp (2 * |0| * Real.sinh η) * Real.cosh (↑2 * η) / (Real.exp (η * ↑2) - 1)
+plant-TW1.lean:74:2: error: Type mismatch
+  h1
+has type
+  ‖1 - lineKernel (-1 / 4) 1‖ ≤ 2 * Real.exp (2 * |-1 / 4| * Real.sinh η) * Real.cosh (↑1 * η) / (Real.exp η - 1)
+but is expected to have type
+  ‖1 - lineKernel (-1 / 4) 1‖ ≤ 2 * Real.exp (2 * |-1 / 4| * Real.sinh η) * Real.cosh (↑1 * η) / (Real.exp (η * ↑1) - 1)
+plant-TW1.lean:79:32: error: Application type mismatch: The argument
+  h 1 (-1 / 4) η 1 ?m.89 hη
+has type
+  ‖ringKernel 1 (-1 / 4) 1 - lineKernel (-1 / 4) 1‖ ≤
+    2 * Real.exp (2 * |-1 / 4| * Real.sinh η) * Real.cosh (↑1 * η) / (Real.exp η - 1)
+but is expected to have type
+  ‖ringKernel 1 (-1 / 4) 1 - lineKernel (-1 / 4) 1‖ ≤
+    2 * Real.exp (2 * |-1 / 4| * Real.sinh η) * Real.cosh (↑1 * η) / (Real.exp (η * ↑1) - 1)
+in the application
+  LE.le.trans ring_one_sub_line_lower (h 1 (-1 / 4) η 1 ?m.89 hη)

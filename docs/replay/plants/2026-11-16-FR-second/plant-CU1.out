@@ -1,0 +1,8 @@
+plant-CU1.lean:69:2: error: Type mismatch
+  h1
+has type
+  Complex.I * Complex.exp (↑(-(2 * t)) * Complex.I) * ↑(Real.sin t) =
+    chainKernel 2 t 2 1 * twoSiteMode 0 2 + chainKernel 2 t 2 2 * twoSiteMode 0 2
+but is expected to have type
+  Complex.I * Complex.exp (↑(-(2 * t)) * Complex.I) * ↑(Real.sin t) =
+    chainKernel 2 t 2 1 * twoSiteMode 0 1 + chainKernel 2 t 2 2 * twoSiteMode 0 2

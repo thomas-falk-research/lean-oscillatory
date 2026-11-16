@@ -1,0 +1,50 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- `R₆(0, 1) = 0`. -/
+theorem ringKernel_six_zero_one : ringKernel 6 0 1 = 0 := by
+  have hθ : ((1 : ℤ) : ℝ) * (Real.pi / 3) = Real.pi / 3 := by push_cast; ring
+  rw [ringKernel_six_time_zero, hθ, sum_pow_root, mul_zero]
+  · intro hw
+    have h1 := congrArg Complex.re hw
+    rw [Complex.exp_ofReal_mul_I_re, Real.cos_pi_div_three] at h1
+    norm_num at h1
+  · rw [← Complex.exp_nat_mul,
+      show ((6 : ℕ) : ℂ) * (↑(Real.pi / 3) * Complex.I) = 2 * ↑Real.pi * Complex.I by push_cast; ring,
+      Complex.exp_two_pi_mul_I]
+
+/-- **Datum: chain of 2 sites at time 0, off the diagonal with `y < x`.** `C₂(0; 2, 1) = R₆(0, 1) − R₆(0, 3) = 0`:
+the check of `chainK_two_lower_offdiag` and the witness datum of the planted control CK2. -/
+theorem chainKernel_two_zero_lower_offdiag : chainKernel 2 0 2 1 = 0 := by
+  have h : chainKernel 2 0 2 1 = ringKernel 6 0 1 - ringKernel 6 0 3 := by
+    rw [chainKernel]; norm_num
+  rw [h, ringKernel_six_zero_one, ringKernel_six_zero_three, sub_zero]
+
+/-- **FC-K through the statement constant**, unit datum off the diagonal with `y < x` on the chain of 2 sites:
+`C₂(0; 2, 1) = 0`. The first layer has the unit datum at `x = y` and at `x < y` only. Plant detected: CK2
+(`x = y ↦ y ≤ x`). -/
+theorem chainK_two_lower_offdiag (h : ChainKernelStatement) : chainKernel 2 0 2 1 = 0 := by
+  obtain ⟨-, -, -, hu⟩ := h 2 0 2 1 le_rfl (by norm_num)
+  have h1 := hu (by norm_num) (by norm_num)
+  rw [ite_eq_right (by norm_num)] at h1
+  exact h1
+
+def P_ChainKernelStatement : Prop :=
+  ∀ (M : ℕ) (t : ℝ) (x y : ℤ), 1 ≤ y → y ≤ (M : ℤ) →
+    HasDerivAt (fun s : ℝ => chainKernel M s x y)
+      (Complex.I * (chainKernel M t (x + 1) y + chainKernel M t (x - 1) y - 2 * chainKernel M t x y)) t ∧
+    chainKernel M t 0 y = 0 ∧ chainKernel M t ((M : ℤ) + 1) y = 0 ∧
+    (1 ≤ x → x ≤ (M : ℤ) → chainKernel M 0 x y = (if y ≤ x then 1 else 0))
+
+theorem witness_not_ChainKernelStatement : ¬ P_ChainKernelStatement :=
+  by
+  intro h
+  have h1 := (h 2 0 2 1 le_rfl (by norm_num)).2.2.2 (by norm_num) (by norm_num)
+  rw [chainKernel_two_zero_lower_offdiag, ite_eq_left (by norm_num)] at h1
+  exact zero_ne_one h1
+
+end OscInt.API.FiniteRingSanity2

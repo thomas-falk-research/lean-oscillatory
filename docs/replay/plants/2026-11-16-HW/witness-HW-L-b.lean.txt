@@ -1,0 +1,104 @@
+import OscInt.Statements.Cusp
+import OscInt.Front.GlobalSanity
+
+namespace OscInt.Statements
+
+/-- One step of the Hadamard walk on `ℤ`: the coin `[[1, 1], [1, −1]] / √2` at every site, then the first component
+moves one site to the left and the second one site to the right. -/
+noncomputable def hadamardStep (ψ : ℤ → ℂ × ℂ) (x : ℤ) : ℂ × ℂ :=
+  (((ψ (x + 1)).1 + (ψ (x + 1)).2) / ((Real.sqrt 2 : ℝ) : ℂ),
+    ((ψ (x - 1)).1 - (ψ (x - 1)).2) / ((Real.sqrt 2 : ℝ) : ℂ))
+
+/-- `t` steps of the Hadamard walk from `ψ₀`. -/
+noncomputable def hadamardWalk (ψ₀ : ℤ → ℂ × ℂ) (t : ℕ) : ℤ → ℂ × ℂ :=
+  hadamardStep^[t] ψ₀
+
+/-- The state `(a, b)` at the origin and `0` at every other site. -/
+def pointState (a b : ℂ) (y : ℤ) : ℂ × ℂ :=
+  if y = 0 then (a, b) else (0, 0)
+
+/-- The dispersion relation of the Hadamard walk, `ω(k) = arcsin(sin k / √2)`. -/
+noncomputable def hadamardDispersion (k : ℝ) : ℝ :=
+  Real.arcsin (Real.sin k / Real.sqrt 2)
+
+/-- The scalar kernel of the Hadamard walk,
+`(2π)^{−1} ∫_{−π}^{π} (e^{−itω(k)} − (−1)^t e^{itω(k)}) / √(2 (1 + cos² k)) · e^{−ixk} dk`. -/
+noncomputable def hadamardKernel (t : ℕ) (x : ℤ) : ℂ :=
+  ((2 * Real.pi : ℝ) : ℂ)⁻¹ * ∫ k in (-Real.pi)..Real.pi,
+    (Complex.exp (↑(-((t : ℝ) * hadamardDispersion k)) * Complex.I) -
+        (-1 : ℂ) ^ t * Complex.exp (↑((t : ℝ) * hadamardDispersion k) * Complex.I)) /
+      ((Real.sqrt (2 * (1 + Real.cos k ^ 2)) : ℝ) : ℂ) *
+    Complex.exp (↑(-((x : ℝ) * k)) * Complex.I)
+
+/-- **HW-R** The walk from a point state in terms of the scalar kernel: for every `t ≥ 0`,
+`ψ_{t+1}(x) = ((a + b)/√2 · K(t+1, x+1) + a K(t, x), (a − b)/√2 · K(t+1, x−1) + b K(t, x))`. -/
+def HadamardKernelStatement : Prop :=
+  ∀ (a b : ℂ) (t : ℕ) (x : ℤ),
+    hadamardWalk (pointState a b) (t + 1) x =
+      ((a + b) / ((Real.sqrt 2 : ℝ) : ℂ) * hadamardKernel (t + 1) (x + 1) + a * hadamardKernel t x,
+        (a - b) / ((Real.sqrt 2 : ℝ) : ℂ) * hadamardKernel (t + 1) (x - 1) + b * hadamardKernel t x)
+
+theorem statement_pin_HadamardKernel : HadamardKernelStatement = HadamardKernelStatement := rfl
+
+/-- **HW-K** Explicit bound for the scalar kernel: `|K(t, x)| ≤ 7 t^{−1/2} + 12 t^{−1/3}` for `t ≥ 1` and every
+site `x`. -/
+def HadamardKernelBoundStatement : Prop :=
+  ∀ (t : ℕ) (x : ℤ), 1 ≤ t →
+    ‖hadamardKernel t x‖ ≤ 7 * (t : ℝ) ^ (-(1 : ℝ) / 2) + 12 * (t : ℝ) ^ (-(1 : ℝ) / 3)
+
+theorem statement_pin_HadamardKernelBound : HadamardKernelBoundStatement = HadamardKernelBoundStatement := rfl
+
+/-- **HW-D** Decay of the Hadamard walk from a point state: each component of `ψ_t(x)` is at most
+`39 (|a| + |b|) t^{−1/3}`, for `t ≥ 1` and every site `x`. -/
+def HadamardDecayStatement : Prop :=
+  ∀ (a b : ℂ) (t : ℕ) (x : ℤ), 1 ≤ t →
+    ‖(hadamardWalk (pointState a b) t x).1‖ ≤ 39 * (‖a‖ + ‖b‖) * (t : ℝ) ^ (-(1 : ℝ) / 3) ∧
+    ‖(hadamardWalk (pointState a b) t x).2‖ ≤ 39 * (‖a‖ + ‖b‖) * (t : ℝ) ^ (-(1 : ℝ) / 3)
+
+theorem statement_pin_HadamardDecay : HadamardDecayStatement = HadamardDecayStatement := rfl
+
+/-- **HW-L** The dispersive estimate `ℓ¹ → ℓ^∞` for finitely supported initial states: each component of `ψ_t(x)` is
+at most `39 t^{−1/3} ∑_y (|ψ₀(y)₁| + |ψ₀(y)₂|)`, for `t ≥ 1` and every site `x`. -/
+def HadamardDispersiveStatement : Prop :=
+  ∀ (ψ₀ : ℤ → ℂ × ℂ) (t : ℕ) (x : ℤ), {y : ℤ | ψ₀ y ≠ (0, 0)}.Finite → 1 ≤ t →
+    ‖(hadamardWalk ψ₀ t x).1‖ ≤
+      39 * (∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)) * (t : ℝ) ^ (-(1 : ℝ) / 3) ∧
+    ‖(hadamardWalk ψ₀ t x).2‖ ≤
+      39 * (∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)) * (t : ℝ) ^ (-(1 : ℝ) / 3)
+
+theorem statement_pin_HadamardDispersive : HadamardDispersiveStatement = HadamardDispersiveStatement := rfl
+
+end OscInt.Statements
+
+namespace OscInt.API.HadamardWalkSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity
+
+/-- **Datum: no step.** The walk at time `0` is the initial state. -/
+theorem hadamardWalk_point_zero (a b : ℂ) (x : ℤ) : hadamardWalk (pointState a b) 0 x = pointState a b x := rfl
+
+/-- The support of a point state is finite. -/
+theorem pointState_finite (a b : ℂ) : {y : ℤ | pointState a b y ≠ (0, 0)}.Finite := by
+  refine (Set.finite_singleton (0 : ℤ)).subset fun y hy => ?_
+  by_contra hne
+  exact hy (by rw [pointState, ite_eq_right (show ¬ y = 0 from hne)])
+
+/-- **Datum: `0^{−1/3} = 0` in Lean**, with the base and the exponent written as in the statements at `t = 0`. -/
+theorem zero_rpow_neg_third : ((0 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) = 0 := by
+  rw [Nat.cast_zero, Real.zero_rpow (by norm_num)]
+
+def P_HadamardDispersiveStatement : Prop :=
+  ∀ (ψ₀ : ℤ → ℂ × ℂ) (t : ℕ) (x : ℤ), {y : ℤ | ψ₀ y ≠ (0, 0)}.Finite →
+    ‖(hadamardWalk ψ₀ t x).1‖ ≤
+      39 * (∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)) * (t : ℝ) ^ (-(1 : ℝ) / 3) ∧
+    ‖(hadamardWalk ψ₀ t x).2‖ ≤
+      39 * (∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)) * (t : ℝ) ^ (-(1 : ℝ) / 3)
+
+theorem witness_not_HadamardDispersiveStatement : ¬ P_HadamardDispersiveStatement :=
+  by
+  intro h
+  have h1 := (h (pointState 1 0) 0 0 (pointState_finite 1 0)).1
+  rw [hadamardWalk_point_zero, zero_rpow_neg_third, mul_zero] at h1
+  norm_num [pointState] at h1
+
+end OscInt.API.HadamardWalkSanity

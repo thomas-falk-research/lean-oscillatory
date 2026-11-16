@@ -1,0 +1,20 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+def P_RingUniqueStatement : Prop :=
+  ∀ (N : ℕ) (u : ℝ → ℤ → ℂ), (∀ (t : ℝ) (x : ℤ), u t (x + (N : ℤ)) = u t x) →
+    (∀ (t : ℝ) (x : ℤ), HasDerivAt (fun s : ℝ => u s x) (Complex.I * (u t (x + 1) + u t (x - 1) - 2 * u t x)) t) →
+    ∀ (t : ℝ) (x : ℤ), u t x = ∑ y ∈ Finset.range N, ringKernel N t (x - (y : ℤ)) * u 0 (y : ℤ)
+
+theorem witness_not_RingUniqueStatement : ¬ P_RingUniqueStatement :=
+  by
+  intro h
+  have h1 := h 0 (fun _ _ => 1) (fun _ _ => rfl)
+    (fun t _ => by convert hasDerivAt_const t (1 : ℂ) using 1; ring) 0 0
+  simp at h1
+
+end OscInt.API.FiniteRingSanity2

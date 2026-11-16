@@ -1,0 +1,18 @@
+ok-U2: accepted (want accepted)
+plant-U2: rejected (recorded)
+    first error: plant-U2.lean:16:38: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: ringU_mode, ringU_const; second layer: ringU_iMode
+witness-U2: accepted (want accepted)
+  U2 [FR-U: hypothesis 0 < N dropped; witness: N = 0, u = 1, t = 0, x = 0 (the sum over Finset.range 0 is empty: 1 = 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CK6: accepted (want accepted)
+plant-CK6: rejected (recorded)
+    first error: plant-CK6.lean:195:14: error: Function expected at
+    copied scripts with an error: first layer: chainK_unit, chainK_two_offdiag; second layer: chainK_two_lower_offdiag
+witness-CK6: accepted (want accepted)
+  CK6 [FC-K: inner hypothesis 1 ≤ x of the unit datum dropped; witness: M = 1, y = 1, x = −1 (C₁(0; −1, 1) = R₄(0, −2) − R₄(0, 0) = −1, unit datum 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CK7: accepted (want accepted)
+plant-CK7: rejected (recorded)
+    first error: plant-CK7.lean:195:14: error: Function expected at
+    copied scripts with an error: first layer: chainK_unit, chainK_two_offdiag; second layer: chainK_two_lower_offdiag
+witness-CK7: accepted (want accepted)
+  CK7 [FC-K: inner hypothesis x ≤ M of the unit datum dropped; witness: M = 1, y = 1, x = 3 (C₁(0; 3, 1) = −1 by chainKernel_one_three, unit datum 0)]: DETECTED (witness compiled: ¬ planted statement)

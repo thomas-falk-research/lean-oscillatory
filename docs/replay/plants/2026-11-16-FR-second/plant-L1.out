@@ -1,0 +1,53 @@
+plant-L1.lean:206:66: warning: This simp argument is unused:
+  neg_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [mul_zero, Int.cast_zero, latticeKernel1_zero_zero, Complex.ofReal_zero, zero_mul, Complex.exp_zero,
+    mul_one]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+plant-L1.lean:206:76: warning: This simp argument is unused:
+  Complex.ofReal_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [mul_zero, Int.cast_zero, latticeKernel1_zero_zero, neg_zero, zero_mul, Complex.exp_zero, mul_one]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+plant-L1.lean:206:97: warning: This simp argument is unused:
+  zero_mul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [mul_zero, Int.cast_zero, latticeKernel1_zero_zero, neg_zero, Complex.ofReal_zero, Complex.exp_zero,
+    mul_one]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+plant-L1.lean:207:6: warning: This simp argument is unused:
+  Complex.exp_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [mul_zero, Int.cast_zero, latticeKernel1_zero_zero, neg_zero, Complex.ofReal_zero, zero_mul,
+    mul_one]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+plant-L1.lean:207:24: warning: This simp argument is unused:
+  mul_one
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [mul_zero, Int.cast_zero, latticeKernel1_zero_zero, neg_zero, Complex.ofReal_zero, zero_mul,
+    Complex.exp_zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+plant-L1.lean:222:4: error: ring failed, ring expressions not equal
+hpi : ↑(2 * Real.pi) ≠ 0
+hc : (↑(2 * Real.pi))⁻¹ * ↑(2 * Real.pi) = 1
+h : ‖latticeKernel1 (1 / 2) 0 - ↑(2 * Real.pi) * ↑(15 / 16)‖ ≤ 2 * Real.pi * (33 / 25600)
+⊢ (↑(2 * Real.pi))⁻¹ * latticeKernel1 (1 / 2) 0 -
+      (↑(2 * Real.pi))⁻¹ * latticeKernel1 (1 / 2) 0 * Complex.exp (↑(-(1 / 2)) * Complex.I) =
+    0
+plant-L1.lean:240:4: error: ring failed, ring expressions not equal
+hpi : ↑(2 * Real.pi) ≠ 0
+hc : (↑(2 * Real.pi))⁻¹ * ↑(2 * Real.pi) = 1
+h : ‖latticeKernel1 (1 / 2) 1 - ↑(2 * Real.pi) * ↑(1 / 4) * Complex.I‖ ≤ 2 * Real.pi * (1 / 36)
+⊢ (↑(2 * Real.pi))⁻¹ * latticeKernel1 (1 / 2) 1 -
+      (↑(2 * Real.pi))⁻¹ * latticeKernel1 (1 / 2) 1 * Complex.exp (↑(-(1 / 2)) * Complex.I) =
+    0

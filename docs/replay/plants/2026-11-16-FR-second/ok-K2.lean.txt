@@ -1,0 +1,49 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+def P_RingKernelStatement : Prop :=
+  ∀ (N : ℕ) (t : ℝ) (r : ℤ), 0 < N →
+    HasDerivAt (fun s : ℝ => ringKernel N s r)
+      (Complex.I * (ringKernel N t (r + 1) + ringKernel N t (r - 1) - 2 * ringKernel N t r)) t ∧
+    ringKernel N 0 r = (if (N : ℤ) ∣ r then 1 else 0) ∧
+    ringKernel N t (r + (N : ℤ)) = ringKernel N t r
+
+theorem P_ringK_two_deriv (h : P_RingKernelStatement) (t : ℝ) :
+    deriv (fun s => ringKernel 2 s 0) t = -2 * Complex.I * Complex.exp (↑(-(4 * t)) * Complex.I) := by
+  have h1 := (h 2 t 0 (by norm_num)).1
+  rw [h1.deriv, ringKernel_two, ringKernel_two, ringKernel_two]
+  simp
+  ring
+
+theorem P_ringK_unit (h : P_RingKernelStatement) : ringKernel 2 0 1 = 0 ∧ ringKernel 2 0 2 = 1 := by
+  have h1 := (h 2 0 1 (by norm_num)).2.1
+  have h2 := (h 2 0 2 (by norm_num)).2.1
+  rw [ite_eq_right (by norm_num)] at h1
+  rw [ite_eq_left (by norm_num)] at h2
+  exact ⟨h1, h2⟩
+
+theorem P_ringK_period (h : P_RingKernelStatement) (t : ℝ) : ringKernel 2 t 3 = ringKernel 2 t 1 := by
+  have h1 := (h 2 t 1 (by norm_num)).2.2
+  rw [show (1 : ℤ) + ((2 : ℕ) : ℤ) = 3 by norm_num] at h1
+  exact h1
+
+theorem P_ringK_four_deriv (h : P_RingKernelStatement) (t : ℝ) :
+    HasDerivAt (fun s : ℝ => ringKernel 4 s 1) (Complex.I * Complex.exp (↑(-(4 * t)) * Complex.I)) t := by
+  have h1 := (h 4 t 1 (by norm_num)).1
+  rw [show (1 : ℤ) + 1 = 2 by norm_num, show (1 : ℤ) - 1 = 0 by norm_num, ringKernel_four_two,
+    ringKernel_four_zero, ringKernel_four_one] at h1
+  convert h1 using 1
+  ring
+
+theorem P_ringK_unit_four (h : P_RingKernelStatement) : ringKernel 4 0 2 = 0 ∧ ringKernel 4 0 4 = 1 := by
+  have h1 := (h 4 0 2 (by norm_num)).2.1
+  have h2 := (h 4 0 4 (by norm_num)).2.1
+  rw [ite_eq_right (by norm_num)] at h1
+  rw [ite_eq_left (by norm_num)] at h2
+  exact ⟨h1, h2⟩
+
+end OscInt.API.FiniteRingSanity2
