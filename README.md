@@ -28,7 +28,9 @@ written, timestamped and reviewed blind before their proofs (the few exceptions 
 and every proof is replayed by six kernel checkers: Lean's own kernel in two modes and four independent
 implementations. A downstream project can check in CI that it depends on exactly the reviewed statements.
 
-- **65 pinned statements; all 65 are machine-checked as stated.** The last two, batch D4U (S4.2U, S4.2O: the D4 limit
+- **71 pinned statements; 65 are machine-checked as stated, 6 are stated and frozen but not proved** (batches PA and
+  KL, frozen on 2026-11-16: the exponentially convergent trapezoidal rule with its Fourier-coefficient bound, the light
+  cone of the lattice kernel, and the Kusmin–Landau inequality in Landau's sharp form; `docs/STATUS.md`). Of the 65, the last two, batch D4U (S4.2U, S4.2O: the D4 limit
   uniformly over C²-totally bounded amplitude families and bounded linear offsets), were stated, frozen,
   blind-reviewed and proved in Lean on 2026-11-15 and are machine-checked as stated since the isolated replay of
   720363d (six kernels; `docs/replay/2026-11-15-session12-D4U-verify-all.txt`). Before them, batch LS (the free lattice
@@ -58,6 +60,8 @@ assumption. The status of each statement, with its evidence: `docs/STATUS.md`.
 | **Lattice kernels.** T6, T6L: the 2D lattice Laplacian decays like t^{−2/3}, sharply (classical and separable). T0E, T6F, T6E: explicit but weak constants (content only for t > 518 and t > 1321). T0E′, T6E′: the cube-root constant 8(1 + √7)/3, within a factor 2 of the best, useful from t ≈ 3.70 (AI-assisted, disclosed). TdF, TdE′: the d-dimensional hypercubic kernel factorises and is bounded by (8(1 + √7)/3)^d t^{−d/3} | `OscInt.API.latticeLaplacianDecay`, `latticeKernel1CubeRoot`, `latticeLaplacianCubeRoot`, `hypercubicKernelFactor`, `hypercubicCubeRoot`, … | machine-checked as stated. The rates are classical (Stefanov–Kevrekidis 2005); the constants are new only through T0E′ (`docs/prior_art.md`) |
 | **Batch LS.** LS-E, LS-K, LS-D, LS-D′: existence of the free lattice Schrödinger group on ℓ²(ℤ^d), its kernel representation, uniqueness, and dispersive decay with explicit constants | `OscInt.API.latticeSchrodingerExists`, `latticeSchrodingerKernel`, `latticeSchrodingerDispersive`, `latticeSchrodingerDecay` | machine-checked as stated (replay of 35dc5c0). AI-drafted proofs, disclosed |
 | **Batch D4U.** S4.2U, S4.2O: the D4 limit t^{2/3}∫e^{itφ}A → c_C A(0) uniformly over C²-totally bounded amplitude families and over bounded linear offsets y·κ (each fixed bound) | `OscInt.API.d4LimitUniform`, `d4LimitOffset` | machine-checked as stated (replay of 720363d). Proof idea and decomposition from an external packet, disclosed |
+| **Batch PA.** PA-C, PA-T, LC-1: Fourier coefficients of a periodic function analytic in a strip decay like M e^{−a\|k\|}; the N-point trapezoidal rule has error at most 4πM/(e^{aN} − 1) (Trefethen–Weideman 2014, Theorem 3.2); the 1D lattice kernel is at most 2π e^{\|t\| sinh η − \|n\| η} | none yet (challenges `OscInt.API.fourierCoeffStrip`, `trapezoidalRule`, `latticeKernel1LightCone`) | stated and frozen (stamp `20261116T130956Z-276d8d7f9605`); blind review pending; not proved |
+| **Batch KL.** KL-D, KL-C, KL-F: the Kusmin–Landau inequality for exponential sums, with Landau's sharp bound cot(πλ/2) on differences, the constant 2/π, and the textbook derivative form | none yet (challenges `OscInt.API.kusminLandau`, `kusminLandauTwoOverPi`, `kusminLandauDeriv`) | stated and frozen (same stamp); blind review pending; not proved. A weaker-constant form exists in Lean elsewhere (`docs/prior_art.md`) |
 
 Worked examples, which also check that the hypotheses can be met (`examples/consumer/`): the lattice Schrödinger
 kernel, single photons on a cosine-band lattice, cold-plasma waves, phase mixing, whistler waves, matrix-valued

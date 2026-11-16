@@ -1601,6 +1601,153 @@
    ],
    "snippet": "example : D4LimitOffsetStatement := OscInt.API.d4LimitOffset",
    "status": "see docs/STATUS.md (row S4.2O)"
+  },
+  {
+   "label": "PA-C",
+   "name": "OscInt.Statements.FourierCoeffStripStatement",
+   "proved_by": null,
+   "summary": "Fourier coefficients of a periodic function analytic in a strip decay exponentially: `|∫_0^{2π} v(θ) e^{−ikθ} dθ| ≤ 2π M e^{−a|k|}`.",
+   "file": "OscInt/Statements/PeriodicAnalytic.lean",
+   "commitment": "ce659a0d4cd324ccd1227f413b8eabc7c2225bab08b4db1e836b338ee7795aee",
+   "stamp": "stamps/20261116T130956Z-276d8d7f9605",
+   "lean_statement": "def FourierCoeffStripStatement : Prop :=\n  ∀ (v : ℂ → ℂ) (a M : ℝ) (k : ℤ), 0 < a → PeriodicAnalyticOn v a M →\n    ‖∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ) * Complex.exp (↑(-((k : ℝ) * θ)) * Complex.I)‖ ≤\n      2 * Real.pi * M * Real.exp (-(a * |(k : ℝ)|))",
+   "hypotheses": [
+    "v holomorphic, 2π-periodic and bounded by M on the open strip |Im z| < a (PeriodicAnalyticOn v a M), a > 0",
+    "k ∈ ℤ"
+   ],
+   "conclusion": "|∫_0^{2π} v(θ) e^{−ikθ} dθ| ≤ 2π M e^{−a|k|} (the Fourier coefficients c_k satisfy |c_k| ≤ M e^{−a|k|}; attained in the limit a → ∞ by v = cos(kz))",
+   "rate": "e^{−a|k|} (explicit constant)",
+   "uniform_over": "k ∈ ℤ, every v with the same a and M",
+   "smoothness": "holomorphic on the strip",
+   "see_also": [
+    "PA-T",
+    "LC-1"
+   ],
+   "snippet": "example (h : FourierCoeffStripStatement) := OscInt.API.PeriodicAnalyticSanity.fourierCoeff_cos3 h",
+   "status": "see docs/STATUS.md (row PA-C)"
+  },
+  {
+   "label": "PA-T",
+   "name": "OscInt.Statements.TrapezoidalRuleStatement",
+   "proved_by": null,
+   "summary": "The trapezoidal rule converges exponentially for a periodic function analytic in a strip: `|I_N − ∫_0^{2π} v| ≤ 4πM / (e^{aN} − 1)` for every `N ≥ 1` (Trefethen–Weideman 2014, Theorem 3.2).",
+   "file": "OscInt/Statements/PeriodicAnalytic.lean",
+   "commitment": "43b9ccbf8f0c5c83f2dd626994fb49b3a088fbffa0101ea35460acf9af42f894",
+   "stamp": "stamps/20261116T130956Z-276d8d7f9605",
+   "lean_statement": "def TrapezoidalRuleStatement : Prop :=\n  ∀ (v : ℂ → ℂ) (a M : ℝ) (N : ℕ), 0 < a → 0 < N → PeriodicAnalyticOn v a M →\n    ‖trapezoidalSum v N - ∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ)‖ ≤\n      4 * Real.pi * M / (Real.exp (a * (N : ℝ)) - 1)",
+   "hypotheses": [
+    "v holomorphic, 2π-periodic and bounded by M on the open strip |Im z| < a (PeriodicAnalyticOn v a M), a > 0",
+    "N ∈ ℕ, N ≥ 1"
+   ],
+   "conclusion": "|(2π/N) Σ_{j<N} v(2πj/N) − ∫_0^{2π} v| ≤ 4πM/(e^{aN} − 1) (Trefethen–Weideman 2014, Theorem 3.2; the constant 4π is a supremum, approached by v = cos(Nz) as aN → ∞)",
+   "rate": "e^{−aN} (explicit constant)",
+   "uniform_over": "N ≥ 1, every v with the same a and M",
+   "smoothness": "holomorphic on the strip",
+   "see_also": [
+    "PA-C",
+    "LC-1"
+   ],
+   "snippet": "example (h : TrapezoidalRuleStatement) := OscInt.API.PeriodicAnalyticSanity.trapezoid_cos3 h",
+   "status": "see docs/STATUS.md (row PA-T)"
+  },
+  {
+   "label": "LC-1",
+   "name": "OscInt.Statements.LatticeKernel1LightConeStatement",
+   "proved_by": null,
+   "summary": "Light-cone bound for the 1D lattice kernel: `|I(t, n)| ≤ 2π e^{|t| sinh η − |n| η}` for every real `t`, integer `n` and `η ≥ 0`.",
+   "file": "OscInt/Statements/PeriodicAnalytic.lean",
+   "commitment": "3d315f36f71b58f6677886bc355b1565c617a563d5f19acfab5ed4f067afeec0",
+   "stamp": "stamps/20261116T130956Z-276d8d7f9605",
+   "lean_statement": "def LatticeKernel1LightConeStatement : Prop :=\n  ∀ (t η : ℝ) (n : ℤ), 0 ≤ η →\n    ‖latticeKernel1 t (n : ℝ)‖ ≤ 2 * Real.pi * Real.exp (|t| * Real.sinh η - |(n : ℝ)| * η)",
+   "hypotheses": [
+    "t ∈ ℝ, n ∈ ℤ",
+    "η ≥ 0"
+   ],
+   "conclusion": "|∫_{−π}^{π} e^{i(t cos k + nk)} dk| ≤ 2π e^{|t| sinh η − |n| η} (light cone of the 1D lattice kernel; with cosh η = |n|/|t| this is Kapteyn's bound; integer n only)",
+   "rate": "superexponential in |n| outside the cone |n| > |t|",
+   "uniform_over": "t ∈ ℝ, n ∈ ℤ, η ≥ 0",
+   "smoothness": "—",
+   "see_also": [
+    "PA-C",
+    "T0E′",
+    "LS-K"
+   ],
+   "snippet": "example (h : LatticeKernel1LightConeStatement) := OscInt.API.PeriodicAnalyticSanity.lightCone_five h",
+   "status": "see docs/STATUS.md (row LC-1)"
+  },
+  {
+   "label": "KL-D",
+   "name": "OscInt.Statements.KusminLandauStatement",
+   "proved_by": null,
+   "summary": "The Kusmin–Landau inequality in Landau's sharp form, on differences: `|Σ_{n=0}^{N} e(c_n)| ≤ cot(πλ/2)`.",
+   "file": "OscInt/Statements/KusminLandau.lean",
+   "commitment": "29d5e7f157f3570acba574fd1d701945037d0c323dac1cc22f6e7e9bb4d80247",
+   "stamp": "stamps/20261116T130956Z-276d8d7f9605",
+   "lean_statement": "def KusminLandauStatement : Prop :=\n  ∀ (c : ℕ → ℝ) (N : ℕ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → DiffsMonotoneIn c N k lam →\n    ‖expSum c N‖ ≤ Real.cos (Real.pi * lam / 2) / Real.sin (Real.pi * lam / 2)",
+   "hypotheses": [
+    "c : ℕ → ℝ, N ∈ ℕ, k ∈ ℤ, 0 < λ ≤ 1/2",
+    "the N differences c_{n+1} − c_n are monotone and lie in [k + λ, k + 1 − λ] (DiffsMonotoneIn c N k λ)"
+   ],
+   "conclusion": "|Σ_{n=0}^{N} e^{2πi c_n}| ≤ cot(πλ/2) (Kusmin–Landau in Landau's sharp form; attained for λ = 1/3 by c = 0, 1/3, 1)",
+   "rate": "bounded independently of N (explicit, sharp constant)",
+   "uniform_over": "N, k, every admissible sequence",
+   "smoothness": "—",
+   "see_also": [
+    "KL-C",
+    "KL-F",
+    "S1.k"
+   ],
+   "snippet": "example (h : KusminLandauStatement) := OscInt.API.KusminLandauSanity.kl_third h",
+   "status": "see docs/STATUS.md (row KL-D)"
+  },
+  {
+   "label": "KL-C",
+   "name": "OscInt.Statements.KusminLandauTwoOverPiStatement",
+   "proved_by": null,
+   "summary": "The Kusmin–Landau inequality with the constant `2/π`: `|Σ_{n=0}^{N} e(c_n)| ≤ 2/(πλ)`.",
+   "file": "OscInt/Statements/KusminLandau.lean",
+   "commitment": "9ebcc71d1c2390b0449a3af651872b55e6dbc13d914c13810bcee7ea5481381a",
+   "stamp": "stamps/20261116T130956Z-276d8d7f9605",
+   "lean_statement": "def KusminLandauTwoOverPiStatement : Prop :=\n  ∀ (c : ℕ → ℝ) (N : ℕ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → DiffsMonotoneIn c N k lam →\n    ‖expSum c N‖ ≤ 2 / (Real.pi * lam)",
+   "hypotheses": [
+    "as KL-D"
+   ],
+   "conclusion": "|Σ_{n=0}^{N} e^{2πi c_n}| ≤ 2/(πλ) (the constant 2/π, not 1/π)",
+   "rate": "bounded independently of N (explicit constant)",
+   "uniform_over": "N, k, every admissible sequence",
+   "smoothness": "—",
+   "see_also": [
+    "KL-D",
+    "KL-F"
+   ],
+   "snippet": "example (h : KusminLandauTwoOverPiStatement) := OscInt.API.KusminLandauSanity.klc_six h",
+   "status": "see docs/STATUS.md (row KL-C)"
+  },
+  {
+   "label": "KL-F",
+   "name": "OscInt.Statements.KusminLandauDerivStatement",
+   "proved_by": null,
+   "summary": "The Kusmin–Landau inequality in its textbook form: `f′` monotone on `(a, b)` with values in `[k + λ, k + 1 − λ]` gives `|Σ_{a ≤ n ≤ b} e(f(n))| ≤ cot(πλ/2)`.",
+   "file": "OscInt/Statements/KusminLandau.lean",
+   "commitment": "8660f13263c6aac898d4cba87ffc941904dbb8d2d1d27de7a03e513771802818",
+   "stamp": "stamps/20261116T130956Z-276d8d7f9605",
+   "lean_statement": "def KusminLandauDerivStatement : Prop :=\n  ∀ (f f' : ℝ → ℝ) (a b : ℝ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → HasDerivOn f f' a b →\n    (MonotoneOn f' (Ioo a b) ∨ AntitoneOn f' (Ioo a b)) →\n    (∀ x ∈ Ioo a b, (k : ℝ) + lam ≤ f' x ∧ f' x ≤ (k : ℝ) + 1 - lam) →\n    ‖∑ n ∈ Finset.Icc ⌈a⌉ ⌊b⌋, Complex.exp (↑(2 * Real.pi * f (n : ℝ)) * Complex.I)‖ ≤\n      Real.cos (Real.pi * lam / 2) / Real.sin (Real.pi * lam / 2)",
+   "hypotheses": [
+    "f continuous on [a, b] with derivative f′ on (a, b) (HasDerivOn)",
+    "f′ monotone on (a, b)",
+    "k + λ ≤ f′ ≤ k + 1 − λ on (a, b), k ∈ ℤ, 0 < λ ≤ 1/2"
+   ],
+   "conclusion": "|Σ_{n ∈ ℤ, a ≤ n ≤ b} e^{2πi f(n)}| ≤ cot(πλ/2) (the textbook form of the Kusmin–Landau inequality)",
+   "rate": "bounded independently of the length of the sum (explicit constant)",
+   "uniform_over": "a, b, k, every admissible f",
+   "smoothness": "f differentiable on (a, b)",
+   "see_also": [
+    "KL-D",
+    "KL-C",
+    "S1.1"
+   ],
+   "snippet": "example (h : KusminLandauDerivStatement) := OscInt.API.KusminLandauSanity.klf_quarter h",
+   "status": "see docs/STATUS.md (row KL-F)"
   }
  ]
 }

@@ -5,19 +5,28 @@ below it, and every rule is binding.
 
 ## Resume here (session 13, 2026-11-16; kept current at every checkpoint)
 
-- **Work item:** `docs/design/unlock-map.md` is complete (sections 1–8; its section 8 is the plan). Next: the
-  statement batch for the periodic-analytic theorems (Fourier-coefficient decay in a strip, the trapezoidal-rule
-  theorem, the lattice light cone), and the Kusmin–Landau inequality if the prior-art check allows; in parallel the
-  application drafts in `docs/funding/` for the EuroHPC cut-off of 1 December 2026, 10:00 CET
-  (`docs/funding/00-call-findings.md`; eligibility of an unaffiliated individual is the open owner question).
-- **Last verified state:** 2c0e328 (= `origin/main`): `make quick` exit code 0 at 11:55:56Z (session log). No Lean file,
-  statement or status claim has changed in session 13.
-- **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
-  sweep C, the targeted prior-art check (12:03:40Z), writing to scratch only.
-- **Exact next command:** none pending for Lean; `make docs-check` before each docs-only push, `make quick` when a
-  Lean file or a status claim changes. In a fresh container first install the toolchain from `toolchain.sha256` (as
-  `.github/actions/setup-lean/action.yml` does) and run `lake exe cache get`.
-- **Disk:** 17 GB available after the build; a full replay needs cleaning first or it breaks the 15 GB rule.
+- **Work item:** batches PA and KL (six statements: PA-C, PA-T, LC-1; KL-D, KL-C, KL-F; `docs/statements.md`). They
+  are **frozen** (stamp `stamps/20261116T130956Z-276d8d7f9605` on commit 276d8d7; pinned) and **not proved**. Next:
+  the blind pre-proof reviews (two referees per batch, briefs in the lead's scratch only; plus one calibration
+  referee per batch on a copy with four planted fidelity errors), their answers under `review/`, a stamp of the
+  answers, and only then the route documents, blueprints and proofs (rule 1: no proof code before that, in the tree
+  or in scratch).
+- **Last verified state:** the freeze commit (the one that adds this paragraph): `make quick` exit code 0, see the
+  session log. 71 pinned statements, 65 machine-checked as stated, 6 stated and frozen.
+- **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched): the
+  Rust-checker agent (12:44:50Z), writing to scratch only. Its brief and all others are in the lead's scratch and are
+  lost with the container; their SHA-256 are in the session log.
+- **Exact next command:** none pending for Lean. If the blind referees are not recorded as launched in the session
+  log, launch them on the freeze commit; if launched without a recorded finish, relaunch them and record the cut-off
+  attempt as partial.
+- **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
+  `docs/funding/` (the application package for the EuroHPC cut-off of 1 December 2026, 10:00 CET; the owner must
+  settle eligibility and copy the portal's form fields); `docs/contract/certificate-v0.md` with the reference checker
+  `python/oscint_cert/` (22 tests pass); the prior-art disclosure of 2026-11-16 in `docs/prior_art.md`.
+- **In the lead's scratch, not in the tree yet (lost if the container is reclaimed):** paper routes for both batches;
+  the quantum-walk experiment package (certified reference, circuits, simulators, registered analysis) and its
+  protocol; they are committed when the blind referees have ended, before the stamp of the review answers.
+- **Disk:** 16 GB available; a full replay needs cleaning first or it breaks the 15 GB rule.
 - **Session log:** `docs/progress/2026-11-16-session13-log.md`.
 
 ## Start here (session 12, 2026-11-15)
