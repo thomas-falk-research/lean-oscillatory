@@ -93,3 +93,11 @@ OscInt.Statements.KusminLandauStatement stamps/20261116T130956Z-276d8d7f9605
 OscInt.Statements.KusminLandauTwoOverPiStatement stamps/20261116T130956Z-276d8d7f9605
 OscInt.Statements.KusminLandauDerivStatement stamps/20261116T130956Z-276d8d7f9605
 challenge:comparator-KL.json stamps/20261116T130956Z-276d8d7f9605
+OscInt.Statements.RingKernelStatement stamps/20261116T205833Z-0748dde3c341
+OscInt.Statements.RingUniqueStatement stamps/20261116T205833Z-0748dde3c341
+OscInt.Statements.RingCosetSumStatement stamps/20261116T205833Z-0748dde3c341
+OscInt.Statements.RingFiniteSizeStatement stamps/20261116T205833Z-0748dde3c341
+OscInt.Statements.ChainKernelStatement stamps/20261116T205833Z-0748dde3c341
+OscInt.Statements.ChainUniqueStatement stamps/20261116T205833Z-0748dde3c341
+OscInt.Statements.ChainFiniteSizeStatement stamps/20261116T205833Z-0748dde3c341
+challenge:comparator-FR.json stamps/20261116T205833Z-0748dde3c341

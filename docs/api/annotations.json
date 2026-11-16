@@ -1138,6 +1138,122 @@
    ],
    "snippet_kind": "type",
    "snippet": "example : KusminLandauDerivStatement := OscInt.API.kusminLandauDeriv"
+  },
+  "FR-K": {
+   "hypotheses": [
+    "N ∈ ℕ, N ≥ 1; t ∈ ℝ; r ∈ ℤ"
+   ],
+   "conclusion": "the ring kernel R_N(t, r) = N^{−1} Σ_{j<N} e^{i(2t(cos k_j − 1) + r k_j)}, k_j = 2πj/N, satisfies ∂_t R = i(R(r+1) + R(r−1) − 2R(r)), R_N(0, r) = [N | r], R_N(t, r + N) = R_N(t, r)",
+   "rate": "— (an identity)",
+   "uniform_over": "—",
+   "smoothness": "—",
+   "see_also": [
+    "FR-U",
+    "FR-S",
+    "FC-K"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : RingKernelStatement) := OscInt.API.FiniteRingSanity.ringK_period h"
+  },
+  "FR-U": {
+   "hypotheses": [
+    "N ≥ 1",
+    "u : ℝ → ℤ → ℂ with u(t, x + N) = u(t, x)",
+    "∂_t u(t, x) = i(u(t, x+1) + u(t, x−1) − 2u(t, x)) for all t, x"
+   ],
+   "conclusion": "u(t, x) = Σ_{y<N} R_N(t, x − y) u(0, y): the ring kernel is the propagator of i u′ + Δu = 0 on the ring of N sites (uniqueness)",
+   "rate": "— (an identity)",
+   "uniform_over": "—",
+   "smoothness": "differentiable in t, site by site",
+   "see_also": [
+    "FR-K",
+    "LS-K",
+    "FC-U"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : RingUniqueStatement) := OscInt.API.FiniteRingSanity.ringU_const h"
+  },
+  "FR-S": {
+   "hypotheses": [
+    "N ≥ 1; t ∈ ℝ; r ∈ ℤ"
+   ],
+   "conclusion": "Σ_{m ∈ ℤ} G(t, r + mN) = R_N(t, r) (HasSum): the ring kernel is the line kernel G(t, n) = (2π)^{−1} e^{−2it} I(2t, n) summed over the images r + Nℤ",
+   "rate": "— (an identity)",
+   "uniform_over": "—",
+   "smoothness": "—",
+   "see_also": [
+    "FR-P",
+    "PA-T",
+    "LC-1"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : RingCosetSumStatement) := OscInt.API.FiniteRingSanity.ringS_origin h"
+  },
+  "FR-P": {
+   "hypotheses": [
+    "N ≥ 1; t ∈ ℝ; r ∈ ℤ",
+    "η > 0"
+   ],
+   "conclusion": "|R_N(t, r) − G(t, r)| ≤ 2 e^{2|t| sinh η} cosh(rη) / (e^{ηN} − 1): the ring of N sites differs from the infinite line by an explicit, exponentially small amount until the wave wraps around (constant 2 best possible as a supremum)",
+   "rate": "e^{−η(N − |r|)} for each fixed η and t",
+   "uniform_over": "N, t, r, η",
+   "smoothness": "—",
+   "see_also": [
+    "FR-S",
+    "LC-1",
+    "FC-P"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : RingFiniteSizeStatement) := OscInt.API.FiniteRingSanity.ringP_one h"
+  },
+  "FC-K": {
+   "hypotheses": [
+    "M ∈ ℕ; t ∈ ℝ; x, y ∈ ℤ with 1 ≤ y ≤ M"
+   ],
+   "conclusion": "the chain kernel C_M(t; x, y) = R_{2(M+1)}(t, x − y) − R_{2(M+1)}(t, x + y) satisfies the equation in x, vanishes at the walls x = 0 and x = M + 1, and C_M(0; x, y) = δ_{xy} for 1 ≤ x ≤ M",
+   "rate": "— (an identity)",
+   "uniform_over": "—",
+   "smoothness": "—",
+   "see_also": [
+    "FC-U",
+    "FR-K"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : ChainKernelStatement) := OscInt.API.FiniteRingSanity.chainK_unit h"
+  },
+  "FC-U": {
+   "hypotheses": [
+    "M ∈ ℕ",
+    "u : ℝ → ℤ → ℂ with u(t, 0) = u(t, M + 1) = 0",
+    "∂_t u(t, x) = i(u(t, x+1) + u(t, x−1) − 2u(t, x)) for all t and 1 ≤ x ≤ M"
+   ],
+   "conclusion": "u(t, x) = Σ_{y=1}^{M} C_M(t; x, y) u(0, y) for 1 ≤ x ≤ M: the chain kernel is the propagator of the open chain of M identical sites (Dirichlet walls; uniqueness)",
+   "rate": "— (an identity)",
+   "uniform_over": "—",
+   "smoothness": "differentiable in t, site by site",
+   "see_also": [
+    "FC-K",
+    "FR-U"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : ChainUniqueStatement) := OscInt.API.FiniteRingSanity.chainU_one h"
+  },
+  "FC-P": {
+   "hypotheses": [
+    "M ∈ ℕ; t ∈ ℝ; sites 1 ≤ x, y ≤ M",
+    "η > 0"
+   ],
+   "conclusion": "|C_M(t; x, y) − G(t, x − y)| ≤ e^{2|t| sinh η} (e^{−(x+y)η} + 2(cosh((x−y)η) + cosh((x+y)η))/(e^{2(M+1)η} − 1)): the open chain differs from the infinite line by its nearest images, explicitly (not sharp)",
+   "rate": "e^{−η · (distance to the nearest image)} for each fixed η and t",
+   "uniform_over": "M, t, x, y, η",
+   "smoothness": "—",
+   "see_also": [
+    "FR-P",
+    "LC-1",
+    "FC-U"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : ChainFiniteSizeStatement) := OscInt.API.FiniteRingSanity.chainP_one h"
   }
  },
  "helpers": [

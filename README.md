@@ -30,8 +30,10 @@ lead had sketched one before a freeze the batch says so), and every proof of a s
 machine-checked as stated has been replayed by six kernel checkers: Lean's own kernel in two modes and four
 independent implementations (six further statements are proved and await that replay; next item). A downstream project can check in CI that it depends on exactly the reviewed statements.
 
-- **71 pinned statements; 65 are machine-checked as stated; 6 more are proved in Lean, with their replay and
-  post-proof reviews pending** (batches PA and KL, frozen, blind-reviewed and proved on 2026-11-16: the exponentially
+- **78 pinned statements; 65 are machine-checked as stated; 6 more are proved in Lean and await their replay; 7
+  are stated and frozen but not proved** (the 7: batch FR, frozen on 2026-11-16, the Schrödinger group on a ring of
+  N sites and on an open chain of M sites with explicit finite-size bounds against the infinite line. The 6:
+  batches PA and KL, frozen, blind-reviewed and proved on 2026-11-16: the exponentially
   convergent trapezoidal rule with its Fourier-coefficient bound, the light cone of the lattice kernel, and the
   Kusmin–Landau inequality in Landau's sharp form; build, axiom audit, statement types and a kernel re-check per
   module pass; they are not counted as machine-checked as stated until the isolated replay; `docs/STATUS.md`). Of the 65, the last two, batch D4U (S4.2U, S4.2O: the D4 limit
@@ -66,6 +68,7 @@ assumption. The status of each statement, with its evidence: `docs/STATUS.md`.
 | **Batch D4U.** S4.2U, S4.2O: the D4 limit t^{2/3}∫e^{itφ}A → c_C A(0) uniformly over C²-totally bounded amplitude families and over bounded linear offsets y·κ (each fixed bound) | `OscInt.API.d4LimitUniform`, `d4LimitOffset` | machine-checked as stated (replay of 720363d). Proof idea and decomposition from an external packet, disclosed |
 | **Batch PA.** PA-C, PA-T, LC-1: Fourier coefficients of a periodic function analytic in a strip decay like M e^{−a\|k\|}; the N-point trapezoidal rule has error at most 4πM/(e^{aN} − 1) (Trefethen–Weideman 2014, Theorem 3.2); the 1D lattice kernel is at most 2π e^{\|t\| sinh η − \|n\| η} | `OscInt.API.fourierCoeffStrip`, `trapezoidalRule`, `latticeKernel1LightCone` | proved in Lean (2026-11-16; build, axiom audit, statement types, kernel re-check per module); replay and post-proof reviews pending. Classical mathematics; AI-written proofs, disclosed |
 | **Batch KL.** KL-D, KL-C, KL-F: the Kusmin–Landau inequality for exponential sums, with Landau's sharp bound cot(πλ/2) on differences, the constant 2/π, and the textbook derivative form | `OscInt.API.kusminLandau`, `kusminLandauTwoOverPi`, `kusminLandauDeriv` | proved in Lean (2026-11-16; same checks); replay and post-proof reviews pending. Classical mathematics; a weaker-constant form exists in Lean elsewhere (`docs/prior_art.md`); AI-written proofs, disclosed |
+| **Batch FR.** FR-K, FR-U, FR-S, FR-P, FC-K, FC-U, FC-P: the kernel of i u′ + Δu = 0 on a ring of N sites and on an open chain of M identical sites; each is the propagator (uniqueness); the ring kernel is the line kernel summed over images; explicit finite-size bounds against the infinite line | none yet (challenges `OscInt.API.ringKernelSolves`, `ringUnique`, `ringCosetSum`, `ringFiniteSize`, `chainKernelSolves`, `chainUnique`, `chainFiniteSize`) | stated and frozen (stamp `20261116T205833Z-0748dde3c341`); blind review pending; not proved. Classical mathematics |
 
 Worked examples, which also check that the hypotheses can be met (`examples/consumer/`): the lattice Schrödinger
 kernel, single photons on a cosine-band lattice, cold-plasma waves, phase mixing, whistler waves, matrix-valued
