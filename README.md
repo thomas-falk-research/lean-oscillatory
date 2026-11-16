@@ -4,7 +4,8 @@
 [![ORCID](https://img.shields.io/badge/ORCID-0009--0001--9478--6061-A6CE39?logo=orcid&logoColor=white)](https://orcid.org/0009-0001-9478-6061)
 
 Author: Thomas Falk III ([ORCID 0009-0001-9478-6061](https://orcid.org/0009-0001-9478-6061)). Cite via `CITATION.cff` or the Zenodo record: all versions
-[10.5281/zenodo.24021328](https://doi.org/10.5281/zenodo.24021328), v0.5.0
+[10.5281/zenodo.24021328](https://doi.org/10.5281/zenodo.24021328), v0.6.0
+[10.5281/zenodo.24263138](https://doi.org/10.5281/zenodo.24263138), v0.5.0
 [10.5281/zenodo.24205167](https://doi.org/10.5281/zenodo.24205167), v0.4.0
 [10.5281/zenodo.24088811](https://doi.org/10.5281/zenodo.24088811), v0.3.0
 [10.5281/zenodo.24045231](https://doi.org/10.5281/zenodo.24045231), v0.2.0
@@ -197,7 +198,8 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 
 Cite the software through its concept DOI, which always resolves to the latest version
 ([10.5281/zenodo.24021328](https://doi.org/10.5281/zenodo.24021328)); to cite the exact version you used, take its
-version DOI from the [Zenodo record](https://doi.org/10.5281/zenodo.24021328) (v0.5.0:
+version DOI from the [Zenodo record](https://doi.org/10.5281/zenodo.24021328) (v0.6.0:
+[10.5281/zenodo.24263138](https://doi.org/10.5281/zenodo.24263138); v0.5.0:
 [10.5281/zenodo.24205167](https://doi.org/10.5281/zenodo.24205167); v0.4.0:
 [10.5281/zenodo.24088811](https://doi.org/10.5281/zenodo.24088811); v0.3.0:
 [10.5281/zenodo.24045231](https://doi.org/10.5281/zenodo.24045231)). GitHub's "Cite this repository" button reads

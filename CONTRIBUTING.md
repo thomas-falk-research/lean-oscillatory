@@ -1,7 +1,8 @@
 # Contributing
 
 OscInt's value is its trust chain: a reader checks the kernel, three axioms, and a short frozen statement, and
-nothing else. Every contribution keeps that chain intact. Read `docs/lessons.md` first; each lesson is a rule.
+nothing else. Every contribution keeps that chain intact. Read "Rules in force" at the top of `docs/lessons.md`
+first; each rule there is binding.
 
 ## The local loop
 ```bash

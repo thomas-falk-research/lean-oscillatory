@@ -1,7 +1,88 @@
 # Lessons
 
-One durable lesson per entry: what happened, why it mattered, the rule. Rules that can be checks are checks
-(named after "Check:"). Read at the start of every session.
+Read "Rules in force" at the start of every session. It distils the 52 numbered entries below it, which keep the
+history and evidence behind each rule (what happened, why it mattered, the check). Records elsewhere cite entries by
+number ("lessons 44"); the numbers do not change. When a rule's reason no longer holds, propose a change to the owner
+rather than ignoring it.
+
+## Rules in force (2026-11-16)
+
+**Already enforced by a check: nothing to remember, but do not disable or weaken the check.** Entries 2 (a checker's
+verdict is its acceptance line), 3 and 15 (kernel replay on every push; the guard forbids metaprogramming entry
+points), 4 (commitment canonicalisation), 5 (no stale build products), 6 (export contents before any checker), 10
+(pins enforced by `make commit` and `make comparator`), 12 (`ContDiff ℝ ⊤`), 13 (projection functions excluded from the
+audit), 14 and 30 (only the root module has submodules; `tools/check_entry_point.sh`), 21 (`verify-all` names missing
+system tools), 27 (the guard's short-name match). Entry 7 is an observation about build repeats, not a rule.
+
+**Order and blindness.** The claim "frozen and reviewed before proof" is what makes "machine-checked as stated"
+credible, and it rests on stamps and records, not on commit order.
+1. Write no proof code for a statement, in the tree or in scratch, before its stamp and its blind pre-proof review are
+   answered and stamped. Proof drafts written while a route referee runs stay outside the repository. (23, 29, 42)
+2. When an external packet with proofs arrives, write its record in the same session, before the statements are
+   frozen: what it contained, what you compiled, when, and how the batch relates to it. State the order claim as "no
+   Lean proof in the repository before the reviews were answered and stamped". (51)
+3. Pre-proof referees do not prove the statements under review or lemmas of planned parts; they run numerical and
+   counterexample checks only. (24)
+4. Freeze the tree while a referee, `make stamp` or the final `make verify-all` runs, until every agent has ended (not
+   only reported); park new files in the scratchpad, and give each referee the commit to review. (16, 25, 42)
+5. The acceptance `make verify-all` runs with no other Lean process on the machine: launch referees before it starts
+   or after it ends. A non-isolated run is kept and labelled, and the acceptance record is a new isolated run. (28, 49)
+
+**Replays in a cloud session.**
+6. Start the replay detached and keep the session busy with a background wait on the replay log's `finished` line,
+   re-armed at the harness's two-hour limit; a container is reclaimed soon after the session goes idle. Record a
+   cut-off run as partial. (49, 50)
+7. Before a build or replay, check `df` and keep at least 15 GB free (a session-12 attempt died on a full disk,
+   `docs/replay/2026-11-15-session12-D4U-partial.txt`); unshallow the clone before `stamp-verify` or `verify-all`.
+   (21, 32)
+
+**Sanity layers and planted controls.** A sanity layer is the only test of the frozen text itself, so its data must be
+able to fail.
+8. Sanity theorems go through the statement constant (or hypothesis `def`s shared with the statement), with generic
+   data: distinct sets for distinct roles, nonzero and distinct coefficients, a bite instance where the hypothesis
+   fails, at least one datum in each branch the statement distinguishes, and, for an explicit constant, a datum in the
+   regime where the bound beats the trivial one. Data must not reduce by linearity to finitely many cases
+   (`review/2026-11-15-D4U-pre-proof-answers.md`, finding 1). (11, 17, 33, 38, 47)
+9. Run planted copies before the stamp. A plant counts as rejected only with semantic evidence: a compiled witness, a
+   robust closing that still fails, or an exact computation. Record script-only rejections as NOT DETECTED, and say
+   when a plant is a true weakening that no data can refute. (33, 44, 47)
+
+**Checks, records and evidence.**
+10. A check verifies the artefact actually used, not a proxy for it; it says what it does not cover, and it has a
+    negative control on the exact path it exists for. Investigate a suspicious count before reporting PASS. (18, 22)
+11. Files whose build products the trust chain hashes (statement and challenge files) are not edited for any reason,
+    comments included: any byte change breaks the stamped hash. Their metadata goes in `REUSE.toml`. (39)
+12. `#check` at the pin every Mathlib name a plan or statement relies on, with its full signature and the hypothesis
+    used (`MathlibNames.lean`). Copy any list another tool dictates from that tool's output, with date and version.
+    Elaborate a new blueprint and assembly against `import OscInt` and `import Blueprint`. (1, 8, 19, 20, 26)
+13. Verifying an agent's part includes per-module `leanchecker`. (15)
+14. Cite a record only by a path (and heading) that exists at the citing commit. (36)
+15. Capture provenance when it happens, never from memory: per referee, the launch commit, launch and finish times and
+    run time from the session record; interpreter and package versions from the running process. A recording script
+    writes outside the tree, and the record is then copied in. (45, 48)
+16. A pre-registered numeric protocol states its resolution argument and an a-posteriori quadrature check, and changes
+    only before its first run. A grid classifier checks symmetry lines exactly, refines near small fold quantities and
+    has a positive control between grid points. (34, 43)
+
+**Sessions, pushes and CI.**
+17. First action of a session: read the remote state (`git fetch`, the releases, the latest CI run on `main`) and
+    record any difference from the hand-off. (31)
+18. Run `make quick` before every push. Run every new CI command line locally, verbatim, before pushing the workflow.
+    Read the CI result of each push before the next claim. (9, 35, 37, 40, 41)
+
+**Privacy (owner rule).**
+19. No chats, prompts or verbatim AI-conversation text in the repository or its history: record external reviews and
+    referee reports only as the lead's answers, in the lead's words. Name an external tool only in an AI-use
+    disclosure. (46)
+
+**Lean and Mathlib facts at this pin** (not cautions, just facts):
+- `ContDiff ℝ ⊤` means analytic; write `∞` with `open scoped ContDiff`, or a numeral. (12)
+- After moving a module, delete its old build outputs, or the stale-build check fails. (30)
+- A public API name must not repeat an internal short name. (27)
+- `HasCompactSupport.mul_left` against a pointwise lambda times out; use `tsupport_mul_subset_right` with
+  `IsCompact.of_isClosed_subset`. (52)
+
+## History and evidence (entries 1–52)
 
 ## 1. The brief's Mathlib names were wrong at the pin (2026-11-05)
 `exists_smooth_zero_one_of_isClosed`, `fourierIntegral_gaussian_pi` and the import `Mathlib.Data.Real.Basic` do not
