@@ -9,16 +9,21 @@ below it, and every rule is binding.
   are **frozen** (stamp `stamps/20261116T130956Z-276d8d7f9605` on commit 276d8d7; pinned), **blind-reviewed** (answers
   `review/2026-11-16-PA-pre-proof-answers.md`, `review/2026-11-16-KL-pre-proof-answers.md`), the answers are
   **stamped** (`stamps/20261116T152412Z-9c9a8767b806` on commit 9c9a876, 15:24:19Z) and they are **not proved**.
-  Proof code is allowed from that stamp on. Next, in order: (1) the route documents (proof-PA and
-  proof-KL under docs/) and the blueprints with the assemblies compiled before any part; (2) one route referee per
-  batch; (3) the proof parts; (4) integration, post-proof reviews A, B, C; (5) one isolated `make verify-all`.
+  Proof code is allowed from that stamp on. The routes (`docs/proof-PA.md`, `docs/proof-KL.md`), the blueprints (`Blueprint/PeriodicAnalytic.lean`,
+  `Blueprint/KusminLandau.lean`) and the lead's assemblies (`OscInt/Front/PeriodicAnalyticAssembly.lean`,
+  `OscInt/Front/KusminLandauAssembly.lean`) are in the tree and compile; **no part is proved**. Next, in order:
+  (1) one route referee per batch; (2) the proof parts (PA: `ContourShiftFacts`, `FourierSeriesFacts`,
+  `AliasBoundFacts`, `KernelIntegrandFacts`; KL: `KLCoreFacts`, `KLDerivFacts`); (3) the final theorems
+  `OscInt.API.fourierCoeffStrip`, `trapezoidalRule`, `latticeKernel1LightCone`, `kusminLandau`,
+  `kusminLandauTwoOverPi`, `kusminLandauDeriv` and their lines in `StatementTypes.lean`; (4) post-proof reviews A, B,
+  C; (5) one isolated `make verify-all`.
 - **Last verified state:** the commit that adds this paragraph: `make quick` exit code 0 (time in the session log).
   71 pinned statements, 65 machine-checked as stated, 6 stated, frozen, reviewed and with stamped answers.
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
   an agent that updates the Rust checker in the lead's scratch (not in the tree; if lost, the committed crate at
   revision 2 of the contract stands and the update is redone).
-- **Exact next command:** read the session log's last rows; if no route document for batch PA exists under docs/, the routes were
-  lost with the scratch and are rewritten from `docs/statements.md` (orientation paragraphs of batches PA and KL).
+- **Exact next command:** read the session log's last rows. If they show route referees launched without a recorded
+  result, relaunch them (their reports live in the lead's scratch until answered); otherwise start the parts.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
   the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;
   a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;

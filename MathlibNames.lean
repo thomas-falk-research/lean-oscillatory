@@ -223,3 +223,41 @@ import Mathlib
 #check @Complex.real_smul
 #check @lp.coeFn_smul
 #check @LinearMap.mkContinuous
+
+-- Batches PA and KL: the routes docs/proof-PA.md and docs/proof-KL.md and the lead's assemblies (2026-11-16).
+-- Absent at the pin, as the routes say: Finset.geom_sum_eq, Real.cos_sq_half, Real.sin_sq_half.
+#check @Complex.exp_int_mul_two_pi_mul_I
+#check @Complex.integral_boundary_rect_eq_zero_of_differentiableOn
+#check @intervalIntegral.norm_integral_le_of_norm_le_const
+#check @Complex.norm_exp
+#check @Complex.norm_exp_ofReal_mul_I
+#check @le_of_tendsto
+#check @ge_of_tendsto
+#check @Ioo_mem_nhdsLT
+#check @summable_geometric_of_lt_one
+#check @Summable.of_nat_of_neg_add_one
+#check @summable_int_iff_summable_nat_and_neg
+#check @HasSum.of_nat_of_neg_add_one
+#check @tsum_geometric_of_lt_one
+#check @hasSum_geometric_of_lt_one
+#check @Function.Periodic.lift
+#check @fourierCoeff_eq_intervalIntegral
+#check @fourier_coe_apply
+#check @has_pointwise_sum_fourier_series_of_summable
+#check @geom_sum_eq
+#check @mul_geom_sum
+#check @IsPrimitiveRoot.geom_sum_eq_zero
+#check @hasSum_sum
+#check @Function.Injective.hasSum_iff
+#check @Complex.cos_add_mul_I
+#check @Function.Periodic.intervalIntegral_add_eq
+#check @AddCircle.liftIco_continuous
+#check @Finset.sum_range_by_parts
+#check @Real.lt_tan
+#check @exists_hasDerivAt_eq_slope
+#check @Real.sin_pos_of_pos_of_lt_pi
+#check @Real.cos_pos_of_mem_Ioo
+#check @Real.tan_eq_sin_div_cos
+#check @Real.cos_half
+#check @Real.tan_pi_div_two_sub
+#check @Complex.exp_sub
