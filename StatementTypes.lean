@@ -103,3 +103,7 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
 #assert_type_is OscInt.API.chainKernelSolves OscInt.Statements.ChainKernelStatement
 #assert_type_is OscInt.API.chainUnique OscInt.Statements.ChainUniqueStatement
 #assert_type_is OscInt.API.chainFiniteSize OscInt.Statements.ChainFiniteSizeStatement
+#assert_type_is OscInt.API.hadamardKernelFormula OscInt.Statements.HadamardKernelStatement
+#assert_type_is OscInt.API.hadamardKernelBound OscInt.Statements.HadamardKernelBoundStatement
+#assert_type_is OscInt.API.hadamardDecay OscInt.Statements.HadamardDecayStatement
+#assert_type_is OscInt.API.hadamardDispersive OscInt.Statements.HadamardDispersiveStatement

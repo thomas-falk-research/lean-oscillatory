@@ -36,15 +36,18 @@ entries, stated and frozen, **not proved** (no `proved_by`): VC2-S `SecondDerivS
 second-derivative van der Corput bound with its sharp classical constant).
 
 Batch HW (`OscInt/Statements/HadamardWalk.lean`, stamp `stamps/20261116T225756Z-5792039264f0`): four new entries,
-stated and frozen, **not proved** (no `proved_by`): HW-R `HadamardKernelStatement`, HW-K
-`HadamardKernelBoundStatement`, HW-D `HadamardDecayStatement`, HW-L `HadamardDispersiveStatement` (the Hadamard walk
-on the line, explicit and not sharp t^{−1/3} bounds).
+the Hadamard walk on the line with explicit and not sharp t^{−1/3} bounds,
+- HW-R `HadamardKernelStatement` (`proved_by` `OscInt.API.hadamardKernelFormula`);
+- HW-K `HadamardKernelBoundStatement` (`proved_by` `OscInt.API.hadamardKernelBound`);
+- HW-D `HadamardDecayStatement` (`proved_by` `OscInt.API.hadamardDecay`);
+- HW-L `HadamardDispersiveStatement` (`proved_by` `OscInt.API.hadamardDispersive`).
 
-`stamps/statements.json` has 86 entries against 65 at v0.6.0: 21 new, 13 with a proving theorem, 8 without. No
-existing statement's text, file, commitment or stamp changed. The thirteen of batches PA, KL and FR are proved in
-Lean (build, axiom audit, statement types, kernel re-check per module) and post-proof reviewed; their isolated
-replay is pending, so `docs/STATUS.md` does not yet call them machine-checked as stated. The seven of batch FR use
-lemmas of batch PA.
+`stamps/statements.json` has 86 entries against 65 at v0.6.0: 21 new, 17 with a proving theorem, 4 without. No
+existing statement's text, file, commitment or stamp changed. The seventeen of batches PA, KL, FR and HW are proved
+in Lean (build, axiom audit, statement types, kernel re-check per module); those of PA, KL and FR are post-proof
+reviewed, those of HW not yet; their isolated replay is pending, so `docs/STATUS.md` does not yet call them
+machine-checked as stated. The seven of batch FR use lemmas of batch PA; HW-K uses S1.2 and S1.3; HW-R uses lemmas
+of its first sanity layer.
 
 ### Proofs
 
@@ -55,7 +58,11 @@ blueprints and assemblies compiled before any part, one route referee per batch
 pre-proof reviews (`review/2026-11-16-FR-pre-proof-answers.md`, answers stamped
 `stamps/20261116T225756Z-5792039264f0`), route `docs/proof-FR.md`, route referee
 (`review/2026-11-16-FR-route-answers.md`), five parts by five proof agents, post-proof reviews
-(`review/2026-11-17-FR-post-proof-answers.md`). Lead, referees and provers are AI agents of one model family.
+(`review/2026-11-17-FR-post-proof-answers.md`). Batch HW: blind pre-proof reviews
+(`review/2026-11-17-HW-pre-proof-answers.md`, answers stamped `stamps/20261117T010311Z-a93c4e1e44f7`), route
+`docs/proof-HW.md`, four parts by four proof agents launched together with the route referee
+(`review/2026-11-17-HW-route-answers.md`); post-proof reviews not yet run. Lead, referees and provers are AI agents
+of one model family.
 
 ### Process and tooling (owner decisions of 2026-11-16)
 
@@ -77,6 +84,9 @@ pre-proof reviews (`review/2026-11-16-FR-pre-proof-answers.md`, answers stamped
   (`docs/prereg/2026-11-16-CTQW-chain.md`, `experiments/ctqw-chain/`).
 - `docs/design/unlock-map.md`, `docs/funding/` (a draft application package), `docs/design/batch-FR-draft.md` (the
   design draft of batch FR, kept as written; the batch itself is frozen and proved, see above).
+- `examples/consumer/ConsumerHadamardWalk.lean`: from HW-D, a bound for each amplitude and for the probability at a
+  site of the Hadamard walk started at one site in a unit state (probability at most 2 (39 √2 t^{−1/3})², t ≥ 1;
+  far from sharp, as the constants are).
 - `examples/consumer/ConsumerFiniteRing.lean`: the two finite-size bounds at η = 1 and the closed-form propagator of
   the chain of two sites, from the seven theorems of batch FR.
 - `examples/consumer/ConsumerPeriodicAnalytic.lean`, `examples/consumer/ConsumerKusminLandau.lean`: unconditional

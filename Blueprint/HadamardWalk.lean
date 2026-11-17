@@ -9,7 +9,7 @@ import OscInt.Statements.HadamardWalk
 
 /-! # Blueprint for batch HW (HW-R, HW-K, HW-D, HW-L): intermediate propositions and five definitions
 
-Route: `docs/proof-HW.md`. Six propositions. HW-K is proved as a part from `HadamardPhaseFacts` and
+Route: `docs/proof-HW.md`. Five propositions. HW-K is proved as a part from `HadamardPhaseFacts` and
 `HadamardAmplitudeFacts` and the proved S1.2 and S1.3; the assembly `OscInt/Front/HadamardWalkAssembly.lean` proves
 HW-R, HW-D and HW-L. The definitions `hwD1`, `hwD2`, `hwD3` (the derivatives of the dispersion relation) and `hwAmp`,
 `hwAmp'` (the amplitude and its derivative) are used by the propositions only; no frozen statement mentions them. -/

@@ -98,3 +98,46 @@ largest ratio of its two sides 0.944 at t = 1; the kernel recursion; the linear 
 - H4: the two lower bounds are attained (at sin k = ±1/√2 and at cos k = ±1).
 - H6: moving the window of integration by periodicity; matching the shape `oscInt (fun x => φ x + p * x) ψ a b` of S1
   with the kernel's integrand (the linear term is −x·k; the amplitude is g; the phase is ±t ω).
+
+## Revision after the route referee (2026-11-17)
+
+The route referee read the route as committed in bcad78c (verdict: sound; no BLOCKER, no MAJOR; three MINOR, five
+NIT; `review/2026-11-17-HW-route-answers.md`). In this batch the parts were launched together with the referee, not
+after it; no finding required a part to be redone. The text above is the reviewed text and is left as it was; these
+items override it.
+1. Names. The headings of H6 and H8 name parts `HadamardKernelBoundFacts` and `HadamardLinearityFacts`; neither
+   exists. HW-K is proved as the frozen statement itself (from `HadamardPhaseFacts` and `HadamardAmplitudeFacts`), and
+   the linearity proposition is `HadamardLinearFacts`. The blueprint has five propositions, not six (its header said
+   six and is corrected).
+2. Obligations of the part HW3 that neither of its hypotheses supplies: interval integrability of `hwAmp'` (from its
+   continuity) and the facts |sin k| ≥ 1/√2 and |cos k| ≥ 1/√2 on the four open arcs. The part proves them.
+3. Slack: none in the four amplitude norms (they are equalities; the part evaluates them exactly), 1.1 % in the
+   constant 12, 1.4 % in 39.
+
+## Parts as integrated (2026-11-17)
+
+Four proof agents (AI agents of the same model family as the lead), one per part, were launched together with the
+route referee (launch record with the SHA-256 of each brief: session log). Each worked in the lead's scratch from the
+blueprint, this route and its brief, and wrote one Lean file; none wrote in the repository. The lead recompiled each
+file with its final theorems ascribed to the blueprint proposition or frozen statement, printed the axioms (all:
+propext, Classical.choice, Quot.sound), compiled the four files with the assembly and the four final theorems as one
+scratch file, and copied the files in unchanged.
+
+| Part | File | Lines | SHA-256 of the file as delivered | Deviations from the route (agent's report, in the lead's words) |
+|---|---|---|---|---|
+| HW1 `HadamardKernelRecFacts` | `OscInt/Front/HadamardWalkKernelRec.lean` | 132 | 6b9d1471e0bd254faf945793578741db7d3965839621d9c2c7a24d34e9bb7f0b | the recursion is proved on the numerators only (the denominator is a common factor and is never evaluated); K(0, ·) and K(1, ·) are taken from the first sanity layer, which the file imports; one new definition, the integrand |
+| HW2 `HadamardPhaseFacts`, `HadamardAmplitudeFacts` | `OscInt/Front/HadamardWalkPhase.lean` | 402 | 1618290be509529e873442f0cea68de6d898736e78bb696b60461bb30c6d7928 | none in the mathematics; two new definitions (the real amplitude and its derivative); two arcs computed, two by the period π |
+| HW3 `HadamardKernelBoundStatement` from the two propositions of HW2 | `OscInt/Front/HadamardWalkKernelBound.lean` | 348 | bc7481c49b75248ddf1d6618851e1e85f891dd79473c43c50c2da5f410c75567 | the first constant goes through √(2/(3√3)) ≥ 31/50 (margin 0.13 %) in place of a real-power identity, so the first numerical inequality reads (1600/31)(√2 − 1/√3) ≤ 14π (coefficient 6.88 ≤ 7) |
+| HW4 `HadamardDecayArithFacts`, `HadamardLinearFacts` | `OscInt/Front/HadamardWalkLinear.lean` | 161 | 2a70338f5f5d972d6486d02095624d78a9c92bdb9047501e7f274c52e835f29b | 2^{1/3} ≤ 1.26 inside a helper (final constant 38.456 ≤ 39); H8 as an induction on an equality of states; one Mathlib name of the brief corrected |
+
+Two agents (HW1, HW2) could not write their report file and returned the report as text. No agent reported a git
+command (the launch messages forbade every git command by name).
+
+Final theorems: `OscInt/Front/HadamardWalkFinal.lean`. The proof of HW-R (through HW1) uses two data lemmas of the
+first sanity layer, `hadamardKernel_zero` and `hadamardKernel_one`, and four identities of the dispersion relation
+proved there; HW-K uses the proved S1.2 and S1.3 (`OscInt.vanDerCorput_two`, `OscInt.vanDerCorput_three`, machine-
+checked as stated since v0.1).
+Checks by the lead at integration (2026-11-17, `docs/replay/2026-11-17-HW-integration-checks.txt`): `lake build`
+completed; `StatementTypes.lean` asserts the four types (82 lines TYPE-OK); `leanchecker` on each of the ten HW
+modules: exit code 0; the consumer example compiles. Not yet done at this point: the post-proof reviews and the
+isolated replay.

@@ -23,7 +23,7 @@ below it, and every rule is binding.
   stated", README counts, CHANGELOG. The clean-runner replay on GitHub is a manual dispatch of `verify.yml` on the
   branch (the pull request is a draft, which skips it); its result is in the session log.
 - **Last verified state:** the integration commit (the one that adds this paragraph): `make quick` exit code 0
-  (time in the session log). 86 pinned statements; 65 machine-checked as stated; 13 proved, replay pending (PA, KL, FR); 8 stated and frozen (VC2, HW).
+  (time in the session log). 86 pinned statements; 65 machine-checked as stated; 17 proved, replay pending (PA, KL, FR, HW); 4 stated and frozen (VC2).
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
   no agent at the time of this commit. Otherwise nothing local; the dispatched `verify.yml` run on 880b537 ended with
   success (clean-runner replay of PA and KL; session log).
@@ -60,9 +60,12 @@ below it, and every rule is binding.
   `comparator-HW.json`, prose with the route). **Frozen**: stamp `stamps/20261116T225756Z-5792039264f0`, pinned; the same stamp is the stamp of the FR
   review answers. Blind reviews A and B are in (FAITHFUL, no counterexample; two MAJOR against the sanity layer; a
   second sanity layer, in the tree). Answers `review/2026-11-17-HW-pre-proof-answers.md`, stamped
-  `stamps/20261117T010311Z-a93c4e1e44f7`. Route `docs/proof-HW.md`, blueprint `Blueprint/HadamardWalk.lean` and the
-  lead's assembly `OscInt/Front/HadamardWalkAssembly.lean` are in the tree and compile; no part is proved. Next:
-  route referee and four parts (table in the route), integration, post-proof reviews. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
+  `stamps/20261117T010311Z-a93c4e1e44f7`. Route `docs/proof-HW.md` (route referee: sound; `review/2026-11-17-HW-route-answers.md`), blueprint
+  `Blueprint/HadamardWalk.lean`, the lead's assembly and the four parts (`OscInt/Front/HadamardWalk{Assembly,KernelRec,Phase,KernelBound,Linear,Final}.lean`)
+  are in the tree: **all four statements are proved in Lean** (integration checks `docs/replay/2026-11-17-HW-integration-checks.txt`;
+  consumer example `examples/consumer/ConsumerHadamardWalk.lean`). Next: three post-proof reviews (briefs: adapt the
+  FR ones in the lead's scratch; if lost, write them from `review/2026-11-17-FR-post-proof-answers.md`), answers,
+  then the isolated replay. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
   the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;
   a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;

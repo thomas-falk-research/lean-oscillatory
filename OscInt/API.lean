@@ -35,7 +35,6 @@ import OscInt.Front.SecondDerivSharpSanity
 import OscInt.Front.SecondDerivSharpSanity2
 import OscInt.Front.HadamardWalkSanity
 import OscInt.Front.HadamardWalkSanity2
-import OscInt.Front.HadamardWalkAssembly
 import OscInt.Front.GlobalFinal
 import OscInt.Front.LatticeFinal
 import OscInt.Front.LatticeExplicitFinal
@@ -47,6 +46,7 @@ import OscInt.Front.D4UniformFinal
 import OscInt.Front.PeriodicAnalyticFinal
 import OscInt.Front.KusminLandauFinal
 import OscInt.Front.FiniteRingFinal
+import OscInt.Front.HadamardWalkFinal
 
 /-!
 # OscInt public API

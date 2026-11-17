@@ -1335,8 +1335,8 @@
     "HW-K",
     "HW-D"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : HadamardKernelStatement) := OscInt.API.HadamardWalkSanity.hwR_zero h"
+   "snippet_kind": "type",
+   "snippet": "example : HadamardKernelStatement := OscInt.API.hadamardKernelFormula"
   },
   "HW-K": {
    "hypotheses": [
@@ -1352,8 +1352,8 @@
     "S1.k",
     "T0E"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : HadamardKernelBoundStatement) := OscInt.API.HadamardWalkSanity.hwK_one h"
+   "snippet_kind": "type",
+   "snippet": "example : HadamardKernelBoundStatement := OscInt.API.hadamardKernelBound"
   },
   "HW-D": {
    "hypotheses": [
@@ -1367,8 +1367,8 @@
     "HW-K",
     "HW-L"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : HadamardDecayStatement) := OscInt.API.HadamardWalkSanity.hwD_one h"
+   "snippet_kind": "type",
+   "snippet": "example : HadamardDecayStatement := OscInt.API.hadamardDecay"
   },
   "HW-L": {
    "hypotheses": [
@@ -1383,8 +1383,8 @@
     "HW-D",
     "LS-D"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : HadamardDispersiveStatement) := OscInt.API.HadamardWalkSanity.hwL_point h"
+   "snippet_kind": "type",
+   "snippet": "example : HadamardDispersiveStatement := OscInt.API.hadamardDispersive"
   }
  },
  "helpers": [

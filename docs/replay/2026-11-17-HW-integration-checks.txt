@@ -1,0 +1,17 @@
+# Batch HW integration checks (lead, session 13): leanchecker run ended 2026-11-17T01:44:13Z on the working tree that
+# became the integration commit (parent bcad78c; the four part files byte-identical to the agents' deliveries).
+# toolchain leanprover/lean4:v4.35.0; leanchecker sha256 12c38901cdbfab178f1bf6145dd30012e9a3b2c11ca695292a5884fa3cbaddb6
+leanchecker OscInt.Statements.HadamardWalk rc=0 4s
+leanchecker OscInt.Front.HadamardWalkSanity rc=0 5s
+leanchecker OscInt.Front.HadamardWalkSanity2 rc=0 5s
+leanchecker Blueprint.HadamardWalk rc=0 4s
+leanchecker OscInt.Front.HadamardWalkAssembly rc=0 4s
+leanchecker OscInt.Front.HadamardWalkKernelRec rc=0 5s
+leanchecker OscInt.Front.HadamardWalkPhase rc=0 4s
+leanchecker OscInt.Front.HadamardWalkKernelBound rc=0 4s
+leanchecker OscInt.Front.HadamardWalkLinear rc=0 5s
+leanchecker OscInt.Front.HadamardWalkFinal rc=0 4s
+# statement types: `lake env lean StatementTypes.lean` printed 82 TYPE-OK lines and nothing else (78 before, 4 for batch HW).
+# consumer example: `lake env lean examples/consumer/ConsumerHadamardWalk.lean` printed nothing (no error, no warning).
+# axioms of the four final theorems, printed by the lead in scratch before integration (the four parts, the assembly
+# and the final theorems compiled as one file): each [propext, Classical.choice, Quot.sound].

@@ -337,18 +337,18 @@ example (h : SecondDerivSevenHalvesStatement) := OscInt.API.SecondDerivSharpSani
 
 /-! ### HW-R: The walk from a point state in terms of the scalar kernel: for every `t ≥ 0`, `ψ_{t+1}(x) = ((a + b)/√2 · K(t+1, x+1) + a K(t, x), (a − b)/√2 · K(t+1, x−1) + b K(t, x))`. -/
 
-example (h : HadamardKernelStatement) := OscInt.API.HadamardWalkSanity.hwR_zero h
+example : HadamardKernelStatement := OscInt.API.hadamardKernelFormula
 
 /-! ### HW-K: Explicit bound for the scalar kernel: `|K(t, x)| ≤ 7 t^{−1/2} + 12 t^{−1/3}` for `t ≥ 1` and every site `x`. -/
 
-example (h : HadamardKernelBoundStatement) := OscInt.API.HadamardWalkSanity.hwK_one h
+example : HadamardKernelBoundStatement := OscInt.API.hadamardKernelBound
 
 /-! ### HW-D: Decay of the Hadamard walk from a point state: each component of `ψ_t(x)` is at most `39 (|a| + |b|) t^{−1/3}`, for `t ≥ 1` and every site `x`. -/
 
-example (h : HadamardDecayStatement) := OscInt.API.HadamardWalkSanity.hwD_one h
+example : HadamardDecayStatement := OscInt.API.hadamardDecay
 
 /-! ### HW-L: The dispersive estimate `ℓ¹ → ℓ^∞` for finitely supported initial states: each component of `ψ_t(x)` is at most `39 t^{−1/3} ∑_y (|ψ₀(y)₁| + |ψ₀(y)₂|)`, for `t ≥ 1` and every site `x`. -/
 
-example (h : HadamardDispersiveStatement) := OscInt.API.HadamardWalkSanity.hwL_point h
+example : HadamardDispersiveStatement := OscInt.API.hadamardDispersive
 
 end OscIntSnippets
