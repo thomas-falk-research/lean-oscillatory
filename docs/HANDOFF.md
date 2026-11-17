@@ -60,7 +60,9 @@ below it, and every rule is binding.
   `comparator-HW.json`, prose with the route). **Frozen**: stamp `stamps/20261116T225756Z-5792039264f0`, pinned; the same stamp is the stamp of the FR
   review answers. Blind reviews A and B are in (FAITHFUL, no counterexample; two MAJOR against the sanity layer; a
   second sanity layer, in the tree). Answers `review/2026-11-17-HW-pre-proof-answers.md`, stamped
-  `stamps/20261117T010311Z-a93c4e1e44f7`. Next: blueprint, assembly, route referee, parts. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
+  `stamps/20261117T010311Z-a93c4e1e44f7`. Route `docs/proof-HW.md`, blueprint `Blueprint/HadamardWalk.lean` and the
+  lead's assembly `OscInt/Front/HadamardWalkAssembly.lean` are in the tree and compile; no part is proved. Next:
+  route referee and four parts (table in the route), integration, post-proof reviews. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
   the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;
   a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;

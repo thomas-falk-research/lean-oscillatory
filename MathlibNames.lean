@@ -287,3 +287,11 @@ import Mathlib
 #check @inv_mul_cancel₀
 #check @norm_sub_le
 #check @Real.exp_add
+#check @Function.iterate_succ_apply'
+#check @finsum_eq_sum_of_support_subset
+#check @Prod.fst_sum
+#check @Prod.snd_sum
+#check @norm_sum_le
+#check @Real.one_rpow
+#check @Real.one_le_sqrt
+#check @Complex.ofReal_ne_zero

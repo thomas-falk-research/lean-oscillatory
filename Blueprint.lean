@@ -23,5 +23,6 @@ import Blueprint.D4Uniform
 import Blueprint.PeriodicAnalytic
 import Blueprint.KusminLandau
 import Blueprint.FiniteRing
+import Blueprint.HadamardWalk
 
 /-! Root of the blueprint library: intermediate propositions (definitions only, no proofs). -/
