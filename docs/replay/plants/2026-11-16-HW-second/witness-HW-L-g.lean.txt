@@ -1,0 +1,54 @@
+import OscInt.Front.HadamardWalkSanity
+
+namespace OscInt.API.HadamardWalkSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.HadamardWalkSanity
+
+/-- Datum for the support hypothesis of HW-L: the constant state `(0, 1)` at every site. Its first component
+vanishes everywhere. -/
+def constSecondState (_ : ℤ) : ℂ × ℂ := (0, 1)
+
+/-- **Datum: the set of sites where the first component of the constant state `(0, 1)` is not zero is finite** (it
+is empty). -/
+theorem constSecondState_first_finite : {y : ℤ | (constSecondState y).1 ≠ 0}.Finite := by
+  have h : {y : ℤ | (constSecondState y).1 ≠ 0} = ∅ := by
+    ext y; simp [constSecondState]
+  rw [h]
+  exact Set.finite_empty
+
+/-- **Datum: the `∑ᶠ` of the norms of the constant state `(0, 1)` is `0`** (infinite support). -/
+theorem constSecondState_finsum : ∑ᶠ y : ℤ, (‖(constSecondState y).1‖ + ‖(constSecondState y).2‖) = 0 := by
+  refine finsum_of_infinite_support ?_
+  have h : Function.support (fun y : ℤ => ‖(constSecondState y).1‖ + ‖(constSecondState y).2‖) = Set.univ := by
+    ext y; simp [constSecondState]
+  rw [h]
+  exact Set.infinite_univ
+
+/-- **Datum: one step from the constant state `(0, 1)`** is `(1/√2, −(1/√2))` at every site. -/
+theorem constSecondState_walk_one (x : ℤ) :
+    hadamardWalk constSecondState 1 x = (1 / ((Real.sqrt 2 : ℝ) : ℂ), -(1 / ((Real.sqrt 2 : ℝ) : ℂ))) := by
+  have e : hadamardWalk constSecondState 1 x = hadamardStep constSecondState x := rfl
+  rw [e, hadamardStep]
+  simp only [constSecondState]
+  rw [zero_add, zero_sub, neg_div]
+
+/-- **Bite: the conclusion of HW-L is false for the constant state `(0, 1)`** at `t = 1` (`1/√2 ≤ 39 · 0 · 1`). The
+hypothesis of finite support must count the sites where either component is not zero. -/
+theorem hwL_constSecond_false (x : ℤ) :
+    ¬ ‖(hadamardWalk constSecondState 1 x).1‖ ≤
+      39 * (∑ᶠ y : ℤ, (‖(constSecondState y).1‖ + ‖(constSecondState y).2‖)) * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h2 : 0 < 1 / Real.sqrt 2 := by positivity
+  rw [constSecondState_walk_one, constSecondState_finsum, norm_one_div_sqrt_two, mul_zero, zero_mul]
+  exact not_le.mpr h2
+
+def P_HadamardDispersiveStatement : Prop :=
+  ∀ (ψ₀ : ℤ → ℂ × ℂ) (t : ℕ) (x : ℤ), {y : ℤ | (ψ₀ y).1 ≠ 0}.Finite → 1 ≤ t →
+    ‖(hadamardWalk ψ₀ t x).1‖ ≤
+      39 * (∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)) * (t : ℝ) ^ (-(1 : ℝ) / 3) ∧
+    ‖(hadamardWalk ψ₀ t x).2‖ ≤
+      39 * (∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)) * (t : ℝ) ^ (-(1 : ℝ) / 3)
+
+theorem witness_not_HadamardDispersiveStatement : ¬ P_HadamardDispersiveStatement :=
+  fun h => hwL_constSecond_false 0 (h constSecondState 1 0 constSecondState_first_finite le_rfl).1
+
+end OscInt.API.HadamardWalkSanity2

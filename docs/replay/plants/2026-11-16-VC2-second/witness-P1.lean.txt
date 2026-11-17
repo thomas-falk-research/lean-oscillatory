@@ -1,0 +1,29 @@
+import OscInt.Front.SecondDerivSharpSanity
+
+namespace OscInt.API.SecondDerivSharpSanity2
+
+open OscInt.Statements OscInt.API.SecondDerivSharpSanity Set
+
+/-- The left side of VC2-K at the quadratic datum on `[−21/10, 21/10]` (`p = 0`, `ψ = 1`). -/
+theorem oscInt_quad :
+    oscInt (fun x => x ^ 2 / 2 + 0 * x) (fun _ => 1) (-(21 / 10)) (21 / 10) =
+      ∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I) := by
+  unfold oscInt
+  refine intervalIntegral.integral_congr (fun x _ => ?_)
+  simp only [zero_mul, add_zero, mul_one]
+
+def P_SecondDerivSevenHalvesStatement : Prop :=
+  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →
+    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b → (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) → AmplitudeOn ψ ψ' a b →
+    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ (7 / 2 : ℝ) * μ ^ (-(1 : ℝ) / 2) * ∫ x in a..b, ‖ψ' x‖
+
+theorem witness_not_SecondDerivSevenHalvesStatement : ¬ P_SecondDerivSevenHalvesStatement := by
+  intro h
+  have h1 := h (fun x => x ^ 2 / 2) (fun x => x) (fun _ => 1) (fun _ => 1) (fun _ => 0) (-(21 / 10)) (21 / 10) 1 0
+    (by norm_num) one_pos (quad_hasDerivOn _ _) (id_hasDerivOn _ _) (fun x _ => by simp)
+    (sanity_amplitude_one _ _).1
+  rw [oscInt_quad] at h1
+  simp only [norm_zero, intervalIntegral.integral_zero, mul_zero] at h1
+  linarith [quad_norm_lower]
+
+end OscInt.API.SecondDerivSharpSanity2

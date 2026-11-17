@@ -1,0 +1,61 @@
+plant-E2.lean:120:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  √1
+in the target expression
+  ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / 1 ^ (1 / 4)
+
+h : P_SecondDerivSharpStatement
+c : ℝ
+hc : 0 ≤ c
+w : ℝ
+hw : w ∈ Icc 0 Real.pi
+hle : ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / 1 ^ (1 / 4)
+⊢ ∃ w ∈ Icc 0 Real.pi, ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w
+plant-E2.lean:128:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  √100
+in the target expression
+  ‖∫ (x : ℝ) in -(c / 10)..c / 10, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / 100 ^ (1 / 4)
+
+h : P_SecondDerivSharpStatement
+c : ℝ
+hc : 0 ≤ c
+w : ℝ
+hw : w ∈ Icc 0 Real.pi
+hle : ‖∫ (x : ℝ) in -(c / 10)..c / 10, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / 100 ^ (1 / 4)
+⊢ ∃ w ∈ Icc 0 Real.pi,
+    ‖∫ (x : ℝ) in -(c / 10)..c / 10, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / 10
+plant-E2.lean:135:49: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  √1
+in the target expression
+  0 ≤ vdc2Profile w / 1 ^ (1 / 4)
+
+h : P_SecondDerivSharpStatement
+a w : ℝ
+hw : w ∈ Icc 0 Real.pi
+hle : 0 ≤ vdc2Profile w / 1 ^ (1 / 4)
+⊢ ∃ w ∈ Icc 0 Real.pi, 0 ≤ vdc2Profile w
+plant-E2.lean:147:2: error: Type mismatch
+  h (fun x => 1 / 100 * x ^ 2 / 2) (fun x => 1 / 100 * x) (-21) 21 (1 / 100) ?m.154 ?m.155
+    (scaled_hasDerivOn (1 / 100) (-21) 21) (scaled_increases (1 / 100) (-21) 21)
+has type
+  ∃ w ∈ Icc 0 Real.pi,
+    ‖∫ (x : ℝ) in -21..21, Complex.exp (↑(1 / 100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / (1 / 100) ^ (1 / 4)
+but is expected to have type
+  ∃ w ∈ Icc 0 Real.pi,
+    ‖∫ (x : ℝ) in -21..21, Complex.exp (↑(1 / 100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / √(1 / 100)
+plant-E2.lean:166:2: error: Type mismatch
+  h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (-(21 / 100)) (21 / 100) 100 ?m.146 ?m.147
+    (scaled_hasDerivOn 100 (-(21 / 100)) (21 / 100)) (scaled_increases 100 (-(21 / 100)) (21 / 100))
+has type
+  ∃ w ∈ Icc 0 Real.pi,
+    ‖∫ (x : ℝ) in -(21 / 100)..21 / 100, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / 100 ^ (1 / 4)
+but is expected to have type
+  ∃ w ∈ Icc 0 Real.pi,
+    ‖∫ (x : ℝ) in -(21 / 100)..21 / 100, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / √100
+plant-E2.lean:190:2: error: Type mismatch
+  h (fun x => x ^ 2 / 2 + x ^ 4 / 12) (fun x => x + x ^ 3 / 3) (-c) c 1 ?m.183 one_pos (quartic_hasDerivOn (-c) c)
+    (quartic_increases (-c) c)
+has type
+  ∃ w ∈ Icc 0 Real.pi,
+    ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2 + x ^ 4 / 12) * Complex.I)‖ ≤ vdc2Profile w / 1 ^ (1 / 4)
+but is expected to have type
+  ∃ w ∈ Icc 0 Real.pi, ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2 + x ^ 4 / 12) * Complex.I)‖ ≤ vdc2Profile w / √1

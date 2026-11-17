@@ -1,0 +1,80 @@
+import OscInt.Front.HadamardWalkSanity
+
+namespace OscInt.API.HadamardWalkSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.HadamardWalkSanity
+
+/-- **Datum: three steps from a point state, all sites.** `((a + b)/2/√2, 0)` at `−3`, `(a/√2, (a + b)/2/√2)` at
+`−1`, `(−((a − b)/2)/√2, −b/√2)` at `1`, `(0, (a − b)/2/√2)` at `3`, and `(0, 0)` elsewhere. -/
+theorem hadamardWalk_point_three (a b : ℂ) (x : ℤ) :
+    hadamardWalk (pointState a b) 3 x =
+      if x = -3 then ((a + b) / 2 / ((Real.sqrt 2 : ℝ) : ℂ), 0)
+      else if x = -1 then (a / ((Real.sqrt 2 : ℝ) : ℂ), (a + b) / 2 / ((Real.sqrt 2 : ℝ) : ℂ))
+      else if x = 1 then (-((a - b) / 2) / ((Real.sqrt 2 : ℝ) : ℂ), -b / ((Real.sqrt 2 : ℝ) : ℂ))
+      else if x = 3 then (0, (a - b) / 2 / ((Real.sqrt 2 : ℝ) : ℂ)) else (0, 0) := by
+  have e : hadamardWalk (pointState a b) 3 x = hadamardStep (hadamardWalk (pointState a b) 2) x := rfl
+  rw [e, hadamardStep, hadamardWalk_point_two, hadamardWalk_point_two]
+  by_cases h1 : x = -3
+  · subst h1; norm_num
+  · by_cases h2 : x = -1
+    · subst h2; norm_num; ring
+    · by_cases h3 : x = 1
+      · subst h3; norm_num; ring
+      · by_cases h4 : x = 3
+        · subst h4; norm_num
+        · rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega),
+            ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right h1, ite_eq_right h2, ite_eq_right h3,
+            ite_eq_right h4]
+          simp
+
+/-- **Datum: the amplitude of the kernel at `t = 3` is `cos 2k = (e^{2ik} + e^{−2ik}) / 2`**:
+`e^{−3iω} + e^{3iω} = 2 cos 3ω = (4 cos² ω − 3) · 2 cos ω` and `cos² ω = 1 − sin² k / 2`. -/
+theorem kernel_quotient_three (k : ℝ) :
+    (Complex.exp (↑(-(((3 : ℕ) : ℝ) * hadamardDispersion k)) * Complex.I) -
+        (-1 : ℂ) ^ 3 * Complex.exp (↑(((3 : ℕ) : ℝ) * hadamardDispersion k) * Complex.I)) /
+      ((Real.sqrt (2 * (1 + Real.cos k ^ 2)) : ℝ) : ℂ) =
+      1 / 2 * Complex.exp (↑(((2 : ℤ) : ℝ) * k) * Complex.I) +
+        1 / 2 * Complex.exp (↑(((-2 : ℤ) : ℝ) * k) * Complex.I) := by
+  have hs : Real.cos (hadamardDispersion k) ^ 2 = 1 - Real.sin k ^ 2 / 2 := by
+    rw [Real.cos_sq', sin_hadamardDispersion, sin_div_sqrt_two_sq]
+  have h1 : 2 * Real.cos (((3 : ℕ) : ℝ) * hadamardDispersion k) =
+      Real.cos (2 * k) * Real.sqrt (2 * (1 + Real.cos k ^ 2)) := by
+    rw [Nat.cast_ofNat, Real.cos_three_mul, ← two_cos_hadamardDispersion, Real.cos_two_mul]
+    linear_combination (8 * Real.cos (hadamardDispersion k)) * hs +
+      (-4 * Real.cos (hadamardDispersion k)) * Real.sin_sq_add_cos_sq k
+  have h2 := exp_neg_add_exp (2 * k)
+  rw [show (-1 : ℂ) ^ 3 = -1 by norm_num, neg_one_mul, sub_neg_eq_add, exp_neg_add_exp, h1, Complex.ofReal_mul,
+    mul_div_assoc, div_self (kernel_denominator_ne_zero k), mul_one, Int.cast_neg, Int.cast_ofNat, neg_mul]
+  push_cast at h2 ⊢
+  linear_combination (-1 / 2 : ℂ) * h2
+
+/-- **Datum: the kernel at `t = 3`** is `1/2` at `x = −2` and at `x = 2`, and `0` at every other site (the integrand
+is `cos 2k · e^{−ixk}`). -/
+theorem hadamardKernel_three (x : ℤ) :
+    hadamardKernel 3 x = if x = -2 then 1 / 2 else if x = 2 then 1 / 2 else 0 := by
+  have h := fourier_pair (1 / 2) (1 / 2) (2 - x) (-2 - x)
+  rw [hadamardKernel]
+  simp only [kernel_quotient_three, add_mul, mul_assoc, exp_mul_exp_site]
+  rw [h]
+  by_cases h1 : x = -2
+  · subst h1; norm_num
+  · by_cases h2 : x = 2
+    · subst h2; norm_num
+    · rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right h1, ite_eq_right h2]; simp
+
+def P_HadamardKernelStatement : Prop :=
+  ∀ (a b : ℂ) (t : ℕ) (x : ℤ),
+    hadamardWalk (pointState a b) (t + 1) x =
+      ((a + b) / ((Real.sqrt 2 : ℝ) : ℂ) * hadamardKernel (t + 1) (x + 1) + a * hadamardKernel t x,
+        (a - b) / ((Real.sqrt 2 : ℝ) : ℂ) * hadamardKernel (t + 1) (x - 1) + b * hadamardKernel t (-x))
+
+theorem witness_not_HadamardKernelStatement : ¬ P_HadamardKernelStatement :=
+  by
+  intro h
+  have h1 := congrArg Prod.snd (h 0 1 2 1)
+  rw [show (2 : ℕ) + 1 = 3 from rfl, hadamardWalk_point_three] at h1
+  simp only [hadamardKernel_three, hadamardKernel_two] at h1
+  norm_num at h1
+  exact inv_ne_zero sqrt_two_ne_zero (by linear_combination (-1 / 2 : ℂ) * h1)
+
+end OscInt.API.HadamardWalkSanity2

@@ -20,17 +20,42 @@ Batch KL (`OscInt/Statements/KusminLandau.lean`, same stamp): three new entries,
 - KL-C `KusminLandauTwoOverPiStatement` (`proved_by` `OscInt.API.kusminLandauTwoOverPi`);
 - KL-F `KusminLandauDerivStatement` (`proved_by` `OscInt.API.kusminLandauDeriv`).
 
-No existing statement's text, file, commitment or stamp changed. The six are proved in Lean (build, axiom audit,
-statement types, kernel re-check per module); their isolated replay and post-proof reviews are pending, so
-`docs/STATUS.md` does not yet call them machine-checked as stated.
+Batch FR (`OscInt/Statements/FiniteRing.lean`, stamp `stamps/20261116T205833Z-0748dde3c341`): seven new entries,
+the Schrödinger group on a ring of N sites and on an open chain of M sites,
+- FR-K `RingKernelStatement` (`proved_by` `OscInt.API.ringKernelSolves`);
+- FR-U `RingUniqueStatement` (`proved_by` `OscInt.API.ringUnique`);
+- FR-S `RingCosetSumStatement` (`proved_by` `OscInt.API.ringCosetSum`);
+- FR-P `RingFiniteSizeStatement` (`proved_by` `OscInt.API.ringFiniteSize`);
+- FC-K `ChainKernelStatement` (`proved_by` `OscInt.API.chainKernelSolves`);
+- FC-U `ChainUniqueStatement` (`proved_by` `OscInt.API.chainUnique`);
+- FC-P `ChainFiniteSizeStatement` (`proved_by` `OscInt.API.chainFiniteSize`).
+
+Batch VC2 (`OscInt/Statements/SecondDerivSharp.lean`, stamp `stamps/20261116T222541Z-5b72549117b1`): four new
+entries, stated and frozen, **not proved** (no `proved_by`): VC2-S `SecondDerivSharpStatement`, VC2-A
+`SecondDerivAttainedStatement`, VC2-N `Vdc2ProfileBoundStatement`, VC2-K `SecondDerivSevenHalvesStatement` (the
+second-derivative van der Corput bound with its sharp classical constant).
+
+Batch HW (`OscInt/Statements/HadamardWalk.lean`, stamp `stamps/20261116T225756Z-5792039264f0`): four new entries,
+stated and frozen, **not proved** (no `proved_by`): HW-R `HadamardKernelStatement`, HW-K
+`HadamardKernelBoundStatement`, HW-D `HadamardDecayStatement`, HW-L `HadamardDispersiveStatement` (the Hadamard walk
+on the line, explicit and not sharp t^{−1/3} bounds).
+
+`stamps/statements.json` has 86 entries against 65 at v0.6.0: 21 new, 13 with a proving theorem, 8 without. No
+existing statement's text, file, commitment or stamp changed. The thirteen of batches PA, KL and FR are proved in
+Lean (build, axiom audit, statement types, kernel re-check per module) and post-proof reviewed; their isolated
+replay is pending, so `docs/STATUS.md` does not yet call them machine-checked as stated. The seven of batch FR use
+lemmas of batch PA.
 
 ### Proofs
 
 Statement-first, as before: frozen and stamped, sanity layers with planted controls, blind pre-proof reviews
 (answers stamped `stamps/20261116T152412Z-9c9a8767b806`), routes `docs/proof-PA.md` and `docs/proof-KL.md` with
 blueprints and assemblies compiled before any part, one route referee per batch
-(`review/2026-11-16-PA-KL-route-answers.md`), then the parts by proof agents. Lead, referees and provers are AI
-agents of one model family.
+(`review/2026-11-16-PA-KL-route-answers.md`), then the parts by proof agents. Batch FR the same way: blind
+pre-proof reviews (`review/2026-11-16-FR-pre-proof-answers.md`, answers stamped
+`stamps/20261116T225756Z-5792039264f0`), route `docs/proof-FR.md`, route referee
+(`review/2026-11-16-FR-route-answers.md`), five parts by five proof agents, post-proof reviews
+(`review/2026-11-17-FR-post-proof-answers.md`). Lead, referees and provers are AI agents of one model family.
 
 ### Process and tooling (owner decisions of 2026-11-16)
 
@@ -50,8 +75,10 @@ agents of one model family.
   checker `python/oscint_cert/` and an independent Rust checker `rust/oscint-cert/`.
 - A registered, not run, protocol for a continuous-time quantum walk on a qubit chain
   (`docs/prereg/2026-11-16-CTQW-chain.md`, `experiments/ctqw-chain/`).
-- `docs/design/unlock-map.md`, `docs/funding/` (a draft application package), `docs/design/batch-FR-draft.md` (draft
-  statements for finite rings and open chains; not frozen).
+- `docs/design/unlock-map.md`, `docs/funding/` (a draft application package), `docs/design/batch-FR-draft.md` (the
+  design draft of batch FR, kept as written; the batch itself is frozen and proved, see above).
+- `examples/consumer/ConsumerFiniteRing.lean`: the two finite-size bounds at η = 1 and the closed-form propagator of
+  the chain of two sites, from the seven theorems of batch FR.
 - `examples/consumer/ConsumerPeriodicAnalytic.lean`, `examples/consumer/ConsumerKusminLandau.lean`: unconditional
   uses of the six new theorems (normalised Fourier coefficients, a stopping rule for the trapezoidal rule, the light
   cone at one e-folding per site, exponential sums with a linear phase); compiled by `make quick`.

@@ -1290,6 +1290,14 @@ h. Variants of FC-P that no datum and no scan distinguishes from the frozen text
    the constant 2 of the ring term replaced by 1, the "− 1" removed, cosh((x − y)η) dropped, the wall coefficient
    1 replaced by 1/2. Whether any of them is true is not known to the lead; the frozen constants are those of the
    derivation (the images bounded one by one with LC-1), not of a fit.
+i. Added after the post-proof reviews (2026-11-17; `review/2026-11-17-FR-post-proof-answers.md`). FC-P holds for all
+   integers x and y: the four site hypotheses are not needed (a referee compiled a proof of that in its scratch, from
+   FR-P and LC-1; it is not a theorem of the library, and the frozen statement keeps the hypotheses). FR-P says
+   nothing for |r| ≥ N, where its right side exceeds 1. FR-U and FC-U are about solutions defined for all real times
+   (a derivative at every t); a solution given on an interval only is not covered as stated. FR-U needs the period
+   at every time: with the period assumed at t = 0 only the statement is false (a null solution built from a
+   function flat at 0, sites defined by the recursion), and no datum or numerical test could show it; the proof
+   uses the period at every t. All seven theorems of this batch use lemmas of batch PA.
 
 ## Batch VC2: the second-derivative van der Corput bound with its sharp constant (session 13, 2026-11-16)
 
@@ -1356,6 +1364,40 @@ Modelling choices and omissions.
    what VC2-S needs). The layer proves no upper bound: the instances of VC2-S, VC2-N and VC2-K at the certified data
    are consistent with it (33/10 ≤ … ≤ 7/2) and not decided by it, and the instance of VC2-A at w = 441/200 (true gap
    0.0074) is not decided either.
+
+Clarifications added after the freeze of batch VC2 (2026-11-17, from the blind pre-proof reviews; the stamped text
+above and the Lean file are unchanged; `review/2026-11-17-VC2-pre-proof-answers.md`).
+a. Modelling choice 1 is wrong where it says that the existential form of VC2-S "is strictly stronger than the bound
+   with the constant sup A". The profile A is continuous on the compact interval [0, π], so "there is w ∈ [0, π] with
+   X ≤ A(w)" holds exactly when X ≤ max_{[0, π]} A: the two forms are equivalent, and w is not tied to f, a or b.
+   The reason given for avoiding a supremum in the Lean text stands.
+b. The docstring of `vdc2Profile` in the frozen Lean file ("the largest real part, over rotations, that the quadratic
+   phase can reach when its positive arc ends at phase w") does not describe the definition. The accurate
+   description is the one of the Notation paragraph: A(w) = Im(e^{iw} · conj F(w)), the component of the quadratic
+   integral F(w) = ∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx along one fixed rotation; A(w) ≤ |F(w)|, with equality at the
+   maximiser, and A takes negative values (A(5) = −1.585). The file is frozen and is not edited.
+c. "Classical" needs a caveat. The constant 3.3643175781… and its attribution to Kershner are cited from tables
+   and titles; nobody in this project has read Kershner's papers or Finch's account. A referee confirmed that the
+   tabulated constant is the maximum of A at the same maximiser (w = 2.2974396). Whether the classical theorem is
+   stated for the class of VC2-S (an increment condition on f′, no second derivative, f′ possibly unbounded at the
+   ends) is not known to the lead; for that class the evidence is the lead's proof on paper, refereed once. "The
+   largest modulus of a Fresnel partial integral" should read: the largest modulus of the two-sided integral
+   ∫_{−c}^{c} e^{ix²/2} dx, which is twice the largest modulus of ∫_0^c e^{iu²/2} du. That the supremum over all c is
+   reached with w = c²/2 ≤ π was certified by a referee for w ≤ 400 only; the paper proof covers all w.
+d. Superfluous hypotheses and notation. Continuity of f at the end points is not needed in VC2-S (the integral does
+   not see f(a), f(b)); it is kept, so a convex phase that tends to +∞ at an end point is excluded. `0 ≤ w` in VC2-A
+   and the lower end of the range in VC2-N are superfluous under Lean's convention √x = 0 for x < 0 (both sides are
+   0); numerically the upper end is too (A ≤ 3.3643… on [0, 60]). The letter A denotes the profile here and the
+   amplitude norm A(ψ; a, b) of S1 in VC2-K. VC2-K is written with μ^{−1/2} (the shape of S1.k) where S1.2 has 1/√μ;
+   they are equal for μ > 0.
+e. Certified by a referee in ball arithmetic (branch and bound over [0, π], 595 cells), outside Lean: the maximum
+   of A on [0, π] lies in [3.364317578155899106067713, 3.364317578155899106067763], at w in
+   [2.297439573597, 2.297439573620]; so VC2-N holds with a margin of at least 0.1356. Evidence, not a proof.
+f. The sanity layer after the reviews: `OscInt/Front/SecondDerivSharpSanity2.lean`,
+   `docs/replay/2026-11-17-VC2-sanity-plants-second.txt`. Second run, 18 planted mutations: 12 refuted by compiled
+   witnesses (four mutations of the exponent of λ or μ, the constant 67/20 in VC2-N and VC2-K, five hypotheses, one
+   mutation of the amplitude norm), 2 true weakenings (the statements for exact parabolas only), 4 not detected (the
+   range of w in VC2-S from below; f′ in place of f in the exponential; the integrand of VC2-A; the weight of ∫|ψ′|).
 
 ## Batch HW: the Hadamard walk on the line, an explicit t^{−1/3} bound (session 13, 2026-11-16)
 
@@ -1455,3 +1497,34 @@ Modelling choices and omissions.
    on the reviews and on the proof. Found by the sanity agent with exact integer arithmetic, outside Lean: the
    mutation of HW-D with 39/t first fails at t = 126 (first component at x = −86 from the state (1, 0):
    2857838189219694731/2⁶³ ≈ 0.30985 against 39/126 ≈ 0.30952).
+
+Clarifications added after the freeze of batch HW (2026-11-17, from the blind pre-proof reviews; the stamped text
+above and the Lean file are unchanged; `review/2026-11-17-HW-pre-proof-answers.md`).
+a. Item 8 overstated the first sanity layer: its data at t ≤ 1 pin the sign of x in the definition of the kernel and
+   in the first summand of HW-R, not in the summands a K(t, x) and b K(t, x) (K(0, ·) and K(1, ·) are even). The second
+   layer (`OscInt/Front/HadamardWalkSanity2.lean`, `docs/replay/2026-11-17-HW-sanity-plants-second.txt`) has the walk
+   after three steps, K(3, ·) = 1/2 at ±2, K(5, ·) = 1/4, 1/2, −1/2, 1/2, 1/4 at −4, −2, 0, 2, 4, and HW-R at t = 2. Second
+   run, 9 planted mutations: 6 refuted by compiled witnesses (the sign of x in each of the two summands; 39 ↦ 1 in
+   HW-D and HW-L; (7, 12) ↦ (1, 0) in HW-K; the support hypothesis on one component), 2 not detected (an exponent
+   mutation of HW-L; the product of the two terms of HW-K), 1 with no known violation (item f).
+b. The numbers of modelling choice 3, corrected and completed by the referees: sup_x |K(t, x)| t^{1/3} equals 1 at
+   t = 1 (K(1, 0) = 1) and is below 1 from t = 2 (largest value 0.9637, at t = 6; 0.9547 at t = 3000; about 0.9544
+   asymptotically). The largest component from the state (1, 0) is 1.6113 t^{−1/3} at t = 3000, 1.6208 t^{−1/3} at most
+   for t ≤ 3000, and about 1.6293 t^{−1/3} asymptotically. So the constants of HW-K and HW-D are about 12.6 and 23.9
+   times the attained values. HW-K is implied by the trivial bound for t ≤ 1679, and HW-D and HW-L by conservation of
+   the ℓ² norm for t ≤ 59319.
+c. The literature locator. In arXiv:1808.05714 the sentence quoted is in Section 3 of version 1 (before Proposition
+   3.12) and in Section 4 of version 3 (before Proposition 4.12). That paper states the estimate for a constant coin
+   with an implicit constant, says it is also proved in two other papers, and credits Sunada and Tate
+   (arXiv:1108.1878); "Airy asymptotics" above undersells that paper. Its conventions differ from this batch: the
+   Euclidean norm on ℂ² and the opposite handedness.
+d. Norms. HW-D and HW-L bound each component of ψ_t(x) (the maximum norm on ℂ²) by the ℓ¹ sum of |ψ₁| + |ψ₂|. With the
+   Euclidean norm on ℂ² on both sides the same statements give the constant 39·2 = 78 (a factor √2 on each side).
+e. The eigenvalue remark of the Notation ("at quasi-momentum k the step has the eigenvalues e^{−iω(k)} and −e^{iω(k)}")
+   is for plane waves v e^{−ikx}, the convention of the kernel. In the Route, 6.8700 should read 6.8699 (6.86990…),
+   and the derivation of HW-D also uses (t − 1)^{−1/2} ≤ √2 t^{−1/2} for t ≥ 2.
+f. CONJECTURED, not a statement of this batch: |K(t, x)| ≤ t^{−1/3} for every t ≥ 1 and every site x. Evidence:
+   floating-point evaluation of the exact recursion at every site for t ≤ 9000 (largest value of
+   sup_x |K| t^{1/3} for t ≥ 2: 0.9637) and on a grid of times up to 1.6·10⁷ (two referees and a sanity agent,
+   independently). What would falsify it: one pair (t, x) with |K(t, x)| t^{1/3} > 1. The route of this batch gives
+   7 t^{−1/2} + 12 t^{−1/3} and cannot reach it.

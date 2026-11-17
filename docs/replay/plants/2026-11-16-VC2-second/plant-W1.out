@@ -1,0 +1,50 @@
+plant-W1.lean:121:12: error: Application type mismatch: The argument
+  hw
+has type
+  w ∈ Icc 0 (441 / 200)
+but is expected to have type
+  w ∈ Icc 0 Real.pi
+in the application
+  And.intro hw
+plant-W1.lean:129:12: error: Application type mismatch: The argument
+  hw
+has type
+  w ∈ Icc 0 (441 / 200)
+but is expected to have type
+  w ∈ Icc 0 Real.pi
+in the application
+  And.intro hw
+plant-W1.lean:136:12: error: Application type mismatch: The argument
+  hw
+has type
+  w ∈ Icc 0 (441 / 200)
+but is expected to have type
+  w ∈ Icc 0 Real.pi
+in the application
+  And.intro hw
+plant-W1.lean:147:2: error: Type mismatch
+  h (fun x => 1 / 100 * x ^ 2 / 2) (fun x => 1 / 100 * x) (-21) 21 (1 / 100) ?m.154 ?m.155
+    (scaled_hasDerivOn (1 / 100) (-21) 21) (scaled_increases (1 / 100) (-21) 21)
+has type
+  ∃ w ∈ Icc 0 (441 / 200),
+    ‖∫ (x : ℝ) in -21..21, Complex.exp (↑(1 / 100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / √(1 / 100)
+but is expected to have type
+  ∃ w ∈ Icc 0 Real.pi,
+    ‖∫ (x : ℝ) in -21..21, Complex.exp (↑(1 / 100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / √(1 / 100)
+plant-W1.lean:166:2: error: Type mismatch
+  h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (-(21 / 100)) (21 / 100) 100 ?m.146 ?m.147
+    (scaled_hasDerivOn 100 (-(21 / 100)) (21 / 100)) (scaled_increases 100 (-(21 / 100)) (21 / 100))
+has type
+  ∃ w ∈ Icc 0 (441 / 200),
+    ‖∫ (x : ℝ) in -(21 / 100)..21 / 100, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / √100
+but is expected to have type
+  ∃ w ∈ Icc 0 Real.pi,
+    ‖∫ (x : ℝ) in -(21 / 100)..21 / 100, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / √100
+plant-W1.lean:190:2: error: Type mismatch
+  h (fun x => x ^ 2 / 2 + x ^ 4 / 12) (fun x => x + x ^ 3 / 3) (-c) c 1 ?m.183 one_pos (quartic_hasDerivOn (-c) c)
+    (quartic_increases (-c) c)
+has type
+  ∃ w ∈ Icc 0 (441 / 200),
+    ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2 + x ^ 4 / 12) * Complex.I)‖ ≤ vdc2Profile w / √1
+but is expected to have type
+  ∃ w ∈ Icc 0 Real.pi, ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2 + x ^ 4 / 12) * Complex.I)‖ ≤ vdc2Profile w / √1

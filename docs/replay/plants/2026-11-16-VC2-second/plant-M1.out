@@ -1,0 +1,6 @@
+plant-M1.lean:111:21: error: `ring_nf` made no progress on the goal
+plant-M1.lean:115:21: error: `ring_nf` made no progress on the goal
+plant-M1.lean:121:2: error: 'show' tactic failed, pattern
+  1 * (y - x) ≤ y + y ^ 3 / 3 - (x + x ^ 3 / 3)
+is not definitionally equal to target
+  1 * (y - x) = (fun x => x + x ^ 3 / 3) y - (fun x => x + x ^ 3 / 3) x

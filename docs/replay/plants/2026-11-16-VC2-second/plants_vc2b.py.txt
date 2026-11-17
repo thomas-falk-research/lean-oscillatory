@@ -1,0 +1,468 @@
+#!/usr/bin/env python3
+"""Second run of planted copies of the batch-VC2 statements (mutations found by the blind pre-proof review).
+
+As the first run (docs/replay/plants/2026-11-16-VC2/plants_vc2.py.txt) and the second runs of batches FR and HW. The
+batch is now a frozen module (OscInt/Statements/SecondDerivSharp.lean) and the first sanity layer is compiled
+(OscInt/Front/SecondDerivSharpSanity.lean); the second layer (SecondDerivSharpSanity2.lean) is not a module of the
+library yet. Every generated file therefore imports OscInt.Front.SecondDerivSharpSanity only and contains, in the
+namespace of the second layer: the unconditional data lemmas of the second layer that the file needs (copied verbatim
+with their docstrings, selected by name closure), then, under the prefix P_, a copy of ONE statement constant of the
+statement module (for the plant M1: of DerivIncreasesAtRate, of VC2-S, which uses it, and of the three rate lemmas of
+the two layers) and copies of the scripts that go through it: every sanity theorem of both layers that takes the
+statement constant as its hypothesis. Exactly one textual mutation is applied to one copied definition. The unplanted
+copy (ok-) must compile. Files with identical text (the ok- copies of one statement) are compiled once.
+Witness files (docs/lessons.md, rule 9): a compiled proof of the negation of the planted statement from unconditional
+data lemmas of the two layers. Four witnesses (E2, E4, H1, H2) also use the trivial bound A(w) <= 2 sqrt(2w), which
+holds for every w: as in the first run it is proved in those witness files only (WITNESS_ONLY below), where it refutes
+a planted statement; it is not part of a sanity layer. No file proves, or uses a proof of, a statement of the batch.
+datum-M1: a compiled proof, on the planted definition of M1, that the quartic datum of the second layer does not
+satisfy it and that the parabola does (the rejection of the copied rate lemmas alone would not tell these apart).
+Verdicts: DETECTED (witness compiled), NOT DETECTED (no witness; "script rejected" alone is recorded and is not a
+detection), TRUE WEAKENING (implied by the frozen statement).
+Usage: plants_vc2b.py REPO SANITY2_FILE OUTDIR SCRATCHDIR [plant ids]
+"""
+import os, re, subprocess, sys
+
+REPO, SAN2_PATH, OUT, SCR = sys.argv[1:5]
+os.makedirs(OUT, exist_ok=True)
+os.makedirs(SCR, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/SecondDerivSharp.lean')).read().split('\n')
+SAN1 = open(os.path.join(REPO, 'OscInt/Front/SecondDerivSharpSanity.lean')).read().split('\n')
+SAN2_ALL = open(SAN2_PATH).read()
+SAN2 = SAN2_ALL[SAN2_ALL.index('namespace OscInt.API.SecondDerivSharpSanity2'):].split('\n')
+S, A, N, K = ('SecondDerivSharpStatement', 'SecondDerivAttainedStatement', 'Vdc2ProfileBoundStatement',
+              'SecondDerivSevenHalvesStatement')
+# Scripts: the theorems of the two layers that take the statement constant as hypothesis (first layer first).
+THMS = {
+    S: ['sharp_quadratic', 'sharp_scaled', 'sharp_degenerate', 'sharp_profile_large',
+        'sharp_smallCurv_literal', 'sharp_smallCurv', 'sharp_smallCurv_simplified', 'sharp_largeCurv_literal',
+        'sharp_largeCurv', 'sharp_largeCurv_simplified', 'sharp_profile_large_sharp', 'sharp_quartic'],
+    A: ['attained_at', 'attained_zero', 'attained_at_sharp'],
+    N: ['profile_le', 'profile_within', 'profile_within_sharp'],
+    K: ['sevenHalves_quadratic', 'sevenHalves_linear', 'sevenHalves_neg', 'sevenHalves_scaled', 'sevenHalves_ramp',
+        'sevenHalves_smallCurv_literal', 'sevenHalves_smallCurv', 'sevenHalves_smallCurv_simplified',
+        'sevenHalves_largeCurv_literal', 'sevenHalves_largeCurv', 'sevenHalves_largeCurv_simplified',
+        'sevenHalves_quad_window', 'sevenHalves_quartic'],
+}
+RATE = 'DerivIncreasesAtRate'
+RATE_DATA = ['scaled_increases', 'quad_increases', 'quartic_increases']
+DECL = re.compile(r"^(?:noncomputable )?(theorem|def) ([A-Za-z_0-9']+)")
+FIRST_LAYER = {m.group(2) for m in map(DECL.match, SAN1) if m}
+
+
+def block(lines, name):
+    """The declaration `name` without its docstring, up to the next blank line; None if absent."""
+    for i, l in enumerate(lines):
+        m = DECL.match(l)
+        if m and m.group(2) == name:
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    return None
+
+
+def script(name):
+    t = block(SAN2, name)
+    return t if t is not None else block(SAN1, name)
+
+
+def data_blocks():
+    """All declarations of the second layer with docstrings, in file order: name -> (index, text)."""
+    res, cur = {}, []
+    for l in SAN2[1:] + ['']:
+        if l.strip() == '':
+            for c in cur:
+                m = DECL.match(c)
+                if m:
+                    res[m.group(2)] = (len(res), '\n'.join(cur))
+                    break
+            cur = []
+        else:
+            cur.append(l)
+    return res
+
+
+DATA = data_blocks()
+THROUGH = {t for ts in THMS.values() for t in ts}
+for n in THROUGH | set(RATE_DATA):
+    assert (n in DATA) != (n in FIRST_LAYER), n
+for n, (_, t) in DATA.items():  # a declaration of the second layer names a statement constant iff it is a script
+    assert (n in THROUGH) == any(s in t for s in (S, A, N, K)), n
+
+
+def closure(text, renamed):
+    """Unconditional declarations of the second layer used by `text`, transitively, in file order."""
+    need, todo = set(), [text]
+    while todo:
+        t = todo.pop()
+        for w in set(re.findall(r"[A-Za-z_][A-Za-z_0-9']*", t)):
+            if w in DATA and w not in need and w not in renamed and w not in THROUGH:
+                need.add(w)
+                todo.append(DATA[w][1])
+    return [DATA[n][1] for n in sorted(need, key=lambda n: DATA[n][0])]
+
+
+HEADER = """import OscInt.Front.SecondDerivSharpSanity
+
+namespace OscInt.API.SecondDerivSharpSanity2
+
+open OscInt.Statements OscInt.API.SecondDerivSharpSanity Set
+
+"""
+FOOTER = '\n\nend OscInt.API.SecondDerivSharpSanity2\n'
+assert all(p in SAN2_ALL for p in HEADER.split('\n\n', 1)) and SAN2_ALL.endswith(FOOTER.lstrip('\n'))
+
+# Proved in witness files only (never in a sanity layer): a bound for A(w) for every w. Text of the first run.
+WITNESS_ONLY = '''\
+/-- (Witness file only: it refutes a planted statement and proves nothing of the batch.) `A(w) ≤ 2B` when
+`2w ≤ B²`, `B ≥ 0`: the trivial bound `A(w) ≤ 2 √(2w)` from `|sin| ≤ 1`. -/
+theorem vdc2Profile_le_of_le (w B : ℝ) (hB : 0 ≤ B) (hw : 2 * w ≤ B ^ 2) : vdc2Profile w ≤ 2 * B := by
+  have h := intervalIntegral.norm_integral_le_of_norm_le_const (a := 0) (b := Real.sqrt (2 * w)) (C := 1)
+    (f := fun u : ℝ => Real.sin (w - u ^ 2 / 2)) (fun u _ => by simpa using Real.abs_sin_le_one _)
+  rw [sub_zero, abs_of_nonneg (Real.sqrt_nonneg _), one_mul, Real.norm_eq_abs] at h
+  have h1 := le_abs_self (∫ u in (0 : ℝ)..Real.sqrt (2 * w), Real.sin (w - u ^ 2 / 2))
+  have h2 : Real.sqrt (2 * w) ≤ B := (Real.sqrt_le_left hB).2 hw
+  unfold vdc2Profile
+  linarith
+
+/-- (Witness file only.) `A(w) ≤ 26/5` for `w ≤ π` (`2π < 6.3 ≤ (13/5)²`). -/
+theorem vdc2Profile_le_pi (w : ℝ) (hw : w ≤ Real.pi) : vdc2Profile w ≤ 26 / 5 := by
+  have h := vdc2Profile_le_of_le w (13 / 5) (by norm_num) (by nlinarith [Real.pi_lt_d2])
+  linarith'''
+
+
+def make(stmt, mut, planted, witness=None, wonly=False):
+    """stmt: the statement constant; mut = (definition to mutate, old, new, count); witness: None, a proof term of
+    `¬ P_<stmt>`, or ('raw', text) for the datum file of M1 (theorems about the planted definition)."""
+    target, old, new, count = mut
+    in_def = target == RATE
+    raw = isinstance(witness, tuple)
+    defs = [target] if (target == stmt or raw) else [target, stmt]
+    parts = []
+    for d in defs:
+        t = block(STMT, d)
+        assert t is not None, d
+        if planted and d == target:
+            assert t.count(old) == count, (d, old, t.count(old))
+            t = t.replace(old, new)
+        parts.append(t)
+    renamed = list(defs)
+    if raw:
+        parts.append(witness[1])
+    else:
+        if in_def:
+            parts += [script(th) for th in RATE_DATA]
+            renamed += RATE_DATA
+        if witness is None:
+            parts += [script(th) for th in THMS[stmt]]
+            renamed += THMS[stmt]
+        else:
+            parts.append(f'theorem witness_not_{stmt} : ¬ {stmt} := {witness}')
+    text = '\n\n'.join(parts)
+    for n in sorted(renamed, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r"(?![\w'])", 'P_' + n, text)
+    extra = [WITNESS_ONLY] if wonly else []
+    data = closure(text + '\n'.join(extra), set(renamed))
+    return HEADER + '\n\n'.join(data + extra + [text]) + FOOTER
+
+
+CACHE = {}
+
+
+def run(tag, text):
+    open(os.path.join(OUT, tag + '.lean.txt'), 'w').write(text)
+    if text in CACHE:  # identical text (an ok- copy of the same statement): compiled once, output empty
+        out, rc = CACHE[text]
+    else:
+        src = os.path.join(SCR, tag + '.lean')
+        open(src, 'w').write(text)
+        r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                           cwd=REPO, capture_output=True, text=True)
+        out, rc = r.stdout + r.stderr, r.returncode
+        if rc == 0 and out == '':
+            CACHE[text] = (out, rc)
+    open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+    errs = [l for l in out.split('\n') if ': error' in l]
+    # the copied declarations in which an error is reported, in file order
+    lines, failing = text.split('\n'), []
+    for e in errs:
+        m = re.search(r'\.lean:(\d+):\d+: error', e)
+        if not m:
+            continue
+        i = int(m.group(1)) - 1
+        while i >= 0 and not DECL.match(lines[i]):
+            i -= 1
+        name = DECL.match(lines[i]).group(2) if i >= 0 else '?'
+        if name not in failing:
+            failing.append(name)
+    return ('accepted' if rc == 0 and not errs else 'rejected'), errs, failing
+
+
+# Witness proofs of ¬ P_<statement> (the names of the copied definitions are prefixed afterwards).
+K_SMALL = '''h (fun x => 1 / 100 * x ^ 2 / 2) (fun x => 1 / 100 * x) (fun _ => 1 / 100) (fun _ => 1) (fun _ => 0)
+    (-21) 21 (1 / 100) 0 (by norm_num) (by norm_num) (scaled_hasDerivOn _ _ _) (scaledLinear_hasDerivOn _ _ _)
+    (fun x _ => by simp) (sanity_amplitude_one _ _).1'''
+K_LARGE = '''h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (fun _ => 100) (fun _ => 1) (fun _ => 0) (-(21 / 100))
+    (21 / 100) 100 0 (by norm_num) (by norm_num) (scaled_hasDerivOn _ _ _) (scaledLinear_hasDerivOn _ _ _)
+    (fun x _ => by simp) (sanity_amplitude_one _ _).1'''
+K_QUAD = '''h (fun x => x ^ 2 / 2) (fun x => x) (fun _ => 1) (fun _ => 1) (fun _ => 0) (-(21 / 10)) (21 / 10) 1 0
+    (by norm_num) one_pos (quad_hasDerivOn _ _) (id_hasDerivOn _ _) (fun x _ => by simp)
+    (sanity_amplitude_one _ _).1'''
+S_SMALL = '''h (fun x => 1 / 100 * x ^ 2 / 2) (fun x => 1 / 100 * x) (-21) 21 (1 / 100) (by norm_num)
+    (by norm_num) (scaled_hasDerivOn _ _ _) (scaled_increases _ _ _)'''
+S_LARGE = '''h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (-(21 / 100)) (21 / 100) 100 (by norm_num)
+    (by norm_num) (scaled_hasDerivOn _ _ _) (scaled_increases _ _ _)'''
+
+W_E1 = f'''by
+  intro h
+  have h1 := {K_SMALL}
+  rw [(sanity_amplitude_one _ _).2, oscInt_smallCurv] at h1
+  linarith [smallCurv_norm_lower, rpow_hundredth_neg_third_le]'''
+
+W_E2 = f'''by
+  intro h
+  obtain ⟨w, hw, hle⟩ := {S_SMALL}
+  have hz := rpow_hundredth_quarter_ge
+  rw [le_div_iff₀ (by linarith)] at hle
+  have h3 := mul_le_mul_of_nonneg_right smallCurv_norm_lower
+    (by linarith : (0 : ℝ) ≤ (1 / 100 : ℝ) ^ ((1 : ℝ) / 4))
+  linarith [vdc2Profile_le_pi w hw.2]'''
+
+W_E3 = f'''by
+  intro h
+  have h1 := {K_LARGE}
+  rw [(sanity_amplitude_one _ _).2, oscInt_largeCurv] at h1
+  linarith [largeCurv_norm_lower, rpow_hundred_neg_three_fifths_le]'''
+
+W_E4 = f'''by
+  intro h
+  obtain ⟨w, hw, hle⟩ := {S_LARGE}
+  have hz := rpow_hundred_three_fifths_gt
+  rw [le_div_iff₀ (by linarith)] at hle
+  have h3 := mul_le_mul_of_nonneg_right largeCurv_norm_lower
+    (by linarith : (0 : ℝ) ≤ (100 : ℝ) ^ ((3 : ℝ) / 5))
+  linarith [vdc2Profile_le_pi w hw.2]'''
+
+W_C1 = '''by
+  intro h
+  have h1 := h (441 / 200) ⟨by norm_num, by linarith [Real.pi_gt_three]⟩
+  linarith [vdc2Profile_gt_67]'''
+
+W_C2 = f'''by
+  intro h
+  have h1 := {K_QUAD}
+  rw [(sanity_amplitude_one _ _).2, Real.one_rpow, oscInt_quad] at h1
+  linarith [quad_norm_gt_67]'''
+
+# H1 to H5: the refutations U1 to U5 of the blind referee (scratchpad/refA-VC2/Mut2.lean), on first-layer data.
+W_H1 = '''by
+  intro h
+  obtain ⟨w, hw, hle⟩ := h (fun _ => 0) (fun _ => 0) 6 0 1 one_pos (zero_hasDerivOn _ _)
+    (fun x hx => absurd (hx.1.trans hx.2) (by norm_num))
+  rw [intervalIntegral.integral_symm, norm_neg, norm_integral_exp_zero 0 6 (by norm_num), Real.sqrt_one,
+    div_one] at hle
+  linarith [vdc2Profile_le_pi w hw.2]'''
+
+W_H2 = '''by
+  intro h
+  obtain ⟨w, hw, hle⟩ := h (fun _ => 0) (fun x => x) 0 6 1 (by norm_num) one_pos (quad_increases _ _)
+  rw [norm_integral_exp_zero 0 6 (by norm_num), Real.sqrt_one, div_one] at hle
+  linarith [vdc2Profile_le_pi w hw.2]'''
+
+W_H3 = '''by
+  intro h
+  have h1 := h (fun _ => 0) (fun _ => 0) (fun _ => 0) (fun _ => 1) (fun _ => 0) 4 0 1 0 one_pos
+    (zero_hasDerivOn _ _) (zero_hasDerivOn _ _) (fun x hx => absurd (hx.1.trans hx.2) (by norm_num))
+    (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, Real.one_rpow] at h1
+  have h2 : ‖∫ _x in (4 : ℝ)..0, Complex.exp (((0 : ℝ) : ℂ) * Complex.I)‖ ≤ 7 / 2 := by
+    simpa [oscInt] using h1
+  rw [intervalIntegral.integral_symm, norm_neg, norm_integral_exp_zero 0 4 (by norm_num)] at h2
+  norm_num at h2'''
+
+W_H4 = '''by
+  intro h
+  have h1 := h (fun _ => 0) (fun _ => 0) (fun _ => 0) (fun _ => 1) (fun _ => 0) 0 1 0 0 zero_le_one
+    (zero_hasDerivOn _ _) (zero_hasDerivOn _ _) (fun x _ => by simp) (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, Real.zero_rpow (by norm_num)] at h1
+  have h2 : ‖∫ _x in (0 : ℝ)..1, Complex.exp (((0 : ℝ) : ℂ) * Complex.I)‖ ≤ 0 := by
+    simpa [oscInt] using h1
+  rw [norm_integral_exp_zero 0 1 zero_le_one] at h2
+  norm_num at h2'''
+
+W_H5 = '''by
+  intro h
+  have h1 := h (fun _ => 0) (fun _ => 0) (fun _ => 100) (fun _ => 1) (fun _ => 0) 0 1 100 0 zero_le_one
+    (by norm_num) (zero_hasDerivOn _ _) (fun x _ => by simp) (sanity_amplitude_one _ _).1
+  have h3 : (7 / 2 : ℝ) * (1 / 10) * 1 = 7 / 20 := by norm_num
+  rw [(sanity_amplitude_one _ _).2, rpow_neg_half_hundred, h3] at h1
+  have h2 : ‖∫ _x in (0 : ℝ)..1, Complex.exp (((0 : ℝ) : ℂ) * Complex.I)‖ ≤ 7 / 20 := by
+    simpa [oscInt] using h1
+  rw [norm_integral_exp_zero 0 1 zero_le_one] at h2
+  norm_num at h2'''
+
+W_P1 = f'''by
+  intro h
+  have h1 := {K_QUAD}
+  rw [oscInt_quad] at h1
+  simp only [norm_zero, intervalIntegral.integral_zero, mul_zero] at h1
+  linarith [quad_norm_lower]'''
+
+DATUM_M1 = ('raw', '''theorem datum_quartic_not_DerivIncreasesAtRate :
+    ¬ DerivIncreasesAtRate (fun x => x + x ^ 3 / 3) (-1) 1 1 :=
+  fun h => quartic_rate_not_exact h
+
+theorem datum_quad_DerivIncreasesAtRate (a b : ℝ) : DerivIncreasesAtRate (fun x => x) a b 1 := by
+  intro x _ y _ _
+  show 1 * (y - x) = y - x
+  ring
+
+theorem datum_scaled_DerivIncreasesAtRate (lam a b : ℝ) : DerivIncreasesAtRate (fun x => lam * x) a b lam := by
+  intro x _ y _ _
+  show lam * (y - x) = lam * y - lam * x
+  ring''')
+
+# (id, statement, (definition to mutate, old, new, number of textual occurrences), witness, uses WITNESS_ONLY, note)
+PLANTS = [
+    ('E1', K, (K, 'μ ^ (-(1 : ℝ) / 2)', 'μ ^ (-(1 : ℝ) / 3)', 1), W_E1, False,
+     'VC2-K: μ^{−1/2} ↦ μ^{−1/3}; witness: φ = (1/100)x²/2 on [−21, 21], μ = 1/100, ψ = 1: left side ≥ 33, planted '
+     'bound (7/2)·100^{1/3} ≤ 35/2 (100^{1/3} ≤ 5)'),
+    ('E2', S, (S, 'vdc2Profile w / Real.sqrt lam', 'vdc2Profile w / lam ^ ((1 : ℝ) / 4)', 1), W_E2, True,
+     'VC2-S: / √λ ↦ / λ^{1/4}; witness: λ = 1/100, f = (1/100)x²/2 on [−21, 21]: left side ≥ 33, planted bound '
+     'A(w)·100^{1/4} ≤ (26/5)·4 = 20.8 ((1/100)^{1/4} ≥ 1/4, A(w) ≤ 26/5 for w ≤ π)'),
+    ('E3', K, (K, 'μ ^ (-(1 : ℝ) / 2)', 'μ ^ (-(3 : ℝ) / 5)', 1), W_E3, False,
+     'VC2-K: μ^{−1/2} ↦ μ^{−3/5}; witness: φ = 100x²/2 on [−21/100, 21/100], μ = 100, ψ = 1: left side ≥ 33/100, '
+     'planted bound (7/2)·100^{−3/5} ≤ 7/30 = 0.2333 (100^{−3/5} ≤ 1/15)'),
+    ('E4', S, (S, 'vdc2Profile w / Real.sqrt lam', 'vdc2Profile w / lam ^ ((3 : ℝ) / 5)', 1), W_E4, True,
+     'VC2-S: / √λ ↦ / λ^{3/5}; witness: λ = 100, f = 100x²/2 on [−21/100, 21/100]: left side ≥ 33/100, planted bound '
+     'A(w)/100^{3/5} < (26/5)/(520/33) = 33/100 (100^{3/5} > 520/33 because (520/33)^5 = 971509.4… < 10^6; A(w) ≤ '
+     '26/5 for w ≤ π; in floating point 0.33 against 0.32810)'),
+    ('C1', N, (N, '7 / 2', '67 / 20', 1), W_C1, False,
+     'VC2-N: 7/2 ↦ 67/20; witness: w = 441/200, 67/20 < 3.35007 ≤ A(w) (vdc2Profile_lower_sharp: the exact value '
+     'of the polynomial bound of the first layer, 3.3500756…)'),
+    ('C2', K, (K, '(7 / 2 : ℝ)', '(67 / 20 : ℝ)', 1), W_C2, False,
+     'VC2-K: 7/2 ↦ 67/20; witness: φ = x²/2 on [−21/10, 21/10], μ = 1, ψ = 1: left side ≥ 3.358 > 67/20 '
+     '(quad_norm_lower_sharp)'),
+    ('M1', S, (RATE, "lam * (y - x) ≤ f' y - f' x", "lam * (y - x) = f' y - f' x", 1), None, False,
+     'DerivIncreasesAtRate: ≤ ↦ = (the statement for exact parabolas only)'),
+    ('M2', K, (K, "μ ≤ |φ'' x|", "|φ'' x| = μ", 1), None, False,
+     'VC2-K: μ ≤ |φ″(x)| ↦ |φ″(x)| = μ (the statement for |φ″| constant only)'),
+    ('H1', S, (S, ', a ≤ b → 0 < lam →', ', 0 < lam →', 1), W_H1, True,
+     'VC2-S: a ≤ b dropped; witness: f = 0, f′ = 0, a = 6, b = 0, λ = 1 (the interval (6, 0) is empty, so the rate '
+     'hypothesis is vacuous): left side 6, and A(w) ≤ 26/5 for w ≤ π'),
+    ('H2', S, (S, " → HasDerivOn f f' a b →", ' →', 1), W_H2, True,
+     'VC2-S: HasDerivOn f f′ a b dropped; witness: f = 0, f′ = x on [0, 6], λ = 1 (nothing ties f′ to f): left side '
+     '6, and A(w) ≤ 26/5 for w ≤ π'),
+    ('H3', K, (K, ', a ≤ b → 0 < μ →', ', 0 < μ →', 1), W_H3, False,
+     'VC2-K: a ≤ b dropped; witness: φ = 0, a = 4, b = 0, μ = 1, ψ = 1 (the interval (4, 0) is empty): left side 4, '
+     'bound 7/2'),
+    ('H4', K, (K, 'a ≤ b → 0 < μ →', 'a ≤ b →', 1), W_H4, False,
+     'VC2-K: 0 < μ dropped; witness: φ = 0 on [0, 1], μ = 0, ψ = 1: left side 1, bound (7/2)·0^{−1/2} = 0 in Lean'),
+    ('H5', K, (K, " → HasDerivOn φ' φ'' a b →", ' →', 1), W_H5, False,
+     'VC2-K: HasDerivOn φ′ φ″ a b dropped; witness: φ = 0, φ′ = 0, φ″ = 100 on [0, 1], μ = 100, ψ = 1 (nothing ties '
+     'φ″ to φ′): left side 1, bound 7/20'),
+    ('P1', K, (K, "ampNorm ψ ψ' a b", "∫ x in a..b, ‖ψ' x‖", 1), W_P1, False,
+     'VC2-K: ampNorm ↦ ∫|ψ′|; witness: φ = x²/2 on [−21/10, 21/10], μ = 1, ψ = 1, ψ′ = 0: left side ≥ 33/10, '
+     'planted bound 0'),
+    ('W1', S, (S, 'Icc (0 : ℝ) Real.pi', 'Icc (0 : ℝ) (441 / 200)', 1), None, False,
+     'VC2-S: range of w: [0, π] ↦ [0, 441/200]'),
+    ('X1', S, (S, '((f x : ℝ) : ℂ)', "((f' x : ℝ) : ℂ)", 1), None, False,
+     'VC2-S: f(x) ↦ f′(x) inside the exponential'),
+    ('Q1', A, (A, '((x ^ 2 / 2 : ℝ) : ℂ)', '((x ^ 2 : ℝ) : ℂ)', 1), None, False,
+     'VC2-A: integrand e^{ix²/2} ↦ e^{ix²}'),
+    ('P2', K, (K, "ampNorm ψ ψ' a b", "(‖ψ b‖ + (1 / 2) * ∫ x in a..b, ‖ψ' x‖)", 1), None, False,
+     'VC2-K: ampNorm ↦ |ψ(b)| + (1/2)∫|ψ′|'),
+]
+SCRIPT_NOTE = ' The verdict does not use the rejection or acceptance of the copied scripts, which is recorded above.'
+VERDICT = {
+    'M1': 'TRUE WEAKENING: the planted hypothesis f′(y) − f′(x) = λ(y − x) implies the frozen one (an equality is an '
+          'inequality), so the planted statement is implied by the frozen statement and no witness can exist. It '
+          'is weaker in content: it speaks only of phases with f′ affine of slope λ on (a, b), that is, of exact '
+          'parabolas. Script-level evidence: the copied rate lemma quartic_increases of the datum '
+          'f = x²/2 + x⁴/12 (second layer, B1) is rejected on the planted definition, and not for a reason of '
+          'script only: datum-M1 (compiled on the planted definition) proves that this datum does not satisfy '
+          'the planted hypothesis on (−1, 1), so sharp_quartic is not an instance of the planted statement. '
+          'The rejection of the copied scaled_increases and quad_increases is script-only (their proof term is '
+          '`le_of_eq`): datum-M1 also proves that the parabolas satisfy the planted definition.',
+    'M2': 'TRUE WEAKENING: the planted hypothesis |φ″(x)| = μ implies the frozen one μ ≤ |φ″(x)|, so the planted '
+          'statement is implied by the frozen statement and no witness can exist. It is weaker in content: it '
+          'speaks only of phases with |φ″| constant. Script-level evidence: the copied script sevenHalves_quartic '
+          '(φ = x²/2 + x⁴/12, φ″ = 1 + x², second layer, B2) is rejected on the planted copy: it supplies '
+          '1 ≤ |1 + x²|, and |1 + x²| = 1 is false on (−1, 1) (quartic_second_not_exact, unconditional, in the '
+          'second layer). The copied scripts on data with |φ″| constant are accepted.',
+    'W1': 'NOT DETECTED: no witness attempted. The planted statement is false on paper: at f = x²/2 on '
+          '[−21/10, 21/10], λ = 1, the left side is 3.36141… and the maximum of A on [0, 441/200] is '
+          'A(441/200) = 3.35396… (floating point, the referee\'s values; A increases up to w ≈ 2.2974). Refuting it '
+          'in Lean needs an upper bound A(w) ≤ 3.36 for every w in [0, 441/200]: an upper bound for the profile '
+          'on an interval, which is a piece of VC2-N and which this layer must not prove (the trivial bound '
+          '2√(2w) gives 4.2 at w = 441/200). The margin, 0.0075, is also below the margin of the certified left '
+          'side (3.358 from quad_norm_lower_sharp, against the true 3.36141). So that the range of w in VC2-S '
+          'is [0, π] and not a shorter interval that still contains 441/200 rests on the fidelity review and on '
+          'the proof.' + SCRIPT_NOTE,
+    'X1': 'NOT DETECTED: no witness attempted (the brief of this run records it without one). The planted statement '
+          'is false in general, and at every datum of the two layers it is hidden: at f = λx²/2 on [−c, c] the '
+          'planted left side is |∫ e^{iλx} dx| = 2|sin(λc)|/λ, which is 1.73 against A ≤ 3.36 at λ = 1, c = 21/10, '
+          '0.0173 against 0.336 at λ = 100, c = 21/100, and 41.7 against 33.6 ≤ A(w)·10 ≤ 52 at λ = 1/100, c = 21 '
+          '(floating point; the last one exceeds the true bound 33.64 but not the bound 52 that the trivial '
+          'estimate A ≤ 26/5 gives). Remark for the lead (not compiled, on paper only): a fixed datum outside '
+          'the two layers would detect it with the trivial bound alone: λ = 1/100, f = (1/100)x²/2 on '
+          '[−100, 100]: the planted left side is 200 sin 1 = 168.3 (real part ≥ 200 cos 1 ≥ 100 from '
+          'cos 1 ≥ 1/2), against A(w)·10 ≤ 52.' + SCRIPT_NOTE,
+    'Q1': 'NOT DETECTED: no witness attempted. A witness needs w ≥ 0 with |∫_{−√(2w)}^{√(2w)} e^{ix²} dx| < A(w), '
+          'that is, an upper bound for an oscillatory integral at a fixed w that beats a certified lower bound of '
+          'A(w): at w = 441/200 the planted right side is (1/√2)|∫_{−2.97}^{2.97} e^{iu²/2} du| = 1.657 against '
+          'A = 3.354 (floating point), but the two layers have lower bounds of integrals only (polynomial minorants of cos and '
+          'sin on the range of the phase), and an upper bound by the same method needs majorants of degree ≥ 9 '
+          'on a phase range of length 4.41. Not attempted in this run.' + SCRIPT_NOTE,
+    'P2': 'NOT DETECTED: no witness attempted. At ψ = 1 the planted norm equals ampNorm, and at the ramp '
+          'ψ(x) = 1 − x on [0, 1] of the first layer the planted bound is 7/4 against a left side 0.4976. A '
+          'witness needs a datum where the amplitude norm bites: an amplitude with ψ(b) = 0 (a cut-off) and a '
+          'certified left side above (7/2)·(1/2)·∫|ψ′| (above 1.75 when ∫|ψ′| = 1, μ = 1), which no datum of the '
+          'two layers has. That the weight of ∫|ψ′| is 1 rests on the fidelity review and on the proof.'
+          + SCRIPT_NOTE,
+}
+
+ONLY = sys.argv[5:]
+jobs = []
+for pid, stmt, mut, witness, wonly, note in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    if not os.environ.get('VC2B_WITNESS_ONLY'):  # development switch; the recorded run does not set it
+        jobs.append((pid, 'ok-' + pid, make(stmt, mut, False), 'accepted'))
+        jobs.append((pid, 'plant-' + pid, make(stmt, mut, True), None))
+    if witness:
+        jobs.append((pid, 'witness-' + pid, make(stmt, mut, True, witness, wonly), 'accepted'))
+    if pid == 'M1':
+        jobs.append((pid, 'datum-' + pid, make(stmt, mut, True, DATUM_M1), 'accepted'))
+results = [run(j[1], j[2]) for j in jobs]
+
+by_pid = {}
+for (pid, tag, _, w), (verdict, errs, failing) in zip(jobs, results):
+    line = f"{tag}: {verdict}" + (f" (want {w}){'' if verdict == w else '  <-- MISMATCH'}" if w else ' (recorded)')
+    if errs:
+        line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+    if tag.startswith('plant-'):
+        first = [n[2:] for n in failing if n[2:] in FIRST_LAYER]
+        second = [n[2:] for n in failing if n[2:] not in FIRST_LAYER]
+        line += ('\n    copied scripts with an error: first layer: ' + (', '.join(first) or 'none (all accepted)') +
+                 '; second layer: ' + (', '.join(second) or 'none (all accepted)'))
+        if pid == 'M1' and 'quartic_increases' not in second:
+            line += '\n    <-- MISMATCH: the B2 rate lemma was expected to fail on the planted definition'
+        if pid == 'M2' and 'sevenHalves_quartic' not in second:
+            line += '\n    <-- MISMATCH: the B2 script was expected to fail on the planted copy'
+    by_pid.setdefault(pid, {})[tag.split('-')[0]] = (verdict, line)
+lines = []
+for pid, stmt, mut, witness, wonly, note in PLANTS:
+    if pid not in by_pid:
+        continue
+    r = by_pid[pid]
+    lines += [r[k][1] for k in ('ok', 'plant', 'witness', 'datum') if k in r]
+    if witness:
+        v = ('DETECTED (witness compiled: ¬ planted statement)' if r['witness'][0] == 'accepted'
+             else 'WITNESS FAILED  <-- MISMATCH')
+    else:
+        v = VERDICT[pid]
+    lines.append(f'  {pid} [{note}]: {v}')
+open(os.path.join(OUT, 'SUMMARY.txt' if not ONLY else 'SUMMARY-partial.txt'), 'w').write('\n'.join(lines) + '\n')
+print('\n'.join(lines))

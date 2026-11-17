@@ -32,7 +32,9 @@ import OscInt.Front.KusminLandauSanity2
 import OscInt.Front.FiniteRingSanity
 import OscInt.Front.FiniteRingSanity2
 import OscInt.Front.SecondDerivSharpSanity
+import OscInt.Front.SecondDerivSharpSanity2
 import OscInt.Front.HadamardWalkSanity
+import OscInt.Front.HadamardWalkSanity2
 import OscInt.Front.GlobalFinal
 import OscInt.Front.LatticeFinal
 import OscInt.Front.LatticeExplicitFinal

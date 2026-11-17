@@ -1,0 +1,67 @@
+import OscInt.Front.SecondDerivSharpSanity
+
+namespace OscInt.API.SecondDerivSharpSanity2
+
+open OscInt.Statements OscInt.API.SecondDerivSharpSanity Set
+
+/-- **Large curvature, change of variable `x = u/10`.**
+`∫_{−21/100}^{21/100} e^{i·100x²/2} dx = (1/10) ∫_{−21/10}^{21/10} e^{iu²/2} du`. -/
+theorem largeCurv_integral_eq :
+    ∫ x in (-(21 / 100 : ℝ))..(21 / 100), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I) =
+      (1 / 10 : ℝ) • ∫ u in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((u ^ 2 / 2 : ℝ) : ℂ) * Complex.I) := by
+  have h := intervalIntegral.smul_integral_comp_mul_left (a := (-(21 / 100) : ℝ)) (b := 21 / 100)
+    (fun u : ℝ => Complex.exp (((u ^ 2 / 2 : ℝ) : ℂ) * Complex.I)) 10
+  have e1 : (10 : ℝ) * (-(21 / 100)) = -(21 / 10) := by norm_num
+  have e2 : (10 : ℝ) * (21 / 100) = 21 / 10 := by norm_num
+  rw [e1, e2] at h
+  rw [← h, smul_smul]
+  have hf : ∀ x : ℝ, ((10 * x) ^ 2 / 2 : ℝ) = 100 * x ^ 2 / 2 := fun x => by ring
+  simp only [hf]
+  norm_num
+
+/-- **A2. Certified value at large curvature, at the extremal width.**
+`33/100 ≤ |∫_{−21/100}^{21/100} e^{i·100x²/2} dx|` (true value `0.336141…`; a tenth of `quad_norm_lower`). -/
+theorem largeCurv_norm_lower :
+    33 / 100 ≤
+      ‖∫ x in (-(21 / 100 : ℝ))..(21 / 100), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ := by
+  rw [largeCurv_integral_eq, norm_smul, Real.norm_eq_abs, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 10)]
+  linarith [quad_norm_lower]
+
+/-- The left side of VC2-K at the large-curvature datum (`p = 0`, `ψ = 1`) is the integral of `largeCurv_norm_lower`. -/
+theorem oscInt_largeCurv :
+    oscInt (fun x => 100 * x ^ 2 / 2 + 0 * x) (fun _ => 1) (-(21 / 100)) (21 / 100) =
+      ∫ x in (-(21 / 100 : ℝ))..(21 / 100), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I) := by
+  unfold oscInt
+  refine intervalIntegral.integral_congr (fun x _ => ?_)
+  simp only [zero_mul, add_zero, mul_one]
+
+/-- `(x^r)^n = x^{rn}` for `x ≥ 0` and a natural number `n`. -/
+theorem rpow_pow_nat {x : ℝ} (hx : 0 ≤ x) (r : ℝ) (n : ℕ) : (x ^ r) ^ n = x ^ (r * (n : ℝ)) := by
+  rw [← Real.rpow_natCast, ← Real.rpow_mul hx]
+
+/-- `100^{−3/5} ≤ 1/15` (it is `0.063095…`; its fifth power is `10⁻⁶ ≤ 15⁻⁵`). -/
+theorem rpow_hundred_neg_three_fifths_le : (100 : ℝ) ^ (-(3 : ℝ) / 5) ≤ 1 / 15 := by
+  have h5 : ((100 : ℝ) ^ (-(3 : ℝ) / 5)) ^ 5 = 1 / 1000000 := by
+    rw [rpow_pow_nat (by norm_num), show (-(3 : ℝ) / 5) * ((5 : ℕ) : ℝ) = -((3 : ℕ) : ℝ) by norm_num,
+      Real.rpow_neg (by norm_num), Real.rpow_natCast]
+    norm_num
+  by_contra hlt
+  rw [not_le] at hlt
+  have h6 := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 1 / 15) hlt.le 5
+  rw [h5] at h6
+  norm_num at h6
+
+def P_SecondDerivSevenHalvesStatement : Prop :=
+  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →
+    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b → (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) → AmplitudeOn ψ ψ' a b →
+    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ (7 / 2 : ℝ) * μ ^ (-(3 : ℝ) / 5) * ampNorm ψ ψ' a b
+
+theorem witness_not_SecondDerivSevenHalvesStatement : ¬ P_SecondDerivSevenHalvesStatement := by
+  intro h
+  have h1 := h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (fun _ => 100) (fun _ => 1) (fun _ => 0) (-(21 / 100))
+    (21 / 100) 100 0 (by norm_num) (by norm_num) (scaled_hasDerivOn _ _ _) (scaledLinear_hasDerivOn _ _ _)
+    (fun x _ => by simp) (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, oscInt_largeCurv] at h1
+  linarith [largeCurv_norm_lower, rpow_hundred_neg_three_fifths_le]
+
+end OscInt.API.SecondDerivSharpSanity2

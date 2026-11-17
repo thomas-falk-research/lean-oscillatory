@@ -1,0 +1,103 @@
+ok-E1: accepted (want accepted)
+plant-E1: rejected (recorded)
+    first error: plant-E1.lean:180:36: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: sevenHalves_scaled; second layer: sevenHalves_smallCurv_literal, sevenHalves_largeCurv_literal, sevenHalves_quartic
+witness-E1: accepted (want accepted)
+  E1 [VC2-K: μ^{−1/2} ↦ μ^{−1/3}; witness: φ = (1/100)x²/2 on [−21, 21], μ = 1/100, ψ = 1: left side ≥ 33, planted bound (7/2)·100^{1/3} ≤ 35/2 (100^{1/3} ≤ 5)]: DETECTED (witness compiled: ¬ planted statement)
+ok-E2: accepted (want accepted)
+plant-E2: rejected (recorded)
+    first error: plant-E2.lean:120:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: sharp_quadratic, sharp_scaled, sharp_degenerate; second layer: sharp_smallCurv_literal, sharp_largeCurv_literal, sharp_quartic
+witness-E2: accepted (want accepted)
+  E2 [VC2-S: / √λ ↦ / λ^{1/4}; witness: λ = 1/100, f = (1/100)x²/2 on [−21, 21]: left side ≥ 33, planted bound A(w)·100^{1/4} ≤ (26/5)·4 = 20.8 ((1/100)^{1/4} ≥ 1/4, A(w) ≤ 26/5 for w ≤ π)]: DETECTED (witness compiled: ¬ planted statement)
+ok-E3: accepted (want accepted)
+plant-E3: rejected (recorded)
+    first error: plant-E3.lean:180:36: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: sevenHalves_scaled; second layer: sevenHalves_smallCurv_literal, sevenHalves_largeCurv_literal, sevenHalves_quartic
+witness-E3: accepted (want accepted)
+  E3 [VC2-K: μ^{−1/2} ↦ μ^{−3/5}; witness: φ = 100x²/2 on [−21/100, 21/100], μ = 100, ψ = 1: left side ≥ 33/100, planted bound (7/2)·100^{−3/5} ≤ 7/30 = 0.2333 (100^{−3/5} ≤ 1/15)]: DETECTED (witness compiled: ¬ planted statement)
+ok-E4: accepted (want accepted)
+plant-E4: rejected (recorded)
+    first error: plant-E4.lean:120:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: sharp_quadratic, sharp_scaled, sharp_degenerate; second layer: sharp_smallCurv_literal, sharp_largeCurv_literal, sharp_quartic
+witness-E4: accepted (want accepted)
+  E4 [VC2-S: / √λ ↦ / λ^{3/5}; witness: λ = 100, f = 100x²/2 on [−21/100, 21/100]: left side ≥ 33/100, planted bound A(w)/100^{3/5} < (26/5)/(520/33) = 33/100 (100^{3/5} > 520/33 because (520/33)^5 = 971509.4… < 10^6; A(w) ≤ 26/5 for w ≤ π; in floating point 0.33 against 0.32810)]: DETECTED (witness compiled: ¬ planted statement)
+ok-C1: accepted (want accepted)
+plant-C1: rejected (recorded)
+    first error: plant-C1.lean:33:2: error: Type mismatch
+    copied scripts with an error: first layer: profile_le; second layer: profile_within_sharp
+witness-C1: accepted (want accepted)
+  C1 [VC2-N: 7/2 ↦ 67/20; witness: w = 441/200, 67/20 < 3.35007 ≤ A(w) (vdc2Profile_lower_sharp: the exact value of the polynomial bound of the first layer, 3.3500756…)]: DETECTED (witness compiled: ¬ planted statement)
+ok-C2: accepted (want accepted)
+plant-C2: rejected (recorded)
+    first error: plant-C2.lean:158:2: error: Type mismatch: After simplification, term
+    copied scripts with an error: first layer: sevenHalves_quadratic, sevenHalves_linear, sevenHalves_neg, sevenHalves_scaled; second layer: sevenHalves_smallCurv_literal, sevenHalves_largeCurv_literal, sevenHalves_quartic
+witness-C2: accepted (want accepted)
+  C2 [VC2-K: 7/2 ↦ 67/20; witness: φ = x²/2 on [−21/10, 21/10], μ = 1, ψ = 1: left side ≥ 3.358 > 67/20 (quad_norm_lower_sharp)]: DETECTED (witness compiled: ¬ planted statement)
+ok-M1: accepted (want accepted)
+plant-M1: rejected (recorded)
+    first error: plant-M1.lean:111:21: error: `ring_nf` made no progress on the goal
+    copied scripts with an error: first layer: scaled_increases, quad_increases; second layer: quartic_increases
+datum-M1: accepted (want accepted)
+  M1 [DerivIncreasesAtRate: ≤ ↦ = (the statement for exact parabolas only)]: TRUE WEAKENING: the planted hypothesis f′(y) − f′(x) = λ(y − x) implies the frozen one (an equality is an inequality), so the planted statement is implied by the frozen statement and no witness can exist. It is weaker in content: it speaks only of phases with f′ affine of slope λ on (a, b), that is, of exact parabolas. Script-level evidence: the copied rate lemma quartic_increases of the datum f = x²/2 + x⁴/12 (second layer, B1) is rejected on the planted definition, and not for a reason of script only: datum-M1 (compiled on the planted definition) proves that this datum does not satisfy the planted hypothesis on (−1, 1), so sharp_quartic is not an instance of the planted statement. The rejection of the copied scaled_increases and quad_increases is script-only (their proof term is `le_of_eq`): datum-M1 also proves that the parabolas satisfy the planted definition.
+ok-M2: accepted (want accepted)
+plant-M2: rejected (recorded)
+    first error: plant-M2.lean:240:16: error: Type mismatch
+    copied scripts with an error: first layer: none (all accepted); second layer: sevenHalves_quartic
+  M2 [VC2-K: μ ≤ |φ″(x)| ↦ |φ″(x)| = μ (the statement for |φ″| constant only)]: TRUE WEAKENING: the planted hypothesis |φ″(x)| = μ implies the frozen one μ ≤ |φ″(x)|, so the planted statement is implied by the frozen statement and no witness can exist. It is weaker in content: it speaks only of phases with |φ″| constant. Script-level evidence: the copied script sevenHalves_quartic (φ = x²/2 + x⁴/12, φ″ = 1 + x², second layer, B2) is rejected on the planted copy: it supplies 1 ≤ |1 + x²|, and |1 + x²| = 1 is false on (−1, 1) (quartic_second_not_exact, unconditional, in the second layer). The copied scripts on data with |φ″| constant are accepted.
+ok-H1: accepted (want accepted)
+plant-H1: rejected (recorded)
+    first error: plant-H1.lean:119:4: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: sharp_quadratic, sharp_scaled, sharp_degenerate; second layer: sharp_smallCurv_literal, sharp_largeCurv_literal, sharp_quartic
+witness-H1: accepted (want accepted)
+  H1 [VC2-S: a ≤ b dropped; witness: f = 0, f′ = 0, a = 6, b = 0, λ = 1 (the interval (6, 0) is empty, so the rate hypothesis is vacuous): left side 6, and A(w) ≤ 26/5 for w ≤ π]: DETECTED (witness compiled: ¬ planted statement)
+ok-H2: accepted (want accepted)
+plant-H2: rejected (recorded)
+    first error: plant-H2.lean:119:4: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: sharp_quadratic, sharp_scaled, sharp_degenerate; second layer: sharp_smallCurv_literal, sharp_largeCurv_literal, sharp_quartic
+witness-H2: accepted (want accepted)
+  H2 [VC2-S: HasDerivOn f f′ a b dropped; witness: f = 0, f′ = x on [0, 6], λ = 1 (nothing ties f′ to f): left side 6, and A(w) ≤ 26/5 for w ≤ π]: DETECTED (witness compiled: ¬ planted statement)
+ok-H3: accepted (want accepted)
+plant-H3: rejected (recorded)
+    first error: plant-H3.lean:156:12: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: sevenHalves_quadratic, sevenHalves_linear, sevenHalves_neg, sevenHalves_scaled, sevenHalves_ramp; second layer: sevenHalves_smallCurv_literal, sevenHalves_largeCurv_literal, sevenHalves_quartic
+witness-H3: accepted (want accepted)
+  H3 [VC2-K: a ≤ b dropped; witness: φ = 0, a = 4, b = 0, μ = 1, ψ = 1 (the interval (4, 0) is empty): left side 4, bound 7/2]: DETECTED (witness compiled: ¬ planted statement)
+ok-H4: accepted (want accepted)
+plant-H4: rejected (recorded)
+    first error: plant-H4.lean:156:12: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: sevenHalves_quadratic, sevenHalves_linear, sevenHalves_neg, sevenHalves_scaled, sevenHalves_ramp; second layer: sevenHalves_smallCurv_literal, sevenHalves_largeCurv_literal, sevenHalves_quartic
+witness-H4: accepted (want accepted)
+  H4 [VC2-K: 0 < μ dropped; witness: φ = 0 on [0, 1], μ = 0, ψ = 1: left side 1, bound (7/2)·0^{−1/2} = 0 in Lean]: DETECTED (witness compiled: ¬ planted statement)
+ok-H5: accepted (want accepted)
+plant-H5: rejected (recorded)
+    first error: plant-H5.lean:156:34: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: sevenHalves_quadratic, sevenHalves_linear, sevenHalves_neg, sevenHalves_scaled, sevenHalves_ramp; second layer: sevenHalves_smallCurv_literal, sevenHalves_largeCurv_literal, sevenHalves_quartic
+witness-H5: accepted (want accepted)
+  H5 [VC2-K: HasDerivOn φ′ φ″ a b dropped; witness: φ = 0, φ′ = 0, φ″ = 100 on [0, 1], μ = 100, ψ = 1 (nothing ties φ″ to φ′): left side 1, bound 7/20]: DETECTED (witness compiled: ¬ planted statement)
+ok-P1: accepted (want accepted)
+plant-P1: rejected (recorded)
+    first error: plant-P1.lean:157:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: sevenHalves_quadratic, sevenHalves_linear, sevenHalves_neg, sevenHalves_scaled, sevenHalves_ramp; second layer: sevenHalves_smallCurv_literal, sevenHalves_largeCurv_literal, sevenHalves_quartic
+witness-P1: accepted (want accepted)
+  P1 [VC2-K: ampNorm ↦ ∫|ψ′|; witness: φ = x²/2 on [−21/10, 21/10], μ = 1, ψ = 1, ψ′ = 0: left side ≥ 33/10, planted bound 0]: DETECTED (witness compiled: ¬ planted statement)
+ok-W1: accepted (want accepted)
+plant-W1: rejected (recorded)
+    first error: plant-W1.lean:121:12: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: sharp_quadratic, sharp_scaled, sharp_degenerate; second layer: sharp_smallCurv_literal, sharp_largeCurv_literal, sharp_quartic
+  W1 [VC2-S: range of w: [0, π] ↦ [0, 441/200]]: NOT DETECTED: no witness attempted. The planted statement is false on paper: at f = x²/2 on [−21/10, 21/10], λ = 1, the left side is 3.36141… and the maximum of A on [0, 441/200] is A(441/200) = 3.35396… (floating point, the referee's values; A increases up to w ≈ 2.2974). Refuting it in Lean needs an upper bound A(w) ≤ 3.36 for every w in [0, 441/200]: an upper bound for the profile on an interval, which is a piece of VC2-N and which this layer must not prove (the trivial bound 2√(2w) gives 4.2 at w = 441/200). The margin, 0.0075, is also below the margin of the certified left side (3.358 from quad_norm_lower_sharp, against the true 3.36141). So that the range of w in VC2-S is [0, π] and not a shorter interval that still contains 441/200 rests on the fidelity review and on the proof. The verdict does not use the rejection or acceptance of the copied scripts, which is recorded above.
+ok-X1: accepted (want accepted)
+plant-X1: rejected (recorded)
+    first error: plant-X1.lean:121:16: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: sharp_quadratic, sharp_scaled; second layer: sharp_smallCurv_literal, sharp_largeCurv_literal, sharp_quartic
+  X1 [VC2-S: f(x) ↦ f′(x) inside the exponential]: NOT DETECTED: no witness attempted (the brief of this run records it without one). The planted statement is false in general, and at every datum of the two layers it is hidden: at f = λx²/2 on [−c, c] the planted left side is |∫ e^{iλx} dx| = 2|sin(λc)|/λ, which is 1.73 against A ≤ 3.36 at λ = 1, c = 21/10, 0.0173 against 0.336 at λ = 100, c = 21/100, and 41.7 against 33.6 ≤ A(w)·10 ≤ 52 at λ = 1/100, c = 21 (floating point; the last one exceeds the true bound 33.64 but not the bound 52 that the trivial estimate A ≤ 26/5 gives). Remark for the lead (not compiled, on paper only): a fixed datum outside the two layers would detect it with the trivial bound alone: λ = 1/100, f = (1/100)x²/2 on [−100, 100]: the planted left side is 200 sin 1 = 168.3 (real part ≥ 200 cos 1 ≥ 100 from cos 1 ≥ 1/2), against A(w)·10 ≤ 52. The verdict does not use the rejection or acceptance of the copied scripts, which is recorded above.
+ok-Q1: accepted (want accepted)
+plant-Q1: rejected (recorded)
+    first error: plant-Q1.lean:34:32: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: attained_at; second layer: attained_at_sharp
+  Q1 [VC2-A: integrand e^{ix²/2} ↦ e^{ix²}]: NOT DETECTED: no witness attempted. A witness needs w ≥ 0 with |∫_{−√(2w)}^{√(2w)} e^{ix²} dx| < A(w), that is, an upper bound for an oscillatory integral at a fixed w that beats a certified lower bound of A(w): at w = 441/200 the planted right side is (1/√2)|∫_{−2.97}^{2.97} e^{iu²/2} du| = 1.657 against A = 3.354 (floating point), but the two layers have lower bounds of integrals only (polynomial minorants of cos and sin on the range of the phase), and an upper bound by the same method needs majorants of degree ≥ 9 on a phase range of length 4.41. Not attempted in this run. The verdict does not use the rejection or acceptance of the copied scripts, which is recorded above.
+ok-P2: accepted (want accepted)
+plant-P2: rejected (recorded)
+    first error: plant-P2.lean:157:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: sevenHalves_quadratic, sevenHalves_linear, sevenHalves_neg, sevenHalves_scaled, sevenHalves_ramp; second layer: sevenHalves_smallCurv_literal, sevenHalves_largeCurv_literal, sevenHalves_quartic
+  P2 [VC2-K: ampNorm ↦ |ψ(b)| + (1/2)∫|ψ′|]: NOT DETECTED: no witness attempted. At ψ = 1 the planted norm equals ampNorm, and at the ramp ψ(x) = 1 − x on [0, 1] of the first layer the planted bound is 7/4 against a left side 0.4976. A witness needs a datum where the amplitude norm bites: an amplitude with ψ(b) = 0 (a cut-off) and a certified left side above (7/2)·(1/2)·∫|ψ′| (above 1.75 when ∫|ψ′| = 1, μ = 1), which no datum of the two layers has. That the weight of ∫|ψ′| is 1 rests on the fidelity review and on the proof. The verdict does not use the rejection or acceptance of the copied scripts, which is recorded above.

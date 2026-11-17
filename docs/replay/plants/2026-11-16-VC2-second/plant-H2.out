@@ -1,0 +1,55 @@
+plant-H2.lean:119:4: error: Application type mismatch: The argument
+  quad_hasDerivOn ?m.94 ?m.95
+has type
+  HasDerivOn (fun x => x ^ 2 / 2) (fun x => x) ?m.94 ?m.95
+but is expected to have type
+  DerivIncreasesAtRate (fun x => x) (-c) c 1
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) (-c) c 1 ?m.87 one_pos (quad_hasDerivOn ?m.94 ?m.95)
+plant-H2.lean:118:9: error: Tactic `rcases` failed: `x✝ : ?m.97` is not an inductive datatype
+plant-H2.lean:127:18: error: Application type mismatch: The argument
+  scaled_hasDerivOn ?m.145 ?m.146 ?m.147
+has type
+  HasDerivOn (fun x => ?m.145 * x ^ 2 / 2) (fun x => ?m.145 * x) ?m.146 ?m.147
+but is expected to have type
+  DerivIncreasesAtRate (fun x => 100 * x) (-(c / 10)) (c / 10) 100
+in the application
+  h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (-(c / 10)) (c / 10) 100 ?m.143 ?m.144
+    (scaled_hasDerivOn ?m.145 ?m.146 ?m.147)
+plant-H2.lean:126:9: error: Tactic `rcases` failed: `x✝ : ?m.149` is not an inductive datatype
+plant-H2.lean:134:4: error: Application type mismatch: The argument
+  quad_hasDerivOn ?m.46 ?m.47
+has type
+  HasDerivOn (fun x => x ^ 2 / 2) (fun x => x) ?m.46 ?m.47
+but is expected to have type
+  DerivIncreasesAtRate (fun x => x) a a 1
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) a a 1 le_rfl one_pos (quad_hasDerivOn ?m.46 ?m.47)
+plant-H2.lean:133:9: error: Tactic `rcases` failed: `x✝ : ?m.49` is not an inductive datatype
+plant-H2.lean:148:4: error: Application type mismatch: The argument
+  scaled_hasDerivOn ?m.156 ?m.157 ?m.158
+has type
+  HasDerivOn (fun x => ?m.156 * x ^ 2 / 2) (fun x => ?m.156 * x) ?m.157 ?m.158
+but is expected to have type
+  DerivIncreasesAtRate (fun x => 1 / 100 * x) (-21) 21 (1 / 100)
+in the application
+  h (fun x => 1 / 100 * x ^ 2 / 2) (fun x => 1 / 100 * x) (-21) 21 (1 / 100) ?m.154 ?m.155
+    (scaled_hasDerivOn ?m.156 ?m.157 ?m.158)
+plant-H2.lean:167:4: error: Application type mismatch: The argument
+  scaled_hasDerivOn ?m.148 ?m.149 ?m.150
+has type
+  HasDerivOn (fun x => ?m.148 * x ^ 2 / 2) (fun x => ?m.148 * x) ?m.149 ?m.150
+but is expected to have type
+  DerivIncreasesAtRate (fun x => 100 * x) (-(21 / 100)) (21 / 100) 100
+in the application
+  h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (-(21 / 100)) (21 / 100) 100 ?m.146 ?m.147
+    (scaled_hasDerivOn ?m.148 ?m.149 ?m.150)
+plant-H2.lean:191:4: error: Application type mismatch: The argument
+  quartic_hasDerivOn ?m.190 ?m.191
+has type
+  HasDerivOn (fun x => x ^ 2 / 2 + x ^ 4 / 12) (fun x => x + x ^ 3 / 3) ?m.190 ?m.191
+but is expected to have type
+  DerivIncreasesAtRate (fun x => x + x ^ 3 / 3) (-c) c 1
+in the application
+  h (fun x => x ^ 2 / 2 + x ^ 4 / 12) (fun x => x + x ^ 3 / 3) (-c) c 1 ?m.183 one_pos
+    (quartic_hasDerivOn ?m.190 ?m.191)

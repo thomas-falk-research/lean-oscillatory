@@ -217,3 +217,8 @@ Two limits of round 3 that this page did not state (post-proof referee C, 2026-1
 referees, four each, so they are not eight independent trials and the pooled interval [0.794, 1.00] is nominal; and
 its two "controls" are the genuine reviews of the statements under test, so "0 false alarms of 2" assumes that
 those statements are faithful, which is the thing being measured.
+
+Rounds not run (2026-11-16/17). No calibration copy with planted errors was given to any referee of batch FR (blind
+pre-proof A and B, the route referee, post-proof A, B and C) or to the blind pre-proof referees of batches VC2 and
+HW. The detection rates on this page are those of rounds 1 to 4 and say nothing measured about those reviews; the
+answers files of the three batches say the same.

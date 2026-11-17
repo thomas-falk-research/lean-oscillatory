@@ -26,8 +26,7 @@ below it, and every rule is binding.
   (time in the session log). 86 pinned statements; 65 machine-checked as stated; 13 proved, replay pending (PA, KL, FR); 8 stated and frozen (VC2, HW).
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
   no agent at the time of this commit. Otherwise nothing local; the dispatched `verify.yml` run on 880b537 ended with
-  success (clean-runner replay of PA and KL; session log). In the lead's scratch, not in the tree: the sanity layer and planted controls
-  of the draft batch FR (an agent's work; if lost, redo from `docs/design/batch-FR-draft.md`).
+  success (clean-runner replay of PA and KL; session log).
 - **Exact next command:** read the session log's last rows. If a `make verify-all` start is recorded without a
   result, the run is dead: record it as a partial under `docs/replay/` and start it again on a clean tree.
 - **Owner decisions of 2026-11-16, done:** rules 7, 18, 20, 21, 22 (`docs/lessons.md`) with their tools
@@ -46,8 +45,7 @@ below it, and every rule is binding.
   (`stamps/20261116T225756Z-5792039264f0`). **Proved in Lean** (2026-11-16/17): `OscInt.API.ringKernelSolves`, `ringUnique`,
   `ringCosetSum`, `ringFiniteSize`, `chainKernelSolves`, `chainUnique`, `chainFiniteSize`
   (`OscInt/Front/FiniteRingFinal.lean`; route, referee, parts: `docs/proof-FR.md`). Order from here: post-proof
-  reviews A, B, C on the integration commit, answers, stamp; then the isolated replay (with PA and KL). A route on paper exists in the lead's scratch; if lost, the dependencies are in
-  `docs/design/batch-FR-draft.md`.
+  reviews A, B, C on the integration commit, answers, stamp; then the isolated replay (with PA and KL).
 - **Batch VC2 (sharp second-derivative van der Corput bound; four statements VC2-S, VC2-A, VC2-N, VC2-K):** in the
   tree for its freeze (`OscInt/Statements/SecondDerivSharp.lean`, sanity layer, plants, challenge,
   `comparator-VC2.json`, prose). **Frozen**: stamp `stamps/20261116T222541Z-5b72549117b1`, pinned. Blind pre-proof reviews A and B are in

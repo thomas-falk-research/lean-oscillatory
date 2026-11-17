@@ -1194,9 +1194,9 @@
     "N ≥ 1; t ∈ ℝ; r ∈ ℤ",
     "η > 0"
    ],
-   "conclusion": "|R_N(t, r) − G(t, r)| ≤ 2 e^{2|t| sinh η} cosh(rη) / (e^{ηN} − 1): the ring of N sites differs from the infinite line by an explicit, exponentially small amount until the wave wraps around (constant 2 best possible as a supremum)",
+   "conclusion": "|R_N(t, r) − G(t, r)| ≤ 2 e^{2|t| sinh η} cosh(rη) / (e^{ηN} − 1): the ring of N sites differs from the infinite line by an explicit, exponentially small amount until the wave wraps around",
    "rate": "e^{−η(N − |r|)} for each fixed η and t",
-   "uniform_over": "N, t, r, η",
+   "uniform_over": "N, t, r, η (R_N has period N in r and the bound has not: use the representative with |r| ≤ N/2; for |r| ≥ N the bound exceeds 1)",
    "smoothness": "—",
    "see_also": [
     "FR-S",
@@ -1243,7 +1243,7 @@
     "M ∈ ℕ; t ∈ ℝ; sites 1 ≤ x, y ≤ M",
     "η > 0"
    ],
-   "conclusion": "|C_M(t; x, y) − G(t, x − y)| ≤ e^{2|t| sinh η} (e^{−(x+y)η} + 2(cosh((x−y)η) + cosh((x+y)η))/(e^{2(M+1)η} − 1)): the open chain differs from the infinite line by its nearest images, explicitly (not sharp)",
+   "conclusion": "|C_M(t; x, y) − G(t, x − y)| ≤ e^{2|t| sinh η} (e^{−(x+y)η} + 2(cosh((x−y)η) + cosh((x+y)η))/(e^{2(M+1)η} − 1)) for sites 1 ≤ x, y ≤ M: the open chain differs from the infinite line by its images in the two walls, each bounded explicitly",
    "rate": "e^{−η · (distance to the nearest image)} for each fixed η and t",
    "uniform_over": "M, t, x, y, η",
    "smoothness": "—",

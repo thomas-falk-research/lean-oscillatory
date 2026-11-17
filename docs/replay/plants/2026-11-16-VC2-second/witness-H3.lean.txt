@@ -1,0 +1,23 @@
+import OscInt.Front.SecondDerivSharpSanity
+
+namespace OscInt.API.SecondDerivSharpSanity2
+
+open OscInt.Statements OscInt.API.SecondDerivSharpSanity Set
+
+def P_SecondDerivSevenHalvesStatement : Prop :=
+  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), 0 < μ →
+    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b → (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) → AmplitudeOn ψ ψ' a b →
+    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ (7 / 2 : ℝ) * μ ^ (-(1 : ℝ) / 2) * ampNorm ψ ψ' a b
+
+theorem witness_not_SecondDerivSevenHalvesStatement : ¬ P_SecondDerivSevenHalvesStatement := by
+  intro h
+  have h1 := h (fun _ => 0) (fun _ => 0) (fun _ => 0) (fun _ => 1) (fun _ => 0) 4 0 1 0 one_pos
+    (zero_hasDerivOn _ _) (zero_hasDerivOn _ _) (fun x hx => absurd (hx.1.trans hx.2) (by norm_num))
+    (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, Real.one_rpow] at h1
+  have h2 : ‖∫ _x in (4 : ℝ)..0, Complex.exp (((0 : ℝ) : ℂ) * Complex.I)‖ ≤ 7 / 2 := by
+    simpa [oscInt] using h1
+  rw [intervalIntegral.integral_symm, norm_neg, norm_integral_exp_zero 0 4 (by norm_num)] at h2
+  norm_num at h2
+
+end OscInt.API.SecondDerivSharpSanity2

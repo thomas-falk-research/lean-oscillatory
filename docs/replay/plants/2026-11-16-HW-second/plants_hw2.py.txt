@@ -1,0 +1,277 @@
+#!/usr/bin/env python3
+"""Second run of planted copies of the batch-HW statements (mutations found by the blind pre-proof review).
+
+As the first run (docs/replay/plants/2026-11-16-HW/plants_hw.py.txt) and the second run of batch FR. The batch is now
+a frozen module (OscInt/Statements/HadamardWalk.lean) and the first sanity layer is compiled
+(OscInt/Front/HadamardWalkSanity.lean); the second layer (HadamardWalkSanity2.lean) is not a module of the library
+yet. Every generated file therefore imports OscInt.Front.HadamardWalkSanity only and contains, in the namespace of
+the second layer: the unconditional data lemmas of the second layer that the file needs (copied verbatim with their
+docstrings, selected by name closure), then, under the prefix P_, a copy of ONE statement constant of the statement
+module and copies of the scripts that go through it: every sanity theorem of both layers that takes it as its
+hypothesis. Exactly one mutation (one textual pattern at its recorded occurrences, or the two constants of HW-K
+together) is applied to the copied statement. The unplanted copy (ok-) must compile.
+Witness files (docs/lessons.md, rule 9): a compiled proof of the negation of the planted statement from unconditional
+data lemmas of the two layers (data at the fixed times t = 1, 2, 3, 5). No file proves, or uses a proof of, a
+statement of the batch, and no file contains a fact about the walk or the kernel at a general time.
+Verdicts: DETECTED (witness compiled), NOT DETECTED (no witness; "script rejected" alone is recorded and is not a
+detection), TRUE WEAKENING (implied by the frozen statement), NO VIOLATION KNOWN.
+Usage: plants_hw2.py REPO SANITY2_FILE OUTDIR SCRATCHDIR [plant ids]
+"""
+import os, re, subprocess, sys
+
+REPO, SAN2_PATH, OUT, SCR = sys.argv[1:5]
+os.makedirs(OUT, exist_ok=True)
+os.makedirs(SCR, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/HadamardWalk.lean')).read().split('\n')
+SAN1 = open(os.path.join(REPO, 'OscInt/Front/HadamardWalkSanity.lean')).read().split('\n')
+SAN2_ALL = open(SAN2_PATH).read()
+SAN2 = SAN2_ALL[SAN2_ALL.index('namespace OscInt.API.HadamardWalkSanity2'):].split('\n')
+R, K, D, L = ('HadamardKernelStatement', 'HadamardKernelBoundStatement', 'HadamardDecayStatement',
+              'HadamardDispersiveStatement')
+# Scripts: the theorems of the two layers that take the statement constant as hypothesis (first layer first).
+THMS = {
+    R: ['hwR_zero', 'hwR_zero_table', 'hwR_one', 'hwR_one_table', 'hwR_two', 'hwR_two_table'],
+    K: ['hwK_one', 'hwK_one_simplified', 'hwK_two', 'hwK_eight', 'hwK_eight_simplified', 'hwK_five'],
+    D: ['hwD_one', 'hwD_two', 'hwD_three', 'hwD_three_unit'],
+    L: ['hwL_point', 'hwL_two_site', 'hwL_five', 'hwL_point_three', 'hwL_two_site_two'],
+}
+FIRST_LAYER = set()
+DECL = re.compile(r"^(?:noncomputable )?(theorem|def) ([A-Za-z_0-9']+)")
+for l in SAN1:
+    m = DECL.match(l)
+    if m:
+        FIRST_LAYER.add(m.group(2))
+
+
+def block(lines, name):
+    """The declaration `name` without its docstring, up to the next blank line; None if absent."""
+    for i, l in enumerate(lines):
+        m = DECL.match(l)
+        if m and m.group(2) == name:
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    return None
+
+
+def script(name):
+    t = block(SAN2, name)
+    return t if t is not None else block(SAN1, name)
+
+
+def data_blocks():
+    """All declarations of the second layer with docstrings, in file order: name -> (index, text)."""
+    res, cur = {}, []
+    for l in SAN2[1:] + ['']:
+        if l.strip() == '':
+            for c in cur:
+                m = DECL.match(c)
+                if m:
+                    res[m.group(2)] = (len(res), '\n'.join(cur))
+                    break
+            cur = []
+        else:
+            cur.append(l)
+    return res
+
+
+DATA = data_blocks()
+for names in THMS.values():
+    for n in names:
+        assert (n in DATA) != (n in FIRST_LAYER), n
+
+
+def closure(text, renamed):
+    """Unconditional declarations of the second layer used by `text`, transitively, in file order."""
+    need, todo = set(), [text]
+    while todo:
+        t = todo.pop()
+        for w in set(re.findall(r"[A-Za-z_][A-Za-z_0-9']*", t)):
+            if w in DATA and w not in need and w not in renamed:
+                assert not any(s in DATA[w][1] for s in (R, K, D, L)), f'{w} is not unconditional'
+                need.add(w)
+                todo.append(DATA[w][1])
+    return [DATA[n][1] for n in sorted(need, key=lambda n: DATA[n][0])]
+
+
+HEADER = """import OscInt.Front.HadamardWalkSanity
+
+namespace OscInt.API.HadamardWalkSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.HadamardWalkSanity
+
+"""
+FOOTER = '\n\nend OscInt.API.HadamardWalkSanity2\n'
+
+
+def make(target, muts, planted, witness=None):
+    """target: the statement constant copied under P_; muts: [(old, new, count)]; witness: None or a proof term of
+    `¬ P_<target>`."""
+    t = block(STMT, target)
+    assert t is not None, target
+    if planted:
+        for old, new, count in muts:
+            assert t.count(old) == count, (target, old, t.count(old))
+            t = t.replace(old, new)
+    parts, renamed = [t], [target]
+    if witness is None:
+        for th in THMS[target]:
+            parts.append(script(th))
+            renamed.append(th)
+    else:
+        parts.append(f'theorem witness_not_{target} : ¬ {target} :=\n  {witness}')
+    text = '\n\n'.join(parts)
+    for n in sorted(renamed, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r"(?![\w'])", 'P_' + n, text)
+    data = closure(text, set(renamed))
+    return HEADER + '\n\n'.join(data + [text]) + FOOTER
+
+
+def run(tag, text):
+    src = os.path.join(SCR, tag + '.lean')
+    open(src, 'w').write(text)
+    open(os.path.join(OUT, tag + '.lean.txt'), 'w').write(text)
+    r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                       cwd=REPO, capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+    errs = [l for l in out.split('\n') if ': error' in l]
+    # the copied scripts in which an error is reported, in file order
+    lines, failing = text.split('\n'), []
+    for e in errs:
+        m = re.search(r'\.lean:(\d+):\d+: error', e)
+        if not m:
+            continue
+        i = int(m.group(1)) - 1
+        while i >= 0 and not DECL.match(lines[i]):
+            i -= 1
+        name = DECL.match(lines[i]).group(2) if i >= 0 else '?'
+        if name not in failing:
+            failing.append(name)
+    return ('accepted' if r.returncode == 0 and not errs else 'rejected'), errs, failing
+
+
+# Table of planted controls, second run for batch HW (part of plants_hw2.py).
+# (id, statement constant copied under P_, [(old, new, number of textual occurrences)], witness, note)
+# witness: a proof term of ¬ P_<statement>, or None.
+
+W_Rl = '''by
+  intro h
+  have h1 := congrArg Prod.fst (h 1 0 2 (-1))
+  rw [show (2 : ℕ) + 1 = 3 from rfl, hadamardWalk_point_three] at h1
+  simp only [hadamardKernel_three, hadamardKernel_two] at h1
+  norm_num at h1
+  exact inv_ne_zero sqrt_two_ne_zero (by linear_combination (1 / 2 : ℂ) * h1)'''
+
+W_Rm = '''by
+  intro h
+  have h1 := congrArg Prod.snd (h 0 1 2 1)
+  rw [show (2 : ℕ) + 1 = 3 from rfl, hadamardWalk_point_three] at h1
+  simp only [hadamardKernel_three, hadamardKernel_two] at h1
+  norm_num at h1
+  exact inv_ne_zero sqrt_two_ne_zero (by linear_combination (-1 / 2 : ℂ) * h1)'''
+
+W_De = '''fun h => hwD_constant_one_false (h 1 0 3 (-1) (by norm_num)).1'''
+
+W_Le = '''fun h => hwL_constant_one_false (h (pointState 1 0) 3 (-1) (pointState_finite 1 0) (by norm_num)).1'''
+
+W_Lg = '''fun h => hwL_constSecond_false 0 (h constSecondState 1 0 constSecondState_first_finite le_rfl).1'''
+
+W_Ke = '''by
+  intro h
+  have h1 := h 5 0 (by norm_num)
+  rw [hadamardKernel_five_zero, norm_neg, norm_div, norm_one, Complex.norm_ofNat] at h1
+  exact hwK_constants_one_zero_bite h1'''
+
+PLANTS = [
+    ('HW-R-l', R, [('+ a * hadamardKernel t x', '+ a * hadamardKernel t (-x)', 1)], W_Rl,
+     'a K(t, x) ↦ a K(t, −x) in the first component; witness: t = 2, x = −1, (a, b) = (1, 0); K(3, 0) = 0 and '
+     'K(2, 1) = −1/√2 (1/√2 = −1/√2)'),
+    ('HW-R-m', R, [('+ b * hadamardKernel t x', '+ b * hadamardKernel t (-x)', 1)], W_Rm,
+     'b K(t, x) ↦ b K(t, −x) in the second component; witness: t = 2, x = 1, (a, b) = (0, 1); K(3, 0) = 0 and '
+     'K(2, −1) = 1/√2 (−1/√2 = 1/√2)'),
+    ('HW-D-e', D, [('39 * ', '1 * ', 2)], W_De,
+     'constant 39 ↦ 1 (both components); witness: t = 3, x = −1, (a, b) = (1, 0) (1/√2 ≤ 3^{−1/3} = 0.6934)'),
+    ('HW-L-e', L, [('39 * ', '1 * ', 2)], W_Le,
+     'constant 39 ↦ 1 (both components); witness: the point state (1, 0), t = 3, x = −1 (1/√2 ≤ 3^{−1/3})'),
+    ('HW-L-f', L, [('(-(1 : ℝ) / 3)', '((1 : ℝ) / 3)', 2)], None,
+     'exponent −1/3 ↦ 1/3 (both components)'),
+    ('HW-L-g', L, [('{y : ℤ | ψ₀ y ≠ (0, 0)}.Finite', '{y : ℤ | (ψ₀ y).1 ≠ 0}.Finite', 1)], W_Lg,
+     'support hypothesis ψ₀ y ≠ (0, 0) ↦ (ψ₀ y).1 ≠ 0; witness: the constant state (0, 1), t = 1, x = 0; no site '
+     'has a nonzero first component, the ∑ᶠ is 0 (1/√2 ≤ 39 · 0 · 1)'),
+    ('HW-K-e', K, [('7 * ', '1 * ', 1), ('12 * ', '0 * ', 1)], W_Ke,
+     'constants (7, 12) ↦ (1, 0) (so t^{−1/2} alone); witness: t = 5, x = 0, |K(5, 0)| = 1/2 '
+     '(1/2 ≤ 5^{−1/2} = 0.4472)'),
+    ('HW-K-f', K, [(' + 12 * ', ' * 12 * ', 1)], None,
+     '+ between the two terms ↦ * (so 84 t^{−5/6})'),
+    ('HW-K-g', K, [('7 * ', '0 * ', 1), ('12 * ', '1 * ', 1)], None,
+     'constants (7, 12) ↦ (0, 1) (so t^{−1/3} alone)'),
+]
+VERDICT = {
+    'HW-L-f': 'NOT DETECTED, and no witness can exist: TRUE WEAKENING. Under the hypothesis 1 ≤ t of the statement, '
+              't^{−1/3} ≤ 1 ≤ t^{1/3}, and the factor 39 ∑ᶠ (|ψ₀(y)₁| + |ψ₀(y)₂|) is nonnegative, so the planted '
+              'bound is at least the bound of the frozen statement under the same hypotheses: the frozen statement '
+              'implies the planted one (not proved in Lean: a conclusion for every t is outside this layer). About '
+              'mutations of the exponent in general, with the constant 39 kept: the largest datum of the two layers '
+              'relative to the ℓ¹ sum is 1/√2 (t = 1 and t = 3) and 1/2 (t = 2), and 39 t^e is below it only for '
+              'e < −6.29 at t = 2 and e < −3.65 at t = 3 (explore_hw2.py.txt, unregistered); for every e ≥ −1 the '
+              'planted bound is at least 13 times the ℓ¹ sum at t ≤ 3. So no mutation of the exponent to a value '
+              'e ≥ −3.65 is refutable with data at t ≤ 3: the exponent −1/3 of HW-L (and of HW-D, first run, '
+              'plant HW-D-d: first violation of 39/t at t = 126) rests on the fidelity review and on the proof. '
+              'The rejection of the copied scripts is by the literal form of the conclusion only.',
+    'HW-K-f': 'NOT DETECTED: no witness. The planted bound is 84 t^{−5/6}; at the exact data of the two layers it '
+              'holds with a wide margin (t = 1: 1 against 84; t = 2: 1/√2 against 47.1; t = 3: 1/2 against 33.6; '
+              't = 5: 1/2 against 22.0). Floating-point scan (explore_hw2.py.txt, unregistered; kernel by FFT, all '
+              't ≤ 9000): the first t with sup_x |K(t, x)| > 84 t^{−5/6} is t = 7749 (0.048238 against 0.048222; '
+              'the blind referee had "near 7700"). A witness needs a lower bound for one value of the kernel at '
+              'such a time, which no datum at a fixed small time and no short proof gives. That the two terms are '
+              'added rests on the fidelity review and on the proof. The rejection of the copied scripts is by the '
+              'literal form of the conclusion only.',
+    'HW-K-g': 'NO VIOLATION KNOWN: no witness, none exists in the data. The planted bound is t^{−1/3}, stronger '
+              'than the frozen one. It holds at the exact data: with equality at t = 1 (|K(1, 0)| = 1), and '
+              '1/√2 ≤ 2^{−1/3} = 0.794, 1/2 ≤ 3^{−1/3} = 0.693, 1/2 ≤ 5^{−1/3} = 0.585. Floating-point scan '
+              '(explore_hw2.py.txt, unregistered): the supremum over 2 ≤ t ≤ 9000 of sup_x |K(t, x)| t^{1/3} is '
+              '0.9637, attained at t = 6 (the blind referee had at most 0.9637 for 2 ≤ t ≤ 3000). Recorded as an '
+              'open question, not as a true weakening: the constants (7, 12) of HW-K are those of the route, not '
+              'sharp, and no datum distinguishes them from (0, 1). The rejection of the copied scripts is by the '
+              'literal form of the conclusion only.',
+}
+
+ONLY = sys.argv[5:]
+jobs = []
+for pid, target, muts, witness, note in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    if not os.environ.get('HW2_WITNESS_ONLY'):  # development switch; the recorded run does not set it
+        jobs.append((pid, 'ok-' + pid, make(target, muts, False), 'accepted'))
+        jobs.append((pid, 'plant-' + pid, make(target, muts, True), None))
+    if witness:
+        jobs.append((pid, 'witness-' + pid, make(target, muts, True, witness), 'accepted'))
+results = [run(j[1], j[2]) for j in jobs]
+
+by_pid = {}
+for (pid, tag, _, w), (verdict, errs, failing) in zip(jobs, results):
+    line = f"{tag}: {verdict}" + (f" (want {w}){'' if verdict == w else '  <-- MISMATCH'}" if w else ' (recorded)')
+    if errs:
+        line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+    if tag.startswith('plant-'):
+        first = [n[2:] for n in failing if n[2:] in FIRST_LAYER]
+        second = [n[2:] for n in failing if n[2:] not in FIRST_LAYER]
+        line += ('\n    copied scripts with an error: first layer: ' + (', '.join(first) or 'none (all accepted)') +
+                 '; second layer: ' + (', '.join(second) or 'none (all accepted)'))
+    by_pid.setdefault(pid, {})[tag.split('-')[0]] = (verdict, line)
+lines = []
+for pid, target, muts, witness, note in PLANTS:
+    if pid not in by_pid:
+        continue
+    r = by_pid[pid]
+    lines += [r[k][1] for k in ('ok', 'plant', 'witness') if k in r]
+    if witness:
+        v = ('DETECTED (witness compiled: ¬ planted statement)' if r['witness'][0] == 'accepted'
+             else 'WITNESS FAILED  <-- MISMATCH')
+    else:
+        v = VERDICT[pid]
+    lines.append(f'  {pid} [{note}]: {v}')
+open(os.path.join(OUT, 'SUMMARY.txt' if not ONLY else 'SUMMARY-partial.txt'), 'w').write('\n'.join(lines) + '\n')
+print('\n'.join(lines))

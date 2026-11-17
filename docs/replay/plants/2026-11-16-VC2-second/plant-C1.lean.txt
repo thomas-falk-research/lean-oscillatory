@@ -1,0 +1,43 @@
+import OscInt.Front.SecondDerivSharpSanity
+
+namespace OscInt.API.SecondDerivSharpSanity2
+
+open OscInt.Statements OscInt.API.SecondDerivSharpSanity Set
+
+/-- The exact value of the polynomial bound of the first layer: `profilePrim(21/10) − profilePrim(0)`
+(`1.6750378…`; twice it is `3.3500756…`). -/
+theorem profilePrim_value :
+    profilePrim (21 / 10) - profilePrim 0 = 5988260236461868197 / 3575000000000000000 := by
+  unfold profilePrim
+  norm_num
+
+/-- **Certified value, not rounded.** `3.35007 ≤ A(441/200)` (true value `3.35396…`). -/
+theorem vdc2Profile_lower_sharp : 335007 / 100000 ≤ vdc2Profile (441 / 200) := by
+  have h := sub_le_integral_of_le (F := profilePrim) (P := fun u => sinLow (441 / 200 - u ^ 2 / 2))
+    (g := fun u => Real.sin (441 / 200 - u ^ 2 / 2)) (a := 0) (b := 21 / 10) (by norm_num)
+    profilePrim_hasDerivAt (by unfold sinLow; fun_prop) (by fun_prop)
+    (fun u hu => sinLow_le_sin _ (by nlinarith [hu.1, hu.2]))
+  rw [profilePrim_value] at h
+  unfold vdc2Profile
+  rw [sqrt_two_mul_w]
+  linarith
+
+/-- `67/20 < A(441/200)`, strictly (margin `7 · 10⁻⁵`). -/
+theorem vdc2Profile_gt_67 : 67 / 20 < vdc2Profile (441 / 200) := by
+  linarith [vdc2Profile_lower_sharp]
+
+def P_Vdc2ProfileBoundStatement : Prop :=
+  ∀ w ∈ Icc (0 : ℝ) Real.pi, vdc2Profile w ≤ 67 / 20
+
+theorem P_profile_le (h : P_Vdc2ProfileBoundStatement) : vdc2Profile (441 / 200) ≤ 7 / 2 :=
+  h (441 / 200) ⟨by norm_num, by linarith [Real.pi_gt_three]⟩
+
+theorem P_profile_within (h : P_Vdc2ProfileBoundStatement) :
+    94 / 100 * (7 / 2) ≤ vdc2Profile (441 / 200) ∧ vdc2Profile (441 / 200) ≤ 7 / 2 :=
+  ⟨by linarith [vdc2Profile_lower], P_profile_le h⟩
+
+theorem P_profile_within_sharp (h : P_Vdc2ProfileBoundStatement) :
+    67 / 20 < vdc2Profile (441 / 200) ∧ vdc2Profile (441 / 200) ≤ 7 / 2 :=
+  ⟨vdc2Profile_gt_67, h (441 / 200) ⟨by norm_num, by linarith [Real.pi_gt_three]⟩⟩
+
+end OscInt.API.SecondDerivSharpSanity2

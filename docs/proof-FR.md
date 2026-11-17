@@ -137,7 +137,8 @@ assembly and the seven final theorems as one scratch file, and copied the files 
 
 Agents' slips against their briefs, as they reported them: two proof agents (FR3, FR4) each ran one read-only
 `git status` inside the repository; nothing was written there (the lead's `git status` after each report: clean).
-Three agents could not write their report file (the harness refused it) and returned the report as text.
+Four agents left no report file (the harness refused it for three, who returned the report as text; the fourth,
+FR3, named a report file that does not exist, and its final message is its whole report); only FR4 wrote one.
 
 Final theorems: `OscInt/Front/FiniteRingFinal.lean`.
 Checks by the lead at integration (2026-11-17, `docs/replay/2026-11-17-FR-integration-checks.txt`): `lake build`

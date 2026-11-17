@@ -1,0 +1,65 @@
+import OscInt.Front.SecondDerivSharpSanity
+
+namespace OscInt.API.SecondDerivSharpSanity2
+
+open OscInt.Statements OscInt.API.SecondDerivSharpSanity Set
+
+/-- The left side of VC2-K at the quadratic datum on `[−21/10, 21/10]` (`p = 0`, `ψ = 1`). -/
+theorem oscInt_quad :
+    oscInt (fun x => x ^ 2 / 2 + 0 * x) (fun _ => 1) (-(21 / 10)) (21 / 10) =
+      ∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I) := by
+  unfold oscInt
+  refine intervalIntegral.integral_congr (fun x _ => ?_)
+  simp only [zero_mul, add_zero, mul_one]
+
+/-- `2.566 ≤ Re ∫_{−21/10}^{21/10} e^{ix²/2} dx` (true value `2.5698…`; the polynomial bound gives `2.56602…`). -/
+theorem quad_re_lower_sharp :
+    1283 / 500 ≤ (∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)).re := by
+  rw [re_intervalIntegral (by fun_prop)]
+  simp only [Complex.exp_ofReal_mul_I_re]
+  have h := sub_le_integral_of_le (F := cosPrim) (P := fun x => cosLow (x ^ 2 / 2))
+    (g := fun x => Real.cos (x ^ 2 / 2)) (a := -(21 / 10)) (b := 21 / 10) (by norm_num) cosPrim_hasDerivAt
+    (by unfold cosLow; fun_prop) (by fun_prop) (fun x _ => cosLow_le_cos _ (by positivity))
+  have hv : (1283 / 500 : ℝ) ≤ cosPrim (21 / 10) - cosPrim (-(21 / 10)) := by
+    unfold cosPrim
+    norm_num
+  linarith
+
+/-- `2.1666 ≤ Im ∫_{−21/10}^{21/10} e^{ix²/2} dx` (true value `2.1674…`; the polynomial bound gives `2.16669…`). -/
+theorem quad_im_lower_sharp :
+    10833 / 5000 ≤ (∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)).im := by
+  rw [im_intervalIntegral (by fun_prop)]
+  simp only [Complex.exp_ofReal_mul_I_im]
+  have h := sub_le_integral_of_le (F := sinPrim) (P := fun x => sinLow (x ^ 2 / 2))
+    (g := fun x => Real.sin (x ^ 2 / 2)) (a := -(21 / 10)) (b := 21 / 10) (by norm_num) sinPrim_hasDerivAt
+    (by unfold sinLow; fun_prop) (by fun_prop) (fun x _ => sinLow_le_sin _ (by positivity))
+  have hv : (10833 / 5000 : ℝ) ≤ sinPrim (21 / 10) - sinPrim (-(21 / 10)) := by
+    unfold sinPrim
+    norm_num
+  linarith
+
+/-- **Certified value, not rounded.** `3.358 ≤ |∫_{−21/10}^{21/10} e^{ix²/2} dx|` (true value `3.36141…`;
+`2.566² + 2.1666² = 11.2785… ≥ 3.358² = 11.2761…`). -/
+theorem quad_norm_lower_sharp :
+    1679 / 500 ≤ ‖∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ :=
+  le_norm_of_re_im (by norm_num) (by norm_num) (by norm_num) quad_re_lower_sharp quad_im_lower_sharp
+
+/-- `67/20 < |∫_{−21/10}^{21/10} e^{ix²/2} dx|`, strictly (margin `0.008`). -/
+theorem quad_norm_gt_67 :
+    67 / 20 < ‖∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ := by
+  linarith [quad_norm_lower_sharp]
+
+def P_SecondDerivSevenHalvesStatement : Prop :=
+  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →
+    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b → (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) → AmplitudeOn ψ ψ' a b →
+    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ (67 / 20 : ℝ) * μ ^ (-(1 : ℝ) / 2) * ampNorm ψ ψ' a b
+
+theorem witness_not_SecondDerivSevenHalvesStatement : ¬ P_SecondDerivSevenHalvesStatement := by
+  intro h
+  have h1 := h (fun x => x ^ 2 / 2) (fun x => x) (fun _ => 1) (fun _ => 1) (fun _ => 0) (-(21 / 10)) (21 / 10) 1 0
+    (by norm_num) one_pos (quad_hasDerivOn _ _) (id_hasDerivOn _ _) (fun x _ => by simp)
+    (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, Real.one_rpow, oscInt_quad] at h1
+  linarith [quad_norm_gt_67]
+
+end OscInt.API.SecondDerivSharpSanity2

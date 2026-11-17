@@ -1,0 +1,86 @@
+import OscInt.Front.HadamardWalkSanity
+
+namespace OscInt.API.HadamardWalkSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.HadamardWalkSanity
+
+/-- **Datum: three steps from a point state, all sites.** `((a + b)/2/√2, 0)` at `−3`, `(a/√2, (a + b)/2/√2)` at
+`−1`, `(−((a − b)/2)/√2, −b/√2)` at `1`, `(0, (a − b)/2/√2)` at `3`, and `(0, 0)` elsewhere. -/
+theorem hadamardWalk_point_three (a b : ℂ) (x : ℤ) :
+    hadamardWalk (pointState a b) 3 x =
+      if x = -3 then ((a + b) / 2 / ((Real.sqrt 2 : ℝ) : ℂ), 0)
+      else if x = -1 then (a / ((Real.sqrt 2 : ℝ) : ℂ), (a + b) / 2 / ((Real.sqrt 2 : ℝ) : ℂ))
+      else if x = 1 then (-((a - b) / 2) / ((Real.sqrt 2 : ℝ) : ℂ), -b / ((Real.sqrt 2 : ℝ) : ℂ))
+      else if x = 3 then (0, (a - b) / 2 / ((Real.sqrt 2 : ℝ) : ℂ)) else (0, 0) := by
+  have e : hadamardWalk (pointState a b) 3 x = hadamardStep (hadamardWalk (pointState a b) 2) x := rfl
+  rw [e, hadamardStep, hadamardWalk_point_two, hadamardWalk_point_two]
+  by_cases h1 : x = -3
+  · subst h1; norm_num
+  · by_cases h2 : x = -1
+    · subst h2; norm_num; ring
+    · by_cases h3 : x = 1
+      · subst h3; norm_num; ring
+      · by_cases h4 : x = 3
+        · subst h4; norm_num
+        · rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega),
+            ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right h1, ite_eq_right h2, ite_eq_right h3,
+            ite_eq_right h4]
+          simp
+
+/-- **Datum: two steps from the two-site state at `x = 0`** give `(1, 1/2)`: the first component is the sum of the
+contributions `1/2` of the two sites, the second comes from the site `0` only. -/
+theorem twoSiteState_walk_two : hadamardWalk twoSiteState 2 0 = (1, 1 / 2) := by
+  have e : hadamardWalk twoSiteState 2 0 = hadamardStep (hadamardStep twoSiteState) 0 := rfl
+  have hi := inv_sqrt_two_mul_self
+  rw [e]
+  simp only [hadamardStep]
+  norm_num [twoSiteState]
+  constructor
+  · rw [div_eq_mul_inv, add_mul, hi]; norm_num
+  · rw [div_eq_mul_inv, hi]
+
+def P_HadamardDispersiveStatement : Prop :=
+  ∀ (ψ₀ : ℤ → ℂ × ℂ) (t : ℕ) (x : ℤ), {y : ℤ | ψ₀ y ≠ (0, 0)}.Finite → 1 ≤ t →
+    ‖(hadamardWalk ψ₀ t x).1‖ ≤
+      39 * (∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)) * (t : ℝ) ^ ((1 : ℝ) / 3) ∧
+    ‖(hadamardWalk ψ₀ t x).2‖ ≤
+      39 * (∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)) * (t : ℝ) ^ ((1 : ℝ) / 3)
+
+theorem P_hwL_point (h : P_HadamardDispersiveStatement) (a b : ℂ) :
+    ‖(a + b) / ((Real.sqrt 2 : ℝ) : ℂ)‖ ≤ 39 * (‖a‖ + ‖b‖) * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) ∧
+      ‖(a - b) / ((Real.sqrt 2 : ℝ) : ℂ)‖ ≤ 39 * (‖a‖ + ‖b‖) * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h1 := (h (pointState a b) 1 (-1) (pointState_finite a b) le_rfl).1
+  have h2 := (h (pointState a b) 1 1 (pointState_finite a b) le_rfl).2
+  rw [hadamardWalk_point_one, ite_eq_left rfl, pointState_finsum] at h1
+  rw [hadamardWalk_point_one, ite_eq_right (by norm_num), ite_eq_left rfl, pointState_finsum] at h2
+  exact ⟨h1, h2⟩
+
+theorem P_hwL_two_site (h : P_HadamardDispersiveStatement) :
+    1 / Real.sqrt 2 ≤ 39 * 2 * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) ∧
+      1 / Real.sqrt 2 ≤ 39 * 2 * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h1 := h twoSiteState 1 1 twoSiteState_finite le_rfl
+  rw [twoSiteState_walk_one, twoSiteState_finsum, norm_one_div_sqrt_two] at h1
+  exact h1
+
+theorem P_hwL_five (h : P_HadamardDispersiveStatement) :
+    1 / Real.sqrt 2 ≤ 39 * 1 * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h1 := (h fiveState 1 4 fiveState_finite le_rfl).1
+  rw [fiveState_walk_one, fiveState_finsum, norm_one_div_sqrt_two] at h1
+  exact h1
+
+theorem P_hwL_point_three (h : P_HadamardDispersiveStatement) (a b : ℂ) :
+    ‖a / ((Real.sqrt 2 : ℝ) : ℂ)‖ ≤ 39 * (‖a‖ + ‖b‖) * ((3 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) ∧
+      ‖(a + b) / 2 / ((Real.sqrt 2 : ℝ) : ℂ)‖ ≤ 39 * (‖a‖ + ‖b‖) * ((3 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h1 := h (pointState a b) 3 (-1) (pointState_finite a b) (by norm_num)
+  rw [hadamardWalk_point_three, ite_eq_right (by norm_num), ite_eq_left rfl, pointState_finsum] at h1
+  exact h1
+
+theorem P_hwL_two_site_two (h : P_HadamardDispersiveStatement) :
+    (1 : ℝ) ≤ 39 * 2 * ((2 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) ∧
+      (1 : ℝ) / 2 ≤ 39 * 2 * ((2 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have hn : ‖(1 : ℂ) / 2‖ = 1 / 2 := by rw [norm_div, norm_one, Complex.norm_ofNat]
+  have h1 := h twoSiteState 2 0 twoSiteState_finite (by norm_num)
+  rw [twoSiteState_walk_two, twoSiteState_finsum, norm_one, hn] at h1
+  exact h1
+
+end OscInt.API.HadamardWalkSanity2

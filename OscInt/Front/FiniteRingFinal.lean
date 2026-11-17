@@ -20,10 +20,12 @@ Route `docs/proof-FR.md` (refereed; "Parts as integrated"); assembly `OscInt/Fro
 `OscInt/Front/FiniteRingKernel.lean` (FR-K and the evenness of the ring kernel), `OscInt/Front/FiniteRingCoset.lean`
 (FR-S, from the Fourier series and the aliasing lemma of batch PA), `OscInt/Front/FiniteRingImages.lean` (the bound
 for a sum over images), `OscInt/Front/FiniteRingEnergy.lean` and `OscInt/Front/FiniteRingChainEnergy.lean` (the two
-uniqueness arguments, by conservation of the sum of squared moduli). The mathematics is classical: the propagator
-of a ring by periodisation of the propagator of the line (method of images), the propagator of an open chain with
-identical sites as the odd part of the propagator of a ring of `2(M + 1)` sites, and explicit finite-size bounds
-from the light-cone bound LC-1. Nothing here is claimed as new mathematics (`docs/prior_art.md`, batch FR).
+uniqueness arguments, by conservation of the sum of squared moduli). The method is classical: the propagator
+of a ring by periodisation of the propagator of the line (method of images), and the propagator of an open chain with
+identical sites as the odd part of the propagator of a ring of `2(M + 1)` sites. The explicit finite-size bounds
+FR-P and FC-P follow from these and the light-cone bound LC-1 in a few lines; they were not looked for in print in
+this form. Nothing here is claimed as new mathematics (`docs/prior_art.md`, batch FR). All seven theorems use lemmas
+of batch PA (`OscInt/Front/PeriodicAnalyticAlias.lean` and, for FR-S, FR-P, FC-P, its final theorems).
 -/
 
 namespace OscInt.API
@@ -47,16 +49,18 @@ theorem ringFiniteSize : RingFiniteSizeStatement :=
 period: the kernel is the propagator of the ring. FR-K and conservation of the sum of squared moduli. -/
 theorem ringUnique : RingUniqueStatement := ringUnique_of ringKernelSolves ringDatumFacts ringEnergyFacts
 
-/-- **FC-K** (`ChainKernelStatement`): the chain kernel `C_M(t; x, y) = R_{2(M+1)}(t, x − y) − R_{2(M+1)}(t, x + y)`
-solves the equation, vanishes at the walls `0` and `M + 1` and is the unit datum on the sites `1, …, M`. -/
+/-- **FC-K** (`ChainKernelStatement`): for `1 ≤ y ≤ M` the chain kernel
+`C_M(t; x, y) = R_{2(M+1)}(t, x − y) − R_{2(M+1)}(t, x + y)` solves the equation in `x`, vanishes at the walls `0` and
+`M + 1`, and at `t = 0` is the unit datum on the sites `1 ≤ x ≤ M`. -/
 theorem chainKernelSolves : ChainKernelStatement := chainKernel_of ringKernelSolves ringEvenFacts
 
 /-- **FC-U** (`ChainUniqueStatement`): every solution on the open chain with Dirichlet walls is the chain-kernel sum
 of its datum: the kernel is the propagator of the chain of `M` identical sites. -/
 theorem chainUnique : ChainUniqueStatement := chainUnique_of chainKernelSolves chainEnergyFacts
 
-/-- **FC-P** (`ChainFiniteSizeStatement`): the chain kernel differs from the line kernel `G(t, x − y)` by at most
-`e^{2|t| sinh η} (e^{−(x+y)η} + 2 (cosh((x−y)η) + cosh((x+y)η)) / (e^{2(M+1)η} − 1))`, for every `η > 0`. -/
+/-- **FC-P** (`ChainFiniteSizeStatement`): for sites `1 ≤ x, y ≤ M` and every `η > 0`, the chain kernel differs from
+the line kernel `G(t, x − y)` by at most
+`e^{2|t| sinh η} (e^{−(x+y)η} + 2 (cosh((x−y)η) + cosh((x+y)η)) / (e^{2(M+1)η} − 1))`. -/
 theorem chainFiniteSize : ChainFiniteSizeStatement := chainFiniteSize_of ringFiniteSize latticeKernel1LightCone
 
 end OscInt.API

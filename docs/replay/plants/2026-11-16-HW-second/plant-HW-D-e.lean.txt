@@ -1,0 +1,64 @@
+import OscInt.Front.HadamardWalkSanity
+
+namespace OscInt.API.HadamardWalkSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.HadamardWalkSanity
+
+/-- **Datum: three steps from a point state, all sites.** `((a + b)/2/√2, 0)` at `−3`, `(a/√2, (a + b)/2/√2)` at
+`−1`, `(−((a − b)/2)/√2, −b/√2)` at `1`, `(0, (a − b)/2/√2)` at `3`, and `(0, 0)` elsewhere. -/
+theorem hadamardWalk_point_three (a b : ℂ) (x : ℤ) :
+    hadamardWalk (pointState a b) 3 x =
+      if x = -3 then ((a + b) / 2 / ((Real.sqrt 2 : ℝ) : ℂ), 0)
+      else if x = -1 then (a / ((Real.sqrt 2 : ℝ) : ℂ), (a + b) / 2 / ((Real.sqrt 2 : ℝ) : ℂ))
+      else if x = 1 then (-((a - b) / 2) / ((Real.sqrt 2 : ℝ) : ℂ), -b / ((Real.sqrt 2 : ℝ) : ℂ))
+      else if x = 3 then (0, (a - b) / 2 / ((Real.sqrt 2 : ℝ) : ℂ)) else (0, 0) := by
+  have e : hadamardWalk (pointState a b) 3 x = hadamardStep (hadamardWalk (pointState a b) 2) x := rfl
+  rw [e, hadamardStep, hadamardWalk_point_two, hadamardWalk_point_two]
+  by_cases h1 : x = -3
+  · subst h1; norm_num
+  · by_cases h2 : x = -1
+    · subst h2; norm_num; ring
+    · by_cases h3 : x = 1
+      · subst h3; norm_num; ring
+      · by_cases h4 : x = 3
+        · subst h4; norm_num
+        · rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega),
+            ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right h1, ite_eq_right h2, ite_eq_right h3,
+            ite_eq_right h4]
+          simp
+
+def P_HadamardDecayStatement : Prop :=
+  ∀ (a b : ℂ) (t : ℕ) (x : ℤ), 1 ≤ t →
+    ‖(hadamardWalk (pointState a b) t x).1‖ ≤ 1 * (‖a‖ + ‖b‖) * (t : ℝ) ^ (-(1 : ℝ) / 3) ∧
+    ‖(hadamardWalk (pointState a b) t x).2‖ ≤ 1 * (‖a‖ + ‖b‖) * (t : ℝ) ^ (-(1 : ℝ) / 3)
+
+theorem P_hwD_one (h : P_HadamardDecayStatement) (a b : ℂ) :
+    ‖(a + b) / ((Real.sqrt 2 : ℝ) : ℂ)‖ ≤ 39 * (‖a‖ + ‖b‖) * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) ∧
+      ‖(a - b) / ((Real.sqrt 2 : ℝ) : ℂ)‖ ≤ 39 * (‖a‖ + ‖b‖) * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h1 := (h a b 1 (-1) le_rfl).1
+  have h2 := (h a b 1 1 le_rfl).2
+  rw [hadamardWalk_point_one, ite_eq_left rfl] at h1
+  rw [hadamardWalk_point_one, ite_eq_right (by norm_num), ite_eq_left rfl] at h2
+  exact ⟨h1, h2⟩
+
+theorem P_hwD_two (h : P_HadamardDecayStatement) (a b : ℂ) :
+    ‖(a - b) / 2‖ ≤ 39 * (‖a‖ + ‖b‖) * ((2 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) ∧
+      ‖(a + b) / 2‖ ≤ 39 * (‖a‖ + ‖b‖) * ((2 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h1 := h a b 2 0 (by norm_num)
+  rw [hadamardWalk_point_two, ite_eq_right (by norm_num), ite_eq_left rfl] at h1
+  exact h1
+
+theorem P_hwD_three (h : P_HadamardDecayStatement) (a b : ℂ) :
+    ‖a / ((Real.sqrt 2 : ℝ) : ℂ)‖ ≤ 39 * (‖a‖ + ‖b‖) * ((3 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) ∧
+      ‖(a + b) / 2 / ((Real.sqrt 2 : ℝ) : ℂ)‖ ≤ 39 * (‖a‖ + ‖b‖) * ((3 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h1 := h a b 3 (-1) (by norm_num)
+  rw [hadamardWalk_point_three, ite_eq_right (by norm_num), ite_eq_left rfl] at h1
+  exact h1
+
+theorem P_hwD_three_unit (h : P_HadamardDecayStatement) :
+    1 / Real.sqrt 2 ≤ 39 * ((1 : ℝ) + 0) * ((3 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h1 := (P_hwD_three h 1 0).1
+  rw [norm_one_div_sqrt_two, norm_one, norm_zero] at h1
+  exact h1
+
+end OscInt.API.HadamardWalkSanity2

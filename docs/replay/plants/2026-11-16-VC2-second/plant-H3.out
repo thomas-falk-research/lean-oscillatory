@@ -1,0 +1,248 @@
+plant-H3.lean:156:12: error: Application type mismatch: The argument
+  quad_hasDerivOn ?m.101 ?m.102
+has type
+  HasDerivOn (fun x => x ^ 2 / 2) (fun x => x) ?m.101 ?m.102
+but is expected to have type
+  HasDerivOn (fun x => x) (fun x => 1) (-c) c
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) (fun x => 1) (fun x => 1) (fun x => 0) (-c) c 1 0 ?m.93 ?m.100
+    (quad_hasDerivOn ?m.101 ?m.102)
+plant-H3.lean:156:69: error: `simp` made no progress
+plant-H3.lean:156:4: error: Application type mismatch: The argument
+  one_pos
+has type
+  0 < 1
+but is expected to have type
+  HasDerivOn (fun x => x ^ 2 / 2) (fun x => x) (-c) c
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) (fun x => 1) (fun x => 1) (fun x => 0) (-c) c 1 0
+    (lt_of_not_ge fun a =>
+      Mathlib.Tactic.Linarith.lt_irrefl
+        (Eq.mp
+          (congrArg (fun _a => _a < 0)
+            (Mathlib.Tactic.Ring.of_eq
+              (Mathlib.Tactic.Ring.Common.add_congr
+                (Mathlib.Tactic.Ring.Common.neg_congr
+                  (Mathlib.Tactic.Ring.cast_pos (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_one))
+                  (Mathlib.Tactic.Ring.Common.neg_add
+                    (Mathlib.Meta.NormNum.IsInt.to_raw_eq
+                      (Mathlib.Meta.NormNum.isInt_neg (Eq.refl Neg.neg)
+                        (Mathlib.Meta.NormNum.IsNat.to_isInt (Mathlib.Meta.NormNum.IsNat.of_raw ℝ 1))
+                        (Eq.refl (Int.negOfNat 1))))
+                    Mathlib.Tactic.Ring.Common.neg_zero))
+                (Mathlib.Tactic.Ring.Common.sub_congr
+                  (Mathlib.Tactic.Ring.cast_pos (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_one))
+                  (Mathlib.Tactic.Ring.cast_zero (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_zero))
+                  (Mathlib.Tactic.Ring.Common.sub_pf Mathlib.Tactic.Ring.Common.neg_zero
+                    (Mathlib.Tactic.Ring.Common.add_pf_add_zero (Nat.rawCast 1 + 0))))
+                (Mathlib.Tactic.Ring.Common.add_pf_add_overlap_zero
+                  (Mathlib.Meta.NormNum.IsInt.to_isNat
+                    (Mathlib.Meta.NormNum.isInt_add (Eq.refl HAdd.hAdd)
+                      (Mathlib.Meta.NormNum.IsInt.of_raw ℝ (Int.negOfNat 1))
+                      (Mathlib.Meta.NormNum.IsNat.to_isInt (Mathlib.Meta.NormNum.IsNat.of_raw ℝ 1))
+                      (Eq.refl (Int.ofNat 0))))
+                  (Mathlib.Tactic.Ring.Common.add_pf_zero_add 0)))
+              (Mathlib.Tactic.Ring.cast_zero (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_zero))))
+          (Mathlib.Tactic.Linarith.add_lt_of_neg_of_le (neg_neg_of_pos Mathlib.Tactic.Linarith.zero_lt_one)
+            (Mathlib.Tactic.Linarith.sub_nonpos_of_le a))))
+    one_pos
+plant-H3.lean:163:12: error: Application type mismatch: The argument
+  quad_hasDerivOn ?m.113 ?m.114
+has type
+  HasDerivOn (fun x => x ^ 2 / 2) (fun x => x) ?m.113 ?m.114
+but is expected to have type
+  HasDerivOn (fun x => x) (fun x => 1) (-c) c
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) (fun x => 1) (fun x => 1) (fun x => 0) (-c) c 1 3 ?m.105 ?m.112
+    (quad_hasDerivOn ?m.113 ?m.114)
+plant-H3.lean:163:69: error: `simp` made no progress
+plant-H3.lean:163:4: error: Application type mismatch: The argument
+  one_pos
+has type
+  0 < 1
+but is expected to have type
+  HasDerivOn (fun x => x ^ 2 / 2) (fun x => x) (-c) c
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) (fun x => 1) (fun x => 1) (fun x => 0) (-c) c 1 3
+    (lt_of_not_ge fun a =>
+      Mathlib.Tactic.Linarith.lt_irrefl
+        (Eq.mp
+          (congrArg (fun _a => _a < 0)
+            (Mathlib.Tactic.Ring.of_eq
+              (Mathlib.Tactic.Ring.Common.add_congr
+                (Mathlib.Tactic.Ring.Common.neg_congr
+                  (Mathlib.Tactic.Ring.cast_pos (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_one))
+                  (Mathlib.Tactic.Ring.Common.neg_add
+                    (Mathlib.Meta.NormNum.IsInt.to_raw_eq
+                      (Mathlib.Meta.NormNum.isInt_neg (Eq.refl Neg.neg)
+                        (Mathlib.Meta.NormNum.IsNat.to_isInt (Mathlib.Meta.NormNum.IsNat.of_raw ℝ 1))
+                        (Eq.refl (Int.negOfNat 1))))
+                    Mathlib.Tactic.Ring.Common.neg_zero))
+                (Mathlib.Tactic.Ring.Common.sub_congr
+                  (Mathlib.Tactic.Ring.cast_pos (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_one))
+                  (Mathlib.Tactic.Ring.cast_zero (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_zero))
+                  (Mathlib.Tactic.Ring.Common.sub_pf Mathlib.Tactic.Ring.Common.neg_zero
+                    (Mathlib.Tactic.Ring.Common.add_pf_add_zero (Nat.rawCast 1 + 0))))
+                (Mathlib.Tactic.Ring.Common.add_pf_add_overlap_zero
+                  (Mathlib.Meta.NormNum.IsInt.to_isNat
+                    (Mathlib.Meta.NormNum.isInt_add (Eq.refl HAdd.hAdd)
+                      (Mathlib.Meta.NormNum.IsInt.of_raw ℝ (Int.negOfNat 1))
+                      (Mathlib.Meta.NormNum.IsNat.to_isInt (Mathlib.Meta.NormNum.IsNat.of_raw ℝ 1))
+                      (Eq.refl (Int.ofNat 0))))
+                  (Mathlib.Tactic.Ring.Common.add_pf_zero_add 0)))
+              (Mathlib.Tactic.Ring.cast_zero (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_zero))))
+          (Mathlib.Tactic.Linarith.add_lt_of_neg_of_le (neg_neg_of_pos Mathlib.Tactic.Linarith.zero_lt_one)
+            (Mathlib.Tactic.Linarith.sub_nonpos_of_le a))))
+    one_pos
+plant-H3.lean:170:26: error: Application type mismatch: The argument
+  negQuad_hasDerivOn ?m.111 ?m.112
+has type
+  HasDerivOn (fun x => -(x ^ 2 / 2)) (fun x => -x) ?m.111 ?m.112
+but is expected to have type
+  HasDerivOn (fun x => -x) (fun x => -1) (-c) c
+in the application
+  h (fun x => -(x ^ 2 / 2)) (fun x => -x) (fun x => -1) (fun x => 1) (fun x => 0) (-c) c 1 0 ?m.103 ?m.110
+    (negQuad_hasDerivOn ?m.111 ?m.112)
+plant-H3.lean:170:89: error: `simp` made no progress
+plant-H3.lean:170:18: error: Application type mismatch: The argument
+  one_pos
+has type
+  0 < 1
+but is expected to have type
+  HasDerivOn (fun x => -(x ^ 2 / 2)) (fun x => -x) (-c) c
+in the application
+  h (fun x => -(x ^ 2 / 2)) (fun x => -x) (fun x => -1) (fun x => 1) (fun x => 0) (-c) c 1 0
+    (lt_of_not_ge fun a =>
+      Mathlib.Tactic.Linarith.lt_irrefl
+        (Eq.mp
+          (congrArg (fun _a => _a < 0)
+            (Mathlib.Tactic.Ring.of_eq
+              (Mathlib.Tactic.Ring.Common.add_congr
+                (Mathlib.Tactic.Ring.Common.neg_congr
+                  (Mathlib.Tactic.Ring.cast_pos (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_one))
+                  (Mathlib.Tactic.Ring.Common.neg_add
+                    (Mathlib.Meta.NormNum.IsInt.to_raw_eq
+                      (Mathlib.Meta.NormNum.isInt_neg (Eq.refl Neg.neg)
+                        (Mathlib.Meta.NormNum.IsNat.to_isInt (Mathlib.Meta.NormNum.IsNat.of_raw ℝ 1))
+                        (Eq.refl (Int.negOfNat 1))))
+                    Mathlib.Tactic.Ring.Common.neg_zero))
+                (Mathlib.Tactic.Ring.Common.sub_congr
+                  (Mathlib.Tactic.Ring.cast_pos (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_one))
+                  (Mathlib.Tactic.Ring.cast_zero (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_zero))
+                  (Mathlib.Tactic.Ring.Common.sub_pf Mathlib.Tactic.Ring.Common.neg_zero
+                    (Mathlib.Tactic.Ring.Common.add_pf_add_zero (Nat.rawCast 1 + 0))))
+                (Mathlib.Tactic.Ring.Common.add_pf_add_overlap_zero
+                  (Mathlib.Meta.NormNum.IsInt.to_isNat
+                    (Mathlib.Meta.NormNum.isInt_add (Eq.refl HAdd.hAdd)
+                      (Mathlib.Meta.NormNum.IsInt.of_raw ℝ (Int.negOfNat 1))
+                      (Mathlib.Meta.NormNum.IsNat.to_isInt (Mathlib.Meta.NormNum.IsNat.of_raw ℝ 1))
+                      (Eq.refl (Int.ofNat 0))))
+                  (Mathlib.Tactic.Ring.Common.add_pf_zero_add 0)))
+              (Mathlib.Tactic.Ring.cast_zero (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_zero))))
+          (Mathlib.Tactic.Linarith.add_lt_of_neg_of_le (neg_neg_of_pos Mathlib.Tactic.Linarith.zero_lt_one)
+            (Mathlib.Tactic.Linarith.sub_nonpos_of_le a))))
+    one_pos
+plant-H3.lean:178:73: error: Application type mismatch: The argument
+  scaledLinear_hasDerivOn ?m.151 ?m.152 ?m.153
+has type
+  HasDerivOn (fun x => ?m.151 * x) (fun x => ?m.151) ?m.152 ?m.153
+but is expected to have type
+  ∀ x ∈ Ioo (-(1 / 10)) (1 / 10), 100 ≤ |100|
+in the application
+  h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (fun x => 100) (fun x => 1) (fun x => 0) (-(1 / 10)) (1 / 10) 100 0
+    ?m.145 ?m.146 ?m.150 (scaledLinear_hasDerivOn ?m.151 ?m.152 ?m.153)
+plant-H3.lean:178:34: error: unsolved goals
+h : P_SecondDerivSevenHalvesStatement
+⊢ HasDerivOn (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (-(1 / 10)) (1 / 10)
+plant-H3.lean:179:19: error: `simp` made no progress
+plant-H3.lean:188:24: error: Application type mismatch: The argument
+  quad_hasDerivOn ?m.127 ?m.128
+has type
+  HasDerivOn (fun x => x ^ 2 / 2) (fun x => x) ?m.127 ?m.128
+but is expected to have type
+  HasDerivOn (fun x => x) (fun x => 1) 0 1
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) (fun x => 1) (fun x => ↑(1 - x)) (fun x => -1) 0 1 1 0 ?m.119 ?m.126
+    (quad_hasDerivOn ?m.127 ?m.128)
+plant-H3.lean:188:81: error: `simp` made no progress
+plant-H3.lean:188:16: error: Application type mismatch: The argument
+  one_pos
+has type
+  0 < 1
+but is expected to have type
+  HasDerivOn (fun x => x ^ 2 / 2) (fun x => x) 0 1
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) (fun x => 1) (fun x => ↑(1 - x)) (fun x => -1) 0 1 1 0 ?m.119 one_pos
+plant-H3.lean:196:70: error: Application type mismatch: The argument
+  scaledLinear_hasDerivOn ?m.211 ?m.212 ?m.213
+has type
+  HasDerivOn (fun x => ?m.211 * x) (fun x => ?m.211) ?m.212 ?m.213
+but is expected to have type
+  ∀ x ∈ Ioo (-21) 21, 1 / 100 ≤ |1 / 100|
+in the application
+  h (fun x => 1 / 100 * x ^ 2 / 2) (fun x => 1 / 100 * x) (fun x => 1 / 100) (fun x => 1) (fun x => 0) (-21) 21
+    (1 / 100) 0 ?m.205 ?m.206 ?m.210 (scaledLinear_hasDerivOn ?m.211 ?m.212 ?m.213)
+plant-H3.lean:196:31: error: unsolved goals
+h : P_SecondDerivSevenHalvesStatement
+⊢ HasDerivOn (fun x => 1 / 100 * x ^ 2 / 2) (fun x => 1 / 100 * x) (-21) 21
+plant-H3.lean:197:19: error: `simp` made no progress
+plant-H3.lean:215:75: error: Application type mismatch: The argument
+  scaledLinear_hasDerivOn ?m.206 ?m.207 ?m.208
+has type
+  HasDerivOn (fun x => ?m.206 * x) (fun x => ?m.206) ?m.207 ?m.208
+but is expected to have type
+  ∀ x ∈ Ioo (-(21 / 100)) (21 / 100), 100 ≤ |100|
+in the application
+  h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (fun x => 100) (fun x => 1) (fun x => 0) (-(21 / 100)) (21 / 100) 100
+    0 ?m.200 ?m.201 ?m.205 (scaledLinear_hasDerivOn ?m.206 ?m.207 ?m.208)
+plant-H3.lean:215:36: error: unsolved goals
+h : P_SecondDerivSevenHalvesStatement
+⊢ HasDerivOn (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (-(21 / 100)) (21 / 100)
+plant-H3.lean:216:19: error: `simp` made no progress
+plant-H3.lean:239:57: error: Application type mismatch: The argument
+  quarticDeriv_hasDerivOn ?m.242 ?m.243
+has type
+  HasDerivOn (fun x => x + x ^ 3 / 3) (fun x => 1 + x ^ 2) ?m.242 ?m.243
+but is expected to have type
+  ∀ x ∈ Ioo (-c) c, 1 ≤ |1 + x ^ 2|
+in the application
+  h (fun x => x ^ 2 / 2 + x ^ 4 / 12) (fun x => x + x ^ 3 / 3) (fun x => 1 + x ^ 2) (fun x => 1) (fun x => 0) (-c) c 1 0
+    ?m.231 ?m.238 ?m.241 (quarticDeriv_hasDerivOn ?m.242 ?m.243)
+plant-H3.lean:239:32: error: Application type mismatch: The argument
+  quartic_hasDerivOn ?m.239 ?m.240
+has type
+  HasDerivOn (fun x => x ^ 2 / 2 + x ^ 4 / 12) (fun x => x + x ^ 3 / 3) ?m.239 ?m.240
+but is expected to have type
+  HasDerivOn (fun x => x + x ^ 3 / 3) (fun x => 1 + x ^ 2) (-c) c
+in the application
+  h (fun x => x ^ 2 / 2 + x ^ 4 / 12) (fun x => x + x ^ 3 / 3) (fun x => 1 + x ^ 2) (fun x => 1) (fun x => 0) (-c) c 1 0
+    (lt_of_not_ge fun a =>
+      Mathlib.Tactic.Linarith.lt_irrefl
+        (Eq.mp
+          (congrArg (fun _a => _a < 0)
+            (Mathlib.Tactic.Ring.of_eq
+              (Mathlib.Tactic.Ring.Common.add_congr
+                (Mathlib.Tactic.Ring.Common.neg_congr
+                  (Mathlib.Tactic.Ring.cast_pos (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_one))
+                  (Mathlib.Tactic.Ring.Common.neg_add
+                    (Mathlib.Meta.NormNum.IsInt.to_raw_eq
+                      (Mathlib.Meta.NormNum.isInt_neg (Eq.refl Neg.neg)
+                        (Mathlib.Meta.NormNum.IsNat.to_isInt (Mathlib.Meta.NormNum.IsNat.of_raw ℝ 1))
+                        (Eq.refl (Int.negOfNat 1))))
+                    Mathlib.Tactic.Ring.Common.neg_zero))
+                (Mathlib.Tactic.Ring.Common.sub_congr
+                  (Mathlib.Tactic.Ring.cast_pos (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_one))
+                  (Mathlib.Tactic.Ring.cast_zero (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_zero))
+                  (Mathlib.Tactic.Ring.Common.sub_pf Mathlib.Tactic.Ring.Common.neg_zero
+                    (Mathlib.Tactic.Ring.Common.add_pf_add_zero (Nat.rawCast 1 + 0))))
+                (Mathlib.Tactic.Ring.Common.add_pf_add_overlap_zero
+                  (Mathlib.Meta.NormNum.IsInt.to_isNat
+                    (Mathlib.Meta.NormNum.isInt_add (Eq.refl HAdd.hAdd)
+                      (Mathlib.Meta.NormNum.IsInt.of_raw ℝ (Int.negOfNat 1))
+                      (Mathlib.Meta.NormNum.IsNat.to_isInt (Mathlib.Meta.NormNum.IsNat.of_raw ℝ 1))
+                      (Eq.refl (Int.ofNat 0))))
+                  (Mathlib.Tactic.Ring.Common.add_pf_zero_add 0)))
+              (Mathlib.Tactic.Ring.cast_zero (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_zero))))
+          (Mathlib.Tactic.Linarith.add_lt_of_neg_of_le (neg_neg_of_pos Mathlib.Tactic.Linarith.zero_lt_one)
+            (Mathlib.Tactic.Linarith.sub_nonpos_of_le a))))
+    ?m.238 (quartic_hasDerivOn ?m.239 ?m.240)

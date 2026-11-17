@@ -1,0 +1,48 @@
+plant-HW-L-g.lean:52:40: error: Application type mismatch: The argument
+  pointState_finite a b
+has type
+  {y | pointState a b y ≠ (0, 0)}.Finite
+but is expected to have type
+  {y | (pointState a b y).1 ≠ 0}.Finite
+in the application
+  h (pointState a b) 1 (-1) (pointState_finite a b)
+plant-HW-L-g.lean:53:37: error: Application type mismatch: The argument
+  pointState_finite a b
+has type
+  {y | pointState a b y ≠ (0, 0)}.Finite
+but is expected to have type
+  {y | (pointState a b y).1 ≠ 0}.Finite
+in the application
+  h (pointState a b) 1 1 (pointState_finite a b)
+plant-HW-L-g.lean:61:32: error: Application type mismatch: The argument
+  twoSiteState_finite
+has type
+  {y | twoSiteState y ≠ (0, 0)}.Finite
+but is expected to have type
+  {y | (twoSiteState y).1 ≠ 0}.Finite
+in the application
+  h twoSiteState 1 1 twoSiteState_finite
+plant-HW-L-g.lean:67:30: error: Application type mismatch: The argument
+  fiveState_finite
+has type
+  {y | fiveState y ≠ (0, 0)}.Finite
+but is expected to have type
+  {y | (fiveState y).1 ≠ 0}.Finite
+in the application
+  h fiveState 1 4 fiveState_finite
+plant-HW-L-g.lean:74:39: error: Application type mismatch: The argument
+  pointState_finite a b
+has type
+  {y | pointState a b y ≠ (0, 0)}.Finite
+but is expected to have type
+  {y | (pointState a b y).1 ≠ 0}.Finite
+in the application
+  h (pointState a b) 3 (-1) (pointState_finite a b)
+plant-HW-L-g.lean:82:32: error: Application type mismatch: The argument
+  twoSiteState_finite
+has type
+  {y | twoSiteState y ≠ (0, 0)}.Finite
+but is expected to have type
+  {y | (twoSiteState y).1 ≠ 0}.Finite
+in the application
+  h twoSiteState 2 0 twoSiteState_finite

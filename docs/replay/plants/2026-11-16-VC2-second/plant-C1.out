@@ -1,0 +1,14 @@
+plant-C1.lean:33:2: error: Type mismatch
+  h (441 / 200) ⟨?m.29, ?m.30⟩
+has type
+  vdc2Profile (441 / 200) ≤ 67 / 20
+but is expected to have type
+  vdc2Profile (441 / 200) ≤ 7 / 2
+plant-C1.lean:41:22: error: Application type mismatch: The argument
+  h (441 / 200) ⟨?m.49, ?m.50⟩
+has type
+  vdc2Profile (441 / 200) ≤ 67 / 20
+but is expected to have type
+  vdc2Profile (441 / 200) ≤ 7 / 2
+in the application
+  ⟨vdc2Profile_gt_67, h (441 / 200) ⟨?m.49, ?m.50⟩⟩
