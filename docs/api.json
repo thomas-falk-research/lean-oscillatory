@@ -1924,7 +1924,7 @@
   {
    "label": "VC2-S",
    "name": "OscInt.Statements.SecondDerivSharpStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.secondDerivSharp",
    "summary": "The second-derivative van der Corput bound with its sharp constant: if `f′` increases at rate at least `λ > 0`, then `|∫_a^b e^{if}| ≤ A(w)/√λ` for some `w ∈ [0, π]`.",
    "file": "OscInt/Statements/SecondDerivSharp.lean",
    "commitment": "5e300a10f677af923adcff29d30ecb69f70caf77b58ecd17b7f6c48da5ee78c6",
@@ -1945,13 +1945,13 @@
     "VC2-K",
     "S1.2"
    ],
-   "snippet": "example (h : SecondDerivSharpStatement) := OscInt.API.SecondDerivSharpSanity.sharp_profile_large h",
+   "snippet": "example : SecondDerivSharpStatement := OscInt.API.secondDerivSharp",
    "status": "see docs/STATUS.md (row VC2-S)"
   },
   {
    "label": "VC2-A",
    "name": "OscInt.Statements.SecondDerivAttainedStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.secondDerivAttained",
    "summary": "The bound of VC2-S is attained by the quadratic phase: `A(w) ≤ |∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx|`.",
    "file": "OscInt/Statements/SecondDerivSharp.lean",
    "commitment": "93b1e48a43ba0cddd9948f13746f10a8167557a4fd7cef10b720875ec9bc1fa4",
@@ -1968,13 +1968,13 @@
     "VC2-S",
     "VC2-N"
    ],
-   "snippet": "example (h : SecondDerivAttainedStatement) := OscInt.API.SecondDerivSharpSanity.attained_at h",
+   "snippet": "example : SecondDerivAttainedStatement := OscInt.API.secondDerivAttained",
    "status": "see docs/STATUS.md (row VC2-A)"
   },
   {
    "label": "VC2-N",
    "name": "OscInt.Statements.Vdc2ProfileBoundStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.vdc2ProfileBound",
    "summary": "An explicit bound for the sharp constant: `A(w) ≤ 7/2` for `0 ≤ w ≤ π`.",
    "file": "OscInt/Statements/SecondDerivSharp.lean",
    "commitment": "54c821111f5c3df622b30d27356fbc246ef977086831e487063b1bdf584972e1",
@@ -1991,13 +1991,13 @@
     "VC2-S",
     "VC2-K"
    ],
-   "snippet": "example (h : Vdc2ProfileBoundStatement) := OscInt.API.SecondDerivSharpSanity.profile_within h",
+   "snippet": "example : Vdc2ProfileBoundStatement := OscInt.API.vdc2ProfileBound",
    "status": "see docs/STATUS.md (row VC2-N)"
   },
   {
    "label": "VC2-K",
    "name": "OscInt.Statements.SecondDerivSevenHalvesStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.secondDerivSevenHalves",
    "summary": "The second-derivative test with amplitude and a linear term, constant `7/2`: `|∫_a^b e^{i(φ(x) + px)} ψ(x) dx| ≤ (7/2) μ^{−1/2} (|ψ(b)| + ∫_a^b |ψ′|)` when `|φ″| ≥ μ > 0` on `(a, b)`.",
    "file": "OscInt/Statements/SecondDerivSharp.lean",
    "commitment": "76b19164173b360ecfefc3bd945404158cfeedf389d7b0a83d5dd6e1d3c959a6",
@@ -2018,7 +2018,7 @@
     "VC2-S",
     "VC2-N"
    ],
-   "snippet": "example (h : SecondDerivSevenHalvesStatement) := OscInt.API.SecondDerivSharpSanity.sevenHalves_ramp h",
+   "snippet": "example : SecondDerivSevenHalvesStatement := OscInt.API.secondDerivSevenHalves",
    "status": "see docs/STATUS.md (row VC2-K)"
   },
   {

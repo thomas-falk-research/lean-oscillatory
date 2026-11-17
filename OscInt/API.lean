@@ -47,7 +47,7 @@ import OscInt.Front.PeriodicAnalyticFinal
 import OscInt.Front.KusminLandauFinal
 import OscInt.Front.FiniteRingFinal
 import OscInt.Front.HadamardWalkFinal
-import OscInt.Front.SecondDerivSharpAssembly
+import OscInt.Front.SecondDerivSharpFinal
 
 /-!
 # OscInt public API

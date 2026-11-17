@@ -35,7 +35,8 @@ def Vdc2RootFacts : Prop :=
   ∀ (f f' : ℝ → ℝ) (c d lam : ℝ), Vdc2Side f f' c d lam → ∀ x ∈ Ioo c d, 2 * lam * (f x - f c) ≤ f' x ^ 2
 
 /-- **V-head** A positive arc that starts at the turning point: if the phase gained on the side is at most
-`w ≤ π`, then `∫_c^d sin(w − (f − f(c))) ≤ A(w) / (2 √lam)`, with equality for the quadratic phase. -/
+`w ≤ π`, then `∫_c^d sin(w − (f − f(c))) ≤ A(w) / (2 √lam)`, with equality for the quadratic phase
+`f = lam (x − c)² / 2` when `f(d) − f(c) = w`. -/
 def Vdc2HeadFacts : Prop :=
   ∀ (f f' : ℝ → ℝ) (c d lam w : ℝ), Vdc2Side f f' c d lam → 0 ≤ w → w ≤ Real.pi → f d - f c ≤ w →
     ∫ x in c..d, Real.sin (w - (f x - f c)) ≤ vdc2Profile w / (2 * Real.sqrt lam)

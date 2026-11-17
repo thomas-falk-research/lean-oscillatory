@@ -321,19 +321,19 @@ example : ChainFiniteSizeStatement := OscInt.API.chainFiniteSize
 
 /-! ### VC2-S: The second-derivative van der Corput bound with its sharp constant: if `f′` increases at rate at least `λ > 0`, then `|∫_a^b e^{if}| ≤ A(w)/√λ` for some `w ∈ [0, π]`. -/
 
-example (h : SecondDerivSharpStatement) := OscInt.API.SecondDerivSharpSanity.sharp_profile_large h
+example : SecondDerivSharpStatement := OscInt.API.secondDerivSharp
 
 /-! ### VC2-A: The bound of VC2-S is attained by the quadratic phase: `A(w) ≤ |∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx|`. -/
 
-example (h : SecondDerivAttainedStatement) := OscInt.API.SecondDerivSharpSanity.attained_at h
+example : SecondDerivAttainedStatement := OscInt.API.secondDerivAttained
 
 /-! ### VC2-N: An explicit bound for the sharp constant: `A(w) ≤ 7/2` for `0 ≤ w ≤ π`. -/
 
-example (h : Vdc2ProfileBoundStatement) := OscInt.API.SecondDerivSharpSanity.profile_within h
+example : Vdc2ProfileBoundStatement := OscInt.API.vdc2ProfileBound
 
 /-! ### VC2-K: The second-derivative test with amplitude and a linear term, constant `7/2`: `|∫_a^b e^{i(φ(x) + px)} ψ(x) dx| ≤ (7/2) μ^{−1/2} (|ψ(b)| + ∫_a^b |ψ′|)` when `|φ″| ≥ μ > 0` on `(a, b)`. -/
 
-example (h : SecondDerivSevenHalvesStatement) := OscInt.API.SecondDerivSharpSanity.sevenHalves_ramp h
+example : SecondDerivSevenHalvesStatement := OscInt.API.secondDerivSevenHalves
 
 /-! ### HW-R: The walk from a point state in terms of the scalar kernel: for every `t ≥ 0`, `ψ_{t+1}(x) = ((a + b)/√2 · K(t+1, x+1) + a K(t, x), (a − b)/√2 · K(t+1, x−1) + b K(t, x))`. -/
 

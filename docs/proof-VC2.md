@@ -127,3 +127,54 @@ V-head, V-tail and V-side on eleven families of phases, three rates and three le
 quadratic phase; results `numerics/results-vc2-interface-checks-2026-11-17.txt`. A first version of that script
 reported violations of V-tail and V-side; they were quadrature errors (panels of fixed length at phase speeds of
 10⁹), and they disappeared when the panels were cut by phase.
+
+## Revision after the route referee (2026-11-17)
+
+The route referee read the route as committed in fbffce5 (verdict: sound; no BLOCKER, no MAJOR; two MINOR, six NIT;
+`review/2026-11-17-VC2-route-answers.md`). As for batch HW the parts were launched together with the referee; no
+finding required a part to be redone. The text above is the reviewed text and is left as it was; these items
+override it.
+1. V8, the subdivision. "Positive terms at the right end, negative at the left end" on a uniform grid needs about
+   400 cells (200 fail, by the referee's computation in exact rationals); the right end of the range must be a
+   rational R with R²/2 ≥ π. The part VC5 did not use that rule: it bounds the positive monomials by chords and the
+   negative ones by tangents, which needs six cells on [0, 51/20], and reaches degree 9 for the sine in seven
+   steps for all y ≥ 0 (table below).
+2. `primitive_hasDerivOn` of batch S1 is stated for the complex integrand e^{iφ} only; V3 and V4 need its real
+   analogue, which the parts VC2 and VC3 each prove for themselves.
+3. V2 does not use f′ > 0, and V4 uses that f′ is positive and nondecreasing, not the rate λ. In V3 the body of the
+   proof assumes c < d; the case c = d is the degenerate case stated after it. In V5 the integer is
+   n = ⌈(θ − π/2)/(2π)⌉.
+
+## Parts as integrated (2026-11-17)
+
+Six proof agents (AI agents of the same model family as the lead), one per part, were launched together with the
+route referee (launch record with the SHA-256 of each brief: session log). Each worked from the blueprint, this
+route and its brief, and wrote one Lean file in the lead's scratch; none wrote in the repository. The lead
+recompiled each file with its final theorems ascribed to the blueprint proposition or frozen statement, printed the
+axioms (all: propext, Classical.choice, Quot.sound), compiled the six files with the assembly and the four final
+theorems as one scratch file, and copied the files in. Five are byte-identical to the deliveries; to the file of
+VC3, which ended without closing its namespace, the lead appended the line `end OscInt.SecondDerivSharpAux`
+(SHA-256 in the tree: 9e773b13dc5efb77782ffb5b1956ac808d25496f67bb4bea71fc161f79be95fc).
+
+| Part | File | Lines as delivered | SHA-256 of the file as delivered | Deviations from the route (agent's report, in the lead's words) |
+|---|---|---|---|---|
+| VC1 `Vdc2TurningPointFacts`, `Vdc2RootFacts` | `OscInt/Front/SecondDerivSharpTurn.lean` | 87 | 2244d1c04334974ecd761e8a50683430e3891c5953a47e202bc995edcc30046d | the antitone lemma in its `HasDerivWithinAt` form; the last step is given G(x) ≤ G(c) multiplied by λ; the turning point as a helper for a nonempty set and a case split |
+| VC2 `Vdc2HeadFacts` from `Vdc2RootFacts` | `OscInt/Front/SecondDerivSharpHead.lean` | 170 | eadeee3c8a8029f0b83d7e380bc246a0a1902abfd3aa533d4cb690777d417c2b | no case split for c = d; Γ(F(d)) ≤ Γ(w) without F(d) ≥ 0; the real primitive handled inline; f′ ≥ √(2F)√λ through `Real.sqrt_le_iff` |
+| VC3 `Vdc2TailFacts` | `OscInt/Front/SecondDerivSharpTail.lean` | 237 | 5ff9b0620011030abfe0f0f6122588bda7406f54c4c6db5b20b22f23990071a6 | the comparison lemma without the hypothesis 0 < s (not needed); the induction generalised over c, d only; a nonpositive integrand through the negated one |
+| VC4 `Vdc2OneSideFacts` from `Vdc2HeadFacts`, `Vdc2TailFacts` | `OscInt/Front/SecondDerivSharpSide.lean` | 182 | 46cd12ea0f4f694f7a676a98610a448cbb58cbc56ffc6964e82b00741d47c38a | both cases through one lemma for an arc that starts at a point of phase 0, so the tail is called with α = f(c) + w − π/2 at the left end of the arc (in Case B this differs from the route's α by 2π); no sin(5π/2) and no three-way split |
+| VC5 the frozen VC2-N | `OscInt/Front/SecondDerivSharpProfile.lean` | 304 | cac2d79bbc15c2f403eaf49d06d77f309fc48027fdede283324c9488560c8266 | the sine bound for all y ≥ 0 in seven steps from Mathlib's bound for the cosine; the moments by the recursion (2n + 3) I_{n+1} = (n + 1) β² I_n; six cells on [0, 51/20] with chords for the positive and tangents for the negative monomials (largest end value about 3.4729, so the margin of the Lean proof is 0.027, not the 0.135 of B itself); one auxiliary definition `vdc2N_mom`; π < 3.15 is enough |
+| VC6 the frozen VC2-A | `OscInt/Front/SecondDerivSharpAttained.lean` | 65 | fe4d14877b3f26436e717993eb63c3bb6e4dedc1132feedddd7e01209036453a | −Im(e^{−iw} z) in place of Im(e^{iw} z̄), so no conjugation; the hypothesis 0 ≤ w of the frozen statement is not used |
+
+Reports. No agent could write its report file (the harness refuses report files from subagents); four first said
+they had written one. Each report came back as text and was saved by the lead as a retyped, shortened summary, so
+the saved files are the lead's, not the agents' (SHA-256: VC1 2054148f0ff2491a79dbf158729b5e7e4b196ef75b91bc47f69b3fb4ab028364, VC2 54bf4d5c559c36e5ddc781c951882d74ed0eb7a4a5a235cfbc6662069a84f929, VC3 fdc5d77acf32a01943ad4ff76aa2cc68c4707e18ccdd371a608ecf746bae7f4b,
+VC4 a27bac6736501133ca773bcb1856d1bbc107d6d784a5d8af314bbd858559a223, VC5 8aa4ffb1e0e711f121ce314e756e1040b4bd0bc88d41779f623a02947a539161, VC6 a4d027c4159ea913b97220d965577a68e69a79b576d5fd30adfe1a694adf5e07; the files are in the lead's scratch, not in the tree, rule 19). No
+git command appears in any report (the briefs and the launch messages forbade every git command). Run times are in
+the session log: two to eight minutes per part; "proof agent" here means that, not an iterated search.
+
+Final theorems: `OscInt/Front/SecondDerivSharpFinal.lean`. The part files import the blueprint and Mathlib only;
+the assembly also imports three proved files of batch S1.
+Checks by the lead at integration (2026-11-17, `docs/replay/2026-11-17-VC2-integration-checks.txt`): `lake build`
+completed; `StatementTypes.lean` asserts the four types (86 lines TYPE-OK); `leanchecker` on each of the twelve VC2
+modules: exit code 0; the consumer example compiles. Not yet done at this point: the post-proof reviews and the
+isolated replay.

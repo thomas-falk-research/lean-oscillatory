@@ -1271,8 +1271,8 @@
     "VC2-K",
     "S1.2"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : SecondDerivSharpStatement) := OscInt.API.SecondDerivSharpSanity.sharp_profile_large h"
+   "snippet_kind": "type",
+   "snippet": "example : SecondDerivSharpStatement := OscInt.API.secondDerivSharp"
   },
   "VC2-A": {
    "hypotheses": [
@@ -1286,8 +1286,8 @@
     "VC2-S",
     "VC2-N"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : SecondDerivAttainedStatement) := OscInt.API.SecondDerivSharpSanity.attained_at h"
+   "snippet_kind": "type",
+   "snippet": "example : SecondDerivAttainedStatement := OscInt.API.secondDerivAttained"
   },
   "VC2-N": {
    "hypotheses": [
@@ -1301,8 +1301,8 @@
     "VC2-S",
     "VC2-K"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : Vdc2ProfileBoundStatement) := OscInt.API.SecondDerivSharpSanity.profile_within h"
+   "snippet_kind": "type",
+   "snippet": "example : Vdc2ProfileBoundStatement := OscInt.API.vdc2ProfileBound"
   },
   "VC2-K": {
    "hypotheses": [
@@ -1320,8 +1320,8 @@
     "VC2-S",
     "VC2-N"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : SecondDerivSevenHalvesStatement) := OscInt.API.SecondDerivSharpSanity.sevenHalves_ramp h"
+   "snippet_kind": "type",
+   "snippet": "example : SecondDerivSevenHalvesStatement := OscInt.API.secondDerivSevenHalves"
   },
   "HW-R": {
    "hypotheses": [

@@ -107,3 +107,7 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
 #assert_type_is OscInt.API.hadamardKernelBound OscInt.Statements.HadamardKernelBoundStatement
 #assert_type_is OscInt.API.hadamardDecay OscInt.Statements.HadamardDecayStatement
 #assert_type_is OscInt.API.hadamardDispersive OscInt.Statements.HadamardDispersiveStatement
+#assert_type_is OscInt.API.secondDerivSharp OscInt.Statements.SecondDerivSharpStatement
+#assert_type_is OscInt.API.secondDerivAttained OscInt.Statements.SecondDerivAttainedStatement
+#assert_type_is OscInt.API.vdc2ProfileBound OscInt.Statements.Vdc2ProfileBoundStatement
+#assert_type_is OscInt.API.secondDerivSevenHalves OscInt.Statements.SecondDerivSevenHalvesStatement

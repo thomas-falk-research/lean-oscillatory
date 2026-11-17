@@ -22,8 +22,8 @@ below it, and every rule is binding.
   110 minutes, re-armed at once). Then: replay record under `docs/replay/`, STATUS rows to "machine-checked as
   stated", README counts, CHANGELOG. The clean-runner replay on GitHub is a manual dispatch of `verify.yml` on the
   branch (the pull request is a draft, which skips it); its result is in the session log.
-- **Last verified state:** the commit that adds the post-proof answers of batch HW and the blueprint of batch VC2: `make quick` exit code 0
-  (time in the session log). 86 pinned statements; 65 machine-checked as stated; 17 proved, replay pending (PA, KL, FR, HW); 4 stated and frozen (VC2).
+- **Last verified state:** the integration commit of batch VC2: `make quick` exit code 0
+  (time in the session log). 86 pinned statements; 65 machine-checked as stated; 21 proved, replay pending (PA, KL, FR, HW, VC2); none unproved.
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
   no agent at the time of this commit. Otherwise nothing local; the dispatched `verify.yml` run on 880b537 ended with
   success (clean-runner replay of PA and KL; session log).
@@ -55,11 +55,13 @@ below it, and every rule is binding.
   stamped `stamps/20261117T010311Z-a93c4e1e44f7`. Route `docs/proof-VC2.md`, blueprint `Blueprint/SecondDerivSharp.lean` (the definition `Vdc2Side` and five
   propositions) and the lead's assembly `OscInt/Front/SecondDerivSharpAssembly.lean` (VC2-S from the turning point
   and the one-sided bound; VC2-K from VC2-S, VC2-N and the amplitude transfer of S1) are in the tree and compile;
-  interface checks `numerics/review/vc2_interface_checks.py`. No part is proved in the tree. Next: route referee and
-  six parts (table at the end of the route; briefs in the lead's scratch, hashes in the session log; if the scratch
-  is lost, write the briefs again from the route), integration (`SecondDerivSharpFinal.lean`, StatementTypes,
-  annotations, consumer example), post-proof reviews. A launch of these agents with no recorded finish in the
-  session log is dead. Classical theorem; nothing new.
+  interface checks `numerics/review/vc2_interface_checks.py`. Route referee: sound
+  (`review/2026-11-17-VC2-route-answers.md`). **All four statements are proved in Lean**: six parts
+  (`OscInt/Front/SecondDerivSharp{Turn,Head,Tail,Side,Profile,Attained}.lean`), final theorems
+  `OscInt/Front/SecondDerivSharpFinal.lean`, consumer example `examples/consumer/ConsumerSecondDerivSharp.lean`,
+  integration checks `docs/replay/2026-11-17-VC2-integration-checks.txt`. Next: three post-proof reviews (a launch
+  with no recorded finish in the session log is dead), answers, then the isolated replay of all five batches.
+  Classical theorem; nothing new.
 - **Batch HW (the Hadamard walk on the line, explicit t^{−1/3} bound; four statements HW-R, HW-K, HW-D, HW-L):** in
   the tree for its freeze (`OscInt/Statements/HadamardWalk.lean`, sanity layer, plants, challenge,
   `comparator-HW.json`, prose with the route). **Frozen**: stamp `stamps/20261116T225756Z-5792039264f0`, pinned; the same stamp is the stamp of the FR

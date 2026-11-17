@@ -31,9 +31,11 @@ the Schrödinger group on a ring of N sites and on an open chain of M sites,
 - FC-P `ChainFiniteSizeStatement` (`proved_by` `OscInt.API.chainFiniteSize`).
 
 Batch VC2 (`OscInt/Statements/SecondDerivSharp.lean`, stamp `stamps/20261116T222541Z-5b72549117b1`): four new
-entries, stated and frozen, **not proved** (no `proved_by`): VC2-S `SecondDerivSharpStatement`, VC2-A
-`SecondDerivAttainedStatement`, VC2-N `Vdc2ProfileBoundStatement`, VC2-K `SecondDerivSevenHalvesStatement` (the
-second-derivative van der Corput bound with its sharp classical constant).
+entries, the second-derivative van der Corput bound with its sharp classical constant,
+- VC2-S `SecondDerivSharpStatement` (`proved_by` `OscInt.API.secondDerivSharp`);
+- VC2-A `SecondDerivAttainedStatement` (`proved_by` `OscInt.API.secondDerivAttained`);
+- VC2-N `Vdc2ProfileBoundStatement` (`proved_by` `OscInt.API.vdc2ProfileBound`);
+- VC2-K `SecondDerivSevenHalvesStatement` (`proved_by` `OscInt.API.secondDerivSevenHalves`).
 
 Batch HW (`OscInt/Statements/HadamardWalk.lean`, stamp `stamps/20261116T225756Z-5792039264f0`): four new entries,
 the Hadamard walk on the line with explicit and not sharp t^{−1/3} bounds,
@@ -42,12 +44,13 @@ the Hadamard walk on the line with explicit and not sharp t^{−1/3} bounds,
 - HW-D `HadamardDecayStatement` (`proved_by` `OscInt.API.hadamardDecay`);
 - HW-L `HadamardDispersiveStatement` (`proved_by` `OscInt.API.hadamardDispersive`).
 
-`stamps/statements.json` has 86 entries against 65 at v0.6.0: 21 new, 17 with a proving theorem, 4 without. No
-existing statement's text, file, commitment or stamp changed. The seventeen of batches PA, KL, FR and HW are proved
-in Lean (build, axiom audit, statement types, kernel re-check per module) and post-proof reviewed; their isolated
-replay is pending, so `docs/STATUS.md` does not yet call them machine-checked as stated. The seven of batch FR use
+`stamps/statements.json` has 86 entries against 65 at v0.6.0: 21 new, all with a proving theorem. No
+existing statement's text, file, commitment or stamp changed. The twenty-one of batches PA, KL, FR, HW and VC2 are
+proved in Lean (build, axiom audit, statement types, kernel re-check per module); those of PA, KL, FR and HW are
+post-proof reviewed, those of VC2 not yet; their isolated replay is pending, so `docs/STATUS.md` does not yet call them machine-checked as stated. The seven of batch FR use
 lemmas of batch PA; HW-K, HW-D and HW-L use S1.2 and S1.3; HW-R, HW-D and HW-L use thirteen lemmas of the first HW
-sanity layer and one of the sanity layer of batch GD (`docs/STATUS.md`, "Batch HW, what the rows rest on").
+sanity layer and one of the sanity layer of batch GD (`docs/STATUS.md`, "Batch HW, what the rows rest on"); VC2-K
+uses the amplitude transfer and two lemmas of batch S1.
 
 ### Proofs
 
@@ -61,7 +64,11 @@ pre-proof reviews (`review/2026-11-16-FR-pre-proof-answers.md`, answers stamped
 (`review/2026-11-17-FR-post-proof-answers.md`). Batch HW: blind pre-proof reviews
 (`review/2026-11-17-HW-pre-proof-answers.md`, answers stamped `stamps/20261117T010311Z-a93c4e1e44f7`), route
 `docs/proof-HW.md`, four parts by four proof agents launched together with the route referee
-(`review/2026-11-17-HW-route-answers.md`), post-proof reviews (`review/2026-11-17-HW-post-proof-answers.md`). Lead, referees and provers are AI agents
+(`review/2026-11-17-HW-route-answers.md`), post-proof reviews (`review/2026-11-17-HW-post-proof-answers.md`).
+Batch VC2: blind pre-proof reviews (`review/2026-11-17-VC2-pre-proof-answers.md`, answers stamped
+`stamps/20261117T010311Z-a93c4e1e44f7`), route `docs/proof-VC2.md`, six parts by six proof agents launched together
+with the route referee (`review/2026-11-17-VC2-route-answers.md`); post-proof reviews not yet run. A proof on paper
+of batch VC2 is older than its freeze. Lead, referees and provers are AI agents
 of one model family.
 
 ### Process and tooling (owner decisions of 2026-11-16)
@@ -84,6 +91,8 @@ of one model family.
   (`docs/prereg/2026-11-16-CTQW-chain.md`, `experiments/ctqw-chain/`).
 - `docs/design/unlock-map.md`, `docs/funding/` (a draft application package), `docs/design/batch-FR-draft.md` (the
   design draft of batch FR, kept as written; the batch itself is frozen and proved, see above).
+- `examples/consumer/ConsumerSecondDerivSharp.lean`: from VC2-S and VC2-N, the bound (7/2)/√λ for `∫ e^{if}` when
+  f′ increases at rate λ, and for every partial integral of the Fresnel phase e^{iλx²/2}.
 - `examples/consumer/ConsumerHadamardWalk.lean`: from HW-D, a bound for each amplitude and for the probability at a
   site of the Hadamard walk started at one site in a unit state (probability at most 2 (39 √2 t^{−1/3})² =
   6084 t^{−2/3}, t ≥ 1; far from sharp, as the constants are: below the trivial bound 1 only for t > 474552).
