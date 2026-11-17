@@ -96,3 +96,10 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
 #assert_type_is OscInt.API.kusminLandau OscInt.Statements.KusminLandauStatement
 #assert_type_is OscInt.API.kusminLandauTwoOverPi OscInt.Statements.KusminLandauTwoOverPiStatement
 #assert_type_is OscInt.API.kusminLandauDeriv OscInt.Statements.KusminLandauDerivStatement
+#assert_type_is OscInt.API.ringKernelSolves OscInt.Statements.RingKernelStatement
+#assert_type_is OscInt.API.ringUnique OscInt.Statements.RingUniqueStatement
+#assert_type_is OscInt.API.ringCosetSum OscInt.Statements.RingCosetSumStatement
+#assert_type_is OscInt.API.ringFiniteSize OscInt.Statements.RingFiniteSizeStatement
+#assert_type_is OscInt.API.chainKernelSolves OscInt.Statements.ChainKernelStatement
+#assert_type_is OscInt.API.chainUnique OscInt.Statements.ChainUniqueStatement
+#assert_type_is OscInt.API.chainFiniteSize OscInt.Statements.ChainFiniteSizeStatement

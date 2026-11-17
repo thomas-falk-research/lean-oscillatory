@@ -293,31 +293,31 @@ example : KusminLandauDerivStatement := OscInt.API.kusminLandauDeriv
 
 /-! ### FR-K: The ring kernel solves `i ∂_t R + ΔR = 0` in the site variable, equals the unit datum of the ring at `t = 0` (1 on `Nℤ`, 0 elsewhere) and has period `N`. -/
 
-example (h : RingKernelStatement) := OscInt.API.FiniteRingSanity.ringK_period h
+example : RingKernelStatement := OscInt.API.ringKernelSolves
 
 /-! ### FR-U: Every solution of period `N` of `i u′ + Δu = 0` is the kernel sum of its datum over one period: `u(t, x) = Σ_{y<N} R_N(t, x − y) u(0, y)`. -/
 
-example (h : RingUniqueStatement) := OscInt.API.FiniteRingSanity.ringU_const h
+example : RingUniqueStatement := OscInt.API.ringUnique
 
 /-! ### FR-S: Method of images: the ring kernel is the line kernel summed over the coset `r + Nℤ`. -/
 
-example (h : RingCosetSumStatement) := OscInt.API.FiniteRingSanity.ringS_origin h
+example : RingCosetSumStatement := OscInt.API.ringCosetSum
 
 /-! ### FR-P: Finite-size error of the ring: `|R_N(t, r) − G(t, r)| ≤ 2 e^{2|t| sinh η} cosh(rη) / (e^{ηN} − 1)` for every `η > 0`. -/
 
-example (h : RingFiniteSizeStatement) := OscInt.API.FiniteRingSanity.ringP_one h
+example : RingFiniteSizeStatement := OscInt.API.ringFiniteSize
 
 /-! ### FC-K: The chain kernel solves the equation in the site variable, vanishes at the walls `x = 0` and `x = M + 1`, and is the unit datum at `t = 0` on the sites `1, …, M`. -/
 
-example (h : ChainKernelStatement) := OscInt.API.FiniteRingSanity.chainK_unit h
+example : ChainKernelStatement := OscInt.API.chainKernelSolves
 
 /-! ### FC-U: Every solution of `i u′ + Δu = 0` on the open chain `1, …, M` with `u = 0` at the walls `0` and `M + 1` is the kernel sum of its datum: `u(t, x) = Σ_{y=1}^{M} C_M(t; x, y) u(0, y)`. -/
 
-example (h : ChainUniqueStatement) := OscInt.API.FiniteRingSanity.chainU_one h
+example : ChainUniqueStatement := OscInt.API.chainUnique
 
 /-! ### FC-P: Finite-size error of the open chain: for sites `1 ≤ x, y ≤ M` and every `η > 0`, `|C_M(t; x, y) − G(t, x − y)| ≤ e^{2|t| sinh η} (e^{−(x+y)η} + 2 (cosh((x−y)η) + cosh((x+y)η)) / (e^{2(M+1)η} − 1))`. -/
 
-example (h : ChainFiniteSizeStatement) := OscInt.API.FiniteRingSanity.chainP_one h
+example : ChainFiniteSizeStatement := OscInt.API.chainFiniteSize
 
 /-! ### VC2-S: The second-derivative van der Corput bound with its sharp constant: if `f′` increases at rate at least `λ > 0`, then `|∫_a^b e^{if}| ≤ A(w)/√λ` for some `w ∈ [0, π]`. -/
 

@@ -100,3 +100,48 @@ Parts (one agent each, one Lean file each):
 - The two energy arguments: derivative of a finite sum of squared moduli; index shifts in sums over a period and
   over 1, …, M; "zero derivative implies constant" on all of ℝ.
 - F-even: the re-indexing j ↦ N − j on a `Finset.range`.
+
+## Revision after the route referee (2026-11-16)
+
+The route referee read the route as committed in 6ef8939 (verdict: sound after corrections; no BLOCKER, no MAJOR;
+`review/2026-11-16-FR-route-answers.md`). The text above is the reviewed text and is left as it was; these items
+override it.
+1. Part F-coset, the modulus of v: the display should read |v(z)| = e^{2t sin x sinh y − ry} (the route has the wrong
+   sign in front of 2t). The bound e^{2|t| sinh 1 + |r|} is unaffected. An error of the lead.
+2. Part F-coset is proved without computing that modulus: v(z) = e^{−2it} · e^{i(2t) cos z} · e^{irz}, with the bound of
+   the middle factor from the library (`kernelIntegrand_norm_le`) and |e^{irz}| = e^{−r Im z} ≤ e^{|r|}. The constant is
+   then e^{|2t| sinh 1} · e^{|r|}; it does not appear in the statement.
+3. Part F-even at N = 0: both sides are 0 in Lean ((0 : ℂ)⁻¹ = 0 and an empty sum); the route's re-indexing covers N ≥ 1.
+4. Feasibility notes taken over: F-images needs a majorant with the constants A e^{−rη} and A e^{rη} on the two sides
+   (two geometric series); the energy arguments use the complex form Σ conj(w_x) w_x.
+5. Header: the sentence about referee B's remark and F-images says nothing and is withdrawn. What is true: for the
+   extremal sequence g(n) = A e^{−|n|η} the bound of F-images is an equality whenever |r| ≤ N, which is consistent with
+   FR-P being nearly attained along r = ±N.
+
+## Parts as integrated (2026-11-16)
+
+Five proof agents (AI agents of the same model family as the lead), one per part, were launched together after the
+route referee had reported (the SHA-256 of each brief is in the session log). Each worked in the lead's scratch
+from the blueprint, this route, the referee's notes and its brief, and wrote one Lean file; none wrote in the
+repository. The lead recompiled each file with its final theorems ascribed to the blueprint proposition or frozen
+statement, printed the axioms (all: propext, Classical.choice, Quot.sound), compiled all five files with the
+assembly and the seven final theorems as one scratch file, and copied the files in unchanged.
+
+| Part | File | Lines | SHA-256 of the file as delivered | Deviations from the route (agent's report, in the lead's words) |
+|---|---|---|---|---|
+| FR1 `RingKernelStatement`, `RingEvenFacts` | `OscInt/Front/FiniteRingKernel.lean` | 175 | 305673387aed7fba69423eacdf67dd8c39de79d9bd6cf07559c747b782ed19d4 | the equation is proved for every N; evenness re-indexes the whole range j ↦ N − j with "mode N = mode 0" instead of keeping j = 0 apart; the period uses the integer-multiple-of-2πi lemma directly |
+| FR2 `RingCosetSumStatement` | `OscInt/Front/FiniteRingCoset.lean` | 140 | 52000d9ad8be686071bf250235e1c333afc83cd3e0bc94bbbd6cf90e0c7bdbf2 | none in substance; the referee's cheaper path (revision, item 2); one new definition, the function v |
+| FR3 `ImageSumFacts` | `OscInt/Front/FiniteRingImages.lean` | 128 | f63461c3723c503d3ef508e37f30e00151d410b0df92b14993d0859be168ccab | none |
+| FR4 `RingDatumFacts`, `RingEnergyFacts` | `OscInt/Front/FiniteRingEnergy.lean` | 154 | 93378c571f697861d25b2d33c5123777a5a8bd76886d75ecc977a5fd49492e3d | complex energy; the derivative of each term is written as i (F(x) − F(x + 1)) and summed with one shift lemma, instead of matching two sums as complex conjugates |
+| FR5 `ChainEnergyFacts` | `OscInt/Front/FiniteRingChainEnergy.lean` | 124 | 861b0acb46177c368b1e1185cb1951e7b56b75779270baf42c74d40e9e9126bc | complex energy over the sites k + 1, k < M; the derivative of each term is i (J(x) − J(x − 1)) with the current J(x) = conj(w_x) w_{x+1} − conj(w_{x+1}) w_x, which telescopes to the two walls |
+
+Agents' slips against their briefs, as they reported them: two proof agents (FR3, FR4) each ran one read-only
+`git status` inside the repository; nothing was written there (the lead's `git status` after each report: clean).
+Three agents could not write their report file (the harness refused it) and returned the report as text.
+
+Final theorems: `OscInt/Front/FiniteRingFinal.lean`.
+Checks by the lead at integration (2026-11-17, `docs/replay/2026-11-17-FR-integration-checks.txt`): `lake build`
+completed; `StatementTypes.lean` asserts the seven types (78 lines TYPE-OK); `leanchecker` on each of the eleven FR
+modules (statements, two sanity layers, blueprint, assembly, five parts, final): exit code 0; the axioms of the seven
+final theorems are in the audit of `make quick`. Not yet done at this point: the post-proof reviews and the isolated
+replay.

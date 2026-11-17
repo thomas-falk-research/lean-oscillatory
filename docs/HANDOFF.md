@@ -23,11 +23,9 @@ below it, and every rule is binding.
   stated", README counts, CHANGELOG. The clean-runner replay on GitHub is a manual dispatch of `verify.yml` on the
   branch (the pull request is a draft, which skips it); its result is in the session log.
 - **Last verified state:** the integration commit (the one that adds this paragraph): `make quick` exit code 0
-  (time in the session log). 86 pinned statements; 65 machine-checked as stated; 6 proved, replay pending; 15 stated and frozen (batches FR, VC2 and HW).
+  (time in the session log). 86 pinned statements; 65 machine-checked as stated; 13 proved, replay pending (PA, KL, FR); 8 stated and frozen (VC2, HW).
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
-  launched right after this commit (see the launch record at the end of the session log): the FR route referee,
-  four blind referees (VC2 and HW), then five FR proof agents in scratch; if the session log has no row with their
-  results, they are dead and are relaunched from the briefs' descriptions in the log. Otherwise nothing local; the dispatched `verify.yml` run on 880b537 ended with
+  no agent at the time of this commit. Otherwise nothing local; the dispatched `verify.yml` run on 880b537 ended with
   success (clean-runner replay of PA and KL; session log). In the lead's scratch, not in the tree: the sanity layer and planted controls
   of the draft batch FR (an agent's work; if lost, redo from `docs/design/batch-FR-draft.md`).
 - **Exact next command:** read the session log's last rows. If a `make verify-all` start is recorded without a
@@ -45,19 +43,23 @@ below it, and every rule is binding.
   Blind pre-proof reviews A and B: all seven FAITHFUL, no counterexample, no BLOCKER; three MAJOR against the
   sanity layer, answered by `OscInt/Front/FiniteRingSanity2.lean` and a second plant run
   (`review/2026-11-16-FR-pre-proof-answers.md`, `docs/replay/2026-11-16-FR-sanity-plants-second.txt`). The answers are stamped
-  (`stamps/20261116T225756Z-5792039264f0`). Route `docs/proof-FR.md`, blueprint `Blueprint/FiniteRing.lean` and the lead's assembly
-  `OscInt/Front/FiniteRingAssembly.lean` are in the tree and compile; no part is proved. Order from here: route
-  referee, then five parts (table in the route), integration, post-proof reviews. A route on paper exists in the lead's scratch; if lost, the dependencies are in
+  (`stamps/20261116T225756Z-5792039264f0`). **Proved in Lean** (2026-11-16/17): `OscInt.API.ringKernelSolves`, `ringUnique`,
+  `ringCosetSum`, `ringFiniteSize`, `chainKernelSolves`, `chainUnique`, `chainFiniteSize`
+  (`OscInt/Front/FiniteRingFinal.lean`; route, referee, parts: `docs/proof-FR.md`). Order from here: post-proof
+  reviews A, B, C on the integration commit, answers, stamp; then the isolated replay (with PA and KL). A route on paper exists in the lead's scratch; if lost, the dependencies are in
   `docs/design/batch-FR-draft.md`.
 - **Batch VC2 (sharp second-derivative van der Corput bound; four statements VC2-S, VC2-A, VC2-N, VC2-K):** in the
   tree for its freeze (`OscInt/Statements/SecondDerivSharp.lean`, sanity layer, plants, challenge,
-  `comparator-VC2.json`, prose). **Frozen**: stamp `stamps/20261116T222541Z-5b72549117b1`, pinned. Next for this batch: blind pre-proof
-  reviews A and B, answers, stamp of the answers, and only then proof code (rule 1).  A proof on paper exists and was refereed (session
+  `comparator-VC2.json`, prose). **Frozen**: stamp `stamps/20261116T222541Z-5b72549117b1`, pinned. Blind pre-proof reviews A and B are in
+  (session log, 2026-11-16 23:14 row): FAITHFUL, no counterexample, three MAJOR against the sanity layer; a second
+  sanity layer exists in the lead's scratch (if lost: redo from the findings in the log). Next: answers, stamp of
+  the answers, and only then proof code (rule 1).  A proof on paper exists and was refereed (session
   log); a route for Lean that avoids inverse functions is in the lead's scratch. Classical theorem; nothing new.
 - **Batch HW (the Hadamard walk on the line, explicit t^{−1/3} bound; four statements HW-R, HW-K, HW-D, HW-L):** in
   the tree for its freeze (`OscInt/Statements/HadamardWalk.lean`, sanity layer, plants, challenge,
   `comparator-HW.json`, prose with the route). **Frozen**: stamp `stamps/20261116T225756Z-5792039264f0`, pinned; the same stamp is the stamp of the FR
-  review answers. Then: blind reviews, answers, stamp, proof code. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
+  review answers. Blind reviews A and B are in (FAITHFUL, no counterexample; two MAJOR against the sanity layer; a
+  second sanity layer exists in the lead's scratch). Then: answers, stamp, proof code. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
   the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;
   a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;

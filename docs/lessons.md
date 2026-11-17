@@ -103,7 +103,7 @@ able to fail.
 - `HasCompactSupport.mul_left` against a pointwise lambda times out; use `tsupport_mul_subset_right` with
   `IsCompact.of_isClosed_subset`. (52)
 
-## History and evidence (entries 1–58)
+## History and evidence (entries 1–60)
 
 ## 1. The brief's Mathlib names were wrong at the pin (2026-11-05)
 `exists_smooth_zero_one_of_isClosed`, `fourierIntegral_gaussian_pi` and the import `Mathlib.Data.Real.Basic` do not
@@ -537,3 +537,17 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     `make docs-check` passed locally, and the job failed on GitHub ("Files with copyright information: 1567 / 1568").
     Fixed in the next commit (header added, `reuse lint` run locally: compliant). Check before pushing a new file
     that is not covered by a `REUSE.toml` pattern: `reuse lint` in a throw-away environment, as the job does.
+59. **The container restarted while nine agents and jobs were running; two referees and their computations died.**
+    Session 13, about 23:57Z on 2026-11-16: the lead's shell command ended with exit code 137 and the machine came
+    back with an uptime of zero minutes. Running at that moment: two blind referees, each with a heavy background
+    computation of its own (a certified evaluation of a walk after 59320 steps; a full adversarial search), a second
+    sanity agent just finished, and the lead's re-run of a plant generator. The cause was not measured; memory
+    exhaustion is the likely one (15 GB, no swap). Nothing in the repository or in scratch was lost; the referees
+    were resumed from their transcripts with an instruction not to relaunch heavy jobs, and their reports say what
+    was left unfinished. Check for a brief that allows computation: a ceiling on memory and time per job, and no
+    more than four compute-heavy agents at once on this machine.
+60. **Three agents in one evening ran `git status` inside the repository although their briefs forbade git.** Session
+    13: the sanity agent of batch HW and the proof agents FR3 and FR4 reported it themselves. Read-only and harmless
+    here (the lead's `git status` was clean each time), but it is a rule broken by habit. The later briefs name the
+    command explicitly ("no git command of any kind, including git status"), and the two agents given that wording
+    reported no such slip.

@@ -1152,8 +1152,8 @@
     "FR-S",
     "FC-K"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : RingKernelStatement) := OscInt.API.FiniteRingSanity.ringK_period h"
+   "snippet_kind": "type",
+   "snippet": "example : RingKernelStatement := OscInt.API.ringKernelSolves"
   },
   "FR-U": {
    "hypotheses": [
@@ -1170,8 +1170,8 @@
     "LS-K",
     "FC-U"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : RingUniqueStatement) := OscInt.API.FiniteRingSanity.ringU_const h"
+   "snippet_kind": "type",
+   "snippet": "example : RingUniqueStatement := OscInt.API.ringUnique"
   },
   "FR-S": {
    "hypotheses": [
@@ -1186,8 +1186,8 @@
     "PA-T",
     "LC-1"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : RingCosetSumStatement) := OscInt.API.FiniteRingSanity.ringS_origin h"
+   "snippet_kind": "type",
+   "snippet": "example : RingCosetSumStatement := OscInt.API.ringCosetSum"
   },
   "FR-P": {
    "hypotheses": [
@@ -1203,8 +1203,8 @@
     "LC-1",
     "FC-P"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : RingFiniteSizeStatement) := OscInt.API.FiniteRingSanity.ringP_one h"
+   "snippet_kind": "type",
+   "snippet": "example : RingFiniteSizeStatement := OscInt.API.ringFiniteSize"
   },
   "FC-K": {
    "hypotheses": [
@@ -1218,8 +1218,8 @@
     "FC-U",
     "FR-K"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : ChainKernelStatement) := OscInt.API.FiniteRingSanity.chainK_unit h"
+   "snippet_kind": "type",
+   "snippet": "example : ChainKernelStatement := OscInt.API.chainKernelSolves"
   },
   "FC-U": {
    "hypotheses": [
@@ -1235,8 +1235,8 @@
     "FC-K",
     "FR-U"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : ChainUniqueStatement) := OscInt.API.FiniteRingSanity.chainU_one h"
+   "snippet_kind": "type",
+   "snippet": "example : ChainUniqueStatement := OscInt.API.chainUnique"
   },
   "FC-P": {
    "hypotheses": [
@@ -1252,8 +1252,8 @@
     "LC-1",
     "FC-U"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : ChainFiniteSizeStatement) := OscInt.API.FiniteRingSanity.chainP_one h"
+   "snippet_kind": "type",
+   "snippet": "example : ChainFiniteSizeStatement := OscInt.API.chainFiniteSize"
   },
   "VC2-S": {
    "hypotheses": [

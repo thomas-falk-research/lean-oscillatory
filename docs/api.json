@@ -1752,7 +1752,7 @@
   {
    "label": "FR-K",
    "name": "OscInt.Statements.RingKernelStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.ringKernelSolves",
    "summary": "The ring kernel solves `i ∂_t R + ΔR = 0` in the site variable, equals the unit datum of the ring at `t = 0` (1 on `Nℤ`, 0 elsewhere) and has period `N`.",
    "file": "OscInt/Statements/FiniteRing.lean",
    "commitment": "6399cfe597f67ac26135a740e0bab2b7e2a421887968e6a1530d42ff5dacbae6",
@@ -1770,13 +1770,13 @@
     "FR-S",
     "FC-K"
    ],
-   "snippet": "example (h : RingKernelStatement) := OscInt.API.FiniteRingSanity.ringK_period h",
+   "snippet": "example : RingKernelStatement := OscInt.API.ringKernelSolves",
    "status": "see docs/STATUS.md (row FR-K)"
   },
   {
    "label": "FR-U",
    "name": "OscInt.Statements.RingUniqueStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.ringUnique",
    "summary": "Every solution of period `N` of `i u′ + Δu = 0` is the kernel sum of its datum over one period: `u(t, x) = Σ_{y<N} R_N(t, x − y) u(0, y)`.",
    "file": "OscInt/Statements/FiniteRing.lean",
    "commitment": "0df8f549e55712b4937255dc85e8dae7a408b817cf58104be5be4fa159125f84",
@@ -1796,13 +1796,13 @@
     "LS-K",
     "FC-U"
    ],
-   "snippet": "example (h : RingUniqueStatement) := OscInt.API.FiniteRingSanity.ringU_const h",
+   "snippet": "example : RingUniqueStatement := OscInt.API.ringUnique",
    "status": "see docs/STATUS.md (row FR-U)"
   },
   {
    "label": "FR-S",
    "name": "OscInt.Statements.RingCosetSumStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.ringCosetSum",
    "summary": "Method of images: the ring kernel is the line kernel summed over the coset `r + Nℤ`.",
    "file": "OscInt/Statements/FiniteRing.lean",
    "commitment": "01f15cf181b6331ab2db5d45c5ce997e075c2c26909192b0f4590dcbe7cb3af0",
@@ -1820,13 +1820,13 @@
     "PA-T",
     "LC-1"
    ],
-   "snippet": "example (h : RingCosetSumStatement) := OscInt.API.FiniteRingSanity.ringS_origin h",
+   "snippet": "example : RingCosetSumStatement := OscInt.API.ringCosetSum",
    "status": "see docs/STATUS.md (row FR-S)"
   },
   {
    "label": "FR-P",
    "name": "OscInt.Statements.RingFiniteSizeStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.ringFiniteSize",
    "summary": "Finite-size error of the ring: `|R_N(t, r) − G(t, r)| ≤ 2 e^{2|t| sinh η} cosh(rη) / (e^{ηN} − 1)` for every `η > 0`.",
    "file": "OscInt/Statements/FiniteRing.lean",
    "commitment": "7f9f79763fee10a5517be479e757c2d8f5827858220c84224d12dd715f51e1f4",
@@ -1845,13 +1845,13 @@
     "LC-1",
     "FC-P"
    ],
-   "snippet": "example (h : RingFiniteSizeStatement) := OscInt.API.FiniteRingSanity.ringP_one h",
+   "snippet": "example : RingFiniteSizeStatement := OscInt.API.ringFiniteSize",
    "status": "see docs/STATUS.md (row FR-P)"
   },
   {
    "label": "FC-K",
    "name": "OscInt.Statements.ChainKernelStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.chainKernelSolves",
    "summary": "The chain kernel solves the equation in the site variable, vanishes at the walls `x = 0` and `x = M + 1`, and is the unit datum at `t = 0` on the sites `1, …, M`.",
    "file": "OscInt/Statements/FiniteRing.lean",
    "commitment": "9e198fb243feac85d32cac645f35a866826bac394883f19d7ed6ef2ef9043ae5",
@@ -1868,13 +1868,13 @@
     "FC-U",
     "FR-K"
    ],
-   "snippet": "example (h : ChainKernelStatement) := OscInt.API.FiniteRingSanity.chainK_unit h",
+   "snippet": "example : ChainKernelStatement := OscInt.API.chainKernelSolves",
    "status": "see docs/STATUS.md (row FC-K)"
   },
   {
    "label": "FC-U",
    "name": "OscInt.Statements.ChainUniqueStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.chainUnique",
    "summary": "Every solution of `i u′ + Δu = 0` on the open chain `1, …, M` with `u = 0` at the walls `0` and `M + 1` is the kernel sum of its datum: `u(t, x) = Σ_{y=1}^{M} C_M(t; x, y) u(0, y)`.",
    "file": "OscInt/Statements/FiniteRing.lean",
    "commitment": "60531d3c356a8df2b871d6c81802938ff1ea978ba94cfa72a9be5dd108e8fee7",
@@ -1893,13 +1893,13 @@
     "FC-K",
     "FR-U"
    ],
-   "snippet": "example (h : ChainUniqueStatement) := OscInt.API.FiniteRingSanity.chainU_one h",
+   "snippet": "example : ChainUniqueStatement := OscInt.API.chainUnique",
    "status": "see docs/STATUS.md (row FC-U)"
   },
   {
    "label": "FC-P",
    "name": "OscInt.Statements.ChainFiniteSizeStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.chainFiniteSize",
    "summary": "Finite-size error of the open chain: for sites `1 ≤ x, y ≤ M` and every `η > 0`, `|C_M(t; x, y) − G(t, x − y)| ≤ e^{2|t| sinh η} (e^{−(x+y)η} + 2 (cosh((x−y)η) + cosh((x+y)η)) / (e^{2(M+1)η} − 1))`.",
    "file": "OscInt/Statements/FiniteRing.lean",
    "commitment": "a0ab4f0a4dce9450ce9ac587abcb243d14743da5658a5d39277ffc6d711292ff",
@@ -1918,7 +1918,7 @@
     "LC-1",
     "FC-U"
    ],
-   "snippet": "example (h : ChainFiniteSizeStatement) := OscInt.API.FiniteRingSanity.chainP_one h",
+   "snippet": "example : ChainFiniteSizeStatement := OscInt.API.chainFiniteSize",
    "status": "see docs/STATUS.md (row FC-P)"
   },
   {

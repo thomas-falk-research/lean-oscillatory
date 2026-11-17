@@ -110,6 +110,7 @@ entry-point:
 	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerD4Uniform.lean
 	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerPeriodicAnalytic.lean
 	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerKusminLandau.lean
+	$(LAKE) env lean -DautoImplicit=false examples/consumer/ConsumerFiniteRing.lean
 
 # The API index docs/api.json and examples/api/Snippets.lean, generated from stamps/statements.json and
 # docs/api/annotations.json (`tools/gen_api.py`); `api-check` fails on drift (and is part of `quick`).
