@@ -293,7 +293,8 @@ theorem hwKB_coeff_cos (T : ℝ) (hT : 0 < T) :
   rw [Real.mul_rpow hT.le (by positivity), hwKB_q_rpow]
   ring
 
-/-- First numerical inequality: `(1600/31)(√2 − 1/√3) ≤ 14π` (this is `(16/π)(3√3/2)^{1/2}(√2 − 1/√3) ≤ 7`). -/
+/-- First numerical inequality: `(1600/31)(√2 − 1/√3) ≤ 14π` (with `(3√3/2)^{1/2} ≤ 50/31` this gives
+`(16/π)(3√3/2)^{1/2}(√2 − 1/√3) ≤ 7`). -/
 theorem hwKB_num_one : 1600 / 31 * (Real.sqrt 2 - 1 / Real.sqrt 3) ≤ 14 * Real.pi := by
   linarith [hwKB_sqrt_two_le, hwKB_inv_sqrt_three_ge, Real.pi_gt_d2]
 

@@ -127,17 +127,27 @@ scratch file, and copied the files in unchanged.
 |---|---|---|---|---|
 | HW1 `HadamardKernelRecFacts` | `OscInt/Front/HadamardWalkKernelRec.lean` | 132 | 6b9d1471e0bd254faf945793578741db7d3965839621d9c2c7a24d34e9bb7f0b | the recursion is proved on the numerators only (the denominator is a common factor and is never evaluated); K(0, ·) and K(1, ·) are taken from the first sanity layer, which the file imports; one new definition, the integrand |
 | HW2 `HadamardPhaseFacts`, `HadamardAmplitudeFacts` | `OscInt/Front/HadamardWalkPhase.lean` | 402 | 1618290be509529e873442f0cea68de6d898736e78bb696b60461bb30c6d7928 | none in the mathematics; two new definitions (the real amplitude and its derivative); two arcs computed, two by the period π |
-| HW3 `HadamardKernelBoundStatement` from the two propositions of HW2 | `OscInt/Front/HadamardWalkKernelBound.lean` | 348 | bc7481c49b75248ddf1d6618851e1e85f891dd79473c43c50c2da5f410c75567 | the first constant goes through √(2/(3√3)) ≥ 31/50 (margin 0.13 %) in place of a real-power identity, so the first numerical inequality reads (1600/31)(√2 − 1/√3) ≤ 14π (coefficient 6.88 ≤ 7) |
+| HW3 `HadamardKernelBoundStatement` from the two propositions of HW2 | `OscInt/Front/HadamardWalkKernelBound.lean` | 348 | bc7481c49b75248ddf1d6618851e1e85f891dd79473c43c50c2da5f410c75567 | the first constant goes through √(2/(3√3)) ≥ 31/50 (margin 0.065 %; 0.13 % for the squares) in place of a real-power identity, so the first numerical inequality reads (1600/31)(√2 − 1/√3) ≤ 14π (coefficient 6.88 ≤ 7) |
 | HW4 `HadamardDecayArithFacts`, `HadamardLinearFacts` | `OscInt/Front/HadamardWalkLinear.lean` | 161 | 2a70338f5f5d972d6486d02095624d78a9c92bdb9047501e7f274c52e835f29b | 2^{1/3} ≤ 1.26 inside a helper (final constant 38.456 ≤ 39); H8 as an induction on an equality of states; one Mathlib name of the brief corrected |
 
-Two agents (HW1, HW2) could not write their report file and returned the report as text. No agent reported a git
-command (the launch messages forbade every git command by name).
+Two agents (HW1, HW2) could not write their report file and returned the report as text; those two reports were not
+saved and have no hash, so for HW1 and HW2 the column "Deviations" is the lead's summary with no recoverable
+source. No git command appears in the two reports that exist or in the lead's memory of the other two (the launch
+messages forbade every git command by name). Observed by post-proof referee C from the file times in the lead's
+scratch (not tamper-evident): three of the four part files were written once, with no working files beside them;
+"proof agent" here means a few minutes of work, not an iterated search (run times in the session log). After the
+post-proof reviews the lead changed one docstring in the part HW3 (`hwKB_num_one`: "this is" became "with
+(3√3/2)^{1/2} ≤ 50/31 this gives"), so that file is no longer byte-identical to the delivery; its SHA-256 is now in
+`docs/replay/2026-11-17-HW-integration-checks.txt`.
 
-Final theorems: `OscInt/Front/HadamardWalkFinal.lean`. The proof of HW-R (through HW1) uses two data lemmas of the
-first sanity layer, `hadamardKernel_zero` and `hadamardKernel_one`, and four identities of the dispersion relation
-proved there; HW-K uses the proved S1.2 and S1.3 (`OscInt.vanDerCorput_two`, `OscInt.vanDerCorput_three`, machine-
-checked as stated since v0.1).
+Final theorems: `OscInt/Front/HadamardWalkFinal.lean`. The proof of HW-R (through HW1) cites six lemmas of the
+first sanity layer: the data lemmas `hadamardKernel_zero` and `hadamardKernel_one`, the identity
+`sin_hadamardDispersion`, Euler's formula `exp_neg_sub_exp` and the non-vanishing facts `sqrt_two_ne_zero` and
+`kernel_denominator_ne_zero`; its closure holds thirteen theorems of that layer and one of the sanity layer of batch
+GD (list: `docs/STATUS.md`, "Batch HW, what the rows rest on"), and HW-D and HW-L inherit them. HW-K uses the proved
+S1.2 and S1.3 (`OscInt.vanDerCorput_two`, `OscInt.vanDerCorput_three`, machine-checked as stated since the first
+release, v0.2.0).
 Checks by the lead at integration (2026-11-17, `docs/replay/2026-11-17-HW-integration-checks.txt`): `lake build`
 completed; `StatementTypes.lean` asserts the four types (82 lines TYPE-OK); `leanchecker` on each of the ten HW
-modules: exit code 0; the consumer example compiles. Not yet done at this point: the post-proof reviews and the
-isolated replay.
+modules: exit code 0; the consumer example compiles. Post-proof reviews: `review/2026-11-17-HW-post-proof-answers.md`.
+Not yet done: the isolated replay.

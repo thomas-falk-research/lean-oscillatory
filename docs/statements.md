@@ -1528,3 +1528,8 @@ f. CONJECTURED, not a statement of this batch: |K(t, x)| ≤ t^{−1/3} for ever
    sup_x |K| t^{1/3} for t ≥ 2: 0.9637) and on a grid of times up to 1.6·10⁷ (two referees and a sanity agent,
    independently). What would falsify it: one pair (t, x) with |K(t, x)| t^{1/3} > 1. The route of this batch gives
    7 t^{−1/2} + 12 t^{−1/3} and cannot reach it.
+g. Added 2026-11-17 after the post-proof reviews (`review/2026-11-17-HW-post-proof-answers.md`); the text above is
+   unchanged. In item 8 and in the plant summary, "HW-K without t ≥ 1" is called a true weakening: dropping a
+   hypothesis strengthens a statement, and here the result is equivalent to HW-K (at t = 0 both sides are 0 in Lean,
+   as the plant summary says); "true and equivalent" is the accurate word. In clarification f, "independently" means: by separate AI agents of one model family, each with
+   its own code, on one machine; not by independent people. HW-L is stated for finitely supported initial states.

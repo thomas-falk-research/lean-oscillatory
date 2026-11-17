@@ -24,5 +24,6 @@ import Blueprint.PeriodicAnalytic
 import Blueprint.KusminLandau
 import Blueprint.FiniteRing
 import Blueprint.HadamardWalk
+import Blueprint.SecondDerivSharp
 
 /-! Root of the blueprint library: intermediate propositions (definitions only, no proofs). -/

@@ -1342,7 +1342,7 @@
    "hypotheses": [
     "t ∈ ℕ, t ≥ 1; x ∈ ℤ"
    ],
-   "conclusion": "|K(t, x)| ≤ 7 t^{−1/2} + 12 t^{−1/3}: explicit bound for the scalar kernel of the Hadamard walk, uniform in the site (constants of the classical route, not sharp: numerically sup_x |K| ≈ 0.95 t^{−1/3})",
+   "conclusion": "|K(t, x)| ≤ 7 t^{−1/2} + 12 t^{−1/3}: explicit bound for the scalar kernel of the Hadamard walk, uniform in the site (constants of the classical route, not sharp: numerically sup_x |K| t^{1/3} is 1 at t = 1 and at most 0.9637 for t ≥ 2; the bound is implied by the L¹ bound 1.18034 of the kernel for t ≤ 1679)",
    "rate": "t^{-1/3}",
    "uniform_over": "the site x",
    "smoothness": "—",
@@ -1359,7 +1359,7 @@
    "hypotheses": [
     "a, b ∈ ℂ; t ∈ ℕ, t ≥ 1; x ∈ ℤ"
    ],
-   "conclusion": "each component of U^t δ_{a,b}(x) has modulus at most 39 (|a| + |b|) t^{−1/3}: the amplitudes of the Hadamard walk from a point state decay like t^{−1/3} uniformly in the site, with an explicit constant (not sharp: numerically about 1.61 t^{−1/3} from the state (1, 0))",
+   "conclusion": "each component of U^t δ_{a,b}(x) has modulus at most 39 (|a| + |b|) t^{−1/3}: the amplitudes of the Hadamard walk from a point state decay like t^{−1/3} uniformly in the site, with an explicit constant (not sharp: numerically at most 1.6208 t^{−1/3} from the state (1, 0) for t ≤ 3000; for t ≤ 59319 the bound is implied by conservation of the ℓ² norm, which is not a theorem of this library)",
    "rate": "t^{-1/3}",
    "uniform_over": "the site x and the initial coin state (a, b)",
    "smoothness": "—",
@@ -1375,7 +1375,7 @@
     "ψ₀ : ℤ → ℂ² of finite support",
     "t ∈ ℕ, t ≥ 1; x ∈ ℤ"
    ],
-   "conclusion": "each component of U^t ψ₀(x) has modulus at most 39 t^{−1/3} Σ_y (|ψ₀,₁(y)| + |ψ₀,₂(y)|): the dispersive estimate ℓ¹ → ℓ^∞ of the Hadamard walk with an explicit constant",
+   "conclusion": "each component of U^t ψ₀(x) has modulus at most 39 t^{−1/3} Σ_y (|ψ₀,₁(y)| + |ψ₀,₂(y)|): the dispersive estimate ℓ¹ → ℓ^∞ of the Hadamard walk with an explicit constant (not sharp; finitely supported initial states only; for a point state no content before t > 59319)",
    "rate": "t^{-1/3}",
    "uniform_over": "the site x and the initial state",
    "smoothness": "—",

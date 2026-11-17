@@ -14,7 +14,7 @@ import OscInt.Front.HadamardWalkLinear
 /-!
 # Batch HW: the final theorems
 
-Route `docs/proof-HW.md` (refereed; "Parts as integrated"); assembly `OscInt/Front/HadamardWalkAssembly.lean`; parts
+Route `docs/proof-HW.md` (read by one route referee, an AI agent of the lead's model family; "Parts as integrated"); assembly `OscInt/Front/HadamardWalkAssembly.lean`; parts
 `OscInt/Front/HadamardWalkKernelRec.lean` (the kernel at times `0`, `1` and its recursion),
 `OscInt/Front/HadamardWalkPhase.lean` (the derivative chain of the dispersion relation with its two lower bounds;
 the amplitude and its variation on four arcs), `OscInt/Front/HadamardWalkKernelBound.lean` (HW-K, from the proved

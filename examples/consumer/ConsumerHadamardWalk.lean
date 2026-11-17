@@ -14,7 +14,8 @@ Only `import OscInt.API` and Mathlib. Unconditional uses of the theorems of batc
 * `hadamard_amplitude_le`: each amplitude of the walk from a normalised point state is at most `39 √2 t^{−1/3}`;
 * `hadamard_probability_le`: the probability at a site, `|ψ₁|² + |ψ₂|²`, is at most `2 (39 √2 t^{−1/3})²`, that is
   `6084 t^{−2/3}`: the "peak probability decays like `t^{−2/3}`" of the quantum-walk literature, as an upper bound
-  with an explicit (far from sharp) constant, for every `t ≥ 1` and every site;
+  with an explicit (far from sharp) constant, for every `t ≥ 1` and every site (below the trivial bound `1` only
+  for `t > 474552 = 78³`);
 * the sanity data, now without hypotheses.
 -/
 

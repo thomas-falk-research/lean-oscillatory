@@ -551,3 +551,12 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     here (the lead's `git status` was clean each time), but it is a rule broken by habit. The later briefs name the
     command explicitly ("no git command of any kind, including git status"), and the two agents given that wording
     reported no such slip.
+61. **A "fresh-context" referee on the lead's machine is isolated by instruction only, and "read-only git" is not a
+    list.** Session 13, post-proof round of batch HW: the adversarial referee reported that it could read the lead's
+    whole scratch directory (paper routes, briefs, earlier reports, the other referees' working files); and its
+    `git fsck --lost-found` wrote 41 files under `.git` although the brief said "no command that changes the
+    repository". Rule from now on: (a) every packet for a referee or prover is a snapshot outside the lead's scratch
+    tree, and the brief says which paths may be read; where that cannot be enforced, the answers file says
+    "isolation by instruction"; (b) a brief that allows git lists the commands (`git log`, `git show`, `git diff`,
+    `git ls-tree`, `git cat-file`, `git rev-parse`) and forbids every other one by name of the rule, not by
+    "read-only"; (c) an agent's report that is returned as text is saved to a file by the lead at once and hashed.

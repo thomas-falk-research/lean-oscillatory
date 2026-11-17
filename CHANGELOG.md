@@ -44,10 +44,10 @@ the Hadamard walk on the line with explicit and not sharp t^{−1/3} bounds,
 
 `stamps/statements.json` has 86 entries against 65 at v0.6.0: 21 new, 17 with a proving theorem, 4 without. No
 existing statement's text, file, commitment or stamp changed. The seventeen of batches PA, KL, FR and HW are proved
-in Lean (build, axiom audit, statement types, kernel re-check per module); those of PA, KL and FR are post-proof
-reviewed, those of HW not yet; their isolated replay is pending, so `docs/STATUS.md` does not yet call them
-machine-checked as stated. The seven of batch FR use lemmas of batch PA; HW-K uses S1.2 and S1.3; HW-R uses lemmas
-of its first sanity layer.
+in Lean (build, axiom audit, statement types, kernel re-check per module) and post-proof reviewed; their isolated
+replay is pending, so `docs/STATUS.md` does not yet call them machine-checked as stated. The seven of batch FR use
+lemmas of batch PA; HW-K, HW-D and HW-L use S1.2 and S1.3; HW-R, HW-D and HW-L use thirteen lemmas of the first HW
+sanity layer and one of the sanity layer of batch GD (`docs/STATUS.md`, "Batch HW, what the rows rest on").
 
 ### Proofs
 
@@ -61,7 +61,7 @@ pre-proof reviews (`review/2026-11-16-FR-pre-proof-answers.md`, answers stamped
 (`review/2026-11-17-FR-post-proof-answers.md`). Batch HW: blind pre-proof reviews
 (`review/2026-11-17-HW-pre-proof-answers.md`, answers stamped `stamps/20261117T010311Z-a93c4e1e44f7`), route
 `docs/proof-HW.md`, four parts by four proof agents launched together with the route referee
-(`review/2026-11-17-HW-route-answers.md`); post-proof reviews not yet run. Lead, referees and provers are AI agents
+(`review/2026-11-17-HW-route-answers.md`), post-proof reviews (`review/2026-11-17-HW-post-proof-answers.md`). Lead, referees and provers are AI agents
 of one model family.
 
 ### Process and tooling (owner decisions of 2026-11-16)
@@ -85,8 +85,8 @@ of one model family.
 - `docs/design/unlock-map.md`, `docs/funding/` (a draft application package), `docs/design/batch-FR-draft.md` (the
   design draft of batch FR, kept as written; the batch itself is frozen and proved, see above).
 - `examples/consumer/ConsumerHadamardWalk.lean`: from HW-D, a bound for each amplitude and for the probability at a
-  site of the Hadamard walk started at one site in a unit state (probability at most 2 (39 √2 t^{−1/3})², t ≥ 1;
-  far from sharp, as the constants are).
+  site of the Hadamard walk started at one site in a unit state (probability at most 2 (39 √2 t^{−1/3})² =
+  6084 t^{−2/3}, t ≥ 1; far from sharp, as the constants are: below the trivial bound 1 only for t > 474552).
 - `examples/consumer/ConsumerFiniteRing.lean`: the two finite-size bounds at η = 1 and the closed-form propagator of
   the chain of two sites, from the seven theorems of batch FR.
 - `examples/consumer/ConsumerPeriodicAnalytic.lean`, `examples/consumer/ConsumerKusminLandau.lean`: unconditional

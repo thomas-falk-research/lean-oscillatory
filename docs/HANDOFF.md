@@ -22,7 +22,7 @@ below it, and every rule is binding.
   110 minutes, re-armed at once). Then: replay record under `docs/replay/`, STATUS rows to "machine-checked as
   stated", README counts, CHANGELOG. The clean-runner replay on GitHub is a manual dispatch of `verify.yml` on the
   branch (the pull request is a draft, which skips it); its result is in the session log.
-- **Last verified state:** the integration commit (the one that adds this paragraph): `make quick` exit code 0
+- **Last verified state:** the commit that adds the post-proof answers of batch HW and the blueprint of batch VC2: `make quick` exit code 0
   (time in the session log). 86 pinned statements; 65 machine-checked as stated; 17 proved, replay pending (PA, KL, FR, HW); 4 stated and frozen (VC2).
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
   no agent at the time of this commit. Otherwise nothing local; the dispatched `verify.yml` run on 880b537 ended with
@@ -52,9 +52,14 @@ below it, and every rule is binding.
   `comparator-VC2.json`, prose). **Frozen**: stamp `stamps/20261116T222541Z-5b72549117b1`, pinned. Blind pre-proof reviews A and B are in
   (session log, 2026-11-16 23:14 row): FAITHFUL, no counterexample, three MAJOR against the sanity layer; a second
   sanity layer exists in the lead's scratch (if lost: redo from the findings in the log). Answers `review/2026-11-17-VC2-pre-proof-answers.md`,
-  stamped `stamps/20261117T010311Z-a93c4e1e44f7`. Next: route, blueprint, assembly, route referee, parts (a route
-  on paper that avoids inverse functions is in the lead's scratch; not in the tree).  A proof on paper exists and was refereed (session
-  log); a route for Lean that avoids inverse functions is in the lead's scratch. Classical theorem; nothing new.
+  stamped `stamps/20261117T010311Z-a93c4e1e44f7`. Route `docs/proof-VC2.md`, blueprint `Blueprint/SecondDerivSharp.lean` (the definition `Vdc2Side` and five
+  propositions) and the lead's assembly `OscInt/Front/SecondDerivSharpAssembly.lean` (VC2-S from the turning point
+  and the one-sided bound; VC2-K from VC2-S, VC2-N and the amplitude transfer of S1) are in the tree and compile;
+  interface checks `numerics/review/vc2_interface_checks.py`. No part is proved in the tree. Next: route referee and
+  six parts (table at the end of the route; briefs in the lead's scratch, hashes in the session log; if the scratch
+  is lost, write the briefs again from the route), integration (`SecondDerivSharpFinal.lean`, StatementTypes,
+  annotations, consumer example), post-proof reviews. A launch of these agents with no recorded finish in the
+  session log is dead. Classical theorem; nothing new.
 - **Batch HW (the Hadamard walk on the line, explicit t^{−1/3} bound; four statements HW-R, HW-K, HW-D, HW-L):** in
   the tree for its freeze (`OscInt/Statements/HadamardWalk.lean`, sanity layer, plants, challenge,
   `comparator-HW.json`, prose with the route). **Frozen**: stamp `stamps/20261116T225756Z-5792039264f0`, pinned; the same stamp is the stamp of the FR
@@ -63,9 +68,11 @@ below it, and every rule is binding.
   `stamps/20261117T010311Z-a93c4e1e44f7`. Route `docs/proof-HW.md` (route referee: sound; `review/2026-11-17-HW-route-answers.md`), blueprint
   `Blueprint/HadamardWalk.lean`, the lead's assembly and the four parts (`OscInt/Front/HadamardWalk{Assembly,KernelRec,Phase,KernelBound,Linear,Final}.lean`)
   are in the tree: **all four statements are proved in Lean** (integration checks `docs/replay/2026-11-17-HW-integration-checks.txt`;
-  consumer example `examples/consumer/ConsumerHadamardWalk.lean`). Next: three post-proof reviews (briefs: adapt the
-  FR ones in the lead's scratch; if lost, write them from `review/2026-11-17-FR-post-proof-answers.md`), answers,
-  then the isolated replay. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
+  consumer example `examples/consumer/ConsumerHadamardWalk.lean`). Post-proof reviews answered
+  (`review/2026-11-17-HW-post-proof-answers.md`: FAITHFUL ×4, SOUND ×4, no failing regime; no BLOCKER, no MAJOR;
+  findings against the records, corrected; not yet stamped). Left: the isolated replay (with PA, KL, FR), and the
+  stamp of those answers. A gap the reviews found and nobody closed: no machine-read list says which lemmas a
+  proved statement depends on, so a change to a sanity lemma does not mark the rows that use it. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
   the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;
   a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;

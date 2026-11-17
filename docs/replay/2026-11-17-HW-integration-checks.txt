@@ -15,3 +15,9 @@ leanchecker OscInt.Front.HadamardWalkFinal rc=0 4s
 # consumer example: `lake env lean examples/consumer/ConsumerHadamardWalk.lean` printed nothing (no error, no warning).
 # axioms of the four final theorems, printed by the lead in scratch before integration (the four parts, the assembly
 # and the final theorems compiled as one file): each [propext, Classical.choice, Quot.sound].
+# After the post-proof reviews (2026-11-17): one docstring of OscInt/Front/HadamardWalkKernelBound.lean changed (hwKB_num_one) and
+# the header comment of OscInt/Front/HadamardWalkFinal.lean; no declaration changed. New SHA-256 of the part file:
+# 3201ee2792c577921a03260cd4d5ac07dc6d2af4c7589d9a580a9006b1466965 (as delivered: bc7481c49b75248ddf1d6618851e1e85f891dd79473c43c50c2da5f410c75567).
+# leanchecker after that change, 2026-11-17T02:31:21Z:
+leanchecker OscInt.Front.HadamardWalkKernelBound rc=0 5s
+leanchecker OscInt.Front.HadamardWalkFinal rc=0 4s
