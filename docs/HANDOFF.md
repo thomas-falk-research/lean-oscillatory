@@ -44,20 +44,23 @@ below it, and every rule is binding.
   (`review/2026-11-16-FR-pre-proof-answers.md`, `docs/replay/2026-11-16-FR-sanity-plants-second.txt`). The answers are stamped
   (`stamps/20261116T225756Z-5792039264f0`). **Proved in Lean** (2026-11-16/17): `OscInt.API.ringKernelSolves`, `ringUnique`,
   `ringCosetSum`, `ringFiniteSize`, `chainKernelSolves`, `chainUnique`, `chainFiniteSize`
-  (`OscInt/Front/FiniteRingFinal.lean`; route, referee, parts: `docs/proof-FR.md`). Order from here: post-proof
-  reviews A, B, C on the integration commit, answers, stamp; then the isolated replay (with PA and KL).
+  (`OscInt/Front/FiniteRingFinal.lean`; route, referee, parts: `docs/proof-FR.md`). Post-proof reviews A, B, C answered
+  (`review/2026-11-17-FR-post-proof-answers.md`) and stamped (`stamps/20261117T010311Z-a93c4e1e44f7`). Left: the
+  isolated replay (with PA and KL).
 - **Batch VC2 (sharp second-derivative van der Corput bound; four statements VC2-S, VC2-A, VC2-N, VC2-K):** in the
   tree for its freeze (`OscInt/Statements/SecondDerivSharp.lean`, sanity layer, plants, challenge,
   `comparator-VC2.json`, prose). **Frozen**: stamp `stamps/20261116T222541Z-5b72549117b1`, pinned. Blind pre-proof reviews A and B are in
   (session log, 2026-11-16 23:14 row): FAITHFUL, no counterexample, three MAJOR against the sanity layer; a second
-  sanity layer exists in the lead's scratch (if lost: redo from the findings in the log). Next: answers, stamp of
-  the answers, and only then proof code (rule 1).  A proof on paper exists and was refereed (session
+  sanity layer exists in the lead's scratch (if lost: redo from the findings in the log). Answers `review/2026-11-17-VC2-pre-proof-answers.md`,
+  stamped `stamps/20261117T010311Z-a93c4e1e44f7`. Next: route, blueprint, assembly, route referee, parts (a route
+  on paper that avoids inverse functions is in the lead's scratch; not in the tree).  A proof on paper exists and was refereed (session
   log); a route for Lean that avoids inverse functions is in the lead's scratch. Classical theorem; nothing new.
 - **Batch HW (the Hadamard walk on the line, explicit t^{−1/3} bound; four statements HW-R, HW-K, HW-D, HW-L):** in
   the tree for its freeze (`OscInt/Statements/HadamardWalk.lean`, sanity layer, plants, challenge,
   `comparator-HW.json`, prose with the route). **Frozen**: stamp `stamps/20261116T225756Z-5792039264f0`, pinned; the same stamp is the stamp of the FR
   review answers. Blind reviews A and B are in (FAITHFUL, no counterexample; two MAJOR against the sanity layer; a
-  second sanity layer exists in the lead's scratch). Then: answers, stamp, proof code. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
+  second sanity layer, in the tree). Answers `review/2026-11-17-HW-pre-proof-answers.md`, stamped
+  `stamps/20261117T010311Z-a93c4e1e44f7`. Next: blueprint, assembly, route referee, parts. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
   the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;
   a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;
