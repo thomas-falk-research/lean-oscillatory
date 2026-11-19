@@ -355,3 +355,16 @@ for the Hadamard walk: not found in this sweep; PLAUSIBLE-not-in-print, with the
 Scholar, no subscription database, two papers known by title only). The constants of batch HW are far from sharp
 (`docs/statements.md`, Batch HW, choice 3). **Nothing in batch HW is claimed as new mathematics**; the claim, if
 proved, is "machine-checked, explicit constants".
+
+## Explicit remainders for the stationary-phase leading term (gate of 2026-11-19, batch SPL)
+
+Gate for the batch opened on 2026-11-19 (`docs/design/batch-SPL-opening.md`, section 4, which has the details).
+Sixteen logged queries: `numerics/results-spl-prior-art-search-2026-11-19.txt`. Closest results: Olver, *Error bounds
+for stationary phase approximations*, SIAM J. Math. Anal. 5 (1974) 19–29 (bibliographic data only; text NOT READ);
+Ali Mehmeti and Dewez, arXiv:1412.5789, arXiv:1412.5792, arXiv:1512.05940, after Erdélyi (1956, NOT READ), read in
+part: one variable, explicit constants, the integral split at the stationary point, remainder `O(ω^{−δ})` with
+`δ < 1` after the first term for a regular amplitude; Hörmander, ALPDO I, Theorem 7.7.5 (constant not explicit). The
+two-sided bound of the draft statement SPL-S (remainder at most `sup |κ| · ‖g‴‖₁ · λ^{−3/2}` with an explicit kernel
+κ) was not found. That is a statement about this search, not a claim of novelty: the identity behind it is two
+integrations by parts, and Olver's paper is unread. No formalisation of a stationary-phase leading term was found
+by one arXiv query; Mathlib and the upstream repository are still to be searched.
