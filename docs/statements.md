@@ -1619,3 +1619,66 @@ h. Corrections after the external review of batch HW (2026-11-19, `review/2026-1
    that the script never had, and its comparison of the trapezoidal rule with adaptive quadrature had one nonzero
    value among ten; the header is corrected and six points with nonzero values are added. The statement file is
    unchanged.
+
+## Batch SPL: the leading term of a quadratic-phase integral with an explicit remainder (session 13, 2026-11-19)
+
+Order. As batch VC2: statements, `OscInt/Statements/StationaryLeading.lean`, sanity theorems with planted controls,
+challenge and comparator, frozen and stamped before the blind pre-proof reviews. What differs from "statement
+first", said plainly: a complete proof on paper of SPL-I, SPL-S, SPL-K and SPL-A predates the freeze
+(`docs/proof-SPL.md`, second version; its first version was read by a plan referee of the lead's model family,
+`review/2026-11-19-SPL-plan-referee-answers.md`), and a registered numeric test of the draft statements was run
+before the freeze (`docs/prereg/2026-11-19-SPL-quadratic-remainder.md`, PASS 12 of 12). No Lean proof of these
+statements is in the repository history before the stamp of the answers to the blind reviews. Owner decision that
+opened the batch: `docs/decisions/2026-11-19-next-batch-spl.md`.
+
+Why. The library bounds oscillatory integrals from above. A consumer that needs an asymptotic formula needs the
+leading term and a bound, with a stated constant and valid for every value of the large parameter, on what is left
+(`docs/ROADMAP.md`, "Asymptotic expansions"; `docs/design/batch-SPL-opening.md`). This batch does that for the
+normal form of a nondegenerate stationary point in one variable, the phase u²/2. The identity SPL-I is classical in
+substance: it is the two-sided case, three integrations by parts, of Erdélyi's remainder representation
+(`docs/prior_art.md`, gate of 2026-11-19). Nothing is claimed as new; the claim, if proved, is "machine-checked,
+with an explicit constant".
+
+Notation. F(x) = ∫_0^x e^{iv²/2} dv (Lean `fresnelPrim x`); L = √π (1 + i)/2 (Lean `fresnelLimit`; it is the limit of
+F at +∞, which is a fact to be proved and is not used to define anything). The kernel: for τ ≥ 0,
+κ(τ) = F(τ)/2 + τ e^{iτ²/2}/2 + (iτ²/2)(L − F(τ)) (Lean `splKernelPos τ`), and κ(τ) = −κ(−τ) for τ < 0 (Lean
+`splKernel`). An *amplitude* is a function g: ℝ → ℂ together with functions g₁, g₂, g₃ such that g has derivative
+g₁(x) at every x, g₁ has derivative g₂(x), g₂ has derivative g₃(x), and g, g₁, g₂, g₃ are integrable on ℝ (Lean
+`SplAmplitude g g₁ g₂ g₃`). ‖g₃‖₁ = ∫_ℝ |g₃|. For λ > 0,
+R(g, λ) = ∫_ℝ g(u) e^{iλu²/2} du − g(0) √(2π/λ) e^{iπ/4} (Lean `splRemainder g lam`).
+
+**SPL-I (the remainder as an integral).** For every amplitude and every λ > 0:
+R(g, λ) = −i λ^{−3/2} ∫_ℝ g₃(t) κ(√λ t) dt.
+
+**SPL-S (bound through the kernel).** For every amplitude and every λ > 0 there is τ ≥ 0 with
+|R(g, λ)| ≤ |κ(τ)| ‖g₃‖₁ λ^{−3/2}.
+
+**SPL-K (bound with a number).** For every amplitude and every λ > 0: |R(g, λ)| ≤ (7/8) ‖g₃‖₁ λ^{−3/2}.
+
+**SPL-A (attained).** For every τ ≥ 0 and ε > 0 there is an amplitude with g infinitely differentiable, of compact
+support and not identically zero, such that |R(g, 1)| ≥ (|κ(τ)| − ε) ‖g₃‖₁. (With SPL-S: the best constant K in
+|R| ≤ K ‖g₃‖₁ λ^{−3/2} is sup |κ|.)
+
+What the statements say and do not say (modelling choices and omissions, for the reviewer).
+1. The phase is exactly u²/2. A general phase with a nondegenerate stationary point is not treated; it is stage 2
+   of the batch plan and has no statement. The sign of the phase is +: for −u²/2 conjugate.
+2. The amplitude is on the whole line with integrable derivatives; compactly supported functions of class C³ and
+   Schwartz functions are amplitudes. End points are not treated: an integral over a bounded interval with an
+   amplitude that does not vanish at the ends has contributions of order 1/λ that these statements do not describe.
+3. Continuity of g₃ is not asked. Integrability of g₁ and g₂ is asked although it is believed to follow from that
+   of g and g₃ (not proved, not used as a claim).
+4. In Lean `∫` is the Bochner integral, which is 0 for a function that is not integrable; `Integrable g` in the
+   hypothesis is what makes the first term of R the integral it denotes. `√(2π/λ)` is `Real.sqrt`, and `λ^{−3/2}`
+   is `Real.rpow`; both are used only for λ > 0.
+5. SPL-S has the form "there is τ" used by VC2-S for a constant that is a supremum of a profile. It does not say
+   where |κ| is largest or what its largest value is.
+6. The number 7/8 in SPL-K is not the best constant. Numerically sup |κ| = 0.7219740, at τ = 1.6246 (registered
+   test; not a Lean theorem). A statement with a rational close to that value (SPL-N) is not in this batch's first
+   freeze: its proof needs certified enclosures of the Fresnel primitive that the library does not have
+   (`docs/proof-SPL.md`, section 5).
+7. SPL-A is stated at λ = 1; other λ follow by scaling, which is not stated. It gives no rate in ε.
+8. The remainder is O(λ^{−3/2}) and the statements give no second term of the expansion. Consistency with the
+   classical second term, of modulus (√(2π)/2) |g″(0)| λ^{−3/2}: since |g″(0)| ≤ ‖g₃‖₁/2, no constant below
+   √(2π)/4 = 0.6267 can be true in SPL-K.
+9. Relative to Erdélyi's theorem (one-sided integrals, stationary points and singularities of real order, any
+   number of terms): one case only, two-sided, with the term in g″(0) not separated.
