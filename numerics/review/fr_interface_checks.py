@@ -5,6 +5,7 @@
 """Numerical checks of the blueprint propositions of batch FR (Blueprint/FiniteRing.lean), transcribed from the Lean
 text, run by the lead before the parts are proved. Tooling, not evidence for a Lean theorem. mpmath, 40 digits.
 RingEnergyFacts and ChainEnergyFacts are uniqueness statements and cannot be tested by sampling; they are not here."""
+import sys
 import random
 from mpmath import mp, mpf, exp, cos, pi, cosh, fabs, mpc
 mp.dps = 40
@@ -61,3 +62,4 @@ report("control: constant 1 in place of 2 fails (extremal g, N = 3, r = 1)", lhs
 lhs, rhs = image_case(3, 2, mpf(1), mpf(1), "extremal")
 report("control: cosh(r eta) replaced by 1 fails (extremal g, N = 3, r = 2)", lhs > 2 / (exp(mpf(3)) - 1))
 print("ALL PASS" if ok else "SOME FAIL")
+sys.exit(0 if ok else 1)   # a failed check must fail the process (external review of VC2, 2026-11-19)

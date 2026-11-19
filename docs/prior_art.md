@@ -232,8 +232,14 @@ defining integral with a root search for the maximum; the Fresnel functions C an
 digits and to the OEIS value to the digits it prints.
 
 Labels. That the sharp constant is 3.3643… and that Kershner determined it: CITED from titles, the OEIS entry and
-the lead's memory of the literature, originals unread (FOLKLORE until someone reads Kershner). That Rogers did not
-know it: his LaTeX source, read by the lead, does not cite Kershner. The lead's argument: a proof on paper,
+the lead's memory of the literature, originals unread (FOLKLORE until someone reads Kershner). About Rogers's paper
+(corrected 2026-11-19 after an external review, `review/2026-11-19-VC2-external-review-answers.md`): the arXiv
+preprint (math/0311013 v1 of 3 November 2003, the only version on arXiv) does not cite Kershner and says that
+numerical experiments suggest the value of the sharp constant for n = 2; the external reviewer reports that the
+published version (Proc. Amer. Math. Soc. 133 (2005) 3543–3550, p. 3549) attributes the sharp constant for n = 2 to
+Kershner (its references [6] and [7]); the lead could not open the published text and has not seen that page.
+Nothing is inferred here about what the author knew. An earlier wording of this paragraph ("Rogers did not know
+it") drew that inference from the preprint alone and is withdrawn. The lead's argument: a proof on paper,
 unrefereed, of a known theorem; whether it differs from Kershner's is unknown. **Nothing here is claimed as new.**
 What remains worth doing is a machine check of the classical sharp theorem, which would replace the constant 8 of
 S1.2 by 3.3643… everywhere downstream; no formalisation of it was searched for yet.

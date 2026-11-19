@@ -35,6 +35,7 @@ control, and the corrected name of the J4 control (the referee's findings F1 and
 
 Usage: python3 -I numerics/review/pa_kl_interface_checks.py
 """
+import sys
 import math
 import platform
 import random
@@ -289,3 +290,4 @@ npass = sum(ok for _, ok in results)
 print(f"summary: {npass} of {len(results)} checks pass")
 print(f"python {platform.python_version()}, python-flint {flint.__version__}, FLINT {flint.__FLINT_VERSION__}, "
       f"working precision {ctx.prec} bits, seed 20261116")
+sys.exit(0 if npass == len(results) else 1)   # a failed check must fail the process (external review of VC2, 2026-11-19)

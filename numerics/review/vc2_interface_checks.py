@@ -103,5 +103,7 @@ good = abs(lhs - A(w) / 2) < 1e-12
 ok = ok and good
 print(f"oneside attained by the quadratic from rest (lam = 1, w = 2, d = 2): lhs - A(w)/2 = {lhs - A(w) / 2:.3e}  {'PASS' if good else 'FAIL'}")
 amax = max(A(x) for x in np.linspace(0, math.pi, 3142))
-print(f"max of A on a grid of step 0.001 over [0, pi]: {amax:.9f}  {'PASS' if amax <= 3.5 else 'FAIL'}")
+good = amax <= 3.5
+ok = ok and good
+print(f"max of A on a grid of 3142 points (spacing pi/3141) over [0, pi]: {amax:.9f}  {'PASS' if good else 'FAIL'}")
 sys.exit(0 if ok else 1)

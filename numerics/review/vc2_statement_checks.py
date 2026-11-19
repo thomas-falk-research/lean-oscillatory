@@ -6,6 +6,7 @@
 quadrature: searches and consistency checks, not certificates. Two methods for the oscillatory integrals: Fresnel
 closed forms piece by piece (scipy.special.fresnel) and adaptive quadrature (scipy.integrate.quad).
 Run: python vc2_statement_checks.py   (numpy, scipy, mpmath; versions in numerics/review/requirements-review.txt)"""
+import sys
 import math, cmath, numpy as np
 from scipy.special import fresnel
 from scipy.integrate import quad
@@ -101,3 +102,4 @@ for trial in range(1500):
         worst = max(worst, abs(re + 1j * im) * math.sqrt(mu) / amp); n += 1
 report("VC2-K: sqrt(mu) |int e^{i(phi + p x)} psi| / ampNorm <= 7/2, random data", worst <= 3.5, f"{n} cases, largest ratio {worst:.6f}")
 print("ALL PASS" if ok else "SOME FAIL")
+sys.exit(0 if ok else 1)   # a failed check must fail the process (external review of VC2, 2026-11-19)

@@ -1410,6 +1410,17 @@ g. Added 2026-11-19 after the post-proof reviews (`review/2026-11-19-VC2-post-pr
    and the proof of VC2-A rejects it. (4) In the second plant summary, case X1, the value 0.0173 should read
    0.0167 (2 sin(21)/100); the verdict does not change. (5) The decimal 3.3643… is not a theorem of the library
    (in Lean: 335007/100000 ≤ A(441/200) and A ≤ 7/2 on [0, π]).
+h. Added 2026-11-19 after an external review (`review/2026-11-19-VC2-external-review-answers.md`); the text above is
+   unchanged. (1) Item 6, "7/2 is within 6 % of a value of A": the denominator matters. Measured against the
+   certified lower bound 33/10 the excess is 2/33 = 6.06 %; measured against 7/2 it is 2/35 = 5.7 %; with the
+   stronger certified lower bound 335007/100000 of the second sanity layer it is below 6 % either way. (2) What the
+   four statements say together, in one place: VC2-A is a one-sided projection inequality, A(w) ≤ |F(w)| for the
+   symmetric Fresnel integral F(w), not an equality for each w; that the constant max A of VC2-S is attained follows
+   from VC2-S, VC2-A and the compactness of [0, π] together (at a maximiser w*, max A = A(w*) ≤ |F(w*)| ≤ max A),
+   and this corollary is not a Lean statement of the batch; VC2-K has the constant 7/2, which is not sharp.
+   (3) Observed by the external reviewer and not statements of the batch: continuity of f at the end points is
+   not needed in VC2-S (trim the interval and pass to the limit), and A(w) ≤ 7/2 holds for every real w (apply
+   VC2-S and VC2-A to the quadratic phase).
 
 ## Batch HW: the Hadamard walk on the line, an explicit t^{−1/3} bound (session 13, 2026-11-16)
 

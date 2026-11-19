@@ -6,6 +6,7 @@
 Lean text, run by the lead before the parts are proved. Tooling, not evidence for a Lean theorem. mpmath, 30 digits;
 the kernel by the trapezoidal rule, which is exact for trigonometric polynomials. HadamardLinearFacts is checked on
 random finite states by the step itself."""
+import sys
 import random, math
 import numpy as np
 from mpmath import mp, mpf, sin, cos, asin, sqrt, pi, diff, quad, fabs
@@ -81,3 +82,4 @@ for trial in range(6):
             m = max(m, abs(f[0] - tot[0]), abs(f[1] - tot[1]))
 report("HadamardLinearFacts: walk of a 4-site state = sum of translated point-state walks (t = 0, 1, 2, 7)", m < 1e-12, f"max diff {m:.2e}")
 print("ALL PASS" if ok else "SOME FAIL")
+sys.exit(0 if ok else 1)   # a failed check must fail the process (external review of VC2, 2026-11-19)

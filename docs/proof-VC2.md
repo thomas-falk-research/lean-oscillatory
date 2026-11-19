@@ -189,3 +189,19 @@ lead. (2) Revision item 1: with the route's rule the subdivision passes from 262
 (post-proof referee C, exact rationals; 200 fail, 400 pass); "about 400" was loose, and the lead has re-run
 neither count. (3) Two lines, not one, were appended to the file of VC3 (corrected above). (4) `Vdc2Side.mono` in
 the assembly is used by no theorem of the batch (the parts VC3 and VC4 carry their own copies); it is left in.
+
+## Corrections after the external review (2026-11-19)
+
+`review/2026-11-19-VC2-external-review-answers.md`. (1) V8 as written above is a schema, not a certificate: it
+names no cells. The certificate is in the Lean source of the part VC5 and is this. With β = √(2w), the bound is the
+polynomial B(β) = (2/3)β³ − (2/105)β⁷ + (2/10395)β¹¹ − (2/2027025)β¹⁵ + (2/654729075)β¹⁹. On each of the six cells
+[0, 17/10], [17/10, 39/20], [39/20, 21/10], [21/10, 9/4], [9/4, 12/5], [12/5, 51/20] the monomials with a positive
+coefficient are bounded above by their chords and those with a negative coefficient by their tangents at the
+midpoint of the cell; the sum is affine, so it is at most its larger end value. The largest of the twelve end
+values is 3.4729240977… (recomputed by the lead in exact rationals), 0.0270759… below 7/2; and (51/20)²/2 = 3.25125
+exceeds 63/20 > π, so the cells cover every β = √(2w) with 0 ≤ w ≤ π. (2) V4, induction: the claim at level n covers
+phase gains up to 2π(n + 1); in the step from n to n + 1 the first period [c, q] is removed and the rest has a gain
+of at most 2π(n + 1), which is the claim at level n. The sentence above writes "2πn" for the step from n − 1 to n.
+(3) The later sections of this page (the revision after the route referee and the corrections after the
+post-proof reviews) restate findings of earlier reviews; a reader who is to judge the route blind should stop
+before them. The external reviewer was given this whole page in its proof phase and says so.

@@ -1,7 +1,8 @@
 # Contributing
 
-OscInt's value is its trust chain: a reader checks the kernel, three axioms, and a short frozen statement, and
-nothing else. Every contribution keeps that chain intact. Read "Rules in force" at the top of `docs/lessons.md`
+OscInt's value is its trust chain: a reader checks the kernel, three axioms, and a short frozen statement with
+the definitions it unfolds to, in the pinned environment (toolchain, Mathlib revision, source files: the README's
+section "What stays trusted" lists them), and nothing else. Every contribution keeps that chain intact. Read "Rules in force" at the top of `docs/lessons.md`
 first; each rule there is binding.
 
 ## The local loop
@@ -24,7 +25,9 @@ the lakefile's `leanOptions`). Never run `leanchecker` on the root module `OscIn
 - No weakened statement or test to get green. A part that is false is reported with a counterexample.
 
 ## Adding a statement, end to end
-The order matters: the statement is frozen and reviewed before any proof exists, so "as stated" can be claimed.
+The order matters: the statement is frozen and reviewed before any Lean proof of it exists, so "as stated" can be
+claimed. (A proof on paper, and Lean proofs of special cases in a sanity layer, may be older; where they are, the
+batch's paragraph in `docs/STATUS.md` says so.)
 1. **Mathematics.** Write the statement in `docs/statements.md`: hypotheses, conclusion, modelling choices, and
    what it omits relative to the source.
 2. **Lean statement.** A `def XStatement : Prop` with a docstring starting `**<label>**` (the label and summary go

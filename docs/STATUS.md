@@ -249,7 +249,10 @@ four rows are machine-checked as stated. The repairs to the packet's drafts are 
 `docs/replay/2026-11-19-session13-verify-all.txt`) is recorded, so the four rows say "machine-checked as stated";
 what that phrase does and does not cover is the rest of this paragraph. Every referee of these statements (the step referee of the paper proof, blind
 pre-proof A and B, the route referee, post-proof A, B and C),
-every prover, both sanity agents and the lead are AI agents of one model family; no human has read these
+every prover, both sanity agents and the lead are AI agents of one model family. One further review, on
+2026-11-19, was by an AI system of another family that could not run Lean: it read the statements, the route and
+the Lean sources as text at 9ae784e and reconstructed the mathematics (verdict: faithful and sound, "only with
+these caveats"; `review/2026-11-19-VC2-external-review-answers.md`). No human has read these
 statements, and no calibration copy with planted errors was reviewed for this batch (`docs/calibration.md`).
 Mathematics: the constant is classical; the theorem is classical for f″ ≥ λ by citation (tables and two titles; the originals have not been read here), and whether the classical theorem covers the class of VC2-S (an increment condition on f′, no second derivative) is not known to the lead (`docs/prior_art.md`, batch VC2, where the
 attribution is labelled cited; `docs/statements.md`, batch VC2, clarification c). Nothing here is claimed as new

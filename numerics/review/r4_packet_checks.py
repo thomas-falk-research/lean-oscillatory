@@ -122,3 +122,4 @@ rep("W1 ||f||^2 = 91 and ||Δf||^2 = 882 (direct)", round(sum(abs(v)**2 for v in
     and round(sum(abs(v)**2 for v in lap.values())) == 882)
 
 print("RESULT", "PASS" if all(res.values()) else "FAIL", f"{sum(res.values())}/{len(res)}")
+sys.exit(0 if all(res.values()) else 1)   # a failed check must fail the process (external review of VC2, 2026-11-19)

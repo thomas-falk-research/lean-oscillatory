@@ -571,3 +571,12 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     13: the job `tools` failed on a style finding (SC2129) in a new workflow, one push after the local checks had
     passed. Before pushing a change under `.github/workflows/`, run `actionlint` at the version `ci.yml` installs,
     with `shellcheck` on the path (both install without root: `go install` and the `shellcheck-py` wheel).
+64. **What the first review by another model family found that five same-family reviews had not (VC2, 2026-11-19).**
+    (a) A count in a record header that the lead had taken with a pattern broader than the thing named (202 lines
+    with the word, 201 modules). Rule: a count in a record is produced by a command that matches exactly the thing
+    counted, and the command is in the log. (b) Check scripts that print FAIL and exit 0. Rule: every check script
+    ends by failing the process if a check failed, and a new script is run once with a check forced to fail.
+    (c) A sentence about what an author "did not know", inferred from a preprint; the published version differs.
+    Rule: say what a named version of a text contains, never what its author knew. (d) Packets for a blind phase:
+    the route page carried the history of earlier reviews. Rule: a page given to a blind reader ends before any
+    section that restates reviews, or those sections live in another file.
