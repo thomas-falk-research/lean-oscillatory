@@ -14,21 +14,19 @@ below it, and every rule is binding.
   "Parts as integrated").
   Post-proof reviews answered (`review/2026-11-16-PA-KL-post-proof-answers.md`: FAITHFUL ×6, SOUND ×6, no failing
   regime; no BLOCKER; three MAJOR against the records, answered).
-  **Not yet machine-checked as stated:** one isolated `make verify-all` is pending. A first attempt died after two
-  hours when the session's container was suspended (`docs/replay/2026-11-16-session13-PA-KL-partial.txt`; rule 22).
-  The lead did not relaunch it at once: new statements come first, and one replay at the end of the session covers
-  batches PA and KL and whatever is proved by then (three to three and a half hours, detached, isolated, with
-  `tools/replay_preflight.py watch` and a harness background task that keeps the session busy, each wait at most
-  110 minutes, re-armed at once). Then: replay record under `docs/replay/`, STATUS rows to "machine-checked as
-  stated", README counts, CHANGELOG. The clean-runner replay on GitHub is a manual dispatch of `verify.yml` on the
-  branch (the pull request is a draft, which skips it); its result is in the session log.
-- **Last verified state:** the commit that adds the post-proof answers of batch VC2: `make quick` exit code 0
-  (time in the session log). 86 pinned statements; 65 machine-checked as stated; 21 proved, replay pending (PA, KL, FR, HW, VC2); none unproved.
+  **Machine-checked as stated** since the isolated replay of fafd5b8 on 2026-11-19 (RESULT PASS; six kernels;
+  `docs/replay/2026-11-19-session13-verify-all.txt`), together with batches FR, HW and VC2: all 86 pinned
+  statements are now machine-checked as stated. A first attempt on 2026-11-16 had died with the container
+  (`docs/replay/2026-11-16-session13-PA-KL-partial.txt`; rule 22).
+- **Last verified state:** fafd5b8: `make verify-all` RESULT PASS (2026-11-19); the commit that adds the replay record: `make quick` exit code 0
+  (time in the session log). 86 pinned statements; 86 machine-checked as stated.
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
-  no agent at the time of this commit. Otherwise nothing local; the dispatched `verify.yml` run on 880b537 ended with
-  success (clean-runner replay of PA and KL; session log).
-- **Exact next command:** read the session log's last rows. If a `make verify-all` start is recorded without a
-  result, the run is dead: record it as a partial under `docs/replay/` and start it again on a clean tree.
+  no agent and no replay at the time of this commit. The dispatched `verify.yml` run 44497223336 on fafd5b8 ended
+  with success (clean-runner replay of everything; session log).
+- **Exact next command:** read the session log's last rows. Owed, in this order: `make stamp` for the post-proof
+  answers of batches HW and VC2 (about fourteen minutes, tree frozen; then the stamp record and `make quick`);
+  `make anchors` for the stamps whose OpenTimestamps proofs were pending (2026-11-16 and later); then the next
+  statements (`docs/design/unlock-map.md`). A release is the owner's decision (`docs/policy.md`).
 - **Owner decisions of 2026-11-16, done:** rules 7, 18, 20, 21, 22 (`docs/lessons.md`) with their tools
   (`tools/push_gate.py`, `tools/replay_preflight.py`, the status rule in `tools/check_docs.py`, `tools/ots_anchor.py`
   and `anchors/ots/`); draft pull request 19. **Parked by the owner on 2026-11-16:** the hardware run on IBM Quantum (Addendum 1 of

@@ -47,8 +47,9 @@ the Hadamard walk on the line with explicit and not sharp t^{−1/3} bounds,
 
 `stamps/statements.json` has 86 entries against 65 at v0.6.0: 21 new, all with a proving theorem. No
 existing statement's text, file, commitment or stamp changed. The twenty-one of batches PA, KL, FR, HW and VC2 are
-proved in Lean (build, axiom audit, statement types, kernel re-check per module) and post-proof reviewed; their
-isolated replay is pending, so `docs/STATUS.md` does not yet call them machine-checked as stated. The seven of batch FR use
+proved in Lean, post-proof reviewed, and machine-checked as stated since the isolated replay of fafd5b8 on
+2026-11-19 (`docs/replay/2026-11-19-session13-verify-all.txt`: RESULT PASS, six kernels, all 23 comparator
+configurations; a clean-runner run of `verify.yml` on the same commit also passed). The seven of batch FR use
 lemmas of batch PA; HW-K, HW-D and HW-L use S1.2 and S1.3; HW-R, HW-D and HW-L use thirteen lemmas of the first HW
 sanity layer and one of the sanity layer of batch GD (`docs/STATUS.md`, "Batch HW, what the rows rest on"); VC2-K
 uses four lemmas of batch S1 (the amplitude transfer, the mean value inequality, two on `HasDerivOn`).
