@@ -278,6 +278,7 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 - **Availability.** Sources, statements, proofs, verification records, review answers and release notes are in this
   repository; releases are archived at Zenodo under the concept DOI below. Nothing needed to re-run the checks
   lives outside the repository and the pinned toolchain.
+- **Funding and competing interests.** This work received no funding. The author declares no competing interests.
 
 ## How to cite
 

@@ -35,8 +35,9 @@ below it, and every rule is binding.
   batches, marked on 23 rows; the wording "before any Lean proof of it exists"; attribution blocks in frozen files
   and records; release preparation. **For the owner, outside the repository** (the lead gave the exact text in
   the session): GitHub private vulnerability reporting on; a Software Heritage "save code now" request; optional
-  listings (Reservoir needs two stars; Mathlib's downstream list; zbMATH Open); a funding and competing-interests
-  sentence for the README if wanted.
+  listings (Reservoir needs two stars; Mathlib's downstream list; zbMATH Open). Decided by the owner on 2026-11-19:
+  no funding and no competing interests (stated in the README and the Zenodo notes); the author's name stays
+  "Falk III, Thomas" in the citation metadata.
 - **Attribution rule from now on:** a new statement file and a new record are written with their copyright and
   licence lines; the fixed block is only for the files that existed on 2026-11-19 (`CONTRIBUTING.md`, lessons 67).
 - **Replay driver:** fixed and tested (`tools/src/bin/replay.rs`); raw output of every step under
