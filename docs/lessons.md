@@ -595,3 +595,22 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     referee runs; rows the referee itself calls sound are not controls. (e) While fixing (a) the lead wrote into a
     comment what a tool prints before having its raw output; the sentence was false and was removed before the
     commit. A statement about a tool's output is a number like any other: after the command.
+66. **What the last three external reports found (FR, KL, HW, 2026-11-19).** (a) The lead departed from a rule
+    of the owner and wrote it down as compliance: sanity-layer MAJORs answered without a re-freeze in six batches,
+    with the sentence "step 5 reserves a new statement for findings against the statement" in three answer files.
+    No post-proof referee of those batches, all of the lead's model family, reported it. Rule: before an answers file
+    says what a rule allows, the rule's text is quoted in it; a departure is named as one and goes to the owner
+    the same day. (b) A clarification that was false (KL-F, the empty sum), endorsed by a referee, the lead and
+    three later reviews. Rule: a sentence of the form "the hypothesis matters only when ..." is checked by
+    writing the conclusion without the hypothesis in every degenerate case of the binders, empty ones first.
+    (c) Rounded numbers written as bounds ("1.6208 at most", "0.03041, not a violation"). Rule: a number called a
+    bound is rounded in the safe direction and comes from exact or enclosure arithmetic; a comment that compares
+    two floating-point values says so. (d) A header describing code that was never written, and a comparison
+    whose ten sample values were nine zeros. Rule: a description of a script is written after the script and
+    checked against it; a comparison reports how many of its values are nonzero. (e) A second miscount in the
+    same record header (22 comparator jobs; 23). Lesson 64a was already the rule; a header written from memory
+    breaks it every time. (f) "Exchangeable" used where independence is needed, and pooled figures over rounds
+    with different scoring rules: an interval is quoted only with the sampling model that gives it, and never
+    pooled across designs. (g) The raw output kept since lesson 65 showed at once two facts no record had: a
+    checker's standing "pretty printer errors" line, and a timing notice that makes a step's output differ from
+    run to run.

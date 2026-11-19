@@ -11,9 +11,9 @@ planted statement error, and how often it raises a false alarm on an unmodified 
 |---|---|---|---|---|---|---|---|
 | 1 | 2026-11-05 | S1 (van der Corput) | 4 (quantifier, hypothesis, definition, weakened conclusion) | 4 | 1.00, [0.397, 1.00] | 2 | 0 (0/2, upper bound 0.842) |
 | 2 | 2026-11-06 | S2.1, S2.2, S3, S4.1 (325 lines) | 4 (same kinds), planted by a separate agent | 4 | 1.00, [0.397, 1.00] | 2 | 0 (0/2, upper bound 0.842) |
-| 1+2 pooled | | | 8 | 8 | 1.00, [0.630, 1.00] | 4 | 0 (0/4, upper bound 0.603) |
+| 1+2 pooled (nominal: correction of 2026-11-19 below) | | | 8 | 8 | 1.00, [0.630, 1.00] | 4 | 0 (0/4, upper bound 0.603) |
 | 3 | 2026-11-16 | batches PA and KL (six statements) | 8 (definition ×3, hypothesis ×2, conclusion ×2, precedence), planted by the lead's script in text-only snapshots | 8 | 1.00, [0.630, 1.00] | 2 (the genuine reviews) | 0 (0/2, upper bound 0.842) |
-| 1+2+3 pooled | | | 16 | 16 | 1.00, [0.794, 1.00] | 6 | 0 (0/6, upper bound 0.460) |
+| 1+2+3 pooled (nominal: correction of 2026-11-19 below) | | | 16 | 16 | 1.00, [0.794, 1.00] | 6 | 0 (0/6, upper bound 0.460) |
 | 4 (route referee; not pooled) | 2026-11-16 | the routes of batches PA and KL | 8 (a wrong direction, wrong constants ×2, a wrong identity ×2, a false cited fact, an interval closed where it must be open, a wrong factor in a blueprint proposition), planted by the lead | 8 | 1.00, [0.630, 1.00] | none fixed in advance | not measured (the printed "0/5, upper bound 0.522" is withdrawn: correction of 2026-11-19 below) |
 
 Correction, 2026-11-13 (external R3 packet, `review/2026-11-13-external-R3-answers.md`): the bounds in this table are now
@@ -22,6 +22,19 @@ were not bounds: 0.40 for the lower bound 0.3976, 0.84 for the upper bound 0.841
 0.6024. The pre-registered and scored sections below keep their original text, where 0.398, 0.631 and 0.602 are also
 rounded to nearest in the unsafe direction (0.842 there is a valid upper bound). Exact values: (1/40)^{1/4} = 0.39764, 1 − (1/40)^{1/2} = 0.84189, (1/40)^{1/8} = 0.63058,
 1 − (1/40)^{1/4} = 0.60236 (`numerics/review/r3_packet_checks.py`). No reading changes.
+
+Correction, 2026-11-19 (external reviews of batches FR and KL, `review/2026-11-19-FR-external-review-answers.md`, R3,
+and `review/2026-11-19-KL-external-review-answers.md`, F6). Two readings on this page claim more than the designs
+give. (1) Round 2 says below that "if the eight plants are regarded as exchangeable draws from these four kinds,
+the miss rate per error is below 37% at 95% confidence". Exchangeability is not enough: eight indicators that are
+all equal are exchangeable, and for them the interval has no coverage. A Clopper–Pearson interval is a statement
+about independent trials with one detection probability. Nothing in these rounds supports independence (the
+plants were chosen by hand, several sat in one file and went to one referee), so every interval on this page is
+arithmetic under that assumption and not a measured rate. (2) The pooled rows of the table add rounds with
+different scoring rules (rounds 1 and 2: a verdict other than FAITHFUL together with the planted clause
+identified; round 3: the planted line named, at any severity), different files and different referees. They have
+no single quantity that they estimate and are kept as arithmetic only. The original sentences below are
+unchanged.
 
 ## Round 1 protocol (pre-registered 2026-11-05, before any referee ran)
 

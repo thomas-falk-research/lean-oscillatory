@@ -225,8 +225,8 @@ theorem sum_cos3_floor_nodes_four : ∑ j ∈ Finset.range 4, cos3 (((j / 4 : �
   simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
   norm_num
 
-/-- `e^{iz}` on the open strip of half-width `1`, `0` elsewhere: holomorphic on that strip only, `2π`-periodic and
-bounded by `e` on all of `ℂ`. -/
+/-- `e^{iz}` on the open strip of half-width `1`, `0` elsewhere: holomorphic on that strip (and, trivially, where
+it is `0`, for `|Im z| > 1`), discontinuous on the lines `|Im z| = 1`; `2π`-periodic and bounded by `e` on all of `ℂ`. -/
 noncomputable def stripExp : ℂ → ℂ := fun z => if |z.im| < 1 then Complex.exp (Complex.I * z) else 0
 
 /-- `stripExp` is holomorphic on the strip of half-width `1`. -/

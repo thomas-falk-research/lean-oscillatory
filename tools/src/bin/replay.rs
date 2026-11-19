@@ -17,7 +17,9 @@
 //! (a bundled checker has been seen to report a problem and exit 0). One phrase is exempt where it stands and
 //! nowhere else: nanoda's success line "... with no typechecker errors". Until 2026-11-19 the presence of that
 //! phrase anywhere in a step's output switched the scan off for the whole output (found by an external review of
-//! batch PA). The raw output of every step is kept under `OUTDIR/raw/`. Exit 1 on any failure.
+//! batch PA). The acceptance line of con-leche and con-ron is matched with the checker's prefix, since "not
+//! accepted" contains "accepted" (external review of batch KL). The raw output of every step is kept under
+//! `OUTDIR/raw/`. Exit 1 on any failure.
 
 use oscint_tools::export::{Export, Kind};
 use oscint_tools::sys::{run, sha256_file};
@@ -237,12 +239,12 @@ fn go(root: &str, names_path: &str, outdir: &str) -> i32 {
     log.step("con-leche --verified", || {
         let (ok, o) = lake(&["env", "con-leche", "--verified", &e])?;
         keep(out, "con-leche --verified", ok, &o)?;
-        verdict(ok, &o, "accepted")
+        verdict(ok, &o, "con-leche: accepted")
     });
     log.step("con-ron --verified", || {
         let (ok, o) = lake(&["env", "con-ron", "--verified", &e])?;
         keep(out, "con-ron --verified", ok, &o)?;
-        verdict(ok, &o, "accepted")
+        verdict(ok, &o, "con-ron: accepted")
     });
     log.step("lake check --from-export --paranoid", || {
         let (ok, o) = lake(&["check", "--from-export", &e, "--paranoid"])?;
@@ -274,6 +276,10 @@ mod tests {
         assert!(verdict(true, "PANIC\nno typechecker errors\naccepted", "accepted").is_err());
         assert!(verdict(true, "lean4lean found a problem in X\nChecked 5 declarations with no typechecker errors\nlean4lean kernel accepts the solution", "accepts the solution").is_err());
         assert!(verdict(true, "Checked 5 declarations with no typechecker errors\nlean4lean kernel accepts the solution", "accepts the solution").is_ok());
+        // The acceptance line is matched by the checker's own prefix: "not accepted" contains "accepted"
+        // (external review of batch KL, 2026-11-19).
+        assert!(verdict(true, "con-leche: not accepted 5 declarations", "con-leche: accepted").is_err());
+        assert!(verdict(true, "con-leche: accepted 5 declarations (--verified)", "con-leche: accepted").is_ok());
     }
     #[test]
     fn export_axiom_check() {

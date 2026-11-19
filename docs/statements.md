@@ -1063,8 +1063,8 @@ LC-1 FAITHFUL, no counterexample found, no BLOCKER; the stamp `stamps/20261116T1
    holds for every η ≥ 0 and tends to 0, as it must, since the kernel is then 0. Two docstrings of the sanity layer
    say more than their theorems: `halfExp_not_periodic` ("no strip and no bound make it admissible") assumes
    0 < a, and for a ≤ 0 the strip is empty and every function is admissible; `stripExp` ("holomorphic on that strip
-   only") is also holomorphic on the two open regions |Im z| > 1, where it is 0. The Lean files are left as they
-   were replayed; neither theorem's statement is affected.
+   only") is also holomorphic on the two open regions |Im z| > 1, where it is 0. Both docstrings were corrected
+   the same day (comments only); neither theorem's statement is affected.
 
 Proved (2026-11-16). `OscInt.API.fourierCoeffStrip`, `OscInt.API.trapezoidalRule` and
 `OscInt.API.latticeKernel1LightCone` have exactly these three statements as their types (route `docs/proof-PA.md`;
@@ -1171,6 +1171,17 @@ clarifications after the post-proof reviews:
    arithmetic: f′ = 1/5 on [0, 2], linear up to 4/5 on [2, 2.01], 4/5 after, integers 0 to 4: |S| = 3.0681 against
    1/(π/5) + 1 = 2.5915, and below cot(π/10) = 3.0777). The sanity layer records that mutation of KL-F as not
    detected; the proof excludes it.
+4. Corrections after the external review of batch KL (2026-11-19, `review/2026-11-19-KL-external-review-answers.md`).
+   Clarification 3 of the first list is false as written. The hypothesis `lam ≤ 1/2` of KL-F is used exactly when
+   (a, b) is empty (a ≥ b), where the cell condition is vacuous: if no integer lies in [a, b] (a > b, or a = b not
+   an integer) the sum is empty and the conclusion reads 0 ≤ cot(πλ/2), which fails for 1 < λ < 2 (at λ = 3/2 the
+   right side is −1); if a = b is an integer the sum has one term and the conclusion reads 1 ≤ cot(πλ/2), which
+   fails for 1/2 < λ < 2. When (a, b) is not empty the cell condition implies λ ≤ 1/2. The referee's remark, the
+   lead's answer to it and the clarification had only the one-term case. In item 1 above, "exceeds" includes
+   equality (N + 1 = cot(πλ/2) is possible, for example one term at λ = 1/2). In the pre-proof answers, "the
+   monotonicity clause is empty for N ≤ 2": for N = 2 the clause has the instance n = 0 and is then true for every
+   sequence (two real numbers are ordered one way or the other); it restricts nothing, but it is not empty. The
+   docstring of `klCore_zeta` now states its domain. The statement file is unchanged.
 
 ## Batch FR: the Schrödinger group on a ring of N sites and on an open chain of M sites (session 13, 2026-11-16)
 
@@ -1316,6 +1327,18 @@ j. Added 2026-11-19 (found by the lead while answering the external review of ba
    by the factor e^{−4N} fails at 6 points (the 120 of 120 is in `numerics/results-fr-statement-checks-2026-11-19.txt`;
    the control with the smaller tail was run by the lead the same day and is not kept). Its two "must differ"
    controls now need certified disjoint enclosures. The statements and their proofs are not affected.
+k. Corrections after the external review of batch FR (2026-11-19, `review/2026-11-19-FR-external-review-answers.md`).
+   (1) Item 8 and clarification b, "FC-P is not sharp": this is an observation and no more. The largest ratio of
+   the two sides found is 0.4854; that the supremum of the ratio is below 1 is CONJECTURED, not proved. (2)
+   Clarification i, "FR-P says nothing for |r| ≥ N, where its right side exceeds 1": the trivial bound on
+   |R_N − G| is 2 (two kernels of modulus at most 1), so the bound still says something while it is below 2. (3)
+   The docstring of the sanity theorem `chainP_half_time_false` said that at η = 3 the planted bound, 0.03041, is
+   "not a violation". It is one: the left side is 0.0304426 and the planted bound 0.0304082 (ball arithmetic by
+   the lead, difference 3.44e-5 certified positive); the proof in that file uses the coarse lower bound 767/25600,
+   which cannot show it at η = 3. The docstring is corrected, and so is the overview of
+   `OscInt/Front/FiniteRingEnergy.lean` ("constant, hence 0" needs the zero datum). (4) The control of the
+   numerical script called "free ends" is the reflected image with the opposite sign on the ring of 2(M + 1)
+   sites; it is not the chain of M sites with free ends. The statement file is unchanged.
 
 ## Batch VC2: the second-derivative van der Corput bound with its sharp constant (session 13, 2026-11-16)
 
@@ -1574,3 +1597,19 @@ g. Added 2026-11-17 after the post-proof reviews (`review/2026-11-17-HW-post-pro
    hypothesis strengthens a statement, and here the result is equivalent to HW-K (at t = 0 both sides are 0 in Lean,
    as the plant summary says); "true and equivalent" is the accurate word. In clarification f, "independently" means: by separate AI agents of one model family, each with
    its own code, on one machine; not by independent people. HW-L is stated for finitely supported initial states.
+h. Corrections after the external review of batch HW (2026-11-19, `review/2026-11-19-HW-external-review-answers.md`).
+   (1) Clarification b, "1.6208 t^{−1/3} at most for t ≤ 3000", was the maximum rounded down and written as a bound.
+   Exact integer arithmetic (`numerics/review/hw_exact_max_checks.py`, result
+   `numerics/results-hw-exact-max-checks-2026-11-19.txt`): the largest component from the state (1, 0) exceeds
+   1.6208 t^{−1/3} at t = 2990 and t = 2997 and at no other t ≤ 3000; the maximum is 1.620846… at t = 2997,
+   x = −2111, above 1.62084 t^{−1/3} and below 1.62085 t^{−1/3}. (2) The header of the second sanity file said "the
+   first layer tested 39 against 1/2 only"; the first layer has HW-D at t = 1 (1/√2) and t = 2 (1/2), where the
+   constant 1 also holds. Corrected in the file. (3) In the pre-proof answers, "no exact datum can detect a wrong
+   exponent" is too broad: 39/t fails exactly at t = 126 (recorded in the same file). What the finding supports is
+   narrower: because the constants are 12 to 24 times the attained values, an exponent mutation that keeps the
+   bound above the attained values at the times an exact datum reaches is not refuted by such a datum (the
+   recorded cases: the exponent mutation of HW-L, and HW-K with the product of its two terms, first false near
+   t = 7749). (4) The header of `numerics/review/hw_statement_checks.py` announced exact integer-pair arithmetic
+   that the script never had, and its comparison of the trapezoidal rule with adaptive quadrature had one nonzero
+   value among ten; the header is corrected and six points with nonzero values are added. The statement file is
+   unchanged.

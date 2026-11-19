@@ -107,3 +107,69 @@ solution"). So for this step the old rule and the new one give the same verdict 
 the export of record. The same file prints the header of the driver's summary (commit, source tree, SHA-256 of
 the nine binaries), which the public record lacked.
 
+Second evidence, every step: `make lean-replay` with the corrected driver on 237c5b2, in isolation, 15:59:38Z to
+16:36:35Z, RESULT PASS (`docs/replay/2026-11-19-lean-replay-fail-closed.txt`): 201 modules, a fresh export with the
+same SHA-256 as the export of record, six kernels, 209 PASS lines and no FAIL. The Lean sources are those of the
+replay of record and the nine binaries have the same SHA-256. The raw output of all 208 steps was kept and scanned:
+the 201 per-module outputs are empty; none of the steps judged by the common rule prints an error word; the exempt
+phrase occurs only in the output of the nanoda step, which the driver has always judged by a separate rule. So on
+what these binaries print for these sources, the rule before the fix and the rule after it give the same verdict
+at every step: the hole was not open. For the run of record itself this is evidence and not proof, since its raw
+output does not exist; and it says nothing about the replays of earlier commits, whose raw outputs were not kept
+either. Every module of the present tree, which holds all 86 statements, is covered by this run.
+
+Two things the raw output showed that no record had. The nanoda step prints "1 pretty printer errors: Unable to
+print axioms" beside its success line on every run (the driver's comment names it; no record did). And the
+six-kernel step's output is not byte-reproducible: lean4lean prints a notice for a declaration that took more than
+a second, and it named a different declaration in the two runs of 2026-11-19.
+
+A third report (batch KL) pointed at the same function from another side: the acceptance line was matched as a
+bare substring, and "not accepted" contains "accepted". The acceptance strings of the con-leche and con-ron steps
+are now the checkers' own prefixes, with a test. A full `make verify-all` with the corrected driver is the next
+replay of record (session log).
+
+## The reviewer's questions
+
+1. *Raw checker output and the per-binary summary for the replay; a fail-closed rerun.* Both are above: the raw
+   output of the six-kernel step on the export of record, the header of the driver's summary, and the fail-closed
+   rerun with the raw output of every step. The raw files themselves are on the session machine under
+   `build/replay/raw/` (not committed: they are regenerable and the directory is ignored by git); their count, the
+   scan over them and a hash of their concatenation are in the rerun's record.
+2. *202 or 201 modules?* 201. A header miscount by the lead; erratum beside the stamped record.
+3. *Should an undecided comparison be a third result, and the tolerance explicit; strict negative controls; a
+   failure exit?* Yes to each; done in the three scripts named under F01, F02 and F02a. An undecided comparison is
+   printed as UNRESOLVED and fails the script; the one remaining tolerance is documented and counted; controls need
+   a certified violation; every script fails the process on a failed check.
+4. *Were the five sound controls of calibration round 4 chosen and judged independently before the referee's
+   labels were seen?* No. They are the referee's own rows. The figure is withdrawn (F08).
+5. *What should a third party reproduce to justify "machine-checked as stated" without trusting the lead's machine
+   and summaries?* Clone the commit; `make verify-toolchain` (the toolchain archive is downloaded and checked
+   against a pinned SHA-256, and the installed toolchain must be byte-identical to it); `make verify-all`, which
+   builds the library from the sources,
+   audits the axioms of every theorem, compares each API theorem's type with its frozen statement constant,
+   checks every module and a fresh export with the six kernels, rebuilds the statement commitments and runs the
+   comparators against the frozen challenge exports. The workflow `verify.yml` does this on a clean GitHub runner
+   for any commit. What remains trusted after that is listed in the README ("What stays trusted"): the Lean kernel
+   and the toolchain archive (in CI one checker, nanoda, is also built from source), the Mathlib binary cache (the `.olean` files of Mathlib are downloaded, not built, in
+   the replay; one source build reproduced the statement commitments), and that the frozen statements say what is
+   meant. The reviewer is right that the stale-object check compares module names and not contents, that several
+   of the six kernels read one export made by one exporter, and that the independence of the checkers' code bases
+   is not shown by anything in this repository.
+6. *Will the documentation keep the corrected zero-time case, the scope of M and the limited role of the sanity
+   data explicit?* Clarification 7 of batch PA does the first two. The third is said where the reviewer found it
+   (`docs/STATUS.md`, paragraph on batches PA and KL: the sanity layers pin each bound at a few parameter points
+   only) and stays.
+7. *Is a stronger literature or first-formalisation claim intended?* No. The claim is "not found formalised" after
+   a finite search that the prior-art page describes, with its gaps; the mathematics is classical and the page
+   says so.
+
+## What this review does and does not establish
+
+It is the first reading of these three statements, the route and the Lean sources by a system that shares no
+training with the authors, and it found no error in any of them; its own proofs and exact computations agree with
+the statements. It ran no Lean, so nothing in it confirms that a file compiles or that a kernel accepted a proof.
+It is one review by one AI system with delegated readers of its own family, not a human referee. Its findings are
+all on the side of the project's records and tools, and three of them were worth more than the batch they were
+found in: the scan in the replay driver (every row of the status table rests on that driver), the acceptance rules
+of the check scripts (one sibling script had been passing 46 comparisons on a tolerance), and the false-alarm
+figure of a calibration round. The lead had read all three files many times.

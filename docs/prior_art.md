@@ -117,7 +117,8 @@ Same sweep, same day (CITED-READ by the sweep agent, not re-read by the lead):
   and `|J_n| ≤ 1`; its README reports 820 admissions project-wide. With it, the identification
   `latticeKernel1 t n = 2π iⁿ J_n(t)`, which OscInt does not formalise, is PLAUSIBLY available outside Mathlib.
 - No formalisation was found of a Landau-type `x^{−1/3}` Bessel bound, of a lattice dispersive estimate, of uniform
-  fold, cusp or umbilic estimates, of the k-th derivative van der Corput lemma with constants, or of the exponential
+  fold, cusp or umbilic estimates, of the k-th derivative van der Corput lemma with constants (none beyond Roos and
+  Praveen's, which the tables above credit; wording corrected 2026-11-19), or of the exponential
   convergence of the trapezoidal rule. Absence of a found result is PLAUSIBLE-not-novel. No repository was built or
   audited, and zbMATH and the Lean Zulip archive were not queried.
 - Continuum (ℝⁿ) dispersive and Strichartz estimates and two Lieb–Robinson developments exist in Lean
@@ -319,6 +320,15 @@ MathOverflow, 20:46Z to 21:36Z; the two Crossref free-text queries returned noth
   ‖U^t u‖_{ℓ^∞} ≲ t^{−1/3} ‖u‖_{ℓ¹} for a constant coin is "a direct consequence of van der Corput lemma", by "dividing
   the integral in the region" where the second or the third derivative of the dispersion relation is bounded below;
   the constant is implicit and the result is credited there to Sunada and Tate. This is the route of batch HW.
+  Correction, 2026-11-19 (external review of batch HW; the lead opened both papers that day). Proposition 4.12 of
+  version 3 of that paper bounds the evolution composed with the projection onto one spectral branch,
+  ‖U₀ᵗ P₊‖ ≲ ⟨t⟩^{−1/3} from ℓ¹ to ℓ^∞. The estimate for the whole walk with a constant coin is Theorem 2.1 (equation
+  (2.14)) of the same authors' *Scattering and inverse scattering for nonlinear quantum walks*, arXiv:1801.03214
+  (version 2; Discrete Contin. Dyn. Syst. 38 (2018) 3687–3703): ‖U₀ᵗ u‖_{ℓ^∞} ≤ C t^{−1/3} ‖u‖_{ℓ¹} for t ≥ 1 and a coin
+  entry with 0 < |a| < 1, C depending on a, by the same division of the integral and the van der Corput lemma; it
+  says there that the estimate was first obtained by Sunada and Tate "in a slightly different form". On Sunada
+  and Tate, "implicit constants" above is too coarse according to the reviewer, who read the paper in full: the
+  leading Airy coefficient of their Theorem 1.3 is explicit and the remainder is not (not re-read by the lead).
   S. Richard and R. Tiedra de Aldecoa, *Decay estimates for unitary representations with applications to continuous-
   and discrete-time models* (2023; found by title in zbMATH, CITED-NOT-READ).
 - Formalisation: no formal proof of a decay or dispersive estimate for a quantum walk was found (one query in this

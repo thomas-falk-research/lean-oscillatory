@@ -26,7 +26,9 @@ FR-P  the finite-size inequality 2 e^{2|t| sinh eta} cosh(r eta) / (e^{eta N} - 
       fail, which showed the draft was a factor 2 from sharp; the statement was sharpened before the freeze).
 FC-K  walls, unit datum; FC-U: the chain kernel against exp(itL_chain); FC-P: the inequality on a grid.
 Controls (each must fail): FR-P without the factor 2; FR-P with e^{|t| sinh} in place of e^{2|t| sinh}; FC-P
-without the wall term e^{-(x+y) eta}; the chain kernel with an even reflection (free ends) against exp(itL_chain);
+without the wall term e^{-(x+y) eta}; the chain kernel with the reflected image added where it is subtracted (an
+even reflection on the ring of 2(M + 1) sites; until 2026-11-19 this line called it "free ends", which it is not:
+the chain of M sites with free ends is another operator) against exp(itL_chain);
 the ring kernel of N sites against the matrix exponential of the open chain of N sites.
 
 Usage: python3 -I numerics/review/fr_statement_checks.py

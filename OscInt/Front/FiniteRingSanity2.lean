@@ -1029,7 +1029,9 @@ theorem chainP_offdiag_bound_lt :
 /-- **Bite: the time enters the bound of FC-P as `2|t|`.** At `M = 2`, `x = y = 1`, `t = 1/4`, `η = log 16` the bound
 with `|t|` in place of `2|t|` is `e^{255/128} (1/256 + 2 (1 + cosh(2 log 16)) / (16⁶ − 1)) ≤ 7.39 · 0.003922 < 0.0290`,
 below the left side `≥ 767/25600 > 0.0299` (floating point: `0.02875` against `0.03044`; `η = log 16` is within
-`10⁻³` of the minimiser of the planted bound, and at `η = 3` the planted bound is `0.03041`, not a violation). -/
+`10⁻³` of the minimiser of the planted bound; at `η = 3` the planted bound is `0.030408`, still below the left
+side, so a violation there too, by `3.4 · 10⁻⁵`, which the coarse lower bound `767/25600` used here cannot show).
+Corrected 2026-11-19: this comment said "not a violation" at `η = 3`. -/
 theorem chainP_half_time_false :
     ¬ ‖chainKernel 2 (1 / 4) 1 1 - lineKernel (1 / 4) ((1 : ℤ) - 1)‖ ≤
       Real.exp (|(1 / 4 : ℝ)| * Real.sinh (Real.log 16)) *

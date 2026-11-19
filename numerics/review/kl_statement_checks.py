@@ -6,7 +6,10 @@
 the freeze. Tooling, not evidence for a Lean theorem. Sequences have exact rational terms; sums are Arb balls.
 
 T1  KL-D on 4000 random sequences: N in 0..12, lam = p/q with q <= 12, an integer shift k in -2..2, differences
-    drawn in [k + lam, k + 1 - lam] and sorted up or down: |sum e(c_n)| <= cot(pi lam / 2) (certified).
+    drawn in [k + lam, k + 1 - lam] and sorted up or down: |sum e(c_n)| <= cot(pi lam / 2). The test is "no
+    certified violation"; the output counts the comparisons proved on the whole enclosures and those the
+    enclosures do not decide (exact equality occurs at lam = 1/2). Until 2026-11-19 this line said "(certified)"
+    for all 4000 (external review of batch KL).
 T2  KL-C on the same sequences: <= 2 / (pi lam).
 T3  Landau's extremal sequences (Arias de Reyna, arXiv:2002.05982, Lemma 2(b)): for theta = (2M+1)/(2N+1) < 1/2,
     c_j = j theta (j < N), c_j = N theta + (j - N)(1 - theta) (N <= j <= 2N): |sum| = cot(pi theta / 2) (the
@@ -52,6 +55,7 @@ def le(x, y):
 ok = True
 rng = random.Random(20261116)
 bad1 = bad2 = 0
+pr1 = pr2 = 0
 worst = 0.0
 for _ in range(4000):
     q = rng.randint(2, 12)
@@ -75,10 +79,13 @@ for _ in range(4000):
         bad1 += 1
     if r2 is False:
         bad2 += 1
+    pr1 += r1 is True
+    pr2 += r2 is True
     worst = max(worst, float((s / cot(lam)).mid()))
-print(f"T1 KL-D: 4000 sequences, certified violations {bad1}, largest ratio |S|/cot {worst:.6f} "
+print(f"T1 KL-D: 4000 sequences, proved {pr1}, undecided {4000 - pr1 - bad1}, certified violations {bad1}, "
+      f"largest ratio |S|/cot {worst:.6f} "
       "(a ratio of exactly 1 is an attained bound; undecidable comparisons at equality are not violations)")
-print(f"T2 KL-C: certified violations {bad2}")
+print(f"T2 KL-C: proved {pr2}, undecided {4000 - pr2 - bad2}, certified violations {bad2}")
 ok = ok and bad1 == 0 and bad2 == 0
 
 t3 = True

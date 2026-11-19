@@ -8,3 +8,10 @@ whole-library export by Lean's default kernel, which is not a per-module check. 
 leanchecker on 201 modules, and six kernels on the export. No module is missing; nothing else in the header is
 affected. Found by an external reviewer (review/2026-11-19-VC2-external-review-answers.md, finding F04) and confirmed
 by the lead with `grep -c`.
+
+Second erratum (written 2026-11-19, later the same day). The header also says that the clean-runner run 44497223336
+had "22 comparator jobs". It had 23: the job list of that run, read through the GitHub API by the lead, has 28 jobs
+(static, build, replay, commitments, verdict and 23 jobs named "comparator (<file>)"), each with conclusion
+success. The lead had counted the files `comparator-*.json` (22) and missed `comparator.json`. The body of the
+record ("All 23 comparator configurations were accepted") is right. Found by an external reviewer
+(review/2026-11-19-KL-external-review-answers.md, finding F4).

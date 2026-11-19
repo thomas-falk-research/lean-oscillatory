@@ -3,7 +3,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # Checks of the DRAFT batch HW statements, transcribed from the Lean text. Two methods for the walk:
-# (W) the step recursion in exact-ish complex floats (and exact rationals times sqrt2 powers for small t via sympy-free integer pairs),
+# (W) the step recursion in complex floats, with a floating sqrt 2 at every step. Nothing in this script is exact
+#     arithmetic (until 2026-11-19 this header announced an exact integer-pair path that was never written; the exact
+#     walk is numerics/review/hw_exact_max_checks.py),
 # (K) the kernel integral of the definition by the trapezoidal rule, which is exact for trigonometric polynomials.
 import numpy as np, math, cmath, itertools, sys
 from mpmath import mp, mpf, quad, asin, sin, cos, sqrt, exp, pi, diff
@@ -41,9 +43,14 @@ def kernel_mp(t,x):
     f=lambda k:(exp(-1j*t*asin(sin(k)/sqrt(2)))-(-1)**t*exp(1j*t*asin(sin(k)/sqrt(2))))/sqrt(2*(1+cos(k)**2))*exp(-1j*x*k)
     return quad(f,[-pi,-pi/2,0,pi/2,pi])/(2*pi)
 m=0
-for (t,x) in [(0,0),(1,0),(1,1),(2,0),(2,2),(3,1),(3,-1),(5,-3),(8,4),(13,-7)]:
-    m=max(m,abs(complex(kernel_mp(t,x))-kernel(t,x)))
-report("kernel: trapezoid against adaptive quadrature, 10 points", m<1e-12, f"max diff {m:.2e}")
+# K(t, x) = 0 unless t + x is odd: of the first ten points only (1,0) has a nonzero value, so six points with
+# t + x odd were added on 2026-11-19 (external review of batch HW); the number of nonzero values is reported.
+nz=0
+for (t,x) in [(0,0),(1,0),(1,1),(2,0),(2,2),(3,1),(3,-1),(5,-3),(8,4),(13,-7),(2,1),(3,2),(4,-1),(5,-2),(8,3),(13,-6)]:
+    v=complex(kernel_mp(t,x))
+    nz+=abs(v)>1e-3
+    m=max(m,abs(v-kernel(t,x)))
+report("kernel: trapezoid against adaptive quadrature, 16 points", m<1e-12 and nz>=7, f"max diff {m:.2e}; {nz} of the 16 values exceed 1e-3 in modulus")
 report("K(0,x)=0, K(1,x)=delta", abs(kernel(0,0))<1e-14 and abs(kernel(0,3))<1e-14 and abs(kernel(1,0)-1)<1e-13 and abs(kernel(1,1))<1e-14 and abs(kernel(1,-1))<1e-14)
 # 1. HW-R as written, all x in range, several (a,b), t+1 = 1..40
 rng=np.random.default_rng(20261116)

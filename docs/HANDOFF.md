@@ -28,14 +28,23 @@ below it, and every rule is binding.
   2026-11-19). Then the next statements (`docs/design/unlock-map.md`). A release is the owner's decision
   (`docs/policy.md`).
 - **External review (2026-11-19, run by the owner with an AI system of another model family, one batch per
-  conversation, pinned to 9ae784e; it cannot run Lean).** Reports answered: VC2
-  (`review/2026-11-19-VC2-external-review-answers.md`) and PA (`review/2026-11-19-PA-external-review-answers.md`).
-  Reports not yet received: KL, FR, HW. For each: check its access log, verify every finding by command before
-  accepting or rejecting it, answer finding by finding under `review/`, do not commit the report (rule 19; record
-  its hash). Known flaw of the request: the route pages given for the proof phase restate earlier reviews, so that
-  phase is not blind (lesson 64d). What the two reports changed is in lessons 64 and 65; the PA report found a
-  hole in the replay driver's output scan (fixed; the session log says whether the fail-closed rerun with raw
-  output has finished and what it showed).
+  conversation, pinned to 9ae784e; it cannot run Lean): all five reports received and answered**
+  (`review/2026-11-19-{VC2,PA,FR,KL,HW}-external-review-answers.md`). All 21 statements: faithful, true, route
+  sound; every finding is against records, tools or process, and each was checked by the lead. What changed is in
+  lessons 64 to 66 and in `docs/STATUS.md`, paragraph "External reviews of 2026-11-19". Known flaw of the request:
+  the route pages given for the proof phase restate earlier reviews (lesson 64d).
+- **Open with the owner (asked 2026-11-19; no rule file was edited):** (1) step 5 of `CONTRIBUTING.md` was not
+  followed in six batches (D4U, PA, KL, FR, HW, VC2: sanity-layer MAJORs answered without a re-freeze, 23 rows;
+  `docs/STATUS.md`, paragraph "Step 5 in six batches"). The lead recommended a one-time waiver stated on the rows,
+  as for API3; until the owner decides, the rows carry the departure as not ratified. (2) The sentence "before
+  any proof exists" in `CONTRIBUTING.md` against the disclosed proof plans on paper that predate the freezes.
+- **Replay driver (found by the PA and KL reports): fixed and tested** (`tools/src/bin/replay.rs`: the scan can no
+  longer be switched off by a success phrase; acceptance by the checker's prefix; raw output of every step kept
+  under `build/replay/raw/`). A fail-closed rerun of the replay step on 237c5b2 passed
+  (`docs/replay/2026-11-19-lean-replay-fail-closed.txt`). **A full `make verify-all` with the corrected driver and
+  the corrected docstrings is the next replay of record: the session log says whether it was launched and how it
+  ended (a launch with no recorded finish is dead and is relaunched).** After it: record under `docs/replay/`,
+  the Replay cells and paragraphs of `docs/STATUS.md`, then `make stamp`.
 - **Owner decisions of 2026-11-16, done:** rules 7, 18, 20, 21, 22 (`docs/lessons.md`) with their tools
   (`tools/push_gate.py`, `tools/replay_preflight.py`, the status rule in `tools/check_docs.py`, `tools/ots_anchor.py`
   and `anchors/ots/`); draft pull request 19.

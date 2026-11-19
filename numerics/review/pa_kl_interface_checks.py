@@ -9,6 +9,8 @@ blueprint states it. Arb balls throughout; an equality passes only if the two en
 than 1e-25; an inequality passes only if it holds for the whole enclosures. One exception, counted in the output: the
 first J4 family contains exact equality cases (lam = 1/2, all differences 1/2), which no enclosure decides; a
 comparison of that family that is not decided is accepted if it holds with 1e-25 added to the right-hand side.
+The second J4 family (boundary-heavy sequences) and J5 test "no certified violation", as their output lines say;
+the output counts the comparisons proved and those left undecided (added 2026-11-19, external review of batch KL).
 A control passes only if the violation (or the difference) is certified on the whole enclosures; an undecided
 comparison does not count as a failed bound.
 
@@ -232,6 +234,7 @@ for _ in range(300):
 report("J4 core inequality, k = 0", bad == 0, f"{n} sequences, {bad} violations, {slack} undecided and accepted with slack 1e-25, largest ratio {worst:.6f}")
 n = bad = 0
 worst = 0.0
+proved = 0
 for _ in range(300):
     lam = arb(rng.randint(1, 500)) / 1000
     N = rng.randint(1, 30)
@@ -244,8 +247,9 @@ for _ in range(300):
     rhs = cot(PI * lam / 2)
     n += 1
     bad += bool(lhs > rhs)
+    proved += le(lhs, rhs)
     worst = max(worst, float((lhs / rhs).mid()))
-report("J4 core inequality on boundary-heavy sequences (no certified violation)", bad == 0, f"{n} sequences, {bad} certified violations, largest ratio {worst:.9f}")
+report("J4 core inequality on boundary-heavy sequences (no certified violation)", bad == 0, f"{n} sequences, {proved} proved, {n - proved - bad} undecided, {bad} certified violations, largest ratio {worst:.9f}")
 att = []
 for num, den in ((1, 3), (1, 5), (1, 7), (3, 7), (1, 2)):
     lam = arb(num) / den
@@ -283,6 +287,7 @@ def klf_sum(a, b, k, u, v, p):
 n = bad = 0
 worst = 0.0
 ctrl = 0
+proved5 = 0
 for i in range(600):
     lam = arb(rng.randint(1, 500)) / 1000
     k = rng.randint(-3, 3)
@@ -295,9 +300,10 @@ for i in range(600):
     rhs = cot(PI * lam / 2)
     n += 1
     bad += bool(lhs > rhs)
+    proved5 += le(lhs, rhs)
     worst = max(worst, float((lhs / rhs).mid()))
     ctrl += bool(klf_sum(a, b, k, lam / 2, lam / 2, p) > rhs)
-report("J5 derivative form on sample phases (no certified violation)", bad == 0, f"{n} phases, {bad} certified violations, largest ratio {worst:.6f}")
+report("J5 derivative form on sample phases (no certified violation)", bad == 0, f"{n} phases, {proved5} proved, {n - proved5 - bad} undecided, {bad} certified violations, largest ratio {worst:.6f}")
 report("J5 control (a derivative outside the cell must violate the bound somewhere)", ctrl > 0, f"{ctrl} certified violations")
 
 npass = sum(ok for _, ok in results)

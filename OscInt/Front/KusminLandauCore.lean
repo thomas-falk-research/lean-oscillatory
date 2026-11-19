@@ -23,7 +23,8 @@ open OscInt.Statements OscInt.Blueprint.KusminLandau
 /-- The cotangent `cot(πx)`, written `cos(πx)/sin(πx)`. -/
 noncomputable def klCore_q (x : ℝ) : ℝ := Real.cos (Real.pi * x) / Real.sin (Real.pi * x)
 
-/-- The weight `ζ(x) = 1/(e(x) − 1)` in closed form, `−1/2 − (cot(πx)/2)·i`. -/
+/-- The weight `ζ(x) = 1/(e(x) − 1)` in closed form, `−1/2 − (cot(πx)/2)·i`, for `sin(πx) ≠ 0`. At an integer
+`x` this definition gives `−1/2`, while `1/(e(x) − 1)` is `1/0 = 0` in Lean; every use has `sin(πx) ≠ 0`. -/
 noncomputable def klCore_zeta (x : ℝ) : ℂ := -(1 / 2 : ℂ) - ((klCore_q x / 2 : ℝ) : ℂ) * Complex.I
 
 /-- `sin(πx) > 0` for `0 < x < 1`. -/

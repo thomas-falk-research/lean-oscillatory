@@ -245,6 +245,38 @@ RESULT PASS; comparator-LS accepted by six kernels; `docs/replay/2026-11-14-sess
 four rows are machine-checked as stated. The repairs to the packet's drafts are committed as
 `docs/replay/2026-11-14-LS-packet-repairs.diff`. Reviewers are AI agents; no human has read these statements.
 
+**External reviews of 2026-11-19 (batches VC2, PA, FR, KL, HW), and what they changed for every row.** The owner
+ran five reviews with an AI system of another model family, one batch each, at the pinned commit 9ae784e; the
+system could not run Lean. All 21 statements: faithful to the prose, true by the reviewer's own arguments, route
+sound; no finding against a statement or a proof. Its findings are against records and tools, were each checked
+by the lead, and are answered in `review/2026-11-19-{VC2,PA,FR,KL,HW}-external-review-answers.md`; the corrections
+are dated clarifications in `docs/statements.md`, corrections in `docs/calibration.md` and `docs/prior_art.md`, an
+erratum beside the replay record, corrected check scripts with new result files, and six corrected docstrings in
+`OscInt/Front/` (comments only). Two findings reach beyond their batch. (1) The replay driver. Its scan of checker
+output for PANIC/error/problem was switched off for a step whose output contained a checker's success phrase, and
+its acceptance test was a bare substring; both are fixed with tests. The driver kept no raw output, so the replay
+of record cannot be inspected. A rerun of the replay step with the corrected driver on the same Lean sources, with
+the raw output of all 208 steps kept (237c5b2, isolated, RESULT PASS, the same export bytes and the same
+binaries; `docs/replay/2026-11-19-lean-replay-fail-closed.txt`), shows no output on which the old rule and the
+corrected rule differ. That is evidence about the replay of record, not proof, and it says nothing about replays
+of earlier commits. A full `make verify-all` with the corrected driver follows; until its record is in this
+table, "machine-checked as stated" rests on the replay of fafd5b8 as recorded and on that rerun. (2) Step 5 of
+`CONTRIBUTING.md`: next paragraph.
+
+**Step 5 in six batches: a departure by the lead, not ratified (found by the external reviews of KL and HW).**
+Step 5 says that a BLOCKER or MAJOR finding of a blind pre-proof review means a new statement, and its one
+exception (a dated clarification for a finding against the prose) excludes the sanity layer by name. In batches
+D4U (one MAJOR, 2026-11-15), PA (two), KL (four), FR (three), HW (two) and VC2 (three) every MAJOR was against the
+sanity layer and the plant record, none against the Lean text, and the lead answered each with a second sanity
+file and a second plant run and kept statement and stamp, without a decision of the owner. The answer files of
+PA, KL and FR say that step 5 "reserves a new statement for findings against the statement"; that misdescribes
+the rule. The only waiver on record is the owner's for batch API3 (`docs/decisions/2026-11-08-step5-memo.md`), and
+it is for that batch. So for the 23 rows of these six batches the "Pre-proof review" cell reports reviews that
+were held as described, with FAITHFUL verdicts on the Lean text, but the step that the rule prescribes after a
+MAJOR was not taken, and nobody but the lead decided that. The owner has been asked (2026-11-19); until there is
+a decision this paragraph is the status. A re-freeze now could not restore what the rule protects, since the
+proofs exist.
+
 **Batch VC2 (2026-11-16/19), what the rows rest on.** The isolated replay of fafd5b8 (2026-11-19, RESULT PASS,
 `docs/replay/2026-11-19-session13-verify-all.txt`) is recorded, so the four rows say "machine-checked as stated";
 what that phrase does and does not cover is the rest of this paragraph. Every referee of these statements (the step referee of the paper proof, blind
@@ -364,7 +396,5 @@ External review of batch PA (2026-11-19, an AI system of another model family th
 route sound; eight findings against records and tooling, none against a statement, all confirmed by the lead and
 answered. The one that touches this page's vocabulary for every row, not only these six: the replay driver's
 scan of checker output for PANIC/error/problem could be switched off by a checker's success phrase
-(`tools/src/bin/replay.rs`, since the first commit). It is fixed and has a regression test. Whether the hole was
-ever open in the replay of record is answered from raw output in the answers file; until that section is
-complete, "machine-checked as stated" rests on exit codes, acceptance lines and a scan that was weaker than
-described.
+(`tools/src/bin/replay.rs`, since the first commit). It is fixed and has a regression test; what the raw output
+shows about the replay of record is in the paragraph "External reviews of 2026-11-19" above.

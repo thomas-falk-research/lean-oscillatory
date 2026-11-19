@@ -33,8 +33,8 @@ What the first layer could not see, and the datum added here:
   `K(0, ·) = 0` and `K(1, ·) = δ` are even, so `K(t, x) ↦ K(t, −x)` in these summands was invisible.
 * **HW-D at `t = 3`, `x = −1`** (`hwD_three`, `hwD_three_unit`: `1/√2 ≤ 39 · (1 + 0) · 3^{−1/3}`), checked
   unconditionally (`hwD_three_check`), with the bite `¬ (1/√2 ≤ 1 · 3^{−1/3})` (`hwD_constant_one_bite`,
-  `hwD_constant_one_false`): the constant `1` in the place of `39` is false. The first layer tested `39` against
-  `1/2` only.
+  `hwD_constant_one_false`): the constant `1` in the place of `39` is false. The first layer tested `39` at
+  `t = 1` and `t = 2` only (against `1/√2` and `1/2`), where the constant `1` holds as well.
 * **HW-L at `t ≠ 1`**: on a point state at `t = 3`, `x = −1` (`hwL_point_three`), and on the two-site state of the
   first layer at `t = 2`, `x = 0`, where the walk is `(1, 1/2)` (`twoSiteState_walk_two`, `hwL_two_site_two`,
   checked by `hwL_two_site_two_check`); the bite of the constant on the walk (`hwL_constant_one_false`).

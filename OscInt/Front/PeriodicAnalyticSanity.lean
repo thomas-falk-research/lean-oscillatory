@@ -325,7 +325,8 @@ theorem cos3_not_bounded_by_one : ¬ PeriodicAnalyticOn cos3 (1 / 2) 1 := by
   have h0 := h.2.2 0 (zero_mem_openStrip _ (by norm_num))
   simp [cos3] at h0
 
-/-- **Bite on the period.** `e^{iz/2}` has period `4π`, not `2π`: no strip and no bound make it admissible. -/
+/-- **Bite on the period.** `e^{iz/2}` has period `4π`, not `2π`: no strip of positive half-width and no bound
+make it admissible. -/
 theorem halfExp_not_periodic (a M : ℝ) (ha : 0 < a) :
     ¬ PeriodicAnalyticOn (fun z => Complex.exp (Complex.I * z / 2)) a M := by
   intro h

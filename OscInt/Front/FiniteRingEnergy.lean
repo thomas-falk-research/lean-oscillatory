@@ -17,7 +17,8 @@ import Mathlib.Analysis.Calculus.Deriv.Add
 `ringDatumFacts`: over one period `y < N` exactly one `y` has `N ∣ x − y`, the residue of `x`, and a function of
 period `N` takes the same value at `x` and at its residue.
 `ringEnergyFacts`: the energy `Σ_{x<N} conj(w_x) w_x` of a solution of period `N` has derivative `0` (the sum over a
-period of `F(x) − F(x + 1)` with `F(z) = conj(w_z) w_{z−1} − w_z conj(w_{z−1})`), so it is constant, hence `0`.
+period of `F(x) − F(x + 1)` with `F(z) = conj(w_z) w_{z−1} − w_z conj(w_{z−1})`), so it is constant, hence `0`
+for a solution whose datum at `t = 0` is `0` (the premise of the proposition).
 -/
 
 namespace OscInt.FiniteRingAux
