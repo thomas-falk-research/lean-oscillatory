@@ -58,9 +58,11 @@ jobs:
           elif [[ "$line" =~ ^collect\ ([1-5])$ ]]; then action=collect; rep="${BASH_REMATCH[1]}"
           else echo "REFUSED: the last line is not an instruction. Nothing runs."; exit 1
           fi
-          echo "action=$action" >> "$GITHUB_OUTPUT"
-          echo "repetition=$rep" >> "$GITHUB_OUTPUT"
-          echo "attempt=$att" >> "$GITHUB_OUTPUT"
+          {
+            echo "action=$action"
+            echo "repetition=$rep"
+            echo "attempt=$att"
+          } >> "$GITHUB_OUTPUT"
           echo "action: $action, repetition: $rep, attempt: $att"
 
   gate:

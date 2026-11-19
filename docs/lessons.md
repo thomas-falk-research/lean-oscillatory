@@ -567,3 +567,7 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     are recorded separately (so the log showed exactly which launches had no finish). New: a long isolated replay
     is not started when the remaining allowance is unknown and other agents are running; and when agents are
     resumed instead of relaunched after such a stop, the answers file says so.
+63. **A workflow file is linted only in CI (`actionlint` with `shellcheck`), like `reuse lint` in lesson 58.** Session
+    13: the job `tools` failed on a style finding (SC2129) in a new workflow, one push after the local checks had
+    passed. Before pushing a change under `.github/workflows/`, run `actionlint` at the version `ci.yml` installs,
+    with `shellcheck` on the path (both install without root: `go install` and the `shellcheck-py` wheel).
