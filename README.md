@@ -130,11 +130,13 @@ use the same `lean-toolchain`, `leanprover/lean4:v4.35.0`):
 [[require]]
 name = "oscint"
 git = "https://github.com/thomas-falk-research/lean-oscillatory"
-rev = "v0.7.0"   # a release tag (pins and notes: docs/release-notes/v0.7.0.md)
+rev = "v0.6.0"   # a release tag (pins and notes: docs/release-notes/v0.6.0.md)
 ```
 
-v0.7.0 has all 86 statements; v0.6.0 has the first 65. To use work that is not in a release yet, set `rev` to a full
-commit hash and take the SHA-256 of `stamps/statements.json` at that commit as your pin. From v0.7.0 use the
+The tag in the line above is the latest published release (the release procedure moves it after each release). Each
+release's notes say which statements it has: v0.6.0 the first 65, v0.7.0 all 86 (`docs/release-notes/`). To use
+work that is not in a published release, set `rev` to a full commit hash and take the SHA-256 of
+`stamps/statements.json` at that commit as your pin. From v0.7.0 use the
 checker shipped with the release: an older copy of `tools/oscint_check.py` reports every statement file as edited
 (`CHANGELOG.md`, "Attribution"). More on depending on OscInt: `docs/downstream.md`.
 
