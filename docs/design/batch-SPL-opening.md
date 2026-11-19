@@ -107,6 +107,12 @@ local maximum, `τ* = 1.62460`, with `K* = 0.7219740` to seven places; the later
 0.6267. The crude bound from batch VC2 (half of `sup A/2`, 0.8411) is 16 % larger. These numbers steer the batch
 and prove nothing; the registered test is `docs/prereg/2026-11-19-SPL-quadratic-remainder.md`.
 
+Added after the registered run (2026-11-19T22:05:36Z, `numerics/results-spl-remainder-checks-2026-11-19.txt`, program
+unchanged since registration): OVERALL PASS, 12 of 12 lines. The bound held in the 20 cases G1–G4 (largest ratio
+0.3311 against 0.7219740); the kernel identity agreed with direct quadrature to 6 · 10⁻¹³ after scaling; the
+near-extremal amplitude G5 reached the ratio 0.71652, which is 99.2 % of the constant and above `√(2π)/4`; the
+four controls came out as required. This is VALIDATED on these five amplitudes and proves nothing beyond them.
+
 ## 6. Stages and stop gates
 
 1. **Stage 1 (this batch): the normal form**, SPL-S, SPL-N, SPL-K, SPL-A. Order of work: registered numeric test;
