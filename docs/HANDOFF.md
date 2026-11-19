@@ -18,6 +18,17 @@ below it, and every rule is binding.
   after v0.7.0 is published. State of the batch: the session log's last rows. Order of work: prior-art gate,
   registered numerics, proof plan with a plan referee, statements and freeze, blind review, proofs
   (`CONTRIBUTING.md`); no Lean proof text before the answers to the blind review are stamped.
+- **Batch SPL, state on 2026-11-19 (nothing is running):** done: opening note
+  (`docs/design/batch-SPL-opening.md`), prior-art gate (identity classical in substance, Erdélyi; constant not
+  found; Olver 1974 unread), registered numeric test PASS 12 of 12 (`docs/prereg/LEDGER.md`), proof on paper in
+  its second version (`docs/proof-SPL.md`), plan referee answered
+  (`review/2026-11-19-SPL-plan-referee-answers.md`). **Exact next step:** write "Batch SPL" in
+  `docs/statements.md` and `OscInt/Statements/StationaryLeading.lean` (statements SPL-I, SPL-S, SPL-K with 7/8,
+  SPL-A; class: C³ with `g, g′, g″, g‴` integrable; SPL-N is not in this freeze) with a sanity layer and recorded
+  plants, challenge file and comparator; `make quick`; freeze, `make stamp`, pins; then two blind referees. A
+  draft of the Lean statements is in the lead's scratch only and is lost with the container; the definitions are
+  in section 2 of the proof page. The owner may bring reports of external sessions of another model family
+  (blind derivation, literature, general phase); answer them under `review/` like the earlier external reviews.
 - **Work item (2026-11-19): release candidate v0.7.0.** All 86 pinned statements are proved; the 21 of session 13
   (batches PA, KL, FR, VC2, HW) were machine-checked as stated by the isolated replay of fafd5b8
   (`docs/replay/2026-11-19-session13-verify-all.txt`). Since then, on the owner's instruction, the tree was made

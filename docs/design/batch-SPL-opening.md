@@ -98,6 +98,14 @@ in the literature searched on 2026-11-19 (queries and hits in the log); the clos
 It does not support "new": the identity of section 3 is two integrations by parts and may well be known, and
 Olver's paper is unread.
 
+Addendum, the same day, after two reports (`review/2026-11-19-SPL-plan-referee-answers.md`): the identity is the
+two-sided `N = 3` case of Erdélyi's remainder representation, so only the folded kernel and its constant are
+candidates for something not written down before, and that is not claimed. The plan referee found no fatal error
+in the first version of the proof; `docs/proof-SPL.md` (second version) replaces section 3 above. Changes to
+section 2: the identity becomes a statement of its own (SPL-I); the consumer constant of SPL-K is 7/8, which
+follows from VC2-S and VC2-N; SPL-N (73/100) is not part of the first freeze and waits for a prototype of a
+certified enclosure.
+
 ## 5. Exploration (EXPLORED, 2026-11-19; `numerics/review/spl_explore_kappa.py`, output
 `numerics/results-spl-explore-kappa-2026-11-19.txt`)
 

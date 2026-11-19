@@ -368,3 +368,13 @@ two-sided bound of the draft statement SPL-S (remainder at most `sup |κ| · ‖
 κ) was not found. That is a statement about this search, not a claim of novelty: the identity behind it is two
 integrations by parts, and Olver's paper is unread. No formalisation of a stationary-phase leading term was found
 by one arXiv query; Mathlib and the upstream repository are still to be searched.
+
+Addendum, the same day (`review/2026-11-19-SPL-plan-referee-answers.md`, section 2). A reader with a fresh context
+found that the identity behind SPL-S is classical in substance: it is the two-sided case (stationary point of order
+two, regular amplitude, three integrations by parts) of Erdélyi's remainder representation, read in the
+reproduction of Ali Mehmeti and Dewez (arXiv:1412.5789, Theorem 1.3), with the term in `g″(0)` folded into the
+kernel; the relation between the two kernels was checked by the lead numerically. Erdélyi's bound with the separate
+term gives the constant 1.2533. Olver (1974) was read only through a later account of its theorem (one-sided,
+total variations over the large parameter). Mathlib at the pin has no Fresnel integral and no stationary phase.
+Still unread: Olver (1974), Erdélyi's originals, the books of Olver, Wong and Zworski; the upstream repository was
+not inspected. The bound with the constant `sup |κ| = 0.72197` was not found; nothing is claimed as new.
