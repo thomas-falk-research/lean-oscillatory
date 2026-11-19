@@ -395,3 +395,22 @@ published remainder formula; the folded kernel with `0.72197…` was not found; 
 are unread, so the evidence justifies calling the refinement neither folklore nor new. A third session derived
 the identity and the constant without sight of the lead's work and got the same kernel up to a factor `i` and the
 same number.
+
+Third addendum, the same day: Erdélyi's original, READ by the lead. The owner's external session identified the
+1956 book as a republication of a technical report (A. Erdélyi, *Asymptotic Expansions*, Technical Report 3,
+contract Nonr-220(11), California Institute of Technology, 1955; DTIC accession AD0055660). The lead found a scan
+of that report, marked as cleared for public release, at the Internet Archive (item `DTIC_AD0055660`; SHA-256 of
+the PDF fetched 799cd55269d1327873cc67d7d0426980586e40af2572104d7c3c334aa81823df), and read its sections 2.8
+(Fourier integrals) and 2.9 (the method of stationary phase), pages 46 to 56, in the scan's text layer, and
+pages 54 and 55 as page images. What is there: the integral is broken at the stationary points into pieces on
+which the phase is monotone, a neutralizer separates the two ends, and after the substitution `u^ρ = h(t) − h(α)`
+the piece is integrated by parts N times against the kernels `φ_{−n−1}(u) = ((−1)^{n+1}/n!) ∫_u^∞ (z − u)^n z^{λ−1}
+exp(ixz^ρ) dz` taken along the ray `arg(z − u) = π/(2ρ)` (its equation (11)); the remainder is
+`R_N(x) = (−1)^{N+1} e^{ixh(α)} ∫ φ_{−N}(u) d^N(ν₁k)/du^N du` (13), bounded through
+`|φ_{−n−1}(u)| ≤ (1/n!) Γ((n+1)/ρ) u^{λ−1} x^{−(n+1)/ρ}` (15, as printed). The theorem itself is stated as an asymptotic
+expansion "to N terms". This confirms the account of Ali Mehmeti and Dewez and of the two readers: the identity
+of SPL-I is the case `ρ = 2, λ = 1, N = 3` of (11) and (13), taken on both sides of the stationary point and added.
+Not in those sections: a kernel for the two-sided integral, the folding of the term in `g″(0)`, or a number for
+the supremum. Limits of this reading: it is the report, which catalogue records give as the source of the Dover
+book, not the printed book; the text layer garbles formulas, and only two pages were read as images. Still
+unread in the original: Olver (1974) and Erdélyi's article of 1955 (J. SIAM 3, 17–27).
