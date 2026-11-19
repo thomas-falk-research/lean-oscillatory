@@ -12,19 +12,24 @@
                        circuits once, 4000 shots each. Does not wait for the device.
   collect R            Fetch the job of the latest attempt of repetition R. A finished job gives the raw counts; a
                        failed or cancelled job gives a failure record. Submits nothing.
-  merge FILE...        Join the five result files into the one file the registered analysis reads; compare the
-                       compiled two-qubit gate counts with section 4. No credentials, no network.
+  locate R             List the jobs the service holds with the tags of repetition R (identifier, status). For the
+                       case that a job exists and its record was lost. Submits nothing.
+  merge --out F FILE...  Join the five result files into the one file F that the registered analysis reads; compare
+                       the compiled two-qubit gate counts with section 4. No credentials, no network.
 
 `submit` refuses: without the guard variable (CTQW_GUARD="submit repetition R attempt A": a guard against accident,
 not a proof of approval; the approval is the owner's release of the workflow job that holds the credentials);
 without an explicit instance; on any plan but the no-cost one; if the usage limit is reached; if the earlier
-repetitions are not on record; if this repetition already has an attempt that is not marked as rejected before
-execution; if less than an hour has passed since the previous repetition was submitted; and if the service already
-holds a job with this attempt's tag (in which case it prints that job's identifier, so a lost one is recovered).
+repetitions are not on record with an attempt that was not rejected; if this repetition already has an attempt
+that is not marked as rejected before execution, or whose job the service does not itself report as ended without
+any device usage; if less than an hour has passed since the previous repetition was submitted; and if the service
+already holds a job with this attempt's tag, found by the service's tag search or by reading the tags of the recent
+jobs (in which case it prints that job's identifier, so a lost one is recovered).
 
 Everything is printed on standard output; nothing meaningful goes to standard error. Records are built from named
-fields only and never contain the key, an instance identifier, an instance name, an account identifier or the
-instance's usage figures. Texts of exceptions are printed redacted and cut to 300 characters.
+fields only and never contain the key, an instance identifier, an account identifier or the instance's usage
+figures; a record in which a credential form occurs is not printed. Texts of exceptions are printed with the
+credential forms and the instance names removed and cut to 300 characters.
 
 State between runs: --record (default records/submitted.json beside this script), a list of the submit records,
 committed to the repository by the lead after each submission. Repetition 1 chooses the device by the registered
@@ -52,6 +57,7 @@ MIN_QUBITS = 9               # Addendum 1, item 2
 NO_COST_PLAN = "open"        # Addendum 1, item 1
 MAX_EXECUTION_TIME = 60      # seconds of device time per job (Addendum 2, item 4)
 MIN_SPACING_S = 3600         # Addendum 1, item 5
+SETTLE_S = 900               # a failed job's usage figure is trusted only this long after its finish time stamp
 FAMILY_TAG = "ctqw-chain-2026-11-16"
 REHEARSAL_SEEDS = [17, 1017, 2017, 3017, 4017]
 ORDER = [(M, t) for M in CHAINS for t in TIMES]
@@ -95,7 +101,7 @@ def redact(text, forms):
 
 
 def safe_error(exc, forms):
-    return f"FAILED: {type(exc).__name__}: " + redact(str(exc), forms)[:300]
+    return f"FAILED: {type(exc).__name__}: " + redact(str(exc), list(forms) + sorted(NAMES, key=len, reverse=True))[:300]
 
 
 def versions():
@@ -245,7 +251,10 @@ def rehearse(fake_name):
             "runs": runs}
 
 
-def connect():
+NAMES = []          # instance names, removed from error texts only (they may be ordinary words)
+
+
+def connect(creates_job):
     """Returns (service, secret forms). Requires both credentials; checks the plan of the one instance in use."""
     token = os.environ.get("QISKIT_IBM_TOKEN", "")
     instance = os.environ.get("QISKIT_IBM_INSTANCE", "")
@@ -257,13 +266,14 @@ def connect():
         service = QiskitRuntimeService(channel="ibm_quantum_platform", token=token, instance=instance)
         instances = list(service.instances())
         forms = secret_forms(token, instance, [str(i[k]) for i in instances for k in ("crn",) if i.get(k)])
+        NAMES[:] = [str(i["name"]) for i in instances if i.get("name") and len(str(i["name"])) >= 4]
         if service.active_instance() != instance:
             raise Refused("REFUSED: the active instance is not the one given; nothing was done")
         plans = [str(i.get("plan", "")) for i in instances if i.get("crn") == instance]
         if plans != [NO_COST_PLAN]:
             raise Refused("REFUSED: the instance is not on the no-cost plan; nothing was done")
-        if service.usage().get("usage_limit_reached"):
-            raise Refused("REFUSED: the usage limit of the instance is reached; nothing was done")
+        if creates_job and service.usage().get("usage_limit_reached"):
+            raise Refused("REFUSED: the usage limit of the instance is reached; nothing was sent")
     except Refused:
         raise
     except Exception as exc:
@@ -308,6 +318,43 @@ def tag_of(rep, attempt):
     return f"ctqw-chain-rep{rep}-a{attempt}"
 
 
+def jobs_with_tag(service, tag):
+    """Jobs carrying `tag`: by the service's tag search, and by reading the tags of the recent jobs."""
+    found = {}
+    for j in service.jobs(job_tags=[tag], limit=10):
+        found[j.job_id()] = j
+    since = datetime.datetime.now() - datetime.timedelta(days=30)
+    for j in service.jobs(limit=50, created_after=since):
+        if tag in (j.tags or []):
+            found[j.job_id()] = j
+    return list(found.values())
+
+
+def executed_evidence(job):
+    """What the service reports about whether a job ran on a device (Addendum 2, item 6)."""
+    metrics = job.metrics()
+    usage = metrics.get("usage") or {}
+    stamps = metrics.get("timestamps") or {}
+    seconds = usage.get("quantum_seconds", usage.get("seconds"))
+    executed = bool((isinstance(seconds, (int, float)) and seconds > 0) or stamps.get("running"))
+    # "not executed" needs positive evidence: a usage figure of exactly zero, a finish time stamp at least
+    # SETTLE_S seconds old (so that the usage figure is no longer being computed) and no running time stamp.
+    settled = False
+    try:
+        fin = datetime.datetime.fromisoformat(str(stamps.get("finished")).replace("Z", "+00:00"))
+        if fin.tzinfo is None:
+            fin = fin.replace(tzinfo=datetime.timezone.utc)
+        settled = (utcnow() - fin).total_seconds() >= SETTLE_S
+    except Exception:
+        settled = False
+    not_executed = bool(not executed and isinstance(seconds, (int, float)) and not isinstance(seconds, bool)
+                        and seconds == 0 and settled)
+    return {"final": bool(job.in_final_state()), "done": bool(job.done()), "status": str(job.status()),
+            "quantum_seconds": seconds, "running_timestamp": stamps.get("running"),
+            "finished_timestamp": stamps.get("finished"), "executed": executed,
+            "not_executed_with_positive_evidence": not_executed}
+
+
 def describe_job(job):
     try:
         status = str(job.status())
@@ -326,6 +373,9 @@ def submit(rep, attempt, record_path, out_path):
         by_rep.setdefault(int(s["repetition"]), []).append(s)
     if sorted(r for r in by_rep if r < rep) != list(range(1, rep)) or any(r > rep for r in by_rep):
         raise Refused(f"REFUSED: repetitions on record are {sorted(by_rep)}; repetition {rep} is not the next one")
+    for r in range(1, rep):
+        if all(s.get("outcome") == "rejected-before-execution" for s in by_rep[r]):
+            raise Refused(f"REFUSED: repetition {r} has only rejected attempts on record; it comes first")
     mine = sorted(by_rep.get(rep, []), key=lambda s: int(s["attempt"]))
     if [int(s["attempt"]) for s in mine] != list(range(1, attempt)):
         raise Refused(f"REFUSED: attempts on record for repetition {rep} are "
@@ -342,11 +392,16 @@ def submit(rep, attempt, record_path, out_path):
         if spacing < MIN_SPACING_S:
             raise Refused(f"REFUSED: {spacing} s since the previous repetition was submitted; "
                           f"{MIN_SPACING_S} s are registered; nothing was submitted")
-    service, forms = connect()
+    service, forms = connect(creates_job=True)
     job = None
     rec = {"repetition": rep, "attempt": attempt, "job_tags": [FAMILY_TAG, tag]}
     try:
-        existing = list(service.jobs(job_tags=[tag], limit=5))
+        for s in mine:      # the mark in the record is necessary, not sufficient: ask the service
+            ev = executed_evidence(service.job(s["job_id"]))
+            if not ev["final"] or ev["done"] or ev["executed"] or not ev["not_executed_with_positive_evidence"]:
+                raise Refused(f"REFUSED: the service does not report attempt {s['attempt']} of repetition {rep} as "
+                              f"ended without device usage (status {ev['status']}); nothing was submitted")
+        existing = jobs_with_tag(service, tag)
         if existing:
             raise Refused("REFUSED: the service already holds a job with the tag of this attempt: "
                           + "; ".join(describe_job(j) for j in existing) + ". Nothing was submitted.")
@@ -388,7 +443,7 @@ def submit(rep, attempt, record_path, out_path):
 def dryrun(out_path):
     if os.environ.get("CTQW_GUARD", "") != "dry run":
         raise Refused("REFUSED: CTQW_GUARD is not 'dry run'; nothing was sent")
-    service, forms = connect()
+    service, forms = connect(creates_job=True)
     rec = {"not_data": "SERVER-SIDE DRY RUN: validated by the service, mock results, no device executed anything",
            "job_tags": [FAMILY_TAG, "ctqw-chain-dryrun"]}
     try:
@@ -404,6 +459,17 @@ def dryrun(out_path):
         rec["job_id"] = job.job_id()
         rec["submitted_utc"] = stamp()
         print(f"DRY RUN CREATED job_id={rec['job_id']} device={device}", flush=True)
+        try:
+            by_search = [j.job_id() for j in service.jobs(job_tags=["ctqw-chain-dryrun"], limit=10)]
+            since = datetime.datetime.now() - datetime.timedelta(days=30)
+            by_listing = [j.job_id() for j in service.jobs(limit=50, created_after=since)
+                          if "ctqw-chain-dryrun" in (j.tags or [])]
+            rec["tag_guard_test"] = {"found_by_tag_search": rec["job_id"] in by_search,
+                                     "found_by_listing_recent_jobs": rec["job_id"] in by_listing,
+                                     "reading": "two times false does not show that the guard fails for real "
+                                                "jobs: the service may list dry-run jobs differently"}
+        except Exception as exc:
+            rec["tag_guard_test"] = {"failed": safe_error(exc, forms)}
         try:
             rec["usage_estimation"] = job.usage_estimation
         except Exception as exc:
@@ -433,7 +499,7 @@ def collect(rep, record_path, out_path):
         raise Refused(f"REFUSED: no submission on record for repetition {rep}")
     sub = mine[-1]
     tag = tag_of(rep, int(sub["attempt"]))
-    service, forms = connect()
+    service, forms = connect(creates_job=False)
     try:
         job = service.job(sub["job_id"])
         tags = list(job.tags or [])
@@ -448,12 +514,16 @@ def collect(rep, record_path, out_path):
                 "submitted_utc": sub["submitted_utc"], "collected_utc": stamp(), "status": status,
                 "timestamps": metrics.get("timestamps"), "usage": metrics.get("usage"),
                 "usage_note": "as reported at collection; the service may still be computing it",
-                "options_sent": sub["options_sent"], "program_id": sub.get("program_id"),
-                "versions_at_submission": sub["versions"], "versions_at_collection": versions(),
-                "calibration_at_submission": sub["calibration_at_submission"]}
+                "options_sent": sub.get("options_sent"), "program_id": sub.get("program_id"),
+                "versions_at_submission": sub.get("versions"), "versions_at_collection": versions(),
+                "calibration_at_submission": sub.get("calibration_at_submission"),
+                "executed_evidence": executed_evidence(job)}
+        if "circuits" not in sub:
+            meta["record_note"] = "the submit record was incomplete (recovered job); compilation data unavailable"
         if not job.done():
             try:
-                reason = redact(str(job.error_message() or ""), forms)[:300]
+                reason = redact(str(job.error_message() or ""),
+                                list(forms) + sorted(NAMES, key=len, reverse=True))[:300]
             except Exception as exc:
                 reason = f"unavailable: {type(exc).__name__}"
             rec = {"failure_record": True, "repetition": rep, "meta": meta, "error_message": reason,
@@ -465,14 +535,14 @@ def collect(rep, record_path, out_path):
         if len(result) != len(ORDER):
             raise Refused(f"FAILED: {len(result)} results returned, {len(ORDER)} expected")
         try:
-            used = sorted({q for c in sub["circuits"] for q in c["active_physical_qubits"]})
+            used = sorted({q for c in sub["circuits"] for q in c["active_physical_qubits"]})   # KeyError if recovered
             meta["calibration_at_run_time"] = calibration(job.backend(), used, props=job.properties(),
                                                           source="properties recorded with the job")
         except Exception as exc:
             meta["calibration_at_run_time"] = {"note": f"unavailable: {type(exc).__name__}"}
         runs = []
         for i, (M, t) in enumerate(ORDER):
-            circ = next(c for c in sub["circuits"] if c["sites"] == M and c["time"] == t)
+            circ = next((c for c in sub.get("circuits", []) if c["sites"] == M and c["time"] == t), None)
             raw, conv = counts_of(result[i], M)
             runs.append({"sites": M, "time": t, "repetition": rep, "shots": SHOTS, "counts": conv,
                          "counts_as_returned": raw, "meta": dict(meta, circuit=circ)})
@@ -482,6 +552,19 @@ def collect(rep, record_path, out_path):
     except Exception as exc:
         raise Refused(safe_error(exc, forms))
     return finish(rec, forms, out_path)
+
+
+def locate(rep):
+    service, forms = connect(creates_job=False)
+    try:
+        out = []
+        for attempt in range(1, 10):
+            for j in jobs_with_tag(service, tag_of(rep, attempt)):
+                out.append({"attempt": attempt, "job_id": j.job_id(), "status": str(j.status()),
+                            "device": j.backend().name, "created": str(j.creation_date)})
+    except Exception as exc:
+        raise Refused(safe_error(exc, forms))
+    return finish({"repetition": rep, "jobs_at_the_service": out}, forms, "")
 
 
 def merge(paths):
@@ -499,9 +582,10 @@ def merge(paths):
             runs.append(r)
     want = {(M, t, r) for M, t in ORDER for r in range(1, REPETITIONS + 1)}
     gates = [{"sites": r["sites"], "time": r["time"], "repetition": r["repetition"],
-              "two_qubit_gates": r["meta"]["circuit"]["two_qubit_gates"],
-              "section4": r["meta"]["circuit"]["two_qubit_gates_section4"],
-              "within_10_percent": r["meta"]["circuit"]["within_10_percent_of_section4"]} for r in runs]
+              "two_qubit_gates": (r["meta"].get("circuit") or {}).get("two_qubit_gates"),
+              "section4": SECTION4_TWO_QUBIT[(int(r["sites"]), str(r["time"]))],
+              "within_10_percent": (r["meta"].get("circuit") or {}).get("within_10_percent_of_section4")}
+             for r in runs]
     return {"bit_order": "site0-left", "returned_bit_order": RETURNED_ORDER,
             "complete": seen == want, "missing": sorted(want - seen), "gate_count_comparison": gates,
             "runs": sorted(runs, key=lambda r: (r["repetition"], r["sites"], float(r["time"])))}
@@ -532,7 +616,10 @@ def main(argv=None):
     a = sub.add_parser("collect")
     a.add_argument("repetition", type=int, choices=range(1, REPETITIONS + 1))
     a.add_argument("--out", default="")
+    a = sub.add_parser("locate")
+    a.add_argument("repetition", type=int, choices=range(1, REPETITIONS + 1))
     a = sub.add_parser("merge")
+    a.add_argument("--out", required=True)
     a.add_argument("files", nargs="+")
     args = ap.parse_args(argv)
     record = os.path.join(HERE, "records", "submitted.json")
@@ -545,8 +632,15 @@ def main(argv=None):
             text = submit(args.repetition, args.attempt, record, args.out)
         elif args.cmd == "collect":
             text = collect(args.repetition, record, args.out)
+        elif args.cmd == "locate":
+            text = locate(args.repetition)
         else:
-            text = json.dumps(merge(args.files), indent=1, sort_keys=True)
+            merged = merge(args.files)
+            text = json.dumps(merged, indent=1, sort_keys=True)
+            with open(args.out, "w") as fh:
+                fh.write(text + "\n")
+            text = json.dumps({"written": os.path.basename(args.out), "runs": len(merged["runs"]),
+                               "complete": merged["complete"], "missing": merged["missing"]}, sort_keys=True)
     except Refused as exc:
         print(str(exc))
         return 1

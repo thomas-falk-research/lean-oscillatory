@@ -176,13 +176,16 @@ decision rule. Everyone who wrote or checked it is an instance of one AI model f
    that value, the refusal is a rejection before execution.
 5. **Spacing.** A repetition is not submitted less than one hour after the previous one; the script refuses.
 6. **Failures (Addendum 1, item 6, made testable).** Every job carries the tags `ctqw-chain-2026-11-16` and
-   `ctqw-chain-repN-aA` (repetition N, attempt A). Before a submission the script asks the service for a job with
-   that tag and refuses if one exists. A job that ends without results gets a failure record (status, the
+   `ctqw-chain-repN-aA` (repetition N, attempt A). Before a submission the script looks for a job with that tag, by
+   the service's tag search and by reading the tags of the recent jobs, and refuses if one exists. A job that ends without results gets a failure record (status, the
    service's reason, time stamps, usage). It counts as **executed** if the service reports device usage above zero
    or a time stamp for the start of its run; it is then the datum of that repetition (INVALID by the registered
    rule, since it has no counts) and is not repeated. Otherwise it was **rejected before execution** and may be
    resubmitted unchanged as the next attempt; the classification is written into the submit record by the lead
-   after the owner has seen the failure record.
+   after the owner has seen the failure record, and before a resubmission the script itself asks the service
+   for the state of the earlier attempt and refuses unless it ended without results and without usage. This rule
+   rests on what the service reports; if its reports turn out not to distinguish the two cases, the job counts as
+   executed.
 7. **Record.** For every job: the counts as returned and the converted counts (site 0 left-most), the options
    actually set on the sampler, the calibration data of the touched qubits at submission and as recorded with the
    job, the candidates and their queue lengths at submission, the compiled two-qubit gate counts beside those of
@@ -193,7 +196,8 @@ decision rule. Everyone who wrote or checked it is an instance of one AI model f
    registered `analysis.py` reads; it changes no count.
 9. **Dry run (not data).** Before the first submission one server-side dry run of the same eight circuits may be
    made: the service validates the job and returns mock results, and no device executes anything. It tests that
-   the service accepts the job and that the result can be decoded. It cannot change anything in this protocol.
+   the service accepts the job (the 60-second limit included), that the result can be decoded, and that the job
+   is found again by its tag. It cannot change anything in this protocol.
 10. **Approval.** The credentials are held as secrets of a GitHub environment with the owner as required
     reviewer; every job that uses them, including the read-only ones, waits for the owner's release. The lead
     writes an instruction into the trigger file only on the owner's explicit word for that instruction.

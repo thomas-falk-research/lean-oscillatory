@@ -33,11 +33,8 @@ OPT_LEVEL = 3         # registered
 MIN_QUBITS = 9        # registered
 
 
-def redact(text, secrets):
-    for s in secrets:
-        if s:
-            text = text.replace(s, "<redacted>")
-    return text
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from run_hardware import redact, secret_forms  # noqa: E402  (the same redaction as the run script)
 
 
 def describe_backend(backend):
@@ -107,28 +104,28 @@ def main():
         return 0
     token = os.environ.get("QISKIT_IBM_TOKEN", "")
     instance = os.environ.get("QISKIT_IBM_INSTANCE", "")
-    secrets = [token, instance]
+    secrets = secret_forms(token, instance)
     out["mode"] = "live account, read-only"
     out["credentials_present"] = {"QISKIT_IBM_TOKEN": bool(token), "QISKIT_IBM_INSTANCE": bool(instance)}
-    if not token:
-        out["result"] = "NO TOKEN: the secret QISKIT_IBM_TOKEN is empty or not visible to this workflow"
+    if not token or not instance:
+        out["result"] = "NO CREDENTIALS: QISKIT_IBM_TOKEN and QISKIT_IBM_INSTANCE must both be visible to this job"
         print(json.dumps(out, indent=1))
         return 1
     step = "authenticate"
     try:
         from qiskit_ibm_runtime import QiskitRuntimeService
-        kwargs = {"channel": "ibm_quantum_platform", "token": token}
-        if instance:
-            kwargs["instance"] = instance
-        service = QiskitRuntimeService(**kwargs)
+        service = QiskitRuntimeService(channel="ibm_quantum_platform", token=token, instance=instance)
         out["authenticated"] = True
         step = "instances"
         instances = list(service.instances())
-        secrets += [str(i.get(k, "")) for i in instances for k in ("crn", "name")]
+        secrets = secret_forms(token, instance, [str(i[k]) for i in instances for k in ("crn",) if i.get(k)])
+        names = sorted((str(i["name"]) for i in instances if i.get("name") and len(str(i["name"])) >= 4),
+                       key=len, reverse=True)
         out["instances_visible"] = len(instances)
         out["plans_visible"] = sorted({str(i.get("plan", "?")) for i in instances})
         active = service.active_instance()
-        secrets.append(str(active or ""))
+        secrets = secret_forms(token, instance, [str(active or "")] + [str(i[k]) for i in instances
+                                                                      for k in ("crn",) if i.get(k)])
         plan = next((str(i.get("plan", "?")) for i in instances if i.get("crn") == active), None)
         out["active_instance_plan"] = plan
         step = "usage"
@@ -153,7 +150,7 @@ def main():
         out["result"] = "OK: authenticated; nothing was submitted"
     except Exception as exc:
         out["result"] = f"FAILED at step '{step}': {type(exc).__name__}"
-        out["error_text"] = redact(str(exc), secrets)[:600]
+        out["error_text"] = redact(str(exc), list(secrets) + list(locals().get("names", [])))[:300]
         print(redact(json.dumps(out, indent=1), secrets))
         return 1
     print(redact(json.dumps(out, indent=1), secrets))

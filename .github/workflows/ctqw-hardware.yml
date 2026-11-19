@@ -10,8 +10,11 @@ name: ctqw-hardware
 # Where the approval is. The credentials are meant to be ENVIRONMENT secrets of the environment "ibm-hardware",
 # not repository secrets. Every job that needs them declares that environment, so GitHub holds the job until a
 # required reviewer releases it. The job "gate" refuses to let it start unless the environment exists, has a
-# required-reviewers rule and does not let administrators bypass it. What this workflow cannot check: who the
-# reviewers are, and whether copies of the credentials exist elsewhere (as repository secrets, or outside GitHub).
+# required-reviewers rule and does not let administrators bypass it, and unless no copy of the credentials is
+# visible to a job without the environment (a repository-level copy would be readable by any workflow on any
+# branch). What this workflow cannot check: who the reviewers are, whether the person who releases a job is the
+# person who pushed it (pushes of the lead arrive under the owner's account), and whether copies of the
+# credentials exist outside GitHub.
 # The variable CTQW_GUARD set below is a guard against running the script by accident; it is not an approval.
 #
 # Pull requests, forks and other branches cannot start this workflow. Logs and artifacts are public: the scripts
@@ -56,6 +59,7 @@ jobs:
           elif [[ "$line" =~ ^submit\ ([1-5])$ ]]; then action=submit; rep="${BASH_REMATCH[1]}"
           elif [[ "$line" =~ ^submit\ ([1-5])\ attempt\ ([2-9])$ ]]; then action=submit; rep="${BASH_REMATCH[1]}"; att="${BASH_REMATCH[2]}"
           elif [[ "$line" =~ ^collect\ ([1-5])$ ]]; then action=collect; rep="${BASH_REMATCH[1]}"
+          elif [[ "$line" =~ ^locate\ ([1-5])$ ]]; then action=locate; rep="${BASH_REMATCH[1]}"
           else echo "REFUSED: the last line is not an instruction. Nothing runs."; exit 1
           fi
           {
@@ -71,6 +75,18 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
+      - name: No copy of the credentials may be readable without the environment
+        env:
+          TOKEN_VISIBLE_HERE: ${{ secrets.QISKIT_IBM_TOKEN != '' }}
+          INSTANCE_VISIBLE_HERE: ${{ secrets.QISKIT_IBM_INSTANCE != '' }}
+        run: |
+          # This job declares no environment, so it sees repository and organisation secrets only.
+          echo "key visible without the environment: $TOKEN_VISIBLE_HERE; instance visible: $INSTANCE_VISIBLE_HERE"
+          if [[ "$TOKEN_VISIBLE_HERE" != "false" || "$INSTANCE_VISIBLE_HERE" != "false" ]]; then
+            echo "REFUSED: a repository-level copy of a credential exists; any workflow could read it without approval."
+            echo "Keep the two secrets in the environment ibm-hardware only. Nothing runs."
+            exit 1
+          fi
       - name: The approval environment must exist, require a reviewer and allow no bypass
         env:
           GH_TOKEN: ${{ github.token }}
@@ -122,6 +138,7 @@ jobs:
             submit)  CTQW_GUARD="submit repetition $REP attempt $ATT" "$py" "$dir/run_hardware.py" submit "$REP" "$ATT" \
                        --out "submit-rep$REP-a$ATT.json" > stdout.txt 2> stderr.txt ;;
             collect) "$py" "$dir/run_hardware.py" collect "$REP" --out "result-rep$REP.json" > stdout.txt 2> stderr.txt ;;
+            locate)  "$py" "$dir/run_hardware.py" locate "$REP" > stdout.txt 2> stderr.txt ;;
             *)       echo "unknown action" > stdout.txt; false ;;
           esac
           rc=$?

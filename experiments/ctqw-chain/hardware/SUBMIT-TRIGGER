@@ -10,6 +10,7 @@
 #   submit N             submit repetition N (1 to 5), first attempt, to a real device
 #   submit N attempt A   resubmit repetition N after a rejection before execution (A from 2 to 9)
 #   collect N            fetch the job of repetition N (submits nothing)
+#   locate N             list the jobs the service holds for repetition N (submits nothing)
 # Anything else, including a trailing space, makes the workflow stop without doing anything.
 # Every action except "none" needs the owner's release of the job in the GitHub environment "ibm-hardware", which
 # is where the credentials live. The lead writes a line here only on the owner's explicit instruction for that line.
