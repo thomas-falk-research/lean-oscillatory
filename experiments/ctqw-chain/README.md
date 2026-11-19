@@ -15,6 +15,8 @@ owner's approval and account.
 | `simulate.py` → `simulation.json` | two more implementations that share no code with the reference (numpy state vector; Qiskit), and the noise simulation behind the tolerances |
 | `tolerance.json` | the registered tolerances, copied from `simulation.json` |
 | `analysis.py` | the registered analysis of raw counts (standard library only) |
+| `hardware/check_access.py` | a read-only access check: authenticates, reads plan, allowance and device list, compiles the registered circuits locally and estimates device time; it submits nothing. Run by `.github/workflows/ctqw-access-check.yml` when `hardware/CHECK-TRIGGER` changes on the working branch |
+| `hardware/requirements-py312.txt` | the hash-pinned Python environment of that check |
 
 Versions used on 2026-11-16, as printed by the running interpreter: Python 3.13.18, python-flint 0.9.0 (FLINT 3.6.0),
 numpy 2.5.5, qiskit 2.6.2, qiskit-aer 0.18.2.
