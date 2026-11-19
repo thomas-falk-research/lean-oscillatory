@@ -11,6 +11,13 @@ below it, and every rule is binding.
 
 ## Resume here (session 13, 2026-11-16; kept current at every checkpoint)
 
+- **Two branches (owner decision 2026-11-19, `docs/decisions/2026-11-19-next-batch-spl.md`).** The release
+  candidate v0.7.0 is the branch `claude/dreamy-ptolemy-7hs5wb` at 66a88bc (pull request 19) and is not to be
+  changed. This branch, `claude/batch-sp-leading-term`, starts from 66a88bc and carries the next batch, **SPL: the
+  one-variable stationary-phase leading term with an explicit remainder**; no pull request; rebase onto `main`
+  after v0.7.0 is published. State of the batch: the session log's last rows. Order of work: prior-art gate,
+  registered numerics, proof plan with a plan referee, statements and freeze, blind review, proofs
+  (`CONTRIBUTING.md`); no Lean proof text before the answers to the blind review are stamped.
 - **Work item (2026-11-19): release candidate v0.7.0.** All 86 pinned statements are proved; the 21 of session 13
   (batches PA, KL, FR, VC2, HW) were machine-checked as stated by the isolated replay of fafd5b8
   (`docs/replay/2026-11-19-session13-verify-all.txt`). Since then, on the owner's instruction, the tree was made
