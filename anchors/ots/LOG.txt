@@ -1,5 +1,5 @@
-# anchors/ots/LOG.txt: written by tools/ots_anchor.py check at 2026-11-16T20:04:12Z
-# 54 anchored and checked, 0 pending, 0 failed. A block time dates a manifest to within about two hours.
+# anchors/ots/LOG.txt: written by tools/ots_anchor.py check at 2026-11-19T12:50:54Z
+# 62 anchored and checked, 2 pending, 0 failed. A block time dates a manifest to within about two hours.
 # Trust: the opentimestamps library, the explorers mempool.space and blockstream.info, and the network path to them.
 20261105T203058Z-7516eb518dce manifest.a.pool.ots: OK; manifest sha256 c4e57af73da3b41e00e77e7483e44dd54e0cf5396daedfd0c11d010a980785d0; original proof sha256 a6a71fbf17a3d270adf4c9b6b024b0d1e239972f2f05c4dfaff20b44fa56966d; upgraded proof sha256 a2e27b3a770bb8327d5048f73c96690db2c8a72de34a6c8e6525b7eb6dc49eaf
     block 974708: mempool.space: match (block time 2026-11-05T20:51:13Z); blockstream.info: match (block time 2026-11-05T20:51:13Z)
@@ -109,3 +109,21 @@
     block 976159: mempool.space: match (block time 2026-11-16T17:25:24Z); blockstream.info: match (block time 2026-11-16T17:25:24Z)
 20261116T170623Z-3c97ab18ac07 manifest.b.pool.ots: OK; manifest sha256 cd636b010ee471800e3afbbd0c0fd89cec1dc0782cdd657d2b9fff9ce21e9af8; original proof sha256 59e28d24be37d1b0757a2b143159e0fa52c4378412ff98dad1ddcf15efa64f11; upgraded proof sha256 66c4863037fba85d5a895a367ae9f84631868121fcc040237f246cf3cb761831
     block 976159: mempool.space: match (block time 2026-11-16T17:25:24Z); blockstream.info: match (block time 2026-11-16T17:25:24Z)
+20261116T205833Z-0748dde3c341 manifest.a.pool.ots: OK; manifest sha256 45c0a9b6254d1f1fba9255c04b5b9ce2e4d9da526289b1779c5dc2ea9825ed1f; original proof sha256 1be488d392bbd36a8a94971ab7e84b1210115181b1df3d2142fcb6d7285360b9; upgraded proof sha256 4771d0c9132260447c8b04f9fa816fe13882cf011b284b4c9ba28c4d2cfbec2c
+    block 976187: mempool.space: match (block time 2026-11-16T21:25:57Z); blockstream.info: match (block time 2026-11-16T21:25:57Z)
+20261116T205833Z-0748dde3c341 manifest.b.pool.ots: OK; manifest sha256 45c0a9b6254d1f1fba9255c04b5b9ce2e4d9da526289b1779c5dc2ea9825ed1f; original proof sha256 46b4722b9856e9537427c795021e3522f298f66dcaf0a7c5b8006298545078ce; upgraded proof sha256 c65d0197e170d8e45a2b9858f0baefacc05143b00589a372dcb514863b8043c7
+    block 976193: mempool.space: match (block time 2026-11-16T22:33:07Z); blockstream.info: match (block time 2026-11-16T22:33:07Z)
+20261116T222541Z-5b72549117b1 manifest.a.pool.ots: OK; manifest sha256 67eba94bc192ec988e7751f0d6981413a02509e1c62e76ac6b74f8fc7f19d3d1; original proof sha256 6735187782d47c0934ae6e5e7afbd8f0fd93487960d298ad5389cb55994d0971; upgraded proof sha256 92758c3433825bad9e81718728f2b6cb48e562113b51faae2c6b97b6b212ae88
+    block 976193: mempool.space: match (block time 2026-11-16T22:33:07Z); blockstream.info: match (block time 2026-11-16T22:33:07Z)
+20261116T222541Z-5b72549117b1 manifest.b.pool.ots: OK; manifest sha256 67eba94bc192ec988e7751f0d6981413a02509e1c62e76ac6b74f8fc7f19d3d1; original proof sha256 b81733c2392e0cd65c48041489e4dcbd8ba5e5b99f63cd616d9ad0a2ebdda9a1; upgraded proof sha256 30d85967193f2b14cb932ee7f4ed62cdc97c6715b4279cf4fc64d7c3847d2978
+    block 976193: mempool.space: match (block time 2026-11-16T22:33:07Z); blockstream.info: match (block time 2026-11-16T22:33:07Z)
+20261116T225756Z-5792039264f0 manifest.a.pool.ots: OK; manifest sha256 8b3ddd1c7cdee895034e6eaf43560cbaf0097a2ef2a90c1f2487a007a841e439; original proof sha256 e72de70bf21375f96ea8b10fdf5b85c6c716ae4f24fb49c1daa969adf54bd0b8; upgraded proof sha256 056d7e28e87c04e355f7a8a321589d92ed62199f0a9af12b07131f8bf51d4e81
+    block 976199: mempool.space: match (block time 2026-11-17T00:14:13Z); blockstream.info: match (block time 2026-11-17T00:14:13Z)
+20261116T225756Z-5792039264f0 manifest.b.pool.ots: OK; manifest sha256 8b3ddd1c7cdee895034e6eaf43560cbaf0097a2ef2a90c1f2487a007a841e439; original proof sha256 d65fe7a2d931fc5786a2bd958bda6abe47e639557ef1dca05f5697631d608514; upgraded proof sha256 2cdd35f2a196c63f41e2806a2e82099cbb8e2f3046f54bfa566952232b148161
+    block 976202: mempool.space: match (block time 2026-11-17T01:08:30Z); blockstream.info: match (block time 2026-11-17T01:08:30Z)
+20261117T010311Z-a93c4e1e44f7 manifest.a.pool.ots: OK; manifest sha256 c5ff2935d6f94de67714ed4ab008eed61cd537df5c4794de272c4eceaf5d7aee; original proof sha256 f03a206c5f24190df9cd515474f48c4b5188bf26ec0db241fced632b244e51e3; upgraded proof sha256 3b1fe773b4080bdede961ca3ab5b458415ade7f8eb90799601b00eb19eaa5362
+    block 976203: mempool.space: match (block time 2026-11-17T01:16:51Z); blockstream.info: match (block time 2026-11-17T01:16:51Z)
+20261117T010311Z-a93c4e1e44f7 manifest.b.pool.ots: OK; manifest sha256 c5ff2935d6f94de67714ed4ab008eed61cd537df5c4794de272c4eceaf5d7aee; original proof sha256 4702e5cb00c9868aae2597b0a0ff181a1d1ecb60336448c5815012c0cf85ecf8; upgraded proof sha256 1f602b676bc92867c417f0f2e6f1c6c5075c600de0052cf5339bb5662e75a044
+    block 976202: mempool.space: match (block time 2026-11-17T01:08:30Z); blockstream.info: match (block time 2026-11-17T01:08:30Z)
+20261119T124850Z-9ae784e80e32 manifest.a.pool.ots: PENDING (no upgraded copy; original sha256 623ceb80245c48b1aa1817653d0b519ff4570a18df7a833fdc6978f01bab0992)
+20261119T124850Z-9ae784e80e32 manifest.b.pool.ots: PENDING (no upgraded copy; original sha256 7d588120bae35808554dcb5899b09e2b4d8d4cefd74df2eec17e773030911a42)

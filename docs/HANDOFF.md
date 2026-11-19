@@ -23,10 +23,11 @@ below it, and every rule is binding.
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
   no agent and no replay at the time of this commit. The dispatched `verify.yml` run 44497223336 on fafd5b8 ended
   with success (clean-runner replay of everything; session log).
-- **Exact next command:** read the session log's last rows. Owed, in this order: `make stamp` for the post-proof
-  answers of batches HW and VC2 (about fourteen minutes, tree frozen; then the stamp record and `make quick`);
-  `make anchors` for the stamps whose OpenTimestamps proofs were pending (2026-11-16 and later); then the next
-  statements (`docs/design/unlock-map.md`). A release is the owner's decision (`docs/policy.md`).
+- **Exact next command:** read the session log's last rows. Nothing is owed for the five batches of session 13
+  except the Bitcoin anchor of the last stamp (`20261119T124850Z-9ae784e80e32`: run `make anchors` a day or more after
+  2026-11-19). An external review by a model of another family was prepared by the owner on 2026-11-19; if its
+  reports arrive, answer them finding by finding under `review/`. Then the next statements
+  (`docs/design/unlock-map.md`). A release is the owner's decision (`docs/policy.md`).
 - **Owner decisions of 2026-11-16, done:** rules 7, 18, 20, 21, 22 (`docs/lessons.md`) with their tools
   (`tools/push_gate.py`, `tools/replay_preflight.py`, the status rule in `tools/check_docs.py`, `tools/ots_anchor.py`
   and `anchors/ots/`); draft pull request 19. **Parked by the owner on 2026-11-16:** the hardware run on IBM Quantum (Addendum 1 of
@@ -59,8 +60,8 @@ below it, and every rule is binding.
   `OscInt/Front/SecondDerivSharpFinal.lean`, consumer example `examples/consumer/ConsumerSecondDerivSharp.lean`,
   integration checks `docs/replay/2026-11-17-VC2-integration-checks.txt`. Post-proof reviews answered
   (`review/2026-11-19-VC2-post-proof-answers.md`: FAITHFUL ×4, SOUND ×4, no failing regime; no BLOCKER, no MAJOR;
-  findings against the wording of the records, corrected; not yet stamped). Left: the isolated replay of all five
-  batches and the stamp of the HW and VC2 post-proof answers. The constant is classical; the theorem is classical
+  findings against the wording of the records, corrected; stamped `stamps/20261119T124850Z-9ae784e80e32`).
+  Machine-checked as stated since the replay of fafd5b8. The constant is classical; the theorem is classical
   for f″ ≥ λ by citation only (originals unread); nothing is claimed as new.
 - **Batch HW (the Hadamard walk on the line, explicit t^{−1/3} bound; four statements HW-R, HW-K, HW-D, HW-L):** in
   the tree for its freeze (`OscInt/Statements/HadamardWalk.lean`, sanity layer, plants, challenge,
@@ -72,8 +73,8 @@ below it, and every rule is binding.
   are in the tree: **all four statements are proved in Lean** (integration checks `docs/replay/2026-11-17-HW-integration-checks.txt`;
   consumer example `examples/consumer/ConsumerHadamardWalk.lean`). Post-proof reviews answered
   (`review/2026-11-17-HW-post-proof-answers.md`: FAITHFUL ×4, SOUND ×4, no failing regime; no BLOCKER, no MAJOR;
-  findings against the records, corrected; not yet stamped). Left: the isolated replay (with PA, KL, FR), and the
-  stamp of those answers. A gap the reviews found and nobody closed: no machine-read list says which lemmas a
+  findings against the records, corrected; stamped `stamps/20261119T124850Z-9ae784e80e32`). Machine-checked as stated since
+  the replay of fafd5b8. A gap the reviews found and nobody closed: no machine-read list says which lemmas a
   proved statement depends on, so a change to a sanity lemma does not mark the rows that use it. For the next
   batch (post-proof review of VC2): planted mutations must also change every definition a statement uses, not only
   the statement texts. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
