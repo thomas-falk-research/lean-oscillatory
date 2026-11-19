@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Toolchain and pins
 
 Re-check everything on this page with `make verify-toolchain` (hashes, archive ↔ installed toolchain) and
@@ -84,7 +90,8 @@ Absent (no declaration or file matching, `grep -rE` over `Mathlib/`, 2026-11-05)
 | discrete Hardy–Littlewood–Sobolev | absent |
 
 Mathlib at the pin uses the module system (`module`, `public import`). OscInt files are plain (non-module) files;
-this works (with a build warning) and keeps theorem bodies visible to `leanexport`. Converting upstream
+this works (Lake's per-import warning is silenced by `allowNonModules = true` in `lakefile.toml`) and keeps theorem
+bodies visible to `leanexport`. Converting upstream
 candidates to module syntax is part of preparing each Mathlib PR (technical debt, `docs/upstream.md`).
 
 ## Timestamp authorities (pinned roots in `stamps/roots/`, hashes also pinned in `tools/src/bin/stamp.rs`)
@@ -96,7 +103,10 @@ candidates to module syntax is part of preparing each Mathlib PR (technical debt
 | Sectigo | http://timestamp.sectigo.com | USERTrust RSA Certification Authority (Ubuntu ca-certificates) | `8a3dbcb92ab1c6277647fe2ab8536b5c982abbfdb1f1df5728e01b906aba953a` | 2038-01-18 |
 
 OpenTimestamps: digests are submitted to the `a.pool` and `b.pool` calendars; the `.ots` files are pending proofs
-until upgraded with an OpenTimestamps client after Bitcoin confirmation.
+until upgraded with an OpenTimestamps client after Bitcoin confirmation. The stamp directories are never rewritten
+(`docs/lessons.md`, rule 21): the upgraded copies are kept under `anchors/ots/`, made and checked by `make anchors`
+(`tools/ots_anchor.py`), with the result per proof in `anchors/ots/LOG.txt`. State on 2026-11-19: 31 of the 32 stamp
+directories have upgraded copies; the proofs of `20261119T124850Z-9ae784e80e32` are still pending.
 
 ## Mathlib source build
 

@@ -107,3 +107,7 @@ mkdir -p build && lake env lean Axioms.lean > build/axioms.out
 # 2026-11-14T11:27:24Z 0 foreign Lean process(es)
 # 2026-11-14T11:28:24Z 0 foreign Lean process(es)
 # 2026-11-14T11:29:25Z 0 foreign Lean process(es)
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

@@ -131,3 +131,7 @@ so a loss of precision widens an enclosure and cannot turn a failure into a pass
   of the lead's model family. The second layer was written by an agent of the lead from the lead's reading of referee
   A's report; the lead's brief for it contained three wrong numbers, which the agent corrected (session log).
 - The plan of the proof on paper predates these reviews (`docs/statements.md`, Batch FR, "Order").
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

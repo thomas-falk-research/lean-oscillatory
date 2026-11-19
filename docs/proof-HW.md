@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Proof route for batch HW (HW-R, HW-K, HW-D, HW-L)
 
 Written by the lead on paper before the freeze of the batch (the file in the lead's scratch was last written at

@@ -21,3 +21,7 @@ Symbolic checks of a specification (not tests of a hypothesis) are recorded with
 `numerics/census/spec_checks.py` → `numerics/results-census-spec-2026-11-09.txt`, superseded on 2026-11-10 by
 `numerics/results-census-spec-2026-11-10.txt` after control K-QWZm was added before registration, and regenerated after
 the spec referees' repairs (39/39 at the frozen spec commit 61d227c; checks R4, CORPUS and M07-LINES added) (CENSUS).
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

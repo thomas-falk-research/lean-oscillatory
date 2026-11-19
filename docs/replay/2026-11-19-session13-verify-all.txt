@@ -1916,3 +1916,7 @@ PASS        stamp-verify
 PASS        statements-check
 RESULT PASS
 finished 2026-11-19T12:24:29Z rc=0 dirty=0 free=10G
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

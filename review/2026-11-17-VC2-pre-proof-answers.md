@@ -122,3 +122,7 @@ w ≤ π is certified by referee B only for w ≤ 400. *Answer:* noted in clarif
 - VC2-S rests, numerically, on floating-point searches; the truth referee's search was cut short.
 - No calibration copy was reviewed; all agents are of the lead's model family.
 - A proof on paper predates the freeze; the blind referees did not see it, the lead who wrote the statements did.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

@@ -9,9 +9,10 @@
 version = 1
 
 # Configuration, data, generated files and records of the software: Apache-2.0 (owner decision 2026-11-08).
+# NOTICE is the attribution file of section 4(d) of the Apache License 2.0; it is plain text and carries no header.
 [[annotations]]
 path = [
-  "lake-manifest.json", "lean-toolchain", "toolchain.sha256", "comparator*.json",
+  "NOTICE", "llms.txt", "lake-manifest.json", "lean-toolchain", "toolchain.sha256", "comparator*.json",
   "tools/Cargo.lock", "numerics/Cargo.lock", "numerics/results-*.txt", "numerics/census/corpus.json",
   "examples/**/lake-manifest.json", "examples/**/lean-toolchain", "examples/api/**",
   "stamps/pins.txt", "stamps/statements.json", "stamps/*/manifest.txt",
@@ -27,13 +28,16 @@ SPDX-FileCopyrightText = "2026 Thomas Falk III <research@thomas-falk-research.co
 SPDX-License-Identifier = "Apache-2.0"
 
 # Frozen challenges: the comparator checks their export's SHA-256 against the stamp, and a header would shift the source
-# positions that Lean records in each `sorry`, changing the export; they carry no comment header.
+# positions that Lean records in each `sorry`, changing the export; they carry no comment header. Since 2026-11-19
+# each ends with the fixed attribution block (docs/decisions/2026-11-19-attribution-blocks.md), which shifts nothing.
 [[annotations]]
 path = ["Challenge.lean", "Challenge/*.lean"]
 SPDX-FileCopyrightText = "2026 Thomas Falk III <research@thomas-falk-research.com>"
 SPDX-License-Identifier = "Apache-2.0"
 
-# Frozen statement files: their SHA-256 is pinned (stamps/pins.txt, `make commit`), so they carry no comment header.
+# Frozen statement files: the SHA-256 of their frozen bytes is pinned (stamps/pins.txt, `make commit`), so they carry
+# no comment header. Since 2026-11-19 each ends with the fixed attribution block, which the tools strip before
+# hashing (docs/decisions/2026-11-19-attribution-blocks.md).
 [[annotations]]
 path = "OscInt/Statements/*.lean"
 SPDX-FileCopyrightText = "2026 Thomas Falk III <research@thomas-falk-research.com>"

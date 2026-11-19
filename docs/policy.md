@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Versioning, stability and upgrade policy
 
 Adopted 2026-11-06 (session 3). Applies from v0.3.0. Changing this policy is a CHANGELOG entry.
@@ -8,7 +14,7 @@ The **stable surface** of OscInt is:
    recorded there (the SHA-256 of the statement's definitional closure, `docs/commitment-format.md`);
 2. the theorems proving them (`proved_by` in `stamps/statements.json`), whose types are syntactically the statement
    constants (`StatementTypes.lean`);
-3. the front-end theorems in `OscInt/API.lean` once that file exists (ROADMAP §2), each with a frozen statement of
+3. the front-end theorems in `OscInt/API.lean`, each with a frozen statement of
    its own.
 Everything else (`OscInt.D4.*`, `OscInt.StationaryPhase.*`, `OscInt.Blueprint.*`, auxiliary namespaces) is internal:
 it may be renamed or removed in any release. Depend on it only if you accept that.
@@ -29,10 +35,23 @@ A downstream project pins a release by commit hash and the SHA-256 of `stamps/st
 the CHANGELOG. This detects drift; what it does not detect is in README, "Depending on OscInt".
 
 ## Never in place
-A stamped statement file is never edited (lessons 10; `make commit`, `statements check`). A statement that has to
+A stamped statement file is never edited (lessons 10; `make commit`, `statements check`); the one exception is the
+fixed attribution block at its end (next section). A statement that has to
 change becomes a new constant with a new name (for example `D4LimitStatement₂` or `D4LimitLocalStatement`),
 written, stamped, pinned and blind-reviewed like any other (`CONTRIBUTING.md`). The old constant, its proof and its
 pin stay until removed under the deprecation rule.
+
+## Attribution in frozen files and records (owner decision 2026-11-19)
+
+A statement file is its frozen bytes followed by one fixed attribution block (author, licence); the frozen bytes are
+what a stamp pins and what `stamps/statements.json` records by SHA-256, so those values did not change when the
+block was added, and adding it is neither a statement change nor a re-freeze. A challenge file ends with the same
+block; its pin is the SHA-256 of its export, which a trailing comment does not change. A record (review answers,
+replay records, logs, pre-registrations, decision memos, release notes, result files) ends with an attribution block
+and is otherwise never edited. The block is a constant of the tools; a byte changed before it, in it or after it
+fails the checks. Details and what remains without a line of its own: `docs/decisions/2026-11-19-attribution-blocks.md`.
+Licences: the Zenodo record names the code licence (Apache-2.0) only, because its metadata takes one licence; the
+documentation is CC BY 4.0, as `CITATION.cff`, `codemeta.json`, `NOTICE` and the record's notes say.
 
 ## Deprecation
 A stable name is removed only after one minor release in which it is marked `@[deprecated NewName (since :=
@@ -62,7 +81,8 @@ OscInt's statement files. Procedure:
    so the statement is restated in a new file under a new name (as above) before the upgrade lands, and the old
    theorem stays available on the last release that has it.
 4. The full replay (`make verify-all`) on the upgraded tree, recorded in `docs/replay/`; then the release.
-5. A scheduled CI job (ROADMAP §3) builds against the newest Mathlib weekly and only warns; it never changes pins.
+5. Planned, not yet in place (ROADMAP §3): a scheduled CI job that builds against the newest Mathlib weekly and only
+   warns; it never changes pins.
 
 ## What a downstream project should do
 - The owner creates release tags and GitHub releases (decision 2026-11-08); a tag is created only on a `main` commit
@@ -74,11 +94,15 @@ OscInt's statement files. Procedure:
   thomas-falk-research/lean-oscillatory/.github/workflows/release-candidate.yml --source-ref refs/heads/main
   --source-digest <the commit in docs/release-notes/<tag>.commit>`; without the last three flags any workflow, ref or
   commit of the repository would be accepted.
-- Pin a release tag (in `lakefile.toml`: `rev = "v0.6.0"` under `[[require]] name = "oscint"`, README) and the
+- Pin a release tag (in `lakefile.toml`: `rev = "v0.7.0"` under `[[require]] name = "oscint"`, README) and the
   SHA-256 of `stamps/statements.json` from that release's notes (`docs/release-notes/<tag>.md`); against tampering,
   pin the full commit hash recorded in `docs/release-notes/<tag>.commit` instead of the tag name.
 - Run `python3 .lake/packages/oscint/tools/oscint_check.py --statement <each statement you use> --expect-sha256 <pin>`
-  in CI (add `--commitments` to recompute the commitments; it takes a few minutes).
+  in CI. The full check, with kernel replay and recomputed commitments, is the default and takes about 20 minutes;
+  `--fast` skips both and reports PARTIAL, never PASS. Use the checker of the release you depend on: from v0.7.0 a
+  statement file ends with a fixed attribution block and the recorded SHA-256 is of the bytes before it, so a
+  checker copied from v0.6.0 or earlier reports every statement file of a later release as edited
+  (`docs/decisions/2026-11-19-attribution-blocks.md`).
 - Use the theorems listed as `proved_by`, not internal lemmas; or accept that internal names can change in a patch.
 - On an OscInt upgrade, read the CHANGELOG's "Statement changes" section before updating the pin.
 

@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Referee calibration
 
 Purpose: measure how often a fresh-context AI statement referee, given a statement-review prompt (`review/prompts/calibration-r1.md`, `-r2.md`; the real reviews use

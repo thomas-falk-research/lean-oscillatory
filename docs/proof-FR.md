@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Proof route for batch FR (FR-K, FR-U, FR-S, FR-P, FC-K, FC-U, FC-P)
 
 Written by the lead on paper at 2026-11-16T20:46Z, after the statements commit 0748dde and while its stamp was being

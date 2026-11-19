@@ -1,9 +1,23 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Prior art (gate run 2026-11-05)
 
 Searched by a fresh-context search agent (sources it read are marked A) and spot-checked by the lead (L: file
 downloaded and read in this session). Nothing listed was built by us. "Not found" means PLAUSIBLE-not-novel: the
 search can miss work, notably Lean Zulip threads (the archive was not searchable from this session) and private
 repositories.
+
+The works cited on this page, with identifiers and published versions checked against Crossref, arXiv and zbMATH
+Open on 2026-11-19, are collected in `docs/references.bib` (its "annote" fields repeat how each was used). Published
+versions found there for preprints cited below: Hiary–Patel–Yang, J. Number Theory 256 (2024) 195–217; Maeda et al.
+(arXiv:1808.05714), J. Math. Soc. Japan 74(1) (2022) 217–246; Sunada–Tate, J. Funct. Anal. 262(6) (2012) 2608–2645;
+Chou (arXiv:2008.03698), Phys. Lett. A 386 (2021) 126986; Akramov et al. (arXiv:2411.14397), EPL 147(6) (2024) 62001.
+"Ikromov–Müller" without a title, in two places of the documents, may mean their 2016 book or their 2011 paper
+(J. Fourier Anal. Appl. 17(6) 1292–1332); which one was meant is not recorded.
 
 ## Verdicts
 
@@ -87,7 +101,9 @@ Found by a literature sweep of session 13 and confirmed by a second, separate re
 MEDIUM (novelty wording; no proof and no statement is affected).**
 
 E. L. Korotyaev and J. S. Møller, *Weighted estimates for the discrete Laplacian on the cubic lattice*,
-arXiv:1701.03605 (v1 13 January 2017, v2 3 May 2017; journal reference not on the arXiv page), take
+arXiv:1701.03605 (v1 13 January 2017, v2 3 May 2017; journal reference not on the arXiv page; published, by the
+Crossref record read on 2026-11-19, as *Weighted estimates for the Laplacian on the cubic lattice*, Ark. Mat. 57(2)
+(2019) 397–428, DOI 10.4310/arkiv.2019.v57.n2.a8), take
 `(Δf)(n) = ½ Σ_j (f(n + e_j) + f(n − e_j))`, whose group has the kernel `∏_j J_{n_j}(t)` up to a unimodular factor
 (their (1.26), (1.27)), and state in the proof of their Lemma 2.1: "‖e^{itΔ}f‖_∞ ⩽ C_Lan^d t^{−d/3} ‖f‖_1", with
 "C_Lan < 4/5" (Theorem 1.1(a)) "one of Landaus optimal constants" (CITED-READ: the arXiv abstract page and the first

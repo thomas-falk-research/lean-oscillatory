@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Proof route for batch A3: S5.1′ and S5.1 (uniform cusp bound t^{−3/4})
 
 Statements: `CuspBoundGenStatement` (S5.1′) and `CuspBoundStatement` (S5.1) in `OscInt/Statements/Cusp.lean`, frozen

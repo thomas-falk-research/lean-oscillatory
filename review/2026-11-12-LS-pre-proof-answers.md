@@ -89,3 +89,7 @@ Numerically:
    constant".
 5. **NIT, noted:** a gauge plant needs 2dt ∉ πℤ. At t = 0 every gauge and kernel plant is invisible. The derivative
    theorems of A2 are at t = 0, but they concern derivatives, where these are visible.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

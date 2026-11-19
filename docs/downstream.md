@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Depending on OscInt: an integration guide
 
 For a project that uses OscInt's theorems and wants to know, in CI, that it depends on exactly the reviewed
@@ -9,7 +15,7 @@ statements. Policy background: `docs/policy.md`. What the checker does not cover
 [[require]]
 name = "oscint"
 git = "https://github.com/thomas-falk-research/lean-oscillatory"
-rev = "v0.6.0"   # or the full commit hash from docs/release-notes/v0.6.0.commit (against a moved tag)
+rev = "v0.7.0"   # or the full commit hash from docs/release-notes/v0.7.0.commit (against a moved tag)
 ```
 Use OscInt's `lean-toolchain` (`leanprover/lean4:v4.35.0`); Mathlib comes with OscInt at the revision it was checked
 with. Then `lake update oscint && lake exe cache get && lake build`.
@@ -25,7 +31,8 @@ lake build OscInt Blueprint     # the checker replays every OscInt and Blueprint
 python3 .lake/packages/oscint/tools/oscint_check.py \
   --statement OscInt.Statements.FoldOnStatement \
   --expect-sha256 <SHA-256 of stamps/statements.json from docs/release-notes/<tag>.md>
-# add --commitments to recompute the statement commitments (minutes)
+# the kernel replay and the recomputed commitments are part of the default run (about 20 minutes in all, README);
+# --fast (or --no-kernel, --no-commitments) skips them and reports PARTIAL, never PASS
 ```
 It fails if the statement list changed (drift), if a statement's commitment differs from the stamped one, or if the
 kernel rejects a module. Against tampering keep your own copy of `oscint_check.py` whose SHA-256 is the one in the

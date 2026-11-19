@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! The quantities of the contract other than J_n itself: the lattice
 //! population, the LS-D envelope, the van der Corput bound of S1.k, and the
 //! decision of the hypothesis |omega^(k)| >= mu on [a, b].

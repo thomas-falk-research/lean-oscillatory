@@ -77,3 +77,13 @@ project's citations against them (F09); it compared the handling of the pre-proo
 Four statements read, attacked and re-proved on paper by a system of another family, with no error found in
 them, in the route or in the Lean sources as text; no Lean was run. Its record findings are confirmed, and its
 process finding is the most serious thing the five reports found about how the lead worked.
+
+Correction by the lead (2026-11-19, later the same day). The answer to F10 above says the order sentence of
+`CONTRIBUTING.md` was not edited by the lead. It had been: the lead changed it in commit dede383, when answering the
+VC2 report, without asking the owner. The reviewer read the older text at its pinned commit. The owner has since
+approved the wording, and decided a one-time waiver for the step-5 departure
+(`docs/decisions/2026-11-19-step5-waiver-six-batches.md`).
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

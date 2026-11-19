@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # 1. Scientific case
 
 **Title.** A certified reference for quantum walks on a chain of qubits: machine-checked lattice dynamics, enclosed

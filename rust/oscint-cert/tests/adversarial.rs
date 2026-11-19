@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! Certificates built to be refused, and the few that must be accepted.
 //! The statement list used here copies the three entries of
 //! `stamps/statements.json` that the contract's kinds cite.

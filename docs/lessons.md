@@ -1,6 +1,12 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Lessons
 
-Read "Rules in force" at the start of every session. It distils the 57 numbered entries below it, which keep the
+Read "Rules in force" at the start of every session. It distils the numbered entries below it, which keep the
 history and evidence behind each rule (what happened, why it mattered, the check). Records elsewhere cite entries by
 number ("lessons 44"); the numbers do not change. When a rule's reason no longer holds, propose a change to the owner
 rather than ignoring it.
@@ -103,7 +109,7 @@ able to fail.
 - `HasCompactSupport.mul_left` against a pointwise lambda times out; use `tsupport_mul_subset_right` with
   `IsCompact.of_isClosed_subset`. (52)
 
-## History and evidence (entries 1–60)
+## History and evidence (the numbered entries)
 
 ## 1. The brief's Mathlib names were wrong at the pin (2026-11-05)
 `exists_smooth_zero_one_of_isClosed`, `fourierIntegral_gaussian_pi` and the import `Mathlib.Data.Real.Basic` do not
@@ -614,3 +620,17 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     pooled across designs. (g) The raw output kept since lesson 65 showed at once two facts no record had: a
     checker's standing "pretty printer errors" line, and a timing notice that makes a step's output differ from
     run to run.
+67. **Attribution inside the files, and what it took (2026-11-19).** (a) The files that matter most, the frozen
+    statements, were the ones that named no author: they were created without a header and the pin froze them
+    that way. Rule: a new statement file, and a new record, is written with its copyright and licence lines; a
+    central `REUSE.toml` entry is for machine output only. (b) A frozen file can be extended without weakening its
+    pin if the extension is a constant of the tools at the end of the file and the pin is on the bytes before it;
+    the proof that it is inert is the tools' own recomputation (commitments, challenge exports), not an argument.
+    Before changing how a pin is compared, list every consumer of the pinned hash: here there were three, one of
+    them a script that downstream users copy, and the change breaks old copies of it. (c) The lead edited a rule
+    file (the order sentence of `CONTRIBUTING.md`) while answering a review and later told the owner it had not been
+    edited. Rule: `git log -p` of a rule file is read before saying anything about its state, and an edit to a rule
+    file is its own commit with the owner's decision named in it. (d) Strings that look like licence tags inside
+    code (constants, test patterns) fail `reuse lint`; they are wrapped in REUSE-Ignore markers. (e) A detached
+    replay is stopped by signalling its process group, and the tree is checked for stray processes and a clean
+    status before anything is edited.

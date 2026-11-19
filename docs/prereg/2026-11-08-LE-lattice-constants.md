@@ -62,3 +62,7 @@ integrand's Fourier coefficients on the nonzero dual-lattice points `h₁ + F₂
 have length about `√N ≈ 350`, far beyond the frequencies `|h| ≲ t + |x| + 40 ≤ 75` that carry non-negligible weight
 for the registered `(t, x)`. The 1D factors on the right of (d) stay Q1. Tolerance unchanged (`1e−9`); everything else
 unchanged.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

@@ -151,3 +151,7 @@ So no remainder bound C‖A‖_{C²} t^{−2} can hold.
    tool and version, and never to list an AI tool as an author or credit it. So the S5.1′ route is recorded as an
    AI-use disclosure in `docs/prior_art.md`: OpenAI ChatGPT 6, version as given by the owner. The eventual STATUS row
    and proof files will carry the same disclosure.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

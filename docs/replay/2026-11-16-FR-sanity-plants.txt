@@ -133,3 +133,7 @@ ok-FC-P-b: accepted (want accepted)
 plant-FC-P-b: rejected (recorded)
     first error: plant-FC-P-b.lean:181:2: error: Type mismatch: After simplification, term
   FC-P-b [wall term e^{−(x+y)η} dropped]: NOT DETECTED: no witness in this layer. The copied scripts are rejected by the form of the conclusion only. At M = 1 the planted bound is not violated (scan: ‖C₁(t; 1, 1) − G(t, 0)‖ = |1 − J₀(2t)| stays below it), so M = 1 data cannot refute it. A witness needs M ≥ 2, x = y = 1 and a small t ≠ 0, e.g. M = 2, t = 1/4, η = log 16: left side ≈ 0.0304 (the image G(t, 2) at the wall), planted bound ≈ 0.0008. That needs the ring of 6 sites at t ≠ 0 (C₂(t; 1, 1) = e^{−2it} cos t) and a two-sided value of G(1/4, 0), i.e. an upper bound for Re I(1/2, 0) that the library does not have (it has the lower bound latticeKernel1_zero_freq_lower only).
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

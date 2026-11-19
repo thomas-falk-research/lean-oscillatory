@@ -23,3 +23,7 @@ disagreements: 86
   python REJECTED    rust REJECTED   : 1097
   python UNRESOLVED  rust UNRESOLVED : 7
 disagreements: 0
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

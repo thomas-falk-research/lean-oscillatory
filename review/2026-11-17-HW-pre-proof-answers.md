@@ -100,3 +100,7 @@ be true: CONJECTURED, numerical evidence only (exact recursion in floating point
 - Where HW-D and HW-L have content (t ≥ 59 320) the truth review is floating point only.
 - No calibration copy was reviewed; all agents are of the lead's model family.
 - The proof plan on paper predates the freeze and its constants are the statement's constants.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

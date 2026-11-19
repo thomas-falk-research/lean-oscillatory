@@ -36,3 +36,7 @@ Location of the first error of each plant (reading of the .out files):
 - quad, plant (b): accepted (quadPhase is smooth on ℝ^2). This is the gap b2 recorded; globalNondeg_local closes it.
 Not covered: C^4 ↦ C^5 (still rejected only by brittleness: localPhase is C^∞ on U), and weakening plants (structural
 limit of the conditional form, lessons 33).
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

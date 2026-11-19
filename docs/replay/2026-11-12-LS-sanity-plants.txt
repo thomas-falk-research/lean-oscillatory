@@ -92,3 +92,7 @@ witness-K-plus: accepted (want accepted)
 #   (C*/(2π))² · 8^(-2/3) ≈ 0.598. The planted statement gives only min{1, (C*/(2π))² · 8^0} = min{1, 2.394} = 1, which
 #   does not imply 0.598. So the rejection is semantic (the plant is weaker), not a script-step failure; unlike
 #   D-rate, D-const-half and Dp-rate, whose planted bounds are at most the frozen ones on this datum.
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

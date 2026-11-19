@@ -53,3 +53,7 @@ qwz_decay (protocol docs/prereg/2026-11-08-VV-qwz-decay.md); N = 1024, f64
 control L slope -0.67308 outside [-0.92, -0.75]: distinguished (good)
 control S slope -0.40342 outside [-0.92, -0.75]: distinguished (good)
 OVERALL: NOT PASS (see above)
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

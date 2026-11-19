@@ -122,3 +122,7 @@ are added; the thinner strip is detected by a compiled witness in the second run
 - Still not detected by a compiled witness, on the record: the "− 1" of PA-T (A3; refuted at L2 by referee B) and
   the coefficient of |t| in LC-1 (A4). Differentiability on a thinner strip, which the lead expected to stay
   undetected, is detected: the sanity agent found an exact datum (`e^{iz}` on |Im z| < 1, extended by 0).
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

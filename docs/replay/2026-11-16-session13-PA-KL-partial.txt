@@ -210,3 +210,7 @@ comparator: comparator-GD.json accepted against stamps/20261108T094842Z-edf7787a
 comparator: comparator-HC.json accepted against stamps/20261112T120616Z-c56beb57ff8c
 comparator: comparator-KL.json accepted against stamps/20261116T130956Z-276d8d7f9605
 comparator: comparator-LE.json accepted against stamps/20261108T160847Z-4a183530559f
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

@@ -1,10 +1,14 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
 [package]
 name = "oscint-cert"
 version = "0.2.0"
 edition = "2021"
 rust-version = "1.79"
 description = "Independent checker for OscInt certificates (contract 0.1, revision 3), exact rational interval arithmetic only"
-license = "MIT OR Apache-2.0"
+license = "Apache-2.0"
 publish = false
 
 [[bin]]

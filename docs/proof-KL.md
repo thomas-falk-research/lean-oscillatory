@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Proof route for batch KL (KL-D, KL-C, KL-F)
 
 Written by the lead on paper before the blind pre-proof reviews were answered and kept outside the repository until

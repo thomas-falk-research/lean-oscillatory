@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Adoption and outreach: prepared for the owner (nothing here has been submitted)
 
 Every item below is a draft. The owner decides whether, when and where to submit it. Facts in the drafts point at
@@ -7,7 +13,7 @@ evidence in this repository; re-check `docs/STATUS.md` before posting, since sta
 Reservoir (the Lean package index) lists packages from GitHub that build with Lake and carry a licence; an
 inclusion step is on the Reservoir side (see its documentation at the time of submission; not checked from this
 session). What OscInt already has: `lakefile.toml` with `name = "oscint"` and a `version`, an Apache-2.0 `LICENSE`,
-tagged releases (`v0.2.0` to `v0.4.0`; `v0.5.0` prepared), a README section on depending on the package, and `examples/consumer-release/`
+tagged releases (`v0.2.0` to `v0.6.0`), a README section on depending on the package, and `examples/consumer-release/`
 built against the tag in CI. Owner steps: follow Reservoir's current submission procedure; add the badge to README
 once listed.
 
@@ -49,7 +55,7 @@ and a PR description. No PR is opened without the owner's go (`docs/upstream.md`
    stationary-phase approximations; their hypotheses are subtle (uniformity, degenerate critical points).
 2. What is verified: the statement list (S1–S5, front ends, global decay, lattice kernels with explicit constants),
    each with its frozen text and status; what is not (dimension ≥ 3 beyond separable lattice kernels, global assembly
-   with cusps, leading terms of nondegenerate stationary phase, the lattice Schrödinger group of batch LS).
+   with cusps, leading terms of nondegenerate stationary phase).
 3. How: statement-first protocol (frozen `Prop`, timestamps, blind pre-proof review, sanity theorems through the
    statement constants with planted controls), proof campaigns with parallel agents on blueprint interfaces, the
    trust chain (axiom audit, statement-type check, comparator, multi-kernel replay, commitments), and the downstream

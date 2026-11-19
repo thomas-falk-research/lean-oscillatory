@@ -29,3 +29,7 @@ which is rejected; `OscInt.d4ConstantPos` then passes with 43 612 constants in i
 
 Correction 2 (2026-11-06, S4b post-proof B NIT 3): with `value? (allowOpaque := true)` the check also follows
 `opaque` values, so the "limitation" above no longer applies; the control now reports 33 forbidden constants.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

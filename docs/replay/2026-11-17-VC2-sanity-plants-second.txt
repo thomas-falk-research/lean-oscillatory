@@ -109,3 +109,7 @@ plant-P2: rejected (recorded)
     first error: plant-P2.lean:157:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
     copied scripts with an error: first layer: sevenHalves_quadratic, sevenHalves_linear, sevenHalves_neg, sevenHalves_scaled, sevenHalves_ramp; second layer: sevenHalves_smallCurv_literal, sevenHalves_largeCurv_literal, sevenHalves_quartic
   P2 [VC2-K: ampNorm ↦ |ψ(b)| + (1/2)∫|ψ′|]: NOT DETECTED: no witness attempted. At ψ = 1 the planted norm equals ampNorm, and at the ramp ψ(x) = 1 − x on [0, 1] of the first layer the planted bound is 7/4 against a left side 0.4976. A witness needs a datum where the amplitude norm bites: an amplitude with ψ(b) = 0 (a cut-off) and a certified left side above (7/2)·(1/2)·∫|ψ′| (above 1.75 when ∫|ψ′| = 1, μ = 1), which no datum of the two layers has. That the weight of ∫|ψ′| is 1 rests on the fidelity review and on the proof. The verdict does not use the rejection or acceptance of the copied scripts, which is recorded above.
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

@@ -3,7 +3,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 name = "oscint"
-version = "0.6.0"
+version = "0.7.0"
+description = "Machine-checked uniform oscillatory-integral estimates with explicit constants: van der Corput, stationary phase, fold, cusp and D4 umbilic bounds, lattice Schrödinger kernels and groups, quantum walks, the trapezoidal rule, Kusmin–Landau."
+keywords = ["analysis", "oscillatory-integrals", "stationary-phase", "van-der-corput", "dispersive-estimates", "explicit-constants", "mathlib"]
+homepage = "https://doi.org/10.5281/zenodo.24021328"
+license = "Apache-2.0"
+licenseFiles = ["LICENSE", "NOTICE"]
+readmeFile = "README.md"
 defaultTargets = ["OscInt", "Blueprint"]
 # Our files are plain (non-module) Lean files that import Mathlib, which uses the module system. The statement files
 # are stamped and cannot gain a `module` header without a re-freeze (docs/ROADMAP.md §3), so we declare the mix

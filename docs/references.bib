@@ -1,0 +1,1270 @@
+% SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+% SPDX-License-Identifier: CC-BY-4.0
+%
+% References of OscInt: the works its statements, proofs, prior-art page and planning documents cite.
+%
+% How it was built (2026-11-19): every arXiv identifier and DOI cited in the living documents was resolved at the
+% arXiv API and at Crossref (51 and 22, all resolve); an agent of the lead then read docs/prior_art.md,
+% docs/statements.md, README.md, CITATION.cff, docs/applications.md and docs/upstream.md in full, scanned the proof
+% routes and the Lean docstrings for names, looked for identifiers of the works cited without one (Crossref, zbMATH
+% Open), and compared each record with the citing sentence. Every field below comes from a fetched record unless the
+% note says NOT VERIFIED. Titles are as in the record (protect capitals as your style needs). UTF-8.
+%
+% What an entry here does NOT say: that anyone on this project read the work. The documents say how each was used
+% ("annote" repeats it): several classical sources are cited from secondary accounts and were not opened (Kershner
+% 1935/1938, Landau 1928, Kuzmin 1927, Davis 1959, Mordell 1958, Graham-Kolesnik, Duistermaat 1974, Arnol'd 1973).
+%
+% Classes: A = the mathematics of a statement or proof rests on it or follows it; B = prior art or comparison;
+% D = tools and foundations; C = context for applications and planning (design and funding pages).
+
+
+%% Class A: the mathematics of a statement or proof rests on it or follows it
+
+@misc{RoosPraveen_LeanOscillatory,
+  title = {lean-oscillatory (LeanOscillatory/VanDerCorput.lean), commit cf564e0e100e91de222a53b85b106fa9a03a0ec5},
+  url = {https://github.com/roos-j/lean-oscillatory},
+  note = {NOT VERIFIED: whole entry: GitHub API refused by this session; authors (J. Roos, M. Praveen), licence (Apache-2.0), commit and file content are as the OscInt documents state them; no Zenodo or arXiv record found},
+  annote = {S1 ported from it; anticipates S1.k (verdict ANTICIPATED; read: L, A). Zenodo relation isDerivedFrom}
+}
+
+@misc{RoosPraveen_MathlibPR39406,
+  title = {Mathlib pull request no. 39406, van der Corput's lemma},
+  url = {https://github.com/leanprover-community/mathlib4/pull/39406},
+  note = {NOT VERIFIED: whole entry: GitHub API refused by this session; title, authors and state (open, awaiting-author) are as docs/prior_art.md states them on 2026-11-05},
+  annote = {same file as the upstream repository proposed for Mathlib; ANTICIPATES S1 (read: A)}
+}
+
+@book{Stein1993,
+  author = {Stein, Elias M.},
+  title = {Harmonic Analysis: Real-Variable Methods, Orthogonality, and Oscillatory Integrals},
+  series = {Princeton Mathematical Series},
+  number = {43},
+  year = {1993},
+  publisher = {Princeton University Press},
+  address = {Princeton, NJ},
+  doi = {10.1515/9781400883929},
+  isbn = {0-691-03216-5},
+  note = {zbMATH Zbl 0821.42001; Source note: title with subtitle, series, volume 43, ISBN 0-691-03216-5 and "xiii, 695 pp." from zbMATH Zbl 0821.42001 (zbMATH adds: with the assistance of Timothy S. Murphy); DOI 10.1515/9781400883929 is the publisher e-book record (Crossref title "Harmonic Analysis (PMS-43)", type edited-book, e-ISBN 9781400883929)},
+  annote = {source of the forms and constants of S1 and S1.k (Ch. VIII 1.2, Prop. 2 and Corollary); textbook form of S2.1, S2.2 (chapter level, not re-checked against the book, API.lean)}
+}
+
+@article{TrefethenWeideman2014,
+  author = {Trefethen, Lloyd N. and Weideman, J. A. C.},
+  title = {The Exponentially Convergent Trapezoidal Rule},
+  journal = {SIAM Review},
+  volume = {56},
+  number = {3},
+  pages = {385--458},
+  year = {2014},
+  doi = {10.1137/130932132},
+  annote = {PA-T is its Theorem 3.2 (theorem statement read by two sweep agents, not by the lead; CITED-READ (theorem statements)); PA-C section 3}
+}
+
+@misc{AriasDeReyna2020,
+  author = {Arias de Reyna, J.},
+  title = {On Kuzmin-Landau Lemma},
+  year = {2020},
+  howpublished = {arXiv preprint},
+  eprint = {2002.05982},
+  archiveprefix = {arXiv},
+  primaryclass = {math.NT},
+  note = {Source note: the arXiv record gives the author as "J. Arias de Reyna"; the family name is taken to be "Arias de Reyna"; no published version found in the arXiv record or by a Crossref title search on 2026-11-19},
+  annote = {KL-D follows its Lemma 2(a); sharpness Lemma 2(b)-(d) not stated (read in full by the sweep agent, not by the lead)}
+}
+
+@misc{Elkies_Math229,
+  title = {Lecture notes for Harvard Math 229 (analytic number theory), on the Kuzmin-Landau inequality},
+  note = {NOT VERIFIED: whole entry: no identifier or URL in the documents; host not among the permitted services; author N. Elkies as the documents state},
+  annote = {KL statements follow it (two additions: either direction of monotonicity, integer shift); proof route (read in full by the sweep agent)}
+}
+
+@article{Landau1928,
+  author = {Landau, E.},
+  title = {Über eine trigonometrische Summe},
+  journal = {Nachrichten von der Gesellschaft der Wissenschaften zu Göttingen. Mathematisch-Physikalische Klasse},
+  volume = {1928},
+  pages = {21--24},
+  year = {1928},
+  note = {zbMATH JFM 54.0197.03; Source note: record from zbMATH (JFM 54.0197.03; EuDML 59254); no DOI found},
+  annote = {the sharp bound cot(pi*lambda/2) of KL-D and the proof ("Landau's (1928) as rendered by Hiary-Patel-Yang and Elkies"); original not opened}
+}
+
+@article{Kuzmin1927,
+  author = {Kuz'min, R. O.},
+  title = {On some trigonometric inequalities},
+  journal = {Leningrad, J. Soc. Phys.-Math.},
+  volume = {1},
+  pages = {233--239},
+  year = {1927},
+  note = {zbMATH JFM 53.0326.02; Source note: record from zbMATH (JFM 53.0326.02): title as translated there (zbMATH also gives "Über einige trigonometrische Ungleichungen"), language Russian, source "Leningrad, J. Soc. Phys.-Math. 1, 233-239 (1927)"; the full journal name is not in the record; identification with the paper the documents mean ("R. Kuzmin (1927)") rests on author, year and subject only},
+  annote = {attribution of the Kusmin-Landau inequality; original not opened}
+}
+
+@article{HiaryPatelYang2024,
+  author = {Hiary, Ghaith A. and Patel, Dhir and Yang, Andrew},
+  title = {An improved explicit estimate for ζ(1/2 + it)},
+  journal = {Journal of Number Theory},
+  volume = {256},
+  pages = {195--217},
+  year = {2024},
+  eprint = {2207.02366},
+  archiveprefix = {arXiv},
+  doi = {10.1016/j.jnt.2023.09.003},
+  note = {published version of arXiv:2207.02366 (latest v1)},
+  annote = {motivation of batch KL (quoted); proof of KL rendered from its section 4 (read in full by a sweep agent, not by the lead; CITED-READ abstract in unlock-map)}
+}
+
+@article{Kershner1935,
+  author = {Kershner, Richard},
+  title = {Determination of a Van Der Corput-Landau Absolute Constant},
+  journal = {American Journal of Mathematics},
+  volume = {57},
+  number = {4},
+  pages = {840--846},
+  year = {1935},
+  doi = {10.2307/2371020},
+  note = {zbMATH Zbl 0012.34801; Source note: pages 840-846 from zbMATH Zbl 0012.34801 (Crossref gives the first page only)},
+  annote = {VC2: the sharp second-derivative constant is "classical by citation"; CITED from titles, NOT READ (FOLKLORE until read)}
+}
+
+@article{Kershner1938,
+  author = {Kershner, Richard},
+  title = {Determination of a Van Der Corput Absolute Constant},
+  journal = {American Journal of Mathematics},
+  volume = {60},
+  number = {3},
+  pages = {549--554},
+  year = {1938},
+  doi = {10.2307/2371595},
+  note = {zbMATH Zbl 0019.10902; Source note: pages 549-554 from zbMATH Zbl 0019.10902 (Crossref gives the first page only)},
+  annote = {as Kershner 1935; NOT READ}
+}
+
+@article{MaedaEtAl2022,
+  author = {Maeda, Masaya and Sasaki, Hironobu and Segawa, Etsuo and Suzuki, Akito and Suzuki, Kanako},
+  title = {Dispersive estimates for quantum walks on 1D lattice},
+  journal = {Journal of the Mathematical Society of Japan},
+  volume = {74},
+  number = {1},
+  pages = {217--246},
+  year = {2022},
+  eprint = {1808.05714},
+  archiveprefix = {arXiv},
+  doi = {10.2969/jmsj/85218521},
+  note = {published version of arXiv:1808.05714 (latest v3)},
+  annote = {the route of batch HW (constant coin: division of the integral plus van der Corput); CITED-READ in LaTeX source; Prop. 4.12 of v3}
+}
+
+@article{MaedaEtAl2018,
+  author = {Maeda, Masaya and Sasaki, Hironobu and Segawa, Etsuo and Suzuki, Akito and Suzuki, Kanako},
+  title = {Scattering and inverse scattering for nonlinear quantum walks},
+  journal = {Discrete and Continuous Dynamical Systems},
+  volume = {38},
+  number = {7},
+  pages = {3687--3703},
+  year = {2018},
+  eprint = {1801.03214},
+  archiveprefix = {arXiv},
+  doi = {10.3934/dcds.2018159},
+  note = {published version of arXiv:1801.03214 (latest v2)},
+  annote = {Theorem 2.1 (2.14): the whole-walk l1-linfty estimate that HW-L makes explicit; opened by the lead 2026-11-19 (version 2)}
+}
+
+@article{StefanovKevrekidis2005,
+  author = {Stefanov, Atanas and Kevrekidis, Panayotis G},
+  title = {Asymptotic behaviour of small solutions for the discrete nonlinear Schrödinger and Klein–Gordon equations},
+  journal = {Nonlinearity},
+  volume = {18},
+  number = {4},
+  pages = {1841--1857},
+  year = {2005},
+  eprint = {nlin/0409009},
+  archiveprefix = {arXiv},
+  doi = {10.1088/0951-7715/18/4/022},
+  note = {published version of arXiv:nlin/0409009 (latest v1)},
+  annote = {LS-K kernel formula (eq. (6) of v1); rate t^{-d/3} for TdF/TdE', LS (ANTICIPATED; CITED-ABSTRACT)}
+}
+
+@article{Duistermaat1974,
+  author = {Duistermaat, J. J.},
+  title = {Oscillatory integrals, lagrange immersions and unfolding of singularities},
+  journal = {Communications on Pure and Applied Mathematics},
+  volume = {27},
+  number = {2},
+  pages = {207--281},
+  year = {1974},
+  doi = {10.1002/cpa.3160270205},
+  annote = {S5.1/S5.1' sources (uniform estimates for simple singularities; record [CR], text not read, FOLKLORE); S4 route "standard"; textbook form of S3}
+}
+
+@article{Arnold1973,
+  author = {Arnol'd, Vladimir I},
+  title = {REMARKS ON THE STATIONARY PHASE METHOD AND COXETER NUMBERS},
+  journal = {Russian Mathematical Surveys},
+  volume = {28},
+  number = {5},
+  pages = {19--48},
+  year = {1973},
+  doi = {10.1070/rm1973v028n05abeh001609},
+  note = {Source note: title in capitals as in the Crossref record},
+  annote = {S5.1 sources: oscillation index of A3; record [CR], text not read (FOLKLORE)}
+}
+
+@article{CueninIkromov2021,
+  author = {Cuenin, Jean-Claude and Ikromov, Isroil A},
+  title = {Sharp time decay estimates for the discrete Klein–Gordon equation},
+  journal = {Nonlinearity},
+  volume = {34},
+  number = {11},
+  pages = {7938--7962},
+  year = {2021},
+  eprint = {2011.12076},
+  archiveprefix = {arXiv},
+  doi = {10.1088/1361-6544/ac2b86},
+  note = {published version of arXiv:2011.12076 (latest v2)},
+  annote = {S5.1 sources: t^{-3/4} from A3 points in lattice decay (read in the sweep, arXiv version); census known answer [CR][arX]}
+}
+
+
+%% Class B: prior art and comparison
+
+@incollection{Davis1959,
+  author = {Davis, Philip J.},
+  title = {On the numerical integration of periodic analytic functions},
+  booktitle = {Numer. Approx., Proc. Sympos. Math. Res. Center, Madison, April 21-23, 1958},
+  pages = {45--59},
+  year = {1959},
+  note = {zbMATH Zbl 0084.11801; Source note: record from zbMATH Zbl 0084.11801; editor and publisher are not in the record; no DOI found},
+  annote = {history of PA-T (Trefethen-Weideman: "essentially" Davis Theorem 1); not opened}
+}
+
+@article{ChengGraham2004,
+  author = {Cheng, Yuanyou F. and Graham, Sidney W.},
+  title = {Explicit Estimates for the Riemann Zeta Function},
+  journal = {Rocky Mountain Journal of Mathematics},
+  volume = {34},
+  number = {4},
+  pages = {1261--1280},
+  year = {2004},
+  doi = {10.1216/rmjm/1181069799},
+  annote = {its Lemma 2 printed 1/(pi*theta)+1; the comparison KL corrects (quoted via Hiary-Patel-Yang; not opened by the lead)}
+}
+
+@article{Mordell1958,
+  author = {Mordell, L.},
+  title = {On the Kusmin-Landau inequality for exponential sums},
+  journal = {Acta Arithmetica},
+  volume = {4},
+  number = {1},
+  pages = {3--9},
+  year = {1958},
+  doi = {10.4064/aa-4-1-3-9},
+  annote = {named as source for KL; not opened by anyone}
+}
+
+@book{GrahamKolesnik1991,
+  author = {Graham, S. W. and Kolesnik, Grigori},
+  title = {Van der Corput's Method of Exponential Sums},
+  year = {1991},
+  publisher = {Cambridge University Press},
+  doi = {10.1017/cbo9780511661976},
+  isbn = {9780521339278, 9780511661976},
+  annote = {named as source for KL (Theorem 2.1); not opened; two secondary quotations disagree}
+}
+
+@book{Finch2003,
+  author = {Finch, Steven R.},
+  title = {Mathematical Constants},
+  year = {2003},
+  publisher = {Cambridge University Press},
+  doi = {10.1017/cbo9780511550447},
+  isbn = {9780511550447},
+  annote = {reference of OEIS A143305 for the constant 3.3643... (pp. 245-246); pages NOT read}
+}
+
+@misc{OEIS_A143305,
+  title = {OEIS A143305: Decimal expansion of van der Corput's constant},
+  url = {https://oeis.org/A143305},
+  note = {NOT VERIFIED: whole entry: oeis.org is not among the permitted services; title as docs/prior_art.md quotes it},
+  annote = {value 3.3643175781... and formula (read through its API by the lead)}
+}
+
+@article{Rogers2005,
+  author = {Rogers, Keith},
+  title = {Sharp van der Corput estimates and minimal divided differences},
+  journal = {Proceedings of the American Mathematical Society},
+  volume = {133},
+  number = {12},
+  pages = {3543--3550},
+  year = {2005},
+  eprint = {math/0311013},
+  archiveprefix = {arXiv},
+  doi = {10.1090/s0002-9939-05-07918-9},
+  note = {published version of arXiv:math/0311013 (latest v1)},
+  annote = {proves 3^{3/4}*2; preprint read by the lead (LaTeX source); published p. 3549 reported by the external reviewer, not seen by the lead}
+}
+
+@article{SunadaTate2012,
+  author = {Sunada, Toshikazu and Tate, Tatsuya},
+  title = {Asymptotic behavior of quantum walks on the line},
+  journal = {Journal of Functional Analysis},
+  volume = {262},
+  number = {6},
+  pages = {2608--2645},
+  year = {2012},
+  eprint = {1108.1878},
+  archiveprefix = {arXiv},
+  doi = {10.1016/j.jfa.2011.12.016},
+  note = {published version of arXiv:1108.1878 (latest v1)},
+  annote = {HW: asymptotics of 1D quantum walks (CITED-READ sections 1 and 3; Theorem 1.3 per the reviewer)}
+}
+
+@misc{NayakVishwanath2000,
+  author = {Ashwin Nayak and Ashvin Vishwanath},
+  title = {Quantum Walk on the Line},
+  year = {2000},
+  howpublished = {arXiv preprint},
+  eprint = {quant-ph/0010117},
+  archiveprefix = {arXiv},
+  primaryclass = {quant-ph},
+  note = {no published version found in the arXiv record or by a Crossref title search on 2026-11-19},
+  annote = {HW: the rate t^{-1/3} with sketched proofs (CITED-READ, full text)}
+}
+
+@article{CarteretRichmondTemme2005,
+  author = {Carteret, Hilary A and Richmond, Bruce and Temme, Nico M},
+  title = {Evanescence in coined quantum walks},
+  journal = {Journal of Physics A: Mathematical and General},
+  volume = {38},
+  number = {40},
+  pages = {8641--8665},
+  year = {2005},
+  doi = {10.1088/0305-4470/38/40/011},
+  annote = {HW: uniform asymptotics; found by title in zbMATH, CITED-NOT-READ}
+}
+
+@article{RichardTiedra2023,
+  author = {Richard, S. and Tiedra de Aldecoa, R.},
+  title = {Decay Estimates for Unitary Representations with Applications to Continuous- and Discrete-Time Models},
+  journal = {Annales Henri Poincaré},
+  volume = {24},
+  number = {1},
+  pages = {1--36},
+  year = {2023},
+  doi = {10.1007/s00023-022-01199-5},
+  annote = {HW: decay estimates; found by title in zbMATH, CITED-NOT-READ}
+}
+
+@article{KorotyaevMoller2019,
+  author = {Korotyaev, Evgeny L. and Møller, Jacob Schach},
+  title = {Weighted estimates for the Laplacian on the cubic lattice},
+  journal = {Arkiv för Matematik},
+  volume = {57},
+  number = {2},
+  pages = {397--428},
+  year = {2019},
+  eprint = {1701.03605},
+  archiveprefix = {arXiv},
+  doi = {10.4310/arkiv.2019.v57.n2.a8},
+  note = {Source note: the Crossref title omits the word "discrete" that the arXiv title has ("Weighted estimates for the discrete Laplacian on the cubic lattice"); the match was made by authors and title similarity 0.93, the arXiv record names no journal; published version of arXiv:1701.03605 (latest v2)},
+  annote = {an explicit, smaller constant for the lattice l1-linfty estimate is in print (CITED-READ: abstract page and first third of the HTML, verbatim)}
+}
+
+@article{Landau2000JLMS,
+  author = {Landau, L. J.},
+  title = {Bessel Functions: Monotonicity and Bounds},
+  journal = {Journal of the London Mathematical Society},
+  volume = {61},
+  number = {1},
+  pages = {197--215},
+  year = {2000},
+  doi = {10.1112/s0024610799008352},
+  annote = {best constant 0.7857 for |J_nu(x)| <= c x^{-1/3}; record checked against Crossref 2026-11-09, paper not read (abstract page only)}
+}
+
+@article{Landau2000EJDE,
+  author = {Landau, Larry},
+  title = {Monotonicity and bounds on Bessel functions},
+  journal = {Electronic Journal of Differential Equations (EJDE)},
+  volume = {2000, Conf. 04},
+  pages = {147--154},
+  year = {2000},
+  url = {https://ejde.math.txstate.edu/conf-proc/04/l1/landau.pdf},
+  note = {zbMATH Zbl 0976.33002; Source note: record from zbMATH Zbl 0976.33002 (author given there as "Landau, Larry"; EuDML 121438); no DOI; the URL is the one docs/prior_art.md gives and was not fetched},
+  annote = {survey read 2026-11-09 (inequality (10)); T6 equivalent to the classical Bessel bound}
+}
+
+@misc{DLMF,
+  title = {NIST Digital Library of Mathematical Functions, sections 10.9 (10.9.2) and 10.14 (10.14.5, 10.14.8)},
+  url = {https://dlmf.nist.gov/},
+  note = {NOT VERIFIED: whole entry: dlmf.nist.gov is not among the permitted services; no release number or date is cited in the documents},
+  annote = {Bessel integral 10.9.2 (paper identification of the lattice kernel); LC-1 compared with 10.14.5 (Siegel) and 10.14.8 (Kapteyn); not re-read by the lead}
+}
+
+@misc{Fungrim_7f3485,
+  title = {Fungrim entry 7f3485},
+  url = {https://fungrim.org/entry/7f3485/},
+  note = {NOT VERIFIED: whole entry: fungrim.org is not among the permitted services},
+  annote = {cites Landau's constant}
+}
+
+@article{Varchenko1976,
+  author = {Varchenko, A. N.},
+  title = {Newton polyhedra and estimation of oscillating integrals},
+  journal = {Functional Analysis and Its Applications},
+  volume = {10},
+  number = {3},
+  pages = {175--196},
+  year = {1976},
+  doi = {10.1007/bf01075524},
+  note = {zbMATH Zbl 0351.32011; Source note: zbMATH Zbl 0351.32011 dates the English translation 1977 (Russian original Funkts. Anal. Prilozh. 10, No. 3, 13-38 (1976)); the year given is the Crossref print date},
+  annote = {general theory [CR]; S4 prior art ("Varchenko's Newton polyhedra bounds")}
+}
+
+@article{Arnold1972,
+  author = {Arnol'd, V. I.},
+  title = {Normal forms for functions near degenerate critical points, the Weyl groups of Ak, Dk, Ek and Lagrangian singularities},
+  journal = {Functional Analysis and Its Applications},
+  volume = {6},
+  number = {4},
+  pages = {254--272},
+  year = {1972},
+  doi = {10.1007/bf01077644},
+  note = {zbMATH Zbl 0278.57011; Source note: zbMATH Zbl 0278.57011 dates the English translation 1973 (Russian original Funkts. Anal. Prilozh. 6, No. 4, 3-25 (1972)); the year given is the Crossref print date},
+  annote = {general theory [CR]}
+}
+
+@article{IkromovKempeMuller2010,
+  author = {Ikromov, Isroil A. and Kempe, Michael and Müller, Detlef},
+  title = {Estimates for maximal functions associated with hypersurfaces in ℝ3 and related problems of harmonic analysis},
+  journal = {Acta Mathematica},
+  volume = {204},
+  number = {2},
+  pages = {151--271},
+  year = {2010},
+  doi = {10.1007/s11511-010-0047-6},
+  annote = {general theory [CR]}
+}
+
+@book{IkromovMuller2016,
+  author = {Ikromov, Isroil A. and Müller, Detlef},
+  title = {Fourier Restriction for Hypersurfaces in Three Dimensions and Newton Polyhedra (AM-194)},
+  year = {2016},
+  publisher = {Princeton University Press},
+  doi = {10.1515/9781400881246},
+  isbn = {9781400881246},
+  annote = {general theory [CR]; possibly the "Ikromov-Muller" of the S5.1' row and of batch D4U (the documents do not say which work)}
+}
+
+@book{ArnoldGuseinZadeVarchenko_Vol2,
+  author = {Arnold, V.I. and Gusein-Zade, S.M. and Varchenko, A.N.},
+  title = {Singularities of Differentiable Maps, Volume 2},
+  year = {2012},
+  publisher = {Birkhäuser Boston},
+  doi = {10.1007/978-0-8176-8343-6},
+  isbn = {9780817683429, 9780817683436},
+  note = {Source note: Crossref record is the 2012 Birkhäuser reprint; subtitle and original year are not in the record; the documents cite "Singularities of Differentiable Maps II" without edition},
+  annote = {textbook form of S3, S4.1, S4.2 (chapter level, from the author's knowledge, not re-checked)}
+}
+
+@book{Hormander_ALPDO1,
+  author = {Hörmander, Lars},
+  title = {The Analysis of Linear Partial Differential Operators I},
+  series = {Classics in Mathematics},
+  year = {2003},
+  publisher = {Springer Berlin Heidelberg},
+  doi = {10.1007/978-3-642-61497-2},
+  isbn = {9783540006626, 9783642614972},
+  note = {Source note: Crossref record is the 2003 "Classics in Mathematics" printing; the documents cite "ALPDO I, section 7.7" without edition; subtitle not in the record},
+  annote = {textbook form of S2.2 (chapter level, not re-checked)}
+}
+
+@article{BorovykGoldberg2017,
+  author = {Borovyk, Vita and Goldberg, Michael},
+  title = {The Klein--Gordon equation on $\mathbb{Z}^2$ and the quantum harmonic lattice},
+  journal = {Journal de Mathématiques Pures et Appliquées},
+  volume = {107},
+  number = {6},
+  pages = {667--696},
+  year = {2017},
+  eprint = {1304.6353},
+  archiveprefix = {arXiv},
+  doi = {10.1016/j.matpur.2016.10.002},
+  note = {Source note: title mathematics transcribed from the MathML of the Crossref record; published version of arXiv:1304.6353 (latest v3)},
+  annote = {census prior art [CR][arX]; C^3-amplitude cusp estimates (reported by the reviewer, not re-read)}
+}
+
+@article{Schultz1998,
+  author = {Schultz, Pete},
+  title = {The wave equation on the lattice in two and three dimensions},
+  journal = {Communications on Pure and Applied Mathematics},
+  volume = {51},
+  number = {6},
+  pages = {663--695},
+  year = {1998},
+  doi = {10.1002/(sici)1097-0312(199806)51:6<663::aid-cpa4>3.0.co;2-5},
+  annote = {lattice wave equation [CR, not read]}
+}
+
+@misc{BiChengHua2023,
+  author = {Cheng Bi and Jiawei Cheng and Bobo Hua},
+  title = {The Wave Equation on Lattices and Oscillatory Integrals},
+  year = {2023},
+  howpublished = {arXiv preprint},
+  eprint = {2312.04130},
+  archiveprefix = {arXiv},
+  primaryclass = {math.AP},
+  note = {no published version found in the arXiv record or by a Crossref title search on 2026-11-19},
+  annote = {lattice wave equation [arX] (v3 HTML read)}
+}
+
+@article{GeHuaJiaZhou2025,
+  author = {Ge, Huabin and Hua, Bobo and Jia, Longsong and Zhou, Puchun},
+  title = {The asymptotic behavior of discrete Schrödinger equation on the hexagonal triangulation},
+  journal = {Calculus of Variations and Partial Differential Equations},
+  volume = {64},
+  number = {6},
+  pages = {176},
+  year = {2025},
+  eprint = {2412.02947},
+  archiveprefix = {arXiv},
+  doi = {10.1007/s00526-025-03026-1},
+  note = {published version of arXiv:2412.02947 (latest v2)},
+  annote = {triangular lattice [CR][arX], Lemma 4.3}
+}
+
+@misc{WanZhang2025,
+  author = {Zhiqiang Wan and Heng Zhang},
+  title = {Strichartz estimate for discrete Schrödinger equation on layered King's grid},
+  year = {2025},
+  howpublished = {arXiv preprint},
+  eprint = {2507.20142},
+  archiveprefix = {arXiv},
+  primaryclass = {math.AP},
+  note = {no published version found in the arXiv record or by a Crossref title search on 2026-11-19},
+  annote = {King's graph [arX]}
+}
+
+@article{HongTadanoYang2026,
+  author = {Hong, Younghun and Tadano, Yukihide and Yang, Changhun},
+  title = {On the dispersive estimates for the discrete Schrödinger equation on a honeycomb lattice},
+  journal = {Advances in Mathematics},
+  volume = {507},
+  pages = {111368},
+  year = {2026},
+  eprint = {2503.08996},
+  archiveprefix = {arXiv},
+  doi = {10.1016/j.aim.2026.111368},
+  note = {published version of arXiv:2503.08996 (latest v2)},
+  annote = {graphene [CR][arX]}
+}
+
+@article{ChandrasekaranEtAl2020,
+  author = {Chandrasekaran, Anirudh and Shtyk, Alex and Betouras, Joseph J. and Chamon, Claudio},
+  title = {Catastrophe theory classification of Fermi surface topological transitions in two dimensions},
+  journal = {Physical Review Research},
+  volume = {2},
+  number = {1},
+  pages = {013355},
+  year = {2020},
+  doi = {10.1103/physrevresearch.2.013355},
+  annote = {related, not the same problem [CR][arX]}
+}
+
+@article{YuanIsobeFu2019,
+  author = {Yuan, Noah F. Q. and Isobe, Hiroki and Fu, Liang},
+  title = {Magic of high-order van Hove singularity},
+  journal = {Nature Communications},
+  volume = {10},
+  number = {1},
+  pages = {5769},
+  year = {2019},
+  doi = {10.1038/s41467-019-13670-9},
+  annote = {related, not the same problem [CR][arX]}
+}
+
+@article{IgnatZuazua2009,
+  author = {Ignat, Liviu I. and Zuazua, Enrique},
+  title = {Numerical Dispersive Schemes for the Nonlinear Schrödinger Equation},
+  journal = {SIAM Journal on Numerical Analysis},
+  volume = {47},
+  number = {2},
+  pages = {1366--1390},
+  year = {2009},
+  doi = {10.1137/070683787},
+  annote = {numerical schemes [CR, abstract]}
+}
+
+@article{WatabeEtAl2008,
+  author = {Watabe, Kyohei and Kobayashi, Naoki and Katori, Makoto and Konno, Norio},
+  title = {Limit distributions of two-dimensional quantum walks},
+  journal = {Physical Review A},
+  volume = {77},
+  number = {6},
+  pages = {062331},
+  year = {2008},
+  doi = {10.1103/physreva.77.062331},
+  annote = {2D quantum walks [CR][arX], eq. (7); model of the arccos application}
+}
+
+@article{BaryshnikovEtAl2011,
+  author = {Baryshnikov, Yuliy and Brady, Wil and Bressler, Andrew and Pemantle, Robin},
+  title = {Two-dimensional Quantum Random Walk},
+  journal = {Journal of Statistical Physics},
+  volume = {142},
+  number = {1},
+  pages = {78--107},
+  year = {2011},
+  eprint = {0810.5495},
+  archiveprefix = {arXiv},
+  doi = {10.1007/s10955-010-0098-2},
+  note = {published version of arXiv:0810.5495 (latest v4)},
+  annote = {2D quantum walk caustic geometry [CR][arX]; CITED-READ abstract in unlock-map}
+}
+
+@article{Chou2021,
+  author = {Chou, Chih-Lung},
+  title = {On the exact discretization of Schrödinger equation},
+  journal = {Physics Letters A},
+  volume = {386},
+  pages = {126986},
+  year = {2021},
+  eprint = {2008.03698},
+  archiveprefix = {arXiv},
+  doi = {10.1016/j.physleta.2020.126986},
+  note = {published version of arXiv:2008.03698 (latest v1)},
+  annote = {batch FR search: "analytic papers only" (results page only, not opened)}
+}
+
+@article{AkramovEtAl2026,
+  author = {Akramov, M.E. and Yusupov, J.R. and Ehrhardt, M. and Matrasulov, D.U.},
+  title = {Transparent boundary conditions for the spatially discrete Schrödinger equation: Reflectionless quantum transport in 1D lattices},
+  journal = {Physics Letters A},
+  pages = {132381},
+  year = {2026},
+  eprint = {2608.05338},
+  archiveprefix = {arXiv},
+  doi = {10.1016/j.physleta.2026.132381},
+  note = {Source note: the Crossref record (print date 2026-11) has no volume yet; 132381 is the article number; published version of arXiv:2608.05338 (latest v1)},
+  annote = {batch FR search: "analytic papers only" (results page only, not opened)}
+}
+
+@article{AkramovEtAl2024,
+  author = {Akramov, M. and Trunk, C. and Yusupov, J. and Matrasulov, D.},
+  title = {Discrete Schrödinger equation on graphs: An effective model for branched quantum lattice},
+  journal = {Europhysics Letters},
+  volume = {147},
+  number = {6},
+  pages = {62001},
+  year = {2024},
+  eprint = {2411.14397},
+  archiveprefix = {arXiv},
+  doi = {10.1209/0295-5075/ad752e},
+  note = {published version of arXiv:2411.14397 (latest v1)},
+  annote = {batch FR search: "analytic papers only" (results page only, not opened)}
+}
+
+@misc{Eberl_AFP_Bessel,
+  title = {Bessel Functions of the First Kind (Archive of Formal Proofs, Isabelle session Bessel)},
+  note = {NOT VERIFIED: whole entry: isa-afp.org is not among the permitted services and Crossref has no record; author M. Eberl and submission date 3 July 2026 are as docs/prior_art.md states (entry page fetched by the lead 2026-11-19, theories not read)},
+  annote = {nearest formal Bessel development outside Lean (batch PA)}
+}
+
+
+%% Class D: tools and foundations
+
+@incollection{deMouraUllrich2021,
+  author = {de Moura, Leonardo and Ullrich, Sebastian},
+  title = {The Lean 4 Theorem Prover and Programming Language},
+  booktitle = {Automated Deduction – CADE 28},
+  series = {Lecture Notes in Computer Science},
+  pages = {625--635},
+  year = {2021},
+  publisher = {Springer International Publishing},
+  doi = {10.1007/978-3-030-79876-5_37},
+  note = {Source note: Crossref splits the first author as family "Moura", given "Leonardo de"},
+  annote = {the prover (Lean 4)}
+}
+
+@inproceedings{mathlib2020,
+  author = {{The mathlib Community}},
+  title = {The lean mathematical library},
+  booktitle = {Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs},
+  pages = {367--381},
+  year = {2020},
+  publisher = {ACM},
+  doi = {10.1145/3372885.3373824},
+  annote = {the library (Mathlib)}
+}
+
+@misc{Lean4_v4_35_0,
+  title = {Lean 4 toolchain, release v4.35.0},
+  url = {https://github.com/leanprover/lean4/releases/tag/v4.35.0},
+  note = {NOT VERIFIED: whole entry: GitHub API refused by this session; the pin leanprover/lean4:v4.35.0 was read in the file lean-toolchain of the copy},
+  annote = {required toolchain (Zenodo relation requires)}
+}
+
+@misc{Mathlib4_56a0058,
+  title = {Mathlib, commit 56a005855ea17e0b0958f73ec801ae140b0a1679 (tag v4.35.0 according to README.md)},
+  url = {https://github.com/leanprover-community/mathlib4/tree/56a005855ea17e0b0958f73ec801ae140b0a1679},
+  note = {NOT VERIFIED: whole entry: GitHub API refused by this session; the revision was read in lake-manifest.json of the copy; that it carries the tag v4.35.0 is the README's statement},
+  annote = {required library (Zenodo relation requires)}
+}
+
+@misc{nanoda_lib,
+  title = {nanoda_lib, commit 8de7e0c4ed3052745a7f8725164efd9e76d84c56 (crate 0.4.31)},
+  url = {https://github.com/ammkrn/nanoda_lib},
+  note = {NOT VERIFIED: whole entry: GitHub API refused by this session; commit, crate version and licence (Apache-2.0) as docs/toolchain.md states},
+  annote = {independent kernel checker built from source in CI}
+}
+
+@techreport{RFC3161,
+  author = {Adams, C. and Cain, P. and Pinkas, D. and Zuccherato, R.},
+  title = {Internet X.509 Public Key Infrastructure Time-Stamp Protocol (TSP)},
+  number = {3161},
+  year = {2001},
+  doi = {10.17487/rfc3161},
+  institution = {RFC Editor},
+  type = {Request for Comments},
+  annote = {timestamp protocol of the statement stamps}
+}
+
+@misc{CFF_1_2_0,
+  author = {Druskat, Stephan and Spaaks, Jurriaan H. and Chue Hong, Neil and Haines, Robert and Baker, James and Bliven, Spencer and others},
+  title = {Citation File Format},
+  year = {2021},
+  publisher = {Zenodo},
+  doi = {10.5281/zenodo.5171937},
+  note = {Source note: from the Zenodo record 5171937 (publication date 2021-08-09; concept DOI 10.5281/zenodo.1003149); only the first six creators were retrieved},
+  version = {1.2.0},
+  annote = {format of CITATION.cff (cff-version 1.2.0)}
+}
+
+@misc{REUSE_3_3,
+  title = {REUSE Specification, version 3.3},
+  url = {https://reuse.software/spec-3.3/},
+  note = {NOT VERIFIED: whole entry: reuse.software is not among the permitted services},
+  annote = {per-file licensing standard}
+}
+
+
+%% Class C: context for applications and planning
+
+@misc{RyneEtAl2012,
+  author = {Robert D. Ryne and Bruce Carlsten and Ji Qiang and Nikolai Yampolsky},
+  title = {A Model for One-Dimensional Coherent Synchrotron Radiation including Short-Range Effects},
+  year = {2012},
+  howpublished = {arXiv preprint},
+  eprint = {1202.2409},
+  archiveprefix = {arXiv},
+  primaryclass = {physics.acc-ph},
+  note = {no published version found in the arXiv record or by a Crossref title search on 2026-11-19},
+  annote = {planning/application context (CITED-READ abstract)}
+}
+
+@article{PeruzzoEtAl2010,
+  author = {Peruzzo, Alberto and others},
+  title = {Quantum Walks of Correlated Photons},
+  journal = {Science},
+  volume = {329},
+  number = {5998},
+  pages = {1500--1503},
+  year = {2010},
+  eprint = {1006.4764},
+  archiveprefix = {arXiv},
+  doi = {10.1126/science.1193515},
+  note = {Source note: arXiv title: "Quantum walks of correlated particles"; author list truncated here: the Crossref record has 14 authors; published version of arXiv:1006.4764 (latest v1)},
+  annote = {planning/application context (CITED-READ full text)}
+}
+
+@article{BrombergEtAl2009,
+  author = {Bromberg, Yaron and Lahini, Yoav and Morandotti, Roberto and Silberberg, Yaron},
+  title = {Quantum and Classical Correlations in Waveguide Lattices},
+  journal = {Physical Review Letters},
+  volume = {102},
+  number = {25},
+  pages = {253904},
+  year = {2009},
+  eprint = {0807.3938},
+  archiveprefix = {arXiv},
+  doi = {10.1103/physrevlett.102.253904},
+  note = {published version of arXiv:0807.3938 (latest v3)},
+  annote = {planning/application context (CITED-READ full text)}
+}
+
+@incollection{Johansson2018,
+  author = {Johansson, Fredrik},
+  title = {Numerical Integration in Arbitrary-Precision Ball Arithmetic},
+  booktitle = {Mathematical Software – ICMS 2018},
+  series = {Lecture Notes in Computer Science},
+  pages = {255--263},
+  year = {2018},
+  publisher = {Springer International Publishing},
+  eprint = {1802.07942},
+  archiveprefix = {arXiv},
+  doi = {10.1007/978-3-319-96418-8_30},
+  note = {published version of arXiv:1802.07942 (latest v1)},
+  annote = {planning/application context (CITED-READ full text)}
+}
+
+@article{EislerRacz2013,
+  author = {Eisler, Viktor and Rácz, Zoltán},
+  title = {Full Counting Statistics in a Propagating Quantum Front and Random Matrix Spectra},
+  journal = {Physical Review Letters},
+  volume = {110},
+  number = {6},
+  pages = {060602},
+  year = {2013},
+  eprint = {1211.2321},
+  archiveprefix = {arXiv},
+  doi = {10.1103/physrevlett.110.060602},
+  note = {published version of arXiv:1211.2321 (latest v2)},
+  annote = {planning/application context (CITED-READ full text)}
+}
+
+@article{KonoplyaEtAl2019,
+  author = {Konoplya, R A and Zhidenko, A and Zinhailo, A F},
+  title = {Higher order WKB formula for quasinormal modes and grey-body factors: recipes for quick and accurate calculations},
+  journal = {Classical and Quantum Gravity},
+  volume = {36},
+  number = {15},
+  pages = {155002},
+  year = {2019},
+  eprint = {1904.10333},
+  archiveprefix = {arXiv},
+  doi = {10.1088/1361-6382/ab2e25},
+  note = {published version of arXiv:1904.10333 (latest v2)},
+  annote = {planning/application context (CITED-READ abstract)}
+}
+
+@article{BarnettEtAl2019,
+  author = {Barnett, Alexander H. and Magland, Jeremy and af Klinteberg, Ludvig},
+  title = {A Parallel Nonuniform Fast Fourier Transform Library Based on an “Exponential of Semicircle" Kernel},
+  journal = {SIAM Journal on Scientific Computing},
+  volume = {41},
+  number = {5},
+  pages = {C479--C504},
+  year = {2019},
+  eprint = {1808.06736},
+  archiveprefix = {arXiv},
+  doi = {10.1137/18m120885x},
+  note = {published version of arXiv:1808.06736 (latest v2)},
+  annote = {planning/application context (CITED-READ sections 1, 4)}
+}
+
+@article{MouhotVillani2011,
+  author = {Mouhot, Clément and Villani, Cédric},
+  title = {On Landau damping},
+  journal = {Acta Mathematica},
+  volume = {207},
+  number = {1},
+  pages = {29--201},
+  year = {2011},
+  eprint = {0904.2760},
+  archiveprefix = {arXiv},
+  doi = {10.1007/s11511-011-0068-9},
+  note = {published version of arXiv:0904.2760 (latest v5)},
+  annote = {planning/application context (CITED-READ abstract)}
+}
+
+@misc{RahamanEtAl2019,
+  author = {Nasim Rahaman and Aristide Baratin and Devansh Arpit and Felix Draxler and Min Lin and Fred A. Hamprecht and Yoshua Bengio and Aaron Courville},
+  title = {On the Spectral Bias of Neural Networks},
+  year = {2018},
+  howpublished = {arXiv preprint},
+  eprint = {1806.08734},
+  archiveprefix = {arXiv},
+  primaryclass = {stat.ML},
+  note = {Source note: arXiv journal reference: ICML 2019; no Crossref record found; no published version found in the arXiv record or by a Crossref title search on 2026-11-19},
+  annote = {planning/application context (CITED-READ (relevant section))}
+}
+
+@article{YuanEtAl2018,
+  author = {Yuan, Luqi and Lin, Qian and Xiao, Meng and Fan, Shanhui},
+  title = {Synthetic dimension in photonics},
+  journal = {Optica},
+  volume = {5},
+  number = {11},
+  pages = {1396},
+  year = {2018},
+  eprint = {1807.11468},
+  archiveprefix = {arXiv},
+  doi = {10.1364/optica.5.001396},
+  note = {published version of arXiv:1807.11468 (latest v1)},
+  annote = {planning/application context (CITED-READ section II)}
+}
+
+@article{EfremidisEtAl2019,
+  author = {Efremidis, Nikolaos K. and Chen, Zhigang and Segev, Mordechai and Christodoulides, Demetrios N.},
+  title = {Airy beams and accelerating waves: an overview of recent advances},
+  journal = {Optica},
+  volume = {6},
+  number = {5},
+  pages = {686},
+  year = {2019},
+  eprint = {1904.02933},
+  archiveprefix = {arXiv},
+  doi = {10.1364/optica.6.000686},
+  note = {published version of arXiv:1904.02933 (latest v2)},
+  annote = {planning/application context (CITED-READ sections 2, 4)}
+}
+
+@article{GiulianoWeber2017,
+  author = {Giuliano, Rita and Weber, Michel},
+  title = {Approximate local limit theorems with effective rate and application to random walks in random scenery},
+  journal = {Bernoulli},
+  volume = {23},
+  number = {4B},
+  pages = {3268--3310},
+  year = {2017},
+  eprint = {1412.3980},
+  archiveprefix = {arXiv},
+  doi = {10.3150/16-bej846},
+  note = {published version of arXiv:1412.3980 (latest v1)},
+  annote = {planning/application context (CITED-READ abstract)}
+}
+
+@article{TangEtAl2018,
+  author = {Tang, Hao and others},
+  title = {Experimental two-dimensional quantum walk on a photonic chip},
+  journal = {Science Advances},
+  volume = {4},
+  number = {5},
+  pages = {eaat3174},
+  year = {2018},
+  eprint = {1704.08242},
+  archiveprefix = {arXiv},
+  doi = {10.1126/sciadv.aat3174},
+  note = {Source note: article number eaat3174 from Crossref (the arXiv journal reference prints "eaat317"); author list truncated here: the Crossref record has 13 authors; published version of arXiv:1704.08242 (latest v2)},
+  annote = {planning/application context (CITED-READ full text)}
+}
+
+@article{ChildsEtAl2021,
+  author = {Childs, Andrew M. and Su, Yuan and Tran, Minh C. and Wiebe, Nathan and Zhu, Shuchen},
+  title = {Theory of Trotter Error with Commutator Scaling},
+  journal = {Physical Review X},
+  volume = {11},
+  number = {1},
+  pages = {011020},
+  year = {2021},
+  eprint = {1912.08854},
+  archiveprefix = {arXiv},
+  doi = {10.1103/physrevx.11.011020},
+  note = {Source note: arXiv title: "A Theory of Trotter Error"; published version of arXiv:1912.08854 (latest v3)},
+  annote = {planning/application context (CITED-READ abstract)}
+}
+
+@article{GibbsHewettHuybrechs2024,
+  author = {Gibbs, A. and Hewett, D.P. and Huybrechs, D.},
+  title = {Numerical evaluation of oscillatory integrals via automated steepest descent contour deformation},
+  journal = {Journal of Computational Physics},
+  volume = {501},
+  pages = {112787},
+  year = {2024},
+  eprint = {2307.07261},
+  archiveprefix = {arXiv},
+  doi = {10.1016/j.jcp.2024.112787},
+  note = {published version of arXiv:2307.07261 (latest v2)},
+  annote = {planning/application context (CITED-READ sections 1, 4, 5)}
+}
+
+@article{LopezDodin2022,
+  author = {Lopez, N. A. and Dodin, I. Y.},
+  title = {Metaplectic geometrical optics for ray-based modeling of caustics: Theory and algorithms},
+  journal = {Physics of Plasmas},
+  volume = {29},
+  number = {5},
+  pages = {052111},
+  year = {2022},
+  eprint = {2112.07399},
+  archiveprefix = {arXiv},
+  doi = {10.1063/5.0082241},
+  note = {published version of arXiv:2112.07399 (latest v3)},
+  annote = {planning/application context (CITED-READ abstract)}
+}
+
+@article{ChenLucasYin2023,
+  author = {Chen, Chi-Fang and Lucas, Andrew and Yin, Chao},
+  title = {Speed limits and locality in many-body quantum dynamics},
+  journal = {Reports on Progress in Physics},
+  volume = {86},
+  number = {11},
+  pages = {116001},
+  year = {2023},
+  eprint = {2303.07386},
+  archiveprefix = {arXiv},
+  doi = {10.1088/1361-6633/acfaae},
+  note = {Source note: authors from the arXiv record (Crossref has family "(Anthony) Chen"); published version of arXiv:2303.07386 (latest v2)},
+  annote = {planning/application context (CITED-READ section 3.1)}
+}
+
+@article{GongEtAl2021,
+  author = {Gong, Ming and others},
+  title = {Quantum walks on a programmable two-dimensional 62-qubit superconducting processor},
+  journal = {Science},
+  volume = {372},
+  number = {6545},
+  pages = {948--952},
+  year = {2021},
+  eprint = {2102.02573},
+  archiveprefix = {arXiv},
+  doi = {10.1126/science.abg7812},
+  note = {Source note: author list truncated here: the Crossref record has 36 authors; published version of arXiv:2102.02573 (latest v3)},
+  annote = {planning/application context (CITED-READ full text)}
+}
+
+@article{Yang2024,
+  author = {Yang, Andrew},
+  title = {Explicit bounds on ζ(s) in the critical strip and a zero-free region},
+  journal = {Journal of Mathematical Analysis and Applications},
+  volume = {534},
+  number = {2},
+  pages = {128124},
+  year = {2024},
+  eprint = {2301.03165},
+  archiveprefix = {arXiv},
+  doi = {10.1016/j.jmaa.2024.128124},
+  note = {published version of arXiv:2301.03165 (latest v2)},
+  annote = {planning/application context (CITED-READ)}
+}
+
+@article{BiChengHua2026,
+  author = {Bi, Cheng and Cheng, Jiawei and Hua, Bobo},
+  title = {Sharp dispersive estimates for the wave equation on the five-dimensional lattice graph},
+  journal = {Journal of Evolution Equations},
+  volume = {26},
+  number = {2},
+  pages = {77},
+  year = {2026},
+  eprint = {2406.00949},
+  archiveprefix = {arXiv},
+  doi = {10.1007/s00028-026-01205-x},
+  note = {published version of arXiv:2406.00949 (latest v1)},
+  annote = {planning/application context (page not read (web-search summary only))}
+}
+
+@misc{TancikEtAl2020,
+  author = {Matthew Tancik and Pratul P. Srinivasan and Ben Mildenhall and Sara Fridovich-Keil and Nithin Raghavan and Utkarsh Singhal and Ravi Ramamoorthi and Jonathan T. Barron and Ren Ng},
+  title = {Fourier Features Let Networks Learn High Frequency Functions in Low Dimensional Domains},
+  year = {2020},
+  howpublished = {arXiv preprint},
+  eprint = {2006.10739},
+  archiveprefix = {arXiv},
+  primaryclass = {cs.CV},
+  note = {no published version found in the arXiv record or by a Crossref title search on 2026-11-19},
+  annote = {planning/application context (CITED-READ (relevant section))}
+}
+
+@article{ChengEtAl2021,
+  author = {Cheng, Yu and Chen, Guangzhi and Wang, Xiang‐Hua and Yang, Shunchuan},
+  title = {Investigation of numerical dispersion with time step of the FDTD methods: avoiding erroneous conclusions},
+  journal = {IET Microwaves, Antennas & Propagation},
+  volume = {15},
+  number = {7},
+  pages = {691--703},
+  year = {2021},
+  eprint = {2001.10721},
+  archiveprefix = {arXiv},
+  doi = {10.1049/mia2.12068},
+  note = {published version of arXiv:2001.10721 (latest v2)},
+  annote = {planning/application context (census spec: 3D Yee relation, eqs. (2)-(3))}
+}
+
+@misc{LiEtAl2020,
+  author = {Zongyi Li and Nikola Kovachki and Kamyar Azizzadenesheli and Burigede Liu and Kaushik Bhattacharya and Andrew Stuart and Anima Anandkumar},
+  title = {Fourier Neural Operator for Parametric Partial Differential Equations},
+  year = {2020},
+  howpublished = {arXiv preprint},
+  eprint = {2010.08895},
+  archiveprefix = {arXiv},
+  primaryclass = {cs.LG},
+  note = {no published version found in the arXiv record or by a Crossref title search on 2026-11-19},
+  annote = {planning/application context (CITED-READ (relevant section))}
+}
+
+@article{KaramlouEtAl2022,
+  author = {Karamlou, Amir H. and others},
+  title = {Quantum transport and localization in 1d and 2d tight-binding lattices},
+  journal = {npj Quantum Information},
+  volume = {8},
+  number = {1},
+  pages = {35},
+  year = {2022},
+  eprint = {2107.05035},
+  archiveprefix = {arXiv},
+  doi = {10.1038/s41534-022-00528-0},
+  note = {Source note: author list truncated here: the Crossref record has 19 authors; published version of arXiv:2107.05035 (latest v1)},
+  annote = {planning/application context (CITED-READ full text)}
+}
+
+@article{EzquiagaLoVujeva2025,
+  author = {Ezquiaga, Jose María and Lo, Rico K. L. and Vujeva, Luka},
+  title = {Diffraction around caustics in gravitational wave lensing},
+  journal = {Physical Review D},
+  volume = {112},
+  number = {4},
+  pages = {043544},
+  year = {2025},
+  eprint = {2503.22648},
+  archiveprefix = {arXiv},
+  doi = {10.1103/tkk2-x9st},
+  note = {published version of arXiv:2503.22648 (latest v2)},
+  annote = {planning/application context (CITED-READ abstract)}
+}
+
+@article{MaringEtAl2024,
+  author = {Maring, Nicolas and others},
+  title = {A versatile single-photon-based quantum computing platform},
+  journal = {Nature Photonics},
+  volume = {18},
+  number = {6},
+  pages = {603--609},
+  year = {2024},
+  eprint = {2306.00874},
+  archiveprefix = {arXiv},
+  doi = {10.1038/s41566-024-01403-4},
+  note = {Source note: published under another title than the arXiv preprint ("A general-purpose single-photon-based quantum computing platform"); matched by the author list; author list truncated here: the Crossref record has 29 authors; published version of arXiv:2306.00874 (latest v1)},
+  annote = {planning/application context (CITED-READ)}
+}
+
+@misc{Revers2026,
+  author = {Michael Revers},
+  title = {A new improved explicit estimate for $ζ\left( 1/2+it\right)$},
+  year = {2026},
+  howpublished = {arXiv preprint},
+  eprint = {2602.05614},
+  archiveprefix = {arXiv},
+  primaryclass = {math.NT},
+  note = {no published version found in the arXiv record or by a Crossref title search on 2026-11-19},
+  annote = {planning/application context (CITED-READ)}
+}
+
+@article{HunyadiRaczSasvari2004,
+  author = {Hunyadi, V. and Rácz, Z. and Sasvári, L.},
+  title = {Dynamic scaling of fronts in the quantum {XX} chain},
+  journal = {Physical Review E},
+  volume = {69},
+  number = {6},
+  pages = {066103},
+  year = {2004},
+  eprint = {cond-mat/0312250},
+  archiveprefix = {arXiv},
+  doi = {10.1103/physreve.69.066103},
+  note = {Source note: title mathematics transcribed from the MathML of the Crossref record; published version of arXiv:cond-mat/0312250 (latest v1)},
+  annote = {planning/application context (CITED-READ full text)}
+}
+
+@article{DrozEtAl1999,
+  author = {Droz, Serge and Knapp, Daniel J. and Poisson, Eric and Owen, Benjamin J.},
+  title = {Gravitational waves from inspiraling compact binaries: Validity of the stationary-phase approximation to the Fourier transform},
+  journal = {Physical Review D},
+  volume = {59},
+  number = {12},
+  pages = {124016},
+  year = {1999},
+  eprint = {gr-qc/9901076},
+  archiveprefix = {arXiv},
+  doi = {10.1103/physrevd.59.124016},
+  note = {published version of arXiv:gr-qc/9901076 (latest v1)},
+  annote = {planning/application context (CITED-READ full text)}
+}
+
+@article{MoresoSerraBulashenko2025,
+  author = {Moreso Serra, Anna and Bulashenko, Oleg},
+  title = {Probing binary lens caustics with gravitational waves: A uniform approximation approach},
+  journal = {Physical Review D},
+  volume = {112},
+  number = {2},
+  pages = {024041},
+  year = {2025},
+  eprint = {2504.10128},
+  archiveprefix = {arXiv},
+  doi = {10.1103/qkvt-yp6r},
+  note = {published version of arXiv:2504.10128 (latest v3)},
+  annote = {planning/application context (CITED-READ abstract)}
+}
+
+@misc{IkromovToshpulatov2026,
+  author = {Isroil A. Ikromov and Gayrat Toshpulatov},
+  title = {Sharp estimates for the Fourier transform of surface-carried measures and maximal operators associated with hypersurfaces in $\mathbb{R}^4$ with vanishing Gaussian curvature},
+  year = {2026},
+  howpublished = {arXiv preprint},
+  eprint = {2602.18163},
+  archiveprefix = {arXiv},
+  primaryclass = {math.CA},
+  note = {no published version found in the arXiv record or by a Crossref title search on 2026-11-19},
+  annote = {planning/application context (CITED-READ)}
+}
+
+@misc{DhimanKadiriQuesadaHerrera2026,
+  author = {Natasha Dhiman and Habiba Kadiri and Emily Quesada-Herrera},
+  title = {Explicit Exponential Sum Estimates and Approximate Functional Equations for the Zeta Function},
+  year = {2026},
+  howpublished = {arXiv preprint},
+  eprint = {2609.00537},
+  archiveprefix = {arXiv},
+  primaryclass = {math.NT},
+  note = {no published version found in the arXiv record or by a Crossref title search on 2026-11-19},
+  annote = {planning/application context (CITED-READ abstract)}
+}
+
+@book{ArnoldGuseinZadeVarchenko_Vol1,
+  author = {Arnold, V.I. and Gusein-Zade, S.M. and Varchenko, A.N.},
+  title = {Singularities of Differentiable Maps, Volume 1},
+  year = {2012},
+  publisher = {Birkhäuser Boston},
+  doi = {10.1007/978-0-8176-8340-5},
+  isbn = {9780817683399, 9780817683405},
+  annote = {census spec: Arnold's names of the classes (record checked against Crossref 2026-11-09)}
+}
+
+@article{Krawczyk1969,
+  author = {Krawczyk, R.},
+  title = {Newton-Algorithmen zur Bestimmung von Nullstellen mit Fehlerschranken},
+  journal = {Computing},
+  volume = {4},
+  number = {3},
+  pages = {187--201},
+  year = {1969},
+  doi = {10.1007/bf02234767},
+  annote = {census spec: Krawczyk test}
+}
+
+@article{Richardson1969,
+  author = {Richardson, Daniel},
+  title = {Some undecidable problems involving elementary functions of a real variable},
+  journal = {Journal of Symbolic Logic},
+  volume = {33},
+  number = {4},
+  pages = {514--520},
+  year = {1969},
+  doi = {10.2307/2271358},
+  note = {Source note: year is the Crossref print date (1969-01) of J. Symbolic Logic 33(4); the citing document gives no year},
+  annote = {decision record: zero tests undecidable}
+}
+
+@article{EliassonShukla2004,
+  author = {Eliasson, B. and Shukla, P. K.},
+  title = {Theoretical and numerical studies of density modulated whistlers},
+  journal = {Geophysical Research Letters},
+  volume = {31},
+  number = {17},
+  pages = {2004GL020605},
+  year = {2004},
+  doi = {10.1029/2004gl020605},
+  note = {Source note: the documents give only "Eliasson-Shukla, GRL 31 (2004), section 2"; this is the only 2004 GRL article by exactly these two authors that Crossref returns (query.author, container filter); identification PLAUSIBLE, not confirmed against the text; the pages field is the article number of the Crossref record},
+  annote = {whistler example: model source, CITED-UNREAD by the lead (read by the external reviewer)}
+}
+
+@article{KeelTao1998,
+  author = {Keel, Markus and Tao, Terence},
+  title = {Endpoint Strichartz estimates},
+  journal = {American Journal of Mathematics},
+  volume = {120},
+  number = {5},
+  pages = {955--980},
+  year = {1998},
+  doi = {10.1353/ajm.1998.0039},
+  note = {Source note: the document says only "Keel-Tao"; identified by Crossref search for the endpoint Strichartz paper},
+  annote = {proposed application: Strichartz estimates from decay}
+}

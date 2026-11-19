@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Statement commitment format (version 1)
 
 A commitment is the SHA-256 (`sha256sum`) of a text file produced independently by

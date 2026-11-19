@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! Command line of the checker (contract, section 5).
 //!
 //!   oscint-cert check <certificate.json|-> --statements <statements.json>

@@ -147,3 +147,7 @@ The strongest case against the result, in C's words restated: every check was ma
 its own work; the sources were read second-hand or not at all; and the library's distinctive claim, that statements
 come before proofs, is here true of the Lean text and of the timestamps, not of the proof plan, and beyond git it
 is the lead's word.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

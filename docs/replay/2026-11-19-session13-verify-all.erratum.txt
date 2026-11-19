@@ -15,3 +15,7 @@ had "22 comparator jobs". It had 23: the job list of that run, read through the 
 success. The lead had counted the files `comparator-*.json` (22) and missed `comparator.json`. The body of the
 record ("All 23 comparator configurations were accepted") is right. Found by an external reviewer
 (review/2026-11-19-KL-external-review-answers.md, finding F4).
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

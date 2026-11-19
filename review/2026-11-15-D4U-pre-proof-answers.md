@@ -124,3 +124,7 @@ the sanity data reject but no witness can refute (U-not-uniform-seq, O-forall-y)
 particular a plant that drops the uniformity, the batch's content, is a true weakening and cannot be detected
 semantically by any sanity layer; uniformity is pinned by the proofs. (Counts corrected 2026-11-15 after the post-proof
 reviews; the first version counted definition-level witnesses and data-only rejections as refutations.)
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

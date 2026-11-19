@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Proof route: front-end batch 2 (C1–C9, C7′, FE-S2.1, FE-S2.2, FE-S3, FE-S4.1′)
 
 Drafted during the statement-review window in the lead's scratch directory (mathematics and Mathlib names only, no

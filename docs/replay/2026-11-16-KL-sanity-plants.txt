@@ -84,3 +84,7 @@ plant-KL-F-c: rejected (recorded)
       b - 1) = floor b - 1), and the sum is empty, with 0 <= cot(pi lam/2), otherwise. (Conversely f can be
       continued linearly beyond b with the limiting slope, so the two forms should be equivalent.) No data can
       refute it; the rejection above is of the proof script only. Reasoned in prose, not compiled.
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

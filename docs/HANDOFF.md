@@ -1,65 +1,56 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Hand-off
 
-For a reader who saw nothing. Read "Rules in force" at the top of `docs/lessons.md` first; it distils the 52 entries
+For a reader who saw nothing. Read "Rules in force" at the top of `docs/lessons.md` first; it distils the numbered entries
 below it, and every rule is binding.
 
 ## Resume here (session 13, 2026-11-16; kept current at every checkpoint)
 
-- **Work item:** batches PA and KL (six statements: PA-C, PA-T, LC-1; KL-D, KL-C, KL-F; `docs/statements.md`).
-  Frozen (stamp `stamps/20261116T130956Z-276d8d7f9605`), blind-reviewed, answers stamped
-  (`stamps/20261116T152412Z-9c9a8767b806`), routes refereed (`review/2026-11-16-PA-KL-route-answers.md`), and
-  **proved in Lean**: `OscInt.API.fourierCoeffStrip`, `trapezoidalRule`, `latticeKernel1LightCone`, `kusminLandau`,
-  `kusminLandauTwoOverPi`, `kusminLandauDeriv` (files `OscInt/Front/PeriodicAnalyticFinal.lean`,
-  `OscInt/Front/KusminLandauFinal.lean` and the parts they import; records in `docs/proof-PA.md`, `docs/proof-KL.md`,
-  "Parts as integrated").
-  Post-proof reviews answered (`review/2026-11-16-PA-KL-post-proof-answers.md`: FAITHFUL ×6, SOUND ×6, no failing
-  regime; no BLOCKER; three MAJOR against the records, answered).
-  **Machine-checked as stated** since the isolated replay of fafd5b8 on 2026-11-19 (RESULT PASS; six kernels;
-  `docs/replay/2026-11-19-session13-verify-all.txt`), together with batches FR, HW and VC2: all 86 pinned
-  statements are now machine-checked as stated. A first attempt on 2026-11-16 had died with the container
-  (`docs/replay/2026-11-16-session13-PA-KL-partial.txt`; rule 22).
-- **Last verified state:** fafd5b8: `make verify-all` RESULT PASS (2026-11-19); the commit that adds the replay record: `make quick` exit code 0
-  (time in the session log). 86 pinned statements; 86 machine-checked as stated.
-- **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
-  no agent and no replay at the time of this commit. The dispatched `verify.yml` run 44497223336 on fafd5b8 ended
-  with success (clean-runner replay of everything; session log).
-- **Exact next command:** read the session log's last rows. Nothing is owed for the five batches of session 13
-  except the Bitcoin anchor of the last stamp (`20261119T124850Z-9ae784e80e32`: run `make anchors` a day or more after
-  2026-11-19). Then the next statements (`docs/design/unlock-map.md`). A release is the owner's decision
-  (`docs/policy.md`).
-- **External review (2026-11-19, run by the owner with an AI system of another model family, one batch per
-  conversation, pinned to 9ae784e; it cannot run Lean): all five reports received and answered**
-  (`review/2026-11-19-{VC2,PA,FR,KL,HW}-external-review-answers.md`). All 21 statements: faithful, true, route
-  sound; every finding is against records, tools or process, and each was checked by the lead. What changed is in
-  lessons 64 to 66 and in `docs/STATUS.md`, paragraph "External reviews of 2026-11-19". Known flaw of the request:
-  the route pages given for the proof phase restate earlier reviews (lesson 64d).
-- **Open with the owner (asked 2026-11-19; no rule file was edited):** (1) step 5 of `CONTRIBUTING.md` was not
-  followed in six batches (D4U, PA, KL, FR, HW, VC2: sanity-layer MAJORs answered without a re-freeze, 23 rows;
-  `docs/STATUS.md`, paragraph "Step 5 in six batches"). The lead recommended a one-time waiver stated on the rows,
-  as for API3; until the owner decides, the rows carry the departure as not ratified. (2) The sentence "before
-  any proof exists" in `CONTRIBUTING.md` against the disclosed proof plans on paper that predate the freezes.
-- **Replay driver (found by the PA and KL reports): fixed and tested** (`tools/src/bin/replay.rs`: the scan can no
-  longer be switched off by a success phrase; acceptance by the checker's prefix; raw output of every step kept
-  under `build/replay/raw/`). A fail-closed rerun of the replay step on 237c5b2 passed
-  (`docs/replay/2026-11-19-lean-replay-fail-closed.txt`). **A full `make verify-all` with the corrected driver and
-  the corrected docstrings is the next replay of record: the session log says whether it was launched and how it
-  ended (a launch with no recorded finish is dead and is relaunched).** After it: record under `docs/replay/`,
-  the Replay cells and paragraphs of `docs/STATUS.md`, then `make stamp`.
-- **Owner decisions of 2026-11-16, done:** rules 7, 18, 20, 21, 22 (`docs/lessons.md`) with their tools
-  (`tools/push_gate.py`, `tools/replay_preflight.py`, the status rule in `tools/check_docs.py`, `tools/ots_anchor.py`
-  and `anchors/ots/`); draft pull request 19.
+- **Work item (2026-11-19): release candidate v0.7.0.** All 86 pinned statements are proved; the 21 of session 13
+  (batches PA, KL, FR, VC2, HW) were machine-checked as stated by the isolated replay of fafd5b8
+  (`docs/replay/2026-11-19-session13-verify-all.txt`). Since then, on the owner's instruction, the tree was made
+  ready for a release: answers to five external reviews and their corrections, a corrected replay driver, the
+  author's name and licence inside every file that can carry them (attribution blocks on the 41 frozen Lean files
+  and on 199 records), a validated bibliography (`docs/references.bib`), refreshed guides and metadata, community
+  files, and the release content of v0.7.0 (versions, `CHANGELOG.md` section, `docs/release-notes/v0.7.0.md`).
+- **Last verified state and what is running:** the session log's last rows say it (`docs/progress/2026-11-16-session13-log.md`).
+  A full `make verify-all` on the release-candidate commit is the replay of record for v0.7.0. **A launch with no
+  recorded finish is dead and is relaunched** (`tools/replay_preflight.py check` first; nothing else runs meanwhile).
+  A replay launched on 580e34d was stopped unfinished on the owner's instruction and proves nothing.
+- **Exact next command:** if the replay's record is not in `docs/replay/`: relaunch it as the log's launch row
+  says. If it is: fill the "Evidence" section of `docs/release-notes/v0.7.0.md`, update the Replay cells and the
+  paragraph "External reviews of 2026-11-19" of `docs/STATUS.md`, run `tools/release_preflight.sh 0.7.0`,
+  `make stamp` on the final commit, later `make anchors`. Publishing is the owner's: merge the pull request, dispatch
+  `release-candidate` on `main`, then `tools/publish_release.sh` (`CONTRIBUTING.md`).
+- **External review (2026-11-19; an AI system of another model family, one batch per conversation, pinned to
+  9ae784e; it cannot run Lean): all five reports answered**
+  (`review/2026-11-19-{VC2,PA,FR,KL,HW}-external-review-answers.md`). All 21 statements faithful, true, route sound;
+  every finding was against records, tools or process. Lessons 64 to 67.
+- **Owner decisions of 2026-11-19 (all recorded under `docs/decisions/`):** a one-time waiver of step 5 for six
+  batches, marked on 23 rows; the wording "before any Lean proof of it exists"; attribution blocks in frozen files
+  and records; release preparation. **For the owner, outside the repository** (the lead gave the exact text in
+  the session): GitHub private vulnerability reporting on; a Software Heritage "save code now" request; optional
+  listings (Reservoir needs two stars; Mathlib's downstream list; zbMATH Open); a funding and competing-interests
+  sentence for the README if wanted.
+- **Attribution rule from now on:** a new statement file and a new record are written with their copyright and
+  licence lines; the fixed block is only for the files that existed on 2026-11-19 (`CONTRIBUTING.md`, lessons 67).
+- **Replay driver:** fixed and tested (`tools/src/bin/replay.rs`); raw output of every step under
+  `build/replay/raw/`; the fail-closed rerun of the replay step on 237c5b2 passed
+  (`docs/replay/2026-11-19-lean-replay-fail-closed.txt`).
 - **Hardware run on IBM Quantum (pre-registration `docs/prereg/2026-11-16-CTQW-chain.md` with Addenda 1 and 2):
   built and reviewed three times, nothing submitted, nothing may be submitted without the owner's word for that
-  one instruction.** Files under `experiments/ctqw-chain/hardware/`: `run_hardware.py` (rehearse, dryrun, submit,
-  collect, locate, merge), `check_access.py`, hash-pinned `requirements-py312.txt`, a rehearsal on a fake device
-  (not data), `records/submitted.json` (empty), `SUBMIT-TRIGGER` (last line `none`). The workflow
-  `.github/workflows/ctqw-hardware.yml` runs on a push that changes `SUBMIT-TRIGGER` and refuses unless the GitHub
-  environment `ibm-hardware` exists with a required reviewer and no administrator bypass, and unless no credential
-  is visible outside that environment. Waiting on the owner: create that environment, move the two secrets into it,
-  delete the repository-level secrets. Owed by the lead before the first submission: `make stamp` of the commit
-  with the final script and Addendum 2. The access check of 2026-11-19 (plan "open", 600 s, three devices of 156
-  qubits) and every review pass are in the session log. The session's container holds the same credentials in its
-  environment; they are not to be used from here.
+  one instruction.** Files under `experiments/ctqw-chain/hardware/`; the workflow `.github/workflows/ctqw-hardware.yml`
+  runs on a push that changes `SUBMIT-TRIGGER` and refuses unless the GitHub environment `ibm-hardware` exists with a
+  required reviewer and no administrator bypass, and unless no credential is visible outside that environment.
+  Waiting on the owner: create that environment, move the two secrets into it, delete the repository-level
+  secrets. Owed by the lead before the first submission: `make stamp` of the commit with the final script and
+  Addendum 2. The session's container holds the same credentials in its environment; they are not to be used from
+  here.
 - **Batch FR (finite ring, open chain; seven statements FR-K, FR-U, FR-S, FR-P, FC-K, FC-U, FC-P):** in the tree
   for its freeze: `OscInt/Statements/FiniteRing.lean`, sanity layer `OscInt/Front/FiniteRingSanity.lean` with planted
   controls (`docs/replay/2026-11-16-FR-sanity-plants.txt`), `Challenge/FiniteRing.lean`, `comparator-FR.json`, prose in
@@ -110,10 +101,10 @@ below it, and every rule is binding.
   `docs/funding/` (the application package for the EuroHPC cut-off of 1 December 2026, 10:00 CET; the owner must
   settle eligibility and copy the portal's form fields); `docs/contract/certificate-v0.md` with the reference checker
   `python/oscint_cert/` (version 0.2.1, 32 tests pass; revision 3 of the contract; third differential run 0 of 1463); the prior-art disclosure of 2026-11-16 in `docs/prior_art.md`.
-- **Disk:** 16 GB available; a full replay needs cleaning first or it breaks the 15 GB rule.
+- **Disk:** before a full replay `tools/replay_preflight.py check` must pass (it replaced the fixed 15 GB floor).
 - **Session log:** `docs/progress/2026-11-16-session13-log.md`.
 
-## Start here (session 12, 2026-11-15)
+## Session 12 (2026-11-15; historical, superseded by "Resume here")
 
 **State.** 65 pinned statements; all 65 machine-checked as stated. The last two, batch D4U (S4.2U, S4.2O: the D4
 limit uniformly over C²-totally bounded amplitude families and over bounded linear offsets), since the isolated
@@ -147,11 +138,11 @@ detect.
    `10.5281/zenodo.24021328`), recorded in `CITATION.cff` and the README. Its post-release pins pull request
    [thomas-falk-research/lean-oscillatory#17](https://github.com/thomas-falk-research/lean-oscillatory/pull/17) is merged
    (2026-11-16T00:07:32Z, 1a71395).
-2. OpenTimestamps for both D4U stamps is pending (upgrade when the calendars confirm).
+2. OpenTimestamps for both D4U stamps: done since (upgraded copies in `anchors/ots/`).
 3. The machine's disk allowance ran out during the replay (lessons 50-style cut-off): check `df` before a replay and
-   keep at least 15 GB free.
+   keep at least 15 GB free. (Since replaced: `tools/replay_preflight.py check` must pass, lessons rule 7.)
 
-## Start here (session 11, 2026-11-14)
+## Session 11 (2026-11-14; historical, superseded by "Resume here")
 
 **State.** 63 pinned statements; all 63 are machine-checked as stated (`docs/STATUS.md`). The last four, batch LS (the
 free lattice Schrödinger group on ℓ²(ℤ^d)), were **proved in Lean** on 2026-11-14, **post-proof reviewed** (A FAITHFUL,
@@ -166,7 +157,8 @@ were drafted by an external reviewer with an AI tool (R4 packet) and made to ela
 (cb2f648). Its Zenodo version DOI is `10.5281/zenodo.24205167` (read from the Zenodo API on 2026-11-14, recorded
 in `CITATION.cff` and the README in the v0.6.0 preparation).
 
-**Release v0.6.0 is prepared** (`docs/release-notes/v0.6.0.md`, date 2026-11-15; owner decision 2026-11-14: one pull
+**Release v0.6.0** (published by the owner on 2026-11-15; at the time of this section it was prepared:
+`docs/release-notes/v0.6.0.md`; owner decision 2026-11-14: one pull
 request with the release content and the pipeline fixes of the session-11 release audit). The owner publishes, with
 the steps in those notes; publishing now goes through `tools/publish_release.sh`.
 
@@ -463,8 +455,8 @@ no licence grant from the external reviewer is recorded.
   reachable through the proxy.
 
 ## What existed at the end of session 7 (2026-11-08/09; historical)
-Since then batch A3 has added three pinned statements that are stated and reviewed but **not proved** (S1.k, S5.1,
-S5.1′): 55 pinned, 52 proved (`docs/STATUS.md`). Branch names, commits and counts below are as of session 7.
+Since then batch A3 added three pinned statements (S1.k, S5.1, S5.1′), stated and reviewed and at that time not
+proved (they were proved on 2026-11-13; today all 86 pinned statements are proved, `docs/STATUS.md`). Branch names, commits and counts below are as of session 7.
 - Lean v4.35.0, Mathlib `56a0058`. **52 pinned statements, all proved**, each with a row in `docs/STATUS.md`: S1–S4,
   front-end batches 1–3, batch GD (eight; session 6) and, new this session, **batch VT** (four: GD-C-V, GD-V, GD-F-V,
   GD-N-V, the global decay estimates for amplitudes in any complex Banach space `E : Type`, one constant for every E;
@@ -490,9 +482,10 @@ S5.1′): 55 pinned, 52 proved (`docs/STATUS.md`). Branch names, commits and cou
 1. **CONTRIBUTING step 5: decided 2026-11-09, option (iii).** One-time waivers for API3's test-layer MAJOR and LE's
    documentation-only MAJOR (recorded in the 13 STATUS rows and the answers files); step 2 amended (conditional sanity
    theorems with planted copies before the stamp); step 5 gains a clause for documentation-only MAJORs.
-2. **Releases.** v0.4.0 is published. v0.5.0 is prepared in this branch (versions, CHANGELOG section, notes with
+2. **Releases.** v0.4.0, v0.5.0 and v0.6.0 are published; the next release is the owner's decision. (As written
+   at the time: v0.5.0 is prepared in this branch (versions, CHANGELOG section, notes with
    pins; `tools/release_preflight.sh 0.5.0` passes). After the merge: Actions → `release-candidate` on `main`, then the
-   commands it prints (`docs/release-notes/v0.5.0.md`, "Publishing").
+   commands it prints (`docs/release-notes/v0.5.0.md`, "Publishing").)
 3. AI-authorship wording (adversarial finding f1 of session 6), branch protection, P5 tactic policy, discoverability.
 4. Human expert review: deferred by the owner under `docs/policy.md` (wording rule, calibration plan, triggers).
 

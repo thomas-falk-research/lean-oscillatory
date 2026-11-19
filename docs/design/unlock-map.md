@@ -1,4 +1,33 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # The unlock map (session 13, 2026-11-16)
+
+> **Status on 2026-11-19 (this box was added then; the text below it is the record of 2026-11-16 and is not edited).**
+> Since the map was written, five batches that it names or leads to were frozen and proved: 21 statements, none of
+> them in release v0.6.0. The status of each is in `docs/STATUS.md`.
+> - Section 7, item 2, with node N1: batch PA (PA-C, PA-T, LC-1).
+> - Section 7, item 3: batch KL (KL-D, KL-C, KL-F). The prior-art check P1 of section 5 is answered in
+>   `docs/prior_art.md` (batch KL).
+> - Section 7, item 6, nodes N2 and N3: batch FR (FR-K, FR-U, FR-S, FR-P; FC-K, FC-U, FC-P).
+> - Section 5, row O1: batch VC2 (VC2-S, VC2-A, VC2-N, VC2-K). The first-derivative test with its sharp constant 2
+>   (section 7, item 7) is not stated.
+> - Section 4, row F1, and the Hadamard-walk row of section 3.2: batch HW (HW-R, HW-K, HW-D, HW-L).
+> - Section 7, item 4, in experimental and unpublished form: `docs/contract/certificate-v0.md`,
+>   `python/oscint_cert/`, `rust/oscint-cert/`. Item 5: the protocol `docs/prereg/2026-11-16-CTQW-chain.md` is
+>   registered and has not been run.
+>
+> So the following parts of the text below no longer describe the repository: the count 65 in the heading of
+> section 1.1 (now 86); fact 2 under that table (no statement about a ring or a chain); "none exists" in section 1.3
+> for N1, N2 and N3; "no certificate schema yet" and the list of missing engineering nodes in section 1.2; the rung
+> L3 of chains K7 to K10 in section 2.2; "no proof assistant has it" in section 2.2 and row F5 (PA-T is proved here;
+> what the prior-art sweep found is in `docs/prior_art.md`); "(not done)" in row F1; "being checked" and "not
+> searched yet" for P1; the two ASSUMED(L4, N3) marks in section 6; the counts in rows E5 and E6.
+> Still open from section 7: item 1 (the owner's part), item 5 (the run), the sharp constant of item 7 for k = 1,
+> and items 8, 9 and 10.
 
 A graph from what OscInt can do to who could use it, ranked by value per unit of effort. It is written section by
 section and committed as each section is finished; a section that says "pending" has not been written yet.

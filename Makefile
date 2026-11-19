@@ -11,7 +11,7 @@ SKIP = mkdir -p $(B)/skipped && touch $(B)/skipped/$@
 UNSKIP = mkdir -p $(B)/skipped && rm -f $(B)/skipped/$@
 LATEST_STAMP = $(lastword $(sort $(wildcard stamps/2*/)))
 
-.PHONY: push-gate anchors api api-check docs-check stamp-preflight challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics \
+.PHONY: push-gate anchors api api-check docs-check stamp-preflight challenge-export tools tools-test verify-toolchain lean guard lean-replay commit comparator stamp stamp-verify verify-all numerics sbom \
 	quick statements statements-check release-pin entry-point
 
 tools:
@@ -89,6 +89,13 @@ anchors:
 quick: guard statements-check api-check docs-check
 	$(MAKE) --no-print-directory lean
 	$(MAKE) --no-print-directory entry-point
+
+# SPDX bill of materials: every file with its copyright text, licence and checksum (REUSE tool, `pip install reuse`).
+# Not committed (it changes with every commit); it is built for a release and attached to it
+# (docs/decisions/2026-11-19-attribution-blocks.md).
+REUSE ?= reuse
+sbom:
+	mkdir -p $(B) && $(REUSE) spdx -o $(B)/oscint.spdx && grep -c '^FileName:' $(B)/oscint.spdx
 
 # `import OscInt.API` exposes every statement and proving theorem of stamps/statements.json, and the P1 acceptance
 # example (front ends on phases given only by a formula) elaborates against the root build.

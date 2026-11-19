@@ -12,3 +12,7 @@ result, TRUE; no BLOCKER, no MAJOR. Pinned to commitment 5205ebc0… (stamp `202
 - NITs (sanity coverage of the mixed coefficients b, c; dependence of C on φ as Disc → 0; amplitudes for every δ;
   wording of the gradient absorption y ↦ y + t∇φ(0)): accepted; the mixed-coefficient check and the wording go into a
   later sanity file (the stamped file is not edited).
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

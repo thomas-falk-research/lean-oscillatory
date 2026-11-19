@@ -21,3 +21,7 @@ leanchecker OscInt.Front.HadamardWalkFinal rc=0 4s
 # leanchecker after that change, 2026-11-17T02:31:21Z:
 leanchecker OscInt.Front.HadamardWalkKernelBound rc=0 5s
 leanchecker OscInt.Front.HadamardWalkFinal rc=0 4s
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

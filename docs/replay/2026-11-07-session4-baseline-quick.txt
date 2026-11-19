@@ -83,3 +83,7 @@ GammaFree.lean: sha256sum now:
 5dc19eb4a0c065b88ff86fcec751de0c3fac869ea50321b9873e85376df1aec6  GammaFree.lean
 line in stamps/20261107T012459Z-2d5356432156/manifest.txt:
 5dc19eb4a0c065b88ff86fcec751de0c3fac869ea50321b9873e85376df1aec6  GammaFree.lean
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

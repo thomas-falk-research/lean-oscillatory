@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! Exact numbers for the checker: rationals parsed from the contract's
 //! syntax, dyadic numbers `m * 2^e` with big-integer mantissa, and closed
 //! intervals with dyadic end points and outward rounding.

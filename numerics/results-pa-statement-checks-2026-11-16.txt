@@ -8,3 +8,7 @@ C3 PA-C with pi: fails as required
 C4 PA-C with e^{-2a|k|}: fails as required
 python 3.13.18, python-flint 0.9.0, FLINT 3.6.0, 200 bits
 RESULT: PASS
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

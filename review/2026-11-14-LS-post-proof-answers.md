@@ -184,3 +184,7 @@ record). The last 15 s of the `make quick` of b4300ff (which ended at 19:56:30 a
 - **Next:** an isolated `make verify-all` of the commit that adds this file, with the watcher and the keep-alive of
   lessons 50. The four rows move to "machine-checked as stated" only if that replay passes with comparator-LS
   accepted, since no review finding remains open.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

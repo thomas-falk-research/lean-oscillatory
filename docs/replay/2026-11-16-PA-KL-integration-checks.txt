@@ -84,3 +84,7 @@ TYPE-OK OscInt.API.latticeKernel1LightCone : OscInt.Statements.LatticeKernel1Lig
 TYPE-OK OscInt.API.kusminLandau : OscInt.Statements.KusminLandauStatement
 TYPE-OK OscInt.API.kusminLandauTwoOverPi : OscInt.Statements.KusminLandauTwoOverPiStatement
 TYPE-OK OscInt.API.kusminLandauDeriv : OscInt.Statements.KusminLandauDerivStatement
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

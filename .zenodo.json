@@ -7,7 +7,7 @@
       "orcid": "0009-0001-9478-6061"
     }
   ],
-  "description": "A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates: van der Corput's lemma for every derivative order with explicit constants, non-stationary and nondegenerate stationary phase, uniform decay at fold (A2), cusp (A3) and umbilic (D4) points with the D4 leading term and its closed-form constant (also uniformly over totally bounded families of C² amplitudes and over bounded linear terms), global decay from a pointwise classification of the phase (also for amplitudes in any complex Banach space), front ends in Mathlib's idiom, and explicit bounds for the propagator kernel of the free discrete Schrödinger equation: on Z, |∫_{-π}^{π} e^{i(t cos k + ξk)} dk| ≤ 8(1 + √7)/3 · t^{-1/3} for all t > 0 and real ξ, and on Z^d the d-th power of that constant with t^{-d/3}. The library also proves, for the same equation on ℓ²(Z^d), existence and uniqueness of solutions, their kernel representation, and ℓ¹ → ℓ^∞ decay (1 + |t|)^{-d/3} with an explicit constant. The degenerate-point and global bounds are uniform over all linear terms of the phase, as dispersive estimates need. Statements are frozen, timestamped and reviewed blind before their proofs (exceptions are disclosed), and the proofs are replayed by six kernel checkers; a downstream checker verifies that a project depends on exactly the reviewed statements. Proofs and reviews are largely by AI agents; statement fidelity has been reviewed by AI referees, not yet by a human expert.",
+  "description": "A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates with explicit constants: van der Corput's lemma for every derivative order, and the second-derivative bound with its sharp constant; non-stationary and nondegenerate stationary phase; uniform decay at fold (A2), cusp (A3) and umbilic (D4) points with the D4 leading term and its closed-form constant (also uniformly over totally bounded families of C² amplitudes and over bounded linear terms); global decay from a pointwise classification of the phase (also for amplitudes in any complex Banach space); front ends in Mathlib's idiom; and explicit bounds for the propagator kernel of the free discrete Schrödinger equation: on Z, |∫_{-π}^{π} e^{i(t cos k + ξk)} dk| ≤ 8(1 + √7)/3 · t^{-1/3} for all t > 0 and real ξ, and on Z^d the d-th power of that constant with t^{-d/3}. For the same equation the library proves, on ℓ²(Z^d), existence and uniqueness of solutions, their kernel representation and ℓ¹ → ℓ^∞ decay (1 + |t|)^{-d/3} with an explicit constant, and, on a ring of N sites and on an open chain, the propagator with explicit finite-size bounds against the infinite line. It also contains the Hadamard quantum walk on the line with an explicit t^{-1/3} dispersive bound, the exponentially convergent trapezoidal rule for periodic functions analytic in a strip with the Fourier-coefficient bound behind it, and the Kusmin–Landau inequality for exponential sums in Landau's sharp form. The degenerate-point and global bounds are uniform over all linear terms of the phase, as dispersive estimates need. Statements are frozen, timestamped and reviewed blind before their Lean proofs (exceptions are disclosed), and the proofs are replayed by six kernel checkers; a downstream checker verifies that a project depends on exactly the reviewed statements. Proofs and reviews are largely by AI agents; statement fidelity has been reviewed by AI referees, among them one of a different model family, not yet by a human expert.",
   "keywords": [
     "Lean 4",
     "Mathlib",
@@ -27,24 +27,491 @@
     "MSC2020: 39A12 Discrete version of topics in analysis",
     "MSC2020: 35Q41 Time-dependent Schrödinger equations",
     "MSC2020: 68V20 Formalization of mathematics in connection with theorem provers",
-    "MSC2020: 03B35 Mechanization of proofs and logical operations"
+    "MSC2020: 03B35 Mechanization of proofs and logical operations",
+    "Kusmin–Landau inequality",
+    "exponential sums",
+    "trapezoidal rule",
+    "quantum walk",
+    "sharp constants",
+    "MSC2020: 11L07 Estimates on exponential sums",
+    "MSC2020: 65D30 Numerical integration"
   ],
   "license": "Apache-2.0",
   "language": "eng",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "related_identifiers": [
     {
       "identifier": "https://github.com/roos-j/lean-oscillatory",
-      "relation": "isDerivedFrom",
       "scheme": "url",
+      "relation": "isDerivedFrom",
       "resource_type": "software"
+    },
+    {
+      "identifier": "https://github.com/leanprover-community/mathlib4/pull/39406",
+      "scheme": "url",
+      "relation": "cites",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "10.1515/9781400883929",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-book"
+    },
+    {
+      "identifier": "10.1137/130932132",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:2002.05982",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1016/j.jnt.2023.09.003",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:2207.02366",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.2307/2371020",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.2307/2371595",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.2969/jmsj/85218521",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:1808.05714",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.3934/dcds.2018159",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:1801.03214",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1088/0951-7715/18/4/022",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:nlin/0409009",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1002/cpa.3160270205",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.1070/rm1973v028n05abeh001609",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.1088/1361-6544/ac2b86",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:2011.12076",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1216/rmjm/1181069799",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.4064/aa-4-1-3-9",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.1017/cbo9780511661976",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-book"
+    },
+    {
+      "identifier": "10.1017/cbo9780511550447",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-book"
+    },
+    {
+      "identifier": "10.1090/s0002-9939-05-07918-9",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:math/0311013",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1016/j.jfa.2011.12.016",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:1108.1878",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "arXiv:quant-ph/0010117",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1088/0305-4470/38/40/011",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.1007/s00023-022-01199-5",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.4310/arkiv.2019.v57.n2.a8",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:1701.03605",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1112/s0024610799008352",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.1007/bf01075524",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.1007/bf01077644",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.1007/s11511-010-0047-6",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.1515/9781400881246",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-book"
+    },
+    {
+      "identifier": "10.1007/978-0-8176-8343-6",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-book"
+    },
+    {
+      "identifier": "10.1007/978-3-642-61497-2",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-book"
+    },
+    {
+      "identifier": "10.1016/j.matpur.2016.10.002",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:1304.6353",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1002/(sici)1097-0312(199806)51:6<663::aid-cpa4>3.0.co;2-5",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:2312.04130",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1007/s00526-025-03026-1",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:2412.02947",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "arXiv:2507.20142",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1016/j.aim.2026.111368",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:2503.08996",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1103/physrevresearch.2.013355",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.1038/s41467-019-13670-9",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.1137/070683787",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.1103/physreva.77.062331",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "10.1007/s10955-010-0098-2",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:0810.5495",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1016/j.physleta.2020.126986",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:2008.03698",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1016/j.physleta.2026.132381",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:2608.05338",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1209/0295-5075/ad752e",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-article"
+    },
+    {
+      "identifier": "arXiv:2411.14397",
+      "scheme": "arxiv",
+      "relation": "cites",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.1007/978-3-030-79876-5_37",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-section"
+    },
+    {
+      "identifier": "10.1145/3372885.3373824",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-conferencepaper"
+    },
+    {
+      "identifier": "https://github.com/leanprover/lean4/releases/tag/v4.35.0",
+      "scheme": "url",
+      "relation": "requires",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "https://github.com/leanprover-community/mathlib4/tree/56a005855ea17e0b0958f73ec801ae140b0a1679",
+      "scheme": "url",
+      "relation": "requires",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "https://github.com/ammkrn/nanoda_lib",
+      "scheme": "url",
+      "relation": "cites",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "10.17487/rfc3161",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "publication-report"
+    },
+    {
+      "identifier": "10.5281/zenodo.5171937",
+      "scheme": "doi",
+      "relation": "cites",
+      "resource_type": "other"
+    },
+    {
+      "identifier": "0-691-03216-5",
+      "scheme": "isbn",
+      "relation": "cites",
+      "resource_type": "publication-book"
     }
   ],
-  "notes": "Code is licensed under Apache-2.0 (LICENSE); documentation under CC-BY-4.0 (LICENSE-docs); per-file licensing follows the REUSE specification 3.3 (REUSE.toml, LICENSES/). The one-dimensional van der Corput proofs are derived from roos-j/lean-oscillatory by J. Roos and M. Praveen (Apache-2.0).",
+  "notes": "Copyright 2026 Thomas Falk III. Code is licensed under Apache-2.0 (LICENSE); documentation under CC-BY-4.0 (LICENSE-docs); NOTICE gives the required attribution; per-file licensing follows the REUSE specification 3.3. The one-dimensional van der Corput proofs are derived from roos-j/lean-oscillatory by J. Roos and M. Praveen (Apache-2.0). The reference list is docs/references.bib: identifiers checked against Crossref, arXiv and zbMATH Open on 2026-11-19; several classical sources are cited from secondary accounts and were not read (the file says which). Proofs and reviews were drafted largely by AI agents under the author's direction; no human expert has reviewed the statements.",
   "references": [
-    "The mathlib Community (2020). The Lean Mathematical Library. Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs, 367–381. ACM. https://doi.org/10.1145/3372885.3373824",
-    "de Moura, L., Ullrich, S. (2021). The Lean 4 Theorem Prover and Programming Language. Automated Deduction – CADE 28 (Lecture Notes in Computer Science), 625–635. Springer. https://doi.org/10.1007/978-3-030-79876-5_37",
-    "Roos, J., Praveen, M. lean-oscillatory (software, Apache-2.0). https://github.com/roos-j/lean-oscillatory",
-    "Stein, E. M. (1993). Harmonic Analysis: Real-Variable Methods, Orthogonality, and Oscillatory Integrals. Princeton Mathematical Series 43. Princeton University Press. ISBN 0691032165"
+    "lean-oscillatory (LeanOscillatory/VanDerCorput.lean), commit cf564e0e100e91de222a53b85b106fa9a03a0ec5. https://github.com/roos-j/lean-oscillatory",
+    "Mathlib pull request no. 39406, van der Corput's lemma. https://github.com/leanprover-community/mathlib4/pull/39406",
+    "Stein, E. M. (1993). Harmonic Analysis: Real-Variable Methods, Orthogonality, and Oscillatory Integrals. Princeton Mathematical Series 43. Princeton University Press. ISBN 0-691-03216-5. https://doi.org/10.1515/9781400883929",
+    "Trefethen, L. N., Weideman, J. A. C. (2014). The Exponentially Convergent Trapezoidal Rule. SIAM Review 56(3), 385–458. https://doi.org/10.1137/130932132",
+    "Arias de Reyna, J. (2020). On Kuzmin-Landau Lemma. arXiv:2002.05982",
+    "Lecture notes for Harvard Math 229 (analytic number theory), on the Kuzmin-Landau inequality.",
+    "Landau, E. (1928). Über eine trigonometrische Summe. Nachrichten von der Gesellschaft der Wissenschaften zu Göttingen. Mathematisch-Physikalische Klasse 1928, 21–24. zbMATH JFM 54.0197.03",
+    "Kuz'min, R. O. (1927). On some trigonometric inequalities. Leningrad, J. Soc. Phys.-Math. 1, 233–239. zbMATH JFM 53.0326.02",
+    "Hiary, G. A., Patel, D., Yang, A. (2024). An improved explicit estimate for ζ(1/2 + it). Journal of Number Theory 256, 195–217. https://doi.org/10.1016/j.jnt.2023.09.003 arXiv:2207.02366",
+    "Kershner, R. (1935). Determination of a Van Der Corput-Landau Absolute Constant. American Journal of Mathematics 57(4), 840–846. https://doi.org/10.2307/2371020",
+    "Kershner, R. (1938). Determination of a Van Der Corput Absolute Constant. American Journal of Mathematics 60(3), 549–554. https://doi.org/10.2307/2371595",
+    "Maeda, M., Sasaki, H., Segawa, E., Suzuki, A., Suzuki, K. (2022). Dispersive estimates for quantum walks on 1D lattice. Journal of the Mathematical Society of Japan 74(1), 217–246. https://doi.org/10.2969/jmsj/85218521 arXiv:1808.05714",
+    "Maeda, M., Sasaki, H., Segawa, E., Suzuki, A., Suzuki, K. (2018). Scattering and inverse scattering for nonlinear quantum walks. Discrete and Continuous Dynamical Systems 38(7), 3687–3703. https://doi.org/10.3934/dcds.2018159 arXiv:1801.03214",
+    "Stefanov, A., Kevrekidis, P. G. (2005). Asymptotic behaviour of small solutions for the discrete nonlinear Schrödinger and Klein–Gordon equations. Nonlinearity 18(4), 1841–1857. https://doi.org/10.1088/0951-7715/18/4/022 arXiv:nlin/0409009",
+    "Duistermaat, J. J. (1974). Oscillatory integrals, lagrange immersions and unfolding of singularities. Communications on Pure and Applied Mathematics 27(2), 207–281. https://doi.org/10.1002/cpa.3160270205",
+    "Arnol'd, V. I. (1973). REMARKS ON THE STATIONARY PHASE METHOD AND COXETER NUMBERS. Russian Mathematical Surveys 28(5), 19–48. https://doi.org/10.1070/rm1973v028n05abeh001609",
+    "Cuenin, J.-C., Ikromov, I. A. (2021). Sharp time decay estimates for the discrete Klein–Gordon equation. Nonlinearity 34(11), 7938–7962. https://doi.org/10.1088/1361-6544/ac2b86 arXiv:2011.12076",
+    "Davis, P. J. (1959). On the numerical integration of periodic analytic functions. In: Numer. Approx., Proc. Sympos. Math. Res. Center, Madison, April 21-23, 1958, 45–59. zbMATH Zbl 0084.11801",
+    "Cheng, Y. F., Graham, S. W. (2004). Explicit Estimates for the Riemann Zeta Function. Rocky Mountain Journal of Mathematics 34(4), 1261–1280. https://doi.org/10.1216/rmjm/1181069799",
+    "Mordell, L. (1958). On the Kusmin-Landau inequality for exponential sums. Acta Arithmetica 4(1), 3–9. https://doi.org/10.4064/aa-4-1-3-9",
+    "Graham, S. W., Kolesnik, G. (1991). Van der Corput's Method of Exponential Sums. Cambridge University Press. https://doi.org/10.1017/cbo9780511661976",
+    "Finch, S. R. (2003). Mathematical Constants. Cambridge University Press. https://doi.org/10.1017/cbo9780511550447",
+    "OEIS A143305: Decimal expansion of van der Corput's constant. https://oeis.org/A143305",
+    "Rogers, K. (2005). Sharp van der Corput estimates and minimal divided differences. Proceedings of the American Mathematical Society 133(12), 3543–3550. https://doi.org/10.1090/s0002-9939-05-07918-9 arXiv:math/0311013",
+    "Sunada, T., Tate, T. (2012). Asymptotic behavior of quantum walks on the line. Journal of Functional Analysis 262(6), 2608–2645. https://doi.org/10.1016/j.jfa.2011.12.016 arXiv:1108.1878",
+    "Nayak, A., Vishwanath, A. (2000). Quantum Walk on the Line. arXiv:quant-ph/0010117",
+    "Carteret, H. A., Richmond, B., Temme, N. M. (2005). Evanescence in coined quantum walks. Journal of Physics A: Mathematical and General 38(40), 8641–8665. https://doi.org/10.1088/0305-4470/38/40/011",
+    "Richard, S., Tiedra de Aldecoa, R. (2023). Decay Estimates for Unitary Representations with Applications to Continuous- and Discrete-Time Models. Annales Henri Poincaré 24(1), 1–36. https://doi.org/10.1007/s00023-022-01199-5",
+    "Korotyaev, E. L., Møller, J. S. (2019). Weighted estimates for the Laplacian on the cubic lattice. Arkiv för Matematik 57(2), 397–428. https://doi.org/10.4310/arkiv.2019.v57.n2.a8 arXiv:1701.03605",
+    "Landau, L. J. (2000). Bessel Functions: Monotonicity and Bounds. Journal of the London Mathematical Society 61(1), 197–215. https://doi.org/10.1112/s0024610799008352",
+    "Landau, L. (2000). Monotonicity and bounds on Bessel functions. Electronic Journal of Differential Equations (EJDE) 2000, Conf. 04, 147–154. https://ejde.math.txstate.edu/conf-proc/04/l1/landau.pdf zbMATH Zbl 0976.33002",
+    "NIST Digital Library of Mathematical Functions, sections 10.9 (10.9.2) and 10.14 (10.14.5, 10.14.8). https://dlmf.nist.gov/",
+    "Fungrim entry 7f3485. https://fungrim.org/entry/7f3485/",
+    "Varchenko, A. N. (1976). Newton polyhedra and estimation of oscillating integrals. Functional Analysis and Its Applications 10(3), 175–196. https://doi.org/10.1007/bf01075524",
+    "Arnol'd, V. I. (1972). Normal forms for functions near degenerate critical points, the Weyl groups of Ak, Dk, Ek and Lagrangian singularities. Functional Analysis and Its Applications 6(4), 254–272. https://doi.org/10.1007/bf01077644",
+    "Ikromov, I. A., Kempe, M., Müller, D. (2010). Estimates for maximal functions associated with hypersurfaces in ℝ3 and related problems of harmonic analysis. Acta Mathematica 204(2), 151–271. https://doi.org/10.1007/s11511-010-0047-6",
+    "Ikromov, I. A., Müller, D. (2016). Fourier Restriction for Hypersurfaces in Three Dimensions and Newton Polyhedra (AM-194). Princeton University Press. https://doi.org/10.1515/9781400881246",
+    "Arnold, V.I., Gusein-Zade, S.M., Varchenko, A.N. (2012). Singularities of Differentiable Maps, Volume 2. Birkhäuser Boston. https://doi.org/10.1007/978-0-8176-8343-6",
+    "Hörmander, L. (2003). The Analysis of Linear Partial Differential Operators I. Classics in Mathematics. Springer Berlin Heidelberg. https://doi.org/10.1007/978-3-642-61497-2",
+    "Borovyk, V., Goldberg, M. (2017). The Klein–Gordon equation on ℤ² and the quantum harmonic lattice. Journal de Mathématiques Pures et Appliquées 107(6), 667–696. https://doi.org/10.1016/j.matpur.2016.10.002 arXiv:1304.6353",
+    "Schultz, P. (1998). The wave equation on the lattice in two and three dimensions. Communications on Pure and Applied Mathematics 51(6), 663–695. https://doi.org/10.1002/(sici)1097-0312(199806)51:6<663::aid-cpa4>3.0.co;2-5",
+    "Bi, C., Cheng, J., Hua, B. (2023). The Wave Equation on Lattices and Oscillatory Integrals. arXiv:2312.04130",
+    "Ge, H., Hua, B., Jia, L., Zhou, P. (2025). The asymptotic behavior of discrete Schrödinger equation on the hexagonal triangulation. Calculus of Variations and Partial Differential Equations 64(6), 176. https://doi.org/10.1007/s00526-025-03026-1 arXiv:2412.02947",
+    "Wan, Z., Zhang, H. (2025). Strichartz estimate for discrete Schrödinger equation on layered King's grid. arXiv:2507.20142",
+    "Hong, Y., Tadano, Y., Yang, C. (2026). On the dispersive estimates for the discrete Schrödinger equation on a honeycomb lattice. Advances in Mathematics 507, 111368. https://doi.org/10.1016/j.aim.2026.111368 arXiv:2503.08996",
+    "Chandrasekaran, A., Shtyk, A., Betouras, J. J., Chamon, C. (2020). Catastrophe theory classification of Fermi surface topological transitions in two dimensions. Physical Review Research 2(1), 013355. https://doi.org/10.1103/physrevresearch.2.013355",
+    "Yuan, N. F. Q., Isobe, H., Fu, L. (2019). Magic of high-order van Hove singularity. Nature Communications 10(1), 5769. https://doi.org/10.1038/s41467-019-13670-9",
+    "Ignat, L. I., Zuazua, E. (2009). Numerical Dispersive Schemes for the Nonlinear Schrödinger Equation. SIAM Journal on Numerical Analysis 47(2), 1366–1390. https://doi.org/10.1137/070683787",
+    "Watabe, K., Kobayashi, N., Katori, M., Konno, N. (2008). Limit distributions of two-dimensional quantum walks. Physical Review A 77(6), 062331. https://doi.org/10.1103/physreva.77.062331",
+    "Baryshnikov, Y., Brady, W., Bressler, A., Pemantle, R. (2011). Two-dimensional Quantum Random Walk. Journal of Statistical Physics 142(1), 78–107. https://doi.org/10.1007/s10955-010-0098-2 arXiv:0810.5495",
+    "Chou, C.-L. (2021). On the exact discretization of Schrödinger equation. Physics Letters A 386, 126986. https://doi.org/10.1016/j.physleta.2020.126986 arXiv:2008.03698",
+    "Akramov, M.E., Yusupov, J.R., Ehrhardt, M., Matrasulov, D.U. (2026). Transparent boundary conditions for the spatially discrete Schrödinger equation: Reflectionless quantum transport in 1D lattices. Physics Letters A, 132381. https://doi.org/10.1016/j.physleta.2026.132381 arXiv:2608.05338",
+    "Akramov, M., Trunk, C., Yusupov, J., Matrasulov, D. (2024). Discrete Schrödinger equation on graphs: An effective model for branched quantum lattice. Europhysics Letters 147(6), 62001. https://doi.org/10.1209/0295-5075/ad752e arXiv:2411.14397",
+    "Bessel Functions of the First Kind (Archive of Formal Proofs, Isabelle session Bessel).",
+    "de Moura, L., Ullrich, S. (2021). The Lean 4 Theorem Prover and Programming Language. In: Automated Deduction – CADE 28 (Lecture Notes in Computer Science), 625–635. Springer International Publishing. https://doi.org/10.1007/978-3-030-79876-5_37",
+    "The mathlib Community (2020). The lean mathematical library. In: Proceedings of the 9th ACM SIGPLAN International Conference on Certified Programs and Proofs, 367–381. ACM. https://doi.org/10.1145/3372885.3373824",
+    "Lean 4 toolchain, release v4.35.0. https://github.com/leanprover/lean4/releases/tag/v4.35.0",
+    "Mathlib, commit 56a005855ea17e0b0958f73ec801ae140b0a1679 (tag v4.35.0 according to README.md). https://github.com/leanprover-community/mathlib4/tree/56a005855ea17e0b0958f73ec801ae140b0a1679",
+    "nanoda_lib, commit 8de7e0c4ed3052745a7f8725164efd9e76d84c56 (crate 0.4.31). https://github.com/ammkrn/nanoda_lib",
+    "Adams, C., Cain, P., Pinkas, D., Zuccherato, R. (2001). Internet X.509 Public Key Infrastructure Time-Stamp Protocol (TSP). RFC 3161. RFC Editor. https://doi.org/10.17487/rfc3161",
+    "Druskat, S., Spaaks, J. H., Chue Hong, N., Haines, R., Baker, J., Bliven, S., et al. (2021). Citation File Format. Zenodo. Version 1.2.0. https://doi.org/10.5281/zenodo.5171937",
+    "REUSE Specification, version 3.3. https://reuse.software/spec-3.3/"
   ]
 }

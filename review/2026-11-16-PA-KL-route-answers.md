@@ -75,3 +75,7 @@ single-line errors was 8 of 8 in one run. That supports L3 for the routes. It is
 not proved, and STATUS is unchanged. The strongest case against relying on it: the referees and the lead share a
 model family, so an error all of them would make alike is not excluded; and the referees judged the assemblies by
 reading only.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

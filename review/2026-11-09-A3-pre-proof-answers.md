@@ -55,3 +55,7 @@ A global theorem should therefore take a pointwise classification plus compactne
 finite set of A3 points. Also named as lost by the current statements: compact families of phases (e.g. the
 Klein–Gordon band uniformly in the mass), uniformity over non-linear perturbations, a general point k₀ (a translation
 lemma; `isStableA3_translate` is the definitional half).
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

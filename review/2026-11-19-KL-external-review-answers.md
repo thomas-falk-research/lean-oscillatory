@@ -66,3 +66,10 @@ Three statements read, attacked and re-proved on paper by a system of another fa
 them, in the route or in the Lean sources as text; no Lean was run. It found a false sentence in the prose that
 a referee, the lead and three later reviews had let stand (F1), and a departure from the owner's review rule that
 the lead had described as compliance (F2).
+
+Note by the lead (2026-11-19, later the same day). On F2 the owner decided a one-time waiver for the six batches
+(`docs/decisions/2026-11-19-step5-waiver-six-batches.md`; `docs/STATUS.md`, paragraph "Step 5 in six batches").
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

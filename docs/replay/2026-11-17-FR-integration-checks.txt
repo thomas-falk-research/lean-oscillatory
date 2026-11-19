@@ -39,3 +39,7 @@ AUDIT OscInt.FiniteRingAux.ringFiniteSize_of propext,Classical.choice,Quot.sound
 AUDIT OscInt.FiniteRingAux.ringKernelStatement_part propext,Classical.choice,Quot.sound
 AUDIT OscInt.FiniteRingAux.ringUnique_of propext,Classical.choice,Quot.sound
 AUDIT-TOTAL 1911 1911
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

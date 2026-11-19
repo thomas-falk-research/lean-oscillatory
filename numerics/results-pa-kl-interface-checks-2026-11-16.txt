@@ -17,3 +17,7 @@ J5 derivative form on sample phases (no certified violation): PASS  600 phases, 
 J5 control (a derivative outside the cell must violate the bound somewhere): PASS  160 certified violations
 summary: 17 of 17 checks pass
 python 3.13.18, python-flint 0.9.0, FLINT 3.6.0, working precision 200 bits, seed 20261116
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

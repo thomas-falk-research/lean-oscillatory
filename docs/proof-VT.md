@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Route: batch VT (GD-C-V, GD-V, GD-F-V, GD-N-V)
 
 Lead, 2026-11-09, after the pre-proof reviews were committed and stamped (`stamps/20261109T002419Z-45505299011a`).

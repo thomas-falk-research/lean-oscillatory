@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Route: batch D4U (S4.2U, S4.2O)
 
 Lead, session 12, after the pre-proof reviews were answered (`review/2026-11-15-D4U-pre-proof-answers.md`) and stamped.

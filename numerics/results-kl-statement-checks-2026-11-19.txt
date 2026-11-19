@@ -19,3 +19,7 @@ C1 detail: |S| = [3.077683537 +/- 1.76e-10], 1/(pi theta) + 1 = [2.591549431 +/-
 python 3.13.18, python-flint 0.9.0, FLINT 3.6.0, 200 bits
 RESULT: PASS
 # exit status 0
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

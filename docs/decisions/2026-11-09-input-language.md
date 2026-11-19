@@ -68,3 +68,7 @@ polynomial equation in `(cos kᵢ, sin kᵢ)` with rational coefficients, and, a
 A domain with a concrete consumer needs a phase outside the class (first candidates: three-band lattices, 3D lattices),
 or the census shows that an excluded model family dominates the unlocked use cases. A revision is a new dated record
 that names what it supersedes; tools state which version of the class they accept.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

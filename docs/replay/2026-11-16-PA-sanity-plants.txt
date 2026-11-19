@@ -89,3 +89,7 @@ plant-LC-d: rejected (recorded)
     first error: plant-LC-d.lean:13:13: error: Function expected at
 witness-LC-d: accepted (want accepted)
   LC-d [0 ≤ η dropped; witness: t = 1, n = 0, η = −1 (lightCone_eta_neg_false)]: DETECTED (witness compiled: ¬ planted statement)
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

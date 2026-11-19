@@ -61,3 +61,7 @@ but is expected to have type
   fderiv ℝ kinkPhase k + L₀ = 0
 in the application
   kink_det_ne k (closedBall_subset_kinkU hk) hc
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

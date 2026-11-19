@@ -30,3 +30,7 @@ leanchecker OscInt.Front.SecondDerivSharpFinal rc=0 3s
 # Note added 2026-11-19 (post-proof referee C): only the `leanchecker` lines above are tool output; the statements about the
 # build, the 86 TYPE-OK lines, the consumer example and the axioms are the lead's own lines, and `make quick`
 # (2026-11-17, 02:54:40Z to 03:02:21Z, exit code 0) is recorded in the session log only.
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

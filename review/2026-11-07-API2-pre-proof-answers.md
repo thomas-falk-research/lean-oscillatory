@@ -27,3 +27,7 @@ unfolding).
 
 ## Clarification added to `docs/statements.md`
 See "Clarification added after the API2 stamp (2026-11-07)".
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! `oscint-cert`: an independent checker for OscInt certificates
 //! (certificate contract 0.1), written from the contract alone.
 //!

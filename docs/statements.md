@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Statements
 
 The mathematics of every frozen statement, in plain notation, with hypotheses, constants and quantifier order.

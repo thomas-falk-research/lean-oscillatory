@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# No end-of-line conversion anywhere: records, stamps and frozen files are compared byte for byte.
+* -text
+
+# Language statistics and diffs on GitHub (linguist): the library is Lean; records and generated files are not code.
+docs/** linguist-documentation
+review/** linguist-documentation
+docs/replay/** linguist-generated
+docs/api.json linguist-generated
+stamps/** linguist-generated
+anchors/** linguist-generated
+numerics/results-*.txt linguist-generated
+*.lock linguist-generated
+*.tsr binary
+*.ots binary

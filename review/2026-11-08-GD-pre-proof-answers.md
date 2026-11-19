@@ -37,3 +37,7 @@ any proof of a GD statement and covered by the review stamp that follows this co
   when D ⊄ K (`globalDecay_hyp_offK` has such data); it keeps `IsD4Point` about a point where Ψ is C⁴.
 - **B N4, A n3.** Pointers added in the clarification (GD-F/GD-N for D = ∅; T6L's coefficients are D³/6, the
   `cubicCoeffs` convention).
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

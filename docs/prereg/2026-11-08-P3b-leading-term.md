@@ -46,3 +46,7 @@ and the statement draft is revised before freezing (the revision cites this reco
 ## Program
 `numerics/src/bin/spleading.rs` (Rust, no dependencies; `cargo run --release --bin spleading`), output saved verbatim
 to `numerics/results-spleading-2026-11-08.txt`.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

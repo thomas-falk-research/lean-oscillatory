@@ -79,3 +79,7 @@ The isolated replay (six kernels and the comparator) of the commit that holds th
 the four rows say "proved in Lean". A human reader. A calibration of these referees. The literature: whether the
 theorem for the class of VC2-S is in print. Plants that mutate the profile. The decimal value of the sharp constant
 inside Lean.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

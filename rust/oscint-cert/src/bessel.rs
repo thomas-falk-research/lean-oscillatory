@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! J_n(x) for an integer order n and a rational x, from the power series
 //! with an alternating-series remainder bound.
 

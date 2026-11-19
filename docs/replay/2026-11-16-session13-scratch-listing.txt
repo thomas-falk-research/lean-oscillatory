@@ -1343,3 +1343,7 @@
 2026-11-16T13:31:22Z 1659 dc31d9cdc6cbed58c5b31ddba9f0c3460542584397c394cab1981ff71d817ee9 ./work-PA-A2/checks5.py
 2026-11-16T13:32:00Z 1213667 18454cd358b7cb90fa8352b21fc24c042ae005070e61076a1939cf3be7247485 ./work-PA-A2/dl/tw.pdf
 2026-11-16T13:32:00Z 271011 89f588b82f9f93db8e483b9c95429353359c9974d9392475c937040be2fcee80 ./work-PA-A2/tw.txt
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

@@ -23,3 +23,7 @@ PASS I3-alias: periodic-image contribution below 1e-40 at the I3 times and sites
 PASS Order: successive differences shrink by about 4 (second order) with T on the grid {'ratios': [np.float64(4.0), np.float64(4.0), np.float64(4.0), np.float64(4.0), np.float64(4.0), np.float64(4.0), np.float64(4.0), np.float64(4.0)]}
 RESULT PASS
 # exit 0 at 2026-11-13T00:28:55Z
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

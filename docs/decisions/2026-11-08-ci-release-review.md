@@ -142,3 +142,7 @@ checkout v7.0.1 unchanged).
 Not done: `mathlib-next.yml` (weekly report-only build against the next Mathlib, ROADMAP P7). First real runs: this
 pull request exercises `ci.yml` and `verify.yml`; `release-candidate` can be dispatched on `main` at any time without
 side effects (it writes only an attestation and an artifact), so it is testable before the first release.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

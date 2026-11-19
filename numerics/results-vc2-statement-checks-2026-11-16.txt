@@ -10,3 +10,7 @@ PASS control: nearly zero curvature on [0, 6] with lam = 1 exceeds the bound  6.
 PASS control: constant 33/10 is exceeded by the symmetric quadratic
 PASS VC2-K: sqrt(mu) |int e^{i(phi + p x)} psi| / ampNorm <= 7/2, random data  1500 cases, largest ratio 2.409889
 ALL PASS
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

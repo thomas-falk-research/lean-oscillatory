@@ -74,3 +74,7 @@ Hint: Replace the deprecated name:
   [inst_2 : HasContDiffBump E] {c : E} (f : ContDiffBump c), Function.support ↑f = Metric.ball c f.rOut
 @ContDiffBump.tsupport_eq : ∀ {E : Type u_1} [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℝ E]
   [inst_2 : HasContDiffBump E] {c : E} (f : ContDiffBump c), tsupport ↑f = Metric.closedBall c f.rOut
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

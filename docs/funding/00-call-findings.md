@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Funding and access calls: what is open, verified from official pages (2026-11-16)
 
 Status: findings only; nothing has been submitted and nobody has been contacted. The owner decides and submits.

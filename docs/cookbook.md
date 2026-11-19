@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Cookbook
 
 Copy-paste starting points. Each recipe points at a file that `make quick` (or the consumer CI job) compiles, so the
@@ -21,6 +27,14 @@ code there cannot rot silently; copy from it. Which theorem fits which phase: `d
 | Checking `IsA3Point` / `IsStableA3Point` for an explicit quartic phase; S1.k at k = 2, 3 | `OscInt/Front/CuspSanity.lean` | S1.k, S5.1, S5.1′ |
 | A 1D phase with a third-derivative lower bound (whistler waves at an inflection) | `examples/consumer/ConsumerWhistler.lean` | S1.3 (`vanDerCorput_three`) |
 | A phase with nondegenerate Hessian everywhere (cold-plasma waves); free streaming | `examples/consumer/ConsumerColdPlasma.lean`, `examples/consumer/ConsumerPhaseMixing.lean` | GD-N, FE-S2.1 |
+| The D4 limit along a bounded offset that changes with `t` (rounding to lattice sites), with the closed-form constant, and the lower bound it gives | `examples/consumer/ConsumerD4Uniform.lean` | S4.2O (`d4LimitOffset`), S4.4, SH |
+| **[v0.7.0]** Normalised Fourier coefficients of a function analytic in a strip; a stopping rule for the trapezoidal rule; the lattice light cone at `η = 1` | `examples/consumer/ConsumerPeriodicAnalytic.lean` | PA-C (`fourierCoeffStrip`), PA-T (`trapezoidalRule`), LC-1 (`latticeKernel1LightCone`) |
+| **[v0.7.0]** An exponential sum with a linear phase `αn`, `λ ≤ α ≤ 1 − λ`, bounded uniformly in the number of terms | `examples/consumer/ConsumerKusminLandau.lean` | KL-D (`kusminLandau`), KL-C (`kusminLandauTwoOverPi`) |
+| **[v0.7.0]** A ring of `N` sites and an open chain of `M` sites against the infinite line (finite-size bounds at `η = 1`); the chain of two sites in closed form | `examples/consumer/ConsumerFiniteRing.lean` | FR-P (`ringFiniteSize`), FC-P (`chainFiniteSize`), FC-U (`chainUnique`) |
+| **[v0.7.0]** A 1D phase whose derivative increases at rate at least `λ`: the bound `(7/2)/√λ`; partial integrals of the Fresnel phase `e^{iλx²/2}` | `examples/consumer/ConsumerSecondDerivSharp.lean` | VC2-S (`secondDerivSharp`), VC2-N (`vdc2ProfileBound`) |
+| **[v0.7.0]** The Hadamard walk from a normalised point state: a bound for each amplitude and for the probability at a site | `examples/consumer/ConsumerHadamardWalk.lean` | HW-D (`hadamardDecay`) |
+
+Rows marked **[v0.7.0]** use theorems of batches PA, KL, FR, VC2 and HW, which are new in release v0.7.0.
 
 Recurring steps, in the order they come up:
 1. **Smoothness.** `fun_prop` closes `ContDiff ℝ n` for polynomial and trigonometric formulas; for `ContDiffOn` on an

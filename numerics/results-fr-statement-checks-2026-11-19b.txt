@@ -21,3 +21,7 @@ FC-P control (without the wall term must fail somewhere): PASS  314 certified vi
 summary: 12 of 12 checks pass
 python 3.13.18, python-flint 0.9.0, FLINT 3.6.0, working precision 700 bits, seed 20261116
 # exit status 0
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

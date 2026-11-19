@@ -25,3 +25,7 @@ AUDIT OscInt.D4UniformAux.ModAux.continuous_slice propext,Classical.choice,Quot.
 AUDIT OscInt.D4UniformAux.ModAux.exists_rho propext,Classical.choice,Quot.sound
 AUDIT OscInt.D4UniformAux.ModAux.iteratedFDeriv_slice propext,Classical.choice,Quot.sound
 AUDIT OscInt.D4UniformAux.ModAux.tsupport_slice propext,Classical.choice,Quot.sound
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

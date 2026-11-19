@@ -57,3 +57,7 @@ ok-LC-g: accepted (want accepted)
 plant-LC-g: rejected (recorded)
     first error: plant-LC-g.lean:15:40: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
   LC-g [|n| ↦ n]: TRUE WEAKENING: the planted bound 2π e^{|t| sinh η − nη} equals the frozen one for n ≥ 0 and is larger for n < 0 (η ≥ 0), so the frozen statement implies the planted one and no datum can refute it. The rejection of the copied scripts is script-only (a rewrite of |·| finds no pattern); the only sanity instance whose content changes is n = −5, where the plant gives the bound with e^{+10}.
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

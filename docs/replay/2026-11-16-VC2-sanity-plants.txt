@@ -78,3 +78,7 @@ ok-VC2-K-e: accepted (want accepted)
 plant-VC2-K-e: rejected (recorded)
     first error: plant-VC2-K-e.lean:205:86: error: unsolved goals
   VC2-K-e [|φ″| ↦ φ″ in the hypothesis]: TRUE WEAKENING: the planted hypothesis μ ≤ φ″(x) implies the draft hypothesis μ ≤ |φ″(x)| (x ≤ |x|), so the planted statement is implied by the draft one and no datum can refute it. It is strictly weaker in content: it says nothing about concave phases, which the unplanted sanity theorem sevenHalves_neg (φ = −x²/2) uses; in the planted copy that script cannot supply 1 ≤ −1.
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

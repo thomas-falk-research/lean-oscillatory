@@ -8,3 +8,7 @@ CHECK A4 PASS with s(u) = O(|u|^2) from F_s = 0, the cubic part of the reduced p
 OVERALL PASS 4/4
 # exit status 0
 # finished 2026-11-10T10:40:39Z
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

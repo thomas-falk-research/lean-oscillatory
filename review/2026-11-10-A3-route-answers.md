@@ -37,3 +37,7 @@ them.
 - Stamps, pins, and the fidelity of the frozen statements themselves.
 
 Next: proofs of the parts (CONTRIBUTING step 7). P1, P4 and P5 have no dependencies; P2 needs P1; P3 is the largest.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

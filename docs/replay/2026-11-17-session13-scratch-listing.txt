@@ -1281,3 +1281,7 @@
 2026-11-17T00:28:40Z 1366 0080c3601b55963a8232e8b53bb860a3edfc0d15e955d6e1cf772392df645818  referee-work/post-FR-A/LK1.lean
 2026-11-17T00:29:56Z 3223 14d841d93f576f60ca8cc279efef0cbbe621aae6fc54d73fcf9e853cd31eb64d  referee-work/post-FR-C/ChainAll.lean
 2026-11-17T00:30:48Z 2858 e27ad90dc227ed93994f8a75ca4679680c8fca22977b928a04ee38d5121abdaf  referee-work/post-FR-B/Deps.lean
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

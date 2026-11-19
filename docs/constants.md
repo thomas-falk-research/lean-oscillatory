@@ -1,9 +1,18 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 > Provenance (2026-11-07, session 4): written by an exploration agent that read the S2.2/S3 proofs (no Lean written
 > except `#check` probes), reviewed by the lead. Labels are the agent's; nothing here is evidence for a theorem.
 > **Lead's decision (P5):** do not formalise explicit constants along this route yet. The constant it would produce
 > (CONJECTURED ~10⁸–10¹² · R² · B^{20–24} · η^{−8.5…−12}) cannot close the downstream 20-orders gap; the next step is
 > the cheap first deliverable of §4 (explicit local theorems for L6 and L1) or a sharper route, which is an owner
 > decision (`docs/HANDOFF.md`).
+>
+> Scope (added 2026-11-19): this page is about S2.2 and S3 only. The statements that do have explicit constants are
+> listed in `docs/which-theorem.md` §6.
 
 # Explicit constants for S2.2 and S3 (draft for docs/constants.md)
 

@@ -200,3 +200,7 @@ verdict, each finding and what was done about it. Spec-fidelity referee of the s
 ## 8. Run log
 
 (empty: not registered)
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

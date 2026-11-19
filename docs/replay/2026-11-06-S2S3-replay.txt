@@ -38,3 +38,7 @@ PASS  con-leche --verified  (23.3s)  con-leche: accepted 49960 declarations (--v
 PASS  con-ron --verified  (13.9s)  con-ron: accepted 49960 declarations (--verified)
 PASS  lake check --from-export --paranoid  (314.2s)  lean4lean kernel accepts the solution; 6 kernels accepted
 RESULT PASS
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

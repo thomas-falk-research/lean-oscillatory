@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+[*.lean]
+indent_style = space
+indent_size = 2
+max_line_length = 120
+
+[*.{rs,py}]
+indent_style = space
+indent_size = 4
+
+[Makefile]
+indent_style = tab
+
+# Records and frozen files are never reformatted.
+[{stamps,anchors,review,docs/replay,docs/prereg,OscInt/Statements,Challenge}/**]
+insert_final_newline = unset
+end_of_line = unset
+charset = unset

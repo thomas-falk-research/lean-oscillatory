@@ -200,3 +200,7 @@ plant-CK7: rejected (recorded)
     copied scripts with an error: first layer: chainK_unit, chainK_two_offdiag; second layer: chainK_two_lower_offdiag
 witness-CK7: accepted (want accepted)
   CK7 [FC-K: inner hypothesis x ≤ M of the unit datum dropped; witness: M = 1, y = 1, x = 3 (C₁(0; 3, 1) = −1 by chainKernel_one_three, unit datum 0)]: DETECTED (witness compiled: ¬ planted statement)
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

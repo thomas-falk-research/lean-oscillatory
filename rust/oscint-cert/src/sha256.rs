@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! SHA-256 (FIPS 180-4), written out here because the crate takes no
 //! dependency for it. Used to name, in the verdict, the statement list
 //! (`statements_sha256`, and the pin of `--expect-statements-sha256`) and

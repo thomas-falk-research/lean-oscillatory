@@ -10,3 +10,7 @@ theorem ampBoundOfContDiff : OscInt.Statements.AmpBoundOfContDiffStatement := so
 theorem d4LimitClosedForm : OscInt.Statements.D4LimitClosedFormStatement := sorry
 
 end OscInt.API
+
+/- Attribution, appended after the freeze; not part of the frozen text (stamps/pins.txt).
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: Apache-2.0 -/

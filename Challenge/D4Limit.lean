@@ -15,3 +15,7 @@ theorem d4ConstantPos : Statements.D4ConstantPosStatement := sorry
 theorem d4ConstantClosedForm : Statements.D4ConstantClosedFormStatement := sorry
 
 end OscInt
+
+/- Attribution, appended after the freeze; not part of the frozen text (stamps/pins.txt).
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: Apache-2.0 -/

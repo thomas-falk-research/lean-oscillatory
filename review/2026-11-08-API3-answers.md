@@ -113,3 +113,7 @@ route names (S2.1 `OscInt.nonStationary`, the internal S2.2/S3 parts, FE-S4.1′
 > one-time waiver; step 5 is unchanged.
 
 (Option (iii) of the memo; CONTRIBUTING step 2 amended the same day.)
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

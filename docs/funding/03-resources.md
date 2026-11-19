@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # 3. Resources requested, with justification
 
 ## 3.1 Quantum Access Pilot: `[TARGET-SYSTEM]`

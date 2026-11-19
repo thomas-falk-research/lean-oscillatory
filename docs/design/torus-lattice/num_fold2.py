@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
 import numpy as np, sys
 sys.argv=['x','0']
 exec(open(sys.argv[0] if False else __import__('os').path.join(__import__('os').path.dirname(__file__),'num_fold.py')).read().split('print("lattice')[0])

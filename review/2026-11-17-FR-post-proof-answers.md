@@ -55,3 +55,7 @@ Not checked by any of them: the isolated replay, the comparator, a second kernel
   docstrings); `make quick` was run again on the result (session log).
 - Everything in "What is still not covered" of the pre-proof answers still holds for the sanity layers; the proof
   now closes those gaps for the statements themselves (a mutated statement would not have this proof).
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

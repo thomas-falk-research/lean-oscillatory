@@ -46,3 +46,7 @@ bounded. For it the packet supplied:
 - **The claim this supports.** The statements were frozen, stamped and blind-reviewed before any Lean proof entered the
   repository, and the reviewers were not shown the packet. The batch does not claim that its proof was found
   independently of the packet, nor that no proof (on paper or in scratch Lean) existed before the freeze.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

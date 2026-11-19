@@ -80,3 +80,7 @@ plant-KL-F-h: rejected (recorded)
       klf_fractional) and above |2 + e(5/8)| < 1.48 (klf_antitone). A referee reports a numerical ramp at lam = 1/5
       with |S| ~ 2.76 > 2.5915 = 5/pi + 1, which has no exact closed form; it is not reproduced here. The rejection
       above is of the proof script only (the literal of the bound changed).
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

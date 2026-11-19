@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # 2. Work plan
 
 Duration: 3 months (the shorter of the two allocation periods the call offers). Target system: `[TARGET-SYSTEM]`

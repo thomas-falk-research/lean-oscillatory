@@ -78,3 +78,7 @@ command-line cases not as specified: 0
     made by python, checked by rust, vdc-hypothesis: CERTIFIED
     made by rust, checked by python, vdc-hypothesis: CERTIFIED
 cross make/check not CERTIFIED: 0
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

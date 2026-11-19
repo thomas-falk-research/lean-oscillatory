@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! Rigorous enclosures of pi, cosine and sine in fixed-point integer
 //! arithmetic: a number x is held as the pair of integers
 //! (floor-ish, ceil-ish) bounding x * 2^Q.

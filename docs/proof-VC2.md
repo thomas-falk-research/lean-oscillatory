@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Proof route for batch VC2 (VC2-S, VC2-A, VC2-N, VC2-K)
 
 Written by the lead. History, disclosed: a proof on paper in the phase variable existed and was read by a step

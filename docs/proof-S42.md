@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # S4.2 proof route (the D4 limit t^{2/3} ∫ e^{itφ} A → c_C A(0))
 
 Statement: `OscInt.Statements.D4LimitStatement`. New blueprint parts E1–E3: `Blueprint/D4LimitS42.lean`; reused:

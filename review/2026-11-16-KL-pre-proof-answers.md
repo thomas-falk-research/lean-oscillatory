@@ -107,3 +107,7 @@ were not planted, and they agree with A1, A3, A8 and A9 above. They are answered
   dated clarifications in `docs/statements.md`.
 - Still not detected, on the record: Cheng and Graham's constant substituted in KL-F (A3); "lower end of the cell
   dropped" (A7).
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

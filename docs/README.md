@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Documentation index
 
 Start with the repository `README.md`. For a working session, read `lessons.md` (binding rules), then `HANDOFF.md`.
@@ -29,8 +35,22 @@ The exact text and status of each label are in `statements.md` and `STATUS.md`.
 - **TdF, TdE′** (batch HC): the d-dimensional hypercubic lattice kernel factorises; its bound (8(1 + √7)/3)^d t^{−d/3}.
 - **LS-E, LS-K, LS-D, LS-D′** (batch LS): the free lattice Schrödinger group on ℓ²(ℤ^d), its kernel representation,
   and its dispersive decay (machine-checked as stated 2026-11-14, replay of 35dc5c0).
-- **Batch labels:** **API1–API3** are the front-end batches; **GD, LE, LE2, VT, HC, A3, LS** are the batches named
-  after their statements.
+- **S4.2U, S4.2O** (batch D4U): the D4 limit uniformly over C²-totally bounded families of amplitudes, and over
+  bounded linear offsets.
+- **PA-C, PA-T, LC-1** (batch PA): Fourier coefficients of a periodic function analytic in a strip; the trapezoidal
+  rule for such a function; the light cone of the 1D lattice kernel.
+- **KL-D, KL-C, KL-F** (batch KL): the Kusmin–Landau inequality for exponential sums, on differences with the bound
+  cot(πλ/2), with the constant 2/π, and in the derivative form.
+- **FR-K, FR-U, FR-S, FR-P** (batch FR, ring of N sites): the ring kernel, that it is the propagator, the method of
+  images, the finite-size error against the line. **FC-K, FC-U, FC-P** (batch FR, open chain of M sites): the chain
+  kernel, that it is the propagator, the finite-size error against the line.
+- **VC2-S, VC2-A, VC2-N, VC2-K** (batch VC2): the second-derivative van der Corput bound with its sharp constant, its
+  attainment by the quadratic phase, the bound 7/2 for the profile, and the test with amplitude with 7/2 in place of 8.
+- **HW-R, HW-K, HW-D, HW-L** (batch HW): the Hadamard walk on the line in terms of a scalar kernel, the kernel bound,
+  the decay t^{−1/3} from a point state, and the dispersive estimate ℓ¹ → ℓ^∞.
+- The 21 statements of batches PA, KL, FR, VC2 and HW are new in release v0.7.0.
+- **Batch labels:** **API1–API3** are the front-end batches; **GD, LE, LE2, VT, HC, A3, LS, D4U, PA, KL, FR, VC2, HW**
+  are the batches named after their statements.
 
 ## Reference
 
@@ -44,7 +64,7 @@ The exact text and status of each label are in `statements.md` and `STATUS.md`.
 | `downstream.md` | How to depend on OscInt from another Lean project |
 | `prior_art.md` | Prior art for every statement, with verdicts and an AI-use disclosure where one applies |
 | `applications.md` | Where the results apply (models, domains) |
-| `constants.md` | Explicit constants: what the proofs give and what they could give |
+| `constants.md` | Explicit constants for S2.2 and S3: what the present proofs give and what they could give (exploration draft of 2026-11-07); the explicit constants that exist are in `which-theorem.md` §6 |
 | `policy.md` | Versioning, stability and upgrade policy; wording rules |
 | `toolchain.md`, `dependencies.md` | Toolchain pins and dependencies |
 | `commitment-format.md` | The statement-commitment format checked by `make commit` |
@@ -56,7 +76,8 @@ The exact text and status of each label are in `statements.md` and `STATUS.md`.
 
 `proof-S2S3.md`, `proof-S4.md`, `proof-S42.md`, `proof-S43.md`, `proof-S44.md`, `proof-API2.md`, `proof-API3.md`,
 `proof-GD.md`, `proof-LE.md`, `proof-VT.md`, `proof-LE2.md`, `proof-HC.md`, `proof-A3.md`, `proof-LS.md` (route
-refereed; parts proved, replayed and reviewed 2026-11-14; machine-checked as stated).
+refereed; parts proved, replayed and reviewed 2026-11-14; machine-checked as stated), `proof-D4U.md`, `proof-PA.md`,
+`proof-KL.md`, `proof-FR.md`, `proof-VC2.md`, `proof-HW.md`.
 
 ## Process and history
 
@@ -65,7 +86,8 @@ refereed; parts proved, replayed and reviewed 2026-11-14; machine-checked as sta
 | `lessons.md` | Durable lessons; each is a binding rule |
 | `HANDOFF.md` | State and next steps, newest session first |
 | `ROADMAP.md` | Plan, programmes, gated candidates, standing hygiene |
-| `progress.md` | Chronological log of sessions 1–3; sessions 7–10 are in `HANDOFF.md`, sessions 4–6 in its history and in `CHANGELOG.md` |
+| `progress.md` | Chronological log of sessions 1–3; sessions 7–13 are in `HANDOFF.md`, sessions 4–6 in its history and in `CHANGELOG.md` |
+| `progress/` | Per-session logs written as events happen (session 13: `progress/2026-11-16-session13-log.md`) |
 | `decisions/` | Owner decisions and the memos behind them |
 | `design/` | Design notes (torus lattice, vector amplitudes, leading terms) |
 | `prereg/` | Pre-registered numerical studies and their ledger (`prereg/LEDGER.md`) |

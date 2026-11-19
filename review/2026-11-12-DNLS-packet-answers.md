@@ -188,3 +188,7 @@ free streaming. The lead agrees that B1 is the common dependency.
    Lean work is ℓ² Picard–Lindelöf with continuation, mass conservation and Duhamel. It is larger than B1.
 3. **C1 (whistler)** is a small consumer of the proved S1.3 that could be written as an example without new
    statements.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

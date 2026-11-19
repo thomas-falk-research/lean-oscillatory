@@ -173,3 +173,7 @@ all on the side of the project's records and tools, and three of them were worth
 found in: the scan in the replay driver (every row of the status table rests on that driver), the acceptance rules
 of the check scripts (one sibling script had been passing 46 comparisons on a tolerance), and the false-alarm
 figure of a calibration round. The lead had read all three files many times.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

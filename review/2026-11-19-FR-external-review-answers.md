@@ -79,3 +79,13 @@ pre-proof referees, a route referee and three post-proof referees.
 Seven statements read, attacked and re-proved on paper by a system of another family, with no error found in
 them, in the route or in the Lean sources as text. It ran no Lean. Its three record BLOCKERs are confirmed; none
 touches a theorem.
+
+Correction by the lead (2026-11-19, later the same day). The answer to R8 above says the order sentence of
+`CONTRIBUTING.md` was not edited by the lead. It had been: the lead changed it in commit dede383, when answering the
+VC2 report, without asking the owner. The reviewer read the older text at its pinned commit. The owner has since
+approved the wording, and decided a one-time waiver for the step-5 departure
+(`docs/decisions/2026-11-19-step5-waiver-six-batches.md`).
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

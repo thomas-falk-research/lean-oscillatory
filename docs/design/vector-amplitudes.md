@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Design: vector-valued amplitudes (batch VV) and a non-separable two-band model
 
 Status: design draft, 2026-11-08 (session 7, lead). Nothing here is frozen or proved. Labels: PROVEN (machine-checked),

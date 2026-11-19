@@ -94,3 +94,7 @@ not make the batch human-reviewed, it ran no Lean, and one review of one batch i
 objection stands and is not answered by any fix: a kernel can accept a proof of a proposition that is not the
 intended one, and reviews do not remove that risk; what reduces it is that the reviewer read the definitions and
 found the four statements to mean what the prose says.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

@@ -29,3 +29,7 @@ script with identical output, and confirmed the Mathlib names by grep.
 | The lead's interface script comes near equality in V-side only in its last line; it is weak evidence for the tightness of the choice of w. | NIT | Accepted as a limit of that script; the referee's own test is not in the tree. |
 
 Not verified by the referee, by its own account: that the blueprint and the assembly compile.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

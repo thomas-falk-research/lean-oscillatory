@@ -7,3 +7,7 @@ PASS HadamardDecayArithFacts: left/right <= 1 for t = 1..2999 and 10^4..10^15  l
 PASS HadamardKernelRecFacts: K(0,.) = 0, K(1,.) = delta, recursion for t <= 13  max diff 4.48e-16
 PASS HadamardLinearFacts: walk of a 4-site state = sum of translated point-state walks (t = 0, 1, 2, 7)  max diff 3.38e-16
 ALL PASS
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

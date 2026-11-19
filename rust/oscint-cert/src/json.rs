@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! Strict JSON reading for certificates and the statement list.
 //!
 //! `serde_json` decides whether the text is JSON at all (it rejects `NaN`,

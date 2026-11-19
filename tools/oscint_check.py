@@ -14,7 +14,8 @@ Checks, in order (each failure names the file or theorem and the likely fix):
   1. `stamps/statements.json` of the OscInt package parses, and (with --expect-sha256) has the hash you pinned.
   2. Your project uses the Lean toolchain and the Mathlib revision OscInt was checked with (`lean-toolchain`,
      `lake-manifest.json`); a different Mathlib can change what a statement means.
-  3. Every file under `OscInt/Statements/` has a SHA-256 recorded by a pinned stamp (no frozen file edited).
+  3. Every file under `OscInt/Statements/` has a SHA-256 recorded by a pinned stamp (no frozen file edited). From
+     v0.7.0 a statement file may end with one fixed attribution block; the hash is of the bytes before it.
   4. Lean: each selected statement constant is declared in the module of its frozen file; its proving theorem's
      type is *syntactically* the statement constant; its axioms are only propext, Classical.choice, Quot.sound.
   5. Kernel replay: `leanchecker` re-checks every OscInt and Blueprint module and every module in the dependency closure of each
@@ -95,6 +96,35 @@ def sha256(path):
     return h.hexdigest()
 
 
+# A statement file is its frozen bytes, or its frozen bytes followed by exactly one of these attribution blocks and
+# nothing after it (owner decision 2026-11-19, docs/decisions/2026-11-19-attribution-blocks.md). The registry records
+# the SHA-256 of the frozen bytes. The same two constants are in tools/src/sys.rs (ATTRIBUTION_BLOCKS).
+# REUSE-IgnoreStart
+ATTRIBUTION_BLOCKS = (
+    b"\n/- Attribution, appended after the freeze; not part of the frozen text (stamps/pins.txt).\n"
+    b"SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>\n"
+    b"SPDX-License-Identifier: Apache-2.0 -/\n",
+    b"\n/- Attribution, appended after the freeze; not part of the frozen text (stamps/pins.txt).\n"
+    b"SPDX-FileCopyrightText: 2025 Joris Roos\n"
+    b"SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>\n"
+    b"SPDX-License-Identifier: Apache-2.0\n"
+    b"Statement forms and constants follow roos-j/lean-oscillatory; modified 2026 by Thomas Falk III. -/\n",
+)
+# REUSE-IgnoreEnd
+
+
+def frozen_sha256(path):
+    """SHA-256 of a statement file's frozen content: its bytes without one trailing attribution block. A file with
+    anything after the block, or with a block that differs in one byte, is hashed whole and matches no stamp."""
+    with open(path, "rb") as f:
+        data = f.read()
+    for blk in ATTRIBUTION_BLOCKS:
+        if data.endswith(blk):
+            data = data[:-len(blk)]
+            break
+    return hashlib.sha256(data).hexdigest()
+
+
 def fail(msg):
     print(f"oscint-check: FAIL: {msg}")
 
@@ -172,9 +202,9 @@ def main(argv=None):
         if not os.path.isfile(p):
             fail(f"{f['file']} is missing from {oscint}")
             bad += 1
-        elif sha256(p) != f["sha256"]:
-            fail(f"{f['file']} has sha256 {sha256(p)}, its stamp {f['stamp']} records {f['sha256']}: "
-                 "the frozen statement file was edited. Re-fetch the package (`lake update oscint`).")
+        elif frozen_sha256(p) != f["sha256"]:
+            fail(f"{f['file']} has sha256 {frozen_sha256(p)} (frozen content), its stamp {f['stamp']} records "
+                 f"{f['sha256']}: the frozen statement file was edited. Re-fetch the package (`lake update oscint`).")
             bad += 1
     on_disk = sorted(os.path.relpath(os.path.join(r, n), oscint).replace(os.sep, "/")
                      for r, _, ns in os.walk(os.path.join(oscint, "OscInt", "Statements")) for n in ns

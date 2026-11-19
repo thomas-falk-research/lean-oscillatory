@@ -267,3 +267,7 @@ fusion capability. The lead agrees.
   free-transport example gives a 3-dimensional integral with a linear phase per Fourier mode.
 - ROADMAP I3b already says 5D and 6D are instances of a dimension-generic theorem, with no application claim.
 - No change.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

@@ -1,0 +1,33 @@
+OscInt: uniform oscillatory-integral estimates in Lean 4 and Mathlib
+Copyright 2026 Thomas Falk III <research@thomas-falk-research.com>
+ORCID: https://orcid.org/0009-0001-9478-6061
+Source: https://github.com/thomas-falk-research/lean-oscillatory
+Archive and citation (all versions): https://doi.org/10.5281/zenodo.24021328
+
+This product includes software, formal statements, proofs, verification records and documentation developed by
+Thomas Falk III. Much of the proof text and of the reviews was drafted by AI agents under the author's direction;
+the README says where.
+
+Licences. Code, Lean sources, tools and machine-generated records: Apache License 2.0 (LICENSE). Documentation:
+Creative Commons Attribution 4.0 International (LICENSE-docs). Per-file information follows the REUSE
+specification 3.3: comment headers where a file can carry one, REUSE.toml for every other file.
+
+Attribution. Under section 4 of the Apache License 2.0, a redistribution of this work or of a derivative work must
+keep the copyright, patent, trademark and attribution notices of the source files and must include a readable copy
+of the attribution notices in this file. Under section 3(a) of CC BY 4.0, reuse of the documentation must name the
+creator, keep the copyright notice, link to the licence and say whether changes were made. The requested form of
+attribution is:
+
+    Thomas Falk III, "OscInt: uniform oscillatory-integral estimates in Lean 4 and Mathlib",
+    https://doi.org/10.5281/zenodo.24021328 (give the version used; CITATION.cff has the metadata).
+
+Third-party material.
+
+  The one-dimensional van der Corput proofs (OscInt/VanDerCorput/, statement forms in
+  OscInt/Statements/VanDerCorput.lean) are derived from roos-j/lean-oscillatory,
+  Copyright 2025 Joris Roos; authors Joris Roos and Manasa Praveen; Apache License 2.0;
+  https://github.com/roos-j/lean-oscillatory. The files derived from it carry both copyright lines and say what
+  was changed.
+
+  Timestamp tokens, certificate roots and OpenTimestamps proofs under stamps/ and anchors/ are redistributed
+  unmodified for verification; their issuers are named per file in REUSE.toml.

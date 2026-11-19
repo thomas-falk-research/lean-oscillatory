@@ -93,3 +93,7 @@ statements or the mathematics; answered below. The Lean is unchanged by the answ
 Strongest case against the batch (C, accepted as stated): the theorems are a short corollary of S4.1′ and S4.2 and are
 kernel-checked; the statement-first order protects the statements' fidelity, not the independence of the proof, which
 followed an external packet that the lead had read and elaborated before writing the statements.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

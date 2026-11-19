@@ -7,3 +7,6 @@
 /numerics/target/
 /build/
 __pycache__/
+/rust/oscint-cert/target/
+*.egg-info/
+.venv*/

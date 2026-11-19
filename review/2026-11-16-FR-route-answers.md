@@ -26,3 +26,7 @@ name in the sources.
 
 Not verified by the referee, by its own account: that the assembly compiles; the dates and stamp names in the
 route's header.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

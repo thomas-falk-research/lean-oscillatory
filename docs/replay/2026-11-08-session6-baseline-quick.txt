@@ -85,3 +85,7 @@ real	9m5.786s
 user	12m51.108s
 sys	1m21.654s
 EXIT=0
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # S4.4 proof route (closed forms of the D4 constant)
 
 Statement: `OscInt.Statements.D4ConstantClosedFormStatement` (frozen, stamp `20261106T081634Z-e2d7771c358e`,

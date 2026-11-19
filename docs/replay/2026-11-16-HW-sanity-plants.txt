@@ -117,3 +117,7 @@ plant-HW-L-d: rejected (recorded)
     first error: plant-HW-L-d.lean:171:47: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
 witness-HW-L-d: accepted (want accepted)
   HW-L-d [∑ᶠ over all sites ↦ the term at y = 0 (both components); witness: the state (1, 0) at the site 5, t = 1, x = 4 (1/√2 ≤ 0)]: DETECTED (witness compiled: ¬ planted statement)
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

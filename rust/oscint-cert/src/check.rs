@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! The checker of certificate contract 0.1, revision 3: reads a certificate
 //! and a statement list, recomputes everything, and returns a verdict.
 //!

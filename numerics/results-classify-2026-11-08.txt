@@ -93,3 +93,7 @@ n =  2560: value = +7.898987346675 -1.106e-12i  rel.err = 7.5071e-7  quad.check 
 control (no (-1)^n, n = 2559): rel.err = 2.0000e0 (must be > 1)
 criteria: (i) true (ii) true (iii) true resolved true control-fails true
 VERDICT part B: PASS
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

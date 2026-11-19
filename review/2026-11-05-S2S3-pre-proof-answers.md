@@ -16,3 +16,7 @@ BLOCKER, no MAJOR. Pinned to the commitments of stamp `20261105T234456Z-533ae027
 - Both referees independently confirm C² amplitude regularity for S2.2 (Hörmander, ALPDO I, Thm 7.7.5, k = 1,
   phase C⁴) and give the same route for S3; the C² claim for S3 is upgraded from PLAUSIBLE to "argued by two
   independent referees", still not proved.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

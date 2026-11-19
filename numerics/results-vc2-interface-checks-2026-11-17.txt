@@ -4,3 +4,7 @@ tail: 990 cases, largest (lhs - rhs) = -7.874e-06 at [lam=7.0, quadratic, initia
 oneside: 10890 cases, largest (lhs - rhs) = -7.874e-06 at [lam=7.0, quadratic, initial speed 0.0, c=0.000, d=0.019, theta=-1.5708, w=0.0000]  PASS
 oneside attained by the quadratic from rest (lam = 1, w = 2, d = 2): lhs - A(w)/2 = 2.220e-16  PASS
 max of A on a grid of step 0.001 over [0, pi]: 3.364317578  PASS
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

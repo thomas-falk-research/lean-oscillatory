@@ -268,3 +268,7 @@ finished 2026-11-19T16:36:35Z rc=0 dirty=0 free=9G
 #       201 fab48e106e6bf7bbeecaba64796a1309c224922a2a1cee86d197fc948cbcb81d
 #   sha256 of the concatenation (files in byte order of name, each preceded by '== name'):
 #   555689d82ee64f9eadbbb10aca56fc56dd887ce9311facdba465ede8c1136098
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

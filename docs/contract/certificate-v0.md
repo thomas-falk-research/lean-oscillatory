@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # The certificate contract, version 0.1, revision 3 (experimental)
 
 One language-neutral contract between everything that produces an evaluated OscInt result and the one program that

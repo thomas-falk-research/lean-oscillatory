@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Application package (draft for the owner's review; nothing submitted)
 
 Target: the EuroHPC Joint Undertaking **Quantum Access Pilot Mode**, cut-off **1 December 2026, 10:00 CET**

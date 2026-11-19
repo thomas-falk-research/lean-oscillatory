@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # 5. Data and software management plan; open-science statement
 
 The call asks for no data management plan. This section documents what the project already does and what it commits

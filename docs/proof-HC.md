@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Route: batch HC (TdF, TdE′)
 
 Lead, session 10, after the pre-proof reviews were answered (`review/2026-11-12-HC-pre-proof-answers.md`). Blueprint:

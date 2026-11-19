@@ -40,3 +40,7 @@ plant-T6F-tpos: rejected (want rejected)
     first error: plant-T6F-tpos.lean:12:2: error: Type mismatch: After simplification, term
 ok-T0E-nonneg-BLINDSPOT: accepted (want accepted)
 plant-T0E-nonneg-BLINDSPOT: accepted (want accepted)
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

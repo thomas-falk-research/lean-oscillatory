@@ -1,12 +1,23 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Changelog
 
 Versions follow semantic versioning from v0.3.0 (`docs/policy.md`): before 1.0.0, a minor version (0.y.0) may change
 statements and says so under "Statement changes"; a patch (0.y.Z) changes no statement, commitment, statement file
 or `proved_by` name. Every release lists its statement changes, even when there are none.
 
-## Unreleased (after v0.6.0)
+## v0.7.0 — 2026-11-20
 
-Not a release. Statement changes since v0.6.0, for the next minor release:
+A minor release (prepared; the owner publishes). Before 1.0.0 a minor release may change statements; this one changes
+no existing statement's text, commitment or stamp. It adds 21 statements (batches PA, KL, FR, VC2 and HW), all proved
+and machine-checked as stated, so all 86 statements are. It also carries the corrections that followed an external
+review, a fix of the replay driver, and attribution inside the files, with one compatibility note for downstream
+users (section "Attribution" below). Statement fidelity has been reviewed by AI referees, among them one of a
+different model family, not yet by a human expert.
 
 ### Statement changes
 
@@ -81,8 +92,9 @@ of one model family.
   the fixed 15 GB floor) and a watcher for free space and foreign Lean processes (rule 7).
 - `tools/check_docs.py`: a STATUS row with a proving theorem says "proved in Lean" until a replay is recorded and
   "machine-checked as stated" only after; both directions enforced (rule 20).
-- `tools/ots_anchor.py` (`make anchors`) and `anchors/ots/`: Bitcoin anchors of all 27 stamps' OpenTimestamps
-  proofs as upgraded copies, the stamp directories untouched; 54 proofs checked at two block explorers (rule 21).
+- `tools/ots_anchor.py` (`make anchors`) and `anchors/ots/`: Bitcoin anchors of the stamps' OpenTimestamps
+  proofs as upgraded copies, the stamp directories untouched (27 stamps and 54 proofs when the tool was added; 31 of
+  the 32 stamp directories by 2026-11-17, the stamp of 2026-11-19 pending), checked at two block explorers (rule 21).
 - A draft pull request for the working branch, so that CI runs on every push.
 
 ### Added
@@ -103,6 +115,44 @@ of one model family.
 - `examples/consumer/ConsumerPeriodicAnalytic.lean`, `examples/consumer/ConsumerKusminLandau.lean`: unconditional
   uses of the six new theorems (normalised Fourier coefficients, a stopping rule for the trapezoidal rule, the light
   cone at one e-folding per site, exponential sums with a linear phase); compiled by `make quick`.
+
+### External review and corrections (2026-11-19)
+
+- Five reviews of the session-13 batches by an AI system of another model family, run by the owner (it could not
+  run Lean): all 21 statements faithful to their prose, true by the reviewer's own arguments, routes sound; no
+  finding against a statement or a proof. Its findings against records, tools and process were each checked and
+  are answered in `review/2026-11-19-{VC2,PA,FR,KL,HW}-external-review-answers.md`.
+- **Replay driver** (`tools/src/bin/replay.rs`): the scan of checker output for PANIC/error/problem could be
+  switched off for a whole step by a checker's success phrase, and acceptance was matched as a bare substring. Both
+  fixed, with regression tests; the driver now keeps the raw output of every step. A rerun of the replay step with
+  the corrected driver found no output on which the old and the corrected rule differ
+  (`docs/replay/2026-11-19-lean-replay-fail-closed.txt`).
+- Records corrected by dated clarifications and errata, never by rewriting: a false clarification of KL-F (the empty
+  sum), the HW maximum 1.6208 (rounded down; exact integers give 1.620846… at t = 2997), "FC-P is not sharp" (now
+  CONJECTURED), two counts in the header of a replay record, readings of the calibration page, two prior-art
+  citations (`docs/statements.md`, `docs/calibration.md`, `docs/prior_art.md`).
+- Check scripts under `numerics/review/` fail the process on a failed check, test the predicate they describe,
+  count proved, undecided and violated comparisons, and need a certified violation for a control;
+  `numerics/review/hw_exact_max_checks.py` is new.
+- Six docstrings in `OscInt/Front/` corrected (comments only; no statement and no proof changed).
+- **Process.** Step 5 of `CONTRIBUTING.md` had not been followed in six batches (sanity-layer MAJORs answered
+  without a re-freeze); the owner ratified a one-time waiver, marked on the 23 rows of `docs/STATUS.md`
+  (`docs/decisions/2026-11-19-step5-waiver-six-batches.md`). The order sentence of `CONTRIBUTING.md` now reads
+  "before any Lean proof of it exists".
+
+### Attribution (owner decision 2026-11-19)
+
+- **Compatibility note for downstream users.** Every file under `OscInt/Statements/` and `Challenge/` now ends with
+  a fixed attribution block (author, licence). The pin of a statement file is on the bytes before the block;
+  `stamps/statements.json` keeps the SHA-256 values it had. `tools/oscint_check.py` of this release strips the block
+  before hashing; **a copy of the checker from v0.6.0 or earlier reports every statement file as edited** and must
+  be replaced by the one shipped with the release. Commitments and challenge exports are unchanged
+  (`docs/decisions/2026-11-19-attribution-blocks.md`).
+- An SPDX header on every living document and source file that had none; a fixed attribution block at the end of
+  199 records, with a recorded check that nothing else changed (`tools/attribution_blocks.py`,
+  `docs/replay/2026-11-19-attribution-blocks.txt`); a `COPYRIGHT` file in each plant-run directory.
+- `NOTICE` (the attribution file of section 4(d) of the Apache License 2.0) and `make sbom` (an SPDX bill of
+  materials listing every file with its copyright text, licence and checksum).
 
 ## v0.6.0 — 2026-11-15
 

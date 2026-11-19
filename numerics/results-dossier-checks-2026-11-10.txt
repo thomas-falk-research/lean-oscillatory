@@ -32,3 +32,7 @@ RUNTIME python 3.13.18 sympy 1.14.0 mpmath 1.3.0 numpy 2.5.3 scipy 1.18.1 platfo
 OVERALL PASS 27/27
 # exit status 0
 # finished 2026-11-10T10:43:51Z
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

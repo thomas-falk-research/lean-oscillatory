@@ -1,0 +1,6 @@
+Plant-run record of OscInt (https://github.com/thomas-falk-research/lean-oscillatory): planted copies of
+statement text and the compiler output they produced. The files of this directory are kept byte for byte and
+carry no header of their own; this file states their copyright and licence, as REUSE.toml does.
+
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: Apache-2.0

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+//
+// SPDX-License-Identifier: Apache-2.0
+
 //! The command line: verdict on standard output, exit codes 0, 1, 2, 3.
 
 use std::io::Write;

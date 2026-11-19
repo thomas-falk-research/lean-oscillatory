@@ -73,3 +73,7 @@ answers use plain `-answers`. External reviews are `<date>-external-<topic>-answ
 - `calibration/round2/`: six planted variants, the base statements, the statement prose and `key.json`.
 - `calibration/round3/`: the script that built the two planted snapshots of batches PA and KL (four plants each; the plants are in the script).
 - `calibration/round4/`: the two routes of batches PA and KL with eight planted errors (`proof-*-planted.md.txt`) and the key (`key.txt`), for the route referees.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->
