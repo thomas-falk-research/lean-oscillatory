@@ -21,12 +21,13 @@ below it, and every rule is binding.
 - **Last verified state:** 2113b54: `make verify-all` RESULT PASS (2026-11-19, 18:14:41Z to 21:10:51Z, isolated, the
   corrected driver, raw output kept; `docs/replay/2026-11-19-v0.7.0-verify-all.txt`); the same commit passed on a
   clean GitHub runner (`verify.yml` run 44585759180). It is the replay of record for all 86 statements and for
-  v0.7.0. Commits after 2113b54 change documents, metadata notes and records only. Nothing is running (the session
-  log's last rows say whether a stamp was made). A replay launched earlier on 580e34d was stopped unfinished on the
+  v0.7.0. Commits after 2113b54 change documents, metadata notes and records only. The release candidate with
+  its replay record is stamped: `stamps/20261119T213636Z-1aa26b0f21a7` on 1aa26b0 (three RFC 3161 tokens verified,
+  21:36:44Z; OpenTimestamps pending). Nothing is running. A replay launched earlier on 580e34d was stopped unfinished on the
   owner's instruction and proves nothing.
-- **Exact next command:** read the session log's last rows. If no stamp of the release candidate is listed:
-  `make stamp` on a clean tree, commit the stamp directory, push; a day or more later `make anchors` (two stamps
-  are then pending: `20261119T124850Z-9ae784e80e32` and the new one). `tools/release_preflight.sh 0.7.0` must print
+- **Exact next command:** on 2026-11-20 or later, `make anchors OTS_PYTHON=<pinned environment>/bin/python` (two
+  stamps are pending: `20261119T124850Z-9ae784e80e32` and `20261119T213636Z-1aa26b0f21a7`), then commit
+  `anchors/ots/`. `tools/release_preflight.sh 0.7.0` must print
   "ready" (the date in `CITATION.cff`, `codemeta.json` and the CHANGELOG heading is 2026-11-20; the owner may
   change it). Publishing is the owner's: merge the pull request, dispatch `release-candidate` on `main`, then
   `tools/publish_release.sh` (`CONTRIBUTING.md`); the post-release pull request moves the install pins to v0.7.0.
