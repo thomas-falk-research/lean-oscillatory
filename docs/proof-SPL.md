@@ -186,3 +186,22 @@ complex Gaussian integral, not assumed (Mathlib has no Fresnel integral at the p
 the literature reader and the plan referee, to be re-checked by `#check` before any blueprint is frozen (lessons
 1): `integral_gaussian_complex`; `intervalIntegral.integral_mul_deriv_eq_deriv_mul`;
 `MeasureTheory.tendsto_zero_of_hasDerivAt_of_integrableOn_Ioi`; `MeasureTheory.exists_integral_le` (first moment).
+
+## 9. Addendum after three external sessions (2026-11-19; `review/2026-11-19-SPL-external-sessions-answers.md`)
+
+Not refereed in this form; nothing above is changed by it.
+
+- An independent derivation by a session of another model family has the kernel `Q = iκ` and the same best
+  constant; its proof of the identity removes a neighbourhood of 0 and uses the jump of `Q″` there, where this
+  page uses bounded primitives on each half-line.
+- Sharper bounds, true and checked: `|L − F(τ)| ≤ 1/τ` and `|κ(τ) − L/2| ≤ 1/τ³` for `τ > 0` (the constant 1 is
+  attained asymptotically). The external proofs rotate contours. Real-variable routes proposed by the checker, on
+  paper and numerics only: with `T_k(x) := ∫₀^∞ v^k e^{−xv−iv²/2} dv`, `L − F = i e T₀`, `κ′ = i e T₁`,
+  `κ − L/2 = e T₂/2` (one exchange of integrals on `[x, y] × [0, ∞)`); or one more integration by parts in Lemma 1′,
+  which gives the constant 3. Lemma 2's constant 4 is enough for everything on this page.
+- `‖g′‖₁ ≤ ‖g‖₁ + ‖g‴‖₁/6` and `‖g″‖₁ ≤ 4‖g‖₁ + ‖g‴‖₁/3` (two Taylor identities on unit intervals): two of the four
+  integrability hypotheses of `𝒢` are redundant. The statements keep all four.
+- SPL-N: exact-arithmetic certificates for `sup |κ| ≤ 73/100` exist and were run by two families (145 points with a
+  48-term series; the checker's own run of the same grid; smaller designs: with this page's bounds, 10 cells and
+  16 series terms for 73/100, 6 cells and 14 terms for 3/4, by a second-order test on each cell). None has been
+  run in a proof assistant. Section 5's decision stands: SPL-N is the next statement, after a prototype.

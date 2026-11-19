@@ -106,6 +106,12 @@ section 2: the identity becomes a statement of its own (SPL-I); the consumer con
 follows from VC2-S and VC2-N; SPL-N (73/100) is not part of the first freeze and waits for a prototype of a
 certified enclosure.
 
+Second addendum, the same day (`review/2026-11-19-SPL-external-sessions-answers.md`). (1) Correction to the last
+bullet of this section: a quadratic-phase leading term for Schwartz amplitudes with a Fourier-moment remainder is
+formalised in Lean (`openai/math`), and so is the value of the Fresnel integral (two repositories); details in
+`docs/prior_art.md`. (2) An independent derivation by a session of another model family reached the same identity
+and the same constant, and supplied a finite exact-arithmetic certificate for `sup |κ| ≤ 73/100`.
+
 ## 5. Exploration (EXPLORED, 2026-11-19; `numerics/review/spl_explore_kappa.py`, output
 `numerics/results-spl-explore-kappa-2026-11-19.txt`)
 
@@ -138,6 +144,14 @@ four controls came out as required. This is VALIDATED on these five amplitudes a
    the plan referee: state the bound with that integral, or with a constant in sup norms of `φ‴ … φ⁽⁶⁾`, `1/φ″`
    and `a … a‴` (six derivatives of the phase are what the crude one-variable Morse lemma costs). The constants
    must show the blow-up as `φ″(x₀) → 0`: that is what uniformity toward a fold means.
+   **Corrected 2026-11-19 after an external session and its check
+   (`review/2026-11-19-SPL-external-sessions-answers.md`, section 3):** the last clause is wrong. In a strongly
+   convex class with fixed bounds on the fourth derivative of the phase and on the amplitude, a generic fold
+   cannot occur (the third derivative of the phase at the stationary point is forced to 0 with the second), the
+   worst-case blow-up of the constant is `α^{−5/2}`, not `α^{−7/2}`, and the relative remainder is small when
+   `λα² → ∞`. Stage 2 is therefore uniformity in α inside the convex class; its target is the explicit constant of
+   that report (phase of class C^{3,1}, constants in `sup |a|, |a′|, |a″|`, `sup |φ‴|`, `Lip φ‴`), proved on paper
+   and checked by two model families, not machine-checked. The fold regime is stage 3 and is not convex.
 3. **Stage 3: two stationary points that coalesce** (the Airy leading term, `docs/design/leading-term.md` section
    2 in one variable). Not started; no claim.
 

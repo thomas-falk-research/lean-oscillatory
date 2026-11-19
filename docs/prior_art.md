@@ -378,3 +378,20 @@ term gives the constant 1.2533. Olver (1974) was read only through a later accou
 total variations over the large parameter). Mathlib at the pin has no Fresnel integral and no stationary phase.
 Still unread: Olver (1974), Erdélyi's originals, the books of Olver, Wong and Zworski; the upstream repository was
 not inspected. The bound with the constant `sup |κ| = 0.72197` was not found; nothing is claimed as new.
+
+Correction and second addendum, the same day (`review/2026-11-19-SPL-external-sessions-answers.md`). The sentence
+above "No formalisation of a stationary-phase leading term was found" is wrong. A session of another model family,
+run by the owner, found one, and the lead read the source: `openai/math`,
+`lean/OAI/Dynamics/ThreeTorus/StationaryPhase.lean` (commit 4eaee87), lemmas `quadratic_stationary_identity`,
+`quadratic_stationary_error`, `quadratic_stationary_limit`: for a Schwartz amplitude `f` and `t > 0`,
+`|√t ∫ f(x) e^{iπtx²} dx − e^{iπ/4} f(0)| ≤ (π/t) ∫ ξ² |𝓕⁻¹f(ξ)| dξ`. In the normalisation of batch SPL this is the
+leading term with a remainder of order `λ^{−3/2}` in a Fourier-moment norm (the bound of Zworski's proof). The
+value of the Fresnel integral is also formalised in Lean in two public repositories (an FLMF release,
+`tendsto_fresnelC` and `tendsto_fresnelS`; lean-DLMF, `fresnel_integrals_elementary`). The lead read these three
+files and did not compile them. What batch SPL would add: the remainder in `‖g‴‖₁` with an explicit kernel and
+constant, for amplitudes that are not Schwartz; neither bound implies the other. The same session's literature
+search (its ledger has 265 search requests) reached the verdict of the lead's reader: the identity follows from a
+published remainder formula; the folded kernel with `0.72197…` was not found; Olver (1974) and Erdélyi's originals
+are unread, so the evidence justifies calling the refinement neither folklore nor new. A third session derived
+the identity and the constant without sight of the lead's work and got the same kernel up to a factor `i` and the
+same number.

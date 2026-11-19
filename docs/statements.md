@@ -1636,8 +1636,10 @@ leading term and a bound, with a stated constant and valid for every value of th
 (`docs/ROADMAP.md`, "Asymptotic expansions"; `docs/design/batch-SPL-opening.md`). This batch does that for the
 normal form of a nondegenerate stationary point in one variable, the phase u²/2. The identity SPL-I is classical in
 substance: it is the two-sided case, three integrations by parts, of Erdélyi's remainder representation
-(`docs/prior_art.md`, gate of 2026-11-19). Nothing is claimed as new; the claim, if proved, is "machine-checked,
-with an explicit constant".
+(`docs/prior_art.md`, gate of 2026-11-19). A leading term for the same phase is already formalised in Lean
+elsewhere, for Schwartz amplitudes with a remainder in a Fourier-moment norm (`docs/prior_art.md`, second addendum);
+this batch has the remainder in ‖g₃‖₁ with an explicit kernel and constant, for amplitudes that need not be
+Schwartz. Nothing is claimed as new; the claim, if proved, is "machine-checked, with an explicit constant".
 
 Notation. F(x) = ∫_0^x e^{iv²/2} dv (Lean `fresnelPrim x`); L = √π (1 + i)/2 (Lean `fresnelLimit`; it is the limit of
 F at +∞, which is a fact to be proved and is not used to define anything). The kernel: for τ ≥ 0,
@@ -1665,17 +1667,20 @@ What the statements say and do not say (modelling choices and omissions, for the
 2. The amplitude is on the whole line with integrable derivatives; compactly supported functions of class C³ and
    Schwartz functions are amplitudes. End points are not treated: an integral over a bounded interval with an
    amplitude that does not vanish at the ends has contributions of order 1/λ that these statements do not describe.
-3. Continuity of g₃ is not asked. Integrability of g₁ and g₂ is asked although it is believed to follow from that
-   of g and g₃ (not proved, not used as a claim).
+3. Continuity of g₃ is not asked. Integrability of g₁ and g₂ is asked although it follows from that of g and g₃
+   (proved on paper by an external session and re-derived by a checker,
+   `review/2026-11-19-SPL-external-sessions-answers.md`; not proved in Lean, not used as a claim). A statement
+   with two hypotheses is a possible later corollary.
 4. In Lean `∫` is the Bochner integral, which is 0 for a function that is not integrable; `Integrable g` in the
    hypothesis is what makes the first term of R the integral it denotes. `√(2π/λ)` is `Real.sqrt`, and `λ^{−3/2}`
    is `Real.rpow`; both are used only for λ > 0.
 5. SPL-S has the form "there is τ" used by VC2-S for a constant that is a supremum of a profile. It does not say
    where |κ| is largest or what its largest value is.
 6. The number 7/8 in SPL-K is not the best constant. Numerically sup |κ| = 0.7219740, at τ = 1.6246 (registered
-   test; not a Lean theorem). A statement with a rational close to that value (SPL-N) is not in this batch's first
-   freeze: its proof needs certified enclosures of the Fresnel primitive that the library does not have
-   (`docs/proof-SPL.md`, section 5).
+   test, and since then an exact-arithmetic enclosure by an external session, re-run by a checker; not a Lean
+   theorem; the two decimals are rounded). A statement with a rational close to that value (SPL-N) is not in this
+   batch's first freeze: its proof needs certified enclosures of the Fresnel primitive that the library does not
+   have (`docs/proof-SPL.md`, sections 5 and 9).
 7. SPL-A is stated at λ = 1; other λ follow by scaling, which is not stated. It gives no rate in ε.
 8. The remainder is O(λ^{−3/2}) and the statements give no second term of the expansion. Consistency with the
    classical second term, of modulus (√(2π)/2) |g″(0)| λ^{−3/2}: since |g″(0)| ≤ ‖g₃‖₁/2, no constant below
