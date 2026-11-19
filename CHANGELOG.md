@@ -31,7 +31,8 @@ the Schrödinger group on a ring of N sites and on an open chain of M sites,
 - FC-P `ChainFiniteSizeStatement` (`proved_by` `OscInt.API.chainFiniteSize`).
 
 Batch VC2 (`OscInt/Statements/SecondDerivSharp.lean`, stamp `stamps/20261116T222541Z-5b72549117b1`): four new
-entries, the second-derivative van der Corput bound with its sharp classical constant,
+entries, the second-derivative van der Corput bound with its sharp constant sup A (numerically 3.3643…; in Lean
+3.35 < sup A ≤ 7/2),
 - VC2-S `SecondDerivSharpStatement` (`proved_by` `OscInt.API.secondDerivSharp`);
 - VC2-A `SecondDerivAttainedStatement` (`proved_by` `OscInt.API.secondDerivAttained`);
 - VC2-N `Vdc2ProfileBoundStatement` (`proved_by` `OscInt.API.vdc2ProfileBound`);
@@ -46,11 +47,11 @@ the Hadamard walk on the line with explicit and not sharp t^{−1/3} bounds,
 
 `stamps/statements.json` has 86 entries against 65 at v0.6.0: 21 new, all with a proving theorem. No
 existing statement's text, file, commitment or stamp changed. The twenty-one of batches PA, KL, FR, HW and VC2 are
-proved in Lean (build, axiom audit, statement types, kernel re-check per module); those of PA, KL, FR and HW are
-post-proof reviewed, those of VC2 not yet; their isolated replay is pending, so `docs/STATUS.md` does not yet call them machine-checked as stated. The seven of batch FR use
+proved in Lean (build, axiom audit, statement types, kernel re-check per module) and post-proof reviewed; their
+isolated replay is pending, so `docs/STATUS.md` does not yet call them machine-checked as stated. The seven of batch FR use
 lemmas of batch PA; HW-K, HW-D and HW-L use S1.2 and S1.3; HW-R, HW-D and HW-L use thirteen lemmas of the first HW
 sanity layer and one of the sanity layer of batch GD (`docs/STATUS.md`, "Batch HW, what the rows rest on"); VC2-K
-uses the amplitude transfer and two lemmas of batch S1.
+uses four lemmas of batch S1 (the amplitude transfer, the mean value inequality, two on `HasDerivOn`).
 
 ### Proofs
 
@@ -67,8 +68,8 @@ pre-proof reviews (`review/2026-11-16-FR-pre-proof-answers.md`, answers stamped
 (`review/2026-11-17-HW-route-answers.md`), post-proof reviews (`review/2026-11-17-HW-post-proof-answers.md`).
 Batch VC2: blind pre-proof reviews (`review/2026-11-17-VC2-pre-proof-answers.md`, answers stamped
 `stamps/20261117T010311Z-a93c4e1e44f7`), route `docs/proof-VC2.md`, six parts by six proof agents launched together
-with the route referee (`review/2026-11-17-VC2-route-answers.md`); post-proof reviews not yet run. A proof on paper
-of batch VC2 is older than its freeze. Lead, referees and provers are AI agents
+with the route referee (`review/2026-11-17-VC2-route-answers.md`), post-proof reviews
+(`review/2026-11-19-VC2-post-proof-answers.md`). A proof on paper of batch VC2 is older than its freeze. Lead, referees and provers are AI agents
 of one model family.
 
 ### Process and tooling (owner decisions of 2026-11-16)

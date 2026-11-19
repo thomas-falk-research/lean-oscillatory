@@ -26,4 +26,7 @@ leanchecker OscInt.Front.SecondDerivSharpFinal rc=0 3s
 # 46cd12ea0f4f694f7a676a98610a448cbb58cbc56ffc6964e82b00741d47c38a  OscInt/Front/SecondDerivSharpSide.lean
 # cac2d79bbc15c2f403eaf49d06d77f309fc48027fdede283324c9488560c8266  OscInt/Front/SecondDerivSharpProfile.lean
 # fe4d14877b3f26436e717993eb63c3bb6e4dedc1132feedddd7e01209036453a  OscInt/Front/SecondDerivSharpAttained.lean
-# (five equal the deliveries; SecondDerivSharpTail.lean has one line appended by the lead, `end OscInt.SecondDerivSharpAux`)
+# (five equal the deliveries; SecondDerivSharpTail.lean has two lines appended by the lead: an empty line and `end OscInt.SecondDerivSharpAux`)
+# Note added 2026-11-19 (post-proof referee C): only the `leanchecker` lines above are tool output; the statements about the
+# build, the 86 TYPE-OK lines, the consumer example and the axioms are the lead's own lines, and `make quick`
+# (2026-11-17, 02:54:40Z to 03:02:21Z, exit code 0) is recorded in the session log only.

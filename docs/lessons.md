@@ -560,3 +560,10 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     "isolation by instruction"; (b) a brief that allows git lists the commands (`git log`, `git show`, `git diff`,
     `git ls-tree`, `git cat-file`, `git rev-parse`) and forbids every other one by name of the rule, not by
     "read-only"; (c) an agent's report that is returned as text is saved to a file by the lead at once and hashed.
+62. **A usage limit stops the lead and every agent at once, without warning, and for days.** Session 13,
+    2026-11-17 03:15Z to 2026-11-19 09:03Z: two of three post-proof referees were cut off mid-run and the lead with
+    them. Nothing was lost, for three reasons that are rules already and are kept: the tree is frozen while agents
+    run (so nothing was half-written), every unit of work is pushed before the next launch, and launch and finish
+    are recorded separately (so the log showed exactly which launches had no finish). New: a long isolated replay
+    is not started when the remaining allowance is unknown and other agents are running; and when agents are
+    resumed instead of relaunched after such a stop, the answers file says so.

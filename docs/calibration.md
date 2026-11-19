@@ -220,5 +220,6 @@ those statements are faithful, which is the thing being measured.
 
 Rounds not run (2026-11-16/17). No calibration copy with planted errors was given to any referee of batch FR (blind
 pre-proof A and B, the route referee, post-proof A, B and C), to any referee of batch HW (blind pre-proof A and B, the route referee, post-proof A, B and
-C) or to the blind pre-proof referees of batch VC2. The detection rates on this page are those of rounds 1 to 4 and say nothing measured about those reviews; the
+C) or to any referee of batch VC2 (the step referee of the paper proof, blind pre-proof A and B, the route
+referee, post-proof A, B and C). The detection rates on this page are those of rounds 1 to 4 and say nothing measured about those reviews; the
 answers files of the three batches say the same.

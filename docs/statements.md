@@ -1398,6 +1398,18 @@ f. The sanity layer after the reviews: `OscInt/Front/SecondDerivSharpSanity2.lea
    witnesses (four mutations of the exponent of λ or μ, the constant 67/20 in VC2-N and VC2-K, five hypotheses, one
    mutation of the amplitude norm), 2 true weakenings (the statements for exact parabolas only), 4 not detected (the
    range of w in VC2-S from below; f′ in place of f in the exponential; the integrand of VC2-A; the weight of ∫|ψ′|).
+g. Added 2026-11-19 after the post-proof reviews (`review/2026-11-19-VC2-post-proof-answers.md`); the text above is
+   unchanged. (1) "The layer proves no upper bound" (item 6, and the pre-proof answers) is not exact: the first
+   sanity layer proves A(1/2) ≤ 1 and the instance w = 1/2 of VC2-A, and eight witness files of the two plant runs
+   prove A(w) ≤ 26/5 for every w ≤ π; all are older than the stamp and none is used by the proofs. (2) The
+   pre-proof answers say that after a proof of VC2-N the gap of the undetected mutation "range of w in VC2-S cut
+   to [0, 441/200]" closes by itself. It does not: a refutation needs A ≤ c on that range for some c below about
+   3.358, and the proved bound is 7/2. What the proofs settle is that the frozen statements are theorems. (3) No
+   plant mutated the definition of the profile A. Post-proof referee C found one that both sanity layers accept up
+   to a script-only error (the factor 2 replaced by 41/20); it keeps VC2-S and VC2-N true and makes VC2-A false,
+   and the proof of VC2-A rejects it. (4) In the second plant summary, case X1, the value 0.0173 should read
+   0.0167 (2 sin(21)/100); the verdict does not change. (5) The decimal 3.3643… is not a theorem of the library
+   (in Lean: 335007/100000 ≤ A(441/200) and A ≤ 7/2 on [0, π]).
 
 ## Batch HW: the Hadamard walk on the line, an explicit t^{−1/3} bound (session 13, 2026-11-16)
 

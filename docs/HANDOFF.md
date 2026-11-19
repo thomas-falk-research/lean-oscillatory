@@ -22,7 +22,7 @@ below it, and every rule is binding.
   110 minutes, re-armed at once). Then: replay record under `docs/replay/`, STATUS rows to "machine-checked as
   stated", README counts, CHANGELOG. The clean-runner replay on GitHub is a manual dispatch of `verify.yml` on the
   branch (the pull request is a draft, which skips it); its result is in the session log.
-- **Last verified state:** the integration commit of batch VC2: `make quick` exit code 0
+- **Last verified state:** the commit that adds the post-proof answers of batch VC2: `make quick` exit code 0
   (time in the session log). 86 pinned statements; 65 machine-checked as stated; 21 proved, replay pending (PA, KL, FR, HW, VC2); none unproved.
 - **Running or was running** (a launch with no recorded finish in the session log is dead and is relaunched):
   no agent at the time of this commit. Otherwise nothing local; the dispatched `verify.yml` run on 880b537 ended with
@@ -59,9 +59,11 @@ below it, and every rule is binding.
   (`review/2026-11-17-VC2-route-answers.md`). **All four statements are proved in Lean**: six parts
   (`OscInt/Front/SecondDerivSharp{Turn,Head,Tail,Side,Profile,Attained}.lean`), final theorems
   `OscInt/Front/SecondDerivSharpFinal.lean`, consumer example `examples/consumer/ConsumerSecondDerivSharp.lean`,
-  integration checks `docs/replay/2026-11-17-VC2-integration-checks.txt`. Next: three post-proof reviews (a launch
-  with no recorded finish in the session log is dead), answers, then the isolated replay of all five batches.
-  Classical theorem; nothing new.
+  integration checks `docs/replay/2026-11-17-VC2-integration-checks.txt`. Post-proof reviews answered
+  (`review/2026-11-19-VC2-post-proof-answers.md`: FAITHFUL ×4, SOUND ×4, no failing regime; no BLOCKER, no MAJOR;
+  findings against the wording of the records, corrected; not yet stamped). Left: the isolated replay of all five
+  batches and the stamp of the HW and VC2 post-proof answers. The constant is classical; the theorem is classical
+  for f″ ≥ λ by citation only (originals unread); nothing is claimed as new.
 - **Batch HW (the Hadamard walk on the line, explicit t^{−1/3} bound; four statements HW-R, HW-K, HW-D, HW-L):** in
   the tree for its freeze (`OscInt/Statements/HadamardWalk.lean`, sanity layer, plants, challenge,
   `comparator-HW.json`, prose with the route). **Frozen**: stamp `stamps/20261116T225756Z-5792039264f0`, pinned; the same stamp is the stamp of the FR
@@ -74,7 +76,9 @@ below it, and every rule is binding.
   (`review/2026-11-17-HW-post-proof-answers.md`: FAITHFUL ×4, SOUND ×4, no failing regime; no BLOCKER, no MAJOR;
   findings against the records, corrected; not yet stamped). Left: the isolated replay (with PA, KL, FR), and the
   stamp of those answers. A gap the reviews found and nobody closed: no machine-read list says which lemmas a
-  proved statement depends on, so a change to a sanity lemma does not mark the rows that use it. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
+  proved statement depends on, so a change to a sanity lemma does not mark the rows that use it. For the next
+  batch (post-proof review of VC2): planted mutations must also change every definition a statement uses, not only
+  the statement texts. Known mathematics with explicit constants, not sharp; a route on paper is in the prose.
 - **Also done in session 13, each complete on its own:** `docs/design/unlock-map.md` (the map and the plan);
   the quantum-walk protocol `docs/prereg/2026-11-16-CTQW-chain.md` with `experiments/ctqw-chain/` (registered, not run;
   a hardware run needs the owner's approval); the second checker `rust/oscint-cert/` and the differential test;

@@ -1261,7 +1261,7 @@
     "f continuous on [a, b], differentiable on (a, b) with derivative f′",
     "f′(y) − f′(x) ≥ λ (y − x) for a < x ≤ y < b (for instance f″ ≥ λ)"
    ],
-   "conclusion": "there is w ∈ [0, π] with |∫_a^b e^{if}| ≤ A(w)/√λ, where A(w) = 2 ∫_0^{√(2w)} sin(w − u²/2) du: the second-derivative van der Corput bound with its sharp constant sup A = 3.3643… (classical: Kershner)",
+   "conclusion": "there is w ∈ [0, π] with |∫_a^b e^{if}| ≤ A(w)/√λ, where A(w) = 2 ∫_0^{√(2w)} sin(w − u²/2) du: the second-derivative van der Corput bound with its sharp constant sup A (numerically 3.3643…, not a Lean theorem: in Lean 3.35 < sup A ≤ 7/2; classical for f″ ≥ λ by citation, attributed to Kershner, originals unread)",
    "rate": "λ^{-1/2}",
    "uniform_over": "f, a, b (no amplitude, no second derivative needed)",
    "smoothness": "f differentiable on (a, b); f′ may be unbounded at the ends",
@@ -1293,7 +1293,7 @@
    "hypotheses": [
     "0 ≤ w ≤ π"
    ],
-   "conclusion": "A(w) ≤ 7/2 (the supremum is 3.3643175781…; 7/2 is 4 % above it)",
+   "conclusion": "A(w) ≤ 7/2 (numerically the supremum is 3.3643175781…, by ball arithmetic outside Lean; 7/2 is 4 % above it)",
    "rate": "— (a number)",
    "uniform_over": "w ∈ [0, π]",
    "smoothness": "—",
@@ -1313,7 +1313,7 @@
    "conclusion": "|∫_a^b e^{i(φ+px)} ψ| ≤ (7/2) μ^{-1/2} (|ψ(b)| + ∫|ψ′|): S1.2 with the constant 7/2 in place of 8",
    "rate": "μ^{-1/2}",
    "uniform_over": "the linear term p",
-   "smoothness": "φ C² on [a, b] (as S1.2)",
+   "smoothness": "φ continuous on [a, b] with derivative φ′ on (a, b); φ′ continuous on [a, b] with derivative φ″ on (a, b); φ″ need not be continuous (as S1.2)",
    "see_also": [
     "S1.2",
     "S1.k",

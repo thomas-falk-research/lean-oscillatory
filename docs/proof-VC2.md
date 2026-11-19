@@ -153,7 +153,8 @@ route and its brief, and wrote one Lean file in the lead's scratch; none wrote i
 recompiled each file with its final theorems ascribed to the blueprint proposition or frozen statement, printed the
 axioms (all: propext, Classical.choice, Quot.sound), compiled the six files with the assembly and the four final
 theorems as one scratch file, and copied the files in. Five are byte-identical to the deliveries; to the file of
-VC3, which ended without closing its namespace, the lead appended the line `end OscInt.SecondDerivSharpAux`
+VC3, which ended without closing its namespace, the lead appended two lines, an empty one and
+`end OscInt.SecondDerivSharpAux`
 (SHA-256 in the tree: 9e773b13dc5efb77782ffb5b1956ac808d25496f67bb4bea71fc161f79be95fc).
 
 | Part | File | Lines as delivered | SHA-256 of the file as delivered | Deviations from the route (agent's report, in the lead's words) |
@@ -178,3 +179,13 @@ Checks by the lead at integration (2026-11-17, `docs/replay/2026-11-17-VC2-integ
 completed; `StatementTypes.lean` asserts the four types (86 lines TYPE-OK); `leanchecker` on each of the twelve VC2
 modules: exit code 0; the consumer example compiles. Not yet done at this point: the post-proof reviews and the
 isolated replay.
+
+## Corrections after the post-proof reviews (2026-11-19)
+
+`review/2026-11-19-VC2-post-proof-answers.md`. (1) "The theorem is classical" in the first paragraph needs the
+caveat of clarification c of the prose: the constant is classical; the theorem is classical for f″ ≥ λ by citation
+(the originals have not been read here), and whether it is in print for the class of VC2-S is not known to the
+lead. (2) Revision item 1: with the route's rule the subdivision passes from 262 uniform cells on [0, 251/100]
+(post-proof referee C, exact rationals; 200 fail, 400 pass); "about 400" was loose, and the lead has re-run
+neither count. (3) Two lines, not one, were appended to the file of VC3 (corrected above). (4) `Vdc2Side.mono` in
+the assembly is used by no theorem of the batch (the parts VC3 and VC4 carry their own copies); it is left in.

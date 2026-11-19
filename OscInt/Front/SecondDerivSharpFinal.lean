@@ -23,8 +23,9 @@ integrated"); assembly `OscInt/Front/SecondDerivSharpAssembly.lean`; parts
 `OscInt/Front/SecondDerivSharpTail.lean` (from the start of a negative arc the integral of the cosine is `≤ 0`),
 `OscInt/Front/SecondDerivSharpSide.lean` (one side of the turning point, for every rotation),
 `OscInt/Front/SecondDerivSharpProfile.lean` (VC2-N) and `OscInt/Front/SecondDerivSharpAttained.lean` (VC2-A).
-The theorem and its sharp constant are classical (`docs/prior_art.md`, batch VC2). Nothing here is claimed as new
-mathematics.
+The sharp constant is classical; the theorem is classical for `f″ ≥ λ` by citation only (`docs/prior_art.md`,
+batch VC2: the originals have not been read here, and whether the classical statement covers an increment
+condition without a second derivative is not known to the lead). Nothing here is claimed as new mathematics.
 -/
 
 namespace OscInt.API
