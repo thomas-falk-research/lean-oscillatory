@@ -1657,13 +1657,15 @@ R(g, λ) = −i λ^{−3/2} ∫_ℝ g₃(t) κ(√λ t) dt.
 
 **SPL-K (bound with a number).** For every amplitude and every λ > 0: |R(g, λ)| ≤ (7/8) ‖g₃‖₁ λ^{−3/2}.
 
-**SPL-A (attained).** For every τ ≥ 0 and ε > 0 there is an amplitude with g infinitely differentiable, of compact
+**SPL-A (sharpness: attained in the limit, not by an extremiser).** For every τ ≥ 0 and ε > 0 there is an amplitude with g infinitely differentiable, of compact
 support and not identically zero, such that |R(g, 1)| ≥ (|κ(τ)| − ε) ‖g₃‖₁. (With SPL-S: the best constant K in
 |R| ≤ K ‖g₃‖₁ λ^{−3/2} is sup |κ|.)
 
 What the statements say and do not say (modelling choices and omissions, for the reviewer).
 1. The phase is exactly u²/2. A general phase with a nondegenerate stationary point is not treated; it is stage 2
-   of the batch plan and has no statement. The sign of the phase is +: for −u²/2 conjugate.
+   of the batch plan and has no statement. The sign of the phase is +. For the phase −u²/2 and a complex
+   amplitude the rule is R₋(g, λ) = conj(R₊(conj g, λ)), where R₋ has e^{−iλu²/2} and e^{−iπ/4}; it is not stated in
+   Lean in this freeze.
 2. The amplitude is on the whole line with integrable derivatives; compactly supported functions of class C³ and
    Schwartz functions are amplitudes. End points are not treated: an integral over a bounded interval with an
    amplitude that does not vanish at the ends has contributions of order 1/λ that these statements do not describe.
@@ -1687,3 +1689,8 @@ What the statements say and do not say (modelling choices and omissions, for the
    √(2π)/4 = 0.6267 can be true in SPL-K.
 9. Relative to Erdélyi's theorem (one-sided integrals, stationary points and singularities of real order, any
    number of terms): one case only, two-sided, with the term in g″(0) not separated.
+10. Planned for a second freeze of this batch, after a critique of this draft by an external session
+    (`review/2026-11-19-SPL-external-sessions-answers.md`, section 5), and not stated here: a front end for a
+    compactly supported function of class C³ with its canonical derivatives; the phase −u²/2; sharpness for every
+    λ > 0; SPL-N. A user of SPL-K in this freeze supplies the three derivative functions and the four
+    integrability facts.

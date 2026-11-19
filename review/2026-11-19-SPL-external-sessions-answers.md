@@ -101,3 +101,28 @@ Not checked: the report's proof of joint sharpness in full, and most of its tabl
 - Stage 2: target statement from section 3, to be framed, registered and reviewed like any batch.
 - Still unread in the original: Olver (1974), Erdélyi (1955, 1956), Hörmander's and Zworski's books in a clean
   copy. The owner has been asked for copies if a library gives access.
+
+## 5. Critique of the draft statements before the freeze (a fourth session, later the same day)
+
+The owner ran one more session of the same other-family system on two attachments only: the draft Lean statement
+file (SHA-256 12f8d3b6…b40c715, the text committed at a7fa3dc) and the section "Batch SPL" of `docs/statements.md`.
+It could not run Lean and says so. Its report reached the lead as text in the session (no file, so no hash).
+Not checked by a second agent; the lead read it against the statement file and re-derived the items marked below.
+
+Verdicts: SPL-I, SPL-S, SPL-K, SPL-A each FAITHFUL to the prose and true as formalised; no BLOCKER. It checked the
+quantifier order, the coercions, the precedence of the exponent `-(3 : ℝ) / 2`, the Bochner integral under the
+stated integrability, the kernel's definition by cases, and that `HasDerivAt` at every point leaves no freedom in
+`g₁, g₂, g₃`; it derived SPL-I with its sign and scaling on its own, proved 7/8 by an elementary route that does
+not use batch VC2 (polynomial bounds on [0, 2] and a tail from a Laplace-type representation), justified the
+existential form of SPL-S by the argument the proof page now uses, and proved SPL-A by the four-bump construction.
+
+| # | Severity (its own) | Finding (lead's words) | Answer |
+|---|---|---|---|
+| 1 | MAJOR (usability) | A user of SPL-K must supply three derivative functions, three pointwise derivative proofs and four integrability proofs. A corollary for a compactly supported C³ function with canonical derivatives is needed, and a precise theorem for the phase −u²/2: `R₋(g, λ) = conj(R₊(conj g, λ))`; "conjugate" in the prose is right but too short for a complex amplitude. | Accepted. Not by changing the four draft statements (the sanity layer is being built against their text): a second freeze of this batch will state a front end for compactly supported C³ amplitudes, the negative phase, sharpness for general λ, and SPL-N. `docs/statements.md` now gives the conjugation rule exactly and names these as planned statements. |
+| 2 | MAJOR (process) | Twenty-four single-token mutations with explicit data, and four edits that must not be flagged (harmless rewrites). | Accepted. Those not already in the lead's plant list were sent to the sanity-layer agent as an addendum. One corrects the lead's brief: an even extension of the kernel is refuted outright by a Gaussian amplitude (the planted identity makes the remainder vanish by parity), where the brief had expected "not detected before the proof". Re-derived by the lead: with `g₃` odd and an even kernel the integral is 0. |
+| 3 | MINOR | `Integrable g₁` and `Integrable g₂` are redundant, with a one-parameter family of inequalities. | Consistent with section 1, item 6. The statements keep them. |
+| 4 | MINOR | Sharpness for general λ and a normalised form (`‖g₃‖₁ = 1`) should be stated; a nonzero amplitude always has `‖g₃‖₁ > 0`. | Planned statement (item 1). The positivity is used by the sanity layer's consistency theorem. |
+| 5 | NIT | "Attained" in SPL-A means approximated to any tolerance, not an extremiser. The reflexive pin theorems check nothing about content. | The prose label becomes "sharpness (attained in the limit)". The pins are bookkeeping for the commitment tools and were never evidence. |
+
+What the session did not check, by its own account: compilation; the imported file; the paper proof; the
+numerical optimum; attribution.
