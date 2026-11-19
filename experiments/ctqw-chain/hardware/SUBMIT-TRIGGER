@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# A push that changes this file on the working branch starts .github/workflows/ctqw-hardware.yml. The LAST line
+# that does not start with "#" says what to do:
+#   submit N     submit repetition N (1 to 5) to a real device; needs the owner's approval in the GitHub
+#                environment "ibm-hardware" before any step with credentials runs
+#   collect N    fetch the finished job of repetition N (submits nothing)
+# The lead adds a line only on the owner's explicit instruction for that line.
+none

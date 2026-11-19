@@ -113,7 +113,8 @@ SPDX-License-Identifier = "Apache-2.0"
 # experiment package's generated data; the differential-test record: Apache-2.0, as the rest of the software.
 [[annotations]]
 path = [
-  "rust/oscint-cert/**", "experiments/ctqw-chain/*.json", "python/tests/differential-2026-11-16.txt",
+  "rust/oscint-cert/**", "experiments/ctqw-chain/*.json", "experiments/ctqw-chain/hardware/**/*.json",
+  "python/tests/differential-2026-11-16.txt",
   "python/tests/differential-2026-11-16-revision3.txt",
 ]
 SPDX-FileCopyrightText = "2026 Thomas Falk III <research@thomas-falk-research.com>"

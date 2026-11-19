@@ -1,0 +1,141 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: ctqw-hardware
+
+# The registered hardware experiment (docs/prereg/2026-11-16-CTQW-chain.md, Addendum 1): submit one repetition to a
+# real device, or collect a finished one. Nothing here runs unless experiments/ctqw-chain/hardware/SUBMIT-TRIGGER
+# changes on the one branch below, and the last instruction line of that file decides what runs.
+#
+# Three barriers stand before a submission:
+#   1. the lead adds a "submit N" line only on the owner's explicit instruction;
+#   2. the job that holds the credentials uses the environment "ibm-hardware"; the job before it refuses to go on
+#      unless that environment exists and has a required-reviewers rule, so the owner approves each run in GitHub;
+#   3. the script refuses unless the instance is on the no-cost plan and the earlier repetitions are on record.
+# Pull requests, forks and other branches cannot start this workflow. Logs and artifacts are public: the script
+# writes no key, no instance identifier and no account detail.
+
+on:
+  push:
+    branches:
+      - claude/dreamy-ptolemy-7hs5wb
+    paths:
+      - experiments/ctqw-chain/hardware/SUBMIT-TRIGGER
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ctqw-hardware
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    if: ${{ github.repository == 'thomas-falk-research/lean-oscillatory' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      action: ${{ steps.read.outputs.action }}
+      repetition: ${{ steps.read.outputs.repetition }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Read the instruction
+        id: read
+        run: |
+          line="$(grep -v '^#' experiments/ctqw-chain/hardware/SUBMIT-TRIGGER | grep -v '^[[:space:]]*$' | tail -1)"
+          echo "instruction: $line"
+          if [[ "$line" =~ ^(submit|collect)\ ([1-5])$ ]]; then
+            echo "action=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
+            echo "repetition=${BASH_REMATCH[2]}" >> "$GITHUB_OUTPUT"
+          else
+            echo "action=none" >> "$GITHUB_OUTPUT"
+            echo "repetition=0" >> "$GITHUB_OUTPUT"
+            echo "No instruction: nothing will run."
+          fi
+      - name: The approval environment must exist and require a reviewer
+        if: ${{ steps.read.outputs.action == 'submit' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rules="$(gh api "repos/${GITHUB_REPOSITORY}/environments/ibm-hardware" --jq '[.protection_rules[]?.type] | join(",")')" \
+            || { echo "REFUSED: the environment ibm-hardware does not exist or cannot be read. Nothing is submitted."; exit 1; }
+          echo "protection rules: ${rules:-none}"
+          case ",$rules," in
+            *,required_reviewers,*) echo "ok: a reviewer must approve the next job" ;;
+            *) echo "REFUSED: the environment ibm-hardware has no required-reviewers rule. Nothing is submitted."; exit 1 ;;
+          esac
+
+  submit:
+    needs: plan
+    if: ${{ needs.plan.outputs.action == 'submit' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    environment: ibm-hardware
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Pinned Python environment
+        run: |
+          python3 -m venv "$RUNNER_TEMP/q"
+          "$RUNNER_TEMP/q/bin/pip" install --quiet --require-hashes --only-binary=:all: \
+            -r experiments/ctqw-chain/hardware/requirements-py312.txt
+      - name: Submit one repetition (does not wait for the device)
+        env:
+          QISKIT_IBM_TOKEN: ${{ secrets.QISKIT_IBM_TOKEN }}
+          QISKIT_IBM_INSTANCE: ${{ secrets.QISKIT_IBM_INSTANCE }}
+          CTQW_OWNER_APPROVAL: submit repetition ${{ needs.plan.outputs.repetition }}
+          REP: ${{ needs.plan.outputs.repetition }}
+        run: |
+          set +e
+          "$RUNNER_TEMP/q/bin/python" experiments/ctqw-chain/hardware/run_hardware.py submit "$REP" \
+            --out "submit-rep$REP.json" > stdout.txt 2> stderr.txt
+          rc=$?
+          cat stdout.txt
+          tail -1 stderr.txt
+          exit $rc
+      - name: Keep the record
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ctqw-submit-rep${{ needs.plan.outputs.repetition }}
+          path: submit-rep*.json
+          if-no-files-found: warn
+
+  collect:
+    needs: plan
+    if: ${{ needs.plan.outputs.action == 'collect' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Pinned Python environment
+        run: |
+          python3 -m venv "$RUNNER_TEMP/q"
+          "$RUNNER_TEMP/q/bin/pip" install --quiet --require-hashes --only-binary=:all: \
+            -r experiments/ctqw-chain/hardware/requirements-py312.txt
+      - name: Collect one finished repetition (submits nothing)
+        env:
+          QISKIT_IBM_TOKEN: ${{ secrets.QISKIT_IBM_TOKEN }}
+          QISKIT_IBM_INSTANCE: ${{ secrets.QISKIT_IBM_INSTANCE }}
+          REP: ${{ needs.plan.outputs.repetition }}
+        run: |
+          set +e
+          "$RUNNER_TEMP/q/bin/python" experiments/ctqw-chain/hardware/run_hardware.py collect "$REP" \
+            --out "result-rep$REP.json" > stdout.txt 2> stderr.txt
+          rc=$?
+          python3 -c "import json,sys; d=json.load(open('stdout.txt')); print(json.dumps(d, sort_keys=True, separators=(',', ':')))" 2>/dev/null || cat stdout.txt
+          tail -1 stderr.txt
+          exit $rc
+      - name: Keep the record
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ctqw-result-rep${{ needs.plan.outputs.repetition }}
+          path: result-rep*.json
+          if-no-files-found: warn
