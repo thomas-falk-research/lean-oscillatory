@@ -1,8 +1,0 @@
-# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
-#
-# SPDX-License-Identifier: Apache-2.0
-#
-# A push that changes this file on the branch named in .github/workflows/ctqw-access-check.yml runs the access
-# check (experiments/ctqw-chain/hardware/check_access.py). The check submits nothing to any device.
-# One line per requested check: date (UTC), who asked.
-2026-11-19 owner asked for the access check (no submission)

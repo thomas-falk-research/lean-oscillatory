@@ -2,10 +2,15 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# A push that changes this file on the working branch starts .github/workflows/ctqw-hardware.yml. The LAST line
-# that does not start with "#" says what to do:
-#   submit N     submit repetition N (1 to 5) to a real device; needs the owner's approval in the GitHub
-#                environment "ibm-hardware" before any step with credentials runs
-#   collect N    fetch the finished job of repetition N (submits nothing)
-# The lead adds a line only on the owner's explicit instruction for that line.
+# A push that changes this file on the working branch starts .github/workflows/ctqw-hardware.yml, which acts on the
+# LAST LINE of this file and on nothing else. The last line must be exactly one of:
+#   none                 nothing runs
+#   check                read-only access check (submits nothing)
+#   dryrun               one server-side dry run (validated by the service, mock results, no device executes)
+#   submit N             submit repetition N (1 to 5), first attempt, to a real device
+#   submit N attempt A   resubmit repetition N after a rejection before execution (A from 2 to 9)
+#   collect N            fetch the job of repetition N (submits nothing)
+# Anything else, including a trailing space, makes the workflow stop without doing anything.
+# Every action except "none" needs the owner's release of the job in the GitHub environment "ibm-hardware", which
+# is where the credentials live. The lead writes a line here only on the owner's explicit instruction for that line.
 none

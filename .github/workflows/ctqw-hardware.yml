@@ -4,17 +4,18 @@
 
 name: ctqw-hardware
 
-# The registered hardware experiment (docs/prereg/2026-11-16-CTQW-chain.md, Addendum 1): submit one repetition to a
-# real device, or collect a finished one. Nothing here runs unless experiments/ctqw-chain/hardware/SUBMIT-TRIGGER
-# changes on the one branch below, and the last instruction line of that file decides what runs.
+# The registered hardware experiment (docs/prereg/2026-11-16-CTQW-chain.md, Addenda 1 and 2). Nothing here runs
+# unless experiments/ctqw-chain/hardware/SUBMIT-TRIGGER changes on the one branch below; its last line says what.
 #
-# Three barriers stand before a submission:
-#   1. the lead adds a "submit N" line only on the owner's explicit instruction;
-#   2. the job that holds the credentials uses the environment "ibm-hardware"; the job before it refuses to go on
-#      unless that environment exists and has a required-reviewers rule, so the owner approves each run in GitHub;
-#   3. the script refuses unless the instance is on the no-cost plan and the earlier repetitions are on record.
-# Pull requests, forks and other branches cannot start this workflow. Logs and artifacts are public: the script
-# writes no key, no instance identifier and no account detail.
+# Where the approval is. The credentials are meant to be ENVIRONMENT secrets of the environment "ibm-hardware",
+# not repository secrets. Every job that needs them declares that environment, so GitHub holds the job until a
+# required reviewer releases it. The job "gate" refuses to let it start unless the environment exists, has a
+# required-reviewers rule and does not let administrators bypass it. What this workflow cannot check: who the
+# reviewers are, and whether copies of the credentials exist elsewhere (as repository secrets, or outside GitHub).
+# The variable CTQW_GUARD set below is a guard against running the script by accident; it is not an approval.
+#
+# Pull requests, forks and other branches cannot start this workflow. Logs and artifacts are public: the scripts
+# print no key, no instance identifier, no account detail and no raw error trace (standard error is not shown).
 
 on:
   push:
@@ -38,42 +39,64 @@ jobs:
     outputs:
       action: ${{ steps.read.outputs.action }}
       repetition: ${{ steps.read.outputs.repetition }}
+      attempt: ${{ steps.read.outputs.attempt }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Read the instruction
+      - name: Read the instruction (the last line, exactly)
         id: read
         run: |
-          line="$(grep -v '^#' experiments/ctqw-chain/hardware/SUBMIT-TRIGGER | grep -v '^[[:space:]]*$' | tail -1)"
-          echo "instruction: $line"
-          if [[ "$line" =~ ^(submit|collect)\ ([1-5])$ ]]; then
-            echo "action=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
-            echo "repetition=${BASH_REMATCH[2]}" >> "$GITHUB_OUTPUT"
-          else
-            echo "action=none" >> "$GITHUB_OUTPUT"
-            echo "repetition=0" >> "$GITHUB_OUTPUT"
-            echo "No instruction: nothing will run."
+          line="$(tail -n 1 experiments/ctqw-chain/hardware/SUBMIT-TRIGGER)"
+          printf 'last line: [%s]\n' "$line"
+          action=""; rep=0; att=1
+          if [[ "$line" == "none" ]]; then action=none
+          elif [[ "$line" == "check" ]]; then action=check
+          elif [[ "$line" == "dryrun" ]]; then action=dryrun
+          elif [[ "$line" =~ ^submit\ ([1-5])$ ]]; then action=submit; rep="${BASH_REMATCH[1]}"
+          elif [[ "$line" =~ ^submit\ ([1-5])\ attempt\ ([2-9])$ ]]; then action=submit; rep="${BASH_REMATCH[1]}"; att="${BASH_REMATCH[2]}"
+          elif [[ "$line" =~ ^collect\ ([1-5])$ ]]; then action=collect; rep="${BASH_REMATCH[1]}"
+          else echo "REFUSED: the last line is not an instruction. Nothing runs."; exit 1
           fi
-      - name: The approval environment must exist and require a reviewer
-        if: ${{ steps.read.outputs.action == 'submit' }}
+          echo "action=$action" >> "$GITHUB_OUTPUT"
+          echo "repetition=$rep" >> "$GITHUB_OUTPUT"
+          echo "attempt=$att" >> "$GITHUB_OUTPUT"
+          echo "action: $action, repetition: $rep, attempt: $att"
+
+  gate:
+    needs: plan
+    if: ${{ needs.plan.outputs.action != 'none' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: The approval environment must exist, require a reviewer and allow no bypass
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          rules="$(gh api "repos/${GITHUB_REPOSITORY}/environments/ibm-hardware" --jq '[.protection_rules[]?.type] | join(",")')" \
-            || { echo "REFUSED: the environment ibm-hardware does not exist or cannot be read. Nothing is submitted."; exit 1; }
-          echo "protection rules: ${rules:-none}"
+          json="$(gh api "repos/${GITHUB_REPOSITORY}/environments/ibm-hardware")" \
+            || { echo "REFUSED: the environment ibm-hardware does not exist or cannot be read. Nothing runs."; exit 1; }
+          rules="$(jq -r '[.protection_rules[]?.type] | join(",")' <<<"$json")"
+          bypass="$(jq -r '.can_admins_bypass' <<<"$json")"
+          reviewers="$(jq -r '[.protection_rules[]? | select(.type=="required_reviewers") | .reviewers[]?] | length' <<<"$json")"
+          echo "protection rules: ${rules:-none}; reviewers listed: $reviewers; administrators can bypass: $bypass"
           case ",$rules," in
-            *,required_reviewers,*) echo "ok: a reviewer must approve the next job" ;;
-            *) echo "REFUSED: the environment ibm-hardware has no required-reviewers rule. Nothing is submitted."; exit 1 ;;
+            *,required_reviewers,*) ;;
+            *) echo "REFUSED: ibm-hardware has no required-reviewers rule. Nothing runs."; exit 1 ;;
           esac
+          [[ "$reviewers" -ge 1 ]] || { echo "REFUSED: no reviewer is listed. Nothing runs."; exit 1; }
+          [[ "$bypass" == "false" ]] || { echo "REFUSED: administrators can bypass the rule. Nothing runs."; exit 1; }
+          echo "ok: a reviewer must release the next job"
 
-  submit:
-    needs: plan
-    if: ${{ needs.plan.outputs.action == 'submit' }}
+  run:
+    needs: [plan, gate]
+    if: ${{ needs.plan.outputs.action != 'none' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     environment: ibm-hardware
+    env:
+      ACTION: ${{ needs.plan.outputs.action }}
+      REP: ${{ needs.plan.outputs.repetition }}
+      ATT: ${{ needs.plan.outputs.attempt }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -83,59 +106,33 @@ jobs:
           python3 -m venv "$RUNNER_TEMP/q"
           "$RUNNER_TEMP/q/bin/pip" install --quiet --require-hashes --only-binary=:all: \
             -r experiments/ctqw-chain/hardware/requirements-py312.txt
-      - name: Submit one repetition (does not wait for the device)
+      - name: Run the one requested action
         env:
           QISKIT_IBM_TOKEN: ${{ secrets.QISKIT_IBM_TOKEN }}
           QISKIT_IBM_INSTANCE: ${{ secrets.QISKIT_IBM_INSTANCE }}
-          CTQW_OWNER_APPROVAL: submit repetition ${{ needs.plan.outputs.repetition }}
-          REP: ${{ needs.plan.outputs.repetition }}
         run: |
           set +e
-          "$RUNNER_TEMP/q/bin/python" experiments/ctqw-chain/hardware/run_hardware.py submit "$REP" \
-            --out "submit-rep$REP.json" > stdout.txt 2> stderr.txt
+          py="$RUNNER_TEMP/q/bin/python"
+          dir=experiments/ctqw-chain/hardware
+          case "$ACTION" in
+            check)   "$py" "$dir/check_access.py" > stdout.txt 2> stderr.txt ;;
+            dryrun)  CTQW_GUARD="dry run" "$py" "$dir/run_hardware.py" dryrun --out dryrun.json > stdout.txt 2> stderr.txt ;;
+            submit)  CTQW_GUARD="submit repetition $REP attempt $ATT" "$py" "$dir/run_hardware.py" submit "$REP" "$ATT" \
+                       --out "submit-rep$REP-a$ATT.json" > stdout.txt 2> stderr.txt ;;
+            collect) "$py" "$dir/run_hardware.py" collect "$REP" --out "result-rep$REP.json" > stdout.txt 2> stderr.txt ;;
+            *)       echo "unknown action" > stdout.txt; false ;;
+          esac
           rc=$?
           cat stdout.txt
-          tail -1 stderr.txt
+          echo "exit code: $rc; lines on standard error (not shown): $(wc -l < stderr.txt)"
           exit $rc
       - name: Keep the record
         if: ${{ always() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: ctqw-submit-rep${{ needs.plan.outputs.repetition }}
-          path: submit-rep*.json
-          if-no-files-found: warn
-
-  collect:
-    needs: plan
-    if: ${{ needs.plan.outputs.action == 'collect' }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Pinned Python environment
-        run: |
-          python3 -m venv "$RUNNER_TEMP/q"
-          "$RUNNER_TEMP/q/bin/pip" install --quiet --require-hashes --only-binary=:all: \
-            -r experiments/ctqw-chain/hardware/requirements-py312.txt
-      - name: Collect one finished repetition (submits nothing)
-        env:
-          QISKIT_IBM_TOKEN: ${{ secrets.QISKIT_IBM_TOKEN }}
-          QISKIT_IBM_INSTANCE: ${{ secrets.QISKIT_IBM_INSTANCE }}
-          REP: ${{ needs.plan.outputs.repetition }}
-        run: |
-          set +e
-          "$RUNNER_TEMP/q/bin/python" experiments/ctqw-chain/hardware/run_hardware.py collect "$REP" \
-            --out "result-rep$REP.json" > stdout.txt 2> stderr.txt
-          rc=$?
-          python3 -c "import json,sys; d=json.load(open('stdout.txt')); print(json.dumps(d, sort_keys=True, separators=(',', ':')))" 2>/dev/null || cat stdout.txt
-          tail -1 stderr.txt
-          exit $rc
-      - name: Keep the record
-        if: ${{ always() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: ctqw-result-rep${{ needs.plan.outputs.repetition }}
-          path: result-rep*.json
-          if-no-files-found: warn
+          name: ctqw-${{ needs.plan.outputs.action }}-rep${{ needs.plan.outputs.repetition }}-a${{ needs.plan.outputs.attempt }}
+          path: |
+            dryrun.json
+            submit-rep*.json
+            result-rep*.json
+          if-no-files-found: ignore

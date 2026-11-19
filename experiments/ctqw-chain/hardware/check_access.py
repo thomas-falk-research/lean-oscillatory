@@ -6,7 +6,7 @@
 
 It SUBMITS NOTHING: no job, no circuit and no session is sent to any device. It only
   1. authenticates to the service with the credentials in the environment,
-  2. reads the plan and the usage allowance of the active instance,
+  2. reads the plan of the active instance and whether its allowance covers the estimate (no figures are printed),
   3. lists the devices the registered rule would choose from, with their queue lengths,
   4. compiles the eight registered circuits locally for one candidate device (registered optimisation level and
      seed) and estimates the device time of the registered run from the device's own timing data.
@@ -95,7 +95,10 @@ def main():
     import qiskit_ibm_runtime
     out["versions"] = {"python": sys.version.split()[0], "qiskit": qiskit.__version__,
                        "qiskit_ibm_runtime": qiskit_ibm_runtime.__version__}
-    if len(sys.argv) == 3 and sys.argv[1] == "--fake":
+    if len(sys.argv) not in (1, 3) or (len(sys.argv) == 3 and sys.argv[1] != "--fake"):
+        print("usage: check_access.py [--fake NAME]")
+        return 2
+    if len(sys.argv) == 3:
         import qiskit_ibm_runtime.fake_provider as fake
         backend = getattr(fake, sys.argv[2])()
         out["mode"] = "self-test on a simulated device; no credentials used"
@@ -130,8 +133,8 @@ def main():
         out["active_instance_plan"] = plan
         step = "usage"
         usage = service.usage()
-        out["usage"] = {k: v for k, v in usage.items()
-                        if isinstance(v, (int, float, bool)) and ("usage" in k or "seconds" in k or "limit" in k)}
+        out["usage_limit_reached"] = bool(usage.get("usage_limit_reached"))
+        remaining = usage.get("usage_remaining_seconds")
         step = "devices"
         backends = service.backends(min_num_qubits=MIN_QUBITS)
         listed = [describe_backend(b) for b in backends]
@@ -144,6 +147,9 @@ def main():
         step = "compile and estimate"
         candidate = min(ok, key=lambda b: (b.status().pending_jobs, b.name))
         out["estimate"] = estimate(candidate)
+        need = out["estimate"]["estimated_device_seconds_registered_run"]
+        out["allowance_at_least_three_times_the_estimate"] = (
+            bool(remaining >= 3 * need) if isinstance(remaining, (int, float)) and need else None)
         out["result"] = "OK: authenticated; nothing was submitted"
     except Exception as exc:
         out["result"] = f"FAILED at step '{step}': {type(exc).__name__}"

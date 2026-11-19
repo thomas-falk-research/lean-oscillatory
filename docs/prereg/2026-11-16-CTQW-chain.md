@@ -154,6 +154,50 @@ submitted; the stamp directory is named in the run log.
    the layout, the raw counts as returned, and the bit order used to convert them to "site 0 left-most". The
    instance identifier and any account detail are not recorded in the repository.
 
+## Addendum 2 (registered before any hardware run): what Addendum 1 left open
+
+Added on 2026-11-19, before any job has been sent to any device and before the commit that holds it is stamped; the
+stamp directory is named in the run log. It follows a fresh-context review of the run script
+(`experiments/ctqw-chain/hardware/run_hardware.py`) that found points which Addendum 1 would have left to chance or
+to the lead's judgement at run time. It changes no circuit, no shot number, no tolerance, no analysis and no
+decision rule. Everyone who wrote or checked it is an instance of one AI model family; no human has reviewed it.
+
+1. **Device, ties.** If several devices share the fewest pending jobs at the first submission, the first in the
+   alphabetical order of their names is used. (On 2026-11-19 three devices were visible, each with no pending job;
+   a tie is the expected case.) "Operational" is the flag the service reports under that name; the status text is
+   recorded and does not enter the rule.
+2. **Qubits.** Each of the eight circuits is compiled on its own, at each submission, against the device as it
+   then is; the circuits of one chain may therefore sit on different qubits at different times and in different
+   repetitions. The qubit measured for each site and every qubit a circuit touches are recorded.
+3. **Primitive.** "The Sampler primitive (version 2)" is `SamplerV2` as exported by the pinned client
+   (qiskit-ibm-runtime 0.52.1), which sends a program to the service's executor; the class and the program
+   identifier are recorded with each job.
+4. **Limit per job.** 60 seconds of device time (the estimate is about 8 seconds per job). If the service refuses
+   that value, the refusal is a rejection before execution.
+5. **Spacing.** A repetition is not submitted less than one hour after the previous one; the script refuses.
+6. **Failures (Addendum 1, item 6, made testable).** Every job carries the tags `ctqw-chain-2026-11-16` and
+   `ctqw-chain-repN-aA` (repetition N, attempt A). Before a submission the script asks the service for a job with
+   that tag and refuses if one exists. A job that ends without results gets a failure record (status, the
+   service's reason, time stamps, usage). It counts as **executed** if the service reports device usage above zero
+   or a time stamp for the start of its run; it is then the datum of that repetition (INVALID by the registered
+   rule, since it has no counts) and is not repeated. Otherwise it was **rejected before execution** and may be
+   resubmitted unchanged as the next attempt; the classification is written into the submit record by the lead
+   after the owner has seen the failure record.
+7. **Record.** For every job: the counts as returned and the converted counts (site 0 left-most), the options
+   actually set on the sampler, the calibration data of the touched qubits at submission and as recorded with the
+   job, the candidates and their queue lengths at submission, the compiled two-qubit gate counts beside those of
+   section 4. Not recorded anywhere in the repository, in a log or in an artifact: the key, any instance or account
+   identifier, the instance's usage figures. (The access check of 2026-11-19, 14:09Z, printed the plan name and the
+   allowance figures in a public log before this item existed.)
+8. **Joining the five results.** `run_hardware.py merge` joins the five result files into the one file that the
+   registered `analysis.py` reads; it changes no count.
+9. **Dry run (not data).** Before the first submission one server-side dry run of the same eight circuits may be
+   made: the service validates the job and returns mock results, and no device executes anything. It tests that
+   the service accepts the job and that the result can be decoded. It cannot change anything in this protocol.
+10. **Approval.** The credentials are held as secrets of a GitHub environment with the owner as required
+    reviewer; every job that uses them, including the read-only ones, waits for the owner's release. The lead
+    writes an instruction into the trigger file only on the owner's explicit word for that instruction.
+
 ## Run log
 
 No run yet.
