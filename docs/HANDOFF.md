@@ -23,7 +23,7 @@ below it, and every rule is binding.
   found; Olver 1974 unread), registered numeric test PASS 12 of 12 (`docs/prereg/LEDGER.md`), proof on paper in
   its second version (`docs/proof-SPL.md`), plan referee answered
   (`review/2026-11-19-SPL-plan-referee-answers.md`). **Exact next step:** write "Batch SPL" in
-  `docs/statements.md` and `OscInt/Statements/StationaryLeading.lean` (statements SPL-I, SPL-S, SPL-K with 7/8,
+  `docs/statements.md` and a new statement file StationaryLeading.lean under OscInt/Statements/ (statements SPL-I, SPL-S, SPL-K with 7/8,
   SPL-A; class: C³ with `g, g′, g″, g‴` integrable; SPL-N is not in this freeze) with a sanity layer and recorded
   plants, challenge file and comparator; `make quick`; freeze, `make stamp`, pins; then two blind referees. A
   draft of the Lean statements is in the lead's scratch only and is lost with the container; the definitions are
