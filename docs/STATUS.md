@@ -359,3 +359,12 @@ proofs and of these records. The three stamps of these batches are also anchored
 parameter points only; referee C exhibited six further false variants of the statements that contradict no sanity
 datum (`review/2026-11-16-PA-KL-post-proof-answers.md`). The proofs exclude every false variant; that the frozen text
 is not weaker than intended rests on the fidelity reviews and on the data where the bounds are attained.
+External review of batch PA (2026-11-19, an AI system of another model family that could not run Lean;
+`review/2026-11-19-PA-external-review-answers.md`): PA-C, PA-T and LC-1 faithful, true by arguments of its own,
+route sound; eight findings against records and tooling, none against a statement, all confirmed by the lead and
+answered. The one that touches this page's vocabulary for every row, not only these six: the replay driver's
+scan of checker output for PANIC/error/problem could be switched off by a checker's success phrase
+(`tools/src/bin/replay.rs`, since the first commit). It is fixed and has a regression test. Whether the hole was
+ever open in the replay of record is answered from raw output in the answers file; until that section is
+complete, "machine-checked as stated" rests on exit codes, acceptance lines and a scan that was weaker than
+described.

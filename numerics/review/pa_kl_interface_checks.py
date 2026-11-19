@@ -6,7 +6,11 @@
 Blueprint/KusminLandau.lean; routes docs/proof-PA.md, docs/proof-KL.md), run by the lead before the route referees.
 Tooling, not evidence for a Lean theorem: each intermediate proposition is tested on samples in the shape the
 blueprint states it. Arb balls throughout; an equality passes only if the two enclosures overlap and are narrower
-than 1e-25; an inequality passes only if it holds for the whole enclosures.
+than 1e-25; an inequality passes only if it holds for the whole enclosures. One exception, counted in the output: the
+first J4 family contains exact equality cases (lam = 1/2, all differences 1/2), which no enclosure decides; a
+comparison of that family that is not decided is accepted if it holds with 1e-25 added to the right-hand side.
+A control passes only if the violation (or the difference) is certified on the whole enclosures; an undecided
+comparison does not count as a failed bound.
 
 PA  I1  ContourShiftFacts: the Fourier integral on the real line against the one at height b, b = +-a/2 and
         +-0.95a, for the five functions of pa_statement_checks.py and k = -4..4.
@@ -32,6 +36,9 @@ bound M/(e^{aN} - 1) on the extremal sequence; J4 with cot(pi lam) in place of c
 sequence c = (0, 1/3) at lam = 1/3; J5 with a derivative that leaves the cell (u = lam/2).
 Added after the route referee of batch KL (2026-11-16): the boundary and extremal sequences of J4, J5 and its
 control, and the corrected name of the J4 control (the referee's findings F1 and F5).
+Changed after the external review of batch PA (2026-11-19): I2 is tested against the tail itself (it was tested with
+1e-25 added, which the description did not say); the slack of J4 is applied only to undecided comparisons and
+counted; the controls of I1, I3 and J4 require a certified violation (they accepted an undecided comparison).
 
 Usage: python3 -I numerics/review/pa_kl_interface_checks.py
 """
@@ -69,6 +76,11 @@ def le(x, y):
     return bool(y - x >= 0)
 
 
+def differ(x, y):
+    """Certified: the two enclosures are disjoint."""
+    return not (acb(x) - acb(y)).contains(0)
+
+
 def report(name, ok, detail):
     results.append((name, ok))
     print(f"{name}: {'PASS' if ok else 'FAIL'}  {detail}")
@@ -89,8 +101,8 @@ for name, (f, M, As) in FUNCS.items():
                 bad += not same(base, shifted(f, k, a * arb(frac)))
 report("I1 contour shift", bad == 0, f"{n} comparisons, {bad} not equal")
 f3 = FUNCS["f3"][0]
-ctrl = same(shifted(f3, 1, arb(0)), shifted(f3, 1, arb("-0.8")))
-report("I1 control (height beyond the pole must differ)", not ctrl, f"equal: {ctrl}")
+ctrl = differ(shifted(f3, 1, arb(0)), shifted(f3, 1, arb("-0.8")))
+report("I1 control (height beyond the pole must differ)", ctrl, f"certified different: {ctrl}")
 
 # I2
 n = bad = 0
@@ -103,7 +115,7 @@ for name, (f, M, As) in FUNCS.items():
         x = arb(xs)
         s = sum((c[k] * (I * k * x).exp() for k in range(-K, K + 1)), acb(0))
         n += 1
-        bad += not le(abs(f(acb(x)) - s), tail + TOL)
+        bad += not le(abs(f(acb(x)) - s), tail)
 report("I2 Fourier series at real points", bad == 0, f"{n} comparisons (K = 40), {bad} outside the tail bound")
 
 # I3
@@ -132,7 +144,7 @@ for K in (3, 12, 60, 240):
     ratios.append((K, lhs / (2 * M / ((a * N).exp() - 1)), lhs / (M / ((a * N).exp() - 1))))
 ok = all(bool(r < 1) for _, r, _ in ratios) and bool(ratios[-1][1] > arb("0.999999"))
 report("I3 extremal sequence (ratio below 1, tending to 1)", ok, "; ".join(f"K={K}: {r.str(8)}" for K, r, _ in ratios))
-report("I3 control (half the bound must fail on the extremal sequence)", not bool(ratios[-1][2] <= 1), f"ratio to M/(e^(aN)-1): {ratios[-1][2].str(8)}")
+report("I3 control (half the bound must fail on the extremal sequence)", bool(ratios[-1][2] > 1), f"ratio to M/(e^(aN)-1): {ratios[-1][2].str(8)}")
 
 # I4
 n = bad = 0
@@ -199,7 +211,7 @@ for _ in range(100):
     y = x / 2
     bad += not le(cot(y), 1 / y)
 report("J3 half-angle identities and cot x <= 1/x", bad == 0, f"{n} points, {bad} failures")
-n = bad = 0
+n = bad = slack = 0
 worst = 0.0
 for _ in range(300):
     lam = arb(rng.randint(1, 500)) / 1000
@@ -213,9 +225,11 @@ for _ in range(300):
     lhs = abs(sum((e(x) for x in c), acb(0)))
     rhs = cot(PI * lam / 2)
     n += 1
-    bad += not le(lhs, rhs + TOL)
+    if not le(lhs, rhs):
+        slack += 1
+        bad += not le(lhs, rhs + TOL)
     worst = max(worst, float((lhs / rhs).mid()))
-report("J4 core inequality, k = 0", bad == 0, f"{n} sequences, {bad} violations, largest ratio {worst:.6f}")
+report("J4 core inequality, k = 0", bad == 0, f"{n} sequences, {bad} violations, {slack} undecided and accepted with slack 1e-25, largest ratio {worst:.6f}")
 n = bad = 0
 worst = 0.0
 for _ in range(300):
@@ -249,7 +263,7 @@ report("J4 Landau's sequences attain the bound", ok, "; ".join(f"lam={a}/{b}: ra
 
 lam = arb(1) / 3
 lhs = abs(sum((e(lam * j) for j in range(2)), acb(0)))  # c = (0, 1/3): |1 + e(1/3)| = 1
-report("J4 control (cot(pi lam) must fail at lam = 1/3)", not bool(lhs <= cot(PI * lam)), f"|S| = {lhs.str(8)}, cot(pi/3) = {cot(PI * lam).str(8)}, cot(pi/6) = {cot(PI * lam / 2).str(8)}")
+report("J4 control (cot(pi lam) must fail at lam = 1/3)", bool(lhs > cot(PI * lam)), f"|S| = {lhs.str(8)}, cot(pi/3) = {cot(PI * lam).str(8)}, cot(pi/6) = {cot(PI * lam / 2).str(8)}")
 
 
 

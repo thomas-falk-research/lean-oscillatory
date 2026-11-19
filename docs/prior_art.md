@@ -155,6 +155,14 @@ by the agent, none built or audited; the lead read its report, not the sources).
   (`Mathlib/MeasureTheory/Integral/IntervalIntegral/TrapezoidalRule.lean`), its contour-shift lemmas for q-expansions
   on the half-plane, and Bernstein-ellipse analogues in `TSGut/LeanFun`. Open Mathlib pull requests and the Lean
   Zulip archive were not searched.
+- Added 2026-11-19 (named by the external review of batch PA; the entry page and the session's theory listing were
+  fetched that day, the theory files were not read): M. Eberl, *Bessel Functions of the First Kind*, Archive of
+  Formal Proofs, submitted 3 July 2026, Isabelle session `Bessel` with theories `Bessel` and
+  `Bessel_Hankel_Integral`. By its abstract it has J_a and I_a with the series definition, contiguous relations,
+  derivatives, half-integer closed forms and a contour-integral representation of J_a. The entry page names no
+  Kapteyn-type inequality and no bound outside the light cone; whether the theories contain one is not known here.
+  It is the nearest formal Bessel development found outside Lean. It was online when the "titles only" sweep
+  above was made (2026-11-16), and that sweep did not report it.
 - The mathematics is classical and the paper says so: its Theorem 3.2 "is essentially" Theorem 1 of Davis (1959).
   The agent flags one sentence of the paper's proof sketch (after its (3.18)) as naming the wrong direction of the
   contour shift for negative indices; the route for PA-C takes the direction from the formula, not from that sentence.

@@ -25,15 +25,32 @@ below it, and every rule is binding.
   with success (clean-runner replay of everything; session log).
 - **Exact next command:** read the session log's last rows. Nothing is owed for the five batches of session 13
   except the Bitcoin anchor of the last stamp (`20261119T124850Z-9ae784e80e32`: run `make anchors` a day or more after
-  2026-11-19). An external review by a model of another family was prepared by the owner on 2026-11-19; if its
-  reports arrive, answer them finding by finding under `review/`. Then the next statements
-  (`docs/design/unlock-map.md`). A release is the owner's decision (`docs/policy.md`).
+  2026-11-19). Then the next statements (`docs/design/unlock-map.md`). A release is the owner's decision
+  (`docs/policy.md`).
+- **External review (2026-11-19, run by the owner with an AI system of another model family, one batch per
+  conversation, pinned to 9ae784e; it cannot run Lean).** Reports answered: VC2
+  (`review/2026-11-19-VC2-external-review-answers.md`) and PA (`review/2026-11-19-PA-external-review-answers.md`).
+  Reports not yet received: KL, FR, HW. For each: check its access log, verify every finding by command before
+  accepting or rejecting it, answer finding by finding under `review/`, do not commit the report (rule 19; record
+  its hash). Known flaw of the request: the route pages given for the proof phase restate earlier reviews, so that
+  phase is not blind (lesson 64d). What the two reports changed is in lessons 64 and 65; the PA report found a
+  hole in the replay driver's output scan (fixed; the session log says whether the fail-closed rerun with raw
+  output has finished and what it showed).
 - **Owner decisions of 2026-11-16, done:** rules 7, 18, 20, 21, 22 (`docs/lessons.md`) with their tools
   (`tools/push_gate.py`, `tools/replay_preflight.py`, the status rule in `tools/check_docs.py`, `tools/ots_anchor.py`
-  and `anchors/ots/`); draft pull request 19. **Parked by the owner on 2026-11-16:** the hardware run on IBM Quantum (Addendum 1 of
-  `docs/prereg/2026-11-16-CTQW-chain.md` is written and must be stamped before any job; IBM accepts only a one-hour
-  token made from the owner's API key, and making it did not work on the owner's side; the run script and the
-  dress rehearsal are not written; the simpler route is a script the owner runs locally).
+  and `anchors/ots/`); draft pull request 19.
+- **Hardware run on IBM Quantum (pre-registration `docs/prereg/2026-11-16-CTQW-chain.md` with Addenda 1 and 2):
+  built and reviewed three times, nothing submitted, nothing may be submitted without the owner's word for that
+  one instruction.** Files under `experiments/ctqw-chain/hardware/`: `run_hardware.py` (rehearse, dryrun, submit,
+  collect, locate, merge), `check_access.py`, hash-pinned `requirements-py312.txt`, a rehearsal on a fake device
+  (not data), `records/submitted.json` (empty), `SUBMIT-TRIGGER` (last line `none`). The workflow
+  `.github/workflows/ctqw-hardware.yml` runs on a push that changes `SUBMIT-TRIGGER` and refuses unless the GitHub
+  environment `ibm-hardware` exists with a required reviewer and no administrator bypass, and unless no credential
+  is visible outside that environment. Waiting on the owner: create that environment, move the two secrets into it,
+  delete the repository-level secrets. Owed by the lead before the first submission: `make stamp` of the commit
+  with the final script and Addendum 2. The access check of 2026-11-19 (plan "open", 600 s, three devices of 156
+  qubits) and every review pass are in the session log. The session's container holds the same credentials in its
+  environment; they are not to be used from here.
 - **Batch FR (finite ring, open chain; seven statements FR-K, FR-U, FR-S, FR-P, FC-K, FC-U, FC-P):** in the tree
   for its freeze: `OscInt/Statements/FiniteRing.lean`, sanity layer `OscInt/Front/FiniteRingSanity.lean` with planted
   controls (`docs/replay/2026-11-16-FR-sanity-plants.txt`), `Challenge/FiniteRing.lean`, `comparator-FR.json`, prose in

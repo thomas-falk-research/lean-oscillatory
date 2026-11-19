@@ -580,3 +580,18 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     Rule: say what a named version of a text contains, never what its author knew. (d) Packets for a blind phase:
     the route page carried the history of earlier reviews. Rule: a page given to a blind reader ends before any
     section that restates reviews, or those sections live in another file.
+65. **What the second external report found (PA, 2026-11-19): acceptance rules that were weaker than their
+    descriptions.** (a) The replay driver exempted a checker's success phrase by switching its scan for
+    PANIC/error/problem off for the whole output; it had been so since the first commit, through every review.
+    Rule: an exemption in an output filter removes the exempt text and nothing else; every acceptance rule of a
+    driver has a test whose input contains the exempt text together with something that must be rejected; the raw
+    output of every checker step is kept. (b) Check scripts whose description said "at most the bound" tested "the
+    bound plus 1e-25", and controls passed when a comparison was merely undecided. In a sibling script the slack
+    had been deciding 46 of 120 comparisons, because the bound was below the working precision. Rule: description
+    and code state the same predicate; a tolerance is named in the description and the output counts the
+    comparisons it decided; a control passes only on a certified violation; a tolerance added because a test fails
+    is a symptom to diagnose before it is a fix. (c) When a review finds a pattern in one file, sweep its siblings
+    the same day; the pattern is rarely alone. (d) A false-alarm rate needs controls fixed and judged before the
+    referee runs; rows the referee itself calls sound are not controls. (e) While fixing (a) the lead wrote into a
+    comment what a tool prints before having its raw output; the sentence was false and was removed before the
+    commit. A statement about a tool's output is a number like any other: after the command.

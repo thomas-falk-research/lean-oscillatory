@@ -14,7 +14,7 @@ planted statement error, and how often it raises a false alarm on an unmodified 
 | 1+2 pooled | | | 8 | 8 | 1.00, [0.630, 1.00] | 4 | 0 (0/4, upper bound 0.603) |
 | 3 | 2026-11-16 | batches PA and KL (six statements) | 8 (definition ×3, hypothesis ×2, conclusion ×2, precedence), planted by the lead's script in text-only snapshots | 8 | 1.00, [0.630, 1.00] | 2 (the genuine reviews) | 0 (0/2, upper bound 0.842) |
 | 1+2+3 pooled | | | 16 | 16 | 1.00, [0.794, 1.00] | 6 | 0 (0/6, upper bound 0.460) |
-| 4 (route referee; not pooled) | 2026-11-16 | the routes of batches PA and KL | 8 (a wrong direction, wrong constants ×2, a wrong identity ×2, a false cited fact, an interval closed where it must be open, a wrong factor in a blueprint proposition), planted by the lead | 8 | 1.00, [0.630, 1.00] | 5 sound rows of the referee's own table | 0 (0/5, upper bound 0.522) |
+| 4 (route referee; not pooled) | 2026-11-16 | the routes of batches PA and KL | 8 (a wrong direction, wrong constants ×2, a wrong identity ×2, a false cited fact, an interval closed where it must be open, a wrong factor in a blueprint proposition), planted by the lead | 8 | 1.00, [0.630, 1.00] | none fixed in advance | not measured (the printed "0/5, upper bound 0.522" is withdrawn: correction of 2026-11-19 below) |
 
 Correction, 2026-11-13 (external R3 packet, `review/2026-11-13-external-R3-answers.md`): the bounds in this table are now
 rounded outwards (lower bounds down, upper bounds up). Before, they were rounded to nearest, and three printed values
@@ -207,6 +207,16 @@ Result. 8 of 8 planted errors found, each with the right correction (table in
 (1/40)^{1/8} = 0.63058, rounded down). No sound part was reported as wrong: 0 of the 5 rows the referee itself marked
 sound; upper bound 1 − (1/40)^{1/5} = 0.52182, rounded up to 0.522. The referee graded the false blueprint bound as a
 BLOCKER and gave a counterexample; it graded two wrong citations as MAJOR and five slips as MINOR.
+
+Correction, 2026-11-19 (external review of batch PA, `review/2026-11-19-PA-external-review-answers.md`). The
+false-alarm figure of this round is withdrawn. Its denominator, "the 5 rows the referee itself marked sound", was
+not fixed before the report and was chosen by the referee under test: a row the referee marks sound cannot also be
+a row it reports as wrong, so "0 of 5" was certain in advance and the bound 0.522 measures nothing. What the
+record supports is a count without a rate: besides the eight plants the report made three further remarks, all on
+the unplanted text, and the lead judged the three correct and took them into the route. No set of sound
+controls was prepared and scored independently in this round; the same sentence in
+`review/2026-11-16-PA-KL-route-answers.md` is a review record and stands as written, with this correction. The
+detection figure (8 of 8) is unaffected. A false-alarm rate needs controls fixed and judged before launch.
 
 Limits. One referee and one run; eight plants, all single-line, chosen by the same lead who wrote the routes; the
 key was sealed by a hash in the session log, not by a timestamp authority; the genuine referees saw more material

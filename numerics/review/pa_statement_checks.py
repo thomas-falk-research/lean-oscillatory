@@ -4,7 +4,9 @@
 # SPDX-License-Identifier: Apache-2.0
 """Certified truth checks of the batch-PA statements (OscInt/Statements/PeriodicAnalytic.lean) on sample functions,
 run by the lead before the freeze. Tooling, not evidence for a Lean theorem. Arb balls throughout; a comparison
-passes only if it holds for the whole enclosures.
+passes only if it holds for the whole enclosures, and a comparison the enclosures do not decide counts as not passed.
+(Until 2026-11-19 an undecided PA-C comparison with midpoints closer than 1e-30 was accepted, against this
+description; the recorded run of 2026-11-16 printed no such line. Removed after the external review of batch PA.)
 
 Functions, each with the strip half-width a and a bound M valid on |Im z| < a:
   f1  7 cos(3z),            M = 7 cosh(3a)                       (entire; the extremal shape for PA-T)
@@ -14,7 +16,7 @@ Functions, each with the strip half-width a and a bound M valid on |Im z| < a:
   f5  e^{i t cos z},        M = e^{|t| sinh a},       t = 3      (the lattice-kernel integrand)
 PA-C: |int_0^{2pi} v e^{-ik theta}| <= 2 pi M e^{-a|k|};   PA-T: |I_N - I| <= 4 pi M / (e^{aN} - 1).
 LC-1 is check K3 of numerics/review/unlock_chain_checks.py.
-Controls (each must fail): PA-T with 2 pi for f1 (N = 3, a = 1/2); PA-T with e^{2aN} for f1; PA-C with pi for f2
+Controls (each must be certified false on the whole enclosures): PA-T with 2 pi for f1 (N = 3, a = 1/2); PA-T with e^{2aN} for f1; PA-C with pi for f2
 (k = 1, a = 5); PA-C with e^{-2a|k|} for f1 (k = 3, a = 1/2).
 
 Usage: python3 -I numerics/review/pa_statement_checks.py
@@ -65,9 +67,8 @@ for name, (f, M, As) in FUNCS.items():
             r = certainly_le(lhs, rhs)
             nC += 1
             if r is not True:
-                # equality cases (f1 has |c_3| -> bound as a grows) can be undecidable; report them
                 print(f"PA-C {name} a={a} k={k}: {'FALSE' if r is False else 'UNRESOLVED'} lhs={lhs.str(10)} rhs={rhs.str(10)}")
-                ok = ok and (r is None and abs(float((lhs - rhs).mid())) < 1e-30)
+                ok = False
             worstC = max(worstC, float((lhs / rhs).mid()))
         for N in [1, 2, 3, 4, 5, 8, 16]:
             lhs = abs(trap(f, N) - I0)

@@ -1057,6 +1057,14 @@ LC-1 FAITHFUL, no counterexample found, no BLOCKER; the stamp `stamps/20261116T1
 6. The sanity layer was extended after the reviews (`OscInt/Front/PeriodicAnalyticSanity2.lean`; second plant run
    `docs/replay/2026-11-16-PA-sanity-plants-second.txt`): node positions, integrality of n and k, the bound off the
    real axis, a datum at k = 0. The statement file is unchanged.
+7. After the external review of batch PA (2026-11-19, `review/2026-11-19-PA-external-review-answers.md`). In
+   clarification 4, "all three for M < 0 and M = 0" is wrong in scope: only PA-C and PA-T have the parameter M; LC-1
+   has none. At t = 0, n ≠ 0 (clarification 2) the exponent of LC-1 is −|n|η, which has no minimiser: the bound
+   holds for every η ≥ 0 and tends to 0, as it must, since the kernel is then 0. Two docstrings of the sanity layer
+   say more than their theorems: `halfExp_not_periodic` ("no strip and no bound make it admissible") assumes
+   0 < a, and for a ≤ 0 the strip is empty and every function is admissible; `stripExp` ("holomorphic on that strip
+   only") is also holomorphic on the two open regions |Im z| > 1, where it is 0. The Lean files are left as they
+   were replayed; neither theorem's statement is affected.
 
 Proved (2026-11-16). `OscInt.API.fourierCoeffStrip`, `OscInt.API.trapezoidalRule` and
 `OscInt.API.latticeKernel1LightCone` have exactly these three statements as their types (route `docs/proof-PA.md`;
@@ -1298,6 +1306,16 @@ i. Added after the post-proof reviews (2026-11-17; `review/2026-11-17-FR-post-pr
    at every time: with the period assumed at t = 0 only the statement is false (a null solution built from a
    function flat at 0, sites defined by the recursion), and no datum or numerical test could show it; the proof
    uses the period at every t. All seven theorems of this batch use lemmas of batch PA.
+j. Added 2026-11-19 (found by the lead while answering the external review of batch PA, which reported the same
+   pattern in a sibling script; `review/2026-11-19-PA-external-review-answers.md`). Item 10 overstated one of the
+   twelve checks. The check "FR-S coset sum against the ring kernel, within the certified tail" compared against the
+   tail plus 1e-25, which neither the script's description nor item 10 said. For N = 5 and N = 8 the tail (below
+   1e-250 with |m| ≤ 60) is smaller than the enclosures at the working precision (about 1e-209), so at 46 of the 120
+   points the run of 2026-11-16 showed agreement to within 1e-25 and not to within the tail. The script now sums
+   |m| ≤ ⌈60/N⌉, where every tail exceeds 1e-70, and compares with the tail alone: 120 of 120 pass, and a tail smaller
+   by the factor e^{−4N} fails at 6 points (the 120 of 120 is in `numerics/results-fr-statement-checks-2026-11-19.txt`;
+   the control with the smaller tail was run by the lead the same day and is not kept). Its two "must differ"
+   controls now need certified disjoint enclosures. The statements and their proofs are not affected.
 
 ## Batch VC2: the second-derivative van der Corput bound with its sharp constant (session 13, 2026-11-16)
 

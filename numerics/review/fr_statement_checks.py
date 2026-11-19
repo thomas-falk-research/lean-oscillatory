@@ -4,7 +4,13 @@
 # SPDX-License-Identifier: Apache-2.0
 """Certified truth checks of the batch-FR statements (OscInt/Statements/FiniteRing.lean) on samples, run by the lead
 before the freeze. Tooling, not evidence for a Lean theorem. Arb balls throughout: an equality passes only if the
-two enclosures overlap and are narrower than 1e-25; an inequality only if it holds for the whole enclosures.
+two enclosures overlap and are narrower than 1e-25; an inequality only if it holds for the whole enclosures. A
+"must differ" control passes only if two enclosures are certified disjoint. (Changed 2026-11-19 after the external
+review of batch PA found the same pattern in a sibling script: FR-S was tested with 1e-25 added to the tail, which
+this description did not say, and the two "must differ" controls accepted an undecided comparison. With |m| <= 60
+for every N the tail for N = 5 and 8 is below 1e-250, smaller than the enclosures at 700 bits (about 1e-209), so
+46 of the 120 FR-S comparisons were decided by the added 1e-25 and not by the tail; FR-S now sums |m| <= ceil(60/N),
+which keeps every tail above 1e-70 and lets the tail itself decide.)
 
 Two methods that share no formula: the kernels as written in the Lean definitions (a discrete Fourier sum for the
 ring; its odd reflection for the chain; the Bessel form e^{-2it} i^n J_n(2t) for the line, itself checked against
@@ -14,7 +20,7 @@ the integral of the definition), and the matrix exponential exp(itL) of the grap
 FR-K  derivative in t against i (R(r+1) + R(r-1) - 2R(r)) (the derivative from the Fourier sum, term by term, and
       a central difference as a coarse second opinion); the value at t = 0; the period.
 FR-U  the ring kernel against exp(itL): U[x, y] = R_N(t, x - y); so the kernel sum is the unique solution.
-FR-S  the coset sum over |m| <= K against the ring kernel, with the certified tail from LC-1.
+FR-S  the coset sum over |m| <= K = ceil(60/N) against the ring kernel, with the certified tail from LC-1.
 FR-P  the finite-size inequality 2 e^{2|t| sinh eta} cosh(r eta) / (e^{eta N} - 1) on a grid, and how sharp it is
       (a first draft had e^{|r| eta} in place of cosh(r eta): true, but its control "without the factor 2" did not
       fail, which showed the draft was a factor 2 from sharp; the statement was sharpened before the freeze).
@@ -47,6 +53,11 @@ def same(x, y):
 
 def le(x, y):
     return bool(y - x >= 0)
+
+
+def differ(x, y):
+    """Certified: the two enclosures are disjoint."""
+    return not (acb(x) - acb(y)).contains(0)
 
 
 def report(name, ok, detail):
@@ -137,22 +148,24 @@ for N in (1, 2, 3, 5, 8, 13):
                 bad += not same(U[x, y], ring(N, t, x - y))
 report("FR-U ring kernel against exp(itL) of the ring", bad == 0, f"{n} entries, {bad} failures")
 U = expm(chain_laplacian(5), arb(1))
-ctrl = all(same(U[x, y], ring(5, arb(1), x - y)) for x in range(5) for y in range(5))
-report("FR-U control (ring kernel against the open chain must differ)", not ctrl, f"all entries equal: {ctrl}")
+ctrl = sum(differ(U[x, y], ring(5, arb(1), x - y)) for x in range(5) for y in range(5))
+report("FR-U control (ring kernel against the open chain must differ)", ctrl > 0, f"{ctrl} of 25 entries certified different")
 
 # FR-S
 n = bad = 0
+tmin = None
 for N in (1, 2, 3, 5, 8):
     for t in TS:
         for r in (-3, 0, 1, 4):
-            K = 60
+            K = -(-60 // N)
             s = sum((line(t, r + m * N) for m in range(-K, K + 1)), acb(0))
             eta = arb(2)
             # tail: |G(t, n)| <= e^{2|t| sinh eta - |n| eta}; |r + mN| >= |m|N - |r|
             tail = 2 * (2 * abs(t) * eta.sinh() + abs(r) * eta).exp() * (-eta * N * (K + 1)).exp() / (1 - (-eta * N).exp())
             n += 1
-            bad += not le(abs(s - ring(N, t, r)), tail + TOL)
-report("FR-S coset sum (|m| <= 60) against the ring kernel, within the certified tail", bad == 0, f"{n} points, {bad} failures")
+            bad += not le(abs(s - ring(N, t, r)), tail)
+            tmin = tail if tmin is None or bool(tail < tmin) else tmin
+report("FR-S coset sum (|m| <= ceil(60/N)) against the ring kernel, within the certified tail", bad == 0, f"{n} points, {bad} failures; smallest tail {tmin.str(3)}")
 
 # FR-P
 n = bad = 0
@@ -176,7 +189,7 @@ report("FR-P control (e^{|t| sinh} must fail somewhere)", fail_half > 0, f"{fail
 
 # FC-K, FC-U
 n = bad = 0
-ctrl_even = True
+ctrl_even = 0
 for M in (1, 2, 3, 5, 9):
     for t in TS:
         for y in range(1, M + 1):
@@ -191,9 +204,9 @@ for M in (1, 2, 3, 5, 9):
                     n += 1
                     bad += not same(U[x - 1, y - 1], chain(M, t, x, y))
                     even = ring(2 * (M + 1), t, x - y) + ring(2 * (M + 1), t, x + y)
-                    ctrl_even = ctrl_even and same(U[x - 1, y - 1], even)
+                    ctrl_even += differ(U[x - 1, y - 1], even)
 report("FC-K walls and unit datum; FC-U chain kernel against exp(itL) of the open chain", bad == 0, f"{n} checks, {bad} failures")
-report("FC-U control (even reflection must differ)", not ctrl_even, f"all entries equal: {ctrl_even}")
+report("FC-U control (even reflection must differ)", ctrl_even > 0, f"{ctrl_even} entries certified different")
 
 # FC-P
 n = bad = 0

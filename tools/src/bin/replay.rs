@@ -14,7 +14,10 @@
 //!      `lake check --from-export --paranoid` (sandboxed; the only route by which this toolchain's `lean4lean`
 //!      reads an export).
 //! A step passes only if it exits 0, prints its acceptance line, and prints no `PANIC`/`error`/`problem`
-//! (a bundled checker has been seen to report a problem and exit 0). Exit 1 on any failure.
+//! (a bundled checker has been seen to report a problem and exit 0). One phrase is exempt where it stands and
+//! nowhere else: nanoda's success line "... with no typechecker errors". Until 2026-11-19 the presence of that
+//! phrase anywhere in a step's output switched the scan off for the whole output (found by an external review of
+//! batch PA). The raw output of every step is kept under `OUTDIR/raw/`. Exit 1 on any failure.
 
 use oscint_tools::export::{Export, Kind};
 use oscint_tools::sys::{run, sha256_file};
@@ -48,10 +51,12 @@ fn modules(root: &Path) -> Vec<String> {
     out
 }
 
+pub const EXEMPT: &str = "no typechecker errors";
+
 pub fn verdict(ok: bool, out: &str, accept: &str) -> Result<String, String> {
-    let low = out.to_lowercase();
+    let low = out.to_lowercase().replace(EXEMPT, "");
     for bad in ["panic", "error", "problem", "uncaught exception"] {
-        if low.contains(bad) && !low.contains("no typechecker errors") {
+        if low.contains(bad) {
             return Err(format!("output mentions `{bad}`"));
         }
     }
@@ -103,6 +108,12 @@ fn lake(args: &[&str]) -> Result<(bool, String), String> {
     Ok((ok, format!("{o}{e}")))
 }
 
+/// Keeps a step's raw output (stdout then stderr) as `OUTDIR/raw/<step>.txt`.
+fn keep(outdir: &Path, step: &str, ok: bool, text: &str) -> Result<(), String> {
+    let name: String = step.chars().map(|c| if c.is_ascii_alphanumeric() || c == '.' || c == '-' { c } else { '_' }).collect();
+    fs::write(outdir.join("raw").join(format!("{name}.txt")), format!("{text}\n[exit status success: {ok}]\n")).map_err(|e| e.to_string())
+}
+
 fn main() {
     let a: Vec<String> = std::env::args().collect();
     if a.len() != 4 {
@@ -116,7 +127,8 @@ fn main() {
 fn go(root: &str, names_path: &str, outdir: &str) -> i32 {
     let root = Path::new(root);
     let out = Path::new(outdir);
-    fs::create_dir_all(out).expect("outdir");
+    let _ = fs::remove_dir_all(out.join("raw"));
+    fs::create_dir_all(out.join("raw")).expect("outdir");
     let names: Vec<String> = fs::read_to_string(names_path)
         .unwrap_or_default()
         .lines()
@@ -169,6 +181,7 @@ fn go(root: &str, names_path: &str, outdir: &str) -> i32 {
     for m in modules(root) {
         log.step(&format!("leanchecker {m}"), || {
             let (ok, o) = lake(&["env", "leanchecker", &m])?;
+            keep(out, &format!("leanchecker {m}"), ok, &o)?;
             if !ok {
                 return Err(format!("non-zero exit: {}", o.trim()));
             }
@@ -181,6 +194,7 @@ fn go(root: &str, names_path: &str, outdir: &str) -> i32 {
         args.extend(names.iter().map(String::as_str));
         let res = Command::new("lake").args(&args).output().map_err(|e| e.to_string())?;
         fs::write(&export, &res.stdout).map_err(|e| e.to_string())?;
+        keep(out, "leanexport stderr", res.status.success(), &String::from_utf8_lossy(&res.stderr))?;
         if !res.status.success() || !res.stderr.is_empty() {
             return Err(format!("exit {:?}, stderr: {}", res.status.code(), String::from_utf8_lossy(&res.stderr)));
         }
@@ -191,10 +205,12 @@ fn go(root: &str, names_path: &str, outdir: &str) -> i32 {
     let e = export.to_string_lossy().into_owned();
     log.step("leanchecker --from-export", || {
         let (ok, o) = lake(&["env", "leanchecker", "--from-export", &e])?;
+        keep(out, "leanchecker --from-export", ok, &o)?;
         verdict(ok, &o, "accepts the solution")
     });
     log.step("leanchecker-paranoid --from-export", || {
         let (ok, o) = lake(&["env", "leanchecker-paranoid", "--from-export", &e])?;
+        keep(out, "leanchecker-paranoid --from-export", ok, &o)?;
         verdict(ok, &o, "accepts the solution")
     });
     log.step("nanoda", || {
@@ -206,6 +222,7 @@ fn go(root: &str, names_path: &str, outdir: &str) -> i32 {
         );
         fs::write(&cfg, body).map_err(|x| x.to_string())?;
         let (ok, o) = lake(&["env", "nanoda_bin", &cfg.to_string_lossy()])?;
+        keep(out, "nanoda", ok, &o)?;
         // nanoda reports pretty-printer errors (no declarations requested for printing) separately from
         // type-checking errors; only the latter are verdicts.
         let low = o.to_lowercase();
@@ -219,14 +236,17 @@ fn go(root: &str, names_path: &str, outdir: &str) -> i32 {
     });
     log.step("con-leche --verified", || {
         let (ok, o) = lake(&["env", "con-leche", "--verified", &e])?;
+        keep(out, "con-leche --verified", ok, &o)?;
         verdict(ok, &o, "accepted")
     });
     log.step("con-ron --verified", || {
         let (ok, o) = lake(&["env", "con-ron", "--verified", &e])?;
+        keep(out, "con-ron --verified", ok, &o)?;
         verdict(ok, &o, "accepted")
     });
     log.step("lake check --from-export --paranoid", || {
         let (ok, o) = lake(&["check", "--from-export", &e, "--paranoid"])?;
+        keep(out, "lake check --from-export --paranoid", ok, &o)?;
         let v = verdict(ok, &o, "lean4lean kernel accepts the solution")?;
         let n = o.matches("accepts the solution").count();
         Ok(format!("{v}; {n} kernels accepted"))
@@ -249,6 +269,11 @@ mod tests {
         assert!(verdict(true, "PANIC at foo\naccepts the solution", "accepts").is_err());
         assert!(verdict(false, "accepts the solution", "accepts").is_err());
         assert!(verdict(true, "nothing", "accepts").is_err());
+        // The success phrase of one checker must not switch the scan off for the rest of the output
+        // (external review of batch PA, 2026-11-19: this input passed before the fix).
+        assert!(verdict(true, "PANIC\nno typechecker errors\naccepted", "accepted").is_err());
+        assert!(verdict(true, "lean4lean found a problem in X\nChecked 5 declarations with no typechecker errors\nlean4lean kernel accepts the solution", "accepts the solution").is_err());
+        assert!(verdict(true, "Checked 5 declarations with no typechecker errors\nlean4lean kernel accepts the solution", "accepts the solution").is_ok());
     }
     #[test]
     fn export_axiom_check() {
