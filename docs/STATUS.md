@@ -264,9 +264,15 @@ its acceptance test was a bare substring; both are fixed with tests. The driver 
 of record cannot be inspected. A rerun of the replay step with the corrected driver on the same Lean sources, with
 the raw output of all 208 steps kept (237c5b2, isolated, RESULT PASS, the same export bytes and the same
 binaries; `docs/replay/2026-11-19-lean-replay-fail-closed.txt`), shows no output on which the old rule and the
-corrected rule differ. That is evidence about the replay of record, not proof, and it says nothing about replays
-of earlier commits. A full `make verify-all` with the corrected driver follows; until its record is in this
-table, "machine-checked as stated" rests on the replay of fafd5b8 as recorded and on that rerun. (2) Step 5 of
+corrected rule differ. That is evidence about the replay of fafd5b8, not proof, and it says nothing about replays
+of earlier commits. **The replay of record for every row is now the isolated `make verify-all` of 2113b54**
+(2026-11-19, 18:14:41Z to 21:10:51Z, RESULT PASS, `docs/replay/2026-11-19-v0.7.0-verify-all.txt`): made with the
+corrected driver, raw output of every step kept and scanned, on the sources as they are after the attribution
+blocks and the corrected docstrings; 201 modules, an export of 74001 declarations and 2157 target theorems with the
+three permitted axioms only (the same SHA-256 as the export of the replay of fafd5b8), six kernels, 86 statement
+commitments equal to their stamps, 23 comparator configurations accepted, 32 stamp directories verified; a
+clean-runner run of the same commit also passed. The Replay cells of the rows name the record under which each
+row first became machine-checked as stated; this record covers all of them again. (2) Step 5 of
 `CONTRIBUTING.md`: next paragraph.
 
 **Step 5 in six batches: a departure by the lead, ratified afterwards by the owner as a one-time waiver
@@ -294,7 +300,7 @@ followed by that block; the "Frozen" column of the table is about the frozen byt
 records and which `make commit`, `make statements-check` and the downstream checker compare after stripping the
 block. The statement commitments and the challenge exports are recomputed by those tools and must equal the
 stamped ones; the session log records the run that showed it. The replay of fafd5b8 covers the sources before the
-blocks and before six corrected docstrings; the full replay that follows covers them as they are now.
+blocks and before six corrected docstrings; the replay of 2113b54 covers them as they are now.
 
 **Batch VC2 (2026-11-16/19), what the rows rest on.** The isolated replay of fafd5b8 (2026-11-19, RESULT PASS,
 `docs/replay/2026-11-19-session13-verify-all.txt`) is recorded, so the four rows say "machine-checked as stated";

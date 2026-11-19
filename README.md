@@ -82,7 +82,9 @@ trapezoidal rule, exponential sums, and the sharp second-derivative bound. Where
 
 **The latest batches.** The last 21 statements, proved in
 session 13 and machine-checked as stated since the isolated replay of fafd5b8 on 2026-11-19 (six kernels;
-`docs/replay/2026-11-19-session13-verify-all.txt`; a clean-runner run on the same commit also passed): batch VC2,
+`docs/replay/2026-11-19-session13-verify-all.txt`; a clean-runner run on the same commit also passed), and
+replayed again together with every other statement by the isolated replay of 2113b54 with the corrected driver
+(`docs/replay/2026-11-19-v0.7.0-verify-all.txt`): batch VC2,
 the second-derivative van der Corput bound with its sharp constant sup A (numerically 3.3643…, the classical
 constant; that decimal is not a Lean theorem: in Lean 3.35 < sup A ≤ 7/2) and the constant 7/2 in place of 8 in
 the second-derivative test with amplitude (classical for f″ ≥ λ by citation, the originals unread; nothing
@@ -109,8 +111,9 @@ Read these before relying on a row of the table; each is documented where the li
   by its own arguments, and its findings against records, tools and process were checked and corrected
   (`docs/STATUS.md`, "External reviews of 2026-11-19"; `review/2026-11-19-*-external-review-answers.md`).
 - **The replay driver had a hole.** Until 2026-11-19 its scan of checker output for errors could be switched off by
-  a checker's success phrase. It is fixed and tested; a rerun with raw output kept found no output on which the old
-  and the corrected rule differ. The paragraph of `docs/STATUS.md` named above says which replay each row rests on.
+  a checker's success phrase. It is fixed and tested, and every statement was replayed again with the corrected
+  driver and the raw output kept (`docs/replay/2026-11-19-v0.7.0-verify-all.txt`). Replay records made before that
+  date used the old rule; the paragraph of `docs/STATUS.md` named above says what a rerun showed about them.
 - **A review rule was not followed in six batches.** Findings against the sanity layer were answered without a
   re-freeze of the statement; the owner ratified this afterwards as a one-time waiver, marked on the 23 rows
   (`docs/STATUS.md`, "Step 5 in six batches").

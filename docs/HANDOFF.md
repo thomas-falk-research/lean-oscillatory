@@ -18,15 +18,18 @@ below it, and every rule is binding.
   author's name and licence inside every file that can carry them (attribution blocks on the 41 frozen Lean files
   and on 199 records), a validated bibliography (`docs/references.bib`), refreshed guides and metadata, community
   files, and the release content of v0.7.0 (versions, `CHANGELOG.md` section, `docs/release-notes/v0.7.0.md`).
-- **Last verified state and what is running:** the session log's last rows say it (`docs/progress/2026-11-16-session13-log.md`).
-  A full `make verify-all` on the release-candidate commit is the replay of record for v0.7.0. **A launch with no
-  recorded finish is dead and is relaunched** (`tools/replay_preflight.py check` first; nothing else runs meanwhile).
-  A replay launched on 580e34d was stopped unfinished on the owner's instruction and proves nothing.
-- **Exact next command:** if the replay's record is not in `docs/replay/`: relaunch it as the log's launch row
-  says. If it is: fill the "Evidence" section of `docs/release-notes/v0.7.0.md`, update the Replay cells and the
-  paragraph "External reviews of 2026-11-19" of `docs/STATUS.md`, run `tools/release_preflight.sh 0.7.0`,
-  `make stamp` on the final commit, later `make anchors`. Publishing is the owner's: merge the pull request, dispatch
-  `release-candidate` on `main`, then `tools/publish_release.sh` (`CONTRIBUTING.md`).
+- **Last verified state:** 2113b54: `make verify-all` RESULT PASS (2026-11-19, 18:14:41Z to 21:10:51Z, isolated, the
+  corrected driver, raw output kept; `docs/replay/2026-11-19-v0.7.0-verify-all.txt`); the same commit passed on a
+  clean GitHub runner (`verify.yml` run 44585759180). It is the replay of record for all 86 statements and for
+  v0.7.0. Commits after 2113b54 change documents, metadata notes and records only. Nothing is running (the session
+  log's last rows say whether a stamp was made). A replay launched earlier on 580e34d was stopped unfinished on the
+  owner's instruction and proves nothing.
+- **Exact next command:** read the session log's last rows. If no stamp of the release candidate is listed:
+  `make stamp` on a clean tree, commit the stamp directory, push; a day or more later `make anchors` (two stamps
+  are then pending: `20261119T124850Z-9ae784e80e32` and the new one). `tools/release_preflight.sh 0.7.0` must print
+  "ready" (the date in `CITATION.cff`, `codemeta.json` and the CHANGELOG heading is 2026-11-20; the owner may
+  change it). Publishing is the owner's: merge the pull request, dispatch `release-candidate` on `main`, then
+  `tools/publish_release.sh` (`CONTRIBUTING.md`); the post-release pull request moves the install pins to v0.7.0.
 - **External review (2026-11-19; an AI system of another model family, one batch per conversation, pinned to
   9ae784e; it cannot run Lean): all five reports answered**
   (`review/2026-11-19-{VC2,PA,FR,KL,HW}-external-review-answers.md`). All 21 statements faithful, true, route sound;
