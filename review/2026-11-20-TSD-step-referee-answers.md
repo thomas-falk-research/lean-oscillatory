@@ -115,19 +115,85 @@ lead's scratch and is not committed.
 ## 3. A report by another model family (run by the owner from the lead's prompt)
 
 Received 2026-11-20 about 11:40Z: a document of 27 pages (SHA-256 147ef74b…0a06e15eb7) and an archive of 26 files
-(SHA-256 4698803e…e1529bf9; its own checksum list verifies). **Its check by an agent of the lead's family was
-running when this file was written and has no recorded result; until one is recorded here, nothing of the report
-is used.** Its claims, unverified: the lemma is true as printed with every constant; an independent derivation,
+(SHA-256 4698803e…e1529bf9; its own checksum list verifies). Its check by an agent of the lead's family (brief
+SHA-256 5bb4d507…7f484ab3; launched about 11:45Z) finished about 13:10Z and is recorded in section 4. Its claims: the lemma is true as printed with every constant; an independent derivation,
 written before it read the printed proof, with the same decomposition and another core term; 226 instances
 searched without a violation; and a theorem about two analytic functions on the whole strip, symmetric under
 `z ↦ −z̄`, from which the printed lemma follows, with the amplitude coefficient `(e − 2)(M² + M′)` in place of
 `4.5 M² + 1.625 M′` and without the condition `M′ ℓ² ≤ 1`. That theorem and the referee's two parts above are
 compatible in shape (whole line with a symmetry against half-line with a reality condition).
 
+## 4. Check of the external report (an agent of the lead's model family, fresh context)
+
+**Verdict: the theorem of the report's Part 4 is true as stated**, with the coefficient `(e − 2)(M² + M′)` and
+with the printed `4.5 M² + 1.625 M′`. The checker re-derived the whole proof (convergence and reality of the
+integral; the derived facts `β ≤ α`, `α ≤ C₂ s`, `ℓ ≤ s`; the decay of the amplitude from its bounded logarithmic
+derivative; the closing segments; the five pieces of the contour; the middle, far and saddle estimates; the exact
+remainder identity, checked symbolically; the Gaussian moments and the constants `57/100` and `13/25`; the two
+uses of the transition term; the assembly), translated the middle term into the printed one term by term, and
+confirmed that the printed lemma follows with nothing extra. No FATAL and no MAJOR finding; no hypothesis that is
+needed and missing.
+
+Evidence beyond the derivation: the report's five scripts were read before use (they only compute) and rerun from
+a copy, with byte-identical or numerically identical results, all 226 instances of its search included (smallest
+ratio 39.58, no violation); eight instances of the checker's own, with amplitudes not of the report's form and
+several hypotheses at equality, by two or three quadrature routes each: every bound holds, piece by piece. All
+numerics are high-precision quadrature, not interval arithmetic.
+
+Which hypotheses can go, by computed counterexample or argument:
+
+| Hypothesis | Status |
+|---|---|
+| The largeness condition `M ≤ tβu/2` | Needed: a computed counterexample without it (Airy phase, amplitude `sech(30z)`, `t = 450`: measured error 383 against a bound of 15). |
+| `φ″(s) = −α` as an equality | Needed: with an inequality a computed instance violates the bound by a factor 8.6. |
+| `φ` odd; the symmetry of `A`; `A` integrable | Needed (computed or immediate counterexamples). |
+| `φ′(s) = 0`; the width `δ` together with `ℓ ≤ √2 δ`; positivity of several parameters | Redundant; harmless. |
+| `A ≠ 0` | Redundant under Lean's convention for division by zero, needed in the mathematical reading; kept. |
+| `C₂ℓ ≤ α`, `C₂ℓ ≤ (3√2/2)β`, `Mℓ ≤ 1`, `tα ≥ 8` | Needed by the proof; not decided for the statement. |
+
+| # | Severity | Finding (lead's words) | Answer |
+|---|---|---|---|
+| 1 | MINOR | The report's derivation of the printed lemma credits integrability of the amplitude on the line to (SD1) alone; it also needs the bound on the Hankel remainder (its own Part 2 has this right). | For the corollary: the Hankel parameter needs holomorphy in the upper half-plane and the remainder bound, used three times (no zeros, integrability, (E.14)). |
+| 2 | MINOR | Some result files of the bundle are not byte-reproducible from its scripts (digits, a missing newline, one file written by no script); every number agrees with the reruns. | Noted. |
+| 3 | MINOR | The seal on the report's independent derivation is self-asserted; "written before the proof was read" cannot be verified. | Agreed; the lead does not claim it. |
+| 4 | NIT | The inequalities on `φ′` compare complex expressions; a Lean statement should take real parts. | Taken into the statement below. |
+| 5 | NIT | The delivered PDF and the one in the archive do not differ in content (the delivered one carries an embedded provenance attachment, not opened). | Noted. |
+
+Both qualifications that the report makes to the preprint's prose are right and do not touch the lemma: the
+constants `M`, `M′` are independent of `c` only if the bounds of (SD3) are uniform, and the description of the
+"valleys" is a first-order one.
+
+### The statement to freeze (mathematics; the Lean text is still to be written)
+
+For all real `δ, t, s, α, β, C₂, ℓ > 0` and `C₃, M, M′ ≥ 0`, every open `U ⊆ ℂ` containing
+`S_δ = {z : |Im z| ≤ δ}`, and all `φ, A` holomorphic on `U`, assume: (1) on `S_δ`: `A(z) ≠ 0`, `φ(−z) = −φ(z)`,
+`φ(z̄) = conj φ(z)`, `A(−z̄) = conj A(z)`; (2) `v ↦ A(v)` is integrable on ℝ; (3) `φ′(s) = 0` and `φ″(s) = −α`;
+(4) `Re φ′(v) ≥ β (s − v)` for `0 ≤ v ≤ s` and `Re φ′(v) ≤ −α (v − s)` for `v ≥ s`; (5) on `S_δ`: `|φ‴| ≤ C₂`,
+`|φ⁗| ≤ C₃`, `|A′/A| ≤ M`, `|(A′/A)′| ≤ M′`; (6) `ℓ ≤ √2 δ`, `C₂ℓ ≤ α`, `C₂ℓ ≤ (3√2/2) β`, `Mℓ ≤ 1`; (7) with
+`u = ℓ/√2`: `M ≤ tβu/2` and `tα ≥ 8`. Put `r = min{ℓ, (6/(tC₂))^{1/3}}`, `K = (e − 2)(M² + M′)` and
+
+    ε_core = K/(tα) + (C₃/8 + M C₂/2 + K C₂)/(tα²) + (57/100 + (13/25) M) C₂²/(tα³),
+    ε_tr   = (3 e^{Mℓ}/√(2π)) e^{−tα r²/3} / (r √(tα)),
+    ε_mid  = (2 e^{Mu}/(βu)) √(α/(2πt)) e^{−tβ u²/4},
+    ε_far  = √(2/π) e^{Mu} e^{−tα u²/4} / (u √(tα)).
+
+Then `v ↦ A(v) e^{itφ(v)}` is integrable on ℝ; its integral `J` is real; and
+
+    |J − 2 √(2π/(tα)) Re[e^{−iπ/4} A(s) e^{itφ(s)}]| ≤ 2 |A(s)| √(2π/(tα)) (ε_core + 2 ε_tr + ε_mid + ε_far).
+
+The same holds with `K` replaced by any larger number, in particular by the printed `(9/2) M² + (13/8) M′`. The
+printed lemma is this with `z = b − i/2`, `t = c′`, `s = v₀`, `φ(z) = (4π/3) ∫₀^z (x − F)`, `β = (4π/3) s_ch`, and
+the lemma's amplitude times a unimodular constant; the prefactor and the phase are algebra.
+
+This agrees with the step referee's two parts (section 1) in every term; the differences are of form (whole line
+with a symmetry against half-line with a reality condition; the window `r₁` as a parameter against a minimum).
+Three independent readings now give the same theorem and constants: the preprint's proof as re-derived by the step
+referee, the external report's own derivation, and the checker's re-derivation of the latter. Two of the three
+are of the lead's model family, and none is a machine check.
+
 ## What follows for the batch
 
-No stop gate of the opening note is triggered. Next, in this order: record the result of the check of the
-external report; write the prose of the statements (a core statement on two analytic functions, in the whole-line
+No stop gate of the opening note is triggered. Next, in this order: write the prose of the statements (a core statement on two analytic functions, in the whole-line
 symmetric form, with the window as a parameter; the printed lemma as a corollary with the Hankel function as a
 parameter and the printed constants); register a numeric test; then the Lean statements with a sanity layer and
 plants, freeze, blind review, and only then proofs, with the referee's Part I and Part II as the natural

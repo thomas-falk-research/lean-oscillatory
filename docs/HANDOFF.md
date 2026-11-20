@@ -24,9 +24,8 @@ below it, and every rule is binding.
   lemma, Lemma E.1 of hexagon:2611.00174v1) is open; no statement is drafted. Done: opening note
   (`docs/design/batch-TSD-opening.md`); step referee: the lemma is true as printed, every constant re-derived,
   no FATAL, no MAJOR; prior-art reader; a formal core in two parts (`review/2026-11-20-TSD-step-referee-answers.md`).
-  **A launch with no recorded finish is dead:** the check of the external report on the lemma (section 3 of that
-  file) was running at the wrap-up; if no later row of the session log records its result, run it again (the
-  owner has the report's two files; SHA-256 values in that section). **Exact next step for TSD:** the prose of
+  The external report on the lemma (another model family, run by the owner) was checked afterwards: its theorem
+  about two analytic functions is true as stated, and section 4 of that file has the statement to freeze. **Exact next step for TSD:** the prose of
   the statements in `docs/statements.md`, as the last section of that review file says; then a registered numeric
   test, Lean statements with sanity layer and plants, freeze, blind review, proofs. (4) Kept from scratch:
   `numerics/results-spl-n-certificates-from-checker-2026-11-20.txt` (certificates for a later SPL-N). Lost with
