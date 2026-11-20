@@ -31,7 +31,12 @@ below it, and every rule is binding.
   the scratch if the container is reclaimed: the briefs (hashes in the session log), the referees' scripts, the
   query log of the prior-art reader, the extracted external bundles. (5) Anchors still to run, a day or more
   after each stamp: 9ae784e8, 1aa26b0f, 5491b10b, 3e07630d, 3c69b821. (6) Lesson 68 before generating any text
-  for an agent through a shell. (7) Open after the release: `tools/publish_release.sh` needs GNU `find` and
+  for an agent through a shell. (8) Six external sessions (another model family, run by the owner) were asked for on
+  2026-11-20; the session log's row of about 13:45 lists them with the hashes of their prompts. When the owner
+  brings reports: isolate, hash, check by a fresh agent, answer under `review/`, and only then use. Their aim,
+  by owner decision in conversation: find a result that is new, not only a formalisation (explicit zeta bound
+  with the sharp constants; sharp third-derivative constant; stationary-phase constants; lattice decay), and
+  support batch TSD (Hankel bound; audit of the lemma in use). (7) Open after the release: `tools/publish_release.sh` needs GNU `find` and
   `sha256sum` (it stopped on the owner's macOS at the asset check, failing closed); make it portable and name its
   requirements in the release notes' publishing section.
 - **Two branches (owner decision 2026-11-19, `docs/decisions/2026-11-19-next-batch-spl.md`).** The release
