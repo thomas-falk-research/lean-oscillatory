@@ -1747,3 +1747,117 @@ SPL-d (2026-11-20, after the proofs; post-proof referee C). The proofs do not tu
    the frozen text, and not a mutation of it, is what was proved. Two more that no datum of the layer sees
    (same referee): `λ = 1` in SPL-A replaced by another fixed λ, and `HasDerivAt` replaced by an equation with
    `deriv`.
+
+## Batch TSD: two-saddle steepest descent with an explicit remainder (session 14, 2026-11-20)
+
+Status of this section on 2026-11-20: prose only. No Lean statement of the batch exists, nothing is frozen, and no
+Lean proof of any part exists in the repository or in the lead's scratch. Order, as for batch SPL: this prose, a
+registered numeric test of it, the Lean statements with a sanity layer and planted controls, challenge and
+comparator, freeze and stamp, two blind referees, and only then proofs (`CONTRIBUTING.md`). What predates the
+freeze, said plainly: a proof on paper by the source's authors, re-derived three times
+(`review/2026-11-20-TSD-step-referee-answers.md`: a step referee and a checker of the lead's model family, and a
+session of another model family); no machine check. Owner decision that opened the batch:
+`docs/decisions/2026-11-20-batch-two-saddle.md`; opening note: `docs/design/batch-TSD-opening.md`.
+
+Source. Lemma E.1 of *The spinless modular bootstrap at large central charge* (hexagon:2611.00174v1, CC BY 4.0;
+appendix "Two-saddle steepest descent with a uniform remainder"; the label in the TeX source is `lem:D.1`;
+SHA-256 of the TeX file 6e167ddd9f1c8ba46680c9550fd5d84eacf3d9901d02f4c9b22433d63b2db079, downloaded again on
+2026-11-20 in session 14 and equal to the value recorded in session 13). Cited, not copied.
+
+Why. A lemma on which a current research preprint rests, with a four-page proof by a long chain of explicit
+constants. The mechanism is classical (the ordinary two-saddle formula away from coalescence); this quantified
+general form was not found in the literature searched (the search and its limits: section 2 of the review file
+above). Nothing is claimed as new. The claim, if proved, is "machine-checked, with these constants".
+
+Two statements are planned. **TSD-C**, the core, is about two analytic functions on a strip and has no special
+function in it. **TSD-L** is the lemma in the form in which it is printed, with a function `H` in the place of
+the Hankel function `H₀^{(1)}`, and follows from TSD-C by a change of variables and algebra. The first freeze of
+the batch holds TSD-C only; the Lean text of TSD-L is written after the two external reports that bear on it (a
+proof of the Hankel bound; an audit of how the preprint uses the lemma) have been checked.
+
+Notation for TSD-C. For δ > 0 the closed strip is `S_δ = {z ∈ ℂ : |Im z| ≤ δ}`. A prime is the complex
+derivative. `e = 2.718…` is Euler's number where it appears as a factor of a constant.
+
+**TSD-C (two saddles on the real line, symmetric form).** Let `δ, t, s, α, β, C₂, ℓ, r` be positive real numbers
+and `C₃, M, M′` nonnegative real numbers. Let `U ⊆ ℂ` be open with `S_δ ⊆ U`, and let `φ, A : U → ℂ` be
+holomorphic. Assume:
+
+1. (symmetry) for every `z ∈ S_δ`: `A(z) ≠ 0`, `φ(−z) = −φ(z)`, `φ(z̄) = conj φ(z)` and `A(−z̄) = conj A(z)`;
+2. (integrability) `v ↦ A(v)` is integrable on ℝ;
+3. (saddle) `φ′(s) = 0` and `φ″(s) = −α`;
+4. (slopes) `Re φ′(v) ≥ β (s − v)` for `0 ≤ v ≤ s`, and `Re φ′(v) ≤ −α (v − s)` for `v ≥ s`;
+5. (bounds) for every `z ∈ S_δ`: `|φ‴(z)| ≤ C₂`, `|φ⁗(z)| ≤ C₃`, `|A′(z)/A(z)| ≤ M` and `|(A′/A)′(z)| ≤ M′`;
+6. (window) `ℓ ≤ √2 δ`, `C₂ ℓ ≤ α`, `C₂ ℓ ≤ (3√2/2) β`, `M ℓ ≤ 1`, `r ≤ ℓ` and `t C₂ r³ ≤ 6`;
+7. (largeness) with `u = ℓ/√2`: `2M ≤ t β u` and `t α ≥ 8`.
+
+Put `K = (e − 2)(M² + M′)` and
+
+    ε_core = K/(tα) + (C₃/8 + M C₂/2 + K C₂)/(tα²) + (57/100 + (13/25) M) C₂²/(tα³),
+    ε_tr   = 3 e^{Mℓ} e^{−tα r²/3} / (√(2π) r √(tα)),
+    ε_mid  = 2 e^{Mu} √(α/(2πt)) e^{−tβ u²/4} / (βu),
+    ε_far  = √(2/π) e^{Mu} e^{−tα u²/4} / (u √(tα)).
+
+Then `v ↦ A(v) e^{itφ(v)}` is integrable on ℝ; its integral `J = ∫_ℝ A(v) e^{itφ(v)} dv` is a real number; and
+
+    |J − 2 √(2π/(tα)) Re[e^{−iπ/4} A(s) e^{itφ(s)}]| ≤ 2 |A(s)| √(2π/(tα)) (ε_core + 2 ε_tr + ε_mid + ε_far).
+
+Reading. By (1) the function `φ` is real on ℝ and odd, so `v ↦ tφ(v)` is a real phase with stationary points at
+`s` and `−s` (and possibly at 0); the two saddle contributions are complex conjugates of each other, and the
+leading term is their sum. `α` is the curvature at the saddle, `β` a lower bound for the slope of the chord of
+`φ′` between 0 and `s`; both tend to 0 when the saddles coalesce (`s → 0`), and the right-hand side then
+grows: the statement is the ordinary two-saddle formula with a remainder that is explicit up to coalescence, not
+a uniform (Airy-type) expansion through it.
+
+What TSD-C says and does not say (modelling choices and omissions, for the reviewer).
+1. Relation to the printed lemma. With `z = b − i/2`, `t = c′`, `s = v₀`, `φ(z) = (4π/3) ∫₀^z (x − F)`, that is
+   `φ(z) = −i[Φ₀(z + i/2) − Φ₀(i/2)] + (4π/3) x z`, `α = α_x`, `β = (4π/3) s_ch`, and `A` the printed amplitude at
+   `z + i/2` times the unimodular constant `e^{−iπ/4} e^{c′Φ₀(i/2)}`, the four error terms are the printed ones
+   term by term (`ε_mid` after substituting β), and the printed conclusion is `(2πc′/3) √(2/(πk_x)) e^{−k_x/2} J`.
+2. The window `r` is a parameter with two inequalities; the printed lemma takes the largest admissible value,
+   `r₁ = min{ℓ, (6/(c′C₂))^{1/3}}`. `ε_tr` decreases in `r`, so the printed choice gives the best bound, and
+   TSD-C at that value is the printed form. Likewise `ℓ` is a parameter with inequalities in place of the printed
+   minimum of seven quantities; no division by `C₂`, `M` or `M′` occurs.
+3. Hypotheses of the printed lemma that TSD-C does not have, because its conclusion does not need them
+   (step referee, finding 1; external report, checked): `c′ ≥ 39`; `δ₁ ≤ 1/4`; the lower bound on `c′F(0)`; the
+   bound on the Hankel remainder; evenness of `F` and `h₀` beyond the symmetry in (1); exponential decay of the
+   amplitude below the line (integrability on the line is enough, because the bounded logarithmic derivative
+   carries it down); `ℓ ≤ 1`; `ℓ ≤ v₀` (it follows: `α ≤ C₂ s` because `φ″` is odd, so `ℓ ≤ α/C₂ ≤ s`); the
+   printed condition (ii), `c′ α_x u₀ ≥ 2M` (it follows from (7) and `β ≤ α`, which follows from (3) and (4));
+   `M′ ℓ² ≤ 1` (not needed with the coefficient `K` of item 4).
+4. The amplitude coefficient. The printed lemma has `K_A = (9/2) M² + (13/8) M′`; TSD-C has the smaller
+   `K = (e − 2)(M² + M′)`, from the external session's derivation (`e − 2 < 0.72`). The right-hand side increases
+   with `K`, so TSD-C implies the same statement with the printed coefficient. The decimal constants of the
+   printed core term are the rationals `57/100` and `13/25`.
+5. Hypotheses that are implied by the others and are kept for readability: `φ′(s) = 0` (from (4) at `v = s` and
+   (1)); the positivity of `C₂` (from `0 < α ≤ C₂ s`). `A ≠ 0` is needed in the mathematical reading; in Lean,
+   where `x/0 = 0`, the bound on `A′/A` alone would let an amplitude vanish, and (1) excludes that explicitly.
+6. Hypotheses that the three readings found necessary, each by a computed counterexample when it is dropped or
+   weakened (not Lean theorems; `review/2026-11-20-TSD-step-referee-answers.md`, section 4): the largeness
+   condition on `M` in (7); `φ″(s) = −α` as an equality (an inequality fails); the oddness of `φ`, the symmetry
+   of `A`, and the integrability of `A`. Not decided, and therefore kept: whether `C₂ℓ ≤ α`,
+   `C₂ℓ ≤ (3√2/2)β`, `Mℓ ≤ 1` and `tα ≥ 8` are needed by the statement or only by this proof.
+7. Sharpness. Nothing is claimed about the constants being best. Numerically the bound is attained in the limit
+   on a constructed instance (ratio of bound to measured error 1.0017, step referee), so the core term cannot be
+   lowered in general; this is not a statement of the batch.
+8. In Lean the integral is the Bochner integral over ℝ, which is 0 for a function that is not integrable; the
+   first conclusion (integrability) is what makes `J` the integral it denotes. "`J` is real" is stated as
+   `Im J = 0`. Derivatives are Mathlib's `deriv` of functions `ℂ → ℂ` that are differentiable on the open set
+   `U`; the functions are total and only their values on `U` matter.
+9. Not stated: the contour, the four pieces separately, any expansion beyond the leading term, any statement
+   for a phase that is not odd or for saddles that are not a mirror pair, and uniformity through coalescence.
+
+**TSD-L (the printed lemma, with the Hankel function as a parameter); planned, not in the first freeze.** In
+substance: for functions `h₀, Φ₀, Φ₁, 𝓔` and `H` that satisfy the printed hypotheses (SD1) to (SD4), where `H` is
+only asked to be holomorphic in the upper half-plane and to satisfy the printed bound on the remainder `ε_H`
+that the factorisation `H(z) = √(2/(πz)) e^{i(z − π/4)} (1 + ε_H(z))` defines, and for `ℓ`, `u₀`, `r₁` and the
+largeness conditions (i) to (iii) as printed, the number `N = (2πc′/3) ∫ 𝓘(v + i/2) dv` with
+`𝓘(b) = h₀(b) H(k_x b) b` satisfies `|N − 2 Re W| ≤ 2 |W| (ε_core + 2ε_tr + ε_mid + ε_far)` with
+`W = (2πc′/3) h₀(b₀) H(k_x b₀) b₀ e^{−iπ/4} √(2π/(c′α_x))` and the printed four terms with the printed
+coefficient `K_A`. Here `2 Re W = Amp cos Ψ̂` and `2|W| = Amp` are the printed amplitude and phase (the lemma
+states that they satisfy this identity exactly); writing the conclusion through `W` avoids a choice of argument.
+Open points, to be settled before its Lean text is drafted: whether the printed closed forms of `Amp` and of
+`Ψ̂` are separate conclusions; the form of the edge representation (in the abstract statement the transform
+`ĥ₀(c′x²/3)` is the number `N` by hypothesis); which properties of `H` are hypotheses (holomorphy and the
+remainder bound are used three times: no zero of the amplitude, integrability, and the printed remark on the
+amplitude); whether `H` stays a parameter. What TSD-L would not say in any form: that the preprint's own
+function satisfies (SD1) to (SD4), or anything about the preprint's theorems.
