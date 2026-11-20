@@ -1,0 +1,78 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `splKernel`: the kernel extended as an even function (planted copy of splKernel). -/
+noncomputable def P_splKernel (τ : ℝ) : ℂ := if 0 ≤ τ then splKernelPos τ else splKernelPos (-τ)
+
+/-- Copy of `StationaryLeadingIdentityStatement` over the copied definition. -/
+def P_StationaryLeadingIdentityStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    splRemainder g lam =
+      -Complex.I * ((lam ^ (-(3 : ℝ) / 2) : ℝ) : ℂ) * ∫ t, g₃ t * P_splKernel (Real.sqrt lam * t)
+
+/-- `κ(0) = 0`. -/
+theorem P_splKernel_zero : P_splKernel 0 = 0 := by
+  unfold P_splKernel
+  rw [ite_eq_left le_rfl, splKernelPos_zero]
+
+/-- `κ` is odd: `κ(−τ) = −κ(τ)` for every real `τ` (from the definition by cases and `κ₊(0) = 0`). -/
+theorem P_splKernel_neg (τ : ℝ) : P_splKernel (-τ) = -P_splKernel τ := by
+  unfold P_splKernel
+  rcases lt_trichotomy τ 0 with h | h | h
+  · rw [ite_eq_left (by linarith), ite_eq_right (by linarith), neg_neg]
+  · subst h
+    simp [splKernelPos_zero]
+  · rw [ite_eq_right (by linarith), ite_eq_left (by linarith), neg_neg]
+
+/-- `|κ|` is even. -/
+theorem P_norm_splKernel_neg (τ : ℝ) : ‖P_splKernel (-τ)‖ = ‖P_splKernel τ‖ := by
+  rw [P_splKernel_neg, norm_neg]
+
+/-- `‖κ(|τ|)‖ = ‖κ(τ)‖`. -/
+theorem P_norm_splKernel_abs (τ : ℝ) : ‖P_splKernel |τ|‖ = ‖P_splKernel τ‖ := by
+  rcases abs_cases τ with ⟨h, _⟩ | ⟨h, _⟩
+  · rw [h]
+  · rw [h, P_norm_splKernel_neg]
+
+/-- SPL-I on the Gaussian family: the closed form of the remainder equals the kernel integral of `G_s‴`. -/
+theorem P_identity_gauss (h : P_StationaryLeadingIdentityStatement) (s lam : ℝ) (hs : 0 < s) (hlam : 0 < lam) :
+    gaussRoot s lam - splLead lam =
+      -Complex.I * ((lam ^ (-(3 : ℝ) / 2) : ℝ) : ℂ) * ∫ t, gauss3 s t * P_splKernel (Real.sqrt lam * t) := by
+  have h1 := h (gauss s) (gauss1 s) (gauss2 s) (gauss3 s) lam (gauss_splAmplitude s hs) hlam
+  rw [splRemainder_gauss s hs] at h1
+  exact h1
+
+/-- SPL-I at `G_1`, `λ = 4`, written out (`4^{−3/2} = 1/8`, `√4 = 2`). -/
+theorem P_identity_gauss_one_four (h : P_StationaryLeadingIdentityStatement) :
+    (2 * (Real.pi : ℂ) / (1 - 4 * Complex.I)) ^ (1 / 2 : ℂ) -
+        ((Real.sqrt (2 * Real.pi / 4) : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I) =
+      -Complex.I * ((1 / 8 : ℝ) : ℂ) * ∫ t, gauss3 1 t * P_splKernel (2 * t) := by
+  have h1 := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 4 (gauss_splAmplitude 1 one_pos) (by norm_num)
+  rw [splRemainder_gauss 1 one_pos, gaussRoot_one_four, rpow_four, sqrt_four] at h1
+  exact h1
+
+/-- SPL-I at `G_2`, `λ = 9`, written out (`9^{−3/2} = 1/27`, `√9 = 3`). -/
+theorem P_identity_gauss_two_nine (h : P_StationaryLeadingIdentityStatement) :
+    (2 * (Real.pi : ℂ) / (4 - 9 * Complex.I)) ^ (1 / 2 : ℂ) -
+        ((Real.sqrt (2 * Real.pi / 9) : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I) =
+      -Complex.I * ((1 / 27 : ℝ) : ℂ) * ∫ t, gauss3 2 t * P_splKernel (3 * t) := by
+  have h1 := h (gauss 2) (gauss1 2) (gauss2 2) (gauss3 2) 9 (gauss_splAmplitude 2 two_pos) (by norm_num)
+  rw [splRemainder_gauss 2 two_pos, gaussRoot_two_nine, rpow_nine, sqrt_nine] at h1
+  exact h1
+
+/-- SPL-I forces the size of a kernel integral: `6/5 ≤ |∫ G_1‴(t) κ(2t) dt| ≤ 5/2` (it is `8 |R(G_1, 4)|`; against
+`‖G_1‴‖₁ = 3.785…` this is a ratio between `0.31` and `0.67`). -/
+theorem P_identity_integral_bounds (h : P_StationaryLeadingIdentityStatement) :
+    6 / 5 ≤ ‖∫ t, gauss3 1 t * P_splKernel (2 * t)‖ ∧ ‖∫ t, gauss3 1 t * P_splKernel (2 * t)‖ ≤ 5 / 2 := by
+  have h1 := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 4 (gauss_splAmplitude 1 one_pos) (by norm_num)
+  rw [rpow_four, sqrt_four] at h1
+  obtain ⟨h2, h3⟩ := splRemainder_gauss_one_four_bounds
+  rw [h1, norm_mul, norm_mul, norm_neg, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_pos (by norm_num : (0 : ℝ) < 1 / 8)] at h2 h3
+  constructor <;> linarith
+
+end OscInt.API.StationaryLeadingSanity

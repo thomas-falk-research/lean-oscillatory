@@ -1,0 +1,24 @@
+plant-SPL-A-e.lean:21:36: error: Application type mismatch: The argument
+  h4
+has type
+  ∀ (x : ℝ), g x ≠ 0
+but is expected to have type
+  ∃ x, g x ≠ 0
+in the application
+  And.intro h4
+plant-SPL-A-e.lean:29:52: error: Application type mismatch: The argument
+  h4
+has type
+  ∀ (x : ℝ), g x ≠ 0
+but is expected to have type
+  ∃ x, g x ≠ 0
+in the application
+  integral_norm_pos_of_splAmplitude h1 h4
+plant-SPL-A-e.lean:42:54: error: Application type mismatch: The argument
+  hne
+has type
+  ∀ (x : ℝ), g x ≠ 0
+but is expected to have type
+  ∃ x, g x ≠ 0
+in the application
+  integral_norm_pos_of_splAmplitude hamp hne

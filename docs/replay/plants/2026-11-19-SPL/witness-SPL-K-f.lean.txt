@@ -1,0 +1,19 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `StationaryLeadingSevenEighthsStatement`: hypothesis 0 < λ dropped. -/
+def P_StationaryLeadingSevenEighthsStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ →
+    ‖splRemainder g lam‖ ≤ (7 / 8 : ℝ) * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2)
+
+theorem witness_not_P_StationaryLeadingSevenEighthsStatement : ¬ P_StationaryLeadingSevenEighthsStatement := by
+  intro h
+  have h1 := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 0 (gauss_splAmplitude 1 one_pos)
+  rw [Real.zero_rpow (by norm_num : (-(3 : ℝ) / 2) ≠ 0), mul_zero, norm_splRemainder_gauss_zero] at h1
+  linarith [sqrt_two_pi_lower]
+
+end OscInt.API.StationaryLeadingSanity

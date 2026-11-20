@@ -18,6 +18,7 @@ import Challenge.KusminLandau
 import Challenge.FiniteRing
 import Challenge.SecondDerivSharp
 import Challenge.HadamardWalk
+import Challenge.StationaryLeading
 
 /-! Root of the frozen challenge library. Never a default target, never imported. -/
 

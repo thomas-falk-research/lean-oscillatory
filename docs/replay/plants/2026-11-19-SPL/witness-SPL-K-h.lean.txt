@@ -1,0 +1,28 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `SplAmplitude`: Integrable g dropped from SplAmplitude (planted copy of the definition). -/
+def P_SplAmplitude (g g₁ g₂ g₃ : ℝ → ℂ) : Prop :=
+  (∀ x, HasDerivAt g (g₁ x) x) ∧ (∀ x, HasDerivAt g₁ (g₂ x) x) ∧ (∀ x, HasDerivAt g₂ (g₃ x) x) ∧
+    Integrable g₁ ∧ Integrable g₂ ∧ Integrable g₃
+
+/-- Copy of `StationaryLeadingSevenEighthsStatement` over the copied definition. -/
+def P_StationaryLeadingSevenEighthsStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), P_SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    ‖splRemainder g lam‖ ≤ (7 / 8 : ℝ) * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2)
+
+theorem witness_not_P_StationaryLeadingSevenEighthsStatement : ¬ P_StationaryLeadingSevenEighthsStatement := by
+  intro h
+  have hamp : P_SplAmplitude (fun _ => 1) (fun _ => 0) (fun _ => 0) (fun _ => 0) :=
+    ⟨fun x => hasDerivAt_const x 1, fun x => hasDerivAt_const x 0, fun x => hasDerivAt_const x 0,
+      integrable_zero _ _ _, integrable_zero _ _ _, integrable_zero _ _ _⟩
+  have h1 := h (fun _ => 1) (fun _ => 0) (fun _ => 0) (fun _ => 0) 1 hamp one_pos
+  rw [norm_splRemainder_one] at h1
+  simp only [norm_zero, integral_zero, mul_zero, zero_mul] at h1
+  linarith [sqrt_two_pi_lower]
+
+end OscInt.API.StationaryLeadingSanity

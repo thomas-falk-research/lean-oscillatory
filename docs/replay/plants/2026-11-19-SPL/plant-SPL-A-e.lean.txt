@@ -1,0 +1,52 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `StationaryLeadingAttainedStatement`: "∃ x, g x ≠ 0" ↦ "∀ x, g x ≠ 0". -/
+def P_StationaryLeadingAttainedStatement : Prop :=
+  ∀ τ ε : ℝ, 0 ≤ τ → 0 < ε →
+    ∃ g g₁ g₂ g₃ : ℝ → ℂ, SplAmplitude g g₁ g₂ g₃ ∧ ContDiff ℝ ∞ g ∧ HasCompactSupport g ∧ (∀ x, g x ≠ 0) ∧
+      (‖splKernel τ‖ - ε) * (∫ t, ‖g₃ t‖) ≤ ‖splRemainder g 1‖
+
+/-- SPL-A at `τ = 0`: for every `ε > 0` a smooth compactly supported amplitude, not identically zero, with
+`−ε ‖g₃‖₁ ≤ |R(g, 1)|` (`κ(0) = 0`; at `τ = 0` the statement asserts only that such amplitudes exist). -/
+theorem P_attained_zero (h : P_StationaryLeadingAttainedStatement) (ε : ℝ) (hε : 0 < ε) :
+    ∃ g g₁ g₂ g₃ : ℝ → ℂ, SplAmplitude g g₁ g₂ g₃ ∧ ContDiff ℝ ∞ g ∧ HasCompactSupport g ∧ (∃ x, g x ≠ 0) ∧
+      -ε * (∫ t, ‖g₃ t‖) ≤ ‖splRemainder g 1‖ := by
+  obtain ⟨g, g₁, g₂, g₃, h1, h2, h3, h4, h5⟩ := h 0 ε le_rfl hε
+  rw [splKernel_zero, norm_zero, zero_sub] at h5
+  exact ⟨g, g₁, g₂, g₃, h1, h2, h3, h4, h5⟩
+
+/-- SPL-A at `τ = 1`, `ε = 1/100`, with the non-degeneracy that the class forces: `‖g₃‖₁ > 0`, so the inequality
+bounds the ratio `|R(g, 1)| / ‖g₃‖₁` from below by `|κ(1)| − 1/100`. -/
+theorem P_attained_one (h : P_StationaryLeadingAttainedStatement) :
+    ∃ g g₁ g₂ g₃ : ℝ → ℂ, SplAmplitude g g₁ g₂ g₃ ∧ ContDiff ℝ ∞ g ∧ HasCompactSupport g ∧ (0 < ∫ t, ‖g₃ t‖) ∧
+      ‖splKernel 1‖ - 1 / 100 ≤ ‖splRemainder g 1‖ / ∫ t, ‖g₃ t‖ := by
+  obtain ⟨g, g₁, g₂, g₃, h1, h2, h3, h4, h5⟩ := h 1 (1 / 100) zero_le_one (by norm_num)
+  have hpos := integral_norm_pos_of_splAmplitude h1 h4
+  exact ⟨g, g₁, g₂, g₃, h1, h2, h3, hpos, (le_div_iff₀ hpos).2 h5⟩
+
+/-- **Consistency of SPL-A with SPL-K.** Together they bound the kernel: `|κ(τ)| ≤ 7/8` for every `τ ≥ 0`
+(SPL-A gives `g ≠ 0` with `(|κ(τ)| − ε) ‖g₃‖₁ ≤ |R(g, 1)|`, SPL-K gives `|R(g, 1)| ≤ (7/8) ‖g₃‖₁`, and
+`‖g₃‖₁ > 0` by `integral_norm_pos_of_splAmplitude`, proved here from the class alone). Nothing is proved about the
+kernel unconditionally. -/
+theorem P_kernel_le_of_attained_of_sevenEighths (hA : P_StationaryLeadingAttainedStatement)
+    (hK : StationaryLeadingSevenEighthsStatement) (τ : ℝ) (hτ : 0 ≤ τ) : ‖splKernel τ‖ ≤ 7 / 8 := by
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  obtain ⟨g, g₁, g₂, g₃, hamp, -, -, hne, hle⟩ := hA τ ε hτ hε
+  have hK' := hK g g₁ g₂ g₃ 1 hamp one_pos
+  rw [Real.one_rpow, mul_one] at hK'
+  have hpos := integral_norm_pos_of_splAmplitude hamp hne
+  have h1 := le_of_mul_le_mul_right (hle.trans hK') hpos
+  linarith
+
+/-- The same for every real `τ`, because `|κ|` is even. -/
+theorem P_kernel_le_of_attained_of_sevenEighths' (hA : P_StationaryLeadingAttainedStatement)
+    (hK : StationaryLeadingSevenEighthsStatement) (τ : ℝ) : ‖splKernel τ‖ ≤ 7 / 8 := by
+  rw [← norm_splKernel_abs]
+  exact P_kernel_le_of_attained_of_sevenEighths hA hK |τ| (abs_nonneg τ)
+
+end OscInt.API.StationaryLeadingSanity

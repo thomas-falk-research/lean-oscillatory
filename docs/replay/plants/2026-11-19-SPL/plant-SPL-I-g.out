@@ -1,0 +1,40 @@
+plant-SPL-I-g.lean:20:2: error: Type mismatch
+  h1
+has type
+  gaussRoot s lam - splLead lam = -Complex.I * ↑(lam ^ (-3 / 2)) * ∫ (t : ℝ), gauss3 s t * splKernel √lam
+but is expected to have type
+  gaussRoot s lam - splLead lam = -Complex.I * ↑(lam ^ (-3 / 2)) * ∫ (t : ℝ), gauss3 s t * splKernel (√lam * t)
+plant-SPL-I-g.lean:29:2: error: Type mismatch
+  h1
+has type
+  (2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - splLead 4 =
+    -Complex.I * ↑(1 / 8) * ∫ (t : ℝ), gauss3 1 t * splKernel 2
+but is expected to have type
+  (2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - ↑√(2 * Real.pi / 4) * Complex.exp (↑(Real.pi / 4) * Complex.I) =
+    -Complex.I * ↑(1 / 8) * ∫ (t : ℝ), gauss3 1 t * splKernel (2 * t)
+plant-SPL-I-g.lean:38:2: error: Type mismatch
+  h1
+has type
+  (2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - splLead 9 =
+    -Complex.I * ↑(1 / 27) * ∫ (t : ℝ), gauss3 2 t * splKernel 3
+but is expected to have type
+  (2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - ↑√(2 * Real.pi / 9) * Complex.exp (↑(Real.pi / 4) * Complex.I) =
+    -Complex.I * ↑(1 / 27) * ∫ (t : ℝ), gauss3 2 t * splKernel (3 * t)
+plant-SPL-I-g.lean:49:18: error: linarith failed to find a contradiction
+case left
+h : P_StationaryLeadingIdentityStatement
+h1 : splRemainder (gauss 1) 4 = -Complex.I * ↑(1 / 8) * ∫ (t : ℝ), gauss3 1 t * splKernel 2
+h2 : 151 / 1000 ≤ 1 / 8 * ‖∫ (t : ℝ), gauss3 1 t * splKernel 2‖
+h3 : 1 / 8 * ‖∫ (t : ℝ), gauss3 1 t * splKernel 2‖ ≤ 305 / 1000
+a✝ : ‖∫ (t : ℝ), gauss3 1 t * splKernel (2 * t)‖ < 6 / 5
+⊢ False
+failed
+plant-SPL-I-g.lean:49:18: error: linarith failed to find a contradiction
+case right
+h : P_StationaryLeadingIdentityStatement
+h1 : splRemainder (gauss 1) 4 = -Complex.I * ↑(1 / 8) * ∫ (t : ℝ), gauss3 1 t * splKernel 2
+h2 : 151 / 1000 ≤ 1 / 8 * ‖∫ (t : ℝ), gauss3 1 t * splKernel 2‖
+h3 : 1 / 8 * ‖∫ (t : ℝ), gauss3 1 t * splKernel 2‖ ≤ 305 / 1000
+a✝ : 5 / 2 < ‖∫ (t : ℝ), gauss3 1 t * splKernel (2 * t)‖
+⊢ False
+failed

@@ -1,0 +1,14 @@
+plant-SPL-I-k.lean:23:13: error: Type mismatch
+  HasDerivAt.ofReal_comp (gaussR2_hasDerivAt s x)
+has type
+  HasDerivAt (fun y => ↑((s ^ 4 * y ^ 2 - s ^ 2) * gaussR s y)) (↑((3 * s ^ 4 * x - s ^ 6 * x ^ 3) * gaussR s x)) x
+but is expected to have type
+  HasDerivAt (gauss1 s) (gauss3 s x) x
+plant-SPL-I-k.lean:69:25: error: Application type mismatch: The argument
+  Eq.symm h1
+has type
+  g₁ y - g₁ 0 = 0
+but is expected to have type
+  g₂ y - g₂ 0 = 0
+in the application
+  sub_eq_zero.mp (Eq.symm h1)

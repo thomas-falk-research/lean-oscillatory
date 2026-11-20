@@ -1,0 +1,28 @@
+plant-SPL-S-i.lean:19:16: error: Application type mismatch: The argument
+  h1
+has type
+  ‖gaussRoot s lam - splLead lam‖ ≤ ‖splKernel τ‖ / 8 * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-3 / 2)
+but is expected to have type
+  ‖gaussRoot s lam - splLead lam‖ ≤ ‖splKernel τ‖ * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-3 / 2)
+in the application
+  ⟨hτ, h1⟩
+plant-SPL-S-i.lean:29:16: error: Application type mismatch: The argument
+  h1
+has type
+  ‖(2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - splLead 4‖ ≤
+    ‖splKernel τ‖ / 8 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8)
+but is expected to have type
+  ‖(2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - ↑√(2 * Real.pi / 4) * Complex.exp (↑(Real.pi / 4) * Complex.I)‖ ≤
+    ‖splKernel τ‖ * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8)
+in the application
+  ⟨hτ, h1⟩
+plant-SPL-S-i.lean:38:16: error: Application type mismatch: The argument
+  h1
+has type
+  ‖(2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - splLead 9‖ ≤
+    ‖splKernel τ‖ / 8 * (2 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 27)
+but is expected to have type
+  ‖(2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - ↑√(2 * Real.pi / 9) * Complex.exp (↑(Real.pi / 4) * Complex.I)‖ ≤
+    ‖splKernel τ‖ * (2 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 27)
+in the application
+  ⟨hτ, h1⟩

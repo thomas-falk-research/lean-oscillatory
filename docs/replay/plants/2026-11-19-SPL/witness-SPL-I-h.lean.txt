@@ -1,0 +1,31 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `splKernel`: CONTROL: in splKernel, "if 0 ≤ τ" ↦ "if 0 < τ" (planted copy of splKernel). -/
+noncomputable def P_splKernel (τ : ℝ) : ℂ := if 0 < τ then splKernelPos τ else -splKernelPos (-τ)
+
+/-- Copy of `StationaryLeadingIdentityStatement` over the copied definition. -/
+def P_StationaryLeadingIdentityStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    splRemainder g lam =
+      -Complex.I * ((lam ^ (-(3 : ℝ) / 2) : ℝ) : ℂ) * ∫ t, g₃ t * P_splKernel (Real.sqrt lam * t)
+
+/-- The planted kernel is the kernel: the two definitions differ only at `0`, where both branches give `0`. -/
+theorem P_splKernel_eq : P_splKernel = splKernel := by
+  funext τ
+  unfold P_splKernel splKernel
+  rcases lt_trichotomy τ 0 with h | h | h
+  · rw [ite_eq_right (by linarith), ite_eq_right (by linarith)]
+  · subst h
+    simp [splKernelPos_zero]
+  · rw [ite_eq_left h, ite_eq_left h.le]
+
+theorem planted_iff_StationaryLeadingIdentityStatement : P_StationaryLeadingIdentityStatement ↔ StationaryLeadingIdentityStatement := by
+  unfold P_StationaryLeadingIdentityStatement StationaryLeadingIdentityStatement
+  rw [P_splKernel_eq]
+
+end OscInt.API.StationaryLeadingSanity

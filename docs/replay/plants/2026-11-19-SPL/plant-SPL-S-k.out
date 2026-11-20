@@ -1,0 +1,13 @@
+plant-SPL-S-k.lean:17:9: error: Tactic `rcases` failed: `x✝ : ∀ (τ : ℝ),
+  0 ≤ τ →
+    ‖splRemainder (gauss s) lam‖ ≤
+      (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss3 s t‖) * lam ^ (-3 / 2)` is not an inductive datatype
+plant-SPL-S-k.lean:26:9: error: Tactic `rcases` failed: `x✝ : ∀ (τ : ℝ),
+  0 ≤ τ →
+    ‖splRemainder (gauss 1) 4‖ ≤ (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss3 1 t‖) * 4 ^ (-3 / 2)` is not an inductive datatype
+plant-SPL-S-k.lean:36:9: error: Tactic `rcases` failed: `x✝ : ∀ (τ : ℝ),
+  0 ≤ τ →
+    ‖splRemainder (gauss 2) 9‖ ≤ (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss3 2 t‖) * 9 ^ (-3 / 2)` is not an inductive datatype
+plant-SPL-S-k.lean:43:9: error: Tactic `rcases` failed: `x✝ : ∀ (τ : ℝ),
+  0 ≤ τ →
+    ‖splRemainder (gauss 1) 4‖ ≤ (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss3 1 t‖) * 4 ^ (-3 / 2)` is not an inductive datatype

@@ -1,0 +1,8 @@
+plant-SPL-I-cd.lean:22:68: error: unsolved goals
+s : ℝ
+hs : 0 < s
+lam : ℝ
+⊢ gaussRoot s lam - ↑√(Real.pi / lam) * Complex.exp (↑(Real.pi / 4) * Complex.I) =
+    gaussRoot s lam - ↑√(2 * Real.pi / lam) * Complex.exp (↑(Real.pi / 4) * Complex.I)
+plant-SPL-I-cd.lean:139:95: error: unsolved goals
+⊢ √Real.pi = √(2 * Real.pi)

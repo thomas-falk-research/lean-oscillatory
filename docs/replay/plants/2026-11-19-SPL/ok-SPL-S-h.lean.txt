@@ -1,0 +1,132 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- Unplanted copy of `SplAmplitude`. -/
+def P_SplAmplitude (g g₁ g₂ g₃ : ℝ → ℂ) : Prop :=
+  (∀ x, HasDerivAt g (g₁ x) x) ∧ (∀ x, HasDerivAt g₁ (g₂ x) x) ∧ (∀ x, HasDerivAt g₂ (g₃ x) x) ∧
+    Integrable g ∧ Integrable g₁ ∧ Integrable g₂ ∧ Integrable g₃
+
+/-- Copy of `StationaryLeadingStatement` over the copied definition. -/
+def P_StationaryLeadingStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), P_SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    ∃ τ : ℝ, 0 ≤ τ ∧ ‖splRemainder g lam‖ ≤ ‖splKernel τ‖ * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2)
+
+/-- **The class contains the Gaussians.** For `s > 0`, `G_s` with `G_s′, G_s″, G_s‴` is an amplitude. -/
+theorem P_gauss_splAmplitude (s : ℝ) (hs : 0 < s) : P_SplAmplitude (gauss s) (gauss1 s) (gauss2 s) (gauss3 s) := by
+  refine ⟨fun x => (gaussR_hasDerivAt s x).ofReal_comp, fun x => (gaussR1_hasDerivAt s x).ofReal_comp,
+    fun x => (gaussR2_hasDerivAt s x).ofReal_comp, ?_, ?_, ?_, ?_⟩
+  · refine (integrable_ofReal (integrable_cubic_mul_gaussR s hs 1 0 0 0)).congr (Eventually.of_forall fun u => ?_)
+    simp [gauss]
+  · refine (integrable_ofReal (integrable_cubic_mul_gaussR s hs 0 (-(s ^ 2)) 0 0)).congr
+      (Eventually.of_forall fun u => ?_)
+    unfold gauss1
+    exact congrArg Complex.ofReal (by ring)
+  · refine (integrable_ofReal (integrable_cubic_mul_gaussR s hs (-(s ^ 2)) 0 (s ^ 4) 0)).congr
+      (Eventually.of_forall fun u => ?_)
+    unfold gauss2
+    exact congrArg Complex.ofReal (by ring)
+  · refine (integrable_ofReal (integrable_cubic_mul_gaussR s hs 0 (3 * s ^ 4) 0 (-(s ^ 6)))).congr
+      (Eventually.of_forall fun u => ?_)
+    unfold gauss3
+    exact congrArg Complex.ofReal (by ring)
+
+/-- **Bite (integrability).** The constant `1`, with zero derivatives, is not an amplitude: it is not integrable. -/
+theorem P_one_not_splAmplitude : ¬ P_SplAmplitude (fun _ => 1) (fun _ => 0) (fun _ => 0) (fun _ => 0) := by
+  rintro ⟨-, -, -, h, -⟩
+  exact one_ne_zero (const_eq_zero_of_integrable h)
+
+/-- **Bite (the derivative).** `G_1` with the wrong first derivative `G_1` (in place of `G_1′`) is not an amplitude:
+at `0` the derivative of `G_1` is `0`, not `G_1(0) = 1`. -/
+theorem P_gauss_wrong_deriv_not_splAmplitude : ¬ P_SplAmplitude (gauss 1) (gauss 1) (gauss2 1) (gauss3 1) := by
+  rintro ⟨h, -⟩
+  have h1 : HasDerivAt (gauss 1) (gauss1 1 0) 0 := (gaussR_hasDerivAt 1 0).ofReal_comp
+  have h2 := (h 0).unique h1
+  rw [gauss_zero] at h2
+  simp [gauss1] at h2
+
+/-- An amplitude with `‖g₃‖₁ = 0` is identically zero: `g₂` is constant by the fundamental theorem of calculus
+(for a derivative that exists everywhere and is integrable), an integrable constant is `0`, and so on down to `g`.
+(A fact about the class `SplAmplitude`; it makes the conclusion of SPL-A non-degenerate.) -/
+theorem P_eq_zero_of_integral_norm_eq_zero {g g₁ g₂ g₃ : ℝ → ℂ} (h : P_SplAmplitude g g₁ g₂ g₃)
+    (h0 : ∫ t, ‖g₃ t‖ = 0) (x : ℝ) : g x = 0 := by
+  obtain ⟨hd, hd₁, hd₂, hi, hi₁, hi₂, hi₃⟩ := h
+  have hae : (fun t => ‖g₃ t‖) =ᵐ[volume] 0 :=
+    (integral_eq_zero_iff_of_nonneg (fun t => norm_nonneg (g₃ t)) hi₃.norm).1 h0
+  have hae' : ∀ᵐ t ∂(volume : Measure ℝ), g₃ t = 0 := hae.mono fun t ht => norm_eq_zero.1 ht
+  have hconst : ∀ y, g₂ y = g₂ 0 := by
+    intro y
+    have h1 := intervalIntegral.integral_eq_sub_of_hasDerivAt (a := 0) (b := y) (fun t _ => hd₂ t)
+      hi₃.intervalIntegrable
+    have h2 : ∫ t in (0 : ℝ)..y, g₃ t = ∫ _t in (0 : ℝ)..y, (0 : ℂ) :=
+      intervalIntegral.integral_congr_ae (hae'.mono fun t ht _ => ht)
+    rw [h2, intervalIntegral.integral_zero] at h1
+    exact (sub_eq_zero.1 h1.symm)
+  have hz₂ : ∀ y, g₂ y = 0 := by
+    have h1 : g₂ = fun _ => g₂ 0 := funext hconst
+    rw [h1] at hi₂
+    intro y
+    rw [hconst y]
+    exact const_eq_zero_of_integrable hi₂
+  have hc₁ : ∀ y, g₁ y = g₁ 0 := fun y =>
+    is_const_of_deriv_eq_zero (fun t => (hd₁ t).differentiableAt) (fun t => by rw [(hd₁ t).deriv, hz₂]) y 0
+  have hz₁ : ∀ y, g₁ y = 0 := by
+    have h1 : g₁ = fun _ => g₁ 0 := funext hc₁
+    rw [h1] at hi₁
+    intro y
+    rw [hc₁ y]
+    exact const_eq_zero_of_integrable hi₁
+  have hc : ∀ y, g y = g 0 := fun y =>
+    is_const_of_deriv_eq_zero (fun t => (hd t).differentiableAt) (fun t => by rw [(hd t).deriv, hz₁]) y 0
+  have h1 : g = fun _ => g 0 := funext hc
+  rw [h1] at hi
+  rw [hc x]
+  exact const_eq_zero_of_integrable hi
+
+/-- An amplitude that is not identically zero has `‖g₃‖₁ > 0`. -/
+theorem P_integral_norm_pos_of_splAmplitude {g g₁ g₂ g₃ : ℝ → ℂ} (h : P_SplAmplitude g g₁ g₂ g₃)
+    (hne : ∃ x, g x ≠ 0) : 0 < ∫ t, ‖g₃ t‖ := by
+  obtain ⟨x, hx⟩ := hne
+  refine lt_of_le_of_ne (integral_nonneg fun t => norm_nonneg _) fun h0 => hx ?_
+  exact P_eq_zero_of_integral_norm_eq_zero h h0.symm x
+
+/-- SPL-S on the Gaussian family, with `‖G_s‴‖₁ = s²(2 + 8e^{−3/2})`. -/
+theorem P_kernel_gauss (h : P_StationaryLeadingStatement) (s lam : ℝ) (hs : 0 < s) (hlam : 0 < lam) :
+    ∃ τ : ℝ, 0 ≤ τ ∧ ‖gaussRoot s lam - splLead lam‖ ≤
+      ‖splKernel τ‖ * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-(3 : ℝ) / 2) := by
+  obtain ⟨τ, hτ, h1⟩ := h (gauss s) (gauss1 s) (gauss2 s) (gauss3 s) lam (P_gauss_splAmplitude s hs) hlam
+  rw [splRemainder_gauss s hs, integral_norm_gauss3 s hs] at h1
+  exact ⟨τ, hτ, h1⟩
+
+/-- SPL-S at `G_1`, `λ = 4`, written out. -/
+theorem P_kernel_gauss_one_four (h : P_StationaryLeadingStatement) :
+    ∃ τ : ℝ, 0 ≤ τ ∧ ‖(2 * (Real.pi : ℂ) / (1 - 4 * Complex.I)) ^ (1 / 2 : ℂ) -
+        ((Real.sqrt (2 * Real.pi / 4) : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I)‖ ≤
+      ‖splKernel τ‖ * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8) := by
+  obtain ⟨τ, hτ, h1⟩ := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 4 (P_gauss_splAmplitude 1 one_pos) (by norm_num)
+  rw [splRemainder_gauss 1 one_pos, gaussRoot_one_four, integral_norm_gauss3 1 one_pos, rpow_four, one_pow,
+    one_mul] at h1
+  exact ⟨τ, hτ, h1⟩
+
+/-- SPL-S at `G_2`, `λ = 9`, written out (`‖G_2‴‖₁ = 4(2 + 8e^{−3/2})`). -/
+theorem P_kernel_gauss_two_nine (h : P_StationaryLeadingStatement) :
+    ∃ τ : ℝ, 0 ≤ τ ∧ ‖(2 * (Real.pi : ℂ) / (4 - 9 * Complex.I)) ^ (1 / 2 : ℂ) -
+        ((Real.sqrt (2 * Real.pi / 9) : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I)‖ ≤
+      ‖splKernel τ‖ * (2 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 27) := by
+  obtain ⟨τ, hτ, h1⟩ := h (gauss 2) (gauss1 2) (gauss2 2) (gauss3 2) 9 (P_gauss_splAmplitude 2 two_pos) (by norm_num)
+  rw [splRemainder_gauss 2 two_pos, gaussRoot_two_nine, integral_norm_gauss3 2 two_pos, rpow_nine] at h1
+  exact ⟨τ, hτ, h1⟩
+
+/-- SPL-S forces a value of the kernel: some `τ ≥ 0` has `|κ(τ)| ≥ 3/10` (from `G_1`, `λ = 4`:
+`0.151 ≤ |R| ≤ |κ(τ)| · 3.79/8`). The statement is not satisfied by a small kernel. -/
+theorem P_kernel_large (h : P_StationaryLeadingStatement) : ∃ τ : ℝ, 0 ≤ τ ∧ 3 / 10 ≤ ‖splKernel τ‖ := by
+  obtain ⟨τ, hτ, h1⟩ := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 4 (P_gauss_splAmplitude 1 one_pos) (by norm_num)
+  rw [integral_norm_gauss3 1 one_pos, rpow_four, one_pow, one_mul] at h1
+  refine ⟨τ, hτ, ?_⟩
+  have h2 := splRemainder_gauss_one_four_bounds.1
+  nlinarith [normThree_le, normThree_pos, norm_nonneg (splKernel τ)]
+
+end OscInt.API.StationaryLeadingSanity

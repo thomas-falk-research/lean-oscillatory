@@ -739,8 +739,8 @@ theorem gaussRoot_two_nine : gaussRoot 2 9 = (2 * (Real.pi : ℂ) / (4 - 9 * Com
   unfold gaussRoot
   norm_num
 
-/-- `0.151 ≤ |R(G_1, 4)| ≤ 0.305` (true value `0.2218…`; the bounds of `splRemainder_gauss_bounds` are
-`0.15199…` and `0.30398…`). -/
+/-- `0.151 ≤ |R(G_1, 4)| ≤ 0.305` (true value `0.15342…`; the bounds of `splRemainder_gauss_bounds` are
+`0.15198…` and `0.30397…`). -/
 theorem splRemainder_gauss_one_four_bounds :
     151 / 1000 ≤ ‖splRemainder (gauss 1) 4‖ ∧ ‖splRemainder (gauss 1) 4‖ ≤ 305 / 1000 := by
   obtain ⟨h1, h2⟩ := splRemainder_gauss_bounds 1 4 one_pos (by norm_num)
@@ -757,7 +757,8 @@ theorem splRemainder_gauss_one_four_bounds :
     rw [div_le_iff₀ (by positivity)]
     nlinarith [sqrt_two_pi_upper]
 
-/-- `0.169 ≤ |R(G_2, 9)| ≤ 0.341` (the bounds of `splRemainder_gauss_bounds` are `0.16967…` and `0.33934…`). -/
+/-- `0.169 ≤ |R(G_2, 9)| ≤ 0.341` (true value `0.17444…`; the bounds of `splRemainder_gauss_bounds` are `0.16967…`
+and `0.33934…`). -/
 theorem splRemainder_gauss_two_nine_bounds :
     169 / 1000 ≤ ‖splRemainder (gauss 2) 9‖ ∧ ‖splRemainder (gauss 2) 9‖ ≤ 341 / 1000 := by
   obtain ⟨h1, h2⟩ := splRemainder_gauss_bounds 2 9 two_pos (by norm_num)
@@ -904,7 +905,7 @@ theorem sevenEighths_gauss (h : StationaryLeadingSevenEighthsStatement) (s lam :
   rw [splRemainder_gauss s hs, integral_norm_gauss3 s hs] at h1
   exact h1
 
-/-- SPL-K at `G_1`, `λ = 4`, written out: a numeric inequality, `|…| ≤ (7/8)(2 + 8e^{−3/2})/8 = 0.41399…`. -/
+/-- SPL-K at `G_1`, `λ = 4`, written out: a numeric inequality, `|…| ≤ (7/8)(2 + 8e^{−3/2})/8 = 0.41398…`. -/
 theorem sevenEighths_gauss_one_four (h : StationaryLeadingSevenEighthsStatement) :
     ‖(2 * (Real.pi : ℂ) / (1 - 4 * Complex.I)) ^ (1 / 2 : ℂ) -
         ((Real.sqrt (2 * Real.pi / 4) : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I)‖ ≤
@@ -1028,7 +1029,7 @@ theorem norm_gaussRoot_one_hundred_bounds : 1 / 4 ≤ ‖gaussRoot 1 100‖ ∧ 
     rw [not_le] at hlt
     nlinarith [Real.pi_lt_d2]
 
-/-- `Im root(1, 100) ≥ 1/10` (true value `0.1247…`): `2 Re·Im = Im(root²) = 200π/10001` and `Re ≤ |root| ≤ 0.251`. -/
+/-- `Im root(1, 100) ≥ 1/10` (true value `0.17635…`): `2 Re·Im = Im(root²) = 200π/10001` and `Re ≤ |root| ≤ 0.251`. -/
 theorem gaussRoot_one_hundred_im_lower : 1 / 10 ≤ (gaussRoot 1 100).im := by
   have h1 : (gaussRoot 1 100 ^ 2).im = 2 * (gaussRoot 1 100).re * (gaussRoot 1 100).im := by
     rw [pow_two, Complex.mul_im]

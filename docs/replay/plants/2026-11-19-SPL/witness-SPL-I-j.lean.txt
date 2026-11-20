@@ -1,0 +1,31 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `SplAmplitude`: the third derivative clause of SplAmplitude deleted (planted copy of the
+definition). -/
+def P_SplAmplitude (g g₁ g₂ g₃ : ℝ → ℂ) : Prop :=
+  (∀ x, HasDerivAt g (g₁ x) x) ∧ (∀ x, HasDerivAt g₁ (g₂ x) x) ∧
+    Integrable g ∧ Integrable g₁ ∧ Integrable g₂ ∧ Integrable g₃
+
+/-- Copy of `StationaryLeadingIdentityStatement` over the copied definition. -/
+def P_StationaryLeadingIdentityStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), P_SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    splRemainder g lam =
+      -Complex.I * ((lam ^ (-(3 : ℝ) / 2) : ℝ) : ℂ) * ∫ t, g₃ t * splKernel (Real.sqrt lam * t)
+
+theorem witness_not_P_StationaryLeadingIdentityStatement : ¬ P_StationaryLeadingIdentityStatement := by
+  intro h
+  have hamp : P_SplAmplitude (gauss 1) (gauss1 1) (gauss2 1) (fun _ => 0) := by
+    obtain ⟨hd, hd₁, -, hi, hi₁, hi₂, -⟩ := gauss_splAmplitude 1 one_pos
+    exact ⟨hd, hd₁, hi, hi₁, hi₂, integrable_zero _ _ _⟩
+  have h1 := h (gauss 1) (gauss1 1) (gauss2 1) (fun _ => 0) 100 hamp (by norm_num)
+  simp only [zero_mul, integral_zero, mul_zero] at h1
+  have h3 := splRemainder_gauss_one_hundred_lower
+  rw [h1, norm_zero] at h3
+  norm_num at h3
+
+end OscInt.API.StationaryLeadingSanity

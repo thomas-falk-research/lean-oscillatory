@@ -1,0 +1,16 @@
+plant-SPL-A-f.lean:21:28: error: Application type mismatch: The argument
+  h2
+has type
+  ContDiff ℝ 3 g
+but is expected to have type
+  ContDiff ℝ ∞ g
+in the application
+  And.intro h2
+plant-SPL-A-f.lean:30:28: error: Application type mismatch: The argument
+  h2
+has type
+  ContDiff ℝ 3 g
+but is expected to have type
+  ContDiff ℝ ∞ g
+in the application
+  And.intro h2

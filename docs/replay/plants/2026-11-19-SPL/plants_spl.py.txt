@@ -1,0 +1,890 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the draft batch-SPL statements against copies of their sanity theorems.
+
+As the batch-VC2 generators (docs/replay/plants/2026-11-16-VC2/plants_vc2.py.txt and the second run). The statement
+module (OscInt/Statements/StationaryLeading.lean, a draft, not frozen) and the sanity layer
+(OscInt/Front/StationaryLeadingSanity.lean) are compiled modules, so every generated file imports
+OscInt.Front.StationaryLeadingSanity only and contains, in the namespace of the sanity layer and under the prefix P_:
+a copy of ONE statement constant; where the mutation is in a definition the statement uses (splRemainder,
+SplAmplitude, splKernel), a copy of that definition, of every data lemma of the sanity layer that mentions it
+(directly or through another copied lemma), and of the partner statement of the consistency theorem; then copies of
+the scripts that go through the statement: every sanity theorem that takes the statement constant as a hypothesis.
+Exactly one textual mutation is applied to one copied definition. The unplanted copy (ok-) must compile.
+Witness files (docs/lessons.md, rule 9) contain the planted definitions and one compiled theorem, of one of these
+kinds (the verdict says which):
+  not        : ¬ planted statement, from unconditional data of the sanity layer            -> DETECTED
+  cond       : (∀ τ, ‖splKernel τ‖ ≤ 2) → ¬ planted statement (Lemma 2 of docs/proof-SPL.md,
+               not proved in Lean when this was run)                                 -> DETECTED CONDITIONALLY
+  rel        : true statement → ¬ planted statement                                  -> DETECTED RELATIVE TO THE TRUE
+                                                                                        STATEMENT
+  iff        : planted statement ↔ draft statement                                   -> EQUIVALENT
+  true, weak : the planted statement proved outright; draft statement → planted      -> TRUE WEAKENING
+No file proves, or uses a proof of, a statement of the batch. A rejected script alone is never counted as a
+detection. The compiler output is recorded with the scratch directory removed from the paths.
+The first 28 plants are those of the lead's brief (with two verdicts stronger than the brief expected: SPL-I-d and
+SPL-I-e); the last 14 are the mutations proposed by an external referee of the draft statements and two controls
+that must not distinguish (SPL-I-h, SPL-K-l), added on the lead's instruction. Witness-only lemmas (evenness of the
+second derivative of the Gaussian, a scaling of its third derivative, evenness of a planted kernel) are stated in
+the witness files that use them; none is about the kernel of the batch beyond its oddness.
+Usage: plants_spl.py REPO OUTDIR SCRATCHDIR [plant ids]
+"""
+import os, re, subprocess, sys, textwrap
+
+REPO, OUT, SCR = sys.argv[1:4]
+OUT, SCR = os.path.abspath(OUT), os.path.abspath(SCR)
+os.makedirs(OUT, exist_ok=True)
+os.makedirs(SCR, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/StationaryLeading.lean')).read().split('\n')
+SAN_ALL = open(os.path.join(REPO, 'OscInt/Front/StationaryLeadingSanity.lean')).read()
+SAN = SAN_ALL[SAN_ALL.index('namespace OscInt.API.StationaryLeadingSanity'):].split('\n')
+I, S, K, A = ('StationaryLeadingIdentityStatement', 'StationaryLeadingStatement',
+              'StationaryLeadingSevenEighthsStatement', 'StationaryLeadingAttainedStatement')
+STATEMENTS = [I, S, K, A]
+REM, AMP, KER = 'splRemainder', 'SplAmplitude', 'splKernel'
+STMT_DEFS = ['fresnelPrim', 'fresnelLimit', 'splKernelPos', KER, AMP, REM] + STATEMENTS
+DECL = re.compile(r"^(?:noncomputable )?(theorem|def) ([A-Za-z_0-9']+)")
+WORD = re.compile(r"[A-Za-z_][A-Za-z_0-9']*")
+
+
+def block(lines, name):
+    """The declaration `name` without its docstring, up to the next blank line."""
+    for i, l in enumerate(lines):
+        m = DECL.match(l)
+        if m and m.group(2) == name:
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {name}')
+
+
+def data_blocks():
+    """All declarations of the sanity file with docstrings, in file order: name -> (index, text)."""
+    res, cur = {}, []
+    for l in SAN[1:] + ['']:
+        if l.strip() == '':
+            for c in cur:
+                m = DECL.match(c)
+                if m:
+                    res[m.group(2)] = (len(res), '\n'.join(cur))
+                    break
+            cur = []
+        else:
+            cur.append(l)
+    return res
+
+
+DATA = data_blocks()
+
+
+def words(t):
+    """The identifiers of a declaration, its docstring excluded."""
+    ls = t.split('\n')
+    k = next(i for i, l in enumerate(ls) if DECL.match(l))
+    return set(WORD.findall('\n'.join(ls[k:])))
+
+
+# Scripts: the sanity theorems that take a statement constant as a hypothesis, per statement, in file order.
+THROUGH = {st: [n for n, (_, t) in sorted(DATA.items(), key=lambda kv: kv[1][0]) if st in words(t)]
+           for st in STATEMENTS}
+ALL_THROUGH = {n for ns in THROUGH.values() for n in ns}
+for st in STATEMENTS:
+    assert THROUGH[st], st
+
+
+def mention_closure(name):
+    """Data declarations (not scripts) of the sanity file that mention `name`, directly or through one another."""
+    got, changed = set(), True
+    while changed:
+        changed = False
+        for n, (_, t) in DATA.items():
+            if n in got or n in ALL_THROUGH:
+                continue
+            w = words(t)
+            if name in w or (w & got):
+                got.add(n)
+                changed = True
+    return sorted(got, key=lambda n: DATA[n][0])
+
+
+OPEN = """import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+"""
+CLOSE = '\n\nend OscInt.API.StationaryLeadingSanity\n'
+
+
+def wrap(s):
+    """A docstring within 120 columns."""
+    return '\n'.join(textwrap.wrap('/-- ' + s + ' -/', 118))
+
+
+def rename(text, names):
+    """Prefix the given names with P_ in a declaration; its docstring is left as it is."""
+    ls = text.split('\n')
+    k = next(i for i, l in enumerate(ls) if DECL.match(l))
+    doc, decl = '\n'.join(ls[:k]), '\n'.join(ls[k:])
+    for n in sorted(names, key=len, reverse=True):
+        decl = re.sub(r"(?<![\w.'])" + re.escape(n) + r"(?![\w'])", 'P_' + n, decl)
+    return (doc + '\n' if doc else '') + decl
+
+
+def make(stmt, mut, planted, note, witness=None):
+    """The text of a generated file. `mut` = (definition to mutate, old, new, number of occurrences)."""
+    target, old, new, count = mut
+    in_def = target != stmt
+    scripts = THROUGH[stmt]
+    defs = [target, stmt] if in_def else [stmt]
+    data = mention_closure(target) if in_def else []
+    if in_def and witness is None:
+        # the partner statement of a script with two statement hypotheses is copied over the planted definition
+        for th in scripts:
+            for st in STATEMENTS:
+                if st in words(DATA[th][1]) and st not in defs:
+                    defs.append(st)
+    defs.sort(key=STMT_DEFS.index)
+    parts = []
+    for d in defs:
+        t = block(STMT, d)
+        if planted and d == target:
+            assert t.count(old) == count, (d, old, t.count(old))
+            t = t.replace(old, new)
+        if d == target:
+            doc = (f'PLANTED copy of `{d}`: {note.split(";")[0]}.' if planted else f'Unplanted copy of `{d}`.')
+        else:
+            doc = f'Copy of `{d}` over the copied definition' + ('s.' if len(defs) > 2 else '.')
+        parts.append(wrap(doc) + '\n' + t)
+    renamed = list(defs)
+    if witness is None:
+        parts += [DATA[n][1] for n in data] + [DATA[n][1] for n in scripts]
+        renamed += data + scripts
+    text = '\n\n'.join(rename(part, renamed) for part in parts)
+    if witness is not None:
+        text += '\n\n' + witness.strip('\n')
+    return OPEN + '\n' + text + CLOSE
+
+
+def compile_text(tag, text):
+    """Compile one generated file (one Lean process at a time, 15 minutes at most). The result is kept in the scratch
+    directory and reused when the same text is asked for again, so that an interrupted run can be resumed."""
+    src, res = os.path.join(SCR, tag + '.lean'), os.path.join(SCR, tag + '.result')
+    if os.path.exists(src) and os.path.exists(res) and open(src).read() == text:
+        rc, out = open(res).read().split('\n', 1)
+        return int(rc), out
+    open(src, 'w').write(text)
+    env = {k: v for k, v in os.environ.items() if k not in ('QISKIT_IBM_TOKEN', 'QISKIT_IBM_INSTANCE', 'CTQW_GUARD')}
+    try:
+        r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', src],
+                           cwd=REPO, capture_output=True, text=True, env=env, timeout=900)
+        rc, out = r.returncode, (r.stdout + r.stderr).replace(SCR + os.sep, '')
+    except subprocess.TimeoutExpired:
+        rc, out = 124, f'{tag}.lean:1:0: error: no result after 900 s (stopped by the generator)\n'
+    open(res, 'w').write(f'{rc}\n{out}')
+    return rc, out
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# Witnesses. Names of planted definitions carry the prefix P_ here; everything else is the compiled sanity layer.
+# ---------------------------------------------------------------------------------------------------------------
+G1 = '(gauss 1) (gauss1 1) (gauss2 1) (gauss3 1)'
+G4 = '(gauss 4) (gauss1 4) (gauss2 4) (gauss3 4)'
+A1 = '(gauss_splAmplitude 1 one_pos)'
+HK = '(hκ : ∀ τ, ‖splKernel τ‖ ≤ 2)'
+ONE = '(fun _ => 1) (fun _ => 0) (fun _ => 0) (fun _ => 0)'
+
+# the planted remainder at G_1, λ = 100, for the three mutations of the leading term
+REM_C = '''have e : P_splRemainder (gauss 1) 100 = gaussRoot 1 100 - ((Real.sqrt (2 * Real.pi / 100) : ℝ) : ℂ) * 1 := by
+    unfold P_splRemainder
+    rw [integral_gauss_mul_exp 1 one_pos, gauss_zero, one_mul]
+  have him : (P_splRemainder (gauss 1) 100).im = (gaussRoot 1 100).im := by
+    rw [e, mul_one, Complex.sub_im, Complex.ofReal_im, sub_zero]
+  have hlow : 1 / 10 ≤ ‖P_splRemainder (gauss 1) 100‖ := by
+    have h2 := (le_abs_self _).trans (Complex.abs_im_le_norm (P_splRemainder (gauss 1) 100))
+    rw [him] at h2
+    exact gaussRoot_one_hundred_im_lower.trans h2'''
+REM_D = '''have e : P_splRemainder (gauss 1) 100 = gaussRoot 1 100 - ((Real.sqrt (Real.pi / 100) : ℝ) : ℂ) *
+      Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I) := by
+    unfold P_splRemainder
+    rw [integral_gauss_mul_exp 1 one_pos, gauss_zero, one_mul]
+  have hl : ‖((Real.sqrt (Real.pi / 100) : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I)‖ ≤
+      9 / 50 := by
+    rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (Real.sqrt_nonneg _)]
+    exact (Real.sqrt_le_left (by norm_num)).2 (by nlinarith [Real.pi_lt_d2])
+  have hlow : 7 / 100 ≤ ‖P_splRemainder (gauss 1) 100‖ := by
+    rw [e]
+    have h2 := norm_sub_norm_le (gaussRoot 1 100)
+      (((Real.sqrt (Real.pi / 100) : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I))
+    linarith [norm_gaussRoot_one_hundred_bounds.1]'''
+REM_E = '''have e : P_splRemainder (gauss 1) 100 = gaussRoot 1 100 := by
+    unfold P_splRemainder
+    rw [integral_gauss_mul_exp 1 one_pos]
+  have hlow : 1 / 4 ≤ ‖P_splRemainder (gauss 1) 100‖ := by
+    rw [e]
+    exact norm_gaussRoot_one_hundred_bounds.1'''
+
+
+def w_k_rem(rem):
+    return f'''theorem witness_not_P_{K} : ¬ P_{K} := by
+  intro h
+  {rem}
+  have h1 := h {G1} 100 {A1} (by norm_num)
+  rw [integral_norm_gauss3 1 one_pos, rpow_hundred] at h1
+  linarith [normThree_le]'''
+
+
+def w_s_rem(rem):
+    return f'''theorem witness_not_P_{S} {HK} : ¬ P_{S} := by
+  intro h
+  {rem}
+  obtain ⟨τ, -, h1⟩ := h {G1} 100 {A1} (by norm_num)
+  rw [integral_norm_gauss3 1 one_pos, rpow_hundred, one_pow, one_mul] at h1
+  have h2 : ‖splKernel τ‖ * (2 + 8 * Real.exp (-(3 / 2))) ≤ 2 * (379 / 100) :=
+    mul_le_mul (hκ τ) normThree_le normThree_pos.le (by norm_num)
+  linarith'''
+
+
+W_Ka = f'''theorem witness_not_P_{K} : ¬ P_{K} := by
+  intro h
+  have h1 := h {G1} 100 {A1} (by norm_num)
+  have e : (100 : ℝ) ^ (-(2 : ℝ)) = 1 / 10000 := by
+    rw [Real.rpow_neg (by norm_num), Real.rpow_two]
+    norm_num
+  rw [integral_norm_gauss3 1 one_pos, e] at h1
+  linarith [splRemainder_gauss_one_hundred_lower, normThree_le]'''
+
+W_Kb = f'''theorem witness_not_P_{K} : ¬ P_{K} := by
+  intro h
+  have h1 := h {G1} 100 {A1} (by norm_num)
+  rw [integral_norm_gauss3 1 one_pos, rpow_hundred] at h1
+  linarith [splRemainder_gauss_one_hundred_lower, normThree_le]'''
+
+W_Kf = f'''theorem witness_not_P_{K} : ¬ P_{K} := by
+  intro h
+  have h1 := h {G1} 0 {A1}
+  rw [Real.zero_rpow (by norm_num : (-(3 : ℝ) / 2) ≠ 0), mul_zero, norm_splRemainder_gauss_zero] at h1
+  linarith [sqrt_two_pi_lower]'''
+
+W_Kg = f'''theorem witness_not_P_{K} : ¬ P_{K} := by
+  intro h
+  have h1 := h {G4} 1600 (gauss_splAmplitude 4 (by norm_num)) (by norm_num)
+  rw [integral_norm_gauss2 4 (by norm_num), rpow_sixteen_hundred] at h1
+  linarith [splRemainder_gauss_four_sixteen_hundred_lower, exp_neg_half_le]'''
+
+ONE_AMP = f'''have hamp : P_SplAmplitude {ONE} :=
+    ⟨fun x => hasDerivAt_const x 1, fun x => hasDerivAt_const x 0, fun x => hasDerivAt_const x 0,
+      integrable_zero _ _ _, integrable_zero _ _ _, integrable_zero _ _ _⟩'''
+
+W_Kh = f'''theorem witness_not_P_{K} : ¬ P_{K} := by
+  intro h
+  {ONE_AMP}
+  have h1 := h {ONE} 1 hamp one_pos
+  rw [norm_splRemainder_one] at h1
+  simp only [norm_zero, integral_zero, mul_zero, zero_mul] at h1
+  linarith [sqrt_two_pi_lower]'''
+
+W_Sa = f'''theorem witness_not_P_{S} {HK} : ¬ P_{S} := by
+  intro h
+  obtain ⟨τ, -, h1⟩ := h {G1} 100 {A1} (by norm_num)
+  have e : (100 : ℝ) ^ (-(2 : ℝ)) = 1 / 10000 := by
+    rw [Real.rpow_neg (by norm_num), Real.rpow_two]
+    norm_num
+  rw [integral_norm_gauss3 1 one_pos, e, one_pow, one_mul] at h1
+  have h2 : ‖splKernel τ‖ * (2 + 8 * Real.exp (-(3 / 2))) ≤ 2 * (379 / 100) :=
+    mul_le_mul (hκ τ) normThree_le normThree_pos.le (by norm_num)
+  linarith [splRemainder_gauss_one_hundred_lower]'''
+
+W_Sf = f'''theorem witness_not_P_{S} : ¬ P_{S} := by
+  intro h
+  obtain ⟨τ, -, h1⟩ := h {G1} 0 {A1}
+  rw [Real.zero_rpow (by norm_num : (-(3 : ℝ) / 2) ≠ 0), mul_zero, norm_splRemainder_gauss_zero] at h1
+  linarith [sqrt_two_pi_lower]'''
+
+W_Sg = f'''theorem witness_not_P_{S} {HK} : ¬ P_{S} := by
+  intro h
+  obtain ⟨τ, -, h1⟩ := h {G4} 1600 (gauss_splAmplitude 4 (by norm_num)) (by norm_num)
+  rw [integral_norm_gauss2 4 (by norm_num), rpow_sixteen_hundred] at h1
+  have h2 : ‖splKernel τ‖ * (4 * (4 * Real.exp (-(1 / 2)))) ≤ 2 * (4 * (4 * (128 / 211))) :=
+    mul_le_mul (hκ τ) (by linarith [exp_neg_half_le]) (by positivity) (by norm_num)
+  linarith [splRemainder_gauss_four_sixteen_hundred_lower]'''
+
+W_Sh = f'''theorem witness_not_P_{S} : ¬ P_{S} := by
+  intro h
+  {ONE_AMP}
+  obtain ⟨τ, -, h1⟩ := h {ONE} 1 hamp one_pos
+  rw [norm_splRemainder_one] at h1
+  simp only [norm_zero, integral_zero, mul_zero, zero_mul] at h1
+  linarith [sqrt_two_pi_lower]'''
+
+W_Si = f'''theorem witness_not_P_{S} {HK} : ¬ P_{S} := by
+  intro h
+  obtain ⟨τ, -, h1⟩ := h {G1} 100 {A1} (by norm_num)
+  rw [integral_norm_gauss3 1 one_pos, rpow_hundred, one_pow, one_mul] at h1
+  have h2 : ‖splKernel τ‖ * (2 + 8 * Real.exp (-(3 / 2))) ≤ 2 * (379 / 100) :=
+    mul_le_mul (hκ τ) normThree_le normThree_pos.le (by norm_num)
+  linarith [splRemainder_gauss_one_hundred_lower]'''
+
+W_Sj = f'''theorem planted_iff_{S} : P_{S} ↔ {S} := by
+  constructor
+  · intro h g g₁ g₂ g₃ lam hamp hlam
+    obtain ⟨τ, h1⟩ := h g g₁ g₂ g₃ lam hamp hlam
+    refine ⟨|τ|, abs_nonneg τ, ?_⟩
+    rw [norm_splKernel_abs]
+    exact h1
+  · intro h g g₁ g₂ g₃ lam hamp hlam
+    obtain ⟨τ, -, h1⟩ := h g g₁ g₂ g₃ lam hamp hlam
+    exact ⟨τ, h1⟩'''
+
+R_NE = '''have hne : splRemainder (gauss 1) 100 ≠ 0 := by
+    intro h0
+    have h3 := splRemainder_gauss_one_hundred_lower
+    rw [h0, norm_zero] at h3
+    norm_num at h3'''
+
+W_Ia = f'''theorem witness_{I}_not_P (hS : {I}) : ¬ P_{I} := by
+  intro h
+  have h1 := hS {G1} 100 {A1} (by norm_num)
+  have h2 := h {G1} 100 {A1} (by norm_num)
+  {R_NE}
+  exact hne (by linear_combination (1 / 2 : ℂ) * h1 + (1 / 2 : ℂ) * h2)'''
+
+W_Ib = f'''theorem witness_{I}_not_P (hS : {I}) : ¬ P_{I} := by
+  intro h
+  have h1 := hS {G1} 100 {A1} (by norm_num)
+  have h2 := h {G1} 100 {A1} (by norm_num)
+  {R_NE}
+  have hlt : (100 : ℝ) ^ (-(3 : ℝ) / 2) < (100 : ℝ) ^ (-(1 : ℝ) / 2) :=
+    Real.rpow_lt_rpow_of_exponent_lt (by norm_num) (by norm_num)
+  have h3 : ((((100 : ℝ) ^ (-(1 : ℝ) / 2) : ℝ) : ℂ) - (((100 : ℝ) ^ (-(3 : ℝ) / 2) : ℝ) : ℂ)) *
+      splRemainder (gauss 1) 100 = 0 := by
+    linear_combination (((100 : ℝ) ^ (-(1 : ℝ) / 2) : ℝ) : ℂ) * h1 - (((100 : ℝ) ^ (-(3 : ℝ) / 2) : ℝ) : ℂ) * h2
+  rcases mul_eq_zero.1 h3 with h4 | h4
+  · rw [sub_eq_zero] at h4
+    have h5 := Complex.ofReal_injective h4
+    linarith
+  · exact hne h4'''
+
+
+def w_i_rem(lead_fact):
+    return f'''theorem witness_{I}_not_P (hS : {I}) : ¬ P_{I} := by
+  intro h
+  have h1 := hS {G1} 100 {A1} (by norm_num)
+  have h2 := h {G1} 100 {A1} (by norm_num)
+  rw [splRemainder_gauss 1 one_pos] at h1
+  have hpos : 0 < Real.sqrt (2 * Real.pi / 100) := Real.sqrt_pos.2 (by have := Real.pi_pos; positivity)
+{lead_fact}'''
+
+
+W_Icc = w_i_rem('''  have e : P_splRemainder (gauss 1) 100 = gaussRoot 1 100 - ((Real.sqrt (2 * Real.pi / 100) : ℝ) : ℂ) * 1 := by
+    unfold P_splRemainder
+    rw [integral_gauss_mul_exp 1 one_pos, gauss_zero, one_mul]
+  rw [e] at h2
+  have h3 : splLead 100 = ((Real.sqrt (2 * Real.pi / 100) : ℝ) : ℂ) := by
+    linear_combination h2 - h1
+  have h4 : (splLead 100).im = Real.sqrt (2 * Real.pi / 100) * (Real.sqrt 2 / 2) := by
+    unfold splLead
+    rw [exp_pi_div_four, ← mul_assoc, ← Complex.ofReal_mul, Complex.im_ofReal_mul]
+    simp
+  rw [h3, Complex.ofReal_im] at h4
+  have h5 : 0 < Real.sqrt (2 * Real.pi / 100) * (Real.sqrt 2 / 2) :=
+    mul_pos hpos (div_pos (Real.sqrt_pos.2 two_pos) two_pos)
+  linarith''')
+
+W_Icd = w_i_rem('''  have e : P_splRemainder (gauss 1) 100 = gaussRoot 1 100 - ((Real.sqrt (Real.pi / 100) : ℝ) : ℂ) *
+      Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I) := by
+    unfold P_splRemainder
+    rw [integral_gauss_mul_exp 1 one_pos, gauss_zero, one_mul]
+  rw [e] at h2
+  have h3 : splLead 100 = ((Real.sqrt (Real.pi / 100) : ℝ) : ℂ) *
+      Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I) := by
+    linear_combination h2 - h1
+  have hn := norm_splLead 100
+  rw [h3, norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (Real.sqrt_nonneg _)] at hn
+  have h4 := (Real.sqrt_inj (by have := Real.pi_pos; positivity) (by have := Real.pi_pos; positivity)).1 hn
+  linarith [Real.pi_pos]''')
+
+W_Ice = w_i_rem('''  have e : P_splRemainder (gauss 1) 100 = gaussRoot 1 100 := by
+    unfold P_splRemainder
+    rw [integral_gauss_mul_exp 1 one_pos]
+  rw [e] at h2
+  have h3 : splLead 100 = 0 := by
+    linear_combination h2 - h1
+  have hn := norm_splLead 100
+  rw [h3, norm_zero] at hn
+  linarith''')
+
+W_Id = f'''/-- `G_10‴(t) = 1000 G_1‴(10t)`. -/
+theorem gauss3_ten (t : ℝ) : gauss3 10 t = 1000 * gauss3 1 (10 * t) := by
+  unfold gauss3 gaussR
+  rw [← Complex.ofReal_ofNat, ← Complex.ofReal_mul]
+  congr 1
+  have e : -(1 * (10 * t)) ^ 2 / 2 = -(10 * t) ^ 2 / 2 := by ring
+  rw [e]
+  ring
+
+/-- `√(1/100) = 1/10`. -/
+theorem sqrt_hundredth : Real.sqrt (1 / 100) = 1 / 10 := by
+  rw [show (1 / 100 : ℝ) = (1 / 10) ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]
+
+/-- The true identity for `G_10` and the planted one for `G_1`, both at `λ = 1/100`, are about the same integral
+after the substitution `y = 10t`, and give `R(G_10, 1/100) = 100 R(G_1, 1/100)`; the certified bounds say
+`100 |R(G_1, 1/100)| ≥ 250 √(2π)` and `|R(G_10, 1/100)| ≤ 10 √(2π)`. -/
+theorem witness_{I}_not_P (hS : {I}) : ¬ P_{I} := by
+  intro h
+  have h1 := hS (gauss 10) (gauss1 10) (gauss2 10) (gauss3 10) (1 / 100) (gauss_splAmplitude 10 (by norm_num))
+    (by norm_num)
+  have h2 := h {G1} (1 / 100) {A1} (by norm_num)
+  rw [sqrt_hundredth] at h1
+  have hsub : ∫ t, gauss3 10 t * splKernel (1 / 10 * t) = 100 * ∫ y, gauss3 1 y * splKernel (1 / 100 * y) := by
+    have h3 : ∫ t : ℝ, 1000 * (gauss3 1 (10 * t) * splKernel (1 / 100 * (10 * t))) =
+        |(10 : ℝ)⁻¹| • ∫ y : ℝ, 1000 * (gauss3 1 y * splKernel (1 / 100 * y)) :=
+      Measure.integral_comp_mul_left (fun y : ℝ => 1000 * (gauss3 1 y * splKernel (1 / 100 * y))) 10
+    have e : ∀ t : ℝ, gauss3 10 t * splKernel (1 / 10 * t) =
+        1000 * (gauss3 1 (10 * t) * splKernel (1 / 100 * (10 * t))) := by
+      intro t
+      have e1 : (1 / 100 : ℝ) * (10 * t) = 1 / 10 * t := by ring
+      rw [gauss3_ten, e1]
+      ring
+    simp_rw [e]
+    rw [h3, integral_const_mul, abs_of_pos (by norm_num : (0 : ℝ) < 10⁻¹), Complex.real_smul]
+    push_cast
+    ring
+  rw [hsub] at h1
+  have h4 : splRemainder (gauss 10) (1 / 100) = 100 * splRemainder (gauss 1) (1 / 100) := by
+    rw [h1, h2]
+    ring
+  have h5 := (splRemainder_gauss_bounds 10 (1 / 100) (by norm_num) (by norm_num)).2
+  have h6 := (splRemainder_gauss_bounds 1 (1 / 100) one_pos (by norm_num)).1
+  rw [h4, norm_mul, Complex.norm_ofNat, sqrt_hundredth] at h5
+  rw [sqrt_hundredth] at h6
+  have ha : 0 < Real.sqrt (2 * Real.pi) := Real.sqrt_pos.2 (by have := Real.pi_pos; positivity)
+  have hq1 : (100 : ℝ) ≤ Real.sqrt (10 ^ 4 + (1 / 100) ^ 2) := Real.le_sqrt_of_sq_le (by norm_num)
+  have hq2 : Real.sqrt (1 ^ 4 + (1 / 100) ^ 2) ≤ 2 := (Real.sqrt_le_left (by norm_num)).2 (by norm_num)
+  have hq3 : 0 < Real.sqrt (1 ^ 4 + (1 / 100) ^ 2) := Real.sqrt_pos.2 (by norm_num)
+  have h7 : Real.sqrt (2 * Real.pi) * 10 ^ 2 / (1 / 10 * Real.sqrt (10 ^ 4 + (1 / 100) ^ 2)) ≤
+      Real.sqrt (2 * Real.pi) * 10 := by
+    have hq4 : 0 < Real.sqrt (10 ^ 4 + (1 / 100) ^ 2) := by linarith
+    rw [div_le_iff₀ (by positivity)]
+    nlinarith [mul_le_mul_of_nonneg_left hq1 ha.le]
+  have h8 : Real.sqrt (2 * Real.pi) * (5 / 2) ≤
+      Real.sqrt (2 * Real.pi) * 1 ^ 2 / (2 * (1 / 10) * Real.sqrt (1 ^ 4 + (1 / 100) ^ 2)) := by
+    rw [le_div_iff₀ (by positivity)]
+    nlinarith [mul_le_mul_of_nonneg_left hq2 ha.le]
+  linarith'''
+
+W_Ie = f'''/-- The planted kernel is even. -/
+theorem P_splKernel_neg (τ : ℝ) : P_splKernel (-τ) = P_splKernel τ := by
+  unfold P_splKernel
+  rcases lt_trichotomy τ 0 with h | h | h
+  · rw [ite_eq_left (by linarith), ite_eq_right (by linarith)]
+  · subst h
+    simp
+  · rw [ite_eq_right (by linarith), ite_eq_left (by linarith), neg_neg]
+
+/-- With an even kernel the integrand `G_1‴(t) κ(10t)` is odd, so the planted identity says `R(G_1, 100) = 0`. -/
+theorem witness_not_P_{I} : ¬ P_{I} := by
+  intro h
+  have h1 := h {G1} 100 {A1} (by norm_num)
+  have h2 : ∫ t, gauss3 1 t * P_splKernel (Real.sqrt 100 * t) = 0 := by
+    refine integral_eq_zero_of_odd fun t => ?_
+    show gauss3 1 (-t) * P_splKernel (Real.sqrt 100 * -t) = -(gauss3 1 t * P_splKernel (Real.sqrt 100 * t))
+    rw [gauss3_neg, mul_neg, P_splKernel_neg]
+    ring
+  rw [h2, mul_zero] at h1
+  have h3 := splRemainder_gauss_one_hundred_lower
+  rw [h1, norm_zero] at h3
+  norm_num at h3'''
+
+W_Aa = f'''theorem witness_not_P_{A} : ¬ P_{A} := by
+  intro h
+  obtain ⟨g, g₁, g₂, g₃, hamp, -, -, hne, hle⟩ := h 0 1 le_rfl one_pos
+  have hpos := integral_norm_pos_of_splAmplitude hamp hne
+  rw [splKernel_zero, norm_zero] at hle
+  nlinarith [norm_nonneg (splRemainder g 1)]'''
+
+W_Ab = f'''theorem planted_{A}_true : P_{A} := by
+  intro τ ε _ _
+  refine ⟨fun _ => 0, fun _ => 0, fun _ => 0, fun _ => 0,
+    ⟨fun x => hasDerivAt_const x 0, fun x => hasDerivAt_const x 0, fun x => hasDerivAt_const x 0,
+      integrable_zero _ _ _, integrable_zero _ _ _, integrable_zero _ _ _, integrable_zero _ _ _⟩,
+    contDiff_const, HasCompactSupport.zero, ?_⟩
+  simp only [norm_zero, integral_zero, mul_zero]
+  exact norm_nonneg _'''
+
+W_Ac = f'''theorem witness_{K}_not_P (hK : {K}) : ¬ P_{A} := by
+  intro h
+  obtain ⟨g, g₁, g₂, g₃, hamp, -, -, hne, hle⟩ := h 0 1 le_rfl one_pos
+  have hpos := integral_norm_pos_of_splAmplitude hamp hne
+  have h1 := hK g g₁ g₂ g₃ 1 hamp one_pos
+  rw [Real.one_rpow, mul_one] at h1
+  rw [splKernel_zero, norm_zero] at hle
+  linarith'''
+
+W_Ad = f'''theorem planted_{A}_of_true (h : {A}) : P_{A} := by
+  intro τ ε hτ hε
+  obtain ⟨g, g₁, g₂, g₃, h1, h2, -, h4, h5⟩ := h τ ε hτ hε
+  exact ⟨g, g₁, g₂, g₃, h1, h2, h4, h5⟩'''
+
+# --- added after the external referee's list of mutations (lead's addendum to the brief) ---
+R_ZERO = '''have h3 := splRemainder_gauss_one_hundred_lower
+  rw [h1, norm_zero] at h3
+  norm_num at h3'''
+GAUSS2_EVEN = '''/-- `G_s″` is even. -/
+theorem gauss2_neg (s t : ℝ) : gauss2 s (-t) = gauss2 s t := by
+  unfold gauss2 gaussR
+  congr 1
+  have e : -(s * -t) ^ 2 / 2 = -(s * t) ^ 2 / 2 := by ring
+  rw [e]
+  ring
+
+/-- `G_1″` is even and the kernel is odd, so `∫ G_1″(t) κ(10t) dt = 0`. -/
+theorem integral_gauss2_mul_kernel : ∫ t, gauss2 1 t * splKernel (Real.sqrt 100 * t) = 0 := by
+  refine integral_eq_zero_of_odd fun t => ?_
+  show gauss2 1 (-t) * splKernel (Real.sqrt 100 * -t) = -(gauss2 1 t * splKernel (Real.sqrt 100 * t))
+  rw [gauss2_neg, mul_neg, splKernel_neg]
+  ring
+'''
+
+W_If = GAUSS2_EVEN + f'''
+theorem witness_not_P_{I} : ¬ P_{I} := by
+  intro h
+  have h1 := h {G1} 100 {A1} (by norm_num)
+  rw [integral_gauss2_mul_kernel, mul_zero] at h1
+  {R_ZERO}'''
+
+W_Ig = f'''theorem witness_not_P_{I} : ¬ P_{I} := by
+  intro h
+  have h1 := h {G1} 100 {A1} (by norm_num)
+  have h2 : ∫ t, gauss3 1 t * splKernel (Real.sqrt 100) = 0 := by
+    refine integral_eq_zero_of_odd fun t => ?_
+    show gauss3 1 (-t) * splKernel (Real.sqrt 100) = -(gauss3 1 t * splKernel (Real.sqrt 100))
+    rw [gauss3_neg]
+    ring
+  rw [h2, mul_zero] at h1
+  {R_ZERO}'''
+
+# planted amplitudes: the third derivative clause deleted (g₃ = 0), or asked of g₁ (g₃ = G″)
+AMP_J = '''have hamp : P_SplAmplitude (gauss 1) (gauss1 1) (gauss2 1) (fun _ => 0) := by
+    obtain ⟨hd, hd₁, -, hi, hi₁, hi₂, -⟩ := gauss_splAmplitude 1 one_pos
+    exact ⟨hd, hd₁, hi, hi₁, hi₂, integrable_zero _ _ _⟩'''
+
+
+def amp_k(s, pos):
+    return f'''have hamp : P_SplAmplitude (gauss {s}) (gauss1 {s}) (gauss2 {s}) (gauss2 {s}) := by
+    obtain ⟨hd, hd₁, -, hi, hi₁, hi₂, -⟩ := gauss_splAmplitude {s} {pos}
+    exact ⟨hd, hd₁, hd₁, hi, hi₁, hi₂, hi₂⟩'''
+
+
+W_Ij = f'''theorem witness_not_P_{I} : ¬ P_{I} := by
+  intro h
+  {AMP_J}
+  have h1 := h (gauss 1) (gauss1 1) (gauss2 1) (fun _ => 0) 100 hamp (by norm_num)
+  simp only [zero_mul, integral_zero, mul_zero] at h1
+  {R_ZERO}'''
+
+W_Ik = GAUSS2_EVEN + f'''
+theorem witness_not_P_{I} : ¬ P_{I} := by
+  intro h
+  {amp_k(1, 'one_pos')}
+  have h1 := h (gauss 1) (gauss1 1) (gauss2 1) (gauss2 1) 100 hamp (by norm_num)
+  rw [integral_gauss2_mul_kernel, mul_zero] at h1
+  {R_ZERO}'''
+
+W_Ki = f'''theorem witness_not_P_{K} : ¬ P_{K} := by
+  intro h
+  have h1 := h {G1} 100 {A1} (by norm_num)
+  have h2 : ∫ t, gauss3 1 t = 0 := integral_eq_zero_of_odd (gauss3_neg 1)
+  rw [h2, norm_zero, mul_zero, zero_mul] at h1
+  linarith [splRemainder_gauss_one_hundred_lower]'''
+
+W_Kj = f'''theorem witness_not_P_{K} : ¬ P_{K} := by
+  intro h
+  {AMP_J}
+  have h1 := h (gauss 1) (gauss1 1) (gauss2 1) (fun _ => 0) 100 hamp (by norm_num)
+  simp only [norm_zero, integral_zero, mul_zero, zero_mul] at h1
+  linarith [splRemainder_gauss_one_hundred_lower]'''
+
+W_Kk = f'''theorem witness_not_P_{K} : ¬ P_{K} := by
+  intro h
+  {amp_k(4, '(by norm_num)')}
+  have h1 := h (gauss 4) (gauss1 4) (gauss2 4) (gauss2 4) 1600 hamp (by norm_num)
+  rw [integral_norm_gauss2 4 (by norm_num), rpow_sixteen_hundred] at h1
+  linarith [splRemainder_gauss_four_sixteen_hundred_lower, exp_neg_half_le]'''
+
+W_Kl = f'''theorem planted_iff_{K} : P_{K} ↔ {K} := by
+  have e : (-((3 : ℝ) / 2)) = -(3 : ℝ) / 2 := (neg_div 2 3).symm
+  unfold P_{K} {K}
+  rw [e]'''
+
+W_Sk = f'''theorem witness_not_P_{S} : ¬ P_{S} := by
+  intro h
+  have h1 := h {G1} 100 {A1} (by norm_num) 0 le_rfl
+  rw [splKernel_zero, norm_zero, zero_mul, zero_mul] at h1
+  linarith [splRemainder_gauss_one_hundred_lower]'''
+
+W_Sl = f'''theorem witness_not_P_{S} : ¬ P_{S} := by
+  intro h
+  {AMP_J}
+  obtain ⟨τ, -, h1⟩ := h (gauss 1) (gauss1 1) (gauss2 1) (fun _ => 0) 100 hamp (by norm_num)
+  simp only [norm_zero, integral_zero, mul_zero, zero_mul] at h1
+  linarith [splRemainder_gauss_one_hundred_lower]'''
+
+W_Sm = f'''theorem witness_not_P_{S} {HK} : ¬ P_{S} := by
+  intro h
+  {amp_k(4, '(by norm_num)')}
+  obtain ⟨τ, -, h1⟩ := h (gauss 4) (gauss1 4) (gauss2 4) (gauss2 4) 1600 hamp (by norm_num)
+  rw [integral_norm_gauss2 4 (by norm_num), rpow_sixteen_hundred] at h1
+  have h2 : ‖splKernel τ‖ * (4 * (4 * Real.exp (-(1 / 2)))) ≤ 2 * (4 * (4 * (128 / 211))) :=
+    mul_le_mul (hκ τ) (by linarith [exp_neg_half_le]) (by positivity) (by norm_num)
+  linarith [splRemainder_gauss_four_sixteen_hundred_lower]'''
+
+W_Ih = f'''/-- The planted kernel is the kernel: the two definitions differ only at `0`, where both branches give `0`. -/
+theorem P_splKernel_eq : P_splKernel = splKernel := by
+  funext τ
+  unfold P_splKernel splKernel
+  rcases lt_trichotomy τ 0 with h | h | h
+  · rw [ite_eq_right (by linarith), ite_eq_right (by linarith)]
+  · subst h
+    simp [splKernelPos_zero]
+  · rw [ite_eq_left h, ite_eq_left h.le]
+
+theorem planted_iff_{I} : P_{I} ↔ {I} := by
+  unfold P_{I} {I}
+  rw [P_splKernel_eq]'''
+
+W_Ae = f'''theorem witness_not_P_{A} : ¬ P_{A} := by
+  intro h
+  obtain ⟨g, g₁, g₂, g₃, -, -, hcomp, hne, -⟩ := h 0 1 le_rfl one_pos
+  have hs : tsupport g = Set.univ :=
+    Set.eq_univ_of_forall fun x => subset_tsupport g (Function.mem_support.2 (hne x))
+  rw [HasCompactSupport, hs] at hcomp
+  exact noncompact_univ ℝ hcomp'''
+
+W_Af = f'''theorem planted_{A}_of_true (h : {A}) : P_{A} := by
+  intro τ ε hτ hε
+  obtain ⟨g, g₁, g₂, g₃, h1, h2, h3, h4, h5⟩ := h τ ε hτ hε
+  exact ⟨g, g₁, g₂, g₃, h1, h2.of_le (by norm_num), h3, h4, h5⟩'''
+
+M_J = (AMP, ' (∀ x, HasDerivAt g₂ (g₃ x) x) ∧\n   ', '\n   ', 1)
+M_K = (AMP, 'HasDerivAt g₂ (g₃ x) x', 'HasDerivAt g₁ (g₃ x) x', 1)
+N_J = 'the third derivative clause of SplAmplitude deleted (planted copy of the definition)'
+N_K = 'third clause of SplAmplitude: HasDerivAt g₂ (g₃ x) x ↦ HasDerivAt g₁ (g₃ x) x (planted copy of the definition)'
+D_J = 'G_1 with g₃ = 0 is a planted amplitude; λ = 100'
+
+EXP = '-(3 : ℝ) / 2'
+LEAD_EXP = ' * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I)'
+LEAD_ALL = (' -\n    g 0 * ((Real.sqrt (2 * Real.pi / lam) : ℝ) : ℂ) * '
+            'Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I)')
+M_C = (REM, LEAD_EXP, ' * 1', 1)
+M_D = (REM, 'Real.sqrt (2 * Real.pi / lam)', 'Real.sqrt (Real.pi / lam)', 1)
+M_E = (REM, LEAD_ALL, '', 1)
+M_H = (AMP, 'Integrable g ∧ ', '', 1)
+N_100 = 'G_1, λ = 100: |R| ≥ 1.24e-3'
+N_C = 'e^{iπ/4} ↦ 1 in the leading term (planted copy of splRemainder)'
+N_D = '√(2π/λ) ↦ √(π/λ) in the leading term (planted copy of splRemainder)'
+N_E = 'the leading term dropped (planted copy of splRemainder)'
+N_H = 'Integrable g dropped from SplAmplitude (planted copy of the definition)'
+D_ONE = 'g = 1 with zero derivatives is a planted amplitude; λ = 1: the Bochner integral is 0, left side √(2π)'
+A_OLD = '(‖splKernel τ‖ - ε) * (∫ t, ‖g₃ t‖) ≤ ‖splRemainder g 1‖'
+A_NEW = '‖splRemainder g 1‖ ≤ (‖splKernel τ‖ - ε) * (∫ t, ‖g₃ t‖)'
+
+# (id, statement, mutation, kind of witness, witness text, note "mutation; witness: datum")
+PLANTS = [
+    ('SPL-K-a', K, (K, f'lam ^ ({EXP})', 'lam ^ (-(2 : ℝ))', 1), 'not', W_Ka,
+     f'exponent −3/2 ↦ −2; witness: {N_100}, planted right side (7/8)·N0·100^(−2) ≤ 3.32e-4'),
+    ('SPL-K-b', K, (K, '(7 / 8 : ℝ)', '(1 / 4 : ℝ)', 1), 'not', W_Kb,
+     f'constant 7/8 ↦ 1/4; witness: {N_100}, planted right side (1/4)·N0/1000 ≤ 9.475e-4'),
+    ('SPL-K-c', K, M_C, 'not', w_k_rem(REM_C),
+     f'{N_C}; witness: G_1, λ = 100: planted left side ≥ Im root ≥ 1/10, right side (7/8)·N0/1000 ≤ 3.32e-3'),
+    ('SPL-K-d', K, M_D, 'not', w_k_rem(REM_D),
+     f'{N_D}; witness: G_1, λ = 100: planted left side ≥ |root| − √(π/100) ≥ 7/100, right side ≤ 3.32e-3'),
+    ('SPL-K-e', K, M_E, 'not', w_k_rem(REM_E),
+     f'{N_E}; witness: G_1, λ = 100: planted left side = |root| ≥ 1/4, right side ≤ 3.32e-3'),
+    ('SPL-K-f', K, (K, ' → 0 < lam →', ' →', 1), 'not', W_Kf,
+     'hypothesis 0 < λ dropped; witness: G_1, λ = 0: left side √(2π) (√(2π/0) = 0 in Lean), right side 0 '
+     '(0^(−3/2) = 0 in Lean)'),
+    ('SPL-K-g', K, (K, '∫ t, ‖g₃ t‖', '∫ t, ‖g₂ t‖', 1), 'not', W_Kg,
+     '‖g₃‖₁ ↦ ‖g₂‖₁; witness: G_4, λ = 1600: |R| ≥ 3.13e-4 = 20.03/64000, planted right side '
+     '(7/8)·16e^(−1/2)/64000 ≤ 8.5/64000'),
+    ('SPL-K-h', K, M_H, 'not', W_Kh, f'{N_H}; witness: {D_ONE}, right side 0'),
+    ('SPL-S-a', S, (S, f'lam ^ ({EXP})', 'lam ^ (-(2 : ℝ))', 1), 'cond', W_Sa,
+     f'exponent −3/2 ↦ −2; witness: {N_100}, planted right side ≤ 2·N0·100^(−2) ≤ 7.58e-4'),
+    ('SPL-S-c', S, M_C, 'cond', w_s_rem(REM_C),
+     f'{N_C}; witness: G_1, λ = 100: planted left side ≥ 1/10, right side ≤ 2·N0/1000 ≤ 7.58e-3'),
+    ('SPL-S-d', S, M_D, 'cond', w_s_rem(REM_D),
+     f'{N_D}; witness: G_1, λ = 100: planted left side ≥ 7/100, right side ≤ 7.58e-3'),
+    ('SPL-S-e', S, M_E, 'cond', w_s_rem(REM_E),
+     f'{N_E}; witness: G_1, λ = 100: planted left side ≥ 1/4, right side ≤ 7.58e-3'),
+    ('SPL-S-f', S, (S, ' → 0 < lam →', ' →', 1), 'not', W_Sf,
+     'hypothesis 0 < λ dropped; witness: G_1, λ = 0: left side √(2π), right side |κ(τ)|·N0·0 = 0'),
+    ('SPL-S-g', S, (S, '∫ t, ‖g₃ t‖', '∫ t, ‖g₂ t‖', 1), 'cond', W_Sg,
+     '‖g₃‖₁ ↦ ‖g₂‖₁; witness: G_4, λ = 1600: |R| ≥ 3.13e-4 = 20.03/64000, planted right side ≤ '
+     '2·16e^(−1/2)/64000 ≤ 19.42/64000'),
+    ('SPL-S-h', S, M_H, 'not', W_Sh, f'{N_H}; witness: {D_ONE}, right side |κ(τ)|·0 = 0'),
+    ('SPL-S-i', S, (S, '‖splKernel τ‖ * ', '‖splKernel τ‖ / 8 * ', 1), 'cond', W_Si,
+     f'|κ(τ)| ↦ |κ(τ)|/8; witness: {N_100}, planted right side ≤ (2/8)·N0/1000 ≤ 9.475e-4'),
+    ('SPL-S-j', S, (S, '0 ≤ τ ∧ ', '', 1), 'iff', W_Sj, '"0 ≤ τ" dropped'),
+    ('SPL-I-a', I, (I, '-Complex.I * ', 'Complex.I * ', 1), 'rel', W_Ia,
+     '−i ↦ +i; witness: G_1, λ = 100: the two identities give R = −R, and R ≠ 0'),
+    ('SPL-I-b', I, (I, f'({EXP})', '(-(1 : ℝ) / 2)', 1), 'rel', W_Ib,
+     'exponent −3/2 ↦ −1/2; witness: G_1, λ = 100: the two identities give (100^(−1/2) − 100^(−3/2)) R = 0, '
+     'and R ≠ 0'),
+    ('SPL-I-cc', I, M_C, 'rel', W_Icc,
+     f'{N_C}; witness: G_1, λ = 100: the two identities give ℓ = √(2π/100), but Im ℓ > 0'),
+    ('SPL-I-cd', I, M_D, 'rel', W_Icd,
+     f'{N_D}; witness: G_1, λ = 100: the two identities give ℓ = √(π/100) e^(iπ/4), but |ℓ| = √(2π/100)'),
+    ('SPL-I-ce', I, M_E, 'rel', W_Ice,
+     f'{N_E}; witness: G_1, λ = 100: the two identities give ℓ = 0, but |ℓ| = √(2π/100)'),
+    ('SPL-I-d', I, (I, 'splKernel (Real.sqrt lam * t)', 'splKernel (lam * t)', 1), 'rel', W_Id,
+     '√λ t ↦ λ t in the kernel argument; witness: λ = 1/100: the true identity for G_10 and the planted one for '
+     'G_1 are about the same integral (substitution y = 10t) and give R(G_10, 1/100) = 100 R(G_1, 1/100), '
+     'against 100 |R(G_1, 1/100)| ≥ 250√(2π) and |R(G_10, 1/100)| ≤ 10√(2π)'),
+    ('SPL-I-e', I, (KER, 'else -splKernelPos (-τ)', 'else splKernelPos (-τ)', 1), 'not', W_Ie,
+     'the kernel extended as an even function (planted copy of splKernel); witness: G_1, λ = 100: G_1‴ is odd, '
+     'so the planted integral is 0 and the planted identity says R = 0, but |R| ≥ 1.24e-3'),
+    ('SPL-A-a', A, (A, A_OLD, A_NEW, 1), 'not', W_Aa,
+     'the inequality reversed; witness: τ = 0, ε = 1: |R(g, 1)| ≤ −‖g₃‖₁ forces ‖g₃‖₁ = 0, hence g = 0 '
+     '(integral_norm_pos_of_splAmplitude), against g ≠ 0'),
+    ('SPL-A-b', A, (A, ' (∃ x, g x ≠ 0) ∧', '', 1), 'true', W_Ab, '"(∃ x, g x ≠ 0)" dropped'),
+    ('SPL-A-c', A, (A, '‖splKernel τ‖ - ε', '‖splKernel τ‖ + ε', 1), 'rel', W_Ac,
+     '|κ(τ)| − ε ↦ |κ(τ)| + ε; witness: τ = 0, ε = 1: the plant gives g ≠ 0 with ‖g₃‖₁ ≤ |R(g, 1)|, SPL-K gives '
+     '|R(g, 1)| ≤ (7/8)‖g₃‖₁, and ‖g₃‖₁ > 0'),
+    ('SPL-A-d', A, (A, ' HasCompactSupport g ∧', '', 1), 'weak', W_Ad, 'HasCompactSupport dropped'),
+    # mutations proposed by the external referee (lead's addendum), and two controls that must not distinguish
+    ('SPL-I-f', I, (I, '∫ t, g₃ t * splKernel', '∫ t, g₂ t * splKernel', 1), 'not', W_If,
+     'g₃ ↦ g₂ in the integrand; witness: G_1, λ = 100: G_1″ is even and the kernel is odd, so the planted integral '
+     'is 0 and the planted identity says R = 0, but |R| ≥ 1.24e-3'),
+    ('SPL-I-g', I, (I, 'splKernel (Real.sqrt lam * t)', 'splKernel (Real.sqrt lam)', 1), 'not', W_Ig,
+     'kernel argument √λ t ↦ √λ (constant in t); witness: G_1, λ = 100: ∫ G_1‴ κ(10) = 0 because G_1‴ is odd, so '
+     'the planted identity says R = 0, but |R| ≥ 1.24e-3'),
+    ('SPL-I-h', I, (KER, 'if 0 ≤ τ then', 'if 0 < τ then', 1), 'iff', W_Ih,
+     'CONTROL: in splKernel, "if 0 ≤ τ" ↦ "if 0 < τ" (planted copy of splKernel)'),
+    ('SPL-I-j', I, M_J, 'not', W_Ij,
+     f'{N_J}; witness: {D_J}: the planted identity says R = −i·100^(−3/2)·∫ 0 = 0, but |R| ≥ 1.24e-3'),
+    ('SPL-I-k', I, M_K, 'not', W_Ik,
+     f'{N_K}; witness: G_1 with g₃ = G_1″ is a planted amplitude; λ = 100: ∫ G_1″(t) κ(10t) dt = 0 by parity, so '
+     'the planted identity says R = 0, but |R| ≥ 1.24e-3'),
+    ('SPL-K-i', K, (K, '(∫ t, ‖g₃ t‖)', '‖∫ t, g₃ t‖', 1), 'not', W_Ki,
+     f'‖g₃‖₁ = ∫‖g₃‖ ↦ ‖∫ g₃‖; witness: {N_100}, planted right side (7/8)·|∫ G_1‴|/1000 = 0 (G_1‴ is odd)'),
+    ('SPL-K-j', K, M_J, 'not', W_Kj, f'{N_J}; witness: {D_J}: |R| ≥ 1.24e-3, planted right side (7/8)·0/1000 = 0'),
+    ('SPL-K-k', K, M_K, 'not', W_Kk,
+     f'{N_K}; witness: G_4 with g₃ = G_4″ is a planted amplitude; λ = 1600: |R| ≥ 3.13e-4 = 20.03/64000, planted '
+     'right side (7/8)·‖G_4″‖₁/64000 ≤ 8.5/64000 (the datum of SPL-K-g)'),
+    ('SPL-K-l', K, (K, f'lam ^ ({EXP})', 'lam ^ (-((3 : ℝ) / 2))', 1), 'iff', W_Kl,
+     'CONTROL: the exponent written -((3 : ℝ) / 2) instead of -(3 : ℝ) / 2'),
+    ('SPL-S-k', S, (S, '∃ τ : ℝ, 0 ≤ τ ∧ ', '∀ τ : ℝ, 0 ≤ τ → ', 1), 'not', W_Sk,
+     f'"∃ τ, 0 ≤ τ ∧ …" ↦ "∀ τ, 0 ≤ τ → …"; witness: {N_100}, planted right side at τ = 0 is |κ(0)|·N0/1000 = 0'),
+    ('SPL-S-l', S, M_J, 'not', W_Sl, f'{N_J}; witness: {D_J}: |R| ≥ 1.24e-3, planted right side |κ(τ)|·0/1000 = 0'),
+    ('SPL-S-m', S, M_K, 'cond', W_Sm,
+     f'{N_K}; witness: G_4 with g₃ = G_4″ is a planted amplitude; λ = 1600: |R| ≥ 3.13e-4 = 20.03/64000, planted '
+     'right side ≤ 2·‖G_4″‖₁/64000 ≤ 19.42/64000 (the datum of SPL-S-g)'),
+    ('SPL-A-e', A, (A, '(∃ x, g x ≠ 0)', '(∀ x, g x ≠ 0)', 1), 'not', W_Ae,
+     '"∃ x, g x ≠ 0" ↦ "∀ x, g x ≠ 0"; witness: τ = 0, ε = 1: a function with g(x) ≠ 0 for every x has support ℝ, '
+     'which is not compact, so no g satisfies the planted clauses'),
+    ('SPL-A-f', A, (A, 'ContDiff ℝ ∞ g', 'ContDiff ℝ 3 g', 1), 'weak', W_Af, 'ContDiff ℝ ∞ g ↦ ContDiff ℝ 3 g'),
+]
+REL_TO = {'SPL-A-c': 'SPL-K'}
+KAPPA = ('the hypothesis hκ : ∀ τ, ‖splKernel τ‖ ≤ 2 (Lemma 2 of docs/proof-SPL.md; not proved in Lean when this '
+         'was run)')
+REMARK = {
+    'SPL-S-j': 'EQUIVALENT (compiled: planted statement ↔ draft statement, by |κ(|τ|)| = |κ(τ)|, which holds '
+               'because the kernel is odd). The clause "0 ≤ τ" in SPL-S is a normalization: no datum can refute '
+               'its removal, and it makes the statement neither stronger nor weaker.',
+    'SPL-A-b': 'TRUE WEAKENING, and a trivial one (compiled: the planted statement is proved outright with g = 0, '
+               'for which both sides of the inequality are 0). The clause "(∃ x, g x ≠ 0)" carries the '
+               'content of SPL-A: without it the statement asserts nothing.',
+    'SPL-A-d': 'TRUE WEAKENING (compiled: draft statement → planted statement). The planted statement still '
+               'asserts that for every τ ≥ 0 and ε > 0 a C^∞ amplitude of the class SplAmplitude, not identically '
+               'zero, has |R(g, 1)| ≥ (|κ(τ)| − ε)‖g₃‖₁, which is what the sharpness of SPL-S over the class '
+               'needs. Compact support is an additional strength of SPL-A (attainment already within C_c^∞); '
+               'whether the planted statement is strictly weaker cannot be decided before SPL-A is proved, and '
+               'no datum of this layer can see the clause.',
+}
+REMARK.update({
+    'SPL-I-h': 'EQUIVALENT (compiled: planted kernel = kernel as functions, because both branches give 0 at τ = 0 '
+               '(κ₊(0) = 0); hence planted statement ↔ draft statement). A control that must not distinguish: the '
+               'witness layer does not flag it. The copied scripts are rejected all the same, and that is '
+               'script-only: the copied proof of splKernel_zero selects the first branch with 0 ≤ 0, which the '
+               'planted text does not offer; this is why a rejected script is never counted as a detection.',
+    'SPL-K-l': 'EQUIVALENT (compiled: planted statement ↔ draft statement; -(3 : ℝ) / 2 = -((3 : ℝ) / 2) by '
+               'neg_div). A control that must not distinguish: the witness layer does not flag it.',
+    'SPL-A-f': 'TRUE WEAKENING (compiled: draft statement → planted statement, by ContDiff.of_le). The planted '
+               'statement asserts attainment by C³ compactly supported amplitudes only; the draft asserts it '
+               'within C^∞, which is stronger. Whether the planted statement is strictly weaker cannot be '
+               'decided before SPL-A is proved, and no datum of this layer can see the order of smoothness.',
+})
+EXTRA = {
+    'SPL-I-d': ' (The brief expected NOT DETECTED before the proof; unconditionally that is so, since the plant '
+               'agrees with the draft statement at λ = 1 and nothing is known about the kernel. The witness is '
+               'relative to SPL-I itself, used at another amplitude.)',
+    'SPL-I-e': ' (The brief expected NOT DETECTED before the proof; the Gaussian is even, so its third derivative '
+               'is odd, and an even kernel makes the integral vanish: the refutation is unconditional. The '
+               'registered numeric test numerics/results-spl-remainder-checks-2026-11-19.txt, control C3, covers '
+               'the same mutation numerically.)',
+    'SPL-S-g': ' (Margin 3%: 20.03 against 19.42, in units of 1/64000.)',
+    'SPL-S-m': ' (Margin 3%, as SPL-S-g. The planted class is {g, g′, g″ = g₃ integrable}: the plant is SPL-S-g '
+               'for amplitudes of class C² only.)',
+    'SPL-K-k': ' (The planted clause forces g₃ = g₂, so the plant is SPL-K-g for amplitudes with two derivatives: '
+               'the same datum refutes it.)',
+}
+VERDICT = {
+    'not': 'DETECTED (witness compiled: ¬ planted statement)',
+    'cond': 'DETECTED CONDITIONALLY (witness compiled: hκ → ¬ planted statement, under ' + KAPPA + ')',
+    'rel': 'DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: {st} → ¬ planted statement)',
+}
+
+ONLY = sys.argv[4:]
+by_pid, first = {}, {}
+for pid, stmt, mut, kind, witness, note in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    for tag, text, want in (('ok-' + pid, make(stmt, mut, False, note), 'accepted'),
+                            ('plant-' + pid, make(stmt, mut, True, note), None),
+                            ('witness-' + pid, make(stmt, mut, True, note, witness), 'accepted')):
+        # files with identical text (the ok- copies of one statement) are compiled once, under the first tag
+        src_tag = first.setdefault(text, tag)
+        rc, out = compile_text(src_tag, text)
+        out = out.replace(src_tag + '.lean', tag + '.lean')
+        open(os.path.join(OUT, tag + '.lean.txt'), 'w').write(text)
+        open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+        errs = [l for l in out.split('\n') if ': error' in l]
+        verdict = 'accepted' if rc == 0 and not errs else 'rejected'
+        line = f"{tag}: {verdict}" + (f" (want {want}){'' if verdict == want else '  <-- MISMATCH'}" if want
+                                      else ' (recorded)')
+        if errs:
+            line += '\n    first error: ' + errs[0][:160]
+        by_pid.setdefault(pid, {})[tag.split('-')[0]] = (verdict, line)
+        print(line, flush=True)
+lines = []
+for pid, stmt, mut, kind, witness, note in PLANTS:
+    if pid not in by_pid:
+        continue
+    r = by_pid[pid]
+    lines += [r[k][1] for k in ('ok', 'plant', 'witness')]
+    if r['witness'][0] != 'accepted':
+        v = 'WITNESS FAILED  <-- MISMATCH'
+    elif kind in VERDICT:
+        v = VERDICT[kind].format(st=REL_TO.get(pid, pid[:5]))
+    else:
+        v = REMARK[pid]
+        if r['plant'][0] == 'rejected' and pid not in ('SPL-I-h',):
+            v += (' The copied scripts are rejected by the planted copy; that is script-only (their closing steps '
+                  'expect the draft text) and is not a detection.')
+    if r['plant'][0] == 'accepted' and kind in VERDICT:
+        v += ' [the copied scripts were ACCEPTED by the planted copy: the sanity theorems do not see this plant; '\
+             'only the witness does]'
+    lines.append(f'  {pid} [{note}]: {v}{EXTRA.get(pid, "")}')
+if not ONLY:
+    lines.append('  SPL-S-b: not run. The mutation "7/8 ↦ 1/4" of SPL-K has no counterpart in SPL-S, which has no '
+                 'numeric constant; the mutation of its constant is SPL-S-i.')
+    n = {k: sum(1 for p in PLANTS if p[3] == k) for k in ('not', 'cond', 'rel', 'iff', 'true', 'weak')}
+    lines.append(f'  Totals over {len(PLANTS)} plants: DETECTED {n["not"]}; DETECTED CONDITIONALLY {n["cond"]}; '
+                 f'DETECTED RELATIVE TO THE TRUE STATEMENT {n["rel"]}; EQUIVALENT {n["iff"]}; TRUE WEAKENING '
+                 f'{n["true"] + n["weak"]}; NOT DETECTED 0. (Counted from the table of the generator; a line '
+                 'above marked MISMATCH overrides its count.)')
+open(os.path.join(OUT, 'SUMMARY.txt' if not ONLY else 'SUMMARY-partial.txt'), 'w').write('\n'.join(lines) + '\n')
+print('\n' + '\n'.join(lines))

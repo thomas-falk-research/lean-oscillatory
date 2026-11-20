@@ -1,0 +1,52 @@
+plant-SPL-S-a.lean:19:16: error: Application type mismatch: The argument
+  h1
+has type
+  ‖gaussRoot s lam - splLead lam‖ ≤ ‖splKernel τ‖ * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-2)
+but is expected to have type
+  ‖gaussRoot s lam - splLead lam‖ ≤ ‖splKernel τ‖ * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-3 / 2)
+in the application
+  ⟨hτ, h1⟩
+plant-SPL-S-a.lean:27:88: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  4 ^ (-3 / 2)
+in the target expression
+  ‖(2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - splLead 4‖ ≤
+    ‖splKernel τ‖ * (1 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 4 ^ (-2)
+
+h : P_StationaryLeadingStatement
+τ : ℝ
+hτ : 0 ≤ τ
+h1 :
+  ‖(2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - splLead 4‖ ≤
+    ‖splKernel τ‖ * (1 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 4 ^ (-2)
+⊢ ∃ τ,
+    0 ≤ τ ∧
+      ‖(2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) -
+            ↑√(2 * Real.pi / 4) * Complex.exp (↑(Real.pi / 4) * Complex.I)‖ ≤
+        ‖splKernel τ‖ * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8)
+plant-SPL-S-a.lean:37:88: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  9 ^ (-3 / 2)
+in the target expression
+  ‖(2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - splLead 9‖ ≤
+    ‖splKernel τ‖ * (2 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 9 ^ (-2)
+
+h : P_StationaryLeadingStatement
+τ : ℝ
+hτ : 0 ≤ τ
+h1 :
+  ‖(2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - splLead 9‖ ≤
+    ‖splKernel τ‖ * (2 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 9 ^ (-2)
+⊢ ∃ τ,
+    0 ≤ τ ∧
+      ‖(2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) -
+            ↑√(2 * Real.pi / 9) * Complex.exp (↑(Real.pi / 4) * Complex.I)‖ ≤
+        ‖splKernel τ‖ * (2 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 27)
+plant-SPL-S-a.lean:44:38: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  4 ^ (-3 / 2)
+in the target expression
+  ‖splRemainder (gauss 1) 4‖ ≤ ‖splKernel τ‖ * (1 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 4 ^ (-2)
+
+h : P_StationaryLeadingStatement
+τ : ℝ
+hτ : 0 ≤ τ
+h1 : ‖splRemainder (gauss 1) 4‖ ≤ ‖splKernel τ‖ * (1 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 4 ^ (-2)
+⊢ ∃ τ, 0 ≤ τ ∧ 3 / 10 ≤ ‖splKernel τ‖

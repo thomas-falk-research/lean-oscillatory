@@ -1,0 +1,14 @@
+plant-SPL-I-e.lean:26:63: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  - -?a
+in the target expression
+  splKernelPos (-τ) = -splKernelPos (-τ)
+
+case inl
+τ : ℝ
+h : τ < 0
+⊢ splKernelPos (-τ) = -splKernelPos (-τ)
+plant-SPL-I-e.lean:29:2: error: unsolved goals
+case inr.inr
+τ : ℝ
+h : 0 < τ
+⊢ splKernelPos τ = -splKernelPos τ

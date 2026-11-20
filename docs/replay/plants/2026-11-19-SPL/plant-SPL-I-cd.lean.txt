@@ -1,0 +1,182 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `splRemainder`: √(2π/λ) ↦ √(π/λ) in the leading term (planted copy of splRemainder). -/
+noncomputable def P_splRemainder (g : ℝ → ℂ) (lam : ℝ) : ℂ :=
+  (∫ u, g u * Complex.exp (((lam * u ^ 2 / 2 : ℝ) : ℂ) * Complex.I)) -
+    g 0 * ((Real.sqrt (Real.pi / lam) : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I)
+
+/-- Copy of `StationaryLeadingIdentityStatement` over the copied definition. -/
+def P_StationaryLeadingIdentityStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    P_splRemainder g lam =
+      -Complex.I * ((lam ^ (-(3 : ℝ) / 2) : ℝ) : ℂ) * ∫ t, g₃ t * splKernel (Real.sqrt lam * t)
+
+/-- **The remainder of the Gaussian in closed form**: `R(G_s, λ) = (2π/(s² − λi))^{1/2} − √(2π/λ) e^{iπ/4}` for
+`s > 0` and every real `λ` (for `λ ≤ 0` this is the value of the Lean expression, in which `√(2π/λ) = 0`). -/
+theorem P_splRemainder_gauss (s : ℝ) (hs : 0 < s) (lam : ℝ) :
+    P_splRemainder (gauss s) lam = gaussRoot s lam - splLead lam := by
+  unfold P_splRemainder splLead
+  rw [integral_gauss_mul_exp s hs, gauss_zero, one_mul]
+
+/-- **Certified two-sided bound of the remainder of the Gaussian.** For `s, λ > 0`:
+`√(2π) s²/(2 √λ √(s⁴ + λ²)) ≤ |R(G_s, λ)| ≤ √(2π) s²/(√λ √(s⁴ + λ²))`. So `|R(G_s, λ)|` is known up to a factor `2`,
+it is positive, and it is of the order `λ^{−3/2}` for large `λ`. -/
+theorem P_splRemainder_gauss_bounds (s lam : ℝ) (hs : 0 < s) (hlam : 0 < lam) :
+    Real.sqrt (2 * Real.pi) * s ^ 2 / (2 * Real.sqrt lam * Real.sqrt (s ^ 4 + lam ^ 2)) ≤
+        ‖P_splRemainder (gauss s) lam‖ ∧
+      ‖P_splRemainder (gauss s) lam‖ ≤
+        Real.sqrt (2 * Real.pi) * s ^ 2 / (Real.sqrt lam * Real.sqrt (s ^ 4 + lam ^ 2)) := by
+  have hpi := Real.pi_pos
+  obtain ⟨h1, h2⟩ := norm_sub_two_sided (gaussRoot_re_nonneg s lam) (gaussRoot_im_nonneg s lam hlam.le)
+    (splLead_re_nonneg lam) (splLead_im_nonneg lam) (norm_gaussRoot_le_norm_splLead s lam hlam)
+  have ha : 0 < Real.sqrt (2 * Real.pi) := Real.sqrt_pos.2 (by positivity)
+  have hb : 0 < Real.sqrt lam := Real.sqrt_pos.2 hlam
+  have hq : 0 < Real.sqrt (s ^ 4 + lam ^ 2) := Real.sqrt_pos.2 (by positivity)
+  have e : 2 * Real.pi * s ^ 2 / (lam * Real.sqrt (s ^ 4 + lam ^ 2)) =
+      Real.sqrt (2 * Real.pi) ^ 2 * s ^ 2 / (Real.sqrt lam ^ 2 * Real.sqrt (s ^ 4 + lam ^ 2)) := by
+    rw [Real.sq_sqrt (by positivity), Real.sq_sqrt hlam.le]
+  rw [norm_gaussRoot_sq_sub_splLead_sq s lam hs hlam, norm_splLead, Real.sqrt_div (by positivity), e] at h1 h2
+  rw [P_splRemainder_gauss s hs]
+  exact two_sided_algebra ha hb hq h1 h2
+
+/-- `0.151 ≤ |R(G_1, 4)| ≤ 0.305` (true value `0.15342…`; the bounds of `splRemainder_gauss_bounds` are
+`0.15198…` and `0.30397…`). -/
+theorem P_splRemainder_gauss_one_four_bounds :
+    151 / 1000 ≤ ‖P_splRemainder (gauss 1) 4‖ ∧ ‖P_splRemainder (gauss 1) 4‖ ≤ 305 / 1000 := by
+  obtain ⟨h1, h2⟩ := P_splRemainder_gauss_bounds 1 4 one_pos (by norm_num)
+  rw [sqrt_four] at h1 h2
+  have hq1 : Real.sqrt (1 ^ 4 + 4 ^ 2) ≤ 413 / 100 := (Real.sqrt_le_left (by norm_num)).2 (by norm_num)
+  have hq2 : 412 / 100 ≤ Real.sqrt (1 ^ 4 + 4 ^ 2) := Real.le_sqrt_of_sq_le (by norm_num)
+  have hq0 : 0 < Real.sqrt (1 ^ 4 + 4 ^ 2) := lt_of_lt_of_le (by norm_num) hq2
+  generalize Real.sqrt (1 ^ 4 + 4 ^ 2) = q at h1 h2 hq1 hq2 hq0
+  constructor
+  · refine le_trans ?_ h1
+    rw [le_div_iff₀ (by positivity)]
+    nlinarith [sqrt_two_pi_lower]
+  · refine le_trans h2 ?_
+    rw [div_le_iff₀ (by positivity)]
+    nlinarith [sqrt_two_pi_upper]
+
+/-- `0.169 ≤ |R(G_2, 9)| ≤ 0.341` (true value `0.17444…`; the bounds of `splRemainder_gauss_bounds` are `0.16967…`
+and `0.33934…`). -/
+theorem P_splRemainder_gauss_two_nine_bounds :
+    169 / 1000 ≤ ‖P_splRemainder (gauss 2) 9‖ ∧ ‖P_splRemainder (gauss 2) 9‖ ≤ 341 / 1000 := by
+  obtain ⟨h1, h2⟩ := P_splRemainder_gauss_bounds 2 9 two_pos (by norm_num)
+  rw [sqrt_nine] at h1 h2
+  have hq1 : Real.sqrt (2 ^ 4 + 9 ^ 2) ≤ 985 / 100 := (Real.sqrt_le_left (by norm_num)).2 (by norm_num)
+  have hq2 : 984 / 100 ≤ Real.sqrt (2 ^ 4 + 9 ^ 2) := Real.le_sqrt_of_sq_le (by norm_num)
+  have hq0 : 0 < Real.sqrt (2 ^ 4 + 9 ^ 2) := lt_of_lt_of_le (by norm_num) hq2
+  generalize Real.sqrt (2 ^ 4 + 9 ^ 2) = q at h1 h2 hq1 hq2 hq0
+  constructor
+  · refine le_trans ?_ h1
+    rw [le_div_iff₀ (by positivity)]
+    nlinarith [sqrt_two_pi_lower]
+  · refine le_trans h2 ?_
+    rw [div_le_iff₀ (by positivity)]
+    nlinarith [sqrt_two_pi_upper]
+
+/-- The inequality of `sevenEighths_gauss_one_four` is not vacuous: its left side is at least one third of its
+right side (unconditional; `0.151 ≥ 0.138`). -/
+theorem P_sevenEighths_gauss_one_four_within :
+    1 / 3 * (7 / 8 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8)) ≤
+      ‖(2 * (Real.pi : ℂ) / (1 - 4 * Complex.I)) ^ (1 / 2 : ℂ) -
+        ((Real.sqrt (2 * Real.pi / 4) : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I)‖ := by
+  have h2 := P_splRemainder_gauss_one_four_bounds.1
+  rw [P_splRemainder_gauss 1 one_pos, gaussRoot_one_four] at h2
+  refine le_trans ?_ h2
+  linarith [normThree_le]
+
+/-- The inequality of `sevenEighths_gauss_two_nine` is not vacuous: its left side is at least one third of its
+right side (unconditional; `0.169 ≥ 0.1636`). -/
+theorem P_sevenEighths_gauss_two_nine_within :
+    1 / 3 * (7 / 8 * (2 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 27)) ≤
+      ‖(2 * (Real.pi : ℂ) / (4 - 9 * Complex.I)) ^ (1 / 2 : ℂ) -
+        ((Real.sqrt (2 * Real.pi / 9) : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I)‖ := by
+  have h2 := P_splRemainder_gauss_two_nine_bounds.1
+  rw [P_splRemainder_gauss 2 two_pos, gaussRoot_two_nine] at h2
+  refine le_trans ?_ h2
+  linarith [normThree_le]
+
+/-- `1.24·10⁻³ ≤ |R(G_1, 100)|` (the lower bound of `splRemainder_gauss_bounds` is `1.25325…·10⁻³`). -/
+theorem P_splRemainder_gauss_one_hundred_lower : 124 / 100000 ≤ ‖P_splRemainder (gauss 1) 100‖ := by
+  have h1 := (P_splRemainder_gauss_bounds 1 100 one_pos (by norm_num)).1
+  rw [sqrt_hundred] at h1
+  have hq1 : Real.sqrt (1 ^ 4 + 100 ^ 2) ≤ 10001 / 100 := (Real.sqrt_le_left (by norm_num)).2 (by norm_num)
+  have hq0 : 0 < Real.sqrt (1 ^ 4 + 100 ^ 2) := Real.sqrt_pos.2 (by norm_num)
+  generalize Real.sqrt (1 ^ 4 + 100 ^ 2) = q at h1 hq1 hq0
+  refine le_trans ?_ h1
+  rw [le_div_iff₀ (by positivity)]
+  nlinarith [sqrt_two_pi_lower]
+
+/-- `3.13·10⁻⁴ ≤ |R(G_4, 1600)|` (the lower bound of `splRemainder_gauss_bounds` is `3.1331…·10⁻⁴`). -/
+theorem P_splRemainder_gauss_four_sixteen_hundred_lower : 313 / 1000000 ≤ ‖P_splRemainder (gauss 4) 1600‖ := by
+  have h1 := (P_splRemainder_gauss_bounds 4 1600 (by norm_num) (by norm_num)).1
+  rw [sqrt_sixteen_hundred] at h1
+  have hq1 : Real.sqrt (4 ^ 4 + 1600 ^ 2) ≤ 16001 / 10 := (Real.sqrt_le_left (by norm_num)).2 (by norm_num)
+  have hq0 : 0 < Real.sqrt (4 ^ 4 + 1600 ^ 2) := Real.sqrt_pos.2 (by norm_num)
+  generalize Real.sqrt (4 ^ 4 + 1600 ^ 2) = q at h1 hq1 hq0
+  refine le_trans ?_ h1
+  rw [le_div_iff₀ (by positivity)]
+  nlinarith [sqrt_two_pi_lower]
+
+/-- At `λ = 0` the Lean expression `splRemainder (gauss 1) 0` is `√(2π) − 0` in modulus (`√(2π/0) = 0`). -/
+theorem P_norm_splRemainder_gauss_zero : ‖P_splRemainder (gauss 1) 0‖ = Real.sqrt (2 * Real.pi) := by
+  have h0 : splLead 0 = 0 := by
+    simp [splLead]
+  rw [P_splRemainder_gauss 1 one_pos, h0, sub_zero]
+  have h := norm_gaussRoot_sq 1 0
+  have e : (1 : ℝ) ^ 4 + 0 ^ 2 = 1 := by norm_num
+  rw [e, Real.sqrt_one, div_one] at h
+  rw [← h, Real.sqrt_sq (norm_nonneg _)]
+
+/-- For the constant `1` (not an amplitude) the Bochner integral in `splRemainder` is `0`, so
+`|splRemainder 1 1| = √(2π)`. -/
+theorem P_norm_splRemainder_one : ‖P_splRemainder (fun _ => 1) 1‖ = Real.sqrt (2 * Real.pi) := by
+  unfold P_splRemainder
+  rw [integral_undef (not_integrable_one_mul_exp 1), zero_sub, norm_neg, one_mul, norm_mul,
+    Complex.norm_exp_ofReal_mul_I, mul_one, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _),
+    div_one]
+
+/-- SPL-I on the Gaussian family: the closed form of the remainder equals the kernel integral of `G_s‴`. -/
+theorem P_identity_gauss (h : P_StationaryLeadingIdentityStatement) (s lam : ℝ) (hs : 0 < s) (hlam : 0 < lam) :
+    gaussRoot s lam - splLead lam =
+      -Complex.I * ((lam ^ (-(3 : ℝ) / 2) : ℝ) : ℂ) * ∫ t, gauss3 s t * splKernel (Real.sqrt lam * t) := by
+  have h1 := h (gauss s) (gauss1 s) (gauss2 s) (gauss3 s) lam (gauss_splAmplitude s hs) hlam
+  rw [P_splRemainder_gauss s hs] at h1
+  exact h1
+
+/-- SPL-I at `G_1`, `λ = 4`, written out (`4^{−3/2} = 1/8`, `√4 = 2`). -/
+theorem P_identity_gauss_one_four (h : P_StationaryLeadingIdentityStatement) :
+    (2 * (Real.pi : ℂ) / (1 - 4 * Complex.I)) ^ (1 / 2 : ℂ) -
+        ((Real.sqrt (2 * Real.pi / 4) : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I) =
+      -Complex.I * ((1 / 8 : ℝ) : ℂ) * ∫ t, gauss3 1 t * splKernel (2 * t) := by
+  have h1 := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 4 (gauss_splAmplitude 1 one_pos) (by norm_num)
+  rw [P_splRemainder_gauss 1 one_pos, gaussRoot_one_four, rpow_four, sqrt_four] at h1
+  exact h1
+
+/-- SPL-I at `G_2`, `λ = 9`, written out (`9^{−3/2} = 1/27`, `√9 = 3`). -/
+theorem P_identity_gauss_two_nine (h : P_StationaryLeadingIdentityStatement) :
+    (2 * (Real.pi : ℂ) / (4 - 9 * Complex.I)) ^ (1 / 2 : ℂ) -
+        ((Real.sqrt (2 * Real.pi / 9) : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I) =
+      -Complex.I * ((1 / 27 : ℝ) : ℂ) * ∫ t, gauss3 2 t * splKernel (3 * t) := by
+  have h1 := h (gauss 2) (gauss1 2) (gauss2 2) (gauss3 2) 9 (gauss_splAmplitude 2 two_pos) (by norm_num)
+  rw [P_splRemainder_gauss 2 two_pos, gaussRoot_two_nine, rpow_nine, sqrt_nine] at h1
+  exact h1
+
+/-- SPL-I forces the size of a kernel integral: `6/5 ≤ |∫ G_1‴(t) κ(2t) dt| ≤ 5/2` (it is `8 |R(G_1, 4)|`; against
+`‖G_1‴‖₁ = 3.785…` this is a ratio between `0.31` and `0.67`). -/
+theorem P_identity_integral_bounds (h : P_StationaryLeadingIdentityStatement) :
+    6 / 5 ≤ ‖∫ t, gauss3 1 t * splKernel (2 * t)‖ ∧ ‖∫ t, gauss3 1 t * splKernel (2 * t)‖ ≤ 5 / 2 := by
+  have h1 := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 4 (gauss_splAmplitude 1 one_pos) (by norm_num)
+  rw [rpow_four, sqrt_four] at h1
+  obtain ⟨h2, h3⟩ := P_splRemainder_gauss_one_four_bounds
+  rw [h1, norm_mul, norm_mul, norm_neg, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_pos (by norm_num : (0 : ℝ) < 1 / 8)] at h2 h3
+  constructor <;> linarith
+
+end OscInt.API.StationaryLeadingSanity

@@ -1,0 +1,21 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `StationaryLeadingAttainedStatement`: the inequality reversed. -/
+def P_StationaryLeadingAttainedStatement : Prop :=
+  ∀ τ ε : ℝ, 0 ≤ τ → 0 < ε →
+    ∃ g g₁ g₂ g₃ : ℝ → ℂ, SplAmplitude g g₁ g₂ g₃ ∧ ContDiff ℝ ∞ g ∧ HasCompactSupport g ∧ (∃ x, g x ≠ 0) ∧
+      ‖splRemainder g 1‖ ≤ (‖splKernel τ‖ - ε) * (∫ t, ‖g₃ t‖)
+
+theorem witness_not_P_StationaryLeadingAttainedStatement : ¬ P_StationaryLeadingAttainedStatement := by
+  intro h
+  obtain ⟨g, g₁, g₂, g₃, hamp, -, -, hne, hle⟩ := h 0 1 le_rfl one_pos
+  have hpos := integral_norm_pos_of_splAmplitude hamp hne
+  rw [splKernel_zero, norm_zero] at hle
+  nlinarith [norm_nonneg (splRemainder g 1)]
+
+end OscInt.API.StationaryLeadingSanity

@@ -1,0 +1,226 @@
+# Batch SPL: planted controls of the sanity layer (docs/lessons.md, rules 8 and 9). Written by an agent of the lead on
+# 2026-11-19 against the draft statement text (OscInt/Statements/StationaryLeading.lean, SHA-256
+# 12f8d3b622949cd8a9d3d518236da7f96ae84cc26f3d72dda64bb05bfb40c715, unchanged), under a brief that forbids proving
+# the statements; the agent was stopped once by a container restart and resumed. Re-run by the lead (the agent's
+# generator, fresh directories, 2026-11-19T23:56:49Z to 2026-11-20T00:01:10Z, exit code 0): all 253 generated files
+# byte-identical to the agent's (diff -rq reports only the two files that the generator does not write, COPYRIGHT
+# and the generator's own copy). Directory: docs/replay/plants/2026-11-19-SPL/ (generator plants_spl.py.txt).
+# 42 planted mutations: 22 DETECTED (a compiled proof of the negation of the planted statement), 7 DETECTED
+# CONDITIONALLY (the negation proved from the hypothesis that the kernel is bounded by 2, which is Lemma 2 of
+# docs/proof-SPL.md and has no Lean proof), 7 DETECTED RELATIVE TO THE TRUE STATEMENT (true statement implies the
+# negation of the planted one), 3 EQUIVALENT (two of them controls that must not distinguish), 3 TRUE WEAKENING,
+# 0 NOT DETECTED. All 42 unplanted copies compile; all 42 planted copies are rejected by the copied scripts, which
+# is not counted as detection. Known limit, not a plant: Gaussian data cannot refute a constant between about 0.331
+# and 7/8 in SPL-K, nor the clauses "compact support" and "infinitely differentiable" of SPL-A.
+ok-SPL-K-a: accepted (want accepted)
+plant-SPL-K-a: rejected (recorded)
+    first error: plant-SPL-K-a.lean:18:2: error: Type mismatch
+witness-SPL-K-a: accepted (want accepted)
+  SPL-K-a [exponent −3/2 ↦ −2; witness: G_1, λ = 100: |R| ≥ 1.24e-3, planted right side (7/8)·N0·100^(−2) ≤ 3.32e-4]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-K-b: accepted (want accepted)
+plant-SPL-K-b: rejected (recorded)
+    first error: plant-SPL-K-b.lean:18:2: error: Type mismatch
+witness-SPL-K-b: accepted (want accepted)
+  SPL-K-b [constant 7/8 ↦ 1/4; witness: G_1, λ = 100: |R| ≥ 1.24e-3, planted right side (1/4)·N0/1000 ≤ 9.475e-4]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-K-c: accepted (want accepted)
+plant-SPL-K-c: rejected (recorded)
+    first error: plant-SPL-K-c.lean:27:68: error: unsolved goals
+witness-SPL-K-c: accepted (want accepted)
+  SPL-K-c [e^{iπ/4} ↦ 1 in the leading term (planted copy of splRemainder); witness: G_1, λ = 100: planted left side ≥ Im root ≥ 1/10, right side (7/8)·N0/1000 ≤ 3.32e-3]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-K-d: accepted (want accepted)
+plant-SPL-K-d: rejected (recorded)
+    first error: plant-SPL-K-d.lean:27:68: error: unsolved goals
+witness-SPL-K-d: accepted (want accepted)
+  SPL-K-d [√(2π/λ) ↦ √(π/λ) in the leading term (planted copy of splRemainder); witness: G_1, λ = 100: planted left side ≥ |root| − √(π/100) ≥ 7/100, right side ≤ 3.32e-3]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-K-e: accepted (want accepted)
+plant-SPL-K-e: rejected (recorded)
+    first error: plant-SPL-K-e.lean:28:35: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-SPL-K-e: accepted (want accepted)
+  SPL-K-e [the leading term dropped (planted copy of splRemainder); witness: G_1, λ = 100: planted left side = |root| ≥ 1/4, right side ≤ 3.32e-3]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-K-f: accepted (want accepted)
+plant-SPL-K-f: rejected (recorded)
+    first error: plant-SPL-K-f.lean:16:13: error: Function expected at
+witness-SPL-K-f: accepted (want accepted)
+  SPL-K-f [hypothesis 0 < λ dropped; witness: G_1, λ = 0: left side √(2π) (√(2π/0) = 0 in Lean), right side 0 (0^(−3/2) = 0 in Lean)]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-K-g: accepted (want accepted)
+plant-SPL-K-g: rejected (recorded)
+    first error: plant-SPL-K-g.lean:17:31: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-SPL-K-g: accepted (want accepted)
+  SPL-K-g [‖g₃‖₁ ↦ ‖g₂‖₁; witness: G_4, λ = 1600: |R| ≥ 3.13e-4 = 20.03/64000, planted right side (7/8)·16e^(−1/2)/64000 ≤ 8.5/64000]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-K-h: accepted (want accepted)
+plant-SPL-K-h: rejected (recorded)
+    first error: plant-SPL-K-h.lean:28:2: error: unsolved goals
+witness-SPL-K-h: accepted (want accepted)
+  SPL-K-h [Integrable g dropped from SplAmplitude (planted copy of the definition); witness: g = 1 with zero derivatives is a planted amplitude; λ = 1: the Bochner integral is 0, left side √(2π), right side 0]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-S-a: accepted (want accepted)
+plant-SPL-S-a: rejected (recorded)
+    first error: plant-SPL-S-a.lean:19:16: error: Application type mismatch: The argument
+witness-SPL-S-a: accepted (want accepted)
+  SPL-S-a [exponent −3/2 ↦ −2; witness: G_1, λ = 100: |R| ≥ 1.24e-3, planted right side ≤ 2·N0·100^(−2) ≤ 7.58e-4]: DETECTED CONDITIONALLY (witness compiled: hκ → ¬ planted statement, under the hypothesis hκ : ∀ τ, ‖splKernel τ‖ ≤ 2 (Lemma 2 of docs/proof-SPL.md; not proved in Lean when this was run))
+ok-SPL-S-c: accepted (want accepted)
+plant-SPL-S-c: rejected (recorded)
+    first error: plant-SPL-S-c.lean:21:68: error: unsolved goals
+witness-SPL-S-c: accepted (want accepted)
+  SPL-S-c [e^{iπ/4} ↦ 1 in the leading term (planted copy of splRemainder); witness: G_1, λ = 100: planted left side ≥ 1/10, right side ≤ 2·N0/1000 ≤ 7.58e-3]: DETECTED CONDITIONALLY (witness compiled: hκ → ¬ planted statement, under the hypothesis hκ : ∀ τ, ‖splKernel τ‖ ≤ 2 (Lemma 2 of docs/proof-SPL.md; not proved in Lean when this was run))
+ok-SPL-S-d: accepted (want accepted)
+plant-SPL-S-d: rejected (recorded)
+    first error: plant-SPL-S-d.lean:21:68: error: unsolved goals
+witness-SPL-S-d: accepted (want accepted)
+  SPL-S-d [√(2π/λ) ↦ √(π/λ) in the leading term (planted copy of splRemainder); witness: G_1, λ = 100: planted left side ≥ 7/100, right side ≤ 7.58e-3]: DETECTED CONDITIONALLY (witness compiled: hκ → ¬ planted statement, under the hypothesis hκ : ∀ τ, ‖splKernel τ‖ ≤ 2 (Lemma 2 of docs/proof-SPL.md; not proved in Lean when this was run))
+ok-SPL-S-e: accepted (want accepted)
+plant-SPL-S-e: rejected (recorded)
+    first error: plant-SPL-S-e.lean:22:35: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-SPL-S-e: accepted (want accepted)
+  SPL-S-e [the leading term dropped (planted copy of splRemainder); witness: G_1, λ = 100: planted left side ≥ 1/4, right side ≤ 7.58e-3]: DETECTED CONDITIONALLY (witness compiled: hκ → ¬ planted statement, under the hypothesis hκ : ∀ τ, ‖splKernel τ‖ ≤ 2 (Lemma 2 of docs/proof-SPL.md; not proved in Lean when this was run))
+ok-SPL-S-f: accepted (want accepted)
+plant-SPL-S-f: rejected (recorded)
+    first error: plant-SPL-S-f.lean:17:24: error: Function expected at
+witness-SPL-S-f: accepted (want accepted)
+  SPL-S-f [hypothesis 0 < λ dropped; witness: G_1, λ = 0: left side √(2π), right side |κ(τ)|·N0·0 = 0]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-S-g: accepted (want accepted)
+plant-SPL-S-g: rejected (recorded)
+    first error: plant-SPL-S-g.lean:18:31: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-SPL-S-g: accepted (want accepted)
+  SPL-S-g [‖g₃‖₁ ↦ ‖g₂‖₁; witness: G_4, λ = 1600: |R| ≥ 3.13e-4 = 20.03/64000, planted right side ≤ 2·16e^(−1/2)/64000 ≤ 19.42/64000]: DETECTED CONDITIONALLY (witness compiled: hκ → ¬ planted statement, under the hypothesis hκ : ∀ τ, ‖splKernel τ‖ ≤ 2 (Lemma 2 of docs/proof-SPL.md; not proved in Lean when this was run)) (Margin 3%: 20.03 against 19.42, in units of 1/64000.)
+ok-SPL-S-h: accepted (want accepted)
+plant-SPL-S-h: rejected (recorded)
+    first error: plant-SPL-S-h.lean:22:2: error: unsolved goals
+witness-SPL-S-h: accepted (want accepted)
+  SPL-S-h [Integrable g dropped from SplAmplitude (planted copy of the definition); witness: g = 1 with zero derivatives is a planted amplitude; λ = 1: the Bochner integral is 0, left side √(2π), right side |κ(τ)|·0 = 0]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-S-i: accepted (want accepted)
+plant-SPL-S-i: rejected (recorded)
+    first error: plant-SPL-S-i.lean:19:16: error: Application type mismatch: The argument
+witness-SPL-S-i: accepted (want accepted)
+  SPL-S-i [|κ(τ)| ↦ |κ(τ)|/8; witness: G_1, λ = 100: |R| ≥ 1.24e-3, planted right side ≤ (2/8)·N0/1000 ≤ 9.475e-4]: DETECTED CONDITIONALLY (witness compiled: hκ → ¬ planted statement, under the hypothesis hκ : ∀ τ, ‖splKernel τ‖ ≤ 2 (Lemma 2 of docs/proof-SPL.md; not proved in Lean when this was run))
+ok-SPL-S-j: accepted (want accepted)
+plant-SPL-S-j: rejected (recorded)
+    first error: plant-SPL-S-j.lean:17:9: error: Tactic `rcases` failed: `h✝ : Real.le✝ ‖splRemainder (gauss s) lam‖
+witness-SPL-S-j: accepted (want accepted)
+  SPL-S-j ["0 ≤ τ" dropped]: EQUIVALENT (compiled: planted statement ↔ draft statement, by |κ(|τ|)| = |κ(τ)|, which holds because the kernel is odd). The clause "0 ≤ τ" in SPL-S is a normalization: no datum can refute its removal, and it makes the statement neither stronger nor weaker. The copied scripts are rejected by the planted copy; that is script-only (their closing steps expect the draft text) and is not a detection.
+ok-SPL-I-a: accepted (want accepted)
+plant-SPL-I-a: rejected (recorded)
+    first error: plant-SPL-I-a.lean:20:2: error: Type mismatch
+witness-SPL-I-a: accepted (want accepted)
+  SPL-I-a [−i ↦ +i; witness: G_1, λ = 100: the two identities give R = −R, and R ≠ 0]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: SPL-I → ¬ planted statement)
+ok-SPL-I-b: accepted (want accepted)
+plant-SPL-I-b: rejected (recorded)
+    first error: plant-SPL-I-b.lean:20:2: error: Type mismatch
+witness-SPL-I-b: accepted (want accepted)
+  SPL-I-b [exponent −3/2 ↦ −1/2; witness: G_1, λ = 100: the two identities give (100^(−1/2) − 100^(−3/2)) R = 0, and R ≠ 0]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: SPL-I → ¬ planted statement)
+ok-SPL-I-cc: accepted (want accepted)
+plant-SPL-I-cc: rejected (recorded)
+    first error: plant-SPL-I-cc.lean:22:68: error: unsolved goals
+witness-SPL-I-cc: accepted (want accepted)
+  SPL-I-cc [e^{iπ/4} ↦ 1 in the leading term (planted copy of splRemainder); witness: G_1, λ = 100: the two identities give ℓ = √(2π/100), but Im ℓ > 0]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: SPL-I → ¬ planted statement)
+ok-SPL-I-cd: accepted (want accepted)
+plant-SPL-I-cd: rejected (recorded)
+    first error: plant-SPL-I-cd.lean:22:68: error: unsolved goals
+witness-SPL-I-cd: accepted (want accepted)
+  SPL-I-cd [√(2π/λ) ↦ √(π/λ) in the leading term (planted copy of splRemainder); witness: G_1, λ = 100: the two identities give ℓ = √(π/100) e^(iπ/4), but |ℓ| = √(2π/100)]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: SPL-I → ¬ planted statement)
+ok-SPL-I-ce: accepted (want accepted)
+plant-SPL-I-ce: rejected (recorded)
+    first error: plant-SPL-I-ce.lean:23:35: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-SPL-I-ce: accepted (want accepted)
+  SPL-I-ce [the leading term dropped (planted copy of splRemainder); witness: G_1, λ = 100: the two identities give ℓ = 0, but |ℓ| = √(2π/100)]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: SPL-I → ¬ planted statement)
+ok-SPL-I-d: accepted (want accepted)
+plant-SPL-I-d: rejected (recorded)
+    first error: plant-SPL-I-d.lean:20:2: error: Type mismatch
+witness-SPL-I-d: accepted (want accepted)
+  SPL-I-d [√λ t ↦ λ t in the kernel argument; witness: λ = 1/100: the true identity for G_10 and the planted one for G_1 are about the same integral (substitution y = 10t) and give R(G_10, 1/100) = 100 R(G_1, 1/100), against 100 |R(G_1, 1/100)| ≥ 250√(2π) and |R(G_10, 1/100)| ≤ 10√(2π)]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: SPL-I → ¬ planted statement) (The brief expected NOT DETECTED before the proof; unconditionally that is so, since the plant agrees with the draft statement at λ = 1 and nothing is known about the kernel. The witness is relative to SPL-I itself, used at another amplitude.)
+ok-SPL-I-e: accepted (want accepted)
+plant-SPL-I-e: rejected (recorded)
+    first error: plant-SPL-I-e.lean:26:63: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-SPL-I-e: accepted (want accepted)
+  SPL-I-e [the kernel extended as an even function (planted copy of splKernel); witness: G_1, λ = 100: G_1‴ is odd, so the planted integral is 0 and the planted identity says R = 0, but |R| ≥ 1.24e-3]: DETECTED (witness compiled: ¬ planted statement) (The brief expected NOT DETECTED before the proof; the Gaussian is even, so its third derivative is odd, and an even kernel makes the integral vanish: the refutation is unconditional. The registered numeric test numerics/results-spl-remainder-checks-2026-11-19.txt, control C3, covers the same mutation numerically.)
+ok-SPL-A-a: accepted (want accepted)
+plant-SPL-A-a: rejected (recorded)
+    first error: plant-SPL-A-a.lean:21:40: error: Application type mismatch: The argument
+witness-SPL-A-a: accepted (want accepted)
+  SPL-A-a [the inequality reversed; witness: τ = 0, ε = 1: |R(g, 1)| ≤ −‖g₃‖₁ forces ‖g₃‖₁ = 0, hence g = 0 (integral_norm_pos_of_splAmplitude), against g ≠ 0]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-A-b: accepted (want accepted)
+plant-SPL-A-b: rejected (recorded)
+    first error: plant-SPL-A-b.lean:19:9: error: Tactic `rcases` failed: `right✝ : Real.le✝ ((‖splKernel 0‖ - ε) * ∫ (t : ℝ), ‖g₃ t‖)
+witness-SPL-A-b: accepted (want accepted)
+  SPL-A-b ["(∃ x, g x ≠ 0)" dropped]: TRUE WEAKENING, and a trivial one (compiled: the planted statement is proved outright with g = 0, for which both sides of the inequality are 0). The clause "(∃ x, g x ≠ 0)" carries the content of SPL-A: without it the statement asserts nothing. The copied scripts are rejected by the planted copy; that is script-only (their closing steps expect the draft text) and is not a detection.
+ok-SPL-A-c: accepted (want accepted)
+plant-SPL-A-c: rejected (recorded)
+    first error: plant-SPL-A-c.lean:20:33: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-SPL-A-c: accepted (want accepted)
+  SPL-A-c [|κ(τ)| − ε ↦ |κ(τ)| + ε; witness: τ = 0, ε = 1: the plant gives g ≠ 0 with ‖g₃‖₁ ≤ |R(g, 1)|, SPL-K gives |R(g, 1)| ≤ (7/8)‖g₃‖₁, and ‖g₃‖₁ > 0]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: SPL-K → ¬ planted statement)
+ok-SPL-A-d: accepted (want accepted)
+plant-SPL-A-d: rejected (recorded)
+    first error: plant-SPL-A-d.lean:19:9: error: Tactic `rcases` failed: `right✝ : Real.le✝ ((‖splKernel 0‖ - ε) * ∫ (t : ℝ), ‖g₃ t‖)
+witness-SPL-A-d: accepted (want accepted)
+  SPL-A-d [HasCompactSupport dropped]: TRUE WEAKENING (compiled: draft statement → planted statement). The planted statement still asserts that for every τ ≥ 0 and ε > 0 a C^∞ amplitude of the class SplAmplitude, not identically zero, has |R(g, 1)| ≥ (|κ(τ)| − ε)‖g₃‖₁, which is what the sharpness of SPL-S over the class needs. Compact support is an additional strength of SPL-A (attainment already within C_c^∞); whether the planted statement is strictly weaker cannot be decided before SPL-A is proved, and no datum of this layer can see the clause. The copied scripts are rejected by the planted copy; that is script-only (their closing steps expect the draft text) and is not a detection.
+ok-SPL-I-f: accepted (want accepted)
+plant-SPL-I-f: rejected (recorded)
+    first error: plant-SPL-I-f.lean:20:2: error: Type mismatch
+witness-SPL-I-f: accepted (want accepted)
+  SPL-I-f [g₃ ↦ g₂ in the integrand; witness: G_1, λ = 100: G_1″ is even and the kernel is odd, so the planted integral is 0 and the planted identity says R = 0, but |R| ≥ 1.24e-3]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-I-g: accepted (want accepted)
+plant-SPL-I-g: rejected (recorded)
+    first error: plant-SPL-I-g.lean:20:2: error: Type mismatch
+witness-SPL-I-g: accepted (want accepted)
+  SPL-I-g [kernel argument √λ t ↦ √λ (constant in t); witness: G_1, λ = 100: ∫ G_1‴ κ(10) = 0 because G_1‴ is odd, so the planted identity says R = 0, but |R| ≥ 1.24e-3]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-I-h: accepted (want accepted)
+plant-SPL-I-h: rejected (recorded)
+    first error: plant-SPL-I-h.lean:20:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-SPL-I-h: accepted (want accepted)
+  SPL-I-h [CONTROL: in splKernel, "if 0 ≤ τ" ↦ "if 0 < τ" (planted copy of splKernel)]: EQUIVALENT (compiled: planted kernel = kernel as functions, because both branches give 0 at τ = 0 (κ₊(0) = 0); hence planted statement ↔ draft statement). A control that must not distinguish: the witness layer does not flag it. The copied scripts are rejected all the same, and that is script-only: the copied proof of splKernel_zero selects the first branch with 0 ≤ 0, which the planted text does not offer; this is why a rejected script is never counted as a detection.
+ok-SPL-I-j: accepted (want accepted)
+plant-SPL-I-j: rejected (recorded)
+    first error: plant-SPL-I-j.lean:23:4: error: Application type mismatch: The argument
+witness-SPL-I-j: accepted (want accepted)
+  SPL-I-j [the third derivative clause of SplAmplitude deleted (planted copy of the definition); witness: G_1 with g₃ = 0 is a planted amplitude; λ = 100: the planted identity says R = −i·100^(−3/2)·∫ 0 = 0, but |R| ≥ 1.24e-3]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-I-k: accepted (want accepted)
+plant-SPL-I-k: rejected (recorded)
+    first error: plant-SPL-I-k.lean:23:13: error: Type mismatch
+witness-SPL-I-k: accepted (want accepted)
+  SPL-I-k [third clause of SplAmplitude: HasDerivAt g₂ (g₃ x) x ↦ HasDerivAt g₁ (g₃ x) x (planted copy of the definition); witness: G_1 with g₃ = G_1″ is a planted amplitude; λ = 100: ∫ G_1″(t) κ(10t) dt = 0 by parity, so the planted identity says R = 0, but |R| ≥ 1.24e-3]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-K-i: accepted (want accepted)
+plant-SPL-K-i: rejected (recorded)
+    first error: plant-SPL-K-i.lean:17:31: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-SPL-K-i: accepted (want accepted)
+  SPL-K-i [‖g₃‖₁ = ∫‖g₃‖ ↦ ‖∫ g₃‖; witness: G_1, λ = 100: |R| ≥ 1.24e-3, planted right side (7/8)·|∫ G_1‴|/1000 = 0 (G_1‴ is odd)]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-K-j: accepted (want accepted)
+plant-SPL-K-j: rejected (recorded)
+    first error: plant-SPL-K-j.lean:28:4: error: Application type mismatch: The argument
+witness-SPL-K-j: accepted (want accepted)
+  SPL-K-j [the third derivative clause of SplAmplitude deleted (planted copy of the definition); witness: G_1 with g₃ = 0 is a planted amplitude; λ = 100: |R| ≥ 1.24e-3, planted right side (7/8)·0/1000 = 0]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-K-k: accepted (want accepted)
+plant-SPL-K-k: rejected (recorded)
+    first error: plant-SPL-K-k.lean:28:13: error: Type mismatch
+witness-SPL-K-k: accepted (want accepted)
+  SPL-K-k [third clause of SplAmplitude: HasDerivAt g₂ (g₃ x) x ↦ HasDerivAt g₁ (g₃ x) x (planted copy of the definition); witness: G_4 with g₃ = G_4″ is a planted amplitude; λ = 1600: |R| ≥ 3.13e-4 = 20.03/64000, planted right side (7/8)·‖G_4″‖₁/64000 ≤ 8.5/64000 (the datum of SPL-K-g)]: DETECTED (witness compiled: ¬ planted statement) (The planted clause forces g₃ = g₂, so the plant is SPL-K-g for amplitudes with two derivatives: the same datum refutes it.)
+ok-SPL-K-l: accepted (want accepted)
+plant-SPL-K-l: rejected (recorded)
+    first error: plant-SPL-K-l.lean:19:2: error: Type mismatch
+witness-SPL-K-l: accepted (want accepted)
+  SPL-K-l [CONTROL: the exponent written -((3 : ℝ) / 2) instead of -(3 : ℝ) / 2]: EQUIVALENT (compiled: planted statement ↔ draft statement; -(3 : ℝ) / 2 = -((3 : ℝ) / 2) by neg_div). A control that must not distinguish: the witness layer does not flag it. The copied scripts are rejected by the planted copy; that is script-only (their closing steps expect the draft text) and is not a detection.
+ok-SPL-S-k: accepted (want accepted)
+plant-SPL-S-k: rejected (recorded)
+    first error: plant-SPL-S-k.lean:17:9: error: Tactic `rcases` failed: `x✝ : ∀ (τ : ℝ),
+witness-SPL-S-k: accepted (want accepted)
+  SPL-S-k ["∃ τ, 0 ≤ τ ∧ …" ↦ "∀ τ, 0 ≤ τ → …"; witness: G_1, λ = 100: |R| ≥ 1.24e-3, planted right side at τ = 0 is |κ(0)|·N0/1000 = 0]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-S-l: accepted (want accepted)
+plant-SPL-S-l: rejected (recorded)
+    first error: plant-SPL-S-l.lean:22:4: error: Application type mismatch: The argument
+witness-SPL-S-l: accepted (want accepted)
+  SPL-S-l [the third derivative clause of SplAmplitude deleted (planted copy of the definition); witness: G_1 with g₃ = 0 is a planted amplitude; λ = 100: |R| ≥ 1.24e-3, planted right side |κ(τ)|·0/1000 = 0]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-S-m: accepted (want accepted)
+plant-SPL-S-m: rejected (recorded)
+    first error: plant-SPL-S-m.lean:22:13: error: Type mismatch
+witness-SPL-S-m: accepted (want accepted)
+  SPL-S-m [third clause of SplAmplitude: HasDerivAt g₂ (g₃ x) x ↦ HasDerivAt g₁ (g₃ x) x (planted copy of the definition); witness: G_4 with g₃ = G_4″ is a planted amplitude; λ = 1600: |R| ≥ 3.13e-4 = 20.03/64000, planted right side ≤ 2·‖G_4″‖₁/64000 ≤ 19.42/64000 (the datum of SPL-S-g)]: DETECTED CONDITIONALLY (witness compiled: hκ → ¬ planted statement, under the hypothesis hκ : ∀ τ, ‖splKernel τ‖ ≤ 2 (Lemma 2 of docs/proof-SPL.md; not proved in Lean when this was run)) (Margin 3%, as SPL-S-g. The planted class is {g, g′, g″ = g₃ integrable}: the plant is SPL-S-g for amplitudes of class C² only.)
+ok-SPL-A-e: accepted (want accepted)
+plant-SPL-A-e: rejected (recorded)
+    first error: plant-SPL-A-e.lean:21:36: error: Application type mismatch: The argument
+witness-SPL-A-e: accepted (want accepted)
+  SPL-A-e ["∃ x, g x ≠ 0" ↦ "∀ x, g x ≠ 0"; witness: τ = 0, ε = 1: a function with g(x) ≠ 0 for every x has support ℝ, which is not compact, so no g satisfies the planted clauses]: DETECTED (witness compiled: ¬ planted statement)
+ok-SPL-A-f: accepted (want accepted)
+plant-SPL-A-f: rejected (recorded)
+    first error: plant-SPL-A-f.lean:21:28: error: Application type mismatch: The argument
+witness-SPL-A-f: accepted (want accepted)
+  SPL-A-f [ContDiff ℝ ∞ g ↦ ContDiff ℝ 3 g]: TRUE WEAKENING (compiled: draft statement → planted statement, by ContDiff.of_le). The planted statement asserts attainment by C³ compactly supported amplitudes only; the draft asserts it within C^∞, which is stronger. Whether the planted statement is strictly weaker cannot be decided before SPL-A is proved, and no datum of this layer can see the order of smoothness. The copied scripts are rejected by the planted copy; that is script-only (their closing steps expect the draft text) and is not a detection.
+  SPL-S-b: not run. The mutation "7/8 ↦ 1/4" of SPL-K has no counterpart in SPL-S, which has no numeric constant; the mutation of its constant is SPL-S-i.
+  Totals over 42 plants: DETECTED 22; DETECTED CONDITIONALLY 7; DETECTED RELATIVE TO THE TRUE STATEMENT 7; EQUIVALENT 3; TRUE WEAKENING 3; NOT DETECTED 0. (Counted from the table of the generator; a line above marked MISMATCH overrides its count.)

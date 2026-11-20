@@ -1,0 +1,6 @@
+plant-SPL-I-h.lean:20:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  if ?m.12 ≤ ?m.12 then ?m.14 else ?m.15
+in the target expression
+  (if 0 < 0 then splKernelPos 0 else -splKernelPos (-0)) = 0
+
+⊢ (if 0 < 0 then splKernelPos 0 else -splKernelPos (-0)) = 0

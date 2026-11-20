@@ -1,0 +1,22 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `StationaryLeadingAttainedStatement`: "∃ x, g x ≠ 0" ↦ "∀ x, g x ≠ 0". -/
+def P_StationaryLeadingAttainedStatement : Prop :=
+  ∀ τ ε : ℝ, 0 ≤ τ → 0 < ε →
+    ∃ g g₁ g₂ g₃ : ℝ → ℂ, SplAmplitude g g₁ g₂ g₃ ∧ ContDiff ℝ ∞ g ∧ HasCompactSupport g ∧ (∀ x, g x ≠ 0) ∧
+      (‖splKernel τ‖ - ε) * (∫ t, ‖g₃ t‖) ≤ ‖splRemainder g 1‖
+
+theorem witness_not_P_StationaryLeadingAttainedStatement : ¬ P_StationaryLeadingAttainedStatement := by
+  intro h
+  obtain ⟨g, g₁, g₂, g₃, -, -, hcomp, hne, -⟩ := h 0 1 le_rfl one_pos
+  have hs : tsupport g = Set.univ :=
+    Set.eq_univ_of_forall fun x => subset_tsupport g (Function.mem_support.2 (hne x))
+  rw [HasCompactSupport, hs] at hcomp
+  exact noncompact_univ ℝ hcomp
+
+end OscInt.API.StationaryLeadingSanity

@@ -1689,6 +1689,23 @@ What the statements say and do not say (modelling choices and omissions, for the
    √(2π)/4 = 0.6267 can be true in SPL-K.
 9. Relative to Erdélyi's theorem (one-sided integrals, stationary points and singularities of real order, any
    number of terms): one case only, two-sided, with the term in g″(0) not separated.
+Sanity layer and planted controls (written by an agent of the lead against the draft text, under a brief that
+forbids proving the statements; the statement file entered the repository unchanged, SHA-256
+12f8d3b622949cd8a9d3d518236da7f96ae84cc26f3d72dda64bb05bfb40c715). `OscInt/Front/StationaryLeadingSanity.lean`:
+96 theorems. Data: the kernel at 0 and its oddness; the two constants tied to each other
+(`√(2π) e^{iπ/4} = 2 F(∞)`); the Gaussian family `e^{−(su)²/2}` as amplitudes with the closed form of its remainder
+and certified bounds `√(2π) s²/(2√λ √(s⁴+λ²)) ≤ |R| ≤ √(2π) s²/(√λ √(s⁴+λ²))`; `‖g₃‖₁ = s²(2 + 8e^{−3/2})`; two bites
+on the class (the constant 1; a wrong first derivative); a nonzero amplitude has `‖g₃‖₁ > 0`. Each statement is
+instantiated at two Gaussians (s = 1, λ = 4 and s = 2, λ = 9); SPL-K is shown not vacuous there (the left side
+is at least a third of the right side); SPL-A with SPL-K gives `|κ| ≤ 7/8`. Planted controls: 42 mutations,
+`docs/replay/2026-11-19-SPL-sanity-plants.txt` (re-run by the lead, byte-identical): 22 detected, 7 detected only
+under the hypothesis `|κ| ≤ 2` (no Lean proof before the freeze), 7 detected relative to the true statement, 3
+equivalent, 3 true weakenings, none undetected. What the layer cannot see, said before the review: a constant
+between about 0.331 and 7/8 in SPL-K (the Gaussian's ratio stops at 0.331; 7/8 ↦ 1/2 would be false and would not
+be detected); the size of `|κ|` anywhere but at 0; the clauses "compact support" and "infinitely differentiable" of
+SPL-A, and its existence claim for τ > 0. For those the batch rests on the fidelity reviews, on the registered
+numeric test and on the external derivation, not on the sanity layer.
+
 10. Planned for a second freeze of this batch, after a critique of this draft by an external session
     (`review/2026-11-19-SPL-external-sessions-answers.md`, section 5), and not stated here: a front end for a
     compactly supported function of class C³ with its canonical derivatives; the phase −u²/2; sharpness for every

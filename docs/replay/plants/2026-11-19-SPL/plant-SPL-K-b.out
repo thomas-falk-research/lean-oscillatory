@@ -1,0 +1,21 @@
+plant-SPL-K-b.lean:18:2: error: Type mismatch
+  h1
+has type
+  ‖gaussRoot s lam - splLead lam‖ ≤ 1 / 4 * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-3 / 2)
+but is expected to have type
+  ‖gaussRoot s lam - splLead lam‖ ≤ 7 / 8 * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-3 / 2)
+plant-SPL-K-b.lean:28:2: error: Type mismatch
+  h1
+has type
+  ‖(2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - splLead 4‖ ≤ 1 / 4 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8)
+but is expected to have type
+  ‖(2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - ↑√(2 * Real.pi / 4) * Complex.exp (↑(Real.pi / 4) * Complex.I)‖ ≤
+    7 / 8 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8)
+plant-SPL-K-b.lean:37:2: error: Type mismatch
+  h1
+has type
+  ‖(2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - splLead 9‖ ≤
+    1 / 4 * (2 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 27)
+but is expected to have type
+  ‖(2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - ↑√(2 * Real.pi / 9) * Complex.exp (↑(Real.pi / 4) * Complex.I)‖ ≤
+    7 / 8 * (2 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 27)

@@ -1,0 +1,32 @@
+plant-SPL-S-f.lean:17:24: error: Function expected at
+  h (gauss s) (gauss1 s) (gauss2 s) (gauss3 s) lam (gauss_splAmplitude s hs)
+but this term has type
+  ∃ τ, 0 ≤ τ ∧ ‖splRemainder (gauss s) lam‖ ≤ (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss3 s t‖) * lam ^ (-3 / 2)
+
+Note: Expected a function because this term is being applied to the argument
+  hlam
+plant-SPL-S-f.lean:17:9: error: Tactic `rcases` failed: `x✝ : ?m.99` is not an inductive datatype
+plant-SPL-S-f.lean:26:24: error: Function expected at
+  h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 4 (gauss_splAmplitude 1 one_pos)
+but this term has type
+  ∃ τ, 0 ≤ τ ∧ ‖splRemainder (gauss 1) 4‖ ≤ (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss3 1 t‖) * 4 ^ (-3 / 2)
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-SPL-S-f.lean:26:9: error: Tactic `rcases` failed: `x✝ : ?m.134` is not an inductive datatype
+plant-SPL-S-f.lean:36:24: error: Function expected at
+  h (gauss 2) (gauss1 2) (gauss2 2) (gauss3 2) 9 (gauss_splAmplitude 2 two_pos)
+but this term has type
+  ∃ τ, 0 ≤ τ ∧ ‖splRemainder (gauss 2) 9‖ ≤ (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss3 2 t‖) * 9 ^ (-3 / 2)
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-SPL-S-f.lean:36:9: error: Tactic `rcases` failed: `x✝ : ?m.165` is not an inductive datatype
+plant-SPL-S-f.lean:43:24: error: Function expected at
+  h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 4 (gauss_splAmplitude 1 one_pos)
+but this term has type
+  ∃ τ, 0 ≤ τ ∧ ‖splRemainder (gauss 1) 4‖ ≤ (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss3 1 t‖) * 4 ^ (-3 / 2)
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-SPL-S-f.lean:43:9: error: Tactic `rcases` failed: `x✝ : ?m.38` is not an inductive datatype
