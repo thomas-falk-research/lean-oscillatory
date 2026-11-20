@@ -9,6 +9,19 @@ SPDX-License-Identifier: CC-BY-4.0
 Start with the repository `README.md`. For a working session, read `lessons.md` (binding rules), then `HANDOFF.md`.
 What is proved is in `STATUS.md` (derived from evidence); each statement's mathematics is in `statements.md`.
 
+## Where to start
+
+| You want to | Read |
+|---|---|
+| use a theorem in your own Lean project | `which-theorem.md`, then `cookbook.md` and `downstream.md` |
+| know exactly what a statement says | `statements.md` (prose and modelling choices), then the Lean text in `OscInt/Statements/` |
+| judge how far to trust a result | `STATUS.md` (evidence per statement), then "Known caveats" in the repository `README.md` |
+| know what is classical and what was found elsewhere | `prior_art.md`, `references.bib` |
+| see where the estimates apply | `applications.md` |
+| re-check everything yourself | "How it is checked" in the repository `README.md`; `toolchain.md` |
+| add a statement or change a proof | `CONTRIBUTING.md`, `lessons.md` (binding rules), `policy.md` |
+| continue a working session | `lessons.md`, then `HANDOFF.md` |
+
 ## Labels used throughout
 
 The exact text and status of each label are in `statements.md` and `STATUS.md`.

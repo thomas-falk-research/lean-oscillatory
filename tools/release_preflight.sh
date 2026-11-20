@@ -12,7 +12,9 @@
 # - the version is X.Y.Z; lakefile.toml, CITATION.cff, .zenodo.json and codemeta.json carry it; CHANGELOG.md has a
 #   `## vX.Y.Z` section; docs/release-notes/vX.Y.Z.md exists, has exactly one table row each for stamps/statements.json
 #   and tools/oscint_check.py with their SHA-256 in this tree, and every `--expect-sha256` in it is the statements.json
-#   hash;
+#   hash; the release body can be cut from the notes as tools/publish_release.sh does after the replay: a
+#   `## Publishing` heading, before it a paragraph starting "A minor/patch/major release", and a
+#   `## Statement changes` heading between the two;
 # - the dates agree: CITATION.cff `date-released`, codemeta.json `datePublished` and the CHANGELOG heading
 #   `## vX.Y.Z — YYYY-MM-DD`;
 # - every `rev = "v…"` in the release notes is this release's tag;
@@ -128,7 +130,7 @@ PY
 
 # check ROOT VERSION PREV_VERSION PREV_STATEMENTS
 check() {
-  local root=$1 v=$2 pv=$3 psj=$4 bad=0 tag notes f h rows n sj e
+  local root=$1 v=$2 pv=$3 psj=$4 bad=0 tag notes f h rows n sj e part
   say() { echo "preflight: $*"; bad=1; }
   echo "$v" | grep -qxE '[0-9]+\.[0-9]+\.[0-9]+' || { say "version '$v' is not X.Y.Z"; return 1; }
   tag="v$v"; notes="$root/docs/release-notes/$tag.md"
@@ -150,6 +152,18 @@ check() {
   while read -r e; do
     [ -z "$e" ] || [ "$e" = "$sj" ] || say "docs/release-notes/$tag.md uses --expect-sha256 $e; it must be $sj"
   done < <(grep -oE -- '--expect-sha256[[:space:]]+[0-9a-f]+' "$notes" | awk '{print $2}')
+  # the release body: the same three conditions as body() in tools/publish_release.sh, which runs only after the
+  # replay (for v0.7.0 a missing section was found there, an hour and a half into the run)
+  if ! grep -q '^## Publishing' "$notes"; then
+    say "docs/release-notes/$tag.md has no '## Publishing' section (tools/publish_release.sh cuts the release body there)"
+  else
+    part=$(awk '/^## Publishing/ { exit } /^A (minor|patch|major) release/ { on = 1 } on' "$notes")
+    if [ -z "$part" ]; then
+      say "docs/release-notes/$tag.md has no paragraph starting 'A minor/patch/major release' before '## Publishing'"
+    elif ! grep -q '^## Statement changes' <<<"$part"; then
+      say "docs/release-notes/$tag.md: the release body would have no '## Statement changes' section (it must lie between the 'A … release' paragraph and '## Publishing')"
+    fi
+  fi
   policy "$root" "$v" "$pv" "$psj" || bad=1
   [ "$bad" -eq 0 ] && echo "preflight: $tag ready (versions, dates, CHANGELOG, notes, pins and statement changes agree with this tree and v$pv)"
   return "$bad"
@@ -195,11 +209,13 @@ self_test() {
       "$v" "$pv" > "$t/r/CHANGELOG.md"
     local a b; a=$(sha256sum "$t/r/stamps/statements.json" | cut -d' ' -f1); b=$(sha256sum "$t/r/tools/oscint_check.py" | cut -d' ' -f1)
     # shellcheck disable=SC2016  # the backticks are Markdown, not command substitution
-    printf '| `stamps/statements.json` | `%s` |\n| `tools/oscint_check.py` | `%s` |\n--expect-sha256 %s\nrev = "v%s"\n\n## Statement changes\n\nNone.\n' \
+    printf '| `stamps/statements.json` | `%s` |\n| `tools/oscint_check.py` | `%s` |\n--expect-sha256 %s\nrev = "v%s"\n\nA minor release. Text.\n\n## Statement changes\n\nNone.\n' \
       "$a" "$b" "$a" "$v" > "$t/r/docs/release-notes/v$v.md"
   }
-  want() {  # name, expected exit status[, previous version]
-    local got; check "$t/r" "$v" "${3-$pv}" "$t/prev.json" >/dev/null 2>&1; got=$?
+  want() {  # name, expected exit status[, previous version]; the notes get their last section here unless NOPUB is set
+    local got n="$t/r/docs/release-notes/v$v.md"
+    if [ -f "$n" ] && [ -z "${NOPUB-}" ] && ! grep -q '^## Publishing' "$n"; then printf '\n## Publishing\n\nSteps.\n' >> "$n"; fi
+    check "$t/r" "$v" "${3-$pv}" "$t/prev.json" >/dev/null 2>&1; got=$?
     if [ "$got" -ne "$2" ]; then echo "release_preflight self-test: FAIL: $1 (exit $got, want $2)"; rc=1; fi
   }
   # a previous release in which the first entry's FIELD (default proved_by) was null
@@ -224,6 +240,10 @@ json.dump(d, open(sys.argv[1], "w"))' "$t/prev.json" "${1:-proved_by}"
   mk; local row; row=$(head -1 "$t/r/docs/release-notes/v$v.md"); echo "$row" >> "$t/r/docs/release-notes/v$v.md"
   want "duplicate row" 1
   mk; rm "$t/r/docs/release-notes/v$v.md"; want "missing notes" 1
+  mk; NOPUB=1 want "notes without '## Publishing'" 1
+  mk; sed -i '/^A minor release/d' "$t/r/docs/release-notes/v$v.md"; want "notes without the 'A … release' paragraph" 1
+  mk; sed -i '/^A minor release/d' "$t/r/docs/release-notes/v$v.md"; printf '\nA minor release. Text.\n' >> "$t/r/docs/release-notes/v$v.md"
+  want "statement changes outside the release body" 1
   mk; sed -i 's/2026-01-02/2026-01-03/' "$t/r/CITATION.cff"; want "dates disagree" 1
   mk; sed -i "s/^## v$v — 2026-01-02/## v$v/" "$t/r/CHANGELOG.md"; want "CHANGELOG date missing" 1
   mk; echo "rev = \"v$pv\"" >> "$t/r/docs/release-notes/v$v.md"; want "stale rev in notes" 1
@@ -256,7 +276,7 @@ json.dump(d, open(sys.argv[1], "w"))' "$t/prev.json" "${1:-proved_by}"
   [ "$(previous "$t/tags" 1.0.0)" = 0.10.1 ] || { echo "release_preflight self-test: FAIL: previous below 1.0.0"; rc=1; }
   [ "$(previous "$t/tags" 0.10.0)" = 0.9.0 ] || { echo "release_preflight self-test: FAIL: previous below 0.10.0"; rc=1; }
   [ -z "$(previous "$t/tags" 0.9.0)" ] || { echo "release_preflight self-test: FAIL: nothing below 0.9.0"; rc=1; }
-  [ "$rc" -eq 0 ] && echo "release_preflight self-test: PASS (28 planted defects detected, 4 clean copies accepted, 3 previous-tag checks)"
+  [ "$rc" -eq 0 ] && echo "release_preflight self-test: PASS (31 planted defects detected, 4 clean copies accepted, 3 previous-tag checks)"
   return "$rc"
 }
 
