@@ -258,3 +258,25 @@ Names read by `#check` at the pin on 2026-11-20 (they exist with the shapes the 
 Interfaces checked in floating point before parts are assigned: `numerics/review/spl_blueprint_interface_checks.py`,
 record `numerics/results-spl-blueprint-interface-checks-2026-11-20.txt` (each proposition on grids or on test
 amplitudes, P-bump also for a second kernel; not a registered test).
+
+## 11. Revision after the route referee (2026-11-20; `review/2026-11-20-SPL-route-referee-answers.md`)
+
+No FATAL and no MAJOR finding; no proposition of the blueprint was found false. Changes:
+
+- The blueprint has seven propositions: **P-tail** (`SplFresnelTailFacts`: some `L′` has `|F(x) − L′| ≤ 2/x` for
+  `x > 0`) and **P-value** (`SplFresnelValueFacts`: every such `L′` equals the closed form `L`) were added, so that
+  the existence of the limit and its value are two parts. P-fresnel follows from them with `F′ = e` and the
+  oddness of `F`.
+- Order of the parts (what each may assume): P-tail and P-value, nothing; P-fresnel, P-tail and P-value; P-bound,
+  P-fresnel (oddness only); P-kernel, P-fresnel and P-bound; P-line, P-kernel; P-bump, nothing.
+- Route (a) of section 10 for the value of the limit (Lemma 4 through Proposition 3) is withdrawn; the value is
+  obtained by Abel summation.
+- P-tail without Cauchy's criterion: for `x > 0`, `e(v)/(iv²)` is integrable on `(x, ∞)`, so
+  `F(y) = F(x) + e(y)/(iy) − e(x)/(ix) + ∫_x^y e(v)/(iv²) dv` has a limit as `y → ∞`, and
+  `L′ − F(x) = −e(x)/(ix) + ∫_x^∞ e(v)/(iv²) dv` has modulus at most `1/x + 1/x`.
+- P-value: in the hypothesis `F` is bounded on `[0, ∞)` (by 1 on `[0, 1]`, by `|L′| + 2` beyond); the integration
+  by parts on the half-line can use Mathlib's `MeasureTheory.integral_Ioi_mul_deriv_eq_deriv_mul`.
+- P-line: the left half-line by the reflection only; the primitives `E₂` and `κ₊` are unbounded on the negative
+  half-line.
+- P-bound, P-kernel and P-line start from Lean proofs that the route referee wrote in its scratch directory
+  (compiled by the lead; not in the repository). A fresh agent rewrites them into part files.

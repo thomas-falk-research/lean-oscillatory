@@ -10,7 +10,8 @@ import OscInt.Statements.StationaryLeading
 /-! # Blueprint for batch SPL (SPL-I, SPL-S, SPL-K, SPL-A): intermediate propositions and three definitions
 
 Route: `docs/proof-SPL.md` (second version, with its addendum and the section "Parts as planned for Lean").
-Five propositions. `fresnelE u = e^{iu²/2}`; `splPrimOne = F − L` and `splPrimTwo = u (F − L) + i e` are the first two
+Seven propositions (P-tail and P-value were added after the route referee: together with `F′ = e` and the oddness
+of `F` they give P-fresnel). `fresnelE u = e^{iu²/2}`; `splPrimOne = F − L` and `splPrimTwo = u (F − L) + i e` are the first two
 primitives of `e` used in the three integrations by parts (`E₁`, `E₂` of the route; the third primitive is `iκ₊`).
 No frozen statement mentions these definitions. -/
 
@@ -27,6 +28,15 @@ noncomputable def splPrimOne (u : ℝ) : ℂ := fresnelPrim u - fresnelLimit
 
 /-- `E₂(u) = u (F(u) − L) + i e(u)`, a primitive of `E₁`. -/
 noncomputable def splPrimTwo (u : ℝ) : ℂ := (u : ℂ) * (fresnelPrim u - fresnelLimit) + Complex.I * fresnelE u
+
+/-- **P-tail** The Fresnel primitive has a limit at `+∞`, approached at rate `2/x`: some `L′` has
+`|F(x) − L′| ≤ 2/x` for every `x > 0`. -/
+def SplFresnelTailFacts : Prop := ∃ L' : ℂ, ∀ x : ℝ, 0 < x → ‖fresnelPrim x - L'‖ ≤ 2 / x
+
+/-- **P-value** The value of the Fresnel integral: a number approached by `F` at rate `2/x` is the closed form
+`L = √π (1 + i)/2`. -/
+def SplFresnelValueFacts : Prop :=
+  ∀ L' : ℂ, (∀ x : ℝ, 0 < x → ‖fresnelPrim x - L'‖ ≤ 2 / x) → L' = fresnelLimit
 
 /-- **P-fresnel** The Fresnel primitive: `F′ = e` on the line, `F` is odd, and `|F(x) − L| ≤ 2/x` for `x > 0`, where
 `L = √π (1 + i)/2` is the closed form `fresnelLimit` (so `F(x) → L`: the value of the Fresnel integral). -/
