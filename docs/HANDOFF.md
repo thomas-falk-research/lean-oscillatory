@@ -11,11 +11,34 @@ below it, and every rule is binding.
 
 ## Resume here (session 13, 2026-11-16; kept current at every checkpoint)
 
+- **State at the wrap-up of 2026-11-20, about 12:30Z (read this first).** Everything is pushed; this branch is
+  `claude/batch-sp-leading-term`. (1) **Release v0.7.0:** the owner's practice run of `release-candidate` failed at
+  the release body; fixed by pull request 22, merged (`main` at 5d85acb). Owner's next steps: dispatch
+  `release-candidate` on `main` with `0.7.0`, then `tools/publish_release.sh` as the run prints (the notes'
+  "Publishing" section); the metadata date is 2026-11-20, to be changed first if the release is published on a
+  later day. (2) **Batch SPL** (four statements) is machine-checked as stated on this branch and not released
+  (below). Owner decision (`docs/decisions/2026-11-20-batch-two-saddle.md`): after v0.7.0 and its pins pull
+  request, merge `main` into this branch (never rebase), expect conflicts in `README.md` (restructured on `main`)
+  and at the end of the session log, re-apply the SPL lines to the new README layout, then this branch goes into
+  `main` by a merge commit, never squashed; v0.8.0 comes later. (3) **Batch TSD** (the two-saddle steepest-descent
+  lemma, Lemma E.1 of hexagon:2611.00174v1) is open; no statement is drafted. Done: opening note
+  (`docs/design/batch-TSD-opening.md`); step referee: the lemma is true as printed, every constant re-derived,
+  no FATAL, no MAJOR; prior-art reader; a formal core in two parts (`review/2026-11-20-TSD-step-referee-answers.md`).
+  **A launch with no recorded finish is dead:** the check of the external report on the lemma (section 3 of that
+  file) was running at the wrap-up; if no later row of the session log records its result, run it again (the
+  owner has the report's two files; SHA-256 values in that section). **Exact next step for TSD:** the prose of
+  the statements in `docs/statements.md`, as the last section of that review file says; then a registered numeric
+  test, Lean statements with sanity layer and plants, freeze, blind review, proofs. (4) Kept from scratch:
+  `numerics/results-spl-n-certificates-from-checker-2026-11-20.txt` (certificates for a later SPL-N). Lost with
+  the scratch if the container is reclaimed: the briefs (hashes in the session log), the referees' scripts, the
+  query log of the prior-art reader, the extracted external bundles. (5) Anchors still to run, a day or more
+  after each stamp: 9ae784e8, 1aa26b0f, 5491b10b, 3e07630d, 3c69b821. (6) Lesson 68 before generating any text
+  for an agent through a shell.
 - **Two branches (owner decision 2026-11-19, `docs/decisions/2026-11-19-next-batch-spl.md`).** The release
   candidate v0.7.0 is the branch `claude/dreamy-ptolemy-7hs5wb` at 66a88bc (pull request 19) and is not to be
   changed. This branch, `claude/batch-sp-leading-term`, starts from 66a88bc and carries the next batch, **SPL: the
-  one-variable stationary-phase leading term with an explicit remainder**; no pull request; rebase onto `main`
-  after v0.7.0 is published. State of the batch: the session log's last rows. Order of work: prior-art gate,
+  one-variable stationary-phase leading term with an explicit remainder**; no pull request; after v0.7.0 is published, merge `main` into it
+  (never rebase: stamps name its commits; the first bullet above). State of the batch: the session log's last rows. Order of work: prior-art gate,
   registered numerics, proof plan with a plan referee, statements and freeze, blind review, proofs
   (`CONTRIBUTING.md`); no Lean proof text before the answers to the blind review are stamped.
 - **Batch SPL, state on 2026-11-19 (nothing is running):** done: opening note
