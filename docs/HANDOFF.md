@@ -11,34 +11,45 @@ below it, and every rule is binding.
 
 ## Resume here (session 13, 2026-11-16; kept current at every checkpoint)
 
-- **State at the wrap-up of 2026-11-20, about 12:30Z (read this first).** Everything is pushed; this branch is
-  `claude/batch-sp-leading-term`. (1) **Release v0.7.0:** the owner's practice run of `release-candidate` failed at
-  the release body; fixed by pull request 22, merged (`main` at 5d85acb). **v0.7.0 was published by the owner on 2026-11-20** (tag
-  `v0.7.0` at 5d85acb; release-candidate run 44722915520). Owner's remaining steps: merge the pull request
-  `release/v0.7.0-pins` that `post-release` opens, and record the Zenodo version DOI when it is minted. (2) **Batch SPL** (four statements) is machine-checked as stated on this branch and not released
-  (below). Owner decision (`docs/decisions/2026-11-20-batch-two-saddle.md`): after v0.7.0 and its pins pull
-  request, merge `main` into this branch (never rebase), expect conflicts in `README.md` (restructured on `main`)
-  and at the end of the session log, re-apply the SPL lines to the new README layout, then this branch goes into
-  `main` by a merge commit, never squashed; v0.8.0 comes later. (3) **Batch TSD** (the two-saddle steepest-descent
-  lemma, Lemma E.1 of hexagon:2611.00174v1) is open; no statement is drafted. Done: opening note
-  (`docs/design/batch-TSD-opening.md`); step referee: the lemma is true as printed, every constant re-derived,
-  no FATAL, no MAJOR; prior-art reader; a formal core in two parts (`review/2026-11-20-TSD-step-referee-answers.md`).
-  The external report on the lemma (another model family, run by the owner) was checked afterwards: its theorem
-  about two analytic functions is true as stated, and section 4 of that file has the statement to freeze. **Exact next step for TSD:** the prose of
-  the statements in `docs/statements.md`, as the last section of that review file says; then a registered numeric
-  test, Lean statements with sanity layer and plants, freeze, blind review, proofs. (4) Kept from scratch:
-  `numerics/results-spl-n-certificates-from-checker-2026-11-20.txt` (certificates for a later SPL-N). Lost with
-  the scratch if the container is reclaimed: the briefs (hashes in the session log), the referees' scripts, the
-  query log of the prior-art reader, the extracted external bundles. (5) Anchors still to run, a day or more
-  after each stamp: 9ae784e8, 1aa26b0f, 5491b10b, 3e07630d, 3c69b821. (6) Lesson 68 before generating any text
-  for an agent through a shell. (8) Six external sessions (another model family, run by the owner) were asked for on
-  2026-11-20; the session log's row of about 13:45 lists them with the hashes of their prompts. When the owner
-  brings reports: isolate, hash, check by a fresh agent, answer under `review/`, and only then use. Their aim,
-  by owner decision in conversation: find a result that is new, not only a formalisation (explicit zeta bound
-  with the sharp constants; sharp third-derivative constant; stationary-phase constants; lattice decay), and
-  support batch TSD (Hankel bound; audit of the lemma in use). (7) Open after the release: `tools/publish_release.sh` needs GNU `find` and
-  `sha256sum` (it stopped on the owner's macOS at the asset check, failing closed); make it portable and name its
-  requirements in the release notes' publishing section.
+- **START HERE (state at the end of session 13, 2026-11-20; everything is pushed; nothing is running).**
+  1. **Release.** v0.7.0 is published (annotated tag at 5d85acb), and its pins pull request is merged: `main` is at
+     d1c05fd. Still the owner's: the Zenodo version DOI into `CITATION.cff` and the README when it is minted.
+  2. **This branch**, `claude/batch-sp-leading-term` (no pull request yet), holds batch SPL (four statements,
+     machine-checked as stated, not released) and the opening of batch TSD. **First action of the next session:**
+     merge `main` into it. Never rebase and never squash: three stamps name its commits (5491b10, 3e07630,
+     3c69b82). A trial merge on 2026-11-20 conflicts in exactly two files: `README.md` (restructured on `main`,
+     pins moved to v0.7.0; re-apply this branch's SPL lines to the new layout: 90 statements, the four of SPL on
+     the development branch only) and the end of `docs/progress/2026-11-16-session13-log.md` (keep both sides'
+     rows, in time order). `CHANGELOG.md` merges by itself. Gate with `make quick`, then ask the owner for a pull
+     request into `main` (merge commit; owner decision `docs/decisions/2026-11-20-batch-two-saddle.md`). v0.8.0
+     comes later.
+  3. **External reports are waiting with the owner** (sessions of another model family run from six prompts of
+     2026-11-20; the session log's row of about 13:45 has the prompts' hashes and aims: A explicit zeta bound with
+     the sharp constants; B stationary-phase constants; C lattice decay; D sharp third-derivative constant; E
+     Hankel bound; F audit of the two-saddle lemma in use). For each report: copy to an isolated directory, hash,
+     list an archive before extracting, read scripts before running them, have a fresh agent check it against a
+     brief with a logged hash, answer under `review/`, and only then use anything. A report's "verdict" is a
+     claim until checked. The owner's aim (in conversation, 2026-11-20): a result that is new, not only a
+     formalisation; candidates in the lead's order of promise: A, D, B, then C. Any claim of novelty goes through
+     the prior-art gate and is worded "not found in the literature searched".
+  4. **Batch TSD** (Lemma E.1 of hexagon:2611.00174v1, the two-saddle steepest-descent lemma): no statement is
+     drafted. Three readings agree that the lemma is true as printed, and the statement to freeze is written out
+     in section 4 of `review/2026-11-20-TSD-step-referee-answers.md`. **Next step:** the prose in
+     `docs/statements.md` (a core statement on two analytic functions, whole-line symmetric form; the printed
+     lemma as a corollary with the Hankel function as a parameter and the printed constants), then a registered
+     numeric test, the Lean statements with a sanity layer and plants, freeze, blind review, and only then proofs
+     (blueprint: the estimate part and the deformation part of section 1 there; Mathlib has Cauchy on rectangles
+     and primitives on convex sets). Reports E and F bear on this batch.
+  5. **Smaller open items.** `tools/publish_release.sh` needs GNU `find` and `sha256sum` (it stopped on the
+     owner's macOS; make it portable and name its requirements in the notes' publishing section). The SPL sources
+     are not in `docs/references.bib`. A "replayed" field in the registry is the owner's call. Anchors to run, a
+     day or more after each stamp: 9ae784e8, 1aa26b0f, 5491b10b, 3e07630d, 3c69b821. Certificates for a later
+     SPL-N: `numerics/results-spl-n-certificates-from-checker-2026-11-20.txt`.
+  6. **Working rules learned in session 13** (lessons 62 and 68): push after every unit and record a launch before
+     making it, because a usage limit stops everything at once; while agents write in the tree, run the gate on a
+     clean checkout; every Lean run of every agent, referees included, goes through one lock; text for an agent is
+     never passed through an unquoted shell here-document. The lead's scratch does not survive the container:
+     briefs, referees' scripts and extracted bundles of session 13 are gone unless the owner kept the bundles.
 - **Two branches (owner decision 2026-11-19, `docs/decisions/2026-11-19-next-batch-spl.md`).** The release
   candidate v0.7.0 is the branch `claude/dreamy-ptolemy-7hs5wb` at 66a88bc (pull request 19) and is not to be
   changed. This branch, `claude/batch-sp-leading-term`, starts from 66a88bc and carries the next batch, **SPL: the
