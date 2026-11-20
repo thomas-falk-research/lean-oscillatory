@@ -1861,3 +1861,17 @@ Open points, to be settled before its Lean text is drafted: whether the printed 
 remainder bound are used three times: no zero of the amplitude, integrability, and the printed remark on the
 amplitude); whether `H` stays a parameter. What TSD-L would not say in any form: that the preprint's own
 function satisfies (SD1) to (SD4), or anything about the preprint's theorems.
+
+Note of 2026-11-20, after the checks of two external reports (`review/2026-11-20-external-reports-answers.md`,
+sections 2 and 4). (1) The factorisation above must be read with the prefactor `√(2/π) z^{−1/2}`, principal
+power; written as the principal root of the quotient `2/(πz)` it has the other sign on the negative real axis.
+On the open upper half-plane, where TSD-L uses it, the two agree. (2) Hypotheses that a statement of the printed
+lemma needs: bounds `M`, `M′` and the absence of zeros for the whole amplitude, the factor with `H` included;
+evenness of `F`; the two slope inequalities; the symmetry of `𝓘` on the strip; integrability on the edge; `C₂`
+and `C₃` as inequalities. Printed hypotheses that are idle: (SD3), (SD2)(d), (SD2)(e), `c′ ≥ 39`, the lower
+bound on `c′F(0)`. Printed hypotheses that cannot be used as printed: "real on ℝ ∪ iℝ" (the preprint's own
+function has poles on the imaginary axis; the condition is also redundant), "independent of `c`", and the edge
+representation, which only names the integral. (3) A bound for the remainder of the Hankel function of order
+zero that is stronger than the printed one, `|ε_H(z)| ≤ 1/(8|z|)` on the closed upper half-plane, with bounds
+for two derivatives, has a proof on paper that was checked; the bound itself is in print (Nemes 2017). Whether
+`H` stays a parameter is not decided.
