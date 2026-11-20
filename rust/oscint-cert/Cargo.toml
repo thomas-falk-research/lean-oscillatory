@@ -20,7 +20,7 @@ name = "oscint_cert"
 path = "src/lib.rs"
 
 [dependencies]
-num-bigint = "=0.4.8"
+num-bigint = "=0.5.1"
 num-integer = "=0.1.47"
 num-rational = "=0.4.2"
 num-traits = "=0.2.19"
