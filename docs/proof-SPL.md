@@ -205,3 +205,56 @@ Not refereed in this form; nothing above is changed by it.
   48-term series; the checker's own run of the same grid; smaller designs: with this page's bounds, 10 cells and
   16 series terms for 73/100, 6 cells and 14 terms for 3/4, by a second-order test on each cell). None has been
   run in a proof assistant. Section 5's decision stands: SPL-N is the next statement, after a prototype.
+
+## 10. Parts as planned for Lean (2026-11-20)
+
+Written after the stamp of the answers to the blind reviews (`stamps/20261120T011816Z-3e07630da3a5`) and before
+the route referee. Blueprint: `Blueprint/StationaryLeading.lean`, five propositions and three definitions
+(`fresnelE = e`, `splPrimOne = E₁`, `splPrimTwo = E₂`). Where the parts differ from sections 1 to 6:
+
+- **P-fresnel** (`SplFresnelFacts`): `F′ = e` on the line, `F` odd, and `|F(x) − L| ≤ 2/x` for `x > 0` with `L` the
+  closed form `√π (1 + i)/2`. It merges Lemma 1 and Lemma 4, because the frozen kernel is defined with the closed
+  form and every later part then works with the frozen definitions. Two routes to the value of the limit `L′` of
+  `F`. (a) Lemma 4 as written; it needs Proposition 3 for a kernel with an abstract limit first. (b) Abel
+  summation, preferred for Lean: for `ε > 0`, `∫₀^∞ e^{−εv²/2} e(v) dv = ½ (2π/(ε − i))^{1/2}` (Mathlib
+  `integral_gaussian_complex_Ioi` with `b = (ε − i)/2`), which tends to `½ (2πi)^{1/2} = L` as `ε → 0+` (the
+  principal power is continuous at `2πi`); one integration by parts (`F` is bounded, `F(0) = 0`) gives
+  `∫₀^∞ e^{−εv²/2} e(v) dv = ∫₀^∞ εv e^{−εv²/2} F(v) dv`, and since `∫₀^∞ εv e^{−εv²/2} dv = 1` and
+  `|F(v) − L′| ≤ 2/v`, this differs from `L′` by at most `∫₀^∞ 2ε e^{−εv²/2} dv = √(2πε)`. Hence `L′ = L`. The part may
+  take either route.
+- **P-bound** (`SplFresnelBoundFacts`): `|F| ≤ 7/4`, as in section 5, from `OscInt.API.secondDerivSharp` and
+  `OscInt.API.vdc2ProfileBound`.
+- **P-kernel** (`SplKernelFacts`): the three derivatives of Lemma 2 on the line; `|E₁| ≤ 7/4 + |L| ≤ 4` and
+  `|E₂| ≤ 2 + 1` on `[0, ∞)`; κ odd and continuous; `|κ| ≤ 7/8` through Lemma 2′ and P-bound. Lemma 1′ and the
+  bounds `|κ₊′| ≤ 1`, `|κ₊ − L/2| ≤ 4/u³` of Lemma 2 are not used by any part of this freeze.
+- **P-line** (`SplLineFacts`): Propositions 3 and 3′, `∫ g e = 2L g(0) − i ∫ g‴ κ`.
+- **P-bump** (`SplBumpFacts`): section 6 for any continuous odd kernel `k` with `|k| ≤ M` in place of κ, with these
+  changes. Continuity of `k` at `±τ` replaces the Lipschitz constant: choose `w ≤ τ/2` with
+  `|k(±τ + s) − k(±τ)| ≤ δ := ε/2` for `|s| ≤ w`, and `T ≥ 2τ` with `2Mτ/T ≤ ε/2`. Only `‖g‴‖₁ ≤ 1 + τ/T` is used
+  (triangle inequality; disjointness of the bumps serves only to see `g‴(τ) ≠ 0`, hence `g ≠ 0`). The two terms at
+  `±T` are bounded by `M`: `|∫ g‴ k| ≥ |k(τ)| − δ − Mτ/T`, and `(|k(τ)| − ε)(1 + τ/T) ≤ |k(τ)| − ε + Mτ/T`, so the claim
+  follows from `δ + 2Mτ/T ≤ ε` (if `|k(τ)| − ε < 0` there is nothing to prove). For `τ = 0`: `k(0) = 0`, and any
+  smooth compactly supported function that is not identically zero serves. Compact support of the triple
+  primitive: the moments of `g‴` of orders 0, 1, 2 vanish, shown by three integrations by parts on a bounded
+  interval or by parity.
+- **Assembly** (the lead's, compiled before any part is proved): SPL-I from P-line by the substitution
+  `v = √λ u` (Corollary 3″) and `√(2π) e^{iπ/4} = 2L`; SPL-S from SPL-I by the first-moment argument of section 4
+  (if `‖g‴‖₁ > 0` and `|κ(√λ t)| ‖g‴‖₁ < ∫ |g‴| |κ(√λ ·)|` for every `t`, integrate against `|g‴|` for a
+  contradiction), with κ continuous, bounded and odd from P-kernel; SPL-K from SPL-I and `|κ| ≤ 7/8`; SPL-A from
+  SPL-I at `λ = 1` and P-bump with `k = κ`.
+
+Names read by `#check` at the pin on 2026-11-20 (they exist with the shapes the route assumes):
+`integral_gaussian_complex`, `integral_gaussian_complex_Ioi`, `intervalIntegral.integral_mul_deriv_eq_deriv_mul`
+(derivatives by `HasDerivAt` on the interval, both derivatives interval integrable; no continuity asked),
+`tendsto_zero_of_hasDerivAt_of_integrableOn_Ioi` and its `Iic` twin (root namespace),
+`MeasureTheory.intervalIntegral_tendsto_integral_Ioi`, `MeasureTheory.intervalIntegral_tendsto_integral`,
+`MeasureTheory.integral_Ioi_of_hasDerivAt_of_tendsto`, `MeasureTheory.Measure.integral_comp_mul_left`,
+`MeasureTheory.integral_neg_eq_self`, `MeasureTheory.integral_sub_right_eq_self`,
+`MeasureTheory.integral_eq_zero_iff_of_nonneg`, `MeasureTheory.Integrable.comp_mul_left'`,
+`ContDiffBump.normed` with `integral_normed`, `normed_neg`, `support_normed_eq`, `contDiff_normed`, `nonneg_normed`,
+`contDiff_infty_iff_deriv`, `intervalIntegral.integral_hasDerivAt_right`. Section 8's
+`MeasureTheory.exists_integral_le` exists and asks for a probability measure; the assembly argues directly instead.
+
+Interfaces checked in floating point before parts are assigned: `numerics/review/spl_blueprint_interface_checks.py`,
+record `numerics/results-spl-blueprint-interface-checks-2026-11-20.txt` (each proposition on grids or on test
+amplitudes, P-bump also for a second kernel; not a registered test).
