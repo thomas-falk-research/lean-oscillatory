@@ -178,3 +178,76 @@ recorded outputs. No FATAL finding.
 
 Not checked: the report's local estimates for its counterexample to a homotopy shortcut beyond its constants;
 anything in Lean (Mathlib names were found by search, nothing compiled).
+
+## 8. Certificates for the supremum of the kernel (a seventh session; for the statement SPL-N)
+
+Report: a bundle of 379 files (archive SHA-256 d11f6929…f848cee1, equal to the value it states). Its claims:
+real-variable proofs, with no contour, of `|κ − L/2| ≤ 1/τ³`, `|κ′| ≤ min(1, 1/τ²)`, `|κ″| ≤ min(√(π/2), 1/τ)`, each
+coefficient best possible; a second-order certificate method; certificates for `sup |κ| ≤ 3/4` (3 cells),
+`≤ 73/100` (4 cells, 10 series terms), `≤ 29/40`, `≤ 657/910`, the last being the least rational with denominator
+at most 1000 that bounds the supremum; and one correction to the lead's brief (the power series quoted there is
+valid for `x ≥ 0` only; on the line its quadratic term is `(iL/2) x|x|`), which is right.
+
+Checked by an agent of the lead's family (brief SHA-256 a88bc4a9…644e39de): all four claims confirmed. The proofs
+were re-derived step by step and stay inside integration by parts on bounded intervals, absolutely convergent
+limits, dominated convergence, Tonelli and the Gaussian integral; the verifier was read line by line and passes
+on the four certificates; the checker's own exact-arithmetic code agrees on all four and rechecked all 16,304
+exclusion bins of the minimality proofs. No FATAL or MAJOR finding.
+
+| # | Finding (lead's words) | Answer |
+|---|---|---|
+| 1 | The bundle's certificates are fragile: their smallest margins are 1.3 · 10⁻⁵, 1.2 · 10⁻⁶, 2.4 · 10⁻⁵ and 9.7 · 10⁻¹¹, and all four fail if its correlated Taylor remainder is replaced by the simpler sum of two remainders, or if the weaker bounds `\|κ″\| ≤ 2/τ` and tail constant 4 are used. | Accepted: they are not what a Lean proof should follow. The checker built four sturdier certificates with the simpler remainder, margins of about 10⁻³ and only `1.7724 < √π < 1.7725`: two for the weak bounds (5 cells for 3/4, 7 cells for 73/100) and two for the sharp bounds (3 and 4 cells). Their data are in the lead's scratch (SHA-256 b6a55f83…c067f55d) and will be committed with the statement SPL-N when it is prepared. |
+| 2 | The claimed minimal numbers of series terms hold only at the minimal number of cells (a certificate for 29/40 with 5 cells and 14 terms exists). | Noted; no claim of this repository depends on those minima. |
+| 3 | Its verifier's routine for the term minima checks less than its proof says, although the data satisfy the missing conditions. | Noted. |
+
+Consequence for the plan: SPL-N is to be stated with 73/100 (or 3/4), proved through one of the checker's
+certificates; which one depends on how the limit of the Fresnel primitive is proved in Lean.
+
+## 9. Sharp constants for every order of the expansion (an eighth session; a research attempt)
+
+Report: a bundle of 184 files (archive SHA-256 262d8939…ece5b20). Its claims: for every `N ≥ 1` an exact identity
+for the remainder after `N` terms with a kernel `κ_N` defined by absolutely convergent real integrals, and the
+best constant `K_N = sup |κ_N|` for the norm `‖g^{(2N+1)}‖₁`; a positive product formula for the moduli of the
+kernels; the supremum is attained at the first positive critical point, for every `N`; `K_1 … K_8` with exact
+certificates; an asymptotic law `K_N = (√(2π)/(2^{N+1} N!)) (ρ + β/N + O(N⁻²))` with explicit `ρ = 1.0694…`,
+`β = 0.0939…`; the dual constants for the norm `‖g^{(2N)}‖_∞`.
+
+Checked by an agent of the lead's family (brief SHA-256 5c3bdf31…38f12c5): seven claims re-derived, the dual
+constants confirmed numerically only. The identity was tested on 27 cases for `N = 1, 2, 3`; the product formula
+to 34 digits; "first maximum is global" for `N ≤ 10` and for `N = 20, 50, 100, 300` (later local maxima reach at
+most 93.5 % of the first); the asymptotic law by extrapolation up to `N = 12800`; the eight constants by the
+checker's own 60-digit computation. For `N = 1` its kernel is the kernel of this batch. No FATAL or MAJOR finding.
+
+What matters for this repository: (i) the identity for general `N` is the computation of `N = 1` repeated by
+induction, `R_N = R_{N−1} − 2 B_{N−1} g^{(2N−2)}(0)`, with no product formula and no geometry; (ii) the certificates
+for `N ≤ 8` do not depend on the product formula, contrary to the bundle's own dependency list; (iii) the checker
+wrote the N-term statement in a form that could be frozen. Not checked: the bundle's literature log, and so any
+question of novelty; the sharpness construction for the dual constants. Nothing of this is claimed as new here.
+
+## 10. Several variables (a ninth session; a research attempt, for the roadmap's two-variable leading term)
+
+Report: a package of 279 files (archive SHA-256 cd99ea12…11d7626a, equal to the value it states). Its claims: for
+a diagonal quadratic form in `n` variables and every `λ > 0`, the remainder after the leading term is at most an
+explicit constant times `λ^{−n/2−1}` times a sum of `n` mixed derivative norms `‖∂_j³ ∏_{k≠j} ∂_k g‖₁`, by applying the
+one-variable results coordinate by coordinate; total order `n + 2` cannot be lowered; for `n = 2` the constant
+`(3/8)(√(π/2) + 7/4)`; a rotation-invariant version; a comparison with the Fourier-side bound and with an `H⁴`
+bound. It says itself that the best constant of the uniform two-variable bound is not determined.
+
+Checked by an agent of the lead's family (brief SHA-256 678887c5…82b7f912): all six claims re-derived; the
+checker's own numerics in two variables (five amplitudes, diagonal, strongly anisotropic and rotated matrices,
+`λ` from 0.001 to 1000) found no violation: largest ratio 0.455 for generic amplitudes, 0.9924 for a near-extremal
+product.
+
+| # | Severity | Finding (lead's words) | Answer |
+|---|---|---|---|
+| 1 | MAJOR (usability, not correctness) | The package's own target for formalisation cannot be frozen as written: its class is an abstract completion, and its constants 3/4 and 7/4 rest on a certificate in Python and on analytic lemmas that this repository does not have. | Accepted. The checker's form is the one to use: `ContDiff ℝ 4` with compact support first; the constants 7/8 (SPL-K) and a bound `J₀ = 11/5` for the Fresnel primitive; symmetric form `(7/16)(√(π/2) + 11/5) λ⁻² (‖g_xxxy‖₁ + ‖g_xyyy‖₁)` for unit moduli. It needs six one-variable lemmas beyond SPL-K, listed in the checker's report (the bound of the full oscillatory integral by `‖f′‖₁`, the trace identity, the negative phase, Fubini on sections). |
+| 2 | MINOR | The proof of the main theorem is a sketch at the exchange of integrals; the checker completed it and says which integrability each step needs. | For the blueprint of that later batch. |
+| 3 | MINOR | The package's checks are mostly arithmetic identities, and its numerics do not exercise the dependence on the eigenvalues. | The claims rest on the proofs, re-derived by the checker, and on the checker's numerics. |
+
+## 11. Where the plan stands after nine sessions
+
+Frozen and blind-reviewed: SPL-I, SPL-S, SPL-K, SPL-A (the proofs are next). Candidates for later freezes, each
+resting on a result that another model family proved on paper and an agent of the lead's family re-derived, none
+machine-checked and none refereed by a human: SPL-N (section 8); a front end for compactly supported amplitudes,
+the negative phase, sharpness for every λ (section 5); the N-term expansion (section 9); a general convex phase
+(sections 3 and 7); the fold with a finite-interval, Airy-free statement (section 6); two variables (section 10).

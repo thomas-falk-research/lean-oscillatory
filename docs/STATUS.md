@@ -117,7 +117,9 @@ on the kernel that has no Lean proof; it cannot see a constant between about 0.3
 of SPL-A (`docs/replay/2026-11-19-SPL-sanity-plants.txt`). The blind pre-proof review by two referees of the
 lead's model family (2026-11-20) gave four verdicts FAITHFUL and no counterexample, with no BLOCKER and no MAJOR
 finding; its MINOR findings are limits of the sanity layer and one missed rule (the statement file was frozen
-without a copyright header; the fixed attribution block was appended afterwards). Nothing is claimed as new mathematics: the identity is Erdélyi's remainder
+without a copyright header; the fixed attribution block was appended afterwards). The answers
+(`review/2026-11-20-SPL-preproof-answers.md`) are stamped: `stamps/20261120T011816Z-3e07630da3a5`, 01:18:24Z; no
+Lean proof of a statement of the batch was in the repository before that stamp. Nothing is claimed as new mathematics: the identity is Erdélyi's remainder
 representation taken on both sides of the stationary point, and a leading term for the same phase is formalised
 elsewhere for Schwartz amplitudes in another norm (`docs/prior_art.md`). No human has read these statements.
 
