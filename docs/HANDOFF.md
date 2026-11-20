@@ -36,10 +36,14 @@ below it, and every rule is binding.
   (`StationaryLeadingFinal.lean` has the four theorems under the challenge names); route referee: no FATAL, no
   MAJOR (`review/2026-11-20-SPL-route-referee-answers.md`); integration checks
   `docs/replay/2026-11-20-SPL-integration-checks.txt`; registry: 90 statements, all with a proving theorem; STATUS
-  rows say "proved in Lean". **Exact next step:** on the frozen integration commit, the full isolated replay
-  (`make verify-all`, about three hours; record under `docs/replay/`) and step 10 of `CONTRIBUTING.md` (two blind
-  post-proof referees and an adversarial referee, fresh contexts, answers under `review/`); only then may the
-  STATUS rows say "machine-checked as stated". While provers write files in the tree, run the gate on a clean
+  rows say "proved in Lean". **Post-proof reviews done 2026-11-20:** FAITHFUL, SOUND, no failing regime; one BLOCKER and other
+  findings against records, none against a statement, all answered
+  (`review/2026-11-20-SPL-post-proof-answers.md`); the conditional and relative plants are closed
+  (`docs/replay/2026-11-20-SPL-plants-closed.txt`). **Exact next step:** stamp the answers (`make stamp` on the
+  clean commit), then the full isolated replay on the resulting commit (`make verify-all`, about three hours;
+  record under `docs/replay/`); only then may the STATUS rows say "machine-checked as stated", with README,
+  `llms.txt` and CHANGELOG following. Open items from the reviews: the SPL sources are not in the bibliography
+  file; a "replayed" field in the registry is the owner's call; a refactoring that frees SPL-I of VC2. While provers write files in the tree, run the gate on a clean
   checkout (a git worktree with the staged change, sharing the Lake build directory and the tools' cargo target directory by symbolic links), or the axiom audit fails
   its count on files not yet imported. Nine external reports and their checks are answered in
   `review/2026-11-19-SPL-external-sessions-answers.md`; section 11 there lists the candidates for later freezes. Release v0.7.0: pull request 19

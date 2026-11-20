@@ -15,14 +15,16 @@ or `proved_by` name. Every release lists its statement changes, even when there 
 ### Statement changes
 
 Batch SPL (`OscInt/Statements/StationaryLeading.lean`, stamp `stamps/20261120T002727Z-5491b10bc8ae`): four new entries,
-proved in Lean on 2026-11-20, post-proof reviews and replay pending (so not yet machine-checked as stated),
+proved in Lean on 2026-11-20, post-proof reviews answered, replay pending (so not yet machine-checked as stated),
 - SPL-I `StationaryLeadingIdentityStatement` (`proved_by` `OscInt.API.stationaryLeadingIdentity`);
 - SPL-S `StationaryLeadingStatement` (`proved_by` `OscInt.API.stationaryLeading`);
 - SPL-K `StationaryLeadingSevenEighthsStatement` (`proved_by` `OscInt.API.stationaryLeadingSevenEighths`);
 - SPL-A `StationaryLeadingAttainedStatement` (`proved_by` `OscInt.API.stationaryLeadingAttained`).
 
-No existing statement's text, commitment or stamp changes. Classical mathematics (the two-sided case of Erdélyi's
-remainder representation); nothing is claimed as new.
+No existing statement's text, commitment or stamp changes. The identity SPL-I is classical in substance (the
+two-sided case of Erdélyi's remainder representation, with one term folded into the kernel); the bounds with this
+kernel (SPL-S, SPL-K) and their sharpness (SPL-A: the supremum of the kernel is the best constant; 7/8 is not sharp)
+were not found in the literature searched (`docs/prior_art.md`); nothing is claimed as new.
 
 ### Added
 

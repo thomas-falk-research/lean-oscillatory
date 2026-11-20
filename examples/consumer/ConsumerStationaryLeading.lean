@@ -11,7 +11,7 @@ import OscInt.API
 # Consumer example: batch SPL (the leading term of a quadratic-phase integral with an explicit remainder)
 
 Only `import OscInt.API` and Mathlib. Unconditional uses of the theorems of batch SPL:
-* `quadratic_phase_leading_term`: for an amplitude `g` with three integrable derivatives and `λ > 0`,
+* `quadratic_phase_leading_term`: for an integrable amplitude `g` with three integrable derivatives and `λ > 0`,
   `|∫ g(u) e^{iλu²/2} du − g(0) √(2π/λ) e^{iπ/4}| ≤ (7/8) ‖g‴‖₁ λ^{−3/2}` (SPL-K, with the remainder written out);
 * `gaussian_at_four`: the same for `g(u) = e^{−u²/2}` at `λ = 4`, where both sides are closed forms.
 -/

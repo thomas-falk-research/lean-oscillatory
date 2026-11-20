@@ -14,7 +14,8 @@ this form it has not been refereed again. Status: a proof on paper, not machine-
 
 Nothing is claimed as new. The identity (T2) below is the two-sided case `ρ = 2, μ = 1, N = 3` of the remainder
 representation of A. Erdélyi (*Asymptotic Expansions*, 1956, section 2.8; read by the lead only in the reproduction
-of Ali Mehmeti and Dewez, arXiv:1412.5789, Theorem 1.3), with the term in `g″(0)` folded into the kernel
+of Ali Mehmeti and Dewez, arXiv:1412.5789, Theorem 1.3; note of 2026-11-20: the lead has since read Erdélyi's
+technical report of 1955, sections 2.8 and 2.9, `docs/prior_art.md`, third addendum), with the term in `g″(0)` folded into the kernel
 (`docs/prior_art.md`, gate of 2026-11-19).
 
 ## 0. Notation and the class of amplitudes
@@ -237,7 +238,7 @@ the route referee. Blueprint: `Blueprint/StationaryLeading.lean`, five propositi
   smooth compactly supported function that is not identically zero serves. Compact support of the triple
   primitive: the moments of `g‴` of orders 0, 1, 2 vanish, shown by three integrations by parts on a bounded
   interval or by parity.
-- **Assembly** (the lead's, compiled before any part is proved): SPL-I from P-line by the substitution
+- **Assembly** (planned as the lead's; in the event written by two agents and read by the lead; compiled before any part is proved): SPL-I from P-line by the substitution
   `v = √λ u` (Corollary 3″) and `√(2π) e^{iπ/4} = 2L`; SPL-S from SPL-I by the first-moment argument of section 4
   (if `‖g‴‖₁ > 0` and `|κ(√λ t)| ‖g‴‖₁ < ∫ |g‴| |κ(√λ ·)|` for every `t`, integrate against `|g‴|` for a
   contradiction), with κ continuous, bounded and odd from P-kernel; SPL-K from SPL-I and `|κ| ≤ 7/8`; SPL-A from
@@ -294,7 +295,10 @@ Where the Lean proofs differ from sections 1 to 6, 10 and 11:
 - **P-fresnel**, **P-bound**, **P-kernel**, **P-line** (`StationaryLeadingFresnel.lean`,
   `StationaryLeadingFresnelBound.lean`, `StationaryLeadingKernel.lean`, `StationaryLeadingLine.lean`): rewritten by a
   fresh agent from the route referee's scratch proofs (split into lemmas, specific imports, docstrings); no change
-  of mathematics. P-kernel bounds `|L|` by `9/4`; `|E₁| ≤ 4` holds on the whole line.
+  of mathematics. Exactly: the referee had written P-bound, P-kernel, P-line and the first two clauses of P-fresnel
+  (`F′ = e`, `F` odd); the third clause of P-fresnel is the agent's combination of P-tail and P-value. Two small
+  lemmas of P-value (the shape of the half-line Gaussian at `b = (ε − i)/2` and the value of the principal power at
+  `2πi`) are also the referee's, reused by the P-value prover under new names, as its brief allowed. P-kernel bounds `|L|` by `9/4`; `|E₁| ≤ 4` holds on the whole line.
 - **P-bump** (`StationaryLeadingBump.lean`): compact support is shown without moments. The amplitude is the
   combination of translates `D[P₃]`, where `P₃` is the triple primitive of the mollifier `ψ` taken from `−w` and
   `D[p](x) = ½[p(x − τ) − p(x + τ)] − (τ/2T)[p(x − T) − p(x + T)]`. `P₃` vanishes left of `−w` and is a polynomial
@@ -306,3 +310,12 @@ Where the Lean proofs differ from sections 1 to 6, 10 and 11:
 
 Checks at integration: `docs/replay/2026-11-20-SPL-integration-checks.txt`. Not yet done at that commit: post-proof
 reviews, the isolated replay.
+
+Added after the post-proof reviews (2026-11-20, `review/2026-11-20-SPL-post-proof-answers.md`). The interface
+check of section 10 was made for the blueprint of five propositions: P-tail and P-value as such were never checked
+numerically by the lead, the value of `L` there is consistent with mpmath's Fresnel functions and nothing more, and
+its check of P-bump uses the construction of section 6, not the one of the Lean file. All four theorems, the
+identity SPL-I included, depend on batch VC2: P-line uses the bounds of P-kernel, which come from `|F| ≤ 7/4`
+(P-bound, from VC2-S and VC2-N); the bounds 3, 6 and 2 of Lemmas 1 and 2 would have avoided this and were not
+formalised. Several small facts are proved more than once across the parts (continuity of `e`, `F′ = e`, the
+constant `√(2π) e^{iπ/4} = 2L`), a consequence of parts that do not import each other.

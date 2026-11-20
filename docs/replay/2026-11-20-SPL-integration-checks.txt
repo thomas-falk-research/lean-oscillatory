@@ -42,6 +42,10 @@ rc=0
 # 6eb2b9de9f0609633a363c494b428a7694d989520ab257f826a79041f4435603  OscInt/Front/StationaryLeadingFinal.lean
 # (the nine assembly and part files equal the agents' deliveries byte for byte; StationaryLeadingFinal.lean is the lead's)
 # The lines starting with '#' are the lead's; the others are tool output or lines the lead's loop printed from exit codes.
+# Note added 2026-11-20 after the post-proof reviews: two docstrings of OscInt/Front/StationaryLeadingFinal.lean were reworded (attribution; no
+# declaration changed), so its SHA-256 is now a9bf01ec21ad80b70d63bee8e88a86004e1f7b5f862035bffa9bef21f0643051 and no longer the value listed above; after
+# the change, at 03:48Z: lake build OscInt success (9262 jobs), leanchecker OscInt.Front.StationaryLeadingFinal exit code 0, the consumer example (its
+# docstring also reworded) exit code 0, StatementTypes.lean 90 TYPE-OK lines. These four are the lead's lines, not tool output. The nine other files are unchanged.
 
 # SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
 # SPDX-License-Identifier: CC-BY-4.0

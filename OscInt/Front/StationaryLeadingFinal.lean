@@ -28,8 +28,10 @@ Gaussian integral), `OscInt/Front/StationaryLeadingFresnel.lean` (P-fresnel from
 `OscInt/Front/StationaryLeadingKernel.lean` (the kernel: its primitives, oddness, continuity, `|κ| ≤ 7/8`),
 `OscInt/Front/StationaryLeadingLine.lean` (three integrations by parts on a half-line and a reflection) and
 `OscInt/Front/StationaryLeadingBump.lean` (mollified point masses for the third derivative).
-The identity is classical (the two-sided case of Erdélyi's remainder representation after three integrations by
-parts; `docs/prior_art.md`, gate of 2026-11-19). Nothing here is claimed as new mathematics.
+The identity is classical in substance (the two-sided case of Erdélyi's remainder representation after three
+integrations by parts, with the term in `g″(0)` folded into the kernel; `docs/prior_art.md`, gate of 2026-11-19 and
+its addenda); the bounds with this kernel were not found in the literature searched. Nothing here is claimed as new
+mathematics.
 -/
 
 namespace OscInt.API
@@ -38,8 +40,9 @@ open OscInt.Statements OscInt.Blueprint.StationaryLeading OscInt.StationaryLeadi
 
 /-- **SPL-I** (`StationaryLeadingIdentityStatement`): for an amplitude `g` with three derivatives, all integrable, and
 `λ > 0`, the remainder `R(g, λ) = ∫ g(u) e^{iλu²/2} du − g(0) √(2π/λ) e^{iπ/4}` of the stationary-phase leading term
-equals `−i λ^{−3/2} ∫ g‴(t) κ(√λ t) dt`, with the explicit kernel `κ = splKernel` (cf. A. Erdélyi, *Asymptotic
-Expansions*, 1956, section 2.8, for one-sided integrals). -/
+equals `−i λ^{−3/2} ∫ g‴(t) κ(√λ t) dt`, with the explicit kernel `κ = splKernel` (cf. A. Erdélyi's technical
+report of 1955, sections 2.8 and 2.9, republished as *Asymptotic Expansions*, 1956, for one-sided integrals; the
+report was read, the book was not). -/
 theorem stationaryLeadingIdentity : StationaryLeadingIdentityStatement :=
   stationaryLeadingIdentity_of (splLineFacts_of (splKernelFacts_of
     (splFresnelFacts_of splFresnelTailFacts splFresnelValueFacts)

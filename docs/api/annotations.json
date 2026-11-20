@@ -1394,7 +1394,7 @@
    "conclusion": "R(g, λ) = −i λ^{−3/2} ∫ g₃(t) κ(√λ t) dt, where R(g, λ) = ∫ g(u) e^{iλu²/2} du − g(0) √(2π/λ) e^{iπ/4} and κ is the odd kernel built from the Fresnel primitive (classical in substance: Erdélyi's remainder representation, two-sided)",
    "rate": "λ^{-3/2}",
    "uniform_over": "an identity; nothing to be uniform over",
-   "smoothness": "three derivatives given as functions; g₃ need not be continuous; no compact support",
+   "smoothness": "three derivatives given as functions with HasDerivAt at every point; g₃ need not be continuous, but as a derivative it has no jump, so piecewise C³ amplitudes are excluded; no compact support",
    "see_also": [
     "SPL-S",
     "SPL-K",
@@ -1412,7 +1412,7 @@
    "conclusion": "there is τ ≥ 0 with |R(g, λ)| ≤ |κ(τ)| ‖g₃‖₁ λ^{−3/2}: the leading term of the quadratic-phase integral with its remainder bounded through the kernel",
    "rate": "λ^{-3/2}",
    "uniform_over": "g and λ (the witness τ may depend on both)",
-   "smoothness": "three derivatives given as functions; g₃ need not be continuous; no compact support",
+   "smoothness": "three derivatives given as functions with HasDerivAt at every point; g₃ need not be continuous, but as a derivative it has no jump, so piecewise C³ amplitudes are excluded; no compact support",
    "see_also": [
     "SPL-I",
     "SPL-K",
@@ -1429,7 +1429,7 @@
    "conclusion": "|∫ g(u) e^{iλu²/2} du − g(0) √(2π/λ) e^{iπ/4}| ≤ (7/8) ‖g₃‖₁ λ^{−3/2} (7/8 is not the best constant; numerically the best is about 0.722)",
    "rate": "λ^{-3/2}",
    "uniform_over": "g and λ > 0 (every λ, not only large)",
-   "smoothness": "three derivatives given as functions; g₃ need not be continuous; no compact support",
+   "smoothness": "three derivatives given as functions with HasDerivAt at every point; g₃ need not be continuous, but as a derivative it has no jump, so piecewise C³ amplitudes are excluded; no compact support",
    "see_also": [
     "SPL-S",
     "SPL-A",

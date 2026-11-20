@@ -44,8 +44,11 @@ independent implementations. A downstream project can check in CI that it depend
 - **90 pinned statements; 86 are machine-checked as stated; 4 more are proved in Lean and await their replay; none
   is unproved** (`docs/STATUS.md`). The 4: batch SPL, frozen, blind-reviewed and proved on 2026-11-20, the leading
   term of a quadratic-phase integral with an explicit remainder, `|∫ g(u) e^{iλu²/2} du − g(0) √(2π/λ) e^{iπ/4}| ≤
-  (7/8) ‖g‴‖₁ λ^{−3/2}`, with the kernel identity behind it and its sharpness (post-proof reviews not yet run;
-  classical mathematics, nothing claimed as new). Release v0.7.0 has
+  (7/8) ‖g‴‖₁ λ^{−3/2}`, with the kernel identity behind it, the bound with the kernel's supremum in place of 7/8,
+  and the proof that this supremum (numerically 0.722) and no smaller constant is the best one; 7/8 itself is not
+  sharp (post-proof reviews answered, `review/2026-11-20-SPL-post-proof-answers.md`; the identity is classical in
+  substance, the bounds with this kernel were not found in the literature searched, and nothing is claimed as
+  new). Release v0.7.0 has
   the 86; v0.6.0 had the first 65 (the 21 of batches PA, KL, FR, VC2 and HW are new).
 - **What to keep in mind** before relying on a row: section "Known caveats" below.
 - **Entry point:** `import OscInt.API`. Which theorem to use: `docs/which-theorem.md`. Recipes: `docs/cookbook.md`.
@@ -109,13 +112,15 @@ replay of 35dc5c0 (six kernels; `docs/replay/2026-11-14-session11-LS-final-verif
 
 Read these before relying on a row of the table; each is documented where the link points.
 
-- **Reviewed by AI only.** Proofs and reviews are by AI agents directed by the owner (for the 21 newest statements,
-  all of one model family); no human expert has read the statements for fidelity. On 2026-11-19 an AI system of
-  another model family reviewed the 21 newest statements (it could not run Lean): it found them faithful and true
+- **Reviewed by AI only.** Proofs and reviews are by AI agents directed by the owner (for the 21 statements of
+  batches PA, KL, FR, VC2, HW and the 4 of batch SPL, all of one model family); no human expert has read the
+  statements for fidelity. On 2026-11-19 an AI system of another model family reviewed the 21 statements of
+  batches PA, KL, FR, VC2, HW (it could not run Lean; for batch SPL its sessions bore on the draft statements and
+  the proof on paper only, not on the Lean proofs): it found them faithful and true
   by its own arguments, and its findings against records, tools and process were checked and corrected
   (`docs/STATUS.md`, "External reviews of 2026-11-19"; `review/2026-11-19-*-external-review-answers.md`).
 - **The replay driver had a hole.** Until 2026-11-19 its scan of checker output for errors could be switched off by
-  a checker's success phrase. It is fixed and tested, and every statement was replayed again with the corrected
+  a checker's success phrase. It is fixed and tested, and every one of the 86 statements of v0.7.0 was replayed again with the corrected
   driver and the raw output kept (`docs/replay/2026-11-19-v0.7.0-verify-all.txt`). Replay records made before that
   date used the old rule; the paragraph of `docs/STATUS.md` named above says what a rerun showed about them.
 - **A review rule was not followed in six batches.** Findings against the sanity layer were answered without a

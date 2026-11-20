@@ -252,3 +252,8 @@ pre-proof A and B, the route referee, post-proof A, B and C), to any referee of 
 C) or to any referee of batch VC2 (the step referee of the paper proof, blind pre-proof A and B, the route
 referee, post-proof A, B and C). The detection rates on this page are those of rounds 1 to 4 and say nothing measured about those reviews; the
 answers files of the three batches say the same.
+
+Round not run (2026-11-19/20). No calibration copy with planted errors was given to any referee of batch SPL (the
+plan referee of the paper proof, blind pre-proof A and B, the route referee, post-proof A, B and C). The blind
+pre-proof referees ran for about eight and eleven minutes. The detection rates on this page say nothing measured
+about those reviews.

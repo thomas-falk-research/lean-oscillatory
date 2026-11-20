@@ -12,7 +12,10 @@ search can miss work, notably Lean Zulip threads (the archive was not searchable
 repositories.
 
 The works cited on this page, with identifiers and published versions checked against Crossref, arXiv and zbMATH
-Open on 2026-11-19, are collected in `docs/references.bib` (its "annote" fields repeat how each was used). Published
+Open on 2026-11-19, are collected in `docs/references.bib` (its "annote" fields repeat how each was used). Exception, found by a
+post-proof referee on 2026-11-20: the works cited in the section on batch SPL (Erdélyi's report of 1955 and book of
+1956, Olver 1974, Ali Mehmeti and Dewez, the external Lean file) are not yet in that file, and their identifiers
+have not been checked in that way. Published
 versions found there for preprints cited below: Hiary–Patel–Yang, J. Number Theory 256 (2024) 195–217; Maeda et al.
 (arXiv:1808.05714), J. Math. Soc. Japan 74(1) (2022) 217–246; Sunada–Tate, J. Funct. Anal. 262(6) (2012) 2608–2645;
 Chou (arXiv:2008.03698), Phys. Lett. A 386 (2021) 126986; Akramov et al. (arXiv:2411.14397), EPL 147(6) (2024) 62001.
@@ -365,8 +368,8 @@ Ali Mehmeti and Dewez, arXiv:1412.5789, arXiv:1412.5792, arXiv:1512.05940, after
 part: one variable, explicit constants, the integral split at the stationary point, remainder `O(ω^{−δ})` with
 `δ < 1` after the first term for a regular amplitude; Hörmander, ALPDO I, Theorem 7.7.5 (constant not explicit). The
 two-sided bound of the draft statement SPL-S (remainder at most `sup |κ| · ‖g‴‖₁ · λ^{−3/2}` with an explicit kernel
-κ) was not found. That is a statement about this search, not a claim of novelty: the identity behind it is two
-integrations by parts, and Olver's paper is unread. No formalisation of a stationary-phase leading term was found
+κ) was not found. That is a statement about this search, not a claim of novelty: the identity behind it is three
+integrations by parts (corrected 2026-11-20; this sentence said two), and Olver's paper is unread. No formalisation of a stationary-phase leading term was found
 by one arXiv query; Mathlib and the upstream repository are still to be searched.
 
 Addendum, the same day (`review/2026-11-19-SPL-plan-referee-answers.md`, section 2). A reader with a fresh context

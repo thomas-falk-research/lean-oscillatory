@@ -1736,3 +1736,14 @@ SPL-c. What the planted controls do not cover, as the two referees listed it: an
    data and were not planted: the phase `λu²/2` replaced by `λu²`, and the sign of i in the remainder. For all of
    these the batch rests, until the proofs exist, on the fidelity reviews and on numerics (the registered test and
    the referees' own), not on the sanity layer.
+SPL-d (2026-11-20, after the proofs; post-proof referee C). The proofs do not turn SPL-I into a characterisation
+   of the kernel: for every amplitude the integral of g₃ is zero, so SPL-I stays true when any complex constant is
+   added to κ (compiled: `docs/replay/plants/2026-11-20-SPL-closed`, the file whose name starts with
+   "equivalent"). What pins the kernel is its oddness, which is part of the frozen definition, together with
+   SPL-I; its supremum is pinned by SPL-S with SPL-A. With the proofs, the 7 planted mutations that were refuted
+   only under a bound on the kernel and the 7 refuted only relative to a true statement are refuted outright
+   (`docs/replay/2026-11-20-SPL-plants-closed.txt`): 36 of 42, the others being 3 equivalent ones and 3 true
+   weakenings. The mutations of SPL-c that the layer cannot see are excluded by the proofs only in the sense that
+   the frozen text, and not a mutation of it, is what was proved. Two more that no datum of the layer sees
+   (same referee): `λ = 1` in SPL-A replaced by another fixed λ, and `HasDerivAt` replaced by an equation with
+   `deriv`.
