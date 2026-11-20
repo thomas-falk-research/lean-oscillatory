@@ -1711,3 +1711,28 @@ numeric test and on the external derivation, not on the sanity layer.
     compactly supported function of class C³ with its canonical derivatives; the phase −u²/2; sharpness for every
     λ > 0; SPL-N. A user of SPL-K in this freeze supplies the three derivative functions and the four
     integrability facts.
+
+Clarifications after the blind pre-proof reviews (2026-11-20; `review/2026-11-20-SPL-preproof-answers.md`). The
+statement file is unchanged.
+SPL-a. Item 3 and item 4. "Continuity of g₃ is not asked" does not mean that g₃ may jump: g₂ has the derivative
+   g₃(x) at every point x, so g₃ has the intermediate-value property, and an amplitude whose second derivative has
+   a corner (a cubic spline, a piecewise C³ function) is not an amplitude in the sense of these statements,
+   although the identity holds for it. Admitted: third derivatives that are discontinuous by oscillation, or
+   unbounded near a point, as long as they are integrable. In SPL-I both sides are Bochner integrals; the integrand
+   on the right is integrable once the kernel is known to be bounded, which is part of the proof and not of the
+   statement.
+SPL-b. Three sentences above claim more than is there. (1) "Each statement is instantiated at two Gaussians":
+   true of SPL-I, SPL-S and SPL-K; SPL-A is instantiated at τ = 0 and at τ = 1, with no Gaussian datum. (2) Item 8,
+   "since |g″(0)| ≤ ‖g₃‖₁/2, no constant below √(2π)/4 can be true": the inference needs amplitudes for which that
+   inequality is nearly an equality; the number is right (it is the limit of |κ| at infinity). (3) "The best
+   constant is sup |κ|" is a consequence of SPL-S and SPL-A together with the fact that a nonzero amplitude has
+   ‖g₃‖₁ > 0 (proved in the sanity layer); it is not a Lean statement of this freeze and concerns constants that do
+   not depend on λ.
+SPL-c. What the planted controls do not cover, as the two referees listed it: any change inside the kernel (a
+   sign or coefficient of one of its three terms, the phase or the sign of i in the Fresnel primitive, the value
+   of F(∞) except through SPL-A with SPL-K); the factor g(0) of the leading term replaced by 1, by a conjugate or by
+   a modulus (all data are real even Gaussians with g(0) = 1); `0 < ε` weakened to `0 ≤ ε` in SPL-A;
+   `Integrable g₃` dropped; 7/8 replaced by a number down to about 0.33. Two more would be detected by the existing
+   data and were not planted: the phase `λu²/2` replaced by `λu²`, and the sign of i in the remainder. For all of
+   these the batch rests, until the proofs exist, on the fidelity reviews and on numerics (the registered test and
+   the referees' own), not on the sanity layer.

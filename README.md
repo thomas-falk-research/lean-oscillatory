@@ -43,7 +43,7 @@ independent implementations. A downstream project can check in CI that it depend
 
 - **90 pinned statements; 86 are machine-checked as stated; 4 are stated and frozen but not proved**
   (`docs/STATUS.md`). The 4: batch SPL, frozen on 2026-11-20, the leading term of a quadratic-phase integral with an
-  explicit remainder; a proof on paper exists, no Lean proof, and the blind review is pending. Release v0.7.0 has
+  explicit remainder; a proof on paper exists, no Lean proof; the blind pre-proof review found them faithful (no blocker). Release v0.7.0 has
   the 86; v0.6.0 had the first 65 (the 21 of batches PA, KL, FR, VC2 and HW are new).
 - **What to keep in mind** before relying on a row: section "Known caveats" below.
 - **Entry point:** `import OscInt.API`. Which theorem to use: `docs/which-theorem.md`. Recipes: `docs/cookbook.md`.
