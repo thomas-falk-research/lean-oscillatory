@@ -11,7 +11,40 @@ below it, and every rule is binding.
 
 ## Resume here (session 13, 2026-11-16; kept current at every checkpoint)
 
-- **START HERE (state at the end of session 13, 2026-11-20; everything is pushed; nothing is running).**
+- **START HERE (session 14, 2026-11-20 20:25Z; everything is pushed; nothing is running).** Log:
+  `docs/progress/2026-11-20-session14-log.md`.
+  1. **Branch and `main`.** Pull request 24 was merged by the owner with a merge commit: `main` is at 74c4552
+     and contains batch SPL (90 statements) as unreleased work. `claude/batch-sp-leading-term` was fast-forwarded
+     to 74c4552 and stays the working branch (never rebase, never squash). All 32 check runs were green on
+     36ac0e5, the clean-runner replay included. In continuous integration every push to a branch with an open
+     pull request cancels the runs of the push before it: while a pull request waits for its checks, do not
+     push.
+  2. **External reports.** Four of six are checked and answered: `review/2026-11-20-external-reports-answers.md`
+     (D: the constant 38/5 for the third-derivative van der Corput lemma, proved on paper, not found in the
+     literature searched, nothing sharp; E: a bound for the Hankel function of order zero, sound, in print; A: a
+     zeta bound, a gain of 1e-4 that does not come from this repository's statements; F: the preprint applies its
+     two-saddle lemma correctly). The lead's ranking puts D first. B and C are NOT checked. **Waiting on the
+     owner:** go-ahead for D (prior-art gate first: Rogers's published paper and what cites it, Kershner,
+     Arkhipov, Karatsuba and Chubarikov, zbMATH Open); whether to check B and C; whether the Hankel function of
+     TSD-L stays a parameter. The packets and the checkers' reports were in `/tmp/oscint-packets/` of the
+     session's container and do not survive it; the hashes are in the log; the owner has the deliveries.
+  3. **Batch TSD.** Done: the prose (`docs/statements.md`, "Batch TSD": TSD-C the core statement; TSD-L planned,
+     with a note of 2026-11-20 on its hypotheses and on the prefactor); two registered numeric tests of TSD-C
+     (`docs/prereg/LEDGER.md`: the first FAILED on two quadrature criteria in case C9, the claim holding in all
+     nine cases; the second, registered with knowledge of the first, PASSED). **Exact next step:** the Lean
+     statement file, to be named TwoSaddle.lean under OscInt/Statements/ (the lead's draft elaborated once at the pin in scratch
+     and is lost with the container; its shape: `closedStrip`, the hypothesis definitions `TsdSymmetric`,
+     `TsdSaddle`, `TsdBounds`, `TsdWindow`, the four error terms and `TwoSaddleStatement` exactly as the prose
+     of TSD-C, with `deriv` and `iteratedDeriv`), then a sanity layer by an agent under a brief that forbids
+     proving the statement (an instance on which every hypothesis holds: the phase `σ²z − z³/3` with a rational
+     or sech amplitude, as in the registered test), planted controls, challenge and comparator, freeze, two
+     blind referees, and only then proofs.
+  4. **Errors of the lead in session 14, all in the log:** times written from estimates (corrected from the
+     clock); two pushes made although the documentation check had failed (a path cited before the file
+     existed; gate and push are now separate commands and the exit code is read first); a case of the first
+     registered protocol that binary64 could not resolve.
+- **State at the end of session 13 (2026-11-20), kept for reference; the block above supersedes it where they
+  differ.**
   1. **Release.** v0.7.0 is published (annotated tag at 5d85acb), and its pins pull request is merged: `main` is at
      d1c05fd. Still the owner's: the Zenodo version DOI into `CITATION.cff` and the README when it is minted.
   2. **This branch**, `claude/batch-sp-leading-term` (no pull request yet), holds batch SPL (four statements,
