@@ -137,6 +137,17 @@ of one model family.
   uses of the six new theorems (normalised Fourier coefficients, a stopping rule for the trapezoidal rule, the light
   cone at one e-folding per site, exponential sums with a linear phase); compiled by `make quick`.
 
+### Release tooling and presentation (2026-11-20)
+
+- The first practice run of `release-candidate` for this release passed every verification job and stopped at the
+  release body: the notes had no `## Publishing` section, which `tools/publish_release.sh` cuts the body at. The
+  section is added, and `tools/release_preflight.sh` now checks, before the replay, that the body can be cut from
+  the notes (three more planted defects in its self-test: 31).
+- `README.md` is restructured for reading: a summary table, a short table of results by area with their entry
+  theorems, a quick start, the trust chain as six steps; the row-by-row status table, the replay history and the
+  details of the downstream check are kept, folded. No claim, count or pin changes. `docs/README.md` gains a
+  "Where to start" table.
+
 ### External review and corrections (2026-11-19)
 
 - Five reviews of the session-13 batches by an AI system of another model family, run by the owner (it could not
