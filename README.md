@@ -41,12 +41,14 @@ lead had sketched one before a freeze the batch says so), and every proof of a s
 machine-checked as stated has been replayed by six kernel checkers: Lean's own kernel in two modes and four
 independent implementations. A downstream project can check in CI that it depends on exactly the reviewed statements.
 
-- **90 pinned statements; 86 are machine-checked as stated; 4 more are proved in Lean and await their replay; none
-  is unproved** (`docs/STATUS.md`). The 4: batch SPL, frozen, blind-reviewed and proved on 2026-11-20, the leading
+- **90 pinned statements, all machine-checked as stated** (`docs/STATUS.md`); 86 of them are in release v0.7.0 and 4
+  are on the development branch only. The 4: batch SPL, frozen, blind-reviewed, proved and replayed on 2026-11-20
+  (`docs/replay/2026-11-20-SPL-verify-all.txt`), the leading
   term of a quadratic-phase integral with an explicit remainder, `|∫ g(u) e^{iλu²/2} du − g(0) √(2π/λ) e^{iπ/4}| ≤
   (7/8) ‖g‴‖₁ λ^{−3/2}`, with the kernel identity behind it, the bound with the kernel's supremum in place of 7/8,
   and the proof that this supremum (numerically 0.722) and no smaller constant is the best one; 7/8 itself is not
-  sharp (post-proof reviews answered, `review/2026-11-20-SPL-post-proof-answers.md`; the identity is classical in
+  sharp (post-proof reviews answered, `review/2026-11-20-SPL-post-proof-answers.md`; reviewed by AI agents of one
+  model family only, with no calibration round; the identity is classical in
   substance, the bounds with this kernel were not found in the literature searched, and nothing is claimed as
   new). Release v0.7.0 has
   the 86; v0.6.0 had the first 65 (the 21 of batches PA, KL, FR, VC2 and HW are new).

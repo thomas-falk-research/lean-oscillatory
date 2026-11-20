@@ -15,7 +15,7 @@ or `proved_by` name. Every release lists its statement changes, even when there 
 ### Statement changes
 
 Batch SPL (`OscInt/Statements/StationaryLeading.lean`, stamp `stamps/20261120T002727Z-5491b10bc8ae`): four new entries,
-proved in Lean on 2026-11-20, post-proof reviews answered, replay pending (so not yet machine-checked as stated),
+proved in Lean on 2026-11-20, post-proof reviews answered, replayed (`docs/replay/2026-11-20-SPL-verify-all.txt`): machine-checked as stated,
 - SPL-I `StationaryLeadingIdentityStatement` (`proved_by` `OscInt.API.stationaryLeadingIdentity`);
 - SPL-S `StationaryLeadingStatement` (`proved_by` `OscInt.API.stationaryLeading`);
 - SPL-K `StationaryLeadingSevenEighthsStatement` (`proved_by` `OscInt.API.stationaryLeadingSevenEighths`);

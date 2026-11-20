@@ -40,10 +40,16 @@ below it, and every rule is binding.
   findings against records, none against a statement, all answered
   (`review/2026-11-20-SPL-post-proof-answers.md`); the conditional and relative plants are closed
   (`docs/replay/2026-11-20-SPL-plants-closed.txt`). The answers are stamped (`stamps/20261120T041355Z-3c69b821f0da`, 04:14:03Z).
-  **Exact next step:** the full isolated replay on the commit that adds that stamp (`make verify-all`, about three hours;
-  record under `docs/replay/`); only then may the STATUS rows say "machine-checked as stated", with README,
-  `llms.txt` and CHANGELOG following. Open items from the reviews: the SPL sources are not in the bibliography
-  file; a "replayed" field in the registry is the owner's call; a refactoring that frees SPL-I of VC2. While provers write files in the tree, run the gate on a clean
+  **Replayed 2026-11-20:** `make verify-all` on ff66a2e, RESULT PASS, 04:24:55Z to 07:54:08Z
+  (`docs/replay/2026-11-20-SPL-verify-all.txt`); the four STATUS rows say "machine-checked as stated"; all 90
+  statements are. **Batch SPL, first freeze, is done.** Exact next steps, in this order of value: (1) owner items
+  for release v0.7.0 below, then merge `main` into this branch (never rebase) and `make anchors` for the stamps of
+  2026-11-19/20 (five of them now: 9ae784e8, 1aa26b0f, 5491b10b, 3e07630d, 3c69b821), a day or more after each;
+  (2) the second freeze of the batch, statements first: SPL-N (the constant 73/100 or 3/4 through the certificates
+  kept in the lead's scratch, to be committed when the statement is prepared), a front end for compactly supported
+  C³ amplitudes, the negative phase, sharpness for every λ; (3) open items from the reviews: the SPL sources are
+  not in the bibliography file; a "replayed" field in the registry is the owner's call; a refactoring that frees
+  SPL-I of VC2. While provers write files in the tree, run the gate on a clean
   checkout (a git worktree with the staged change, sharing the Lake build directory and the tools' cargo target directory by symbolic links), or the axiom audit fails
   its count on files not yet imported. Nine external reports and their checks are answered in
   `review/2026-11-19-SPL-external-sessions-answers.md`; section 11 there lists the candidates for later freezes. Release v0.7.0: pull request 19
