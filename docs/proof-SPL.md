@@ -280,3 +280,29 @@ No FATAL and no MAJOR finding; no proposition of the blueprint was found false. 
   half-line.
 - P-bound, P-kernel and P-line start from Lean proofs that the route referee wrote in its scratch directory
   (compiled by the lead; not in the repository). A fresh agent rewrites them into part files.
+
+## 12. Parts as integrated (2026-11-20)
+
+All seven propositions are proved and the four statements follow (`OscInt/Front/StationaryLeadingFinal.lean`).
+Where the Lean proofs differ from sections 1 to 6, 10 and 11:
+
+- **P-tail** (`StationaryLeadingFresnelTail.lean`): Lemma 1 as written (the bound `2/x` for pairs, Cauchy's
+  criterion along `x = n + 1`, passage to the limit), not the half-line integral of section 11.
+- **P-value** (`StationaryLeadingFresnelValue.lean`): Abel summation as in sections 10 and 11. Integrability of
+  `εv e^{−εv²/2} F(v)` uses `|F(v)| ≤ |v|`, and the boundary term at infinity uses `F → L′`, so boundedness of `F`
+  is not needed.
+- **P-fresnel**, **P-bound**, **P-kernel**, **P-line** (`StationaryLeadingFresnel.lean`,
+  `StationaryLeadingFresnelBound.lean`, `StationaryLeadingKernel.lean`, `StationaryLeadingLine.lean`): rewritten by a
+  fresh agent from the route referee's scratch proofs (split into lemmas, specific imports, docstrings); no change
+  of mathematics. P-kernel bounds `|L|` by `9/4`; `|E₁| ≤ 4` holds on the whole line.
+- **P-bump** (`StationaryLeadingBump.lean`): compact support is shown without moments. The amplitude is the
+  combination of translates `D[P₃]`, where `P₃` is the triple primitive of the mollifier `ψ` taken from `−w` and
+  `D[p](x) = ½[p(x − τ) − p(x + τ)] − (τ/2T)[p(x − T) − p(x + T)]`. `P₃` vanishes left of `−w` and is a polynomial
+  of degree at most two right of `w`, and `D` annihilates such polynomials; so `g` vanishes outside
+  `[−T − w, T + w]`, and `g‴ = D[ψ]`. Evenness of `ψ` is not used. The mollifier step is proved directly for a
+  nonnegative `ψ` of integral 1 supported in `[−w, w]`. For `τ = 0` the same construction is used with
+  `τ = 1, T = 2, w = 1/2`.
+- **Assembly**: SPL-S argues with `f (A − w N)` in place of dividing by the norm `N`.
+
+Checks at integration: `docs/replay/2026-11-20-SPL-integration-checks.txt`. Not yet done at that commit: post-proof
+reviews, the isolated replay.

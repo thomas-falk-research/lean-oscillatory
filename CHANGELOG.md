@@ -10,6 +10,25 @@ Versions follow semantic versioning from v0.3.0 (`docs/policy.md`): before 1.0.0
 statements and says so under "Statement changes"; a patch (0.y.Z) changes no statement, commitment, statement file
 or `proved_by` name. Every release lists its statement changes, even when there are none.
 
+## Unreleased (development branch)
+
+### Statement changes
+
+Batch SPL (`OscInt/Statements/StationaryLeading.lean`, stamp `stamps/20261120T002727Z-5491b10bc8ae`): four new entries,
+proved in Lean on 2026-11-20, post-proof reviews and replay pending (so not yet machine-checked as stated),
+- SPL-I `StationaryLeadingIdentityStatement` (`proved_by` `OscInt.API.stationaryLeadingIdentity`);
+- SPL-S `StationaryLeadingStatement` (`proved_by` `OscInt.API.stationaryLeading`);
+- SPL-K `StationaryLeadingSevenEighthsStatement` (`proved_by` `OscInt.API.stationaryLeadingSevenEighths`);
+- SPL-A `StationaryLeadingAttainedStatement` (`proved_by` `OscInt.API.stationaryLeadingAttained`).
+
+No existing statement's text, commitment or stamp changes. Classical mathematics (the two-sided case of Erdélyi's
+remainder representation); nothing is claimed as new.
+
+### Added
+
+- `examples/consumer/ConsumerStationaryLeading.lean`: the leading term with the remainder written out, and the
+  Gaussian at `λ = 4`.
+
 ## v0.7.0 — 2026-11-20
 
 A minor release (prepared; the owner publishes). Before 1.0.0 a minor release may change statements; this one changes

@@ -1,0 +1,47 @@
+# Batch SPL integration checks (lead, session 13) on the working tree that became the integration commit (parent a8e0eb7).
+# toolchain leanprover/lean4:v4.35.0; leanchecker sha256 12c38901cdbfab178f1bf6145dd30012e9a3b2c11ca695292a5884fa3cbaddb6
+# Tool output, in the order run under the session's Lean lock after 'lake build OscInt' (9262 jobs, success): per-module leanchecker; 'lake env lean StatementTypes.lean' (counts of its output lines and the four lines of this batch); the consumer example examples/consumer/ConsumerStationaryLeading.lean; '#print axioms' of the four final theorems in a scratch file importing OscInt.API; end time.
+leanchecker OscInt.Statements.StationaryLeading rc=0 4s
+leanchecker OscInt.Front.StationaryLeadingSanity rc=0 5s
+leanchecker Blueprint.StationaryLeading rc=0 3s
+leanchecker OscInt.Front.StationaryLeadingAssembly rc=0 4s
+leanchecker OscInt.Front.StationaryLeadingBounds rc=0 4s
+leanchecker OscInt.Front.StationaryLeadingFresnelTail rc=0 3s
+leanchecker OscInt.Front.StationaryLeadingFresnelValue rc=0 4s
+leanchecker OscInt.Front.StationaryLeadingFresnel rc=0 4s
+leanchecker OscInt.Front.StationaryLeadingFresnelBound rc=0 3s
+leanchecker OscInt.Front.StationaryLeadingKernel rc=0 5s
+leanchecker OscInt.Front.StationaryLeadingLine rc=0 4s
+leanchecker OscInt.Front.StationaryLeadingBump rc=0 4s
+leanchecker OscInt.Front.StationaryLeadingFinal rc=0 4s
+--- StatementTypes
+rc=0 TYPE-OK lines: 90; other lines: 0
+TYPE-OK OscInt.API.stationaryLeadingIdentity : OscInt.Statements.StationaryLeadingIdentityStatement
+TYPE-OK OscInt.API.stationaryLeading : OscInt.Statements.StationaryLeadingStatement
+TYPE-OK OscInt.API.stationaryLeadingSevenEighths : OscInt.Statements.StationaryLeadingSevenEighthsStatement
+TYPE-OK OscInt.API.stationaryLeadingAttained : OscInt.Statements.StationaryLeadingAttainedStatement
+--- consumer example
+rc=0
+--- axioms
+'OscInt.API.stationaryLeadingIdentity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.stationaryLeading' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.stationaryLeadingSevenEighths' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.stationaryLeadingAttained' depends on axioms: [propext, Classical.choice, Quot.sound]
+rc=0
+2026-11-20T03:05:39Z
+# SHA-256 of the assembly and part files in the tree:
+# c910efe91c42c5b125947e572679f49c4d23f30a13d2d9d921dbb7da615b73e3  OscInt/Front/StationaryLeadingAssembly.lean
+# f6a8d490eb5192d539db04fc5b61c947117d1561c8df359ff3ade40af05f7ada  OscInt/Front/StationaryLeadingBounds.lean
+# 788c78db15d6091e9fa8125701497067d6ecabe90ca5a33dce9974d42a70a46a  OscInt/Front/StationaryLeadingFresnelTail.lean
+# 9c4082689abee8a5ec6ffee0bfc6d55f97519a7c3e996ef9a65e9172ff2091ff  OscInt/Front/StationaryLeadingFresnelValue.lean
+# 9a6c4f2e137e638d7231436e3401747403db1848fb16bea27533c3aa6583e776  OscInt/Front/StationaryLeadingFresnel.lean
+# f9932b99799a735eb06556a4be8770e937dd6eb23f4833d365084e4eda3af47e  OscInt/Front/StationaryLeadingFresnelBound.lean
+# 88fa54511b9c5ed1dc4dab39ecc464743b1bd99517ec783cb725c663af5c61b0  OscInt/Front/StationaryLeadingKernel.lean
+# 3e08d6589bac4045a5ee5a9da28ef1930138e31bb233143ded46b7af0bf69839  OscInt/Front/StationaryLeadingLine.lean
+# c13d1277bdaf31a7af8c6a068cbb4816331909d951608bbc00c6c3f9ba1ec257  OscInt/Front/StationaryLeadingBump.lean
+# 6eb2b9de9f0609633a363c494b428a7694d989520ab257f826a79041f4435603  OscInt/Front/StationaryLeadingFinal.lean
+# (the nine assembly and part files equal the agents' deliveries byte for byte; StationaryLeadingFinal.lean is the lead's)
+# The lines starting with '#' are the lead's; the others are tool output or lines the lead's loop printed from exit codes.
+
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

@@ -2119,7 +2119,7 @@
   {
    "label": "SPL-I",
    "name": "OscInt.Statements.StationaryLeadingIdentityStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.stationaryLeadingIdentity",
    "summary": "The remainder of the quadratic-phase leading term as an integral of `g‴` against the kernel: `R(g, λ) = −i λ^{−3/2} ∫ g‴(t) κ(√λ t) dt`.",
    "file": "OscInt/Statements/StationaryLeading.lean",
    "commitment": "2ca9a3dad94c0c7d4c42a14292bf7b493bf1e17b7233793b6e837a45c4e42ace",
@@ -2139,13 +2139,13 @@
     "SPL-A",
     "VC2-S"
    ],
-   "snippet": "example (h : StationaryLeadingIdentityStatement) := OscInt.API.StationaryLeadingSanity.identity_integral_bounds h",
+   "snippet": "example : StationaryLeadingIdentityStatement := OscInt.API.stationaryLeadingIdentity",
    "status": "see docs/STATUS.md (row SPL-I)"
   },
   {
    "label": "SPL-S",
    "name": "OscInt.Statements.StationaryLeadingStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.stationaryLeading",
    "summary": "The leading term of the quadratic-phase integral with its remainder bounded through the kernel: `|R(g, λ)| ≤ |κ(τ)| ‖g‴‖₁ λ^{−3/2}` for some `τ ≥ 0`.",
    "file": "OscInt/Statements/StationaryLeading.lean",
    "commitment": "09bec1453d5efba9d1bf29e8f58b834a4162db2b359343e5cf0dbc00c652a229",
@@ -2164,13 +2164,13 @@
     "SPL-K",
     "SPL-A"
    ],
-   "snippet": "example (h : StationaryLeadingStatement) := OscInt.API.StationaryLeadingSanity.kernel_large h",
+   "snippet": "example : StationaryLeadingStatement := OscInt.API.stationaryLeading",
    "status": "see docs/STATUS.md (row SPL-S)"
   },
   {
    "label": "SPL-K",
    "name": "OscInt.Statements.StationaryLeadingSevenEighthsStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.stationaryLeadingSevenEighths",
    "summary": "The leading term of the quadratic-phase integral with remainder at most `(7/8) ‖g‴‖₁ λ^{−3/2}`.",
    "file": "OscInt/Statements/StationaryLeading.lean",
    "commitment": "2cb17329b81cc8d431c415faa9c68038b5dba5037bd70cca4295bf9a3bb0121d",
@@ -2190,13 +2190,13 @@
     "VC2-N",
     "S2.2"
    ],
-   "snippet": "example (h : StationaryLeadingSevenEighthsStatement) := OscInt.API.StationaryLeadingSanity.sevenEighths_gauss_one_four h",
+   "snippet": "example : StationaryLeadingSevenEighthsStatement := OscInt.API.stationaryLeadingSevenEighths",
    "status": "see docs/STATUS.md (row SPL-K)"
   },
   {
    "label": "SPL-A",
    "name": "OscInt.Statements.StationaryLeadingAttainedStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.stationaryLeadingAttained",
    "summary": "The kernel bound of SPL-S is attained in the limit by smooth compactly supported amplitudes: for every `τ ≥ 0` and `ε > 0` some such `g ≠ 0` has `|R(g, 1)| ≥ (|κ(τ)| − ε) ‖g‴‖₁`.",
    "file": "OscInt/Statements/StationaryLeading.lean",
    "commitment": "3ff8b92bd70394bf8bd5506c88d7acc200d7aebcfae95940c7a2c32e6a9de08e",
@@ -2214,7 +2214,7 @@
     "SPL-S",
     "SPL-K"
    ],
-   "snippet": "example (h : StationaryLeadingAttainedStatement) := OscInt.API.StationaryLeadingSanity.attained_one h",
+   "snippet": "example : StationaryLeadingAttainedStatement := OscInt.API.stationaryLeadingAttained",
    "status": "see docs/STATUS.md (row SPL-A)"
   }
  ]

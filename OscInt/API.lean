@@ -50,10 +50,7 @@ import OscInt.Front.KusminLandauFinal
 import OscInt.Front.FiniteRingFinal
 import OscInt.Front.HadamardWalkFinal
 import OscInt.Front.SecondDerivSharpFinal
-import OscInt.Front.StationaryLeadingAssembly
-import OscInt.Front.StationaryLeadingBounds
-import OscInt.Front.StationaryLeadingFresnelTail
-import OscInt.Front.StationaryLeadingFresnelValue
+import OscInt.Front.StationaryLeadingFinal
 
 /-!
 # OscInt public API

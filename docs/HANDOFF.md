@@ -29,15 +29,19 @@ below it, and every rule is binding.
   **Done by 2026-11-20 00:10Z:** statement file `OscInt/Statements/StationaryLeading.lean` (draft text unchanged
   since a7fa3dc), sanity layer (96 theorems), 42 planted controls re-run by the lead, challenge file and
   `comparator-SPL.json`, prose in `docs/statements.md`. **Frozen 2026-11-20:** stamp `stamps/20261120T002727Z-5491b10bc8ae` on 5491b10
-  (three RFC 3161 tokens, 00:27:34Z), pinned; registry has 90 statements, 4 not proved. **Blind review done 2026-11-20:** four verdicts
+  (three RFC 3161 tokens, 00:27:34Z), pinned; registry has 90 statements. **Blind review done 2026-11-20:** four verdicts
   FAITHFUL, no counterexample, no BLOCKER, no MAJOR (`review/2026-11-20-SPL-preproof-answers.md`); the answers are
-  stamped (`stamps/20261120T011816Z-3e07630da3a5`, 01:18:24Z). **Exact next step: the Lean proofs**, by the route
-  of `docs/proof-SPL.md` (second version, with its addendum): Lemma 1 (Fresnel primitive: Cauchy bound, the limit
-  L exists), Lemma 2 (primitives of the kernel, bounds), Proposition 3 (three integrations by parts on a
-  half-line; reflection), Lemma 4 (L from `integral_gaussian_complex`), SPL-I, SPL-S (first-moment lemma), SPL-K
-  (through `OscInt.API.secondDerivSharp` and `vdc2ProfileBound`), SPL-A (four bumps, triple primitive). Final
-  theorems under the challenge names of `comparator-SPL.json`; then `make quick`, post-proof reviews, the full
-  replay. Nine external reports and their checks are answered in
+  stamped (`stamps/20261120T011816Z-3e07630da3a5`, 01:18:24Z). **Proved in Lean 2026-11-20:** blueprint of seven
+  propositions (`Blueprint/StationaryLeading.lean`), assembly and seven parts in ten files under `OscInt/Front/`
+  (`StationaryLeadingFinal.lean` has the four theorems under the challenge names); route referee: no FATAL, no
+  MAJOR (`review/2026-11-20-SPL-route-referee-answers.md`); integration checks
+  `docs/replay/2026-11-20-SPL-integration-checks.txt`; registry: 90 statements, all with a proving theorem; STATUS
+  rows say "proved in Lean". **Exact next step:** on the frozen integration commit, the full isolated replay
+  (`make verify-all`, about three hours; record under `docs/replay/`) and step 10 of `CONTRIBUTING.md` (two blind
+  post-proof referees and an adversarial referee, fresh contexts, answers under `review/`); only then may the
+  STATUS rows say "machine-checked as stated". While provers write files in the tree, run the gate on a clean
+  checkout (a git worktree with the staged change, sharing the Lake build directory and the tools' cargo target directory by symbolic links), or the axiom audit fails
+  its count on files not yet imported. Nine external reports and their checks are answered in
   `review/2026-11-19-SPL-external-sessions-answers.md`; section 11 there lists the candidates for later freezes. Release v0.7.0: pull request 19
   was merged by the owner on 2026-11-20 00:06Z (merge commit 06f8e47 on `main`); the owner dispatches
   `release-candidate` and publishes; after that, merge `main` into this branch (never rebase: a stamp names

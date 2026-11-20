@@ -1401,8 +1401,8 @@
     "SPL-A",
     "VC2-S"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : StationaryLeadingIdentityStatement) := OscInt.API.StationaryLeadingSanity.identity_integral_bounds h"
+   "snippet_kind": "type",
+   "snippet": "example : StationaryLeadingIdentityStatement := OscInt.API.stationaryLeadingIdentity"
   },
   "SPL-S": {
    "hypotheses": [
@@ -1418,8 +1418,8 @@
     "SPL-K",
     "SPL-A"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : StationaryLeadingStatement) := OscInt.API.StationaryLeadingSanity.kernel_large h"
+   "snippet_kind": "type",
+   "snippet": "example : StationaryLeadingStatement := OscInt.API.stationaryLeading"
   },
   "SPL-K": {
    "hypotheses": [
@@ -1436,8 +1436,8 @@
     "VC2-N",
     "S2.2"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : StationaryLeadingSevenEighthsStatement) := OscInt.API.StationaryLeadingSanity.sevenEighths_gauss_one_four h"
+   "snippet_kind": "type",
+   "snippet": "example : StationaryLeadingSevenEighthsStatement := OscInt.API.stationaryLeadingSevenEighths"
   },
   "SPL-A": {
    "hypotheses": [
@@ -1452,8 +1452,8 @@
     "SPL-S",
     "SPL-K"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : StationaryLeadingAttainedStatement) := OscInt.API.StationaryLeadingSanity.attained_one h"
+   "snippet_kind": "type",
+   "snippet": "example : StationaryLeadingAttainedStatement := OscInt.API.stationaryLeadingAttained"
   }
  },
  "helpers": [
