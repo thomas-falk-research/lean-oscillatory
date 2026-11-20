@@ -39,8 +39,8 @@ below it, and every rule is binding.
   rows say "proved in Lean". **Post-proof reviews done 2026-11-20:** FAITHFUL, SOUND, no failing regime; one BLOCKER and other
   findings against records, none against a statement, all answered
   (`review/2026-11-20-SPL-post-proof-answers.md`); the conditional and relative plants are closed
-  (`docs/replay/2026-11-20-SPL-plants-closed.txt`). **Exact next step:** stamp the answers (`make stamp` on the
-  clean commit), then the full isolated replay on the resulting commit (`make verify-all`, about three hours;
+  (`docs/replay/2026-11-20-SPL-plants-closed.txt`). The answers are stamped (`stamps/20261120T041355Z-3c69b821f0da`, 04:14:03Z).
+  **Exact next step:** the full isolated replay on the commit that adds that stamp (`make verify-all`, about three hours;
   record under `docs/replay/`); only then may the STATUS rows say "machine-checked as stated", with README,
   `llms.txt` and CHANGELOG following. Open items from the reviews: the SPL sources are not in the bibliography
   file; a "replayed" field in the registry is the owner's call; a refactoring that frees SPL-I of VC2. While provers write files in the tree, run the gate on a clean
