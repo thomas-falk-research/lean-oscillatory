@@ -123,3 +123,7 @@ bounds against quadrature at 6000 points. It walked every case boundary: v = 1/2
 - The QWZ and plasma mathematics: this batch's referees did not re-check it. It was checked by fresh-context checkers
   earlier (`review/2026-11-10-external-followup-answers.md`).
 - Prior art for real-ξ (Anger-function) bounds.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

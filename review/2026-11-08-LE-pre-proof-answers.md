@@ -46,3 +46,7 @@ Referee A's documentation-only MAJOR, answered by clarification 6 of `docs/state
 was ratified by the owner on 2026-11-09 as a one-time waiver of CONTRIBUTING step 5; step 5 now provides for
 documentation-only MAJORs (answered by a dated clarification recorded in the answers file). The three LE STATUS rows
 say so.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

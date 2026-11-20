@@ -1,0 +1,9 @@
+plant-FR-K-c.lean:144:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  1 + ↑2
+in the target expression
+  ringKernel 2 t (1 + 1) = ringKernel 2 t 1
+
+h : P_RingKernelStatement
+t : ℝ
+h1 : ringKernel 2 t (1 + 1) = ringKernel 2 t 1
+⊢ ringKernel 2 t 3 = ringKernel 2 t 1

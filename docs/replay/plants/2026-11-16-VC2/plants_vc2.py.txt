@@ -1,0 +1,365 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the draft batch-VC2 statements against copies of their sanity theorems.
+
+As the batch-FR generator (docs/replay/plants/2026-11-16-FR/plants_fr.py.txt). The batch is not yet a module of the
+library, so every generated file is self-contained: imports, the statement text copied verbatim from
+SecondDerivSharp-statements.lean, the unconditional data lemmas of SecondDerivSharpSanity.lean that the file needs
+(copied verbatim, selected by name closure), then, under the prefix P_, a copy of one statement (and of
+DerivIncreasesAtRate with its data lemmas where the mutation is in that definition) and the sanity theorems that go
+through the statement constant. Exactly one textual mutation is applied to one copied def. The unplanted copy (ok-)
+must compile. Witness files (docs/lessons.md, rule 9): a compiled proof of the negation of the planted statement from
+unconditional data lemmas. Four witnesses (S-a, S-c, S-d, S-f) also use the bound A(w) <= 2 sqrt(2w), which holds for
+every w: it is proved in those witness files only (WITNESS_ONLY below), where it refutes a planted statement; it is
+not part of the sanity file. No file proves, or uses a proof of, a statement of the batch.
+Verdicts: DETECTED (witness compiled), NOT DETECTED (no witness), TRUE WEAKENING (implied by the draft statement).
+Usage: plants_vc2.py REPO SANITY_DIR OUTDIR SCRATCHDIR [plant ids]
+"""
+import os, re, subprocess, sys, textwrap
+
+REPO, SDIR, OUT, SCR = sys.argv[1:5]
+os.makedirs(OUT, exist_ok=True)
+os.makedirs(SCR, exist_ok=True)
+STMT_TEXT = open(os.path.join(SDIR, 'SecondDerivSharp-statements.lean')).read()
+i0, i1 = STMT_TEXT.index('namespace OscInt.Statements'), STMT_TEXT.index('end OscInt.Statements')
+STMT_TEXT = STMT_TEXT[i0:i1] + 'end OscInt.Statements\n'
+STMT = STMT_TEXT.split('\n')
+SAN_ALL = open(os.path.join(SDIR, 'SecondDerivSharpSanity.lean')).read()
+assert STMT_TEXT in SAN_ALL, 'the sanity file does not carry the statement text verbatim'
+SAN_BODY = SAN_ALL[SAN_ALL.index('namespace OscInt.API.SecondDerivSharpSanity'):]
+SAN = SAN_BODY.split('\n')
+S, A, N, K = ('SecondDerivSharpStatement', 'SecondDerivAttainedStatement', 'Vdc2ProfileBoundStatement',
+              'SecondDerivSevenHalvesStatement')
+THMS = {S: ['sharp_quadratic', 'sharp_scaled', 'sharp_degenerate', 'sharp_profile_large'],
+        A: ['attained_at', 'attained_zero'], N: ['profile_le', 'profile_within'],
+        K: ['sevenHalves_quadratic', 'sevenHalves_linear', 'sevenHalves_neg', 'sevenHalves_scaled',
+            'sevenHalves_ramp']}
+RATE = 'DerivIncreasesAtRate'
+RATE_DATA = ['scaled_increases', 'quad_increases']
+DECL = re.compile(r"^(?:noncomputable )?(theorem|def) ([A-Za-z_0-9']+)")
+
+
+def block(lines, name):
+    """The declaration `name` without its docstring, up to the next blank line."""
+    for i, l in enumerate(lines):
+        m = DECL.match(l)
+        if m and m.group(2) == name:
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {name}')
+
+
+def data_blocks():
+    """All declarations of the sanity file with docstrings, in file order: name -> (index, text)."""
+    res, cur = {}, []
+    for l in SAN[1:] + ['']:
+        if l.strip() == '':
+            for c in cur:
+                m = DECL.match(c)
+                if m:
+                    res[m.group(2)] = (len(res), '\n'.join(cur))
+                    break
+            cur = []
+        else:
+            cur.append(l)
+    return res
+
+
+DATA = data_blocks()
+THROUGH = {t for ts in THMS.values() for t in ts}
+
+
+def closure(text, skip=()):
+    """Unconditional data declarations of the sanity file used by `text`, transitively, in file order."""
+    need, todo = set(), [text]
+    while todo:
+        t = todo.pop()
+        for w in set(re.findall(r"[A-Za-z_][A-Za-z_0-9']*", t)):
+            if w in DATA and w not in need and w not in THROUGH and w not in skip:
+                need.add(w)
+                todo.append(DATA[w][1])
+    return [DATA[n][1] for n in sorted(need, key=lambda n: DATA[n][0])]
+
+
+HEADER = """import OscInt.Statements.VanDerCorput
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
+import Mathlib.Analysis.Real.Pi.Bounds
+
+"""
+OPEN = """
+namespace OscInt.API.SecondDerivSharpSanity
+
+open OscInt.Statements Set
+"""
+assert HEADER in SAN_ALL and OPEN in SAN_ALL
+
+# Proved in witness files only (never in the sanity file): a bound for A(w) for every w.
+WITNESS_ONLY = '''\
+/-- (Witness file only: it refutes a planted statement and proves nothing of the batch.) `A(w) ≤ 2B` when
+`2w ≤ B²`, `B ≥ 0`: the trivial bound `A(w) ≤ 2 √(2w)` from `|sin| ≤ 1`. -/
+theorem vdc2Profile_le_of_le (w B : ℝ) (hB : 0 ≤ B) (hw : 2 * w ≤ B ^ 2) : vdc2Profile w ≤ 2 * B := by
+  have h := intervalIntegral.norm_integral_le_of_norm_le_const (a := 0) (b := Real.sqrt (2 * w)) (C := 1)
+    (f := fun u : ℝ => Real.sin (w - u ^ 2 / 2)) (fun u _ => by simpa using Real.abs_sin_le_one _)
+  rw [sub_zero, abs_of_nonneg (Real.sqrt_nonneg _), one_mul, Real.norm_eq_abs] at h
+  have h1 := le_abs_self (∫ u in (0 : ℝ)..Real.sqrt (2 * w), Real.sin (w - u ^ 2 / 2))
+  have h2 : Real.sqrt (2 * w) ≤ B := (Real.sqrt_le_left hB).2 hw
+  unfold vdc2Profile
+  linarith
+
+/-- (Witness file only.) `A(w) ≤ 26/5` for `w ≤ π` (`2π < 6.3 ≤ (13/5)²`). -/
+theorem vdc2Profile_le_pi (w : ℝ) (hw : w ≤ Real.pi) : vdc2Profile w ≤ 26 / 5 := by
+  have h := vdc2Profile_le_of_le w (13 / 5) (by norm_num) (by nlinarith [Real.pi_lt_d2])
+  linarith'''
+
+
+def wrap(s):
+    """A docstring within 120 columns."""
+    return '\n'.join(textwrap.wrap('/-- ' + s + ' -/', 118))
+
+
+def doc(name, planted, note):
+    return wrap(f'PLANTED copy of `{name}`: {note.split(";")[0]}.' if planted else f'Unplanted copy of `{name}`.')
+
+
+def make(stmt, mut, planted, note, witness=None, wonly=False):
+    target, old, new, count = mut
+    in_def = target == RATE
+    defs = [target] if target == stmt else [target, stmt]
+    parts = []
+    for d in defs:
+        t = block(STMT, d)
+        if planted and d == target:
+            assert t.count(old) == count, (d, old, t.count(old))
+            t = t.replace(old, new)
+        parts.append(doc(d, planted and d == target, note) + '\n' + t)
+    renamed = list(defs)
+    if in_def:
+        parts += [DATA[th][1] for th in RATE_DATA]
+        renamed += RATE_DATA
+    if witness is None:
+        parts += [DATA[th][1] for th in THMS[stmt]]
+        renamed += THMS[stmt]
+    else:
+        parts.append(wrap(f'Witness: the planted copy is false ({note.split("witness: ")[-1]}).') + '\n' +
+                     f'theorem witness_not_{stmt} : ¬ {stmt} := {witness}')
+    text = '\n\n'.join(parts)
+    for n in sorted(renamed, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r'(?![\w])', 'P_' + n, text)
+    text = text.replace('copy of `P_', 'copy of `')
+    extra = [WITNESS_ONLY] if wonly else []
+    data = closure(text + '\n'.join(extra), skip=RATE_DATA if in_def else ())
+    return (HEADER + STMT_TEXT + OPEN + '\n' + '\n\n'.join(data + extra + [text]) +
+            '\n\nend OscInt.API.SecondDerivSharpSanity\n')
+
+
+def run(tag, text):
+    src = os.path.join(SCR, tag + '.lean')
+    open(src, 'w').write(text)
+    open(os.path.join(OUT, tag + '.lean.txt'), 'w').write(text)
+    r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                       cwd=REPO, capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+    errs = [l for l in out.split('\n') if ': error' in l]
+    return ('accepted' if r.returncode == 0 and not errs else 'rejected'), errs
+
+
+# Witness proofs of ¬ P_<statement> (the names of the statement and of DerivIncreasesAtRate are prefixed afterwards).
+QUAD = '''(fun x => x ^ 2 / 2) (fun x => x) (-(21 / 10)) (21 / 10) 1 (by norm_num) one_pos
+    (quad_hasDerivOn _ _)'''
+
+W_Sa = '''by
+  intro h
+  obtain ⟨w, hw, hle⟩ := h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (-(1 / 10)) (1 / 10) 100 (by norm_num)
+    (by norm_num) (scaled_hasDerivOn _ _ _) (scaled_increases _ _ _)
+  linarith [scaled_tenth_lower, cos_half_lower, vdc2Profile_le_pi w hw.2]'''
+
+W_Sb = '''by
+  intro h
+  obtain ⟨w, _, hle⟩ := h (fun _ => 0) (fun _ => 0) 0 1 0 zero_le_one (zero_hasDerivOn _ _) (zero_increases _ _)
+  rw [norm_integral_exp_zero 0 1 zero_le_one, Real.sqrt_zero, div_zero] at hle
+  norm_num at hle'''
+
+W_Sc = f'''by
+  intro h
+  obtain ⟨w, hw, hle⟩ := h {QUAD} (quad_increases _ _)
+  rw [Real.sqrt_one, div_one] at hle
+  linarith [quad_norm_lower, vdc2Profile_le_of_le w (3 / 2) (by norm_num) (by nlinarith [hw.2])]'''
+
+W_Sd = '''by
+  intro h
+  obtain ⟨w, hw, hle⟩ := h (fun _ => 0) (fun _ => 0) 0 6 1 (by norm_num) one_pos (zero_hasDerivOn _ _)
+  rw [norm_integral_exp_zero 0 6 (by norm_num), Real.sqrt_one, div_one] at hle
+  linarith [vdc2Profile_le_pi w hw.2]'''
+
+W_Sf = f'''by
+  intro h
+  obtain ⟨w, hw, hle⟩ := h {QUAD} (quad_increases _ _)
+  rw [Real.sqrt_one, div_one] at hle
+  linarith [quad_norm_lower, vdc2Profile_le_pi w hw.2]'''
+
+W_Aa = '''by
+  intro h
+  have h1 := h (1 / 2) (by norm_num)
+  rw [sqrt_two_mul_half] at h1
+  linarith [attained_half_check]'''
+
+W_Ab = '''by
+  intro h
+  have h1 := h (441 / 200) (by norm_num)
+  linarith [vdc2Profile_lower, quad_sqrt_norm_le]'''
+
+W_Na = '''by
+  intro h
+  have h1 := h (441 / 200) ⟨by norm_num, by linarith [Real.pi_gt_three]⟩
+  linarith [vdc2Profile_lower]'''
+
+W_Ka = '''by
+  intro h
+  have h1 := h (fun x => x ^ 2 / 2) (fun x => x) (fun _ => 1) (fun _ => 1) (fun _ => 0) (-(21 / 10)) (21 / 10) 1 0
+    (by norm_num) one_pos (quad_hasDerivOn _ _) (id_hasDerivOn _ _) (fun x _ => by simp)
+    (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, Real.one_rpow] at h1
+  have h2 : ‖∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤ 3 := by
+    simpa [oscInt] using h1
+  linarith [quad_norm_lower]'''
+
+W_Kb = '''by
+  intro h
+  have h1 := h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (fun _ => 100) (fun _ => 1) (fun _ => 0) (-(1 / 10))
+    (1 / 10) 100 0 (by norm_num) (by norm_num) (scaled_hasDerivOn _ _ _) (scaledLinear_hasDerivOn _ _ _)
+    (fun x _ => by simp) (sanity_amplitude_one _ _).1
+  have h3 : (7 / 2 : ℝ) * (100 : ℝ)⁻¹ * 1 = 7 / 200 := by norm_num
+  rw [(sanity_amplitude_one _ _).2, Real.rpow_neg_one, h3] at h1
+  have h2 : ‖∫ x in (-(1 / 10 : ℝ))..(1 / 10), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤
+      7 / 200 := by
+    simpa [oscInt] using h1
+  linarith [scaled_tenth_lower, cos_half_lower]'''
+
+W_Kc = '''by
+  intro h
+  have h1 := h (fun _ => 0) (fun _ => 0) (fun _ => 0) (fun _ => 1) (fun _ => 0) 0 1 100 0 zero_le_one
+    (by norm_num) (zero_hasDerivOn _ _) (zero_hasDerivOn _ _) (sanity_amplitude_one _ _).1
+  have h3 : (7 / 2 : ℝ) * (1 / 10) * 1 = 7 / 20 := by norm_num
+  rw [(sanity_amplitude_one _ _).2, rpow_neg_half_hundred, h3] at h1
+  have h2 : ‖∫ _x in (0 : ℝ)..1, Complex.exp (((0 : ℝ) : ℂ) * Complex.I)‖ ≤ 7 / 20 := by
+    simpa [oscInt] using h1
+  rw [norm_integral_exp_zero 0 1 zero_le_one] at h2
+  norm_num at h2'''
+
+W_Kd = '''by
+  intro h
+  have h1 := h (fun x => x ^ 2 / 2) (fun x => x) (fun _ => 1) (fun x => ((1 - x : ℝ) : ℂ)) (fun _ => -1) 0 1 1 0
+    zero_le_one one_pos (quad_hasDerivOn _ _) (id_hasDerivOn _ _) (fun x _ => by simp) ramp_amplitudeOn
+  have h3 : ‖(((1 : ℝ) - 1 : ℝ) : ℂ)‖ = 0 := by simp
+  rw [h3, mul_zero] at h1
+  linarith [ramp_lower]'''
+
+# (id, statement, (def to mutate, old, new, number of textual occurrences), witness, uses WITNESS_ONLY, note)
+A_OLD = ('vdc2Profile w ≤\n      ‖∫ x in (-Real.sqrt (2 * w))..(Real.sqrt (2 * w)), '
+         'Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖')
+A_NEW = ('‖∫ x in (-Real.sqrt (2 * w))..(Real.sqrt (2 * w)), '
+         'Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤\n      vdc2Profile w')
+PLANTS = [
+    ('VC2-S-a', S, (S, 'vdc2Profile w / Real.sqrt lam', 'vdc2Profile w / lam', 1), W_Sa, True,
+     '/ √λ ↦ / λ; witness: λ = 100, f = 100x²/2 on [−1/10, 1/10]: left side ≥ (2/10)·(7/8) = 0.175, planted bound '
+     'A(w)/100 ≤ 0.052'),
+    ('VC2-S-b', S, (S, ' 0 < lam →', '', 1), W_Sb, False,
+     '0 < λ dropped; witness: λ = 0, f = 0 on [0, 1] (left side 1, bound A(w)/√0 = 0 in Lean)'),
+    ('VC2-S-c', S, (S, 'Icc (0 : ℝ) Real.pi', 'Icc (0 : ℝ) 1', 1), W_Sc, True,
+     'range of w: [0, π] ↦ [0, 1]; witness: f = x²/2 on [−21/10, 21/10], λ = 1: left side ≥ 33/10, and A(w) ≤ '
+     '2√(2w) ≤ 3 for w ≤ 1'),
+    ('VC2-S-d', S, (S, " → DerivIncreasesAtRate f' a b lam →", ' →', 1), W_Sd, True,
+     'rate hypothesis dropped; witness: f = 0 on [0, 6], λ = 1: left side 6, and A(w) ≤ 26/5 for w ≤ π'),
+    ('VC2-S-e', S, (RATE, "lam * (y - x) ≤ f' y - f' x", "lam * (y - x) ≤ |f' y - f' x|", 1), None, False,
+     "f′(y) − f′(x) ↦ |f′(y) − f′(x)| in DerivIncreasesAtRate (the sign of the curvature)"),
+    ('VC2-S-f', S, (S, 'vdc2Profile w / Real.sqrt lam', 'vdc2Profile w / 2 / Real.sqrt lam', 1), W_Sf, True,
+     'A(w) ↦ A(w)/2; witness: f = x²/2 on [−21/10, 21/10], λ = 1: left side ≥ 33/10, and A(w)/2 ≤ 13/5 for w ≤ π'),
+    ('VC2-A-a', A, (A, A_OLD, A_NEW, 1), W_Aa, False,
+     '≤ reversed; witness: w = 1/2: A(1/2) ≤ 1 < 7/4 ≤ |∫_{−1}^{1} e^{ix²/2} dx| (attained_half_check)'),
+    ('VC2-A-b', A, (A, 'Real.sqrt (2 * w)', 'Real.sqrt w', 2), W_Ab, False,
+     'limits ±√(2w) ↦ ±√w; witness: w = 441/200: 33/10 ≤ A(w), and the planted integral is at most 2√w ≤ 3 '
+     '(quad_sqrt_norm_le)'),
+    ('VC2-N-a', N, (N, '7 / 2', '3', 1), W_Na, False,
+     'constant 7/2 ↦ 3; witness: w = 441/200 (33/10 ≤ A(w))'),
+    ('VC2-N-b', N, (N, 'Icc (0 : ℝ) Real.pi', 'Icc (0 : ℝ) (2 * Real.pi)', 1), None, False,
+     'range of w: [0, π] ↦ [0, 2π]'),
+    ('VC2-K-a', K, (K, '(7 / 2 : ℝ)', '(3 : ℝ)', 1), W_Ka, False,
+     'constant 7/2 ↦ 3; witness: φ = x²/2 on [−21/10, 21/10], μ = 1, ψ = 1 (left side ≥ 33/10)'),
+    ('VC2-K-b', K, (K, 'μ ^ (-(1 : ℝ) / 2)', 'μ ^ (-(1 : ℝ))', 1), W_Kb, False,
+     'μ^{−1/2} ↦ μ^{−1}; witness: φ = 100x²/2 on [−1/10, 1/10], μ = 100, ψ = 1: left side ≥ 0.175, planted bound '
+     '7/200'),
+    ('VC2-K-c', K, (K, " (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) →", '', 1), W_Kc, False,
+     'lower bound for |φ″| dropped; witness: φ = 0 on [0, 1], μ = 100, ψ = 1 (left side 1, bound 7/20)'),
+    ('VC2-K-d', K, (K, "ampNorm ψ ψ' a b", '‖ψ b‖', 1), W_Kd, False,
+     'ampNorm ↦ |ψ(b)|; witness: φ = x²/2, ψ(x) = 1 − x on [0, 1], μ = 1 (left side ≥ 7/16, planted bound 0)'),
+    ('VC2-K-e', K, (K, "μ ≤ |φ'' x|", "μ ≤ φ'' x", 1), None, False,
+     '|φ″| ↦ φ″ in the hypothesis'),
+]
+TRUE_WEAKENING = {
+    'VC2-S-e': 'the planted statement is equivalent to the draft one, so no datum can refute it. It has the weaker '
+               'hypothesis |f′(y) − f′(x)| ≥ λ(y − x), so it implies the draft statement; conversely it follows '
+               'from the draft statement: f′ is a derivative on (a, b), hence has the intermediate value property '
+               '(Darboux), and the planted hypothesis makes it injective, so f′ is strictly monotone on (a, b); if '
+               'it increases, the draft hypothesis holds for f; if it decreases, it holds for −f (derivative −f′, '
+               'continuous on [a, b]), and ∫ e^{−if} is the conjugate of ∫ e^{if}, with the same modulus. Not '
+               'proved in Lean (an implication between statements for general f is outside this layer). So the '
+               'sign of the curvature in VC2-S is a normalization, not a restriction; whether the statement '
+               'should say so is a fidelity question against docs/statements.md. The rejection of the copied scripts '
+               'is script-only: the copied proofs of scaled_increases and quad_increases are by `ring` and do not '
+               'close y − x = |y − x|; the planted rate lemmas themselves are true.',
+    'VC2-K-e': 'the planted hypothesis μ ≤ φ″(x) implies the draft hypothesis μ ≤ |φ″(x)| (x ≤ |x|), so the planted '
+               'statement is implied by the draft one and no datum can refute it. It is strictly weaker in '
+               'content: it says nothing about concave phases, which the unplanted sanity theorem '
+               'sevenHalves_neg (φ = −x²/2) uses; in the planted copy that script cannot supply 1 ≤ −1.',
+}
+NOT_DETECTED = {
+    'VC2-N-b': 'no witness, and none can exist if the planted statement is true, which it appears to be: it is a '
+               'strengthening of the draft statement (a larger range of w). Floating-point evidence '
+               '(scratch/numerics.py and scratch/numerics2.py, unregistered): the maximum of A over a grid of 4001 '
+               'points of [0, 2π] is 3.364317 at w = 2.2981, the same as on [0, π]; on [π, 2π] the largest value on '
+               'a grid of 1001 points is A(π) = 2.5310, and A falls to −1.916 at w = 5.51; over [0, 40] (grid of '
+               '2001 points) the maximum is again 3.3643 at w = 2.30. On paper, A(w) = Im(e^{iw} conj '
+               '∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx) is at most the modulus of the quadratic integral, whose supremum '
+               'over all symmetric intervals is 3.3643… (grid: 3.364314 at c = 2.145), so A ≤ 3.3643… < 7/2 on all '
+               'of [0, ∞). The copied scripts are accepted by the planted copy for the same reason '
+               '(441/200 ≤ 2π). That the range in VC2-N is [0, π] and not larger therefore rests on the fidelity '
+               'review against docs/statements.md; the data cannot see it.',
+}
+
+ONLY = sys.argv[5:]
+jobs = []
+for pid, stmt, mut, witness, wonly, note in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    jobs.append((pid, 'ok-' + pid, make(stmt, mut, False, note), 'accepted'))
+    jobs.append((pid, 'plant-' + pid, make(stmt, mut, True, note), None))
+    if witness:
+        jobs.append((pid, 'witness-' + pid, make(stmt, mut, True, note, witness, wonly), 'accepted'))
+results = [run(j[1], j[2]) for j in jobs]
+
+by_pid = {}
+for (pid, tag, _, w), (verdict, errs) in zip(jobs, results):
+    line = f"{tag}: {verdict}" + (f" (want {w}){'' if verdict == w else '  <-- MISMATCH'}" if w else ' (recorded)')
+    if errs:
+        line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+    by_pid.setdefault(pid, {})[tag.split('-')[0]] = (verdict, line)
+lines = []
+for pid, stmt, mut, witness, wonly, note in PLANTS:
+    if pid not in by_pid:
+        continue
+    r = by_pid[pid]
+    lines += [r[k][1] for k in ('ok', 'plant', 'witness') if k in r]
+    if witness:
+        v = ('DETECTED (witness compiled: ¬ planted statement)' if r['witness'][0] == 'accepted'
+             else 'WITNESS FAILED  <-- MISMATCH')
+    elif pid in TRUE_WEAKENING:
+        v = 'TRUE WEAKENING: ' + TRUE_WEAKENING[pid]
+    else:
+        v = 'NOT DETECTED: ' + NOT_DETECTED[pid]
+    lines.append(f'  {pid} [{note}]: {v}')
+open(os.path.join(OUT, 'SUMMARY.txt' if not ONLY else 'SUMMARY-partial.txt'), 'w').write('\n'.join(lines) + '\n')
+print('\n'.join(lines))

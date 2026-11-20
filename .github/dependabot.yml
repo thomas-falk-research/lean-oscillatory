@@ -3,8 +3,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Keeps the SHA-pinned GitHub Actions current (weekly, one grouped pull request). Dependabot rewrites the pinned SHA
-# and the version comment together. tools/ and numerics/ have no crates (docs/dependencies.md); Lean and Mathlib are
-# upgraded by the procedure in docs/policy.md, never by Dependabot.
+# and the version comment together. tools/ and numerics/ have no crates; rust/oscint-cert has five, pinned exactly
+# (docs/dependencies.md). The hash-pinned Python requirement files are covered too. Lean and Mathlib are upgraded by
+# the procedure in docs/policy.md, never by Dependabot.
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -17,3 +18,18 @@ updates:
         patterns: ["*"]
     commit-message:
       prefix: "ci"
+  - package-ecosystem: cargo
+    directory: "/rust/oscint-cert"
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "deps"
+  - package-ecosystem: pip
+    directories: ["/tools", "/numerics/census", "/numerics/review", "/experiments/ctqw-chain/hardware", "/python"]
+    schedule:
+      interval: monthly
+    groups:
+      python:
+        patterns: ["*"]
+    commit-message:
+      prefix: "deps"

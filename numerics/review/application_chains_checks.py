@@ -177,3 +177,4 @@ for T in (None, 1, 2, 3):
 rep("Order: successive differences shrink by about 4 (second order) with T on the grid", all(3.9 < r < 4.1 for r in ratios),
     ratios=[round(r, 3) for r in ratios])
 print("RESULT", "PASS" if all(res.values()) else "FAIL")
+sys.exit(0 if all(res.values()) else 1)   # a failed check must fail the process (external review of VC2, 2026-11-19)

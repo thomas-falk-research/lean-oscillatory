@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Roadmap
 
 From a machine-checked research library to one that others can depend on: correct, usable, maintained, citable.
@@ -9,6 +15,44 @@ Downstream feedback (2026-11-06, from an independent session working in the same
 library) is folded in below; items it raised are marked *(downstream)*. Its top five, in its order: explicit
 constants for the 2D results; local smoothness hypotheses; asymptotic expansions; parametric uniformity everywhere;
 a stable way to depend on the library. It asked not to change the trust chain.
+
+## State on 2026-11-19
+A dated summary; the sections below keep their own dates and are not rewritten. Statuses are in `docs/STATUS.md`.
+
+Done:
+- 86 pinned statements, each with the status "machine-checked as stated" in `docs/STATUS.md`; the last 21 (batches
+  PA, KL, FR, VC2 and HW, session 13) rest on the isolated replay of fafd5b8 of 2026-11-19
+  (`docs/replay/2026-11-19-session13-verify-all.txt`).
+- Releases v0.2.0 to v0.6.0 are published. v0.6.0 has 65 statements; the 21 of session 13 are not in a release and
+  are listed in `CHANGELOG.md` under "Unreleased".
+- What session 13 worked on was chosen from `docs/design/unlock-map.md` (its section 7, a ranking by the lead), not
+  by the census I1, which is not registered. The owner's direction is recorded in the session log
+  (`docs/progress/2026-11-16-session13-log.md`, row 20:15 of 2026-11-16: the owner parked the hardware run and asked
+  for the time to go to new mathematics). The rule of the industry programme below, "which theorems come next is
+  decided by evidence across many models", was not applied to these five batches.
+- Owner decisions of 2026-11-19 (`docs/decisions/2026-11-19-step5-waiver-six-batches.md`): a one-time waiver of
+  CONTRIBUTING step 5 for batches D4U, PA, KL, FR, HW and VC2 (23 rows of `docs/STATUS.md`); and the wording "before
+  any Lean proof of it exists" for the order sentence of `CONTRIBUTING.md`.
+- Of I5: a draft contract, version 0, and two checkers exist, experimental and not published (see I5).
+
+Open:
+- The full `make verify-all` with the corrected replay driver has not finished and is to be rerun; then its record
+  under `docs/replay/`, the Replay cells of `docs/STATUS.md`, and `make stamp` (`docs/STATUS.md`, paragraph "External
+  reviews of 2026-11-19").
+- The Bitcoin anchor of the stamp `20261119T124850Z-9ae784e80e32` (`anchors/ots/LOG.txt`: pending).
+- The next release, which would carry the 21 statements: the owner's decision (`docs/policy.md`).
+- Owner items recorded in `docs/HANDOFF.md`: a licence grant for the externally drafted LS proof files; whether the
+  packet SHA-256 prefixes stay; the earlier prompts and verbatim reports in the history of `main`; the GitHub
+  environment and secrets for the registered hardware run; eligibility for the funding application (cut-off
+  1 December 2026).
+- The programme below: I1, I2, I3 (global assembly with A3 points, I3a, I3b), I4, I5 (the freeze), I6, I7.
+- Of `docs/design/unlock-map.md`, section 7: item 4 exists only in experimental, unpublished form
+  (`python/README.md`); item 5 is registered and not run (a submission needs the owner's word, `docs/HANDOFF.md`);
+  item 7 in part (the first-derivative test with its sharp constant 2 is not stated: `docs/statements.md`, Batch VC2,
+  modelling choice 4); items 8, 9 and 10.
+- Whether the remaining items of the unlock map or I1 to I3 come first is not decided on this page: an owner decision.
+- No machine-read list says which lemmas a proved statement depends on (`docs/HANDOFF.md`, batch HW).
+- The standing hygiene list and sections 1 to 6 below, where not ticked.
 
 ## Session-7 order (owner, 2026-11-08)
 Agreed in chat after reconciling the session-6 brief with an external review of `main` at 96f55a2. Research, in order:
@@ -42,8 +86,11 @@ another. Nothing here is a capability until its evidence exists (`docs/STATUS.md
       are on `main`. #10's `verify` run on its final head (run 42667383698) passed all 17 jobs, but its `verdict`
       job was never created and the run is marked failed with no failed job (GitHub refused a re-run); the owner merged
       it on those 17 jobs. The `verify` run on `main` after the merge is the check of the merged tree.
-- [ ] **Release v0.5.0** (prepared 2026-11-13, owner publishes): batches A3, LE2 and HC, plus the stated LS batch
+- [x] **Release v0.5.0** (prepared 2026-11-13, owner publishes): batches A3, LE2 and HC, plus the stated LS batch
       (`docs/release-notes/v0.5.0.md`; `tools/release_preflight.sh 0.5.0` passes on the branch).
+      *Published 2026-11-13* (`docs/release-notes/v0.5.0.commit`; `docs/HANDOFF.md`, session 11).
+- [x] **Release v0.6.0** (published 2026-11-15): batch LS proved, batch D4U (`docs/release-notes/v0.6.0.md`,
+      `docs/release-notes/v0.6.0.commit`; `CHANGELOG.md`).
 - [ ] **I1 Singularity census of industry dispersion relations.** Which degenerate points (A3 cusps, A≥4, D4, D≥5, E/J,
       non-isolated sets, non-smooth points) occur in 18 2D models (nine weighted families, plus one unweighted re-check) across five domains (lattice materials,
       two-band topological models, quantum walks, numerical schemes, lattice waves), classified exactly by two
@@ -64,7 +111,7 @@ another. Nothing here is a capability until its evidence exists (`docs/STATUS.md
       memory, proof size) recorded against a hand proof. A separate pre-registration comes before the first run. No
       copy of LeanCert's engine into OscInt unless a limitation is demonstrated.
 - [ ] **I3 Theorem programme, ordered by I1** (provisional until I1's result): a general k-th-order van der Corput
-      bound (only k = 1, 2, 3 exist: S1.1–S1.3); the local A3 bound `t^{−3/4}` uniform in the linear term (route to be
+      bound (done 2026-11-13, see below; when this was written only k = 1, 2, 3 existed: S1.1–S1.3); the local A3 bound `t^{−3/4}` uniform in the linear term (route to be
       chosen at registration: transverse stationary phase plus fourth-order van der Corput, or a parametric normal
       form); global assembly with finitely many A3 points; leading terms with remainders (SAR and seismic steps use the
       leading term); nondegenerate stationary phase in dimension n; non-endpoint Strichartz; the Ikromov–Müller
@@ -142,6 +189,9 @@ another. Nothing here is a capability until its evidence exists (`docs/STATUS.md
       further languages come when a consumer asks. Trust boundary, fixed now: only the defined checker
       (`tools/oscint_check.py` or its successor) may give a result the status CERTIFIED; adapters transport and
       display evidence and can never confer that status.
+  - *2026-11-16 (session 13), what exists:* a draft contract, version 0 (`docs/contract/certificate-v0.md`), a
+    Python reference checker (`python/oscint_cert/`) and a second, independent checker in Rust (`rust/oscint-cert/`);
+    experimental and not published (`CHANGELOG.md`, "Unreleased", "Added"). The item stays open.
 - [ ] **I6 Credibility that adopters check first:** the human expert reading of the statements (owner item, §6; today
       every fidelity reading is by AI referees), a preprint, the Reservoir listing (§3), the first Mathlib pull request
       (§3).
@@ -188,7 +238,8 @@ here is worked on. It moves to the roadmap only when it passes all four gates:
 After I1's result, every row is re-ranked or dropped.
 
 Promotions so far (for comparison):
-- I3a passed gate 1 because S5.1′ needs it.
+- I3a was promoted on the owner's decision of 2026-11-10. The reason first given, that S5.1′ needs it, did not hold
+  (I3a above, "Why first"; corrected here 2026-11-19).
 - I7 passed on the owner's decision and its engineering value alone. Its stop rule stands in for gate 1.
 
 | Candidate | Source | Evidence so far | Waiting on |
@@ -201,7 +252,7 @@ Promotions so far (for comparison):
 | Finite-type fallback: on compact K ⊂ ℝ^d, if at every point some directional derivative of order 2…N has size ≥ δ, then the integral is ≤ C‖a‖_{C¹} t^{−1/N}, uniformly in the linear term | external audit §3/§4 | classical (Stein 1993, Ch. VIII §2, cited from memory); its 1D ingredient is S1.k, so it follows from S1.k with Fubini and a partition, with constants exponential in d | gate 1: would give a weak baseline bound for CENSUS models outside the catalogue; decided by I1's result; prior art to compare: Greenblatt, Rev. Mat. Iberoam. 41 (2025), uniform in linear perturbations (abstract read) |
 | Newton-polyhedron (Varchenko-type) bounds built on the formalized Hironaka resolution (resolutionorg/hironaka v1.0.0, 2026-10-06; char 0, algebraic and real/complex-analytic; project claims no `sorry`, only the three standard axioms; not verified here) | external audit §4, memo §7 | existence of resolution is not an effective bound; the 2D route (Ikromov–Müller, Greenblatt) uses explicit Newton-polygon coordinates instead; Lean toolchain compatibility not checked | gates 1 and 3: only if I1 selects finite-type families beyond A3/D4; then a toolchain and axiom audit of the dependency |
 | Matrix-valued propagators through gap closings (band crossings) | external audit §3 table, memo §6 F; external follow-up 2026-11-10 (QWZ at m = 2) | the vector-valued transfer (batch VT) assumes a fixed phase. Hand proofs for QWZ at the critical mass m = 2: a localized sup_x bound t^{−4/5}, sharp on eight rays with coefficient 𝒞 ≈ 9.934, and the next term t^{−4/3} on the rays where the bands cancel. Re-derived by a fresh-context checker (same model family as the lead) and checked by direct full-matrix quadrature (floating point; the sup over x only up to t = 8000); the uniform argument's constants and the support radius ρ₀ were not checked; constants existential (`review/2026-11-10-external-followup-answers.md`) | gate 1: no consumer or roadmap item needs it yet. Gate 2 met for QWZ m = 2 only, at the level of a hand proof re-derived by the same model family. Gate 4: owner decided 2026-11-10 not to freeze now |
-| Small-data nonlinear lattice dynamics (discrete NLS): decay `(1 + t)^{−d/3}` of small solutions on ℤ^d whenever (d/3)(2p − 1) > 1 (d = 1: p ≥ 3; d = 2, 3: p ≥ 2; d ≥ 4: p ≥ 1), from the explicit ℓ¹ → ℓ^∞ bounds of T0E′/TdE′ ("bet 2", owner request 2026-11-12) | lead, session 10 | *Owner decision 2026-11-12:* its first step, the kernel-to-group identification (B1), is promoted as batch LS (`docs/statements.md`, Batch LS). External research packet 2026-11-12 (`review/2026-11-12-DNLS-packet-answers.md`): kernel-to-group identification (B1), global ℓ² well-posedness with mass and Duhamel (B2) and explicit small-data decay constants (B3), hand proofs checked by the lead; Lean statements in the packet do not elaborate; prior art Stefanov–Kevrekidis Theorem 3 covers the range qualitatively; earlier: scoping `docs/design/dnls-scoping.md`: a decay bootstrap needing no Strichartz estimate (Route 1); condition corrected 2026-11-12 after the HC adversarial review (`review/2026-11-12-HC-post-proof-answers.md`); only the kernel bound is machine-checked, the kernel-to-group identification is a planned lemma; prior art Stefanov–Kevrekidis 2005 (CITED-ABSTRACT); no Lean formalisation of Strichartz or a dispersive nonlinear PDE found | gate 1: a named consumer or owner decision; gate 2: re-derive Route 1 with explicit constants; then a route document for ℓ² well-posedness and the kernel-to-group identification (the go/no-go) |
+| Small-data nonlinear lattice dynamics (discrete NLS): decay `(1 + t)^{−d/3}` of small solutions on ℤ^d whenever (d/3)(2p − 1) > 1 (d = 1: p ≥ 3; d = 2, 3: p ≥ 2; d ≥ 4: p ≥ 1), from the explicit ℓ¹ → ℓ^∞ bounds of T0E′/TdE′ ("bet 2", owner request 2026-11-12) | lead, session 10 | *Owner decision 2026-11-12:* its first step, the kernel-to-group identification (B1), is promoted as batch LS (`docs/statements.md`, Batch LS). External research packet 2026-11-12 (`review/2026-11-12-DNLS-packet-answers.md`): kernel-to-group identification (B1), global ℓ² well-posedness with mass and Duhamel (B2) and explicit small-data decay constants (B3), hand proofs checked by the lead; Lean statements in the packet do not elaborate; prior art Stefanov–Kevrekidis Theorem 3 covers the range qualitatively; earlier: scoping `docs/design/dnls-scoping.md`: a decay bootstrap needing no Strichartz estimate (Route 1); condition corrected 2026-11-12 after the HC adversarial review (`review/2026-11-12-HC-post-proof-answers.md`); only the kernel bound is machine-checked, the kernel-to-group identification is a planned lemma (since 2026-11-14 it is machine-checked: LS-K, `docs/STATUS.md`); prior art Stefanov–Kevrekidis 2005 (CITED-ABSTRACT); no Lean formalisation of Strichartz or a dispersive nonlinear PDE found | gate 1: a named consumer or owner decision; gate 2: re-derive Route 1 with explicit constants; then a route document for ℓ² well-posedness and the kernel-to-group identification (the go/no-go) |
 | Explicit cube-root bound for the 1D discrete Klein–Gordon kernel: \|∫ e^{i(t√(m² + 2 − 2cos k) + ξk)} dk\| ≤ C* (a_m\|t\|)^{−1/3} for every m ≥ 0, a_m the maximum group velocity; uniform on m ∈ [0, m₀]; mass factor necessary | external reviewer, R2 packet 2026-11-12 (`review/2026-11-12-R2-KG-answers.md`) | hand proof re-derived by the lead (new parts) and a fresh-context referee: TRUE; the five envelopes are those of LE2, so the scalar half is already machine-checked for the cosine kernel; numerics `numerics/results-kg-checks-2026-11-12.txt`; rate and maximum velocity classical (Stefanov–Kevrekidis 2005 at mass 1, Egorova–Kopylova–Teschl 2015, read by the lead) | gate 1 (need: no consumer yet) and gate 4 (owner); then a batch: freeze, generalise the LE2 scalar layer, prove the KG level-set geometry, pieces and the limit m → 0 |
 | Two-port memory consumer: an emitter coupled with opposite signs to sites ±1 of the cosine chain has memory kernel g²·2J₁(2Jt)/(2Jt) (one periodic integration by parts from `latticeKernel1 z 1`), hence the integrable envelope g² min{1, (C*/π)(2Jt)^{−4/3}} from T0E′, and a finite-horizon bound Q/(1 − Q) on the error of truncating the memory; with the same-sign, phase-error and zero-hopping controls | external reviewer, application-chains dossier 2026-11-13 (`review/2026-11-13-application-chains-answers.md`) | hand proofs checked by the lead and a fresh-context referee: TRUE; numerics `numerics/results-application-chains-checks-2026-11-13.txt`; the kernel is classical (Plyukhin–Schofield 2001 Eq. (60)) and the same-sign two-point kernel is in print (Zhang et al. 2023); the continuous truncation bound has a discrete analogue (Jørgensen–Pollock 2020 Eq. (22)) | gate 1 (a named consumer: an emitter or lead simulation with a declared tolerance) and gate 4 (owner); then a consumer example: the integration-by-parts identity and the envelope in Lean, the residual bound by hand or later |
 | Imaging block consumer: in a normalised scalar SAR model (track (s, 0, 1), band ρ ∈ [1, 2], taper (1 − u²)³), off-diagonal blocks of radius 1/20 about (0, 2, 0) and (0, 1, 0) satisfy \|K_t\|/K_t(x, x) ≤ 336/(5√5) t^{−2} < 10^{−3} for t ≥ 174; mirror pairs and hard windows as controls | external reviewer, application-chains dossier 2026-11-13 (`review/2026-11-13-application-chains-answers.md`) | hand proof checked by the lead (exact constants by SymPy) and a fresh-context referee: TRUE; elementary (two integrations by parts in frequency), no novelty claimed | gate 1 and gate 4; then a consumer example from S1-type interval bounds |
@@ -286,8 +337,8 @@ trust chain.
       (2π/m)^{n/2} |det D²Ψ|^{-1/2} e^{iπ sgn/4} e^{imΨ(k₀)} A(k₀) + O(m^{-n/2-1}), and the Airy leading term for folds.
 - [ ] **Front-end theorems** in Mathlib idioms (batch 1 done 2026-11-07: F1 `ContDiff`-plus-compact-support amplitudes,
       F2 the D4 limit with its closed-form constant, entry point `OscInt/API.lean`; batch 2 done 2026-11-07: S2.1, S2.2,
-      S3, S4.1′ front ends for one phase, `docs/STATUS.md`; next: family versions,
-      `iteratedFDeriv` conversions, `EuclideanSpace`) (integrals over `EuclideanSpace ℝ (Fin n)`, `ContDiff` plus
+      S3, S4.1′ front ends for one phase, `docs/STATUS.md`; family versions done 2026-11-08, front-end batch 3;
+      `iteratedFDeriv` conversions done, C1 and C2; next: `EuclideanSpace`) (integrals over `EuclideanSpace ℝ (Fin n)`, `ContDiff` plus
       `HasCompactSupport` amplitudes, norms via `iteratedFDeriv`).
 - [x] **Conversion lemmas** *(downstream)*, front-end batch 2 (2026-11-07; C1–C9, C7′; `docs/STATUS.md`, record
       `docs/replay/2026-11-07-session4-final-verify-all.txt`), from standard formulations (a Hessian as a `Matrix`, rank and kernel
@@ -297,14 +348,17 @@ trust chain.
       `FoldOrNondeg`, `GradLower` and `AmpBound` for concrete polynomial phases and standard bumps, with failure
       messages naming the condition that fails rather than an unsolved goal.
 - [ ] **Worked examples that double as non-vacuity checks** *(downstream)*: free Schrödinger decay, Bessel-function
-      decay, an Airy-type fold, in `examples/` (planned).
+      decay, an Airy-type fold, in `examples/` (planned when written; `examples/consumer/` now has 21 files, listed
+      in `docs/cookbook.md` and `docs/applications.md`; this item has not been re-assessed against them).
 - [x] **Sharpness lemma** *(downstream)* (SH `OscInt.API.sharpness`, batch GD; applied, with T6L, to the lattice kernel, `examples/consumer/ConsumerLattice.lean`; replay `docs/replay/2026-11-08-session6-GD-verify-all.txt`): a limit with a nonzero constant gives a matching lower bound on the decay
       rate (generalising the bite checks of S4.2 + S4.3).
 - [ ] **Vector-valued amplitudes** *(downstream)* in a normed space (e.g. matrices), so spectral projections can be
-      used directly instead of entry by entry.
+      used directly instead of entry by entry. Done for the four global theorems (batch VT, 2026-11-09: GD-C-V, GD-V,
+      GD-F-V, GD-N-V, `docs/STATUS.md`); open for the local theorems.
 - [ ] **Generality** *(downstream)*: dimension n for S2.1 and S2.2 (the largest audience gain); further singularity
       types — cusps (A₃, m^{-3/4}), D₅, E₆ — or, more ambitiously, the two-dimensional height / Newton-polygon bound
-      of Ikromov–Müller, which covers these at once.
+      of Ikromov–Müller, which covers these at once. The local cusp bound is done (S5.1, S5.1′, 2026-11-13,
+      `docs/STATUS.md`); the rest is open.
 
 ## 3. Interoperability and packaging
 - [ ] **A stable way to depend on the library** *(downstream)*:
@@ -322,9 +376,11 @@ trust chain.
 - [ ] **Mathlib version policy**: a documented bump procedure; a scheduled CI job building against a newer Mathlib
       that warns early. Statement commitments depend on Mathlib's definitions, so a bump changes them: decide (and
       record) the re-freeze rule, e.g. a machine-checked equivalence between each new statement and its stamped
-      predecessor, then a new stamp and pin.
+      predecessor, then a new stamp and pin. The bump procedure and the re-freeze rule are now in `docs/policy.md`
+      ("Mathlib and toolchain upgrades"), which says that such an equivalence is not available across a Mathlib
+      version; open here: the scheduled CI job.
 - [ ] Mathlib `module` syntax for the library files (needed to upstream; the statement files can only change with a
-      re-freeze). Until then, `allowNonModules = true` in `lakefile.toml` (§4) would declare the mix.
+      re-freeze). Until then, `allowNonModules = true` in `lakefile.toml` (§4) declares the mix.
 - [x] Stable public names and a deprecation policy; semantic versions (`docs/policy.md`, from v0.3.0).
 - [ ] **owner** Upstream the general lemmas listed in `docs/upstream.md` to Mathlib *(downstream: partitions of unity
       with compact support, the polar-coordinates integral and the uniform Leibniz bounds first)*.
@@ -352,7 +408,10 @@ trust chain.
 - [ ] **owner** Choose the first application. Candidates (the brief's deferred list and downstream requests):
   - [ ] **periodic and lattice settings** *(downstream)*: integrals over the torus with periodic amplitudes (the
         kernels of discrete-time dispersive problems: lattice Schrödinger, discrete wave equations, quantum walks),
-        and exponential-sum versions of van der Corput;
+        and exponential-sum versions of van der Corput. Done in part (`docs/STATUS.md`): torus unfolding (T1), the
+        lattice Schrödinger kernels and group (T6, T6L, TdE′, batch LS), the Hadamard walk on the line (batch HW), the
+        Kusmin–Landau inequality for sums (batch KL). Not stated: discrete wave equations, quantum walks in two
+        dimensions, the second- and third-derivative tests for sums;
   - [ ] **from decay to Strichartz** *(downstream)*: an abstract Keel–Tao theorem for continuous and discrete time,
         with the Hardy–Littlewood–Sobolev input;
   - [ ] decay for lattice Schrödinger operators on ℤ²: done for the free discrete Laplacian (T6, T6L: kernel `O(t^{-2/3})` uniformly in `x` for `t ≥ 1`, sharp; ℓ¹ → ℓ^∞ for finitely supported data in `examples/consumer/ConsumerLattice.lean`; replay `docs/replay/2026-11-08-session6-GD-verify-all.txt`); with a potential: open.
@@ -364,7 +423,10 @@ trust chain.
       `OscInt/Statements/` (today all fidelity readings are by AI referees).
 - [ ] **owner** Mathlib built from source on a second machine (`lake build Mathlib` without the cache, then
       `make commit`), recorded in `docs/toolchain.md`.
-- [ ] Upgrade the OpenTimestamps proofs in `stamps/` from pending to Bitcoin-attested, and verify them.
+- [ ] Upgrade the OpenTimestamps proofs in `stamps/` from pending to Bitcoin-attested, and verify them. Carried out
+      since 2026-11-16 as upgraded copies under `anchors/ots/` (`make anchors`; the stamp directories are not rewritten,
+      `docs/lessons.md` rule 21); on 2026-11-19, 31 of 32 stamps are anchored and
+      `20261119T124850Z-9ae784e80e32` is pending (`anchors/ots/LOG.txt`).
 - [ ] **owner** Branch protection on `main` requiring CI (checks named in `docs/decisions/2026-11-08-ci-release-review.md` §4). [x] Dependabot for the SHA-pinned GitHub Actions (`.github/dependabot.yml`, session 6).
 - [ ] **First release** (`v0.2.0`; steps 1–4 done, step 5 open), in this order:
   1. [x] author name and ORCID iD in `CITATION.cff` and `.zenodo.json`; ORCID badge in `README.md`;

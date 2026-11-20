@@ -76,3 +76,7 @@ Location of the first error of each plant (lead's reading of the .out files):
 - GD-D-in-K: discharge of ↑D ⊆ K (goal 3/4 ≤ 1/4, i.e. 0 ∈ K, false)
 - GD-D4-at-zero: discharge of the Hessian condition at 0 instead of (1, 1) (false: hypShift_hessian_zero_ne)
 - T1-support-400, T1-only-continuous: the conclusion (torusUnfold_moments now returns the smoothness and support conjuncts)
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

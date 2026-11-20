@@ -353,3 +353,7 @@ digicert: Verification: OK; Time stamp: Nov  6 08:16:37 2026 GMT
 sectigo: Verification: OK; Time stamp: Nov  6 08:16:37 2026 GMT
 opentimestamps a.pool: proof file commits to the manifest digest (attestation not checked here)
 opentimestamps b.pool: proof file commits to the manifest digest (attestation not checked here)
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

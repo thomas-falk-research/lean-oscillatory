@@ -1,0 +1,57 @@
+# Proof route for batch KL (KL-D, KL-C, KL-F)
+
+Written by the lead on paper before the blind pre-proof reviews were answered and kept outside the repository until
+the answers were stamped (`stamps/20261116T152412Z-9c9a8767b806`, 2026-11-16 15:24:19Z; rule 1; no proof code here).
+Committed after that stamp, with the blueprint section revised once (two Facts instead of three: the weight and
+summation-by-parts lemmas are internal to the core part). Statements: `docs/statements.md`, Batch KL; Lean text
+`OscInt/Statements/KusminLandau.lean`. The proof is Landau's (1928) as rendered by Hiary–Patel–Yang (section 4) and
+Elkies's notes: summation by parts with collinear weights. Status of this page: a route on paper (L3 when refereed),
+not a proof record.
+
+Notation: e(x) = e^{2πix}; d_n = c_{n+1} − c_n for n < N; E_n = e(c_n).
+
+## Part K-reduce (k = 0)
+Replace c_n by c_n − k·n: every E_n is unchanged (e(k n) = 1: `Complex.exp_int_mul_two_pi_mul_I` after casts), the
+differences become d_n − k ∈ [λ, 1 − λ], monotonicity is unchanged. So assume k = 0.
+
+## Part K-weights
+For x ∈ (0, 1): `e(x) ≠ 1`, and with `ζ(x) = 1/(e(x) − 1)`:
+`ζ(x) = −(1 + i cot(πx))/2`, hence (i) `|ζ(x)| = 1/(2 sin πx)`, (ii) `|1 + ζ(x)| = 1/(2 sin πx)`,
+(iii) `ζ(x) − ζ(y) = i (cot πy − cot πx)`, so `|ζ(x) − ζ(y)| = |cot πx − cot πy|/2`.
+(From `e(x) − 1 = e(x/2) · 2i sin(πx)`.) On (0, 1), cot(π·) is strictly decreasing, so for a monotone sequence
+x_0, …, x_{N−1} in [λ, 1 − λ] the sum `Σ_{n=1}^{N−1} |cot πx_n − cot πx_{n−1}|` telescopes to `|cot πx_{N−1} − cot πx_0|`.
+
+## Part K-abel (KL-D for N ≥ 1, k = 0)
+`E_n = ζ(d_n)(E_{n+1} − E_n)` for n < N. Therefore
+`Σ_{n=0}^{N} E_n = E_N + Σ_{n=0}^{N−1} ζ(d_n)(E_{n+1} − E_n)
+               = (1 + ζ(d_{N−1})) E_N − ζ(d_0) E_0 − Σ_{n=1}^{N−1} (ζ(d_n) − ζ(d_{n−1})) E_n`
+(summation by parts; `Finset.sum_range_by_parts` or a direct induction on N, which is cleaner here). With |E_n| = 1:
+`|S| ≤ 1/(2 sin πd_{N−1}) + 1/(2 sin πd_0) + |cot πd_{N−1} − cot πd_0|/2`.
+If d is nondecreasing: cot πd_0 ≥ cot πd_{N−1}, and the bound is
+`(1/2)(1/sin πd_0 + cot πd_0) + (1/2)(1/sin πd_{N−1} − cot πd_{N−1}) = (1/2) cot(πd_0/2) + (1/2) tan(πd_{N−1}/2)`
+(half-angle identities `1/sin x + cot x = tan(x/2)`, `1/sin x − cot x = cot(x/2)` for 0 < x < π).
+Since λ ≤ d_0 and d_{N−1} ≤ 1 − λ: `cot(πd_0/2) ≤ cot(πλ/2)` and `tan(πd_{N−1}/2) ≤ tan(π(1 − λ)/2) = cot(πλ/2)`.
+So |S| ≤ cot(πλ/2). If d is nonincreasing the roles of d_0 and d_{N−1} swap and the same bound results.
+N = 0: |S| = 1 ≤ cot(πλ/2) because πλ/2 ≤ π/4.
+
+## Part K-two (KL-C from KL-D)
+`cot x ≤ 1/x` for 0 < x ≤ π/2 (from `x ≤ sin x` for 0 < x < π/2, so `cos x / sin x ≤ 1/x`; at x = π/2, cot = 0). With x = πλ/2:
+`cot(πλ/2) ≤ 2/(πλ)`.
+
+## Part K-deriv (KL-F from KL-D)
+Let m = ⌈a⌉, M = ⌊b⌋. If m > M the sum is empty. Otherwise put c_j = f(m + j), 0 ≤ j ≤ N := M − m (reindex
+`Finset.Icc m M` by j ↦ m + j). For j < N, [m + j, m + j + 1] ⊆ [a, b], f is continuous on it and differentiable in its
+interior, so by the mean value theorem (`exists_hasDerivAt_eq_slope`) d_j = f′(ξ_j) with ξ_j ∈ [m + j, m + j + 1] ⊆ [a, b];
+hence d_j ∈ [k + λ, k + 1 − λ], and ξ_j < ξ_{j+1} gives the monotonicity of d from that of f′ on (a, b). Apply KL-D.
+
+## Blueprint and assembly
+`Blueprint/KusminLandau.lean` (definitions only):
+- `KLCoreFacts` (KL-D with k = 0: K-weights and K-abel; the weight identities and the summation-by-parts identity are
+  lemmas inside this part);
+- `KLDerivFacts` (`KusminLandauStatement → KusminLandauDerivStatement`: K-deriv).
+Assembly `OscInt/Front/KusminLandauAssembly.lean`, by the lead, compiled before any part is proved:
+- `kusminLandau_of : KLCoreFacts → KusminLandauStatement` (K-reduce);
+- `kusminLandauTwoOverPi_of : KusminLandauStatement → KusminLandauTwoOverPiStatement` (K-two);
+- `kusminLandauDeriv_of : KLDerivFacts → KusminLandauStatement → KusminLandauDerivStatement`.
+Parts for proof agents: `KLCoreFacts` (agent 1), `KLDerivFacts` (agent 2).
+

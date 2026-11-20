@@ -43,3 +43,7 @@ bound is at most 0.131.
 6. **"In every dimension" should be "every d ≥ 1" (A NIT 5).** At d = 0 both sides equal the trivial bound. A
    clarification is added to `docs/statements.md`.
 7. **The prior-art verdict ANTICIPATED is right (A).** The arXiv abstract of Stefanov–Kevrekidis states the rate.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

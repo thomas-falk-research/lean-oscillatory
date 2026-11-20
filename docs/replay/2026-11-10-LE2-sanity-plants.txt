@@ -125,3 +125,7 @@ plant-T0Ep-rate-faster-NOTDETECTED: rejected (recorded)
 #   second run (committed in bf8af89) 7c4e3d556487334a43001ed3ccb9db12743c217f2fc9035539ae67e73485aa44. That the runs used
 #   exactly these bytes rests on the lead's session record (no edit between run and commit); the run itself did not hash
 #   the file.
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

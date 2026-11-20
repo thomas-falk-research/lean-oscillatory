@@ -96,3 +96,7 @@ proof-of-value outside the core. The owner adopted both (CENSUS spec K-QWZm; ROA
 **CHECKED BY HAND, classical**: for a translation-invariant lattice operator with kernel `h(x − y)` and symbol
 `Ĥ(k) = Σ_n h(n) e^{−ink}`, conjugation by `e^{η·x}` gives kernel `h(n) e^{η·n}`, that is, symbol `Ĥ(k + iη)`. So C5's
 complex shift and D1's weight conjugation are one mechanism, the Combes–Thomas one.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

@@ -1601,6 +1601,520 @@
    ],
    "snippet": "example : D4LimitOffsetStatement := OscInt.API.d4LimitOffset",
    "status": "see docs/STATUS.md (row S4.2O)"
+  },
+  {
+   "label": "PA-C",
+   "name": "OscInt.Statements.FourierCoeffStripStatement",
+   "proved_by": "OscInt.API.fourierCoeffStrip",
+   "summary": "Fourier coefficients of a periodic function analytic in a strip decay exponentially: `|∫_0^{2π} v(θ) e^{−ikθ} dθ| ≤ 2π M e^{−a|k|}`.",
+   "file": "OscInt/Statements/PeriodicAnalytic.lean",
+   "commitment": "ce659a0d4cd324ccd1227f413b8eabc7c2225bab08b4db1e836b338ee7795aee",
+   "stamp": "stamps/20261116T130956Z-276d8d7f9605",
+   "lean_statement": "def FourierCoeffStripStatement : Prop :=\n  ∀ (v : ℂ → ℂ) (a M : ℝ) (k : ℤ), 0 < a → PeriodicAnalyticOn v a M →\n    ‖∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ) * Complex.exp (↑(-((k : ℝ) * θ)) * Complex.I)‖ ≤\n      2 * Real.pi * M * Real.exp (-(a * |(k : ℝ)|))",
+   "hypotheses": [
+    "v holomorphic, 2π-periodic and bounded by M on the open strip |Im z| < a (PeriodicAnalyticOn v a M), a > 0",
+    "k ∈ ℤ"
+   ],
+   "conclusion": "|∫_0^{2π} v(θ) e^{−ikθ} dθ| ≤ 2π M e^{−a|k|} (the Fourier coefficients c_k satisfy |c_k| ≤ M e^{−a|k|}; attained exactly by v = c·e^{ikz} with M = |c| e^{a|k|})",
+   "rate": "e^{−a|k|} (explicit constant)",
+   "uniform_over": "k ∈ ℤ, every v with the same a and M",
+   "smoothness": "holomorphic on the strip",
+   "see_also": [
+    "PA-T",
+    "LC-1"
+   ],
+   "snippet": "example : FourierCoeffStripStatement := OscInt.API.fourierCoeffStrip",
+   "status": "see docs/STATUS.md (row PA-C)"
+  },
+  {
+   "label": "PA-T",
+   "name": "OscInt.Statements.TrapezoidalRuleStatement",
+   "proved_by": "OscInt.API.trapezoidalRule",
+   "summary": "The trapezoidal rule converges exponentially for a periodic function analytic in a strip: `|I_N − ∫_0^{2π} v| ≤ 4πM / (e^{aN} − 1)` for every `N ≥ 1` (Trefethen–Weideman 2014, Theorem 3.2).",
+   "file": "OscInt/Statements/PeriodicAnalytic.lean",
+   "commitment": "43b9ccbf8f0c5c83f2dd626994fb49b3a088fbffa0101ea35460acf9af42f894",
+   "stamp": "stamps/20261116T130956Z-276d8d7f9605",
+   "lean_statement": "def TrapezoidalRuleStatement : Prop :=\n  ∀ (v : ℂ → ℂ) (a M : ℝ) (N : ℕ), 0 < a → 0 < N → PeriodicAnalyticOn v a M →\n    ‖trapezoidalSum v N - ∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ)‖ ≤\n      4 * Real.pi * M / (Real.exp (a * (N : ℝ)) - 1)",
+   "hypotheses": [
+    "v holomorphic, 2π-periodic and bounded by M on the open strip |Im z| < a (PeriodicAnalyticOn v a M), a > 0",
+    "N ∈ ℕ, N ≥ 1"
+   ],
+   "conclusion": "|(2π/N) Σ_{j<N} v(2πj/N) − ∫_0^{2π} v| ≤ 4πM/(e^{aN} − 1) (Trefethen–Weideman 2014, Theorem 3.2; the constant 4π is a supremum, approached by v = cos(Nz) as aN → ∞)",
+   "rate": "e^{−aN} (explicit constant)",
+   "uniform_over": "N ≥ 1, every v with the same a and M",
+   "smoothness": "holomorphic on the strip",
+   "see_also": [
+    "PA-C",
+    "LC-1"
+   ],
+   "snippet": "example : TrapezoidalRuleStatement := OscInt.API.trapezoidalRule",
+   "status": "see docs/STATUS.md (row PA-T)"
+  },
+  {
+   "label": "LC-1",
+   "name": "OscInt.Statements.LatticeKernel1LightConeStatement",
+   "proved_by": "OscInt.API.latticeKernel1LightCone",
+   "summary": "Light-cone bound for the 1D lattice kernel: `|I(t, n)| ≤ 2π e^{|t| sinh η − |n| η}` for every real `t`, integer `n` and `η ≥ 0`.",
+   "file": "OscInt/Statements/PeriodicAnalytic.lean",
+   "commitment": "3d315f36f71b58f6677886bc355b1565c617a563d5f19acfab5ed4f067afeec0",
+   "stamp": "stamps/20261116T130956Z-276d8d7f9605",
+   "lean_statement": "def LatticeKernel1LightConeStatement : Prop :=\n  ∀ (t η : ℝ) (n : ℤ), 0 ≤ η →\n    ‖latticeKernel1 t (n : ℝ)‖ ≤ 2 * Real.pi * Real.exp (|t| * Real.sinh η - |(n : ℝ)| * η)",
+   "hypotheses": [
+    "t ∈ ℝ, n ∈ ℤ",
+    "η ≥ 0"
+   ],
+   "conclusion": "|∫_{−π}^{π} e^{i(t cos k + nk)} dk| ≤ 2π e^{|t| sinh η − |n| η} (light cone of the 1D lattice kernel; for t ≠ 0 and |n| ≥ |t| the choice cosh η = |n|/|t| gives the right side of DLMF 10.14.5, Siegel's bound; integer n only)",
+   "rate": "e^{−η|n|} for each fixed η and t; exponential in |n| along rays |n| = c|t|, c > 1, with a rate that tends to 0 as c → 1",
+   "uniform_over": "t ∈ ℝ, n ∈ ℤ, η ≥ 0",
+   "smoothness": "—",
+   "see_also": [
+    "PA-C",
+    "T0E′",
+    "LS-K"
+   ],
+   "snippet": "example : LatticeKernel1LightConeStatement := OscInt.API.latticeKernel1LightCone",
+   "status": "see docs/STATUS.md (row LC-1)"
+  },
+  {
+   "label": "KL-D",
+   "name": "OscInt.Statements.KusminLandauStatement",
+   "proved_by": "OscInt.API.kusminLandau",
+   "summary": "The Kusmin–Landau inequality in Landau's sharp form, on differences: `|Σ_{n=0}^{N} e(c_n)| ≤ cot(πλ/2)`.",
+   "file": "OscInt/Statements/KusminLandau.lean",
+   "commitment": "29d5e7f157f3570acba574fd1d701945037d0c323dac1cc22f6e7e9bb4d80247",
+   "stamp": "stamps/20261116T130956Z-276d8d7f9605",
+   "lean_statement": "def KusminLandauStatement : Prop :=\n  ∀ (c : ℕ → ℝ) (N : ℕ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → DiffsMonotoneIn c N k lam →\n    ‖expSum c N‖ ≤ Real.cos (Real.pi * lam / 2) / Real.sin (Real.pi * lam / 2)",
+   "hypotheses": [
+    "c : ℕ → ℝ, N ∈ ℕ, k ∈ ℤ, 0 < λ ≤ 1/2",
+    "the N differences c_{n+1} − c_n are monotone and lie in [k + λ, k + 1 − λ] (DiffsMonotoneIn c N k λ)"
+   ],
+   "conclusion": "|Σ_{n=0}^{N} e^{2πi c_n}| ≤ cot(πλ/2) (Kusmin–Landau with Landau's constant; attained for λ = 1/3 by c = 0, 1/3, 1; that the constant is best possible for every λ is Landau's result, not machine-checked here)",
+   "rate": "bounded independently of N (explicit constant)",
+   "uniform_over": "N, k, every admissible sequence",
+   "smoothness": "—",
+   "see_also": [
+    "KL-C",
+    "KL-F",
+    "S1.k"
+   ],
+   "snippet": "example : KusminLandauStatement := OscInt.API.kusminLandau",
+   "status": "see docs/STATUS.md (row KL-D)"
+  },
+  {
+   "label": "KL-C",
+   "name": "OscInt.Statements.KusminLandauTwoOverPiStatement",
+   "proved_by": "OscInt.API.kusminLandauTwoOverPi",
+   "summary": "The Kusmin–Landau inequality with the constant `2/π`: `|Σ_{n=0}^{N} e(c_n)| ≤ 2/(πλ)`.",
+   "file": "OscInt/Statements/KusminLandau.lean",
+   "commitment": "9ebcc71d1c2390b0449a3af651872b55e6dbc13d914c13810bcee7ea5481381a",
+   "stamp": "stamps/20261116T130956Z-276d8d7f9605",
+   "lean_statement": "def KusminLandauTwoOverPiStatement : Prop :=\n  ∀ (c : ℕ → ℝ) (N : ℕ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → DiffsMonotoneIn c N k lam →\n    ‖expSum c N‖ ≤ 2 / (Real.pi * lam)",
+   "hypotheses": [
+    "as KL-D"
+   ],
+   "conclusion": "|Σ_{n=0}^{N} e^{2πi c_n}| ≤ 2/(πλ) (the constant 2/π, not 1/π)",
+   "rate": "bounded independently of N (explicit constant)",
+   "uniform_over": "N, k, every admissible sequence",
+   "smoothness": "—",
+   "see_also": [
+    "KL-D",
+    "KL-F"
+   ],
+   "snippet": "example : KusminLandauTwoOverPiStatement := OscInt.API.kusminLandauTwoOverPi",
+   "status": "see docs/STATUS.md (row KL-C)"
+  },
+  {
+   "label": "KL-F",
+   "name": "OscInt.Statements.KusminLandauDerivStatement",
+   "proved_by": "OscInt.API.kusminLandauDeriv",
+   "summary": "The Kusmin–Landau inequality in its textbook form: `f′` monotone on `(a, b)` with values in `[k + λ, k + 1 − λ]` gives `|Σ_{a ≤ n ≤ b} e(f(n))| ≤ cot(πλ/2)`.",
+   "file": "OscInt/Statements/KusminLandau.lean",
+   "commitment": "8660f13263c6aac898d4cba87ffc941904dbb8d2d1d27de7a03e513771802818",
+   "stamp": "stamps/20261116T130956Z-276d8d7f9605",
+   "lean_statement": "def KusminLandauDerivStatement : Prop :=\n  ∀ (f f' : ℝ → ℝ) (a b : ℝ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → HasDerivOn f f' a b →\n    (MonotoneOn f' (Ioo a b) ∨ AntitoneOn f' (Ioo a b)) →\n    (∀ x ∈ Ioo a b, (k : ℝ) + lam ≤ f' x ∧ f' x ≤ (k : ℝ) + 1 - lam) →\n    ‖∑ n ∈ Finset.Icc ⌈a⌉ ⌊b⌋, Complex.exp (↑(2 * Real.pi * f (n : ℝ)) * Complex.I)‖ ≤\n      Real.cos (Real.pi * lam / 2) / Real.sin (Real.pi * lam / 2)",
+   "hypotheses": [
+    "f continuous on [a, b] with derivative f′ on (a, b) (HasDerivOn)",
+    "f′ monotone on (a, b)",
+    "k + λ ≤ f′ ≤ k + 1 − λ on (a, b), k ∈ ℤ, 0 < λ ≤ 1/2"
+   ],
+   "conclusion": "|Σ_{n ∈ ℤ, a ≤ n ≤ b} e^{2πi f(n)}| ≤ cot(πλ/2) (the textbook form of the Kusmin–Landau inequality)",
+   "rate": "bounded independently of the length of the sum (explicit constant)",
+   "uniform_over": "a, b, k, every admissible f",
+   "smoothness": "f differentiable on (a, b)",
+   "see_also": [
+    "KL-D",
+    "KL-C",
+    "S1.1"
+   ],
+   "snippet": "example : KusminLandauDerivStatement := OscInt.API.kusminLandauDeriv",
+   "status": "see docs/STATUS.md (row KL-F)"
+  },
+  {
+   "label": "FR-K",
+   "name": "OscInt.Statements.RingKernelStatement",
+   "proved_by": "OscInt.API.ringKernelSolves",
+   "summary": "The ring kernel solves `i ∂_t R + ΔR = 0` in the site variable, equals the unit datum of the ring at `t = 0` (1 on `Nℤ`, 0 elsewhere) and has period `N`.",
+   "file": "OscInt/Statements/FiniteRing.lean",
+   "commitment": "6399cfe597f67ac26135a740e0bab2b7e2a421887968e6a1530d42ff5dacbae6",
+   "stamp": "stamps/20261116T205833Z-0748dde3c341",
+   "lean_statement": "def RingKernelStatement : Prop :=\n  ∀ (N : ℕ) (t : ℝ) (r : ℤ), 0 < N →\n    HasDerivAt (fun s : ℝ => ringKernel N s r)\n      (Complex.I * (ringKernel N t (r + 1) + ringKernel N t (r - 1) - 2 * ringKernel N t r)) t ∧\n    ringKernel N 0 r = (if (N : ℤ) ∣ r then 1 else 0) ∧\n    ringKernel N t (r + (N : ℤ)) = ringKernel N t r",
+   "hypotheses": [
+    "N ∈ ℕ, N ≥ 1; t ∈ ℝ; r ∈ ℤ"
+   ],
+   "conclusion": "the ring kernel R_N(t, r) = N^{−1} Σ_{j<N} e^{i(2t(cos k_j − 1) + r k_j)}, k_j = 2πj/N, satisfies ∂_t R = i(R(r+1) + R(r−1) − 2R(r)), R_N(0, r) = [N | r], R_N(t, r + N) = R_N(t, r)",
+   "rate": "— (an identity)",
+   "uniform_over": "—",
+   "smoothness": "—",
+   "see_also": [
+    "FR-U",
+    "FR-S",
+    "FC-K"
+   ],
+   "snippet": "example : RingKernelStatement := OscInt.API.ringKernelSolves",
+   "status": "see docs/STATUS.md (row FR-K)"
+  },
+  {
+   "label": "FR-U",
+   "name": "OscInt.Statements.RingUniqueStatement",
+   "proved_by": "OscInt.API.ringUnique",
+   "summary": "Every solution of period `N` of `i u′ + Δu = 0` is the kernel sum of its datum over one period: `u(t, x) = Σ_{y<N} R_N(t, x − y) u(0, y)`.",
+   "file": "OscInt/Statements/FiniteRing.lean",
+   "commitment": "0df8f549e55712b4937255dc85e8dae7a408b817cf58104be5be4fa159125f84",
+   "stamp": "stamps/20261116T205833Z-0748dde3c341",
+   "lean_statement": "def RingUniqueStatement : Prop :=\n  ∀ (N : ℕ) (u : ℝ → ℤ → ℂ), 0 < N → (∀ (t : ℝ) (x : ℤ), u t (x + (N : ℤ)) = u t x) →\n    (∀ (t : ℝ) (x : ℤ), HasDerivAt (fun s : ℝ => u s x) (Complex.I * (u t (x + 1) + u t (x - 1) - 2 * u t x)) t) →\n    ∀ (t : ℝ) (x : ℤ), u t x = ∑ y ∈ Finset.range N, ringKernel N t (x - (y : ℤ)) * u 0 (y : ℤ)",
+   "hypotheses": [
+    "N ≥ 1",
+    "u : ℝ → ℤ → ℂ with u(t, x + N) = u(t, x)",
+    "∂_t u(t, x) = i(u(t, x+1) + u(t, x−1) − 2u(t, x)) for all t, x"
+   ],
+   "conclusion": "u(t, x) = Σ_{y<N} R_N(t, x − y) u(0, y): the ring kernel is the propagator of i u′ + Δu = 0 on the ring of N sites (uniqueness)",
+   "rate": "— (an identity)",
+   "uniform_over": "—",
+   "smoothness": "differentiable in t, site by site",
+   "see_also": [
+    "FR-K",
+    "LS-K",
+    "FC-U"
+   ],
+   "snippet": "example : RingUniqueStatement := OscInt.API.ringUnique",
+   "status": "see docs/STATUS.md (row FR-U)"
+  },
+  {
+   "label": "FR-S",
+   "name": "OscInt.Statements.RingCosetSumStatement",
+   "proved_by": "OscInt.API.ringCosetSum",
+   "summary": "Method of images: the ring kernel is the line kernel summed over the coset `r + Nℤ`.",
+   "file": "OscInt/Statements/FiniteRing.lean",
+   "commitment": "01f15cf181b6331ab2db5d45c5ce997e075c2c26909192b0f4590dcbe7cb3af0",
+   "stamp": "stamps/20261116T205833Z-0748dde3c341",
+   "lean_statement": "def RingCosetSumStatement : Prop :=\n  ∀ (N : ℕ) (t : ℝ) (r : ℤ), 0 < N →\n    HasSum (fun m : ℤ => lineKernel t (r + m * (N : ℤ))) (ringKernel N t r)",
+   "hypotheses": [
+    "N ≥ 1; t ∈ ℝ; r ∈ ℤ"
+   ],
+   "conclusion": "Σ_{m ∈ ℤ} G(t, r + mN) = R_N(t, r) (HasSum): the ring kernel is the line kernel G(t, n) = (2π)^{−1} e^{−2it} I(2t, n) summed over the images r + Nℤ",
+   "rate": "— (an identity)",
+   "uniform_over": "—",
+   "smoothness": "—",
+   "see_also": [
+    "FR-P",
+    "PA-T",
+    "LC-1"
+   ],
+   "snippet": "example : RingCosetSumStatement := OscInt.API.ringCosetSum",
+   "status": "see docs/STATUS.md (row FR-S)"
+  },
+  {
+   "label": "FR-P",
+   "name": "OscInt.Statements.RingFiniteSizeStatement",
+   "proved_by": "OscInt.API.ringFiniteSize",
+   "summary": "Finite-size error of the ring: `|R_N(t, r) − G(t, r)| ≤ 2 e^{2|t| sinh η} cosh(rη) / (e^{ηN} − 1)` for every `η > 0`.",
+   "file": "OscInt/Statements/FiniteRing.lean",
+   "commitment": "7f9f79763fee10a5517be479e757c2d8f5827858220c84224d12dd715f51e1f4",
+   "stamp": "stamps/20261116T205833Z-0748dde3c341",
+   "lean_statement": "def RingFiniteSizeStatement : Prop :=\n  ∀ (N : ℕ) (t η : ℝ) (r : ℤ), 0 < N → 0 < η →\n    ‖ringKernel N t r - lineKernel t r‖ ≤\n      2 * Real.exp (2 * |t| * Real.sinh η) * Real.cosh ((r : ℝ) * η) / (Real.exp (η * (N : ℝ)) - 1)",
+   "hypotheses": [
+    "N ≥ 1; t ∈ ℝ; r ∈ ℤ",
+    "η > 0"
+   ],
+   "conclusion": "|R_N(t, r) − G(t, r)| ≤ 2 e^{2|t| sinh η} cosh(rη) / (e^{ηN} − 1): the ring of N sites differs from the infinite line by an explicit, exponentially small amount until the wave wraps around",
+   "rate": "e^{−η(N − |r|)} for each fixed η and t",
+   "uniform_over": "N, t, r, η (R_N has period N in r and the bound has not: use the representative with |r| ≤ N/2; for |r| ≥ N the bound exceeds 1)",
+   "smoothness": "—",
+   "see_also": [
+    "FR-S",
+    "LC-1",
+    "FC-P"
+   ],
+   "snippet": "example : RingFiniteSizeStatement := OscInt.API.ringFiniteSize",
+   "status": "see docs/STATUS.md (row FR-P)"
+  },
+  {
+   "label": "FC-K",
+   "name": "OscInt.Statements.ChainKernelStatement",
+   "proved_by": "OscInt.API.chainKernelSolves",
+   "summary": "The chain kernel solves the equation in the site variable, vanishes at the walls `x = 0` and `x = M + 1`, and is the unit datum at `t = 0` on the sites `1, …, M`.",
+   "file": "OscInt/Statements/FiniteRing.lean",
+   "commitment": "9e198fb243feac85d32cac645f35a866826bac394883f19d7ed6ef2ef9043ae5",
+   "stamp": "stamps/20261116T205833Z-0748dde3c341",
+   "lean_statement": "def ChainKernelStatement : Prop :=\n  ∀ (M : ℕ) (t : ℝ) (x y : ℤ), 1 ≤ y → y ≤ (M : ℤ) →\n    HasDerivAt (fun s : ℝ => chainKernel M s x y)\n      (Complex.I * (chainKernel M t (x + 1) y + chainKernel M t (x - 1) y - 2 * chainKernel M t x y)) t ∧\n    chainKernel M t 0 y = 0 ∧ chainKernel M t ((M : ℤ) + 1) y = 0 ∧\n    (1 ≤ x → x ≤ (M : ℤ) → chainKernel M 0 x y = (if x = y then 1 else 0))",
+   "hypotheses": [
+    "M ∈ ℕ; t ∈ ℝ; x, y ∈ ℤ with 1 ≤ y ≤ M"
+   ],
+   "conclusion": "the chain kernel C_M(t; x, y) = R_{2(M+1)}(t, x − y) − R_{2(M+1)}(t, x + y) satisfies the equation in x, vanishes at the walls x = 0 and x = M + 1, and C_M(0; x, y) = δ_{xy} for 1 ≤ x ≤ M",
+   "rate": "— (an identity)",
+   "uniform_over": "—",
+   "smoothness": "—",
+   "see_also": [
+    "FC-U",
+    "FR-K"
+   ],
+   "snippet": "example : ChainKernelStatement := OscInt.API.chainKernelSolves",
+   "status": "see docs/STATUS.md (row FC-K)"
+  },
+  {
+   "label": "FC-U",
+   "name": "OscInt.Statements.ChainUniqueStatement",
+   "proved_by": "OscInt.API.chainUnique",
+   "summary": "Every solution of `i u′ + Δu = 0` on the open chain `1, …, M` with `u = 0` at the walls `0` and `M + 1` is the kernel sum of its datum: `u(t, x) = Σ_{y=1}^{M} C_M(t; x, y) u(0, y)`.",
+   "file": "OscInt/Statements/FiniteRing.lean",
+   "commitment": "60531d3c356a8df2b871d6c81802938ff1ea978ba94cfa72a9be5dd108e8fee7",
+   "stamp": "stamps/20261116T205833Z-0748dde3c341",
+   "lean_statement": "def ChainUniqueStatement : Prop :=\n  ∀ (M : ℕ) (u : ℝ → ℤ → ℂ), (∀ t : ℝ, u t 0 = 0 ∧ u t ((M : ℤ) + 1) = 0) →\n    (∀ (t : ℝ) (x : ℤ), 1 ≤ x → x ≤ (M : ℤ) →\n      HasDerivAt (fun s : ℝ => u s x) (Complex.I * (u t (x + 1) + u t (x - 1) - 2 * u t x)) t) →\n    ∀ (t : ℝ) (x : ℤ), 1 ≤ x → x ≤ (M : ℤ) →\n      u t x = ∑ y ∈ Finset.Icc (1 : ℤ) (M : ℤ), chainKernel M t x y * u 0 y",
+   "hypotheses": [
+    "M ∈ ℕ",
+    "u : ℝ → ℤ → ℂ with u(t, 0) = u(t, M + 1) = 0",
+    "∂_t u(t, x) = i(u(t, x+1) + u(t, x−1) − 2u(t, x)) for all t and 1 ≤ x ≤ M"
+   ],
+   "conclusion": "u(t, x) = Σ_{y=1}^{M} C_M(t; x, y) u(0, y) for 1 ≤ x ≤ M: the chain kernel is the propagator of the open chain of M identical sites (Dirichlet walls; uniqueness)",
+   "rate": "— (an identity)",
+   "uniform_over": "—",
+   "smoothness": "differentiable in t, site by site",
+   "see_also": [
+    "FC-K",
+    "FR-U"
+   ],
+   "snippet": "example : ChainUniqueStatement := OscInt.API.chainUnique",
+   "status": "see docs/STATUS.md (row FC-U)"
+  },
+  {
+   "label": "FC-P",
+   "name": "OscInt.Statements.ChainFiniteSizeStatement",
+   "proved_by": "OscInt.API.chainFiniteSize",
+   "summary": "Finite-size error of the open chain: for sites `1 ≤ x, y ≤ M` and every `η > 0`, `|C_M(t; x, y) − G(t, x − y)| ≤ e^{2|t| sinh η} (e^{−(x+y)η} + 2 (cosh((x−y)η) + cosh((x+y)η)) / (e^{2(M+1)η} − 1))`.",
+   "file": "OscInt/Statements/FiniteRing.lean",
+   "commitment": "a0ab4f0a4dce9450ce9ac587abcb243d14743da5658a5d39277ffc6d711292ff",
+   "stamp": "stamps/20261116T205833Z-0748dde3c341",
+   "lean_statement": "def ChainFiniteSizeStatement : Prop :=\n  ∀ (M : ℕ) (t η : ℝ) (x y : ℤ), 0 < η → 1 ≤ x → x ≤ (M : ℤ) → 1 ≤ y → y ≤ (M : ℤ) →\n    ‖chainKernel M t x y - lineKernel t (x - y)‖ ≤\n      Real.exp (2 * |t| * Real.sinh η) *\n        (Real.exp (-(((x + y : ℤ) : ℝ) * η)) +\n          2 * (Real.cosh (((x - y : ℤ) : ℝ) * η) + Real.cosh (((x + y : ℤ) : ℝ) * η)) /\n            (Real.exp (2 * ((M : ℝ) + 1) * η) - 1))",
+   "hypotheses": [
+    "M ∈ ℕ; t ∈ ℝ; sites 1 ≤ x, y ≤ M",
+    "η > 0"
+   ],
+   "conclusion": "|C_M(t; x, y) − G(t, x − y)| ≤ e^{2|t| sinh η} (e^{−(x+y)η} + 2(cosh((x−y)η) + cosh((x+y)η))/(e^{2(M+1)η} − 1)) for sites 1 ≤ x, y ≤ M: the open chain differs from the infinite line by its images in the two walls, each bounded explicitly",
+   "rate": "e^{−η · (distance to the nearest image)} for each fixed η and t",
+   "uniform_over": "M, t, x, y, η",
+   "smoothness": "—",
+   "see_also": [
+    "FR-P",
+    "LC-1",
+    "FC-U"
+   ],
+   "snippet": "example : ChainFiniteSizeStatement := OscInt.API.chainFiniteSize",
+   "status": "see docs/STATUS.md (row FC-P)"
+  },
+  {
+   "label": "VC2-S",
+   "name": "OscInt.Statements.SecondDerivSharpStatement",
+   "proved_by": "OscInt.API.secondDerivSharp",
+   "summary": "The second-derivative van der Corput bound with its sharp constant: if `f′` increases at rate at least `λ > 0`, then `|∫_a^b e^{if}| ≤ A(w)/√λ` for some `w ∈ [0, π]`.",
+   "file": "OscInt/Statements/SecondDerivSharp.lean",
+   "commitment": "5e300a10f677af923adcff29d30ecb69f70caf77b58ecd17b7f6c48da5ee78c6",
+   "stamp": "stamps/20261116T222541Z-5b72549117b1",
+   "lean_statement": "def SecondDerivSharpStatement : Prop :=\n  ∀ (f f' : ℝ → ℝ) (a b lam : ℝ), a ≤ b → 0 < lam → HasDerivOn f f' a b → DerivIncreasesAtRate f' a b lam →\n    ∃ w ∈ Icc (0 : ℝ) Real.pi,\n      ‖∫ x in a..b, Complex.exp (((f x : ℝ) : ℂ) * Complex.I)‖ ≤ vdc2Profile w / Real.sqrt lam",
+   "hypotheses": [
+    "a ≤ b; λ > 0",
+    "f continuous on [a, b], differentiable on (a, b) with derivative f′",
+    "f′(y) − f′(x) ≥ λ (y − x) for a < x ≤ y < b (for instance f″ ≥ λ)"
+   ],
+   "conclusion": "there is w ∈ [0, π] with |∫_a^b e^{if}| ≤ A(w)/√λ, where A(w) = 2 ∫_0^{√(2w)} sin(w − u²/2) du: the second-derivative van der Corput bound with its sharp constant sup A (numerically 3.3643…, not a Lean theorem: in Lean 3.35 < sup A ≤ 7/2; classical for f″ ≥ λ by citation, attributed to Kershner, originals unread)",
+   "rate": "λ^{-1/2}",
+   "uniform_over": "f, a, b (no amplitude, no second derivative needed)",
+   "smoothness": "f differentiable on (a, b); f′ may be unbounded at the ends",
+   "see_also": [
+    "VC2-A",
+    "VC2-N",
+    "VC2-K",
+    "S1.2"
+   ],
+   "snippet": "example : SecondDerivSharpStatement := OscInt.API.secondDerivSharp",
+   "status": "see docs/STATUS.md (row VC2-S)"
+  },
+  {
+   "label": "VC2-A",
+   "name": "OscInt.Statements.SecondDerivAttainedStatement",
+   "proved_by": "OscInt.API.secondDerivAttained",
+   "summary": "The bound of VC2-S is attained by the quadratic phase: `A(w) ≤ |∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx|`.",
+   "file": "OscInt/Statements/SecondDerivSharp.lean",
+   "commitment": "93b1e48a43ba0cddd9948f13746f10a8167557a4fd7cef10b720875ec9bc1fa4",
+   "stamp": "stamps/20261116T222541Z-5b72549117b1",
+   "lean_statement": "def SecondDerivAttainedStatement : Prop :=\n  ∀ w : ℝ, 0 ≤ w →\n    vdc2Profile w ≤\n      ‖∫ x in (-Real.sqrt (2 * w))..(Real.sqrt (2 * w)), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖",
+   "hypotheses": [
+    "w ≥ 0"
+   ],
+   "conclusion": "A(w) ≤ |∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx|: the quadratic phase on a symmetric interval reaches the profile, so no constant below sup_{[0, π]} A is true in VC2-S",
+   "rate": "— (sharpness)",
+   "uniform_over": "w",
+   "smoothness": "—",
+   "see_also": [
+    "VC2-S",
+    "VC2-N"
+   ],
+   "snippet": "example : SecondDerivAttainedStatement := OscInt.API.secondDerivAttained",
+   "status": "see docs/STATUS.md (row VC2-A)"
+  },
+  {
+   "label": "VC2-N",
+   "name": "OscInt.Statements.Vdc2ProfileBoundStatement",
+   "proved_by": "OscInt.API.vdc2ProfileBound",
+   "summary": "An explicit bound for the sharp constant: `A(w) ≤ 7/2` for `0 ≤ w ≤ π`.",
+   "file": "OscInt/Statements/SecondDerivSharp.lean",
+   "commitment": "54c821111f5c3df622b30d27356fbc246ef977086831e487063b1bdf584972e1",
+   "stamp": "stamps/20261116T222541Z-5b72549117b1",
+   "lean_statement": "def Vdc2ProfileBoundStatement : Prop :=\n  ∀ w ∈ Icc (0 : ℝ) Real.pi, vdc2Profile w ≤ 7 / 2",
+   "hypotheses": [
+    "0 ≤ w ≤ π"
+   ],
+   "conclusion": "A(w) ≤ 7/2 (numerically the supremum is 3.3643175781…, by ball arithmetic outside Lean; 7/2 is 4 % above it)",
+   "rate": "— (a number)",
+   "uniform_over": "w ∈ [0, π]",
+   "smoothness": "—",
+   "see_also": [
+    "VC2-S",
+    "VC2-K"
+   ],
+   "snippet": "example : Vdc2ProfileBoundStatement := OscInt.API.vdc2ProfileBound",
+   "status": "see docs/STATUS.md (row VC2-N)"
+  },
+  {
+   "label": "VC2-K",
+   "name": "OscInt.Statements.SecondDerivSevenHalvesStatement",
+   "proved_by": "OscInt.API.secondDerivSevenHalves",
+   "summary": "The second-derivative test with amplitude and a linear term, constant `7/2`: `|∫_a^b e^{i(φ(x) + px)} ψ(x) dx| ≤ (7/2) μ^{−1/2} (|ψ(b)| + ∫_a^b |ψ′|)` when `|φ″| ≥ μ > 0` on `(a, b)`.",
+   "file": "OscInt/Statements/SecondDerivSharp.lean",
+   "commitment": "76b19164173b360ecfefc3bd945404158cfeedf389d7b0a83d5dd6e1d3c959a6",
+   "stamp": "stamps/20261116T222541Z-5b72549117b1",
+   "lean_statement": "def SecondDerivSevenHalvesStatement : Prop :=\n  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →\n    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b → (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) → AmplitudeOn ψ ψ' a b →\n    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ (7 / 2 : ℝ) * μ ^ (-(1 : ℝ) / 2) * ampNorm ψ ψ' a b",
+   "hypotheses": [
+    "|φ″| ≥ μ > 0 on (a, b)",
+    "amplitude ψ with integrable ψ′",
+    "any linear term p x"
+   ],
+   "conclusion": "|∫_a^b e^{i(φ+px)} ψ| ≤ (7/2) μ^{-1/2} (|ψ(b)| + ∫|ψ′|): S1.2 with the constant 7/2 in place of 8",
+   "rate": "μ^{-1/2}",
+   "uniform_over": "the linear term p",
+   "smoothness": "φ continuous on [a, b] with derivative φ′ on (a, b); φ′ continuous on [a, b] with derivative φ″ on (a, b); φ″ need not be continuous (as S1.2)",
+   "see_also": [
+    "S1.2",
+    "S1.k",
+    "VC2-S",
+    "VC2-N"
+   ],
+   "snippet": "example : SecondDerivSevenHalvesStatement := OscInt.API.secondDerivSevenHalves",
+   "status": "see docs/STATUS.md (row VC2-K)"
+  },
+  {
+   "label": "HW-R",
+   "name": "OscInt.Statements.HadamardKernelStatement",
+   "proved_by": "OscInt.API.hadamardKernelFormula",
+   "summary": "The walk from a point state in terms of the scalar kernel: for every `t ≥ 0`, `ψ_{t+1}(x) = ((a + b)/√2 · K(t+1, x+1) + a K(t, x), (a − b)/√2 · K(t+1, x−1) + b K(t, x))`.",
+   "file": "OscInt/Statements/HadamardWalk.lean",
+   "commitment": "af386e0a13668267910c2f734cab9458e9b1c312a528bbd4585a0b46134b29e5",
+   "stamp": "stamps/20261116T225756Z-5792039264f0",
+   "lean_statement": "def HadamardKernelStatement : Prop :=\n  ∀ (a b : ℂ) (t : ℕ) (x : ℤ),\n    hadamardWalk (pointState a b) (t + 1) x =\n      ((a + b) / ((Real.sqrt 2 : ℝ) : ℂ) * hadamardKernel (t + 1) (x + 1) + a * hadamardKernel t x,\n        (a - b) / ((Real.sqrt 2 : ℝ) : ℂ) * hadamardKernel (t + 1) (x - 1) + b * hadamardKernel t x)",
+   "hypotheses": [
+    "a, b ∈ ℂ; t ∈ ℕ; x ∈ ℤ"
+   ],
+   "conclusion": "U^{t+1} δ_{a,b}(x) = ((a + b)/√2 · K(t+1, x+1) + a K(t, x), (a − b)/√2 · K(t+1, x−1) + b K(t, x)): the Hadamard walk on ℤ from a point state in terms of one scalar kernel K, a Fourier integral over the dispersion relation ω(k) = arcsin(sin k/√2)",
+   "rate": "— (an identity)",
+   "uniform_over": "—",
+   "smoothness": "—",
+   "see_also": [
+    "HW-K",
+    "HW-D"
+   ],
+   "snippet": "example : HadamardKernelStatement := OscInt.API.hadamardKernelFormula",
+   "status": "see docs/STATUS.md (row HW-R)"
+  },
+  {
+   "label": "HW-K",
+   "name": "OscInt.Statements.HadamardKernelBoundStatement",
+   "proved_by": "OscInt.API.hadamardKernelBound",
+   "summary": "Explicit bound for the scalar kernel: `|K(t, x)| ≤ 7 t^{−1/2} + 12 t^{−1/3}` for `t ≥ 1` and every site `x`.",
+   "file": "OscInt/Statements/HadamardWalk.lean",
+   "commitment": "c1c2ccd919113bca1f1766c0fc324d6d67aedb56ee181c23654a5e621f770a67",
+   "stamp": "stamps/20261116T225756Z-5792039264f0",
+   "lean_statement": "def HadamardKernelBoundStatement : Prop :=\n  ∀ (t : ℕ) (x : ℤ), 1 ≤ t →\n    ‖hadamardKernel t x‖ ≤ 7 * (t : ℝ) ^ (-(1 : ℝ) / 2) + 12 * (t : ℝ) ^ (-(1 : ℝ) / 3)",
+   "hypotheses": [
+    "t ∈ ℕ, t ≥ 1; x ∈ ℤ"
+   ],
+   "conclusion": "|K(t, x)| ≤ 7 t^{−1/2} + 12 t^{−1/3}: explicit bound for the scalar kernel of the Hadamard walk, uniform in the site (constants of the classical route, not sharp: numerically sup_x |K| t^{1/3} is 1 at t = 1 and at most 0.9637 for t ≥ 2; the bound is implied by the L¹ bound 1.18034 of the kernel for t ≤ 1679)",
+   "rate": "t^{-1/3}",
+   "uniform_over": "the site x",
+   "smoothness": "—",
+   "see_also": [
+    "HW-R",
+    "HW-D",
+    "S1.k",
+    "T0E"
+   ],
+   "snippet": "example : HadamardKernelBoundStatement := OscInt.API.hadamardKernelBound",
+   "status": "see docs/STATUS.md (row HW-K)"
+  },
+  {
+   "label": "HW-D",
+   "name": "OscInt.Statements.HadamardDecayStatement",
+   "proved_by": "OscInt.API.hadamardDecay",
+   "summary": "Decay of the Hadamard walk from a point state: each component of `ψ_t(x)` is at most `39 (|a| + |b|) t^{−1/3}`, for `t ≥ 1` and every site `x`.",
+   "file": "OscInt/Statements/HadamardWalk.lean",
+   "commitment": "1c02dd3c836b99dbcb90aa2b9a2a1a2f97ab7de044304169c69fc416d430cb09",
+   "stamp": "stamps/20261116T225756Z-5792039264f0",
+   "lean_statement": "def HadamardDecayStatement : Prop :=\n  ∀ (a b : ℂ) (t : ℕ) (x : ℤ), 1 ≤ t →\n    ‖(hadamardWalk (pointState a b) t x).1‖ ≤ 39 * (‖a‖ + ‖b‖) * (t : ℝ) ^ (-(1 : ℝ) / 3) ∧\n    ‖(hadamardWalk (pointState a b) t x).2‖ ≤ 39 * (‖a‖ + ‖b‖) * (t : ℝ) ^ (-(1 : ℝ) / 3)",
+   "hypotheses": [
+    "a, b ∈ ℂ; t ∈ ℕ, t ≥ 1; x ∈ ℤ"
+   ],
+   "conclusion": "each component of U^t δ_{a,b}(x) has modulus at most 39 (|a| + |b|) t^{−1/3}: the amplitudes of the Hadamard walk from a point state decay like t^{−1/3} uniformly in the site, with an explicit constant (not sharp: numerically at most 1.6208 t^{−1/3} from the state (1, 0) for t ≤ 3000; for t ≤ 59319 the bound is implied by conservation of the ℓ² norm, which is not a theorem of this library)",
+   "rate": "t^{-1/3}",
+   "uniform_over": "the site x and the initial coin state (a, b)",
+   "smoothness": "—",
+   "see_also": [
+    "HW-K",
+    "HW-L"
+   ],
+   "snippet": "example : HadamardDecayStatement := OscInt.API.hadamardDecay",
+   "status": "see docs/STATUS.md (row HW-D)"
+  },
+  {
+   "label": "HW-L",
+   "name": "OscInt.Statements.HadamardDispersiveStatement",
+   "proved_by": "OscInt.API.hadamardDispersive",
+   "summary": "The dispersive estimate `ℓ¹ → ℓ^∞` for finitely supported initial states: each component of `ψ_t(x)` is at most `39 t^{−1/3} ∑_y (|ψ₀(y)₁| + |ψ₀(y)₂|)`, for `t ≥ 1` and every site `x`.",
+   "file": "OscInt/Statements/HadamardWalk.lean",
+   "commitment": "4f3e7bf201a0a7485df4d88112344729a32da6ee052549c66bb5c213d4ebdcf4",
+   "stamp": "stamps/20261116T225756Z-5792039264f0",
+   "lean_statement": "def HadamardDispersiveStatement : Prop :=\n  ∀ (ψ₀ : ℤ → ℂ × ℂ) (t : ℕ) (x : ℤ), {y : ℤ | ψ₀ y ≠ (0, 0)}.Finite → 1 ≤ t →\n    ‖(hadamardWalk ψ₀ t x).1‖ ≤\n      39 * (∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)) * (t : ℝ) ^ (-(1 : ℝ) / 3) ∧\n    ‖(hadamardWalk ψ₀ t x).2‖ ≤\n      39 * (∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)) * (t : ℝ) ^ (-(1 : ℝ) / 3)",
+   "hypotheses": [
+    "ψ₀ : ℤ → ℂ² of finite support",
+    "t ∈ ℕ, t ≥ 1; x ∈ ℤ"
+   ],
+   "conclusion": "each component of U^t ψ₀(x) has modulus at most 39 t^{−1/3} Σ_y (|ψ₀,₁(y)| + |ψ₀,₂(y)|): the dispersive estimate ℓ¹ → ℓ^∞ of the Hadamard walk with an explicit constant (not sharp; finitely supported initial states only; for a point state no content before t > 59319)",
+   "rate": "t^{-1/3}",
+   "uniform_over": "the site x and the initial state",
+   "smoothness": "—",
+   "see_also": [
+    "HW-D",
+    "LS-D"
+   ],
+   "snippet": "example : HadamardDispersiveStatement := OscInt.API.hadamardDispersive",
+   "status": "see docs/STATUS.md (row HW-L)"
   }
  ]
 }

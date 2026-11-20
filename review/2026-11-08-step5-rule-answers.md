@@ -21,3 +21,7 @@ repository. The lead re-checked findings 1 and 2 against git before acting; both
 - **15 (MINOR), lead's changes in the referee's file.** Agreed; they are here.
 - **17 (NOTE), STATUS row 33 says "answered".** Agreed; changed to "addressed by conditional sanity theorems
   (owner decision pending)".
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

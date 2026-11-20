@@ -1,0 +1,10 @@
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl/out/plant-KL-D-g.lean:17:0: error: Not a definitional equality: the left-hand side
+  P_expSum c N
+is not definitionally equal to the right-hand side
+  ∑ n ∈ Finset.range (N + 1), eTerm (c n)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/kl/out/plant-KL-D-g.lean:17:100: error: Type mismatch
+  rfl
+has type
+  ?m.14 = ?m.14
+but is expected to have type
+  P_expSum c N = ∑ n ∈ Finset.range (N + 1), eTerm (c n)

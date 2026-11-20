@@ -1,0 +1,40 @@
+plant-CP2.lean:302:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  lineKernel (1 / 4) (1 - 1)
+in the target expression
+  ‖chainKernel 2 (1 / 4) 1 1 - lineKernel (1 / 4) 0‖ ≤
+    Real.exp (2 * |1 / 4| * Real.sinh η) *
+      (Real.exp (-(↑(1 + 1) * η)) +
+        2 * (Real.cosh (↑(1 - 1) * η) + Real.cosh (↑(1 + 1) * η)) / (Real.exp (2 * (↑2 + 1) * η) - 1))
+
+h : P_ChainFiniteSizeStatement
+η : ℝ
+hη : 0 < η
+h1 :
+  ‖chainKernel 2 (1 / 4) 1 1 - lineKernel (1 / 4) 0‖ ≤
+    Real.exp (2 * |1 / 4| * Real.sinh η) *
+      (Real.exp (-(↑(1 + 1) * η)) +
+        2 * (Real.cosh (↑(1 - 1) * η) + Real.cosh (↑(1 + 1) * η)) / (Real.exp (2 * (↑2 + 1) * η) - 1))
+⊢ 1 / 40 ≤
+    Real.exp (2 * |1 / 4| * Real.sinh η) *
+      (Real.exp (-(↑(1 + 1) * η)) +
+        2 * (Real.cosh (↑(1 - 1) * η) + Real.cosh (↑(1 + 1) * η)) / (Real.exp (2 * (↑2 + 1) * η) - 1))
+plant-CP2.lean:311:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  lineKernel (1 / 4) (2 - 2)
+in the target expression
+  ‖chainKernel 2 (1 / 4) 2 2 - lineKernel (1 / 4) 0‖ ≤
+    Real.exp (2 * |1 / 4| * Real.sinh η) *
+      (Real.exp (-(↑(2 + 2) * η)) +
+        2 * (Real.cosh (↑(2 - 2) * η) + Real.cosh (↑(2 + 2) * η)) / (Real.exp (2 * (↑2 + 1) * η) - 1))
+
+h : P_ChainFiniteSizeStatement
+η : ℝ
+hη : 0 < η
+h1 :
+  ‖chainKernel 2 (1 / 4) 2 2 - lineKernel (1 / 4) 0‖ ≤
+    Real.exp (2 * |1 / 4| * Real.sinh η) *
+      (Real.exp (-(↑(2 + 2) * η)) +
+        2 * (Real.cosh (↑(2 - 2) * η) + Real.cosh (↑(2 + 2) * η)) / (Real.exp (2 * (↑2 + 1) * η) - 1))
+⊢ 1 / 40 ≤
+    Real.exp (2 * |1 / 4| * Real.sinh η) *
+      (Real.exp (-(↑(2 + 2) * η)) +
+        2 * (Real.cosh (↑(2 - 2) * η) + Real.cosh (↑(2 + 2) * η)) / (Real.exp (2 * (↑2 + 1) * η) - 1))

@@ -1,0 +1,39 @@
+plant-FR-P-c.lean:121:13: error: Function expected at
+  h 1 0 η 1 ?m.33
+but this term has type
+  ‖ringKernel 1 0 1 - lineKernel 0 1‖ ≤
+    2 * Real.exp (2 * |0| * Real.sinh η) * Real.cosh (↑1 * η) / (Real.exp (η * ↑1) - 1)
+
+Note: Expected a function because this term is being applied to the argument
+  hη
+plant-FR-P-c.lean:120:46: error: unsolved goals
+h : P_RingFiniteSizeStatement
+η : ℝ
+hη : 0 < η
+⊢ 1 ≤ 2 * Real.cosh η / (Real.exp η - 1)
+plant-FR-P-c.lean:127:13: error: Function expected at
+  h 1 t η 1 ?m.56
+but this term has type
+  ‖ringKernel 1 t 1 - lineKernel t 1‖ ≤
+    2 * Real.exp (2 * |t| * Real.sinh η) * Real.cosh (↑1 * η) / (Real.exp (η * ↑1) - 1)
+
+Note: Expected a function because this term is being applied to the argument
+  hη
+plant-FR-P-c.lean:126:100: error: unsolved goals
+h : P_RingFiniteSizeStatement
+t η : ℝ
+hη : 0 < η
+⊢ ‖1 - lineKernel t 1‖ ≤ 2 * Real.exp (2 * |t| * Real.sinh η) * Real.cosh η / (Real.exp η - 1)
+plant-FR-P-c.lean:133:13: error: Function expected at
+  h 1 0 η (-1) ?m.35
+but this term has type
+  ‖ringKernel 1 0 (-1) - lineKernel 0 (-1)‖ ≤
+    2 * Real.exp (2 * |0| * Real.sinh η) * Real.cosh (↑(-1) * η) / (Real.exp (η * ↑1) - 1)
+
+Note: Expected a function because this term is being applied to the argument
+  hη
+plant-FR-P-c.lean:132:46: error: unsolved goals
+h : P_RingFiniteSizeStatement
+η : ℝ
+hη : 0 < η
+⊢ 1 ≤ 2 * Real.cosh η / (Real.exp η - 1)

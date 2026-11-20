@@ -90,3 +90,7 @@ The lead's answer to finding 5 was **wrong**. Referee A was right that step 3 ne
 The route referee found the same; `docs/proof-LE2.md` ("Revision after the route referee") splits that sub-range at
 v = 1/8. The new end values are exact and below 97/10. No statement is affected: the gap was in the route's bookkeeping,
 not in T0E′.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

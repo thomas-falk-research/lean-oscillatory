@@ -1,0 +1,8 @@
+plant-FR-U-d.lean:151:2: error: Type mismatch: After simplification, term
+  h1
+ has type
+  (if Even x then Complex.exp (-(4 * ↑t * Complex.I)) else -Complex.exp (-(4 * ↑t * Complex.I))) =
+    ringKernel 2 t x + -ringKernel 2 t (x + 1)
+but is expected to have type
+  (if Even x then Complex.exp (-(4 * ↑t * Complex.I)) else -Complex.exp (-(4 * ↑t * Complex.I))) =
+    ringKernel 2 t x + -ringKernel 2 t (x + -1)

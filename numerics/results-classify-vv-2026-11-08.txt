@@ -3504,3 +3504,7 @@ cusp-type common zeros of (det H, T[w,w,w]): 3434
   (+3.1385246920, -0.0030679616)
   (+3.1385246920, +0.0030679616)
 VERDICT S(m=0.5): separable-band trap (control): CUSP
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

@@ -1,0 +1,26 @@
+import OscInt.Front.KusminLandauSanity
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+
+namespace OscInt.API.KusminLandauSanity
+
+open OscInt.Statements Set
+
+def P_KusminLandauTwoOverPiStatement : Prop :=
+  ∀ (c : ℕ → ℝ) (N : ℕ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → DiffsMonotoneIn c N k lam →
+    ‖expSum c N‖ ≤ 1 / (Real.pi * lam)
+
+theorem witness_not_P_KusminLandauTwoOverPiStatement : ¬ P_KusminLandauTwoOverPiStatement := by
+  intro h
+  have h1 := h cQuarter 1 0 (1 / 4) (by norm_num) (by norm_num) diffs_cQuarter
+  rw [norm_expSum_cQuarter] at h1
+  have h2 : (4 / 3 : ℝ) < Real.sqrt 2 := by
+    rw [Real.lt_sqrt (by norm_num)]
+    norm_num
+  have hpi : 1 / (Real.pi * (1 / 4)) < 4 / 3 := by
+    rw [div_lt_iff₀ (by positivity)]
+    linarith [Real.pi_gt_three]
+  linarith
+
+end OscInt.API.KusminLandauSanity

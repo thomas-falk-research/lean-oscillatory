@@ -1,0 +1,36 @@
+# Batch VC2 integration checks (lead, session 13) on the working tree that became the integration commit (parent fbffce5).
+# toolchain leanprover/lean4:v4.35.0; leanchecker sha256 12c38901cdbfab178f1bf6145dd30012e9a3b2c11ca695292a5884fa3cbaddb6
+leanchecker OscInt.Statements.SecondDerivSharp rc=0 3s
+leanchecker OscInt.Front.SecondDerivSharpSanity rc=0 4s
+leanchecker OscInt.Front.SecondDerivSharpSanity2 rc=0 3s
+leanchecker Blueprint.SecondDerivSharp rc=0 3s
+leanchecker OscInt.Front.SecondDerivSharpAssembly rc=0 3s
+leanchecker OscInt.Front.SecondDerivSharpTurn rc=0 3s
+leanchecker OscInt.Front.SecondDerivSharpHead rc=0 3s
+leanchecker OscInt.Front.SecondDerivSharpTail rc=0 3s
+leanchecker OscInt.Front.SecondDerivSharpSide rc=0 3s
+leanchecker OscInt.Front.SecondDerivSharpProfile rc=0 4s
+leanchecker OscInt.Front.SecondDerivSharpAttained rc=0 3s
+leanchecker OscInt.Front.SecondDerivSharpFinal rc=0 3s
+2026-11-17T02:52:27Z
+# (the last line is the end time of the run; it was made after the docstring fix in Blueprint/SecondDerivSharp.lean)
+# statement types: `lake env lean StatementTypes.lean` printed 86 TYPE-OK lines and nothing else (82 before, 4 for batch VC2).
+# consumer example: `lake env lean -DautoImplicit=false examples/consumer/ConsumerSecondDerivSharp.lean`: exit code 0, no output.
+# axioms of the four final theorems, printed by the lead in scratch before integration (the assembly, the six parts
+# and the final theorems compiled as one file, each final theorem ascribed to its frozen statement): each
+# [propext, Classical.choice, Quot.sound].
+# SHA-256 of the part files in the tree:
+# 2244d1c04334974ecd761e8a50683430e3891c5953a47e202bc995edcc30046d  OscInt/Front/SecondDerivSharpTurn.lean
+# eadeee3c8a8029f0b83d7e380bc246a0a1902abfd3aa533d4cb690777d417c2b  OscInt/Front/SecondDerivSharpHead.lean
+# 9e773b13dc5efb77782ffb5b1956ac808d25496f67bb4bea71fc161f79be95fc  OscInt/Front/SecondDerivSharpTail.lean
+# 46cd12ea0f4f694f7a676a98610a448cbb58cbc56ffc6964e82b00741d47c38a  OscInt/Front/SecondDerivSharpSide.lean
+# cac2d79bbc15c2f403eaf49d06d77f309fc48027fdede283324c9488560c8266  OscInt/Front/SecondDerivSharpProfile.lean
+# fe4d14877b3f26436e717993eb63c3bb6e4dedc1132feedddd7e01209036453a  OscInt/Front/SecondDerivSharpAttained.lean
+# (five equal the deliveries; SecondDerivSharpTail.lean has two lines appended by the lead: an empty line and `end OscInt.SecondDerivSharpAux`)
+# Note added 2026-11-19 (post-proof referee C): only the `leanchecker` lines above are tool output; the statements about the
+# build, the 86 TYPE-OK lines, the consumer example and the axioms are the lead's own lines, and `make quick`
+# (2026-11-17, 02:54:40Z to 03:02:21Z, exit code 0) is recorded in the session log only.
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

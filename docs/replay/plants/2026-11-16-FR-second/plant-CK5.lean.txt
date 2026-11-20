@@ -1,0 +1,227 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- `R₄(t, 4) = (1 + 2 e^{−2it} + e^{−4it}) / 4`. -/
+theorem ringKernel_four_four (t : ℝ) :
+    ringKernel 4 t 4 =
+      (1 + 2 * Complex.exp (↑(-(2 * t)) * Complex.I) + Complex.exp (↑(-(4 * t)) * Complex.I)) / 4 := by
+  rw [ringKernel_four]; norm_num [zpow_ofNat, Complex.I_pow_four]
+
+/-- **Datum, chain of 1 site, the site beyond the right wall.** `C₁(t; 3, 1) = R₄(t, 2) − R₄(t, 4) = −e^{−2it}`: the
+odd reflection of `C₁(t; 1, 1)` in the wall `x = 2`. -/
+theorem chainKernel_one_three (t : ℝ) : chainKernel 1 t 3 1 = -Complex.exp (↑(-(2 * t)) * Complex.I) := by
+  have h : chainKernel 1 t 3 1 = ringKernel 4 t 2 - ringKernel 4 t 4 := by
+    rw [chainKernel]; norm_num
+  rw [h, ringKernel_four_two, ringKernel_four_four]; ring
+
+/-- `w = e^{iπ/3}`, the primitive sixth root of unity: the modes of the ring of 6 sites are `1, w, w², −1, −w, −w²`. -/
+noncomputable def sixRoot : ℂ := Complex.exp (↑(Real.pi / 3) * Complex.I)
+
+/-- `w² = w − 1`, from `w + w⁻¹ = 2 cos(π/3) = 1`. -/
+theorem sixRoot_sq : sixRoot ^ 2 = sixRoot - 1 := by
+  have h1 : Complex.exp (-↑(Real.pi / 3) * Complex.I) * sixRoot = 1 := by
+    rw [sixRoot, ← Complex.exp_add]; simp
+  have hc : Complex.cos (↑(Real.pi / 3)) = 1 / 2 := by
+    rw [← Complex.ofReal_cos, Real.cos_pi_div_three]; norm_num
+  rw [Complex.cos] at hc
+  rw [sixRoot] at h1 ⊢
+  linear_combination (2 * Complex.exp (↑(Real.pi / 3) * Complex.I)) * hc - h1
+
+/-- The modes `k = 2π/3, 4π/3, 5π/3` of the ring of 6 sites: `e^{ik} = w², −w, −w²`. -/
+theorem sixRoot_modes :
+    Complex.exp (↑(2 * (Real.pi / 3)) * Complex.I) = sixRoot ^ 2 ∧
+      Complex.exp (↑(4 * (Real.pi / 3)) * Complex.I) = -sixRoot ∧
+      Complex.exp (↑(5 * (Real.pi / 3)) * Complex.I) = -sixRoot ^ 2 := by
+  have h2 : Complex.exp (↑(2 * (Real.pi / 3)) * Complex.I) = sixRoot ^ 2 := by
+    rw [sixRoot, ← Complex.exp_nat_mul]; congr 1; push_cast; ring
+  refine ⟨h2, ?_, ?_⟩
+  · rw [show (↑(4 * (Real.pi / 3)) : ℂ) * Complex.I = ↑Real.pi * Complex.I + ↑(Real.pi / 3) * Complex.I by
+      push_cast; ring, Complex.exp_add, Complex.exp_pi_mul_I, sixRoot]
+    ring
+  · rw [show (↑(5 * (Real.pi / 3)) : ℂ) * Complex.I = ↑Real.pi * Complex.I + ↑(2 * (Real.pi / 3)) * Complex.I by
+      push_cast; ring, Complex.exp_add, Complex.exp_pi_mul_I, h2]
+    ring
+
+/-- `cos(2π/3) = cos(4π/3) = −1/2` and `cos(5π/3) = 1/2`. -/
+theorem cos_third_pi_multiples :
+    Real.cos (2 * (Real.pi / 3)) = -1 / 2 ∧ Real.cos (4 * (Real.pi / 3)) = -1 / 2 ∧
+      Real.cos (5 * (Real.pi / 3)) = 1 / 2 := by
+  refine ⟨?_, ?_, ?_⟩
+  · rw [Real.cos_two_mul, Real.cos_pi_div_three]; norm_num
+  · rw [show 4 * (Real.pi / 3) = Real.pi / 3 + Real.pi by ring, Real.cos_add_pi, Real.cos_pi_div_three]; norm_num
+  · rw [show 5 * (Real.pi / 3) = 2 * Real.pi - Real.pi / 3 by ring, Real.cos_two_pi_sub, Real.cos_pi_div_three]
+
+/-- **Datum, ring of 6 sites.** With `w = e^{iπ/3}`:
+`R₆(t, r) = (1 + (wʳ + (−w²)ʳ) e^{−it} + (w²ʳ + (−w)ʳ) e^{−3it} + (−1)ʳ e^{−4it}) / 6`: the modes `k = jπ/3` with
+`cos k = 1, 1/2, −1/2, −1, −1/2, 1/2`. -/
+theorem ringKernel_six (t : ℝ) (r : ℤ) :
+    ringKernel 6 t r = (1 + (sixRoot ^ r + (-sixRoot ^ 2) ^ r) * Complex.exp (↑(-t) * Complex.I) +
+      ((sixRoot ^ 2) ^ r + (-sixRoot) ^ r) * Complex.exp (↑(-(3 * t)) * Complex.I) +
+      (-1) ^ r * Complex.exp (↑(-(4 * t)) * Complex.I)) / 6 := by
+  have hθ1 : 2 * Real.pi * ((1 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = Real.pi / 3 := by push_cast; ring
+  have hθ2 : 2 * Real.pi * ((2 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 2 * (Real.pi / 3) := by push_cast; ring
+  have hθ3 : 2 * Real.pi * ((3 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = Real.pi := by push_cast; ring
+  have hθ4 : 2 * Real.pi * ((4 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 4 * (Real.pi / 3) := by push_cast; ring
+  have hθ5 : 2 * Real.pi * ((5 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 5 * (Real.pi / 3) := by push_cast; ring
+  obtain ⟨z2, z4, z5⟩ := sixRoot_modes
+  obtain ⟨c2, c4, c5⟩ := cos_third_pi_multiples
+  have h1 := exp_mode t (Real.pi / 3) (1 / 2) r sixRoot Real.cos_pi_div_three rfl
+  have h2 := exp_mode t (2 * (Real.pi / 3)) (-1 / 2) r (sixRoot ^ 2) c2 z2
+  have h3 := exp_mode t Real.pi (-1) r (-1) Real.cos_pi Complex.exp_pi_mul_I
+  have h4 := exp_mode t (4 * (Real.pi / 3)) (-1 / 2) r (-sixRoot) c4 z4
+  have h5 := exp_mode t (5 * (Real.pi / 3)) (1 / 2) r (-sixRoot ^ 2) c5 z5
+  rw [show 2 * t * ((1 / 2 : ℝ) - 1) = -t by ring] at h1 h5
+  rw [show 2 * t * ((-1 / 2 : ℝ) - 1) = -(3 * t) by ring] at h2 h4
+  rw [show 2 * t * ((-1 : ℝ) - 1) = -(4 * t) by ring] at h3
+  rw [ringKernel, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
+    Finset.sum_range_succ, Finset.sum_range_one, hθ1, hθ2, hθ3, hθ4, hθ5, h1, h2, h3, h4, h5]
+  simp
+  ring
+
+/-- `R₆(t, 0) = (1 + 2 e^{−it} + 2 e^{−3it} + e^{−4it}) / 6`. -/
+theorem ringKernel_six_site_zero (t : ℝ) :
+    ringKernel 6 t 0 = (1 + 2 * Complex.exp (↑(-t) * Complex.I) + 2 * Complex.exp (↑(-(3 * t)) * Complex.I) +
+      Complex.exp (↑(-(4 * t)) * Complex.I)) / 6 := by
+  rw [ringKernel_six]; simp only [zpow_zero]; ring
+
+/-- `R₆(t, 1) = (1 + e^{−it} − e^{−3it} − e^{−4it}) / 6`. -/
+theorem ringKernel_six_site_one (t : ℝ) :
+    ringKernel 6 t 1 = (1 + Complex.exp (↑(-t) * Complex.I) - Complex.exp (↑(-(3 * t)) * Complex.I) -
+      Complex.exp (↑(-(4 * t)) * Complex.I)) / 6 := by
+  rw [ringKernel_six]; simp only [zpow_one]
+  linear_combination
+    ((Complex.exp (↑(-(3 * t)) * Complex.I) - Complex.exp (↑(-t) * Complex.I)) / 6) * sixRoot_sq
+
+/-- `R₆(t, −1) = (1 + e^{−it} − e^{−3it} − e^{−4it}) / 6`. -/
+theorem ringKernel_six_site_neg_one (t : ℝ) :
+    ringKernel 6 t (-1) = (1 + Complex.exp (↑(-t) * Complex.I) - Complex.exp (↑(-(3 * t)) * Complex.I) -
+      Complex.exp (↑(-(4 * t)) * Complex.I)) / 6 := by
+  have i1 : sixRoot⁻¹ = 1 - sixRoot := inv_eq_of_mul_eq_one_right (by linear_combination -sixRoot_sq)
+  have i2 : (-sixRoot ^ 2)⁻¹ = sixRoot :=
+    inv_eq_of_mul_eq_one_right (by linear_combination (-sixRoot - 1) * sixRoot_sq)
+  have i3 : (sixRoot ^ 2)⁻¹ = -sixRoot :=
+    inv_eq_of_mul_eq_one_right (by linear_combination (-sixRoot - 1) * sixRoot_sq)
+  have i4 : (-sixRoot)⁻¹ = sixRoot - 1 := inv_eq_of_mul_eq_one_right (by linear_combination -sixRoot_sq)
+  have i5 : (-1 : ℂ)⁻¹ = -1 := by norm_num
+  rw [ringKernel_six]; simp only [zpow_neg_one]
+  rw [i1, i2, i3, i4, i5]
+  ring
+
+/-- `R₆(t, 2) = (1 − e^{−it} − e^{−3it} + e^{−4it}) / 6`. -/
+theorem ringKernel_six_site_two (t : ℝ) :
+    ringKernel 6 t 2 = (1 - Complex.exp (↑(-t) * Complex.I) - Complex.exp (↑(-(3 * t)) * Complex.I) +
+      Complex.exp (↑(-(4 * t)) * Complex.I)) / 6 := by
+  rw [ringKernel_six]; simp only [zpow_ofNat]
+  linear_combination ((sixRoot ^ 2 + sixRoot + 1) *
+    (Complex.exp (↑(-t) * Complex.I) + Complex.exp (↑(-(3 * t)) * Complex.I)) / 6) * sixRoot_sq
+
+/-- `R₆(t, 3) = (1 − 2 e^{−it} + 2 e^{−3it} − e^{−4it}) / 6`. -/
+theorem ringKernel_six_site_three (t : ℝ) :
+    ringKernel 6 t 3 = (1 - 2 * Complex.exp (↑(-t) * Complex.I) + 2 * Complex.exp (↑(-(3 * t)) * Complex.I) -
+      Complex.exp (↑(-(4 * t)) * Complex.I)) / 6 := by
+  rw [ringKernel_six]; simp only [zpow_ofNat]
+  linear_combination ((sixRoot ^ 3 - 2) * (sixRoot + 1) *
+    (Complex.exp (↑(-(3 * t)) * Complex.I) - Complex.exp (↑(-t) * Complex.I)) / 6) * sixRoot_sq
+
+/-- `e^{−2it} cos t = (e^{−it} + e^{−3it}) / 2`. A fact about the exponential; no kernel is mentioned. -/
+theorem exp_two_mul_cos (t : ℝ) :
+    Complex.exp (↑(-(2 * t)) * Complex.I) * ((Real.cos t : ℝ) : ℂ) =
+      (Complex.exp (↑(-t) * Complex.I) + Complex.exp (↑(-(3 * t)) * Complex.I)) / 2 := by
+  have h1 : Complex.exp (↑(-t) * Complex.I) =
+      Complex.exp (↑(-(2 * t)) * Complex.I) * Complex.exp (↑t * Complex.I) := by
+    rw [← Complex.exp_add]; congr 1; push_cast; ring
+  have h3 : Complex.exp (↑(-(3 * t)) * Complex.I) =
+      Complex.exp (↑(-(2 * t)) * Complex.I) * Complex.exp (-↑t * Complex.I) := by
+    rw [← Complex.exp_add]; congr 1; push_cast; ring
+  rw [h1, h3, Complex.ofReal_cos, Complex.cos]
+  ring
+
+/-- `i e^{−2it} sin t = (e^{−it} − e^{−3it}) / 2`. A fact about the exponential; no kernel is mentioned. -/
+theorem exp_two_mul_sin (t : ℝ) :
+    Complex.I * Complex.exp (↑(-(2 * t)) * Complex.I) * ((Real.sin t : ℝ) : ℂ) =
+      (Complex.exp (↑(-t) * Complex.I) - Complex.exp (↑(-(3 * t)) * Complex.I)) / 2 := by
+  have h1 : Complex.exp (↑(-t) * Complex.I) =
+      Complex.exp (↑(-(2 * t)) * Complex.I) * Complex.exp (↑t * Complex.I) := by
+    rw [← Complex.exp_add]; congr 1; push_cast; ring
+  have h3 : Complex.exp (↑(-(3 * t)) * Complex.I) =
+      Complex.exp (↑(-(2 * t)) * Complex.I) * Complex.exp (-↑t * Complex.I) := by
+    rw [← Complex.exp_add]; congr 1; push_cast; ring
+  rw [h1, h3, Complex.ofReal_sin, Complex.sin]
+  linear_combination (Complex.exp (↑(-(2 * t)) * Complex.I) *
+    (Complex.exp (-↑t * Complex.I) - Complex.exp (↑t * Complex.I)) / 2) * Complex.I_mul_I
+
+/-- **Datum, chain of 2 sites, diagonal.** `C₂(t; 1, 1) = R₆(t, 0) − R₆(t, 2) = e^{−2it} cos t`: the two Dirichlet
+modes have the eigenvalues `−1` and `−3`. -/
+theorem chainKernel_two_diag (t : ℝ) :
+    chainKernel 2 t 1 1 = Complex.exp (↑(-(2 * t)) * Complex.I) * ((Real.cos t : ℝ) : ℂ) := by
+  have h : chainKernel 2 t 1 1 = ringKernel 6 t 0 - ringKernel 6 t 2 := by
+    rw [chainKernel]; norm_num
+  rw [h, ringKernel_six_site_zero, ringKernel_six_site_two, exp_two_mul_cos]; ring
+
+/-- **Datum, chain of 2 sites, off the diagonal.** `C₂(t; 2, 1) = R₆(t, 1) − R₆(t, 3) = i e^{−2it} sin t`. -/
+theorem chainKernel_two_off (t : ℝ) :
+    chainKernel 2 t 2 1 = Complex.I * Complex.exp (↑(-(2 * t)) * Complex.I) * ((Real.sin t : ℝ) : ℂ) := by
+  have h : chainKernel 2 t 2 1 = ringKernel 6 t 1 - ringKernel 6 t 3 := by
+    rw [chainKernel]; norm_num
+  rw [h, ringKernel_six_site_one, ringKernel_six_site_three, exp_two_mul_sin]; ring
+
+/-- **Datum, chain of 2 sites, left wall.** `C₂(t; 0, 1) = R₆(t, −1) − R₆(t, 1) = 0`. -/
+theorem chainKernel_two_wall_zero (t : ℝ) : chainKernel 2 t 0 1 = 0 := by
+  have h : chainKernel 2 t 0 1 = ringKernel 6 t (-1) - ringKernel 6 t 1 := by
+    rw [chainKernel]; norm_num
+  rw [h, ringKernel_six_site_neg_one, ringKernel_six_site_one, sub_self]
+
+def P_ChainKernelStatement : Prop :=
+  ∀ (M : ℕ) (t : ℝ) (x y : ℤ), y ≤ (M : ℤ) →
+    HasDerivAt (fun s : ℝ => chainKernel M s x y)
+      (Complex.I * (chainKernel M t (x + 1) y + chainKernel M t (x - 1) y - 2 * chainKernel M t x y)) t ∧
+    chainKernel M t 0 y = 0 ∧ chainKernel M t ((M : ℤ) + 1) y = 0 ∧
+    (1 ≤ x → x ≤ (M : ℤ) → chainKernel M 0 x y = (if x = y then 1 else 0))
+
+theorem P_chainK_one (h : P_ChainKernelStatement) (t : ℝ) :
+    deriv (fun s => chainKernel 1 s 1 1) t = -2 * Complex.I * Complex.exp (↑(-(2 * t)) * Complex.I) := by
+  obtain ⟨hd, hw0, hw2, -⟩ := h 1 t 1 1 le_rfl (by norm_num)
+  rw [show ((1 : ℕ) : ℤ) + 1 = 2 by norm_num] at hw2
+  rw [show (1 : ℤ) + 1 = 2 by norm_num, show (1 : ℤ) - 1 = 0 by norm_num, hw0, hw2, chainKernel_one] at hd
+  rw [hd.deriv]
+  ring
+
+theorem P_chainK_unit (h : P_ChainKernelStatement) : chainKernel 1 0 1 1 = 1 := by
+  obtain ⟨-, -, -, hu⟩ := h 1 0 1 1 le_rfl (by norm_num)
+  simpa using hu le_rfl (by norm_num)
+
+theorem P_chainK_two_offdiag (h : P_ChainKernelStatement) : chainKernel 2 0 1 2 = 0 := by
+  obtain ⟨-, -, -, hu⟩ := h 2 0 1 2 (by norm_num) (by norm_num)
+  have h1 := hu le_rfl (by norm_num)
+  rw [ite_eq_right (by norm_num)] at h1
+  exact h1
+
+theorem P_chainK_one_wall_site (h : P_ChainKernelStatement) (t : ℝ) :
+    HasDerivAt (fun s : ℝ => chainKernel 1 s 2 1) 0 t := by
+  have h1 := (h 1 t 2 1 le_rfl (by norm_num)).1
+  rw [show (2 : ℤ) + 1 = 3 by norm_num, show (2 : ℤ) - 1 = 1 by norm_num, chainKernel_one_three,
+    chainKernel_one, chainKernel_one_wall_two] at h1
+  convert h1 using 1
+  ring
+
+theorem P_chainK_two_lower_offdiag (h : P_ChainKernelStatement) : chainKernel 2 0 2 1 = 0 := by
+  obtain ⟨-, -, -, hu⟩ := h 2 0 2 1 le_rfl (by norm_num)
+  have h1 := hu (by norm_num) (by norm_num)
+  rw [ite_eq_right (by norm_num)] at h1
+  exact h1
+
+theorem P_chainK_two_bond (h : P_ChainKernelStatement) (t : ℝ) :
+    HasDerivAt (fun s : ℝ => chainKernel 2 s 1 1)
+      (-(Complex.exp (↑(-(2 * t)) * Complex.I) *
+        (((Real.sin t : ℝ) : ℂ) + 2 * Complex.I * ((Real.cos t : ℝ) : ℂ)))) t := by
+  have h1 := (h 2 t 1 1 le_rfl (by norm_num)).1
+  rw [show (1 : ℤ) + 1 = 2 by norm_num, show (1 : ℤ) - 1 = 0 by norm_num, chainKernel_two_off,
+    chainKernel_two_wall_zero, chainKernel_two_diag] at h1
+  convert h1 using 1
+  linear_combination (-(Complex.exp (↑(-(2 * t)) * Complex.I) * ((Real.sin t : ℝ) : ℂ))) * Complex.I_mul_I
+
+end OscInt.API.FiniteRingSanity2

@@ -1,0 +1,570 @@
+#!/usr/bin/env python3
+"""Second run of planted copies of the batch-FR statements (mutations found by the blind pre-proof review).
+
+As the first run (docs/replay/plants/2026-11-16-FR/plants_fr.py.txt) and the second run of batch PA. The batch is now
+a frozen module (OscInt/Statements/FiniteRing.lean) and the first sanity layer is compiled
+(OscInt/Front/FiniteRingSanity.lean); the second layer (FiniteRingSanity2.lean) is not a module of the library yet.
+Every generated file therefore imports OscInt.Front.FiniteRingSanity only and contains, in the namespace of the
+second layer: the unconditional data lemmas of the second layer that the file needs (copied verbatim with their
+docstrings, selected by name closure), then, under the prefix P_, a copy of ONE definition of the statement module
+(a statement constant, or the kernel `lineKernel` / `ringKernel` for the plants L1-L3 and R1) and copies of the
+scripts that go through it: for a statement constant, every sanity theorem of both layers that takes it as its
+hypothesis; for a kernel definition, the data lemmas of both layers that pin it. Exactly one textual mutation is
+applied to the copied definition. The unplanted copy (ok-) must compile.
+Witness files (docs/lessons.md, rule 9): a compiled proof of the negation of the planted statement from
+unconditional data lemmas; for a planted kernel definition, a compiled proof that the copy violates an inequality
+(or identity) that the second layer proves of the true kernel. No file proves, or uses a proof of, a statement of
+the batch.
+Verdicts: DETECTED (witness compiled), NOT DETECTED (no witness; "script rejected" alone is recorded and is not a
+detection), TRUE WEAKENING (implied by the frozen statement), NO VIOLATION KNOWN.
+Usage: plants_fr2.py REPO SANITY2_FILE OUTDIR SCRATCHDIR [plant ids]
+"""
+import os, re, subprocess, sys
+
+REPO, SAN2_PATH, OUT, SCR = sys.argv[1:5]
+os.makedirs(OUT, exist_ok=True)
+os.makedirs(SCR, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/FiniteRing.lean')).read().split('\n')
+SAN1 = open(os.path.join(REPO, 'OscInt/Front/FiniteRingSanity.lean')).read().split('\n')
+SAN2_ALL = open(SAN2_PATH).read()
+SAN2 = SAN2_ALL[SAN2_ALL.index('namespace OscInt.API.FiniteRingSanity2'):].split('\n')
+K, U, S, P = 'RingKernelStatement', 'RingUniqueStatement', 'RingCosetSumStatement', 'RingFiniteSizeStatement'
+CK, CU, CP = 'ChainKernelStatement', 'ChainUniqueStatement', 'ChainFiniteSizeStatement'
+LINE, RING = 'lineKernel', 'ringKernel'
+# Scripts: for a statement constant, the theorems of the two layers that take it as hypothesis (first layer first);
+# for a kernel definition, the data lemmas that pin it.
+THMS = {
+    K: ['ringK_two_deriv', 'ringK_unit', 'ringK_period', 'ringK_four_deriv', 'ringK_unit_four'],
+    U: ['ringU_mode', 'ringU_const', 'ringU_iMode'],
+    S: ['ringS_origin', 'ringS_two'],
+    P: ['ringP_one', 'ringP_time', 'ringP_neg_one', 'ringP_two_two', 'ringP_neg_time', 'ringP_neg_time_half'],
+    CK: ['chainK_one', 'chainK_unit', 'chainK_two_offdiag', 'chainK_one_wall_site', 'chainK_two_lower_offdiag',
+         'chainK_two_bond'],
+    CU: ['chainU_one', 'chainU_two'],
+    CP: ['chainP_one', 'chainP_one_zero', 'chainP_two_one_one', 'chainP_two_two_two'],
+    LINE: ['lineKernel_zero', 'lineKernel_quarter_zero_approx_sharp', 'lineKernel_quarter_zero_approx',
+           'lineKernel_quarter_one_approx_sharp', 'lineKernel_quarter_one_approx'],
+    RING: ['ringKernel_one', 'ringKernel_two', 'ringKernel_four', 'ringKernel_six', 'ringKernel_six_site_zero',
+           'ringKernel_six_four_pi'],
+}
+FIRST_LAYER = set()
+DECL = re.compile(r"^(?:noncomputable )?(theorem|def) ([A-Za-z_0-9']+)")
+for l in SAN1:
+    m = DECL.match(l)
+    if m:
+        FIRST_LAYER.add(m.group(2))
+
+
+def block(lines, name):
+    """The declaration `name` without its docstring, up to the next blank line; None if absent."""
+    for i, l in enumerate(lines):
+        m = DECL.match(l)
+        if m and m.group(2) == name:
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    return None
+
+
+def script(name):
+    t = block(SAN2, name)
+    return t if t is not None else block(SAN1, name)
+
+
+def data_blocks():
+    """All declarations of the second layer with docstrings, in file order: name -> (index, text)."""
+    res, cur = {}, []
+    for l in SAN2[1:] + ['']:
+        if l.strip() == '':
+            for c in cur:
+                m = DECL.match(c)
+                if m:
+                    res[m.group(2)] = (len(res), '\n'.join(cur))
+                    break
+            cur = []
+        else:
+            cur.append(l)
+    return res
+
+
+DATA = data_blocks()
+
+
+def closure(text, renamed):
+    """Unconditional declarations of the second layer used by `text`, transitively, in file order."""
+    need, todo = set(), [text]
+    while todo:
+        t = todo.pop()
+        for w in set(re.findall(r"[A-Za-z_][A-Za-z_0-9']*", t)):
+            if w in DATA and w not in need and w not in renamed:
+                need.add(w)
+                todo.append(DATA[w][1])
+    return [DATA[n][1] for n in sorted(need, key=lambda n: DATA[n][0])]
+
+
+HEADER = """import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+"""
+FOOTER = '\n\nend OscInt.API.FiniteRingSanity2\n'
+
+
+def make(target, muts, planted, witness=None):
+    """target: the definition copied under P_; muts: [(old, new, count)]; witness: None, a proof term of
+    `¬ P_<target>`, or ('raw', full theorem text) for a planted kernel definition."""
+    t = block(STMT, target)
+    assert t is not None, target
+    if planted:
+        for old, new, count in muts:
+            assert t.count(old) == count, (target, old, t.count(old))
+            t = t.replace(old, new)
+    parts, renamed = [t], [target]
+    if witness is None:
+        for th in THMS[target]:
+            s = script(th)
+            if s is not None:  # scripts of priorities B and C exist only once those parts are written
+                parts.append(s)
+                renamed.append(th)
+    elif isinstance(witness, tuple):
+        parts.append(witness[1])
+    else:
+        parts.append(f'theorem witness_not_{target} : ¬ {target} :=\n  {witness}')
+    text = '\n\n'.join(parts)
+    for n in sorted(renamed, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r"(?![\w'])", 'P_' + n, text)
+    data = closure(text, set(renamed))
+    return HEADER + '\n\n'.join(data + [text]) + FOOTER
+
+
+def run(tag, text):
+    src = os.path.join(SCR, tag + '.lean')
+    open(src, 'w').write(text)
+    open(os.path.join(OUT, tag + '.lean.txt'), 'w').write(text)
+    r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                       cwd=REPO, capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+    errs = [l for l in out.split('\n') if ': error' in l]
+    # the copied scripts in which an error is reported, in file order
+    lines, failing = text.split('\n'), []
+    for e in errs:
+        m = re.search(r'\.lean:(\d+):\d+: error', e)
+        if not m:
+            continue
+        i = int(m.group(1)) - 1
+        while i >= 0 and not DECL.match(lines[i]):
+            i -= 1
+        name = DECL.match(lines[i]).group(2) if i >= 0 else '?'
+        if name not in failing:
+            failing.append(name)
+    return ('accepted' if r.returncode == 0 and not errs else 'rejected'), errs, failing
+
+
+# Table of planted controls, second run for batch FR (part of plants_fr2.py).
+# (id, definition copied under P_, [(old, new, number of textual occurrences)], witness, note)
+# witness: a proof term of ¬ P_<statement>, or ('raw', theorem text) for a planted kernel definition, or None.
+
+W_K1 = '''by
+  intro h
+  have h1 := (h 4 0 1 (by norm_num)).1
+  have h2 := h1.unique (ringKernel_four_one_hasDerivAt 0)
+  rw [show (1 : ℤ) + 1 = 2 by norm_num, show (1 : ℤ) - 1 = 0 by norm_num, ringKernel_four_two,
+    ringKernel_four_zero, ringKernel_four_one] at h2
+  have h3 := congrArg Complex.im h2
+  norm_num at h3'''
+
+W_K2 = '''by
+  intro h
+  have h1 := (h 4 0 2 (by norm_num)).2.1
+  rw [ringK_unit_four_check.1] at h1
+  norm_num at h1'''
+
+W_U1 = '''by
+  intro h
+  have h1 := h 4 iMode (by norm_num) iMode_periodic iMode_hasDerivAt 0 1
+  obtain ⟨r0, rm1, rm2⟩ := ringKernel_four_time_zero_neg
+  have e0 : (1 : ℤ) - ((0 : ℕ) : ℤ) = 1 := by norm_num
+  have e1 : (1 : ℤ) - ((1 : ℕ) : ℤ) = 0 := by norm_num
+  have e2 : (1 : ℤ) - ((2 : ℕ) : ℤ) = -1 := by norm_num
+  have e3 : (1 : ℤ) - ((3 : ℕ) : ℤ) = -2 := by norm_num
+  rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one, e0, e1, e2, e3,
+    ringKernel_four_time_zero.1, r0, rm1, rm2, iMode_zero.2.1, Nat.cast_one, iMode_zero_neg_one] at h1
+  have h2 := congrArg Complex.im h1
+  norm_num at h2'''
+
+W_P1 = '''by
+  intro h
+  have h1 := h 2 0 1 2 (by norm_num) (by norm_num)
+  rw [ring_two_sub_line_zero, norm_one] at h1
+  norm_num at h1
+  have h2 := two_cosh_two_lt
+  rw [le_div_iff₀ (by linarith [Real.cosh_pos 2])] at h1
+  linarith'''
+
+W_P2 = '''by
+  intro h
+  have h1 := h 2 0 2 2 (by norm_num) (by norm_num)
+  rw [ring_two_sub_line_zero, norm_one] at h1
+  norm_num at h1
+  have h2 := two_cosh_two_lt
+  rw [le_div_iff₀ (by linarith [Real.cosh_pos 2])] at h1
+  linarith'''
+
+W_P3 = '''fun h => ringP_signed_time_false (h 1 (-1 / 4) 3 1 (by norm_num) (by norm_num))'''
+
+W_CK1 = '''by
+  intro h
+  have h1 := (h 1 0 2 1 le_rfl (by norm_num)).1
+  have h2 := h1.unique (chainKernel_one_wall_two_hasDerivAt 0)
+  rw [show (2 : ℤ) + 1 = 3 by norm_num, show (2 : ℤ) - 1 = 1 by norm_num, chainKernel_one_three,
+    chainKernel_one, chainKernel_one_wall_two] at h2
+  have h3 := congrArg Complex.im h2
+  norm_num at h3'''
+
+W_CK2 = '''by
+  intro h
+  have h1 := (h 2 0 2 1 le_rfl (by norm_num)).2.2.2 (by norm_num) (by norm_num)
+  rw [chainKernel_two_zero_lower_offdiag, ite_eq_left (by norm_num)] at h1
+  exact zero_ne_one h1'''
+
+W_CK4 = '''by
+  intro h
+  have h1 := (h 1 0 1 3 (by norm_num)).2.2.2 le_rfl (by norm_num)
+  rw [chainKernel_one_source_three, ite_eq_right (by norm_num)] at h1
+  norm_num at h1'''
+
+W_CK5 = '''by
+  intro h
+  have h1 := (h 1 0 1 (-1) (by norm_num)).2.2.2 le_rfl (by norm_num)
+  rw [chainKernel_one_source_neg_one, ite_eq_right (by norm_num)] at h1
+  norm_num at h1'''
+
+W_CU2 = '''by
+  intro h
+  have h1 := h 1 (fun s x => if x = 1 then (s : ℂ) else 0) (fun t => by norm_num) 1 1 le_rfl (by norm_num)
+  rw [Nat.cast_one, Finset.Icc_self, Finset.sum_singleton] at h1
+  simp at h1'''
+
+W_CK3 = '''by
+  intro h
+  have h1 := (h 2 (Real.pi / 2) 1 1 le_rfl (by norm_num)).1
+  have h2 := h1.unique (chainKernel_two_diag_hasDerivAt (Real.pi / 2))
+  rw [chainKernel_two_diag, Real.cos_pi_div_two, Real.sin_pi_div_two] at h2
+  simp at h2'''
+
+W_CU1 = '''by
+  intro h
+  have h1 := h 2 twoSiteMode twoSiteMode_walls twoSiteMode_hasDerivAt (Real.pi / 2) 2 (by norm_num) (by norm_num)
+  rw [twoSiteMode_zero.2] at h1
+  simp only [mul_zero, Finset.sum_const_zero] at h1
+  rw [twoSiteMode_two, Real.sin_pi_div_two] at h1
+  simp at h1'''
+
+W_CP2 = '''by
+  intro h
+  have h1 := h 2 0 2 1 2 (by norm_num) le_rfl (by norm_num) (by norm_num) (by norm_num)
+  rw [chainKernel_two_zero_offdiag, lineKernel_zero, ite_eq_left rfl, zero_sub, norm_neg, norm_one, abs_zero,
+    mul_zero, zero_mul, Real.exp_zero, one_mul, show ((1 + 2 : ℤ) : ℝ) * 2 = 6 by norm_num,
+    show ((1 - 2 : ℤ) : ℝ) * 2 = -2 by norm_num, Real.cosh_neg,
+    show 2 * (((2 : ℕ) : ℝ) + 1) * 2 = 12 by norm_num] at h1
+  linarith [chainP_offdiag_bound_lt]'''
+
+CP_HEAD_11 = '''by
+  intro h
+  have h1 := h 2 (1 / 4) 2 1 1 (by norm_num) le_rfl (by norm_num) le_rfl (by norm_num)
+  rw [show lineKernel (1 / 4) ((1 : ℤ) - 1) = lineKernel (1 / 4) 0 by rw [sub_self]] at h1
+  have h2 := chain_two_sub_line_lower.trans h1
+  obtain ⟨nA, n8, n12, n16, n1⟩ := chainP_eta_two_numbers
+  have hA := Real.exp_pos (2 * |(1 / 4 : ℝ)| * Real.sinh 2)
+'''
+CP_HEAD_22 = '''by
+  intro h
+  have h1 := h 2 (1 / 4) 2 2 2 (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  rw [show lineKernel (1 / 4) ((2 : ℤ) - 2) = lineKernel (1 / 4) 0 by rw [sub_self]] at h1
+  have h2 := chain_two_sub_line_lower_two.trans h1
+  obtain ⟨nA, n8, n12, n16, n1⟩ := chainP_eta_two_numbers
+  have hA := Real.exp_pos (2 * |(1 / 4 : ℝ)| * Real.sinh 2)
+'''
+
+W_CP3 = CP_HEAD_11 + '''  rw [show ((1 - 1 : ℤ) : ℝ) * 2 = 0 by norm_num, show ((1 + 1 : ℤ) : ℝ) * 2 = 4 by norm_num,
+    show 2 * (((2 : ℕ) : ℝ) + 1) * 2 = 12 by norm_num, Real.cosh_zero] at h2
+  linarith [mul_le_mul_of_nonneg_left n12 hA.le]'''
+
+W_CP4 = CP_HEAD_22 + '''  rw [show ((2 + 2 : ℤ) : ℝ) * 2 = 8 by norm_num] at h2
+  linarith [mul_le_mul_of_nonneg_left n8 hA.le]'''
+
+W_CP5 = CP_HEAD_22 + '''  rw [show ((2 - 2 : ℤ) : ℝ) * 2 = 0 by norm_num, show ((2 + 2 : ℤ) : ℝ) * 2 = 8 by norm_num,
+    show 2 * (((2 : ℕ) : ℝ) + 1) * 2 = 12 by norm_num, Real.cosh_zero] at h2
+  linarith [mul_le_mul_of_nonneg_left (add_le_add n8 n1) hA.le]'''
+
+W_CP6 = CP_HEAD_22 + '''  rw [show ((2 - 2 : ℤ) : ℝ) * 2 = 0 by norm_num, show ((2 + 2 : ℤ) : ℝ) * 2 = 8 by norm_num,
+    show 2 * (((2 : ℕ) : ℝ) + 2) * 2 = 16 by norm_num, Real.cosh_zero] at h2
+  linarith [mul_le_mul_of_nonneg_left (add_le_add n8 n16) hA.le]'''
+
+W_CP7 = CP_HEAD_11 + '''\
+  rw [show 2 * ((1 + 1 : ℤ) : ℝ) * 2 = 8 by norm_num, show ((1 - 1 : ℤ) : ℝ) * 2 = 0 by norm_num,
+    show ((1 + 1 : ℤ) : ℝ) * 2 = 4 by norm_num, show 2 * (((2 : ℕ) : ℝ) + 1) * 2 = 12 by norm_num,
+    Real.cosh_zero] at h2
+  linarith [mul_le_mul_of_nonneg_left (add_le_add n8 n12) hA.le]'''
+
+W_L1 = ('raw', '''theorem witness_L1 :
+    ¬ ‖lineKernel (1 / 4) 0 - (15 / 16 : ℝ) * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)‖ ≤ 1 / 384 := by
+  intro h
+  have hpi : ((2 * Real.pi : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (by positivity : (2 * Real.pi : ℝ) ≠ 0)
+  have hc : ((2 * Real.pi : ℝ) : ℂ)⁻¹ * ((2 * Real.pi : ℝ) : ℂ) = 1 := inv_mul_cancel₀ hpi
+  have h0 := latticeKernel1_half_zero_approx
+  have h1 := norm_one_sub_exp_half_lower
+  have e : lineKernel (1 / 4) 0 - ((15 / 16 : ℝ) : ℂ) * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) =
+      ((15 / 16 : ℝ) : ℂ) * (1 - Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)) +
+        ((2 * Real.pi : ℝ) : ℂ)⁻¹ *
+          (latticeKernel1 (1 / 2) 0 - ((2 * Real.pi : ℝ) : ℂ) * ((15 / 16 : ℝ) : ℂ)) := by
+    rw [lineKernel, show (2 : ℝ) * (1 / 4) = 1 / 2 by norm_num, Int.cast_zero]
+    linear_combination ((15 / 16 : ℝ) : ℂ) * hc
+  have hX : ‖((2 * Real.pi : ℝ) : ℂ)⁻¹ *
+      (latticeKernel1 (1 / 2) 0 - ((2 * Real.pi : ℝ) : ℂ) * ((15 / 16 : ℝ) : ℂ))‖ ≤ 33 / 25600 := by
+    rw [norm_mul, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity),
+      inv_mul_le_iff₀ (by positivity)]
+    exact h0
+  have hY : ‖((15 / 16 : ℝ) : ℂ) * (1 - Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I))‖ =
+      15 / 16 * ‖1 - Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)‖ := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by norm_num)]
+  have h3 := norm_le_add_norm_add
+    (((15 / 16 : ℝ) : ℂ) * (1 - Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)))
+    (((2 * Real.pi : ℝ) : ℂ)⁻¹ * (latticeKernel1 (1 / 2) 0 - ((2 * Real.pi : ℝ) : ℂ) * ((15 / 16 : ℝ) : ℂ)))
+  rw [e] at h
+  rw [hY] at h3
+  linarith''')
+
+W_L2 = ('raw', '''theorem witness_L2 :
+    ¬ ‖lineKernel (1 / 4) 1 - (1 / 4 : ℝ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)‖ ≤ 1 / 36 := by
+  intro h
+  have hn : ‖lineKernel (1 / 4) 1‖ ≤ 3 / 16 := by
+    rw [lineKernel, norm_mul, norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, norm_inv, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos (by positivity), Int.cast_one, inv_mul_le_iff₀ (by positivity)]
+    linarith [latticeKernel1_one_bounds.1, Real.pi_pos]
+  have hc : ‖((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)‖ = 1 / 4 := by
+    rw [norm_mul, norm_mul, Complex.norm_exp_ofReal_mul_I, Complex.norm_I, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos (by norm_num)]
+    norm_num
+  have h2 := norm_sub_norm_le (((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I))
+    (lineKernel (1 / 4) 1)
+  rw [norm_sub_rev, hc] at h2
+  linarith''')
+
+W_L3 = ('raw', '''theorem witness_L3 :
+    ¬ ‖lineKernel (1 / 4) 1 - (1 / 4 : ℝ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)‖ ≤ 1 / 8 := by
+  intro h
+  have hpi : ((2 * Real.pi : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (by positivity : (2 * Real.pi : ℝ) ≠ 0)
+  have hc : ((2 * Real.pi : ℝ) : ℂ)⁻¹ * ((2 * Real.pi : ℝ) : ℂ) = 1 := inv_mul_cancel₀ hpi
+  have e : lineKernel (1 / 4) 1 + ((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) =
+      ((2 * Real.pi : ℝ) : ℂ)⁻¹ * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) *
+        (latticeKernel1 (-(1 / 2)) 1 + ((2 * Real.pi : ℝ) : ℂ) * ((1 / 4 : ℝ) : ℂ) * Complex.I) := by
+    rw [lineKernel, show (2 : ℝ) * (1 / 4) = 1 / 2 by norm_num, Int.cast_one]
+    linear_combination (-(((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I))) * hc
+  have hs : ‖lineKernel (1 / 4) 1 +
+      ((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)‖ ≤ 1 / 4 := by
+    rw [e, norm_mul, norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, norm_inv, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos (by positivity), inv_mul_le_iff₀ (by positivity)]
+    linarith [latticeKernel1_one_bounds.2, Real.pi_pos]
+  have hn : ‖((2 : ℝ) : ℂ) * (((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I))‖ =
+      1 / 2 := by
+    rw [norm_mul, norm_mul, norm_mul, Complex.norm_exp_ofReal_mul_I, Complex.norm_I, Complex.norm_real,
+      Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos (by norm_num), abs_of_pos (by norm_num)]
+    norm_num
+  have h3 := norm_sub_le
+    (lineKernel (1 / 4) 1 + ((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I))
+    (lineKernel (1 / 4) 1 - ((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I))
+  rw [show lineKernel (1 / 4) 1 + ((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) -
+      (lineKernel (1 / 4) 1 - ((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)) =
+      ((2 : ℝ) : ℂ) * (((1 / 4 : ℝ) : ℂ) * Complex.I * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)) by
+    push_cast; ring, hn] at h3
+  linarith''')
+
+W_R1 = ('raw', '''theorem witness_R1 : ¬ ringKernel 6 (4 * Real.pi) 0 = 1 := by
+  have hθ1 : 2 * Real.pi * ((1 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = Real.pi / 3 := by push_cast; ring
+  have hθ2 : 2 * Real.pi * ((2 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 2 * (Real.pi / 3) := by push_cast; ring
+  have hθ3 : 2 * Real.pi * ((3 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = Real.pi := by push_cast; ring
+  have hθ4 : 2 * Real.pi * ((4 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 4 * (Real.pi / 3) := by push_cast; ring
+  have hθ5 : 2 * Real.pi * ((5 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 5 * (Real.pi / 3) := by push_cast; ring
+  have key : ∀ (θ c : ℝ) (n : ℤ), Real.cos θ = c → 2 * (4 * Real.pi) * (c ^ (3 : ℕ) - 1) = (n : ℝ) * Real.pi →
+      Complex.exp (↑(2 * (4 * Real.pi) * (Real.cos θ ^ (3 : ℕ) - 1) + ((0 : ℤ) : ℝ) * θ) * Complex.I) =
+        (-1) ^ n := by
+    intro θ c n hc hn
+    rw [hc, Int.cast_zero, zero_mul, add_zero, hn]
+    exact exp_int_mul_pi n
+  obtain ⟨c2, c4, c5⟩ := cos_third_pi_multiples
+  have k1 := key (Real.pi / 3) (1 / 2) (-7) Real.cos_pi_div_three (by push_cast; ring)
+  have k2 := key (2 * (Real.pi / 3)) (-1 / 2) (-9) c2 (by push_cast; ring)
+  have k3 := key Real.pi (-1) (-16) Real.cos_pi (by push_cast; ring)
+  have k4 := key (4 * (Real.pi / 3)) (-1 / 2) (-9) c4 (by push_cast; ring)
+  have k5 := key (5 * (Real.pi / 3)) (1 / 2) (-7) c5 (by push_cast; ring)
+  intro h
+  rw [ringKernel, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
+    Finset.sum_range_succ, Finset.sum_range_one, hθ1, hθ2, hθ3, hθ4, hθ5, k1, k2, k3, k4, k5] at h
+  norm_num at h''')
+
+W_CP8 = '''fun h => chainP_half_time_false
+    (h 2 (1 / 4) (Real.log 16) 1 1 (Real.log_pos (by norm_num)) le_rfl (by norm_num) le_rfl (by norm_num))'''
+
+PLANTS = [
+    ('K1', K, [('ringKernel N t (r + 1) + ringKernel N t (r - 1)',
+                '3 * ringKernel N t (r + 1) - ringKernel N t (r - 1)', 1)], W_K1,
+     'FR-K: R(r + 1) + R(r − 1) ↦ 3 R(r + 1) − R(r − 1); witness: N = 4, r = 1, t = 0, two derivatives at one point '
+     '(−i against i)'),
+    ('K2', K, [('(N : ℤ) ∣ r', '(2 : ℤ) ∣ r', 1)], W_K2,
+     'FR-K: unit datum N ∣ r ↦ 2 ∣ r; witness: N = 4, r = 2 (R₄(0, 2) = 0)'),
+    ('U1', U, [('u 0 (y : ℤ)', 'u 0 (-(y : ℤ))', 1)], W_U1,
+     'FR-U: u(0, y) ↦ u(0, −y); witness: N = 4, u = iˣ e^{−2is} (not even in x), t = 0, x = 1 (i = −i)'),
+    ('P1', P, [('Real.exp (η * (N : ℝ))', 'Real.exp (η * (N : ℝ) ^ 2)', 1)], W_P1,
+     'FR-P: e^{ηN} ↦ e^{ηN²}; witness: N = 2, t = 0, r = 2, η = 1 (left side 1, planted bound 2 cosh 2 / (e⁴ − 1))'),
+    ('P2', P, [('Real.cosh ((r : ℝ) * η)', 'Real.cosh η', 1)], W_P2,
+     'FR-P: cosh(rη) ↦ cosh η; witness: N = 2, t = 0, r = 2, η = 2 (left side 1, planted bound 2 cosh 2 / (e⁴ − 1))'),
+    ('P3', P, [('|t|', 't', 1)], W_P3,
+     'FR-P: |t| ↦ t; witness: N = 1, r = 1, t = −1/4, η = 3 and ‖R₁ − G‖ ≥ 1/2 (ringP_signed_time_false)'),
+    ('CK1', CK, [('chainKernel M t (x + 1) y + chainKernel M t (x - 1) y',
+                  'chainKernel M t (x + 1) y - chainKernel M t (x - 1) y', 1)], W_CK1,
+     'FC-K: C(x + 1) + C(x − 1) ↦ C(x + 1) − C(x − 1); witness: M = 1, y = 1, wall site x = 2, t = 0 '
+     '(planted derivative −2i, true derivative 0)'),
+    ('CK2', CK, [('if x = y', 'if y ≤ x', 1)], W_CK2,
+     'FC-K: unit datum x = y ↦ y ≤ x; witness: M = 2, x = 2, y = 1 (C₂(0; 2, 1) = R₆(0, 1) − R₆(0, 3) = 0)'),
+    ('CK4', CK, [('1 ≤ y → y ≤ (M : ℤ) →', '1 ≤ y →', 1)], W_CK4,
+     'FC-K: hypothesis y ≤ M dropped; witness: M = 1, x = 1, y = 3 (C₁(0; 1, 3) = −1, unit datum 0)'),
+    ('CK5', CK, [('1 ≤ y → y ≤ (M : ℤ) →', 'y ≤ (M : ℤ) →', 1)], W_CK5,
+     'FC-K: hypothesis 1 ≤ y dropped; witness: M = 1, x = 1, y = −1 (C₁(0; 1, −1) = −1, unit datum 0)'),
+    ('CU2', CU, [('    (∀ (t : ℝ) (x : ℤ), 1 ≤ x → x ≤ (M : ℤ) →\n      HasDerivAt (fun s : ℝ => u s x) '
+                  '(Complex.I * (u t (x + 1) + u t (x - 1) - 2 * u t x)) t) →\n', '', 1)], W_CU2,
+     'FC-U: equation hypothesis dropped (walls kept); witness: M = 1, u(s, 1) = s, u = 0 elsewhere, t = 1, x = 1 '
+     '(1 = 0)'),
+    ('CK3', CK, [('Complex.I * (chainKernel M t (x + 1) y + chainKernel M t (x - 1) y - 2 * chainKernel M t x y)',
+                  'Complex.I * (- 2 * chainKernel M t x y)', 1)], W_CK3,
+     'FC-K: both neighbour terms dropped; witness: M = 2, x = y = 1, t = π/2 (planted derivative 0, true derivative '
+     '−e^{−iπ} = 1)'),
+    ('CU1', CU, [('chainKernel M t x y * u 0 y', 'chainKernel M t x y * u 0 x', 1)], W_CU1,
+     'FC-U: u(0, y) ↦ u(0, x); witness: M = 2, u = twoSiteMode (datum (1, 0)), x = 2, t = π/2 (−i = 0)'),
+    ('CP2', CP, [('lineKernel t (x - y)', 'lineKernel t 0', 1)], W_CP2,
+     'FC-P: G(t, x − y) ↦ G(t, 0); witness: M = 2, t = 0, x = 1, y = 2, η = 2 (left side 1, bound < 1)'),
+    ('CP3', CP, [('(Real.exp (-(((x + y : ℤ) : ℝ) * η)) +\n          2 * (', '(2 * (', 1)], W_CP3,
+     'FC-P: wall term e^{−(x+y)η} dropped (plant FC-P-b of the first run, NOT DETECTED there); witness: M = 2, '
+     't = 1/4, x = y = 1, η = 2 (left side ≥ 1/40, planted bound ≤ 0.0074)'),
+    ('CP4', CP, [('(Real.exp (-(((x + y : ℤ) : ℝ) * η)) +\n          2 * (Real.cosh (((x - y : ℤ) : ℝ) * η) + '
+                  'Real.cosh (((x + y : ℤ) : ℝ) * η)) /\n            (Real.exp (2 * ((M : ℝ) + 1) * η) - 1))',
+                  'Real.exp (-(((x + y : ℤ) : ℝ) * η))', 1)], W_CP4,
+     'FC-P: ring term dropped; witness: M = 2, t = 1/4, x = y = 2, η = 2 (left side ≥ 1/40, planted bound ≤ 0.0025)'),
+    ('CP5', CP, [('(Real.cosh (((x - y : ℤ) : ℝ) * η) + Real.cosh (((x + y : ℤ) : ℝ) * η))',
+                  'Real.cosh (((x - y : ℤ) : ℝ) * η)', 1)], W_CP5,
+     'FC-P: cosh((x + y)η) dropped; witness: M = 2, t = 1/4, x = y = 2, η = 2 (left side ≥ 1/40, planted bound '
+     '≤ 0.01)'),
+    ('CP6', CP, [('((M : ℝ) + 1)', '((M : ℝ) + 2)', 1)], W_CP6,
+     'FC-P: M + 1 ↦ M + 2 in the exponent; witness: M = 2, t = 1/4, x = y = 2, η = 2 (left side ≥ 1/40, planted '
+     'bound ≤ 0.01)'),
+    ('CP7', CP, [('Real.exp (-(((x + y : ℤ) : ℝ) * η))', 'Real.exp (-(2 * ((x + y : ℤ) : ℝ) * η))', 1)], W_CP7,
+     'FC-P: wall exponent doubled; witness: M = 2, t = 1/4, x = y = 1, η = 2 (left side ≥ 1/40, planted bound ≤ 0.01)'),
+    ('L1', LINE, [(' * Complex.exp (↑(-(2 * t)) * Complex.I)', '', 1)], W_L1,
+     'definition lineKernel: phase factor e^{−2it} dropped; witness: the copy violates the inequality of '
+     'lineKernel_quarter_zero_approx (C1): ‖G′(1/4, 0) − (15/16) e^{−i/2}‖ ≥ (15/16)(15/32) − 33/25600 > 1/384'),
+    ('L2', LINE, [('latticeKernel1 (2 * t)', 'latticeKernel1 t', 1)], W_L2,
+     'definition lineKernel: I(2t, n) ↦ I(t, n); witness: the copy violates the inequality of '
+     'lineKernel_quarter_one_approx_sharp (C2, sharp form 1/36): ‖G′(1/4, 1)‖ ≤ 3/16, distance ≥ 1/16. Against the '
+     'form 1/8 requested for C2 there is no witness: the distance is 0.1260, the margin 0.001 needs I(1/4, 1) to '
+     'third order'),
+    ('L3', LINE, [('latticeKernel1 (2 * t)', 'latticeKernel1 (-(2 * t))', 1)], W_L3,
+     'definition lineKernel: I(2t, n) ↦ I(−2t, n); witness: the copy violates the inequality of '
+     'lineKernel_quarter_one_approx (C2, form 1/8): ‖G′(1/4, 1) + (i/4) e^{−i/2}‖ ≤ 1/4, distance ≥ 1/4'),
+    ('R1', RING, [('Real.cos (2 * Real.pi * (j : ℝ) / (N : ℝ))', 'Real.cos (2 * Real.pi * (j : ℝ) / (N : ℝ)) ^ (3 : ℕ)',
+                   1)],
+     W_R1, 'definition ringKernel: cos k ↦ cos³ k (written `^ (3 : ℕ)`: with a bare `^ 3` the copied definition does '
+     'not elaborate, `HAdd ℝ ℝ ℂ`); witness: the copy violates the datum ringKernel_six_four_pi '
+     '(R₆(4π, 0) = 1): its value at N = 6, t = 4π, r = 0 is (1 − 1 − 1 + 1 − 1 − 1)/6 = −1/3. The rejection of the '
+     'copied scripts for N = 2 and N = 4 is script-only (the plant agrees with the kernel there)'),
+    ('S1', S, [('lineKernel t (r', 'lineKernel (2 * t) (r', 1)], None, 'FR-S: G(t, ·) ↦ G(2t, ·)'),
+    ('S2', S, [('(ringKernel N t r)', '(ringKernel N (-t) r)', 1)], None, 'FR-S: R_N(t, r) ↦ R_N(−t, r)'),
+    ('CP1', CP, [('Real.exp (-(((x + y : ℤ) : ℝ) * η))', 'Real.exp (-(2 * (x : ℝ) * η))', 1)], None,
+     'FC-P: wall term e^{−(x+y)η} ↦ e^{−2xη}'),
+    ('CP8', CP, [('2 * |t|', '|t|', 1)], W_CP8,
+     'FC-P: 2|t| ↦ |t|; witness: M = 2, t = 1/4, x = y = 1, η = log 16 (chainP_half_time_false: left side '
+     '≥ 767/25600 > 0.0299, planted bound ≤ 0.0290; floating point 0.03044 against 0.02875. The brief expected NOT '
+     'DETECTED from the planted bound 0.0304 at η = 3; its infimum over η is 0.02875, at η ≈ log 16)'),
+    ('TW1', P, [('Real.exp (η * (N : ℝ))', 'Real.exp η', 1)], None, 'FR-P: e^{ηN} ↦ e^{η}'),
+    ('TW2', CP, [('((M : ℝ) + 1)', '(M : ℝ)', 1)], None, 'FC-P: M + 1 ↦ M in the exponent'),
+    ('TW3', CP, [(' 0 < η → 1 ≤ x → x ≤ (M : ℤ) → 1 ≤ y → y ≤ (M : ℤ) →', ' 0 < η →', 1)], None,
+     'FC-P: the four site hypotheses dropped'),
+]
+VERDICT = {
+    'S1': 'NOT DETECTED: no witness, none attempted. No datum of FR-S at t ≠ 0 exists in the two layers, and at '
+          't = 0 the plant is the statement. For N = 1 the planted statement follows from the frozen one (R₁ = 1 at '
+          'every time), so a witness needs N ≥ 2, t ≠ 0 and the value of a sum of infinitely many line-kernel '
+          'values. The copied scripts are accepted unchanged.',
+    'S2': 'NOT DETECTED: no witness, none attempted. No datum of FR-S at t ≠ 0 exists in the two layers; at t = 0 '
+          'and for N = 1 (R₁ = 1) the plant agrees with the statement. A witness needs N ≥ 2, t ≠ 0 and the value of '
+          'a sum of infinitely many line-kernel values. The copied scripts are accepted unchanged.',
+    'CP1': 'NOT DETECTED: no witness, none attempted. For x = y the plant is the statement. For x > y the planted wall '
+           'term is smaller, but the ring term of the bound is about e^{(x+y−2(M+1))η}, so the planted bound stays of '
+           'the size e^{−(x+y)η} unless x + y ≤ M. On the chain of 2 sites the only case x > y is (x, y) = (2, 1), and '
+           'there the plant is not violated in floating point (t = 1/4: left side 0.0051, infimum over η of the '
+           'planted bound 0.0124; t ∈ [0.05, 3] in steps of 0.05: largest ratio 0.44; exploratory, unregistered): the '
+           'point suggested in the brief is not a witness. Violations appear for M ≥ 3 (M = 3, (x, y) = (2, 1), '
+           't = 0.05: ratio 15), so a witness needs the chain of 3 sites (ring of 8 sites, modes with '
+           'cos k = ±√2/2) at t ≠ 0 and G(t, 1) to about 5 digits, outside the sizes of this layer. The first-layer '
+           'scripts are accepted unchanged; the rejection of the second-layer scripts is by the literal form of the '
+           'conclusion only.',
+    'TW1': 'TRUE WEAKENING: for N ≥ 1 and η > 0, 0 < e^{η} − 1 ≤ e^{ηN} − 1 and the numerator is positive, so the '
+           'planted bound is at least the bound of the frozen statement; no datum can refute it (not proved in '
+           'Lean: a fact for general N is outside this layer). The rejection of the copied scripts is by the form '
+           'of the conclusion only.',
+    'TW2': 'TRUE WEAKENING: the hypotheses 1 ≤ x ≤ M force M ≥ 1, and then 0 < e^{2Mη} − 1 ≤ e^{2(M+1)η} − 1 with a '
+           'positive numerator, so the planted bound is at least the bound of the frozen statement; no datum can '
+           'refute it (not proved in Lean). The rejection of the copied scripts is by the form of the conclusion '
+           'only.',
+    'TW3': 'NO VIOLATION KNOWN: no witness, none attempted. The blind referee found no violation of the bound '
+           'outside the sites 1 ≤ x, y ≤ M; the hypotheses do not bite on tested data, and the two layers have no '
+           'datum of the left side at such a point with t ≠ 0. Recorded as an open question, not as a true '
+           'weakening. The rejection of the copied scripts is by the arity of the application only.',
+}
+# Order of the record: statement by statement, then the kernel definitions, then the plants without a witness.
+ORDER = ['K1', 'K2', 'U1', 'P1', 'P2', 'P3', 'CK1', 'CK2', 'CK3', 'CK4', 'CK5', 'CU1', 'CU2', 'CP2', 'CP3', 'CP4',
+         'CP5', 'CP6', 'CP7', 'CP8', 'L1', 'L2', 'L3', 'R1', 'S1', 'S2', 'CP1', 'TW1', 'TW2', 'TW3']
+assert sorted(ORDER) == sorted(p[0] for p in PLANTS)
+PLANTS.sort(key=lambda p: ORDER.index(p[0]))
+
+ONLY = sys.argv[5:]
+jobs = []
+for pid, target, muts, witness, note in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    jobs.append((pid, 'ok-' + pid, make(target, muts, False), 'accepted'))
+    jobs.append((pid, 'plant-' + pid, make(target, muts, True), None))
+    if witness:
+        jobs.append((pid, 'witness-' + pid, make(target, muts, True, witness), 'accepted'))
+results = [run(j[1], j[2]) for j in jobs]
+
+by_pid = {}
+for (pid, tag, _, w), (verdict, errs, failing) in zip(jobs, results):
+    line = f"{tag}: {verdict}" + (f" (want {w}){'' if verdict == w else '  <-- MISMATCH'}" if w else ' (recorded)')
+    if errs:
+        line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+    if tag.startswith('plant-'):
+        first = [n[2:] for n in failing if n[2:] in FIRST_LAYER]
+        second = [n[2:] for n in failing if n[2:] not in FIRST_LAYER]
+        line += ('\n    copied scripts with an error: first layer: ' + (', '.join(first) or 'none (all accepted)') +
+                 '; second layer: ' + (', '.join(second) or 'none (all accepted)'))
+    by_pid.setdefault(pid, {})[tag.split('-')[0]] = (verdict, line)
+lines = []
+for pid, target, muts, witness, note in PLANTS:
+    if pid not in by_pid:
+        continue
+    r = by_pid[pid]
+    lines += [r[k][1] for k in ('ok', 'plant', 'witness') if k in r]
+    if witness:
+        what = '¬ planted statement' if not isinstance(witness, tuple) else 'the planted definition violates the datum'
+        v = (f'DETECTED (witness compiled: {what})' if r['witness'][0] == 'accepted'
+             else 'WITNESS FAILED  <-- MISMATCH')
+    else:
+        v = VERDICT[pid]
+    lines.append(f'  {pid} [{note}]: {v}')
+open(os.path.join(OUT, 'SUMMARY.txt' if not ONLY else 'SUMMARY-partial.txt'), 'w').write('\n'.join(lines) + '\n')
+print('\n'.join(lines))

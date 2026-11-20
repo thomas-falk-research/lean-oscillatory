@@ -1,0 +1,45 @@
+# Batch FR integration checks (lead, session 13): leanchecker run ended 2026-11-17T00:09:12Z on the working tree that
+# became the integration commit (parent 6ef8939; the five part files byte-identical to the agents' deliveries).
+# toolchain leanprover/lean4:v4.35.0; leanchecker sha256 12c38901cdbfab178f1bf6145dd30012e9a3b2c11ca695292a5884fa3cbaddb6
+leanchecker OscInt.Statements.FiniteRing rc=0 6s
+leanchecker OscInt.Front.FiniteRingSanity rc=0 5s
+leanchecker OscInt.Front.FiniteRingSanity2 rc=0 7s
+leanchecker Blueprint.FiniteRing rc=0 5s
+leanchecker OscInt.Front.FiniteRingAssembly rc=0 6s
+leanchecker OscInt.Front.FiniteRingKernel rc=0 6s
+leanchecker OscInt.Front.FiniteRingCoset rc=0 6s
+leanchecker OscInt.Front.FiniteRingImages rc=0 5s
+leanchecker OscInt.Front.FiniteRingEnergy rc=0 6s
+leanchecker OscInt.Front.FiniteRingChainEnergy rc=0 6s
+leanchecker OscInt.Front.FiniteRingFinal rc=0 5s
+# statement types: `lake env lean StatementTypes.lean` printed 78 TYPE-OK lines and nothing else (71 before, 7 for batch FR).
+# consumer example: `lake env lean examples/consumer/ConsumerFiniteRing.lean` printed nothing (no error, no warning).
+# axioms of the seven final theorems, printed by the lead in scratch before integration (all five parts, the assembly
+# and the final theorems compiled as one file): each [propext, Classical.choice, Quot.sound]; the audit of the
+# `make quick` run on the integration tree is in the session log.
+# axiom audit (build/axioms.out of the make quick run that ended 2026-11-17T00:20:08Z on the integration tree):
+AUDIT OscInt.API.chainFiniteSize propext,Classical.choice,Quot.sound
+AUDIT OscInt.API.chainKernelSolves propext,Classical.choice,Quot.sound
+AUDIT OscInt.API.chainUnique propext,Classical.choice,Quot.sound
+AUDIT OscInt.API.ringCosetSum propext,Classical.choice,Quot.sound
+AUDIT OscInt.API.ringFiniteSize propext,Classical.choice,Quot.sound
+AUDIT OscInt.API.ringKernelSolves propext,Classical.choice,Quot.sound
+AUDIT OscInt.API.ringUnique propext,Classical.choice,Quot.sound
+AUDIT OscInt.FiniteRingAux.chainEnergyFacts propext,Classical.choice,Quot.sound
+AUDIT OscInt.FiniteRingAux.chainFiniteSize_of propext,Classical.choice,Quot.sound
+AUDIT OscInt.FiniteRingAux.chainKernel_of propext,Classical.choice,Quot.sound
+AUDIT OscInt.FiniteRingAux.chainUnique_of propext,Classical.choice,Quot.sound
+AUDIT OscInt.FiniteRingAux.imageSumFacts propext,Classical.choice,Quot.sound
+AUDIT OscInt.FiniteRingAux.lineKernel_norm_le propext,Classical.choice,Quot.sound
+AUDIT OscInt.FiniteRingAux.ringCosetSumStatement_part propext,Classical.choice,Quot.sound
+AUDIT OscInt.FiniteRingAux.ringDatumFacts propext,Classical.choice,Quot.sound
+AUDIT OscInt.FiniteRingAux.ringEnergyFacts propext,Classical.choice,Quot.sound
+AUDIT OscInt.FiniteRingAux.ringEvenFacts propext,Classical.choice,Quot.sound
+AUDIT OscInt.FiniteRingAux.ringFiniteSize_of propext,Classical.choice,Quot.sound
+AUDIT OscInt.FiniteRingAux.ringKernelStatement_part propext,Classical.choice,Quot.sound
+AUDIT OscInt.FiniteRingAux.ringUnique_of propext,Classical.choice,Quot.sound
+AUDIT-TOTAL 1911 1911
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

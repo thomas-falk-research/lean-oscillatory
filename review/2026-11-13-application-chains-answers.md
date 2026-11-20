@@ -154,3 +154,7 @@ claims none.
 - The lead, the referee and the prior-art agent are Claude instances. Agreement between them is not independent
   confirmation.
 - Nothing here is machine-checked.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

@@ -1,0 +1,311 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the batch-KL statements against copies of their sanity theorems.
+
+As the batch-HC generator (docs/replay/plants/2026-11-12-HC/plants_hc.py.txt): for each plant, copy the named defs
+(from OscInt/Statements/KusminLandau.lean) and sanity theorems (from OscInt/Front/KusminLandauSanity.lean) under the
+prefix P_, apply exactly one textual mutation to one copied def, and compile with
+`lake env lean -DautoImplicit=false`. The unplanted copy (ok-) must compile. Witness files (lessons 44, rule 9): the
+mutated defs followed by a hand-written proof of the negation of the planted statement on closed data; it must compile.
+No file proves, or argues towards, the statements themselves; the two plants with no possible witness are recorded as
+true weakenings with the reason in prose (not compiled).
+Usage: plants_kl.py REPO OUTDIR [plant ids]
+"""
+import os, re, subprocess, sys, textwrap
+
+REPO, OUT = sys.argv[1], sys.argv[2]
+os.makedirs(OUT, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/KusminLandau.lean')).read().split('\n')
+SAN = open(os.path.join(REPO, 'OscInt/Front/KusminLandauSanity.lean')).read().split('\n')
+KD, KC, KF = 'KusminLandauStatement', 'KusminLandauTwoOverPiStatement', 'KusminLandauDerivStatement'
+DM, ES = 'DiffsMonotoneIn', 'expSum'
+
+
+def block(lines, kind, name):
+    pat = re.compile(r'^(noncomputable )?' + kind + r' ' + re.escape(name) + r'\b')
+    for i, l in enumerate(lines):
+        if pat.match(l):
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {kind} {name}')
+
+
+COT = 'Real.cos (Real.pi * lam / 2) / Real.sin (Real.pi * lam / 2)'
+MONO = ('  ((∀ n, n + 1 < N → c (n + 1) - c n ≤ c (n + 2) - c (n + 1)) ∨\n'
+        '      (∀ n, n + 1 < N → c (n + 2) - c (n + 1) ≤ c (n + 1) - c n)) ∧\n'
+        '    ∀ n < N,')
+KD_THMS = ['kl_third', 'kl_anti', 'kl_shift', 'kl_six', 'kl_one_half']
+DM_THMS = ['diffs_cThird', 'diffs_cAnti', 'diffs_cShift', 'diffs_cSix', 'diffs_cOne', 'not_diffs_cAlt',
+           'not_diffs_cQuarter_third', 'not_diffs_cInt'] + KD_THMS
+KF_THMS = ['klf_quarter', 'klf_quarter_shift', 'klf_antitone']
+
+W_SQRT13 = '''  have h13 : (3 : ℝ) < Real.sqrt 13 := by
+    rw [Real.lt_sqrt (by norm_num)]
+    norm_num
+'''
+
+WITNESS = {
+    # cThird, lam = 1/3: sqrt 3 <= 1 / sin(pi/3) = 2 / sqrt 3 is false.
+    'KL-D-a': f'''theorem witness_not_P_{KD} : ¬ P_{KD} := by
+  intro h
+  have h1 := h cThird 2 0 (1 / 3) (by norm_num) (by norm_num) diffs_cThird
+  rw [norm_expSum_cThird, show Real.pi * (1 / 3) = Real.pi / 3 by ring, Real.sin_pi_div_three,
+    le_div_iff₀ (by positivity)] at h1
+  nlinarith [Real.sq_sqrt (show (0 : ℝ) ≤ 3 by norm_num)]''',
+    # cThird, lam = 1/3: sqrt 3 <= cot(pi/3) = 1 / sqrt 3 is false.
+    'KL-D-b': f'''theorem witness_not_P_{KD} : ¬ P_{KD} := by
+  intro h
+  have h1 := h cThird 2 0 (1 / 3) (by norm_num) (by norm_num) diffs_cThird
+  rw [norm_expSum_cThird, show Real.pi * (1 / 3) = Real.pi / 3 by ring, Real.cos_pi_div_three,
+    Real.sin_pi_div_three, le_div_iff₀ (by positivity)] at h1
+  nlinarith [Real.sq_sqrt (show (0 : ℝ) ≤ 3 by norm_num)]''',
+    # cAlt, lam = 1/4: sqrt 13 <= cot(pi/8) is false (3 sin <= cos would give cos^2 >= 9/10, but cos^2 = 1/2 + sqrt 2 / 4).
+    'KL-D-c': f'''theorem witness_not_P_{KD} : ¬ P_{KD} := by
+  intro h
+  have h1 := h cAlt 4 0 (1 / 4) (by norm_num) (by norm_num) cAlt_cell
+  rw [norm_expSum_cAlt, show Real.pi * (1 / 4) / 2 = Real.pi / 8 by ring] at h1
+  have hs : 0 < Real.sin (Real.pi / 8) :=
+    Real.sin_pos_of_pos_of_lt_pi (by positivity) (by linarith [Real.pi_pos])
+  have hc : 2 * Real.cos (Real.pi / 8) ^ 2 - 1 = Real.sqrt 2 / 2 := by
+    rw [← Real.cos_two_mul, show 2 * (Real.pi / 8) = Real.pi / 4 by ring, Real.cos_pi_div_four]
+  have hsc := Real.sin_sq_add_cos_sq (Real.pi / 8)
+  rw [le_div_iff₀ hs] at h1
+{W_SQRT13}  have h2 : Real.sqrt 2 < 8 / 5 := by
+    rw [Real.sqrt_lt' (by norm_num)]
+    norm_num
+  have h3s : 3 * Real.sin (Real.pi / 8) ≤ Real.cos (Real.pi / 8) := by
+    nlinarith [mul_pos (sub_pos.mpr h13) hs]
+  nlinarith [mul_le_mul h3s h3s (by positivity) (by linarith)]''',
+    # cOne, N = 0, lam = 1: 1 <= cos(pi/2) / sin(pi/2) = 0 is false.
+    'KL-D-d': f'''theorem witness_not_P_{KD} : ¬ P_{KD} := by
+  intro h
+  have h1 := h cOne 0 0 1 one_pos (diffs_cOne 0 1)
+  rw [expSum_cOne, norm_one, mul_one, Real.cos_pi_div_two, zero_div] at h1
+  norm_num at h1''',
+    # cOne, N = 0, lam = 0: 1 <= cos 0 / sin 0 = 1 / 0 = 0 is false.
+    'KL-D-e': f'''theorem witness_not_P_{KD} : ¬ P_{KD} := by
+  intro h
+  have h1 := h cOne 0 0 0 (by norm_num) (diffs_cOne 0 0)
+  rw [expSum_cOne, norm_one, mul_zero, zero_div, Real.sin_zero, div_zero] at h1
+  norm_num at h1''',
+    # cInt, N = 2, k = 0, lam = 1/2: every difference is 1 >= 1/2; 3 <= cot(pi/4) = 1 is false.
+    'KL-D-f': f'''theorem witness_not_P_{KD} : ¬ P_{KD} := by
+  intro h
+  have hd : P_{DM} cInt 2 0 (1 / 2) :=
+    ⟨Or.inl fun n _ => by rw [cInt_diff n, show n + 2 = n + 1 + 1 from rfl, cInt_diff (n + 1)],
+      fun n _ => by rw [cInt_diff n]; norm_num⟩
+  have h1 := h cInt 2 0 (1 / 2) (by norm_num) le_rfl hd
+  rw [expSum_cInt, cot_half] at h1
+  norm_num at h1''',
+    # cSix, lam = 1/6: sqrt 13 <= 6/pi + 1 is false (6/pi < 2 from pi > 3, and sqrt 13 > 3).
+    'KL-C-a': f'''theorem witness_not_P_{KC} : ¬ P_{KC} := by
+  intro h
+  have h1 := h cSix 6 0 (1 / 6) (by norm_num) (by norm_num) diffs_cSix
+  rw [norm_expSum_cSix] at h1
+{W_SQRT13}  have hpi : 1 / (Real.pi * (1 / 6)) < 2 := by
+    rw [div_lt_iff₀ (by positivity)]
+    linarith [Real.pi_gt_three]
+  linarith''',
+    # cQuarter, lam = 1/4: sqrt 2 <= 4/pi is false (4/pi < 4/3 < sqrt 2).
+    'KL-C-b': f'''theorem witness_not_P_{KC} : ¬ P_{KC} := by
+  intro h
+  have h1 := h cQuarter 1 0 (1 / 4) (by norm_num) (by norm_num) diffs_cQuarter
+  rw [norm_expSum_cQuarter] at h1
+  have h2 : (4 / 3 : ℝ) < Real.sqrt 2 := by
+    rw [Real.lt_sqrt (by norm_num)]
+    norm_num
+  have hpi : 1 / (Real.pi * (1 / 4)) < 4 / 3 := by
+    rw [div_lt_iff₀ (by positivity)]
+    linarith [Real.pi_gt_three]
+  linarith''',
+    # f(x) = x on [0, 2], f' = 1, k = 0, lam = 1/2: the sum over n = 0, 1, 2 is 3 > 1 = cot(pi/4).
+    'KL-F-a': f'''theorem witness_not_P_{KF} : ¬ P_{KF} := by
+  intro h
+  have h1 := h (fun x => x) (fun _ => 1) 0 2 0 (1 / 2) (by norm_num) le_rfl
+    ⟨continuousOn_id, fun x _ => hasDerivAt_id x⟩ (Or.inl monotoneOn_const) (fun x _ => by norm_num)
+  have hs : ∑ n ∈ Finset.Icc ⌈(0 : ℝ)⌉ ⌊(2 : ℝ)⌋, eTerm ((n : ℤ) : ℝ) = 3 := by
+    rw [Finset.sum_congr rfl (fun n _ => eTerm_int n), Icc_ceil_floor_zero_two]
+    simp
+  have h2 : ‖(3 : ℂ)‖ ≤ _ := hs ▸ h1
+  rw [cot_half] at h2
+  norm_num at h2''',
+    # f(x) = x/2 + (cos(pi x) - 1)/8 on [0, 20]: f' = 1/2 - (pi/8) sin(pi x) in [1/10, 9/10], not monotone;
+    # f(2m) = m, f(2m+1) = m + 1/4; the 21 terms sum to 11 + 10i, of norm sqrt 221 > 10 >= cot(pi/20).
+    'KL-F-b': f'''/-- `f(x) = x/2 + (cos(πx) − 1)/8`: `f(2m) = m`. -/
+theorem wave_even (m : ℤ) :
+    eTerm (((2 * m : ℤ) : ℝ) / 2 + (Real.cos (Real.pi * ((2 * m : ℤ) : ℝ)) - 1) / 8) = 1 := by
+  rw [show Real.pi * ((2 * m : ℤ) : ℝ) = (m : ℝ) * (2 * Real.pi) by push_cast; ring, Real.cos_int_mul_two_pi,
+    show ((2 * m : ℤ) : ℝ) / 2 + (1 - 1) / 8 = (m : ℝ) by push_cast; ring]
+  exact eTerm_int m
+
+/-- `f(2m + 1) = m + 1/4`. -/
+theorem wave_odd (m : ℤ) :
+    eTerm (((2 * m + 1 : ℤ) : ℝ) / 2 + (Real.cos (Real.pi * ((2 * m + 1 : ℤ) : ℝ)) - 1) / 8) = Complex.I := by
+  rw [show Real.pi * ((2 * m + 1 : ℤ) : ℝ) = (m : ℝ) * (2 * Real.pi) + Real.pi by push_cast; ring,
+    Real.cos_add_pi, Real.cos_int_mul_two_pi,
+    eTerm_of _ (1 / 4) m (show ((2 * m + 1 : ℤ) : ℝ) / 2 + (-1 - 1) / 8 = 1 / 4 + (m : ℝ) by push_cast; ring),
+    eTerm_quarter]
+
+/-- The 21 terms `n = 0, …, 20` sum to `11 + 10i`. -/
+theorem wave_sum :
+    ∑ n ∈ Finset.Icc ⌈(0 : ℝ)⌉ ⌊(20 : ℝ)⌋, eTerm ((n : ℝ) / 2 + (Real.cos (Real.pi * (n : ℝ)) - 1) / 8) =
+      ((11 : ℝ) : ℂ) + ((10 : ℝ) : ℂ) * Complex.I := by
+  have hI : Finset.Icc ⌈(0 : ℝ)⌉ ⌊(20 : ℝ)⌋ =
+      (Finset.range 11).image (fun j : ℕ => 2 * (j : ℤ)) ∪
+        (Finset.range 10).image (fun j : ℕ => 2 * (j : ℤ) + 1) := by
+    rw [Int.ceil_zero, show ⌊(20 : ℝ)⌋ = 20 from Int.floor_ofNat 20]
+    decide
+  rw [hI, Finset.sum_union (by decide), Finset.sum_image (fun x _ y _ hxy => by simpa using hxy),
+    Finset.sum_image (fun x _ y _ hxy => by simpa using hxy),
+    Finset.sum_congr rfl (fun (j : ℕ) _ => wave_even (j : ℤ)),
+    Finset.sum_congr rfl (fun (j : ℕ) _ => wave_odd (j : ℤ))]
+  simp
+
+theorem witness_not_P_{KF} : ¬ P_{KF} := by
+  intro h
+  have hd : ∀ x : ℝ, HasDerivAt (fun x : ℝ => x / 2 + (Real.cos (Real.pi * x) - 1) / 8)
+      (1 / 2 - Real.pi / 8 * Real.sin (Real.pi * x)) x := by
+    intro x
+    have h0 : HasDerivAt (fun x : ℝ => x / 2 + (Real.cos (Real.pi * x) - 1) / 8)
+        (1 / 2 + (-Real.sin (Real.pi * x) * (Real.pi * 1)) / 8) x :=
+      ((hasDerivAt_id x).div_const 2).add (((((hasDerivAt_id x).const_mul Real.pi).cos).sub_const 1).div_const 8)
+    exact h0.congr_deriv (by ring)
+  have h1 := h (fun x => x / 2 + (Real.cos (Real.pi * x) - 1) / 8)
+    (fun x => 1 / 2 - Real.pi / 8 * Real.sin (Real.pi * x)) 0 20 0 (1 / 10) (by norm_num) (by norm_num)
+    ⟨by fun_prop, fun x _ => hd x⟩
+    (fun x _ => by
+      simp only [Int.cast_zero]
+      constructor <;>
+        nlinarith [Real.sin_le_one (Real.pi * x), Real.neg_one_le_sin (Real.pi * x), Real.pi_pos, Real.pi_lt_d2])
+  have h2 : ‖((11 : ℝ) : ℂ) + ((10 : ℝ) : ℂ) * Complex.I‖ ≤ _ := wave_sum ▸ h1
+  rw [Complex.norm_add_mul_I, show Real.pi * (1 / 10) / 2 = Real.pi / 20 by ring] at h2
+  have hs : 1 / 10 ≤ Real.sin (Real.pi / 20) := by
+    have := Real.mul_le_sin (x := Real.pi / 20) (by positivity) (by linarith [Real.pi_pos])
+    rwa [show 2 / Real.pi * (Real.pi / 20) = 1 / 10 by field_simp; norm_num] at this
+  have hc := Real.cos_le_one (Real.pi / 20)
+  have h221 : (10 : ℝ) < Real.sqrt (11 ^ 2 + 10 ^ 2) := by
+    rw [Real.lt_sqrt (by norm_num)]
+    norm_num
+  have hpos : 0 < Real.sin (Real.pi / 20) := by linarith
+  rw [le_div_iff₀ hpos] at h2
+  have := mul_lt_mul_of_pos_right h221 hpos
+  linarith''',
+}
+
+TRUE_WEAKENING = {
+    'KL-D-g': ('TRUE WEAKENING (in fact an equivalent re-indexing); no witness possible. The planted statement bounds '
+               'the first N terms under the hypothesis on N differences. It follows from the true statement: for '
+               'N = 0 the sum is empty and 0 <= cot(pi lam/2); for N = M + 1 the hypothesis at N restricts to the '
+               'hypothesis at M, and the true statement at M bounds c 0..c M. Conversely, extending a sequence by '
+               'one more admissible difference (repeat the last one) gives the true statement from the planted one. '
+               'So no data can refute it; the rejection above is of the proof script only (the value lemma for the '
+               'three-term sum). Reasoned in prose, not compiled (no proof about the statements before review).'),
+    'KL-F-c': ('TRUE WEAKENING; no witness possible. The planted sum runs over ceil a <= n < floor b. It follows from '
+               'the true statement applied on [a, floor b - 1] when ceil a <= floor b - 1 (continuity, derivative, '
+               'monotonicity and the cell all restrict to a subinterval, and floor(floor b - 1) = floor b - 1), and '
+               'the sum is empty, with 0 <= cot(pi lam/2), otherwise. (Conversely f can be continued linearly beyond '
+               'b with the limiting slope, so the two forms should be equivalent.) No data can refute it; the '
+               'rejection above is of the proof script only. Reasoned in prose, not compiled.'),
+}
+
+PLANTS = [
+    # (id, defs copied from the statement file (in order), sanity theorems copied, (mutated def, old, new), note)
+    ('KL-D-a', [KD], KD_THMS, (KD, COT, '1 / Real.sin (Real.pi * lam)'),
+     'bound -> 1 / sin(pi lam)'),
+    ('KL-D-b', [KD], KD_THMS, (KD, COT, 'Real.cos (Real.pi * lam) / Real.sin (Real.pi * lam)'),
+     'pi lam / 2 -> pi lam in the bound'),
+    ('KL-D-c', [DM, KD], DM_THMS, (DM, MONO, '  ∀ n < N,'),
+     'monotonicity conjunct of DiffsMonotoneIn dropped'),
+    ('KL-D-d', [KD], KD_THMS, (KD, '0 < lam → lam ≤ 1 / 2 → DiffsMonotoneIn', '0 < lam → DiffsMonotoneIn'),
+     'lam <= 1/2 dropped'),
+    ('KL-D-e', [KD], KD_THMS, (KD, '0 < lam → lam ≤ 1 / 2 → DiffsMonotoneIn', 'lam ≤ 1 / 2 → DiffsMonotoneIn'),
+     '0 < lam dropped'),
+    ('KL-D-f', [DM, KD], DM_THMS, (DM, ' ∧ c (n + 1) - c n ≤ (k : ℝ) + 1 - lam', ''),
+     'upper end of the cell dropped'),
+    ('KL-D-g', [ES, KD], ['expSum_eq', 'expSum_cThird', 'norm_expSum_cThird', 'kl_third'],
+     (ES, 'Finset.range (N + 1)', 'Finset.range N'), 'range (N + 1) -> range N in expSum'),
+    ('KL-C-a', [KC], ['klc_six', 'klc_third'], (KC, '2 / (Real.pi * lam)', '1 / (Real.pi * lam) + 1'),
+     'bound -> 1/(pi lam) + 1'),
+    ('KL-C-b', [KC], ['klc_six', 'klc_third'], (KC, '2 / (Real.pi * lam)', '1 / (Real.pi * lam)'),
+     'bound -> 1/(pi lam)'),
+    ('KL-F-a', [KF], KF_THMS,
+     (KF, "(∀ x ∈ Ioo a b, (k : ℝ) + lam ≤ f' x ∧ f' x ≤ (k : ℝ) + 1 - lam)", "(∀ x ∈ Ioo a b, (k : ℝ) + lam ≤ f' x)"),
+     "upper bound on f' dropped"),
+    ('KL-F-b', [KF], KF_THMS, (KF, "    (MonotoneOn f' (Ioo a b) ∨ AntitoneOn f' (Ioo a b)) →\n", ''),
+     "monotonicity of f' dropped"),
+    ('KL-F-c', [KF], KF_THMS, (KF, 'Finset.Icc ⌈a⌉ ⌊b⌋', 'Finset.Ico ⌈a⌉ ⌊b⌋'),
+     'Finset.Icc -> Finset.Ico in the sum'),
+]
+
+HEADER = """import OscInt.Front.KusminLandauSanity
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+
+namespace OscInt.API.KusminLandauSanity
+
+open OscInt.Statements Set
+"""
+
+
+def make(defs, thms, mut, planted, witness=None):
+    parts = []
+    for d in defs:
+        t = block(STMT, 'def', d)
+        if planted and d == mut[0]:
+            assert t.count(mut[1]) == 1, (d, mut[1], t.count(mut[1]))
+            t = t.replace(mut[1], mut[2])
+        parts.append(t)
+    if witness is None:
+        parts += [block(SAN, 'theorem', th) for th in thms]
+    text = '\n\n'.join(parts)
+    names = defs + (thms if witness is None else [])
+    for n in sorted(names, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r'(?![\w])', 'P_' + n, text)
+    if witness is not None:
+        text += '\n\n' + witness
+    return HEADER + '\n' + text + '\n\nend OscInt.API.KusminLandauSanity\n'
+
+
+def run(tag, text):
+    src = os.path.join(OUT, tag + '.lean')
+    open(src, 'w').write(text)
+    r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                       cwd=REPO, capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+    errs = [l for l in out.split('\n') if ': error' in l]
+    return ('accepted' if r.returncode == 0 and not errs else 'rejected'), errs
+
+
+summary = []
+ONLY = sys.argv[3:]
+for pid, defs, thms, mut, note in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    jobs = [('ok-' + pid, make(defs, thms, mut, False), 'accepted'),
+            ('plant-' + pid, make(defs, thms, mut, True), None)]
+    if pid in WITNESS:
+        jobs.append(('witness-' + pid, make(defs, thms, mut, True, WITNESS[pid]), 'accepted'))
+    res = {}
+    for tag, text, w in jobs:
+        verdict, errs = run(tag, text)
+        res[tag.split('-')[0]] = verdict
+        line = f"{tag}: {verdict}" + (f" (want {w}){'' if verdict == w else '  <-- MISMATCH'}" if w else ' (recorded)')
+        if errs:
+            line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+        print(line, flush=True)
+        summary.append(line)
+    if res.get('witness') == 'accepted':
+        v = 'DETECTED (compiled witness of the negation of the planted statement)'
+    elif pid in TRUE_WEAKENING:
+        v = TRUE_WEAKENING[pid]
+    else:
+        v = 'NOT DETECTED' + ('' if res['plant'] == 'accepted' else ' (script-only rejection)')
+    line = textwrap.fill(f"verdict {pid} [{note}]: {v}", width=116, initial_indent='    ',
+                         subsequent_indent='      ')
+    print(line, flush=True)
+    summary.append(line)
+if not ONLY:
+    open(os.path.join(OUT, 'SUMMARY.txt'), 'w').write('\n'.join(summary) + '\n')

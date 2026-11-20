@@ -1,0 +1,5 @@
+plant-CK2.lean:214:20: error: unsolved goals
+h : P_ChainKernelStatement
+hu : 1 ≤ 2 → 2 ≤ ↑2 → chainKernel 2 0 2 1 = if 1 ≤ 2 then 1 else 0
+h1 : chainKernel 2 0 2 1 = if 1 ≤ 2 then 1 else 0
+⊢ False

@@ -1,0 +1,21 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+def P_RingCosetSumStatement : Prop :=
+  ∀ (N : ℕ) (t : ℝ) (r : ℤ), 0 < N →
+    HasSum (fun m : ℤ => lineKernel (2 * t) (r + m * (N : ℤ))) (ringKernel N t r)
+
+theorem P_ringS_origin (h : P_RingCosetSumStatement) : HasSum (fun m : ℤ => if m = 0 then (1 : ℂ) else 0) 1 := by
+  have h1 := h 1 0 0 (by norm_num)
+  simpa [lineKernel_zero, ringKernel_one] using h1
+
+theorem P_ringS_two (h : P_RingCosetSumStatement) : ∑' m : ℤ, lineKernel 0 (1 + m * 2) = 0 := by
+  have h1 := (h 2 0 1 (by norm_num)).tsum_eq
+  rw [ringKernel_two] at h1
+  simpa using h1
+
+end OscInt.API.FiniteRingSanity2

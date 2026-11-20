@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Scoping: from dispersive decay to nonlinear lattice dynamics (discrete NLS)
 
 Status: **scoping, not a commitment** (owner request 2026-11-12, "bet 2"). Written by the session-10 lead. Nothing here

@@ -10,8 +10,10 @@ Checks, each with a negative control run by --self-test:
            tools/check_docs_allow.txt as planned or as a deliberate future output (lessons 36);
   tables   every Markdown table row has the header's cell count (GitHub splits cells at an unescaped `|`, even in
            code spans);
-  status   docs/STATUS.md has one row per statement of stamps/statements.json, and a row says
-           "machine-checked" exactly when the statement has a proving theorem;
+  status   docs/STATUS.md has one row per statement of stamps/statements.json, and the last cell of a row follows
+           the evidence: it begins "machine-checked as stated" only if the statement has a proving theorem and the
+           Replay cell does not say pending; it begins "proved in Lean" if the statement has a proving theorem and
+           the Replay cell begins "pending"; it begins with neither if there is no proving theorem;
   pins     every `rev = "vX.Y.Z"` in README.md and docs/ names the same release as README.md (release notes under
            docs/release-notes/ document their own release and are skipped);
   privacy  no file under review/prompts/, and no file directly in review/ other than README.md and *-answers.md
@@ -111,6 +113,26 @@ def status_rows(text):
     return rows
 
 
+CHECKED, PROVED = "machine-checked as stated", "proved in Lean"
+
+
+def status_cell_problems(key, r, proved_by):
+    """The status vocabulary (docs/lessons.md, rule 20): the stronger words need the stronger evidence."""
+    status, replay = r[-1], (r[-2] if len(r) >= 2 else "")
+    pending = replay.lower().startswith("pending") or replay in ("", "—", "-")
+    where = f"docs/STATUS.md: row {key}"
+    if not proved_by:
+        if status.startswith((CHECKED, PROVED, "machine-checked")):
+            return [f"{where} says {status[:30]!r} but the statement has no proving theorem"]
+        return []
+    if status.startswith(CHECKED):
+        return [f"{where} says {CHECKED!r} but its Replay cell says {replay[:20]!r}"] if pending else []
+    if status.startswith(PROVED):
+        return [] if pending else [f"{where} says {PROVED!r} but its Replay cell is not pending: {replay[:30]!r}"]
+    return [f"{where} says {status[:30]!r}; with proving theorem {proved_by!r} it must begin {CHECKED!r} "
+            f"(replay recorded) or {PROVED!r} (replay pending)"]
+
+
 def check_status(statements, status_text):
     rows, bad = status_rows(status_text), []
     labels = set()
@@ -122,8 +144,7 @@ def check_status(statements, status_text):
         if not r:
             bad.append(f"docs/STATUS.md: no row for {lab}")
             continue
-        if r[-1].startswith("machine-checked") != bool(s.get("proved_by")):
-            bad.append(f"docs/STATUS.md: row {key} says {r[-1][:30]!r} but proved_by is {s.get('proved_by')!r}")
+        bad.extend(status_cell_problems(key, r, s.get("proved_by")))
     for extra in sorted(set(rows) - labels):
         bad.append(f"docs/STATUS.md: row {extra} has no statement in stamps/statements.json")
     return bad
@@ -219,8 +240,20 @@ def self_test():
         sh("branch", "-q", "-D", "side")
         results.append(("paths finds a file that lived only on a merged side branch", in_history(d, "gone.md")))
     st = [{"label": "S9", "proved_by": None}, {"label": "S8", "proved_by": "OscInt.x"}]
-    status = "| S9 | x | machine-checked |\n| S8 | x | stated |\n| S7 | x | stated |\n"
+    status = "| S9 | x | r | machine-checked as stated |\n| S8 | x | r | stated |\n| S7 | x | r | stated |\n"
     results.append(("status flags proved/row mismatches and an orphan row", len(check_status(st, status)) == 3))
+    one = [{"label": "S8", "proved_by": "OscInt.x"}]
+    cases = [("| S8 | x | docs/replay/r.txt | machine-checked as stated (replay of abc) |", 0),
+             ("| S8 | x | pending | proved in Lean; replay pending |", 0),
+             ("| S8 | x | pending | machine-checked as stated |", 1),          # the stronger words without a replay
+             ("| S8 | x | pending | machine-checked by build only |", 1),      # the old interim wording
+             ("| S8 | x | docs/replay/r.txt | proved in Lean |", 1),           # a replay exists: say so
+             ("| S8 | x | — | machine-checked as stated |", 1)]
+    results.append(("status follows the replay evidence, both ways",
+                    all(len(check_status(one, row + "\n")) == n for row, n in cases)))
+    results.append(("status rejects 'proved in Lean' without a proving theorem",
+                    len(check_status([{"label": "S8", "proved_by": None}],
+                                     "| S8 | x | pending | proved in Lean |\n")) == 1))
     results.append(("pins flags a stale pin",
                     len(check_pins({"README.md": 'rev = "v0.4.0"', "docs/d.md": 'rev = "v0.3.0"'})) == 1))
     results.append(("privacy flags a prompt and a verbatim report",

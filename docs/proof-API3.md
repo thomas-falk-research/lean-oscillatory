@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Proof route: front-end batch 3 (API3)
 
 Statements: `OscInt/Statements/Family.lean`, stamped `stamps/20261108T002603Z-9d03130c8f3a` (RFC 3161 ×3 at

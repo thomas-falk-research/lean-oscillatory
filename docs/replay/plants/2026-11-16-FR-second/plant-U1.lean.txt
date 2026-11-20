@@ -1,0 +1,29 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+def P_RingUniqueStatement : Prop :=
+  ∀ (N : ℕ) (u : ℝ → ℤ → ℂ), 0 < N → (∀ (t : ℝ) (x : ℤ), u t (x + (N : ℤ)) = u t x) →
+    (∀ (t : ℝ) (x : ℤ), HasDerivAt (fun s : ℝ => u s x) (Complex.I * (u t (x + 1) + u t (x - 1) - 2 * u t x)) t) →
+    ∀ (t : ℝ) (x : ℤ), u t x = ∑ y ∈ Finset.range N, ringKernel N t (x - (y : ℤ)) * u 0 (-(y : ℤ))
+
+theorem P_ringU_mode (h : P_RingUniqueStatement) (t : ℝ) (x : ℤ) :
+    (if Even x then 1 else -1) * Complex.exp (↑(-(4 * t)) * Complex.I) =
+      ringKernel 2 t x - ringKernel 2 t (x - 1) := by
+  have h1 := h 2 piMode (by norm_num) piMode_periodic piMode_hasDerivAt t x
+  rw [Finset.sum_range_succ, Finset.sum_range_one] at h1
+  simpa [piMode, sub_eq_add_neg] using h1
+
+theorem P_ringU_const (h : P_RingUniqueStatement) (t : ℝ) (x : ℤ) : ringKernel 1 t x = 1 := by
+  have h1 := h 1 (fun _ _ => 1) (by norm_num) (fun _ _ => rfl)
+    (fun t _ => by convert hasDerivAt_const t (1 : ℂ) using 1; ring) t x
+  simpa using h1.symm
+
+theorem P_ringU_iMode (h : P_RingUniqueStatement) (t : ℝ) (x : ℤ) :
+    iMode t x = ∑ y ∈ Finset.range 4, ringKernel 4 t (x - (y : ℤ)) * iMode 0 (y : ℤ) :=
+  h 4 iMode (by norm_num) iMode_periodic iMode_hasDerivAt t x
+
+end OscInt.API.FiniteRingSanity2

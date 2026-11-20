@@ -1,0 +1,188 @@
+import OscInt.Statements.Cusp
+import OscInt.Front.GlobalSanity
+
+namespace OscInt.Statements
+
+/-- One step of the Hadamard walk on `ℤ`: the coin `[[1, 1], [1, −1]] / √2` at every site, then the first component
+moves one site to the left and the second one site to the right. -/
+noncomputable def hadamardStep (ψ : ℤ → ℂ × ℂ) (x : ℤ) : ℂ × ℂ :=
+  (((ψ (x + 1)).1 + (ψ (x + 1)).2) / ((Real.sqrt 2 : ℝ) : ℂ),
+    ((ψ (x - 1)).1 - (ψ (x - 1)).2) / ((Real.sqrt 2 : ℝ) : ℂ))
+
+/-- `t` steps of the Hadamard walk from `ψ₀`. -/
+noncomputable def hadamardWalk (ψ₀ : ℤ → ℂ × ℂ) (t : ℕ) : ℤ → ℂ × ℂ :=
+  hadamardStep^[t] ψ₀
+
+/-- The state `(a, b)` at the origin and `0` at every other site. -/
+def pointState (a b : ℂ) (y : ℤ) : ℂ × ℂ :=
+  if y = 0 then (a, b) else (0, 0)
+
+/-- The dispersion relation of the Hadamard walk, `ω(k) = arcsin(sin k / √2)`. -/
+noncomputable def hadamardDispersion (k : ℝ) : ℝ :=
+  Real.arcsin (Real.sin k / Real.sqrt 2)
+
+/-- The scalar kernel of the Hadamard walk,
+`(2π)^{−1} ∫_{−π}^{π} (e^{−itω(k)} − (−1)^t e^{itω(k)}) / √(2 (1 + cos² k)) · e^{−ixk} dk`. -/
+noncomputable def hadamardKernel (t : ℕ) (x : ℤ) : ℂ :=
+  ((2 * Real.pi : ℝ) : ℂ)⁻¹ * ∫ k in (-Real.pi)..Real.pi,
+    (Complex.exp (↑(-((t : ℝ) * hadamardDispersion k)) * Complex.I) -
+        (-1 : ℂ) ^ t * Complex.exp (↑((t : ℝ) * hadamardDispersion k) * Complex.I)) /
+      ((Real.sqrt (2 * (1 + Real.cos k ^ 2)) : ℝ) : ℂ) *
+    Complex.exp (↑(-((x : ℝ) * k)) * Complex.I)
+
+/-- **HW-R** The walk from a point state in terms of the scalar kernel: for every `t ≥ 0`,
+`ψ_{t+1}(x) = ((a + b)/√2 · K(t+1, x+1) + a K(t, x), (a − b)/√2 · K(t+1, x−1) + b K(t, x))`. -/
+def HadamardKernelStatement : Prop :=
+  ∀ (a b : ℂ) (t : ℕ) (x : ℤ),
+    hadamardWalk (pointState a b) (t + 1) x =
+      ((a + b) / ((Real.sqrt 2 : ℝ) : ℂ) * hadamardKernel (t + 1) (x + 1) + a * hadamardKernel t x,
+        (a - b) / ((Real.sqrt 2 : ℝ) : ℂ) * hadamardKernel (t + 1) (x - 1) + b * hadamardKernel t x)
+
+theorem statement_pin_HadamardKernel : HadamardKernelStatement = HadamardKernelStatement := rfl
+
+/-- **HW-K** Explicit bound for the scalar kernel: `|K(t, x)| ≤ 7 t^{−1/2} + 12 t^{−1/3}` for `t ≥ 1` and every
+site `x`. -/
+def HadamardKernelBoundStatement : Prop :=
+  ∀ (t : ℕ) (x : ℤ), 1 ≤ t →
+    ‖hadamardKernel t x‖ ≤ 7 * (t : ℝ) ^ (-(1 : ℝ) / 2) + 12 * (t : ℝ) ^ (-(1 : ℝ) / 3)
+
+theorem statement_pin_HadamardKernelBound : HadamardKernelBoundStatement = HadamardKernelBoundStatement := rfl
+
+/-- **HW-D** Decay of the Hadamard walk from a point state: each component of `ψ_t(x)` is at most
+`39 (|a| + |b|) t^{−1/3}`, for `t ≥ 1` and every site `x`. -/
+def HadamardDecayStatement : Prop :=
+  ∀ (a b : ℂ) (t : ℕ) (x : ℤ), 1 ≤ t →
+    ‖(hadamardWalk (pointState a b) t x).1‖ ≤ 39 * (‖a‖ + ‖b‖) * (t : ℝ) ^ (-(1 : ℝ) / 3) ∧
+    ‖(hadamardWalk (pointState a b) t x).2‖ ≤ 39 * (‖a‖ + ‖b‖) * (t : ℝ) ^ (-(1 : ℝ) / 3)
+
+theorem statement_pin_HadamardDecay : HadamardDecayStatement = HadamardDecayStatement := rfl
+
+/-- **HW-L** The dispersive estimate `ℓ¹ → ℓ^∞` for finitely supported initial states: each component of `ψ_t(x)` is
+at most `39 t^{−1/3} ∑_y (|ψ₀(y)₁| + |ψ₀(y)₂|)`, for `t ≥ 1` and every site `x`. -/
+def HadamardDispersiveStatement : Prop :=
+  ∀ (ψ₀ : ℤ → ℂ × ℂ) (t : ℕ) (x : ℤ), {y : ℤ | ψ₀ y ≠ (0, 0)}.Finite → 1 ≤ t →
+    ‖(hadamardWalk ψ₀ t x).1‖ ≤
+      39 * (∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)) * (t : ℝ) ^ (-(1 : ℝ) / 3) ∧
+    ‖(hadamardWalk ψ₀ t x).2‖ ≤
+      39 * (∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)) * (t : ℝ) ^ (-(1 : ℝ) / 3)
+
+theorem statement_pin_HadamardDispersive : HadamardDispersiveStatement = HadamardDispersiveStatement := rfl
+
+end OscInt.Statements
+
+namespace OscInt.API.HadamardWalkSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity
+
+/-- `|1 / √2| = 1 / √2` for the complex number `1 / √2`. -/
+theorem norm_one_div_sqrt_two : ‖(1 : ℂ) / ((Real.sqrt 2 : ℝ) : ℂ)‖ = 1 / Real.sqrt 2 := by
+  rw [norm_div, norm_one, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg 2)]
+
+/-- **Datum: one step from a point state, all sites.** `((a + b)/√2, 0)` at `−1`, `(0, (a − b)/√2)` at `1`, and
+`(0, 0)` elsewhere: the first component has moved to the left. -/
+theorem hadamardWalk_point_one (a b : ℂ) (x : ℤ) :
+    hadamardWalk (pointState a b) 1 x =
+      if x = -1 then ((a + b) / ((Real.sqrt 2 : ℝ) : ℂ), 0)
+      else if x = 1 then (0, (a - b) / ((Real.sqrt 2 : ℝ) : ℂ)) else (0, 0) := by
+  have e : hadamardWalk (pointState a b) 1 x = hadamardStep (pointState a b) x := rfl
+  rw [e, hadamardStep, pointState, pointState]
+  by_cases h1 : x = -1
+  · subst h1; simp
+  · by_cases h2 : x = 1
+    · subst h2; simp
+    · rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right h1, ite_eq_right h2]; simp
+
+/-- The support of a point state is finite. -/
+theorem pointState_finite (a b : ℂ) : {y : ℤ | pointState a b y ≠ (0, 0)}.Finite := by
+  refine (Set.finite_singleton (0 : ℤ)).subset fun y hy => ?_
+  by_contra hne
+  exact hy (by rw [pointState, ite_eq_right (show ¬ y = 0 from hne)])
+
+/-- **Datum: the `ℓ¹` sum of a point state** is `|a| + |b|`. -/
+theorem pointState_finsum (a b : ℂ) :
+    ∑ᶠ y : ℤ, (‖(pointState a b y).1‖ + ‖(pointState a b y).2‖) = ‖a‖ + ‖b‖ := by
+  rw [finsum_eq_single _ (0 : ℤ) fun y hy => by simp [pointState, hy]]
+  simp [pointState]
+
+/-- Datum for HW-L: the two-site state `(1, 0)` at the site `0`, `(0, 1)` at the site `2`, `(0, 0)` elsewhere. Both
+sites contribute to the walk at `t = 1`, `x = 1`. -/
+def twoSiteState (y : ℤ) : ℂ × ℂ :=
+  if y = 0 then (1, 0) else if y = 2 then (0, 1) else (0, 0)
+
+/-- The support of the two-site state is finite. -/
+theorem twoSiteState_finite : {y : ℤ | twoSiteState y ≠ (0, 0)}.Finite := by
+  refine (Set.toFinite ({0, 2} : Set ℤ)).subset fun y hy => ?_
+  by_contra hne
+  simp only [Set.mem_insert_iff, Set.mem_singleton_iff, not_or] at hne
+  exact hy (by rw [twoSiteState, ite_eq_right hne.1, ite_eq_right hne.2])
+
+/-- **Datum: the `ℓ¹` sum of the two-site state is `2`.** -/
+theorem twoSiteState_finsum : ∑ᶠ y : ℤ, (‖(twoSiteState y).1‖ + ‖(twoSiteState y).2‖) = 2 := by
+  have hs : Function.support (fun y : ℤ => ‖(twoSiteState y).1‖ + ‖(twoSiteState y).2‖) ⊆
+      (({0, 2} : Finset ℤ) : Set ℤ) := by
+    intro y hy
+    by_contra hne
+    simp only [Finset.coe_insert, Finset.coe_singleton, Set.mem_insert_iff, Set.mem_singleton_iff, not_or] at hne
+    exact hy (by simp [twoSiteState, hne.1, hne.2])
+  rw [finsum_eq_sum_of_support_subset _ hs, Finset.sum_pair (by norm_num)]
+  norm_num [twoSiteState]
+
+/-- **Datum: one step from the two-site state at `x = 1`** is `(1/√2, 1/√2)`: the first component comes from the
+site `2`, the second from the site `0`. -/
+theorem twoSiteState_walk_one :
+    hadamardWalk twoSiteState 1 1 = (1 / ((Real.sqrt 2 : ℝ) : ℂ), 1 / ((Real.sqrt 2 : ℝ) : ℂ)) := by
+  have e : hadamardWalk twoSiteState 1 1 = hadamardStep twoSiteState 1 := rfl
+  rw [e, hadamardStep]
+  norm_num [twoSiteState]
+
+/-- Datum for HW-L away from the origin: the state `(1, 0)` at the site `5`, `(0, 0)` elsewhere. -/
+def fiveState (y : ℤ) : ℂ × ℂ :=
+  if y = 5 then (1, 0) else (0, 0)
+
+/-- The support of `fiveState` is finite. -/
+theorem fiveState_finite : {y : ℤ | fiveState y ≠ (0, 0)}.Finite := by
+  refine (Set.finite_singleton (5 : ℤ)).subset fun y hy => ?_
+  by_contra hne
+  exact hy (by rw [fiveState, ite_eq_right (show ¬ y = 5 from hne)])
+
+/-- **Datum: the `ℓ¹` sum of `fiveState` is `1`.** -/
+theorem fiveState_finsum : ∑ᶠ y : ℤ, (‖(fiveState y).1‖ + ‖(fiveState y).2‖) = 1 := by
+  rw [finsum_eq_single _ (5 : ℤ) fun y hy => by simp [fiveState, hy]]
+  simp [fiveState]
+
+/-- **Datum: one step from `fiveState` at `x = 4`** is `(1/√2, 0)`. -/
+theorem fiveState_walk_one : hadamardWalk fiveState 1 4 = (1 / ((Real.sqrt 2 : ℝ) : ℂ), 0) := by
+  have e : hadamardWalk fiveState 1 4 = hadamardStep fiveState 4 := rfl
+  rw [e, hadamardStep]
+  norm_num [fiveState]
+
+def P_HadamardDispersiveStatement : Prop :=
+  ∀ (ψ₀ : ℤ → ℂ × ℂ) (t : ℕ) (x : ℤ), {y : ℤ | ψ₀ y ≠ (0, 0)}.Finite →
+    ‖(hadamardWalk ψ₀ t x).1‖ ≤
+      39 * (∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)) * (t : ℝ) ^ (-(1 : ℝ) / 3) ∧
+    ‖(hadamardWalk ψ₀ t x).2‖ ≤
+      39 * (∑ᶠ y : ℤ, (‖(ψ₀ y).1‖ + ‖(ψ₀ y).2‖)) * (t : ℝ) ^ (-(1 : ℝ) / 3)
+
+theorem P_hwL_point (h : P_HadamardDispersiveStatement) (a b : ℂ) :
+    ‖(a + b) / ((Real.sqrt 2 : ℝ) : ℂ)‖ ≤ 39 * (‖a‖ + ‖b‖) * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) ∧
+      ‖(a - b) / ((Real.sqrt 2 : ℝ) : ℂ)‖ ≤ 39 * (‖a‖ + ‖b‖) * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h1 := (h (pointState a b) 1 (-1) (pointState_finite a b) le_rfl).1
+  have h2 := (h (pointState a b) 1 1 (pointState_finite a b) le_rfl).2
+  rw [hadamardWalk_point_one, ite_eq_left rfl, pointState_finsum] at h1
+  rw [hadamardWalk_point_one, ite_eq_right (by norm_num), ite_eq_left rfl, pointState_finsum] at h2
+  exact ⟨h1, h2⟩
+
+theorem P_hwL_two_site (h : P_HadamardDispersiveStatement) :
+    1 / Real.sqrt 2 ≤ 39 * 2 * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) ∧
+      1 / Real.sqrt 2 ≤ 39 * 2 * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h1 := h twoSiteState 1 1 twoSiteState_finite le_rfl
+  rw [twoSiteState_walk_one, twoSiteState_finsum, norm_one_div_sqrt_two] at h1
+  exact h1
+
+theorem P_hwL_five (h : P_HadamardDispersiveStatement) :
+    1 / Real.sqrt 2 ≤ 39 * 1 * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h1 := (h fiveState 1 4 fiveState_finite le_rfl).1
+  rw [fiveState_walk_one, fiveState_finsum, norm_one_div_sqrt_two] at h1
+  exact h1
+
+end OscInt.API.HadamardWalkSanity

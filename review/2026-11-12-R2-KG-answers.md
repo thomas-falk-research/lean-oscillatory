@@ -208,3 +208,7 @@ archive reviewed here stays the reviewed object. It added three points, each che
    - The small-time step needs the KG kernel's own 2π bound, because the existing lemma unfolds the cosine integrand.
    - The cost estimates in this file are structural planning estimates, not compilation results.
 
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

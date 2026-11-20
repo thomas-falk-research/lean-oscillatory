@@ -1,0 +1,206 @@
+# Batch FR: second run of planted controls (second sanity layer, OscInt/Front/FiniteRingSanity2.lean), answering
+# blind pre-proof referee A. Written by an agent of the lead on 2026-11-16 under a brief that forbids proving the
+# statements; re-run by the lead (the agent's generators, fresh directories; main run 22:25:10Z to 22:33:09Z, exit
+# code 0; supplement 22:33:46Z to 22:34:34Z, exit code 0): all 84 + 9 Lean files byte-identical to the agent's, both
+# summaries identical, all compiler outputs identical once directory names are removed. Directory:
+# docs/replay/plants/2026-11-16-FR-second/ (generators plants_fr2.py.txt and plants_fr2_supplement.py.txt; the
+# supplement's summary is SUMMARY-supplement.txt). Main run, 30 planted mutations: 24 DETECTED (a compiled proof of
+# the negation of the planted statement or, for the three mutations of the definition of the line kernel, of the
+# datum for the planted copy), 3 NOT DETECTED (S1, S2: no datum of FR-S at t != 0; CP1: not violated on the chain of
+# 2 sites), 2 TRUE WEAKENING, 1 NO VIOLATION KNOWN (FC-P without its four site hypotheses). Supplement, 3 planted
+# mutations (hypotheses: 0 < N in FR-U; the two inner site hypotheses of the unit datum of FC-K): 3 DETECTED.
+ok-K1: accepted (want accepted)
+plant-K1: rejected (recorded)
+    first error: plant-K1.lean:35:104: error: unsolved goals
+    copied scripts with an error: first layer: none (all accepted); second layer: ringK_four_deriv
+witness-K1: accepted (want accepted)
+  K1 [FR-K: R(r + 1) + R(r − 1) ↦ 3 R(r + 1) − R(r − 1); witness: N = 4, r = 1, t = 0, two derivatives at one point (−i against i)]: DETECTED (witness compiled: ¬ planted statement)
+ok-K2: accepted (want accepted)
+plant-K2: rejected (recorded)
+    first error: plant-K2.lean:45:20: error: unsolved goals
+    copied scripts with an error: first layer: none (all accepted); second layer: ringK_unit_four
+witness-K2: accepted (want accepted)
+  K2 [FR-K: unit datum N ∣ r ↦ 2 ∣ r; witness: N = 4, r = 2 (R₄(0, 2) = 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-U1: accepted (want accepted)
+plant-U1: rejected (recorded)
+    first error: plant-U1.lean:27:2: error: Type mismatch
+    copied scripts with an error: first layer: none (all accepted); second layer: ringU_iMode
+witness-U1: accepted (want accepted)
+  U1 [FR-U: u(0, y) ↦ u(0, −y); witness: N = 4, u = iˣ e^{−2is} (not even in x), t = 0, x = 1 (i = −i)]: DETECTED (witness compiled: ¬ planted statement)
+ok-P1: accepted (want accepted)
+plant-P1: rejected (recorded)
+    first error: plant-P1.lean:66:2: error: Type mismatch
+    copied scripts with an error: first layer: none (all accepted); second layer: ringP_two_two, ringP_neg_time, ringP_neg_time_half
+witness-P1: accepted (want accepted)
+  P1 [FR-P: e^{ηN} ↦ e^{ηN²}; witness: N = 2, t = 0, r = 2, η = 1 (left side 1, planted bound 2 cosh 2 / (e⁴ − 1))]: DETECTED (witness compiled: ¬ planted statement)
+ok-P2: accepted (want accepted)
+plant-P2: rejected (recorded)
+    first error: plant-P2.lean:66:2: error: Type mismatch
+    copied scripts with an error: first layer: none (all accepted); second layer: ringP_two_two, ringP_neg_time, ringP_neg_time_half
+witness-P2: accepted (want accepted)
+  P2 [FR-P: cosh(rη) ↦ cosh η; witness: N = 2, t = 0, r = 2, η = 2 (left side 1, planted bound 2 cosh 2 / (e⁴ − 1))]: DETECTED (witness compiled: ¬ planted statement)
+ok-P3: accepted (want accepted)
+plant-P3: rejected (recorded)
+    first error: plant-P3.lean:53:2: error: Type mismatch: After simplification, term
+    copied scripts with an error: first layer: ringP_time; second layer: ringP_two_two, ringP_neg_time, ringP_neg_time_half
+witness-P3: accepted (want accepted)
+  P3 [FR-P: |t| ↦ t; witness: N = 1, r = 1, t = −1/4, η = 3 and ‖R₁ − G‖ ≥ 1/2 (ringP_signed_time_false)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CK1: accepted (want accepted)
+plant-CK1: rejected (recorded)
+    first error: plant-CK1.lean:204:57: error: unsolved goals
+    copied scripts with an error: first layer: none (all accepted); second layer: chainK_one_wall_site
+witness-CK1: accepted (want accepted)
+  CK1 [FC-K: C(x + 1) + C(x − 1) ↦ C(x + 1) − C(x − 1); witness: M = 1, y = 1, wall site x = 2, t = 0 (planted derivative −2i, true derivative 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CK2: accepted (want accepted)
+plant-CK2: rejected (recorded)
+    first error: plant-CK2.lean:214:20: error: unsolved goals
+    copied scripts with an error: first layer: none (all accepted); second layer: chainK_two_lower_offdiag
+witness-CK2: accepted (want accepted)
+  CK2 [FC-K: unit datum x = y ↦ y ≤ x; witness: M = 2, x = 2, y = 1 (C₂(0; 2, 1) = R₆(0, 1) − R₆(0, 3) = 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CK3: accepted (want accepted)
+plant-CK3: rejected (recorded)
+    first error: plant-CK3.lean:189:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: chainK_one; second layer: chainK_one_wall_site, chainK_two_bond
+witness-CK3: accepted (want accepted)
+  CK3 [FC-K: both neighbour terms dropped; witness: M = 2, x = y = 1, t = π/2 (planted derivative 0, true derivative −e^{−iπ} = 1)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CK4: accepted (want accepted)
+plant-CK4: rejected (recorded)
+    first error: plant-CK4.lean:187:30: error: Function expected at
+    copied scripts with an error: first layer: chainK_one, chainK_unit, chainK_two_offdiag; second layer: chainK_one_wall_site, chainK_two_lower_offdiag, chainK_two_bond
+witness-CK4: accepted (want accepted)
+  CK4 [FC-K: hypothesis y ≤ M dropped; witness: M = 1, x = 1, y = 3 (C₁(0; 1, 3) = −1, unit datum 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CK5: accepted (want accepted)
+plant-CK5: rejected (recorded)
+    first error: plant-CK5.lean:187:30: error: Function expected at
+    copied scripts with an error: first layer: chainK_one, chainK_unit, chainK_two_offdiag; second layer: chainK_one_wall_site, chainK_two_lower_offdiag, chainK_two_bond
+witness-CK5: accepted (want accepted)
+  CK5 [FC-K: hypothesis 1 ≤ y dropped; witness: M = 1, x = 1, y = −1 (C₁(0; 1, −1) = −1, unit datum 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CU1: accepted (want accepted)
+plant-CU1: rejected (recorded)
+    first error: plant-CU1.lean:69:2: error: Type mismatch
+    copied scripts with an error: first layer: none (all accepted); second layer: chainU_two
+witness-CU1: accepted (want accepted)
+  CU1 [FC-U: u(0, y) ↦ u(0, x); witness: M = 2, u = twoSiteMode (datum (1, 0)), x = 2, t = π/2 (−i = 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CU2: accepted (want accepted)
+plant-CU2: rejected (recorded)
+    first error: plant-CU2.lean:57:51: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: chainU_one; second layer: chainU_two
+witness-CU2: accepted (want accepted)
+  CU2 [FC-U: equation hypothesis dropped (walls kept); witness: M = 1, u(s, 1) = s, u = 0 elsewhere, t = 1, x = 1 (1 = 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CP2: accepted (want accepted)
+plant-CP2: rejected (recorded)
+    first error: plant-CP2.lean:302:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: none (all accepted); second layer: chainP_two_one_one, chainP_two_two_two
+witness-CP2: accepted (want accepted)
+  CP2 [FC-P: G(t, x − y) ↦ G(t, 0); witness: M = 2, t = 0, x = 1, y = 2, η = 2 (left side 1, bound < 1)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CP3: accepted (want accepted)
+plant-CP3: rejected (recorded)
+    first error: plant-CP3.lean:287:2: error: Type mismatch: After simplification, term
+    copied scripts with an error: first layer: chainP_one; second layer: chainP_two_one_one, chainP_two_two_two
+witness-CP3: accepted (want accepted)
+  CP3 [FC-P: wall term e^{−(x+y)η} dropped (plant FC-P-b of the first run, NOT DETECTED there); witness: M = 2, t = 1/4, x = y = 1, η = 2 (left side ≥ 1/40, planted bound ≤ 0.0074)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CP4: accepted (want accepted)
+plant-CP4: rejected (recorded)
+    first error: plant-CP4.lean:285:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: chainP_one; second layer: chainP_two_one_one, chainP_two_two_two
+witness-CP4: accepted (want accepted)
+  CP4 [FC-P: ring term dropped; witness: M = 2, t = 1/4, x = y = 2, η = 2 (left side ≥ 1/40, planted bound ≤ 0.0025)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CP5: accepted (want accepted)
+plant-CP5: rejected (recorded)
+    first error: plant-CP5.lean:288:2: error: Type mismatch: After simplification, term
+    copied scripts with an error: first layer: chainP_one; second layer: chainP_two_one_one, chainP_two_two_two
+witness-CP5: accepted (want accepted)
+  CP5 [FC-P: cosh((x + y)η) dropped; witness: M = 2, t = 1/4, x = y = 2, η = 2 (left side ≥ 1/40, planted bound ≤ 0.01)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CP6: accepted (want accepted)
+plant-CP6: rejected (recorded)
+    first error: plant-CP6.lean:287:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: chainP_one; second layer: chainP_two_one_one, chainP_two_two_two
+witness-CP6: accepted (want accepted)
+  CP6 [FC-P: M + 1 ↦ M + 2 in the exponent; witness: M = 2, t = 1/4, x = y = 2, η = 2 (left side ≥ 1/40, planted bound ≤ 0.01)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CP7: accepted (want accepted)
+plant-CP7: rejected (recorded)
+    first error: plant-CP7.lean:288:2: error: Type mismatch: After simplification, term
+    copied scripts with an error: first layer: chainP_one; second layer: chainP_two_one_one, chainP_two_two_two
+witness-CP7: accepted (want accepted)
+  CP7 [FC-P: wall exponent doubled; witness: M = 2, t = 1/4, x = y = 1, η = 2 (left side ≥ 1/40, planted bound ≤ 0.01)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CP8: accepted (want accepted)
+plant-CP8: rejected (recorded)
+    first error: plant-CP8.lean:288:2: error: Type mismatch: After simplification, term
+    copied scripts with an error: first layer: chainP_one; second layer: chainP_two_one_one, chainP_two_two_two
+witness-CP8: accepted (want accepted)
+  CP8 [FC-P: 2|t| ↦ |t|; witness: M = 2, t = 1/4, x = y = 1, η = log 16 (chainP_half_time_false: left side ≥ 767/25600 > 0.0299, planted bound ≤ 0.0290; floating point 0.03044 against 0.02875. The brief expected NOT DETECTED from the planted bound 0.0304 at η = 3; its infimum over η is 0.02875, at η ≈ log 16)]: DETECTED (witness compiled: ¬ planted statement)
+ok-L1: accepted (want accepted)
+plant-L1: rejected (recorded)
+    first error: plant-L1.lean:222:4: error: ring failed, ring expressions not equal
+    copied scripts with an error: first layer: none (all accepted); second layer: lineKernel_quarter_zero_approx_sharp, lineKernel_quarter_one_approx_sharp
+witness-L1: accepted (want accepted)
+  L1 [definition lineKernel: phase factor e^{−2it} dropped; witness: the copy violates the inequality of lineKernel_quarter_zero_approx (C1): ‖G′(1/4, 0) − (15/16) e^{−i/2}‖ ≥ (15/16)(15/32) − 33/25600 > 1/384]: DETECTED (witness compiled: the planted definition violates the datum)
+ok-L2: accepted (want accepted)
+plant-L2: rejected (recorded)
+    first error: plant-L2.lean:211:8: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: lineKernel_zero; second layer: lineKernel_quarter_zero_approx_sharp, lineKernel_quarter_one_approx_sharp
+witness-L2: accepted (want accepted)
+  L2 [definition lineKernel: I(2t, n) ↦ I(t, n); witness: the copy violates the inequality of lineKernel_quarter_one_approx_sharp (C2, sharp form 1/36): ‖G′(1/4, 1)‖ ≤ 3/16, distance ≥ 1/16. Against the form 1/8 requested for C2 there is no witness: the distance is 0.1260, the margin 0.001 needs I(1/4, 1) to third order]: DETECTED (witness compiled: the planted definition violates the datum)
+ok-L3: accepted (want accepted)
+plant-L3: rejected (recorded)
+    first error: plant-L3.lean:211:8: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: lineKernel_zero; second layer: lineKernel_quarter_zero_approx_sharp, lineKernel_quarter_one_approx_sharp
+witness-L3: accepted (want accepted)
+  L3 [definition lineKernel: I(2t, n) ↦ I(−2t, n); witness: the copy violates the inequality of lineKernel_quarter_one_approx (C2, form 1/8): ‖G′(1/4, 1) + (i/4) e^{−i/2}‖ ≤ 1/4, distance ≥ 1/4]: DETECTED (witness compiled: the planted definition violates the datum)
+ok-R1: accepted (want accepted)
+plant-R1: rejected (recorded)
+    first error: plant-R1.lean:52:69: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: ringKernel_two, ringKernel_four; second layer: ringKernel_six
+witness-R1: accepted (want accepted)
+  R1 [definition ringKernel: cos k ↦ cos³ k (written `^ (3 : ℕ)`: with a bare `^ 3` the copied definition does not elaborate, `HAdd ℝ ℝ ℂ`); witness: the copy violates the datum ringKernel_six_four_pi (R₆(4π, 0) = 1): its value at N = 6, t = 4π, r = 0 is (1 − 1 − 1 + 1 − 1 − 1)/6 = −1/3. The rejection of the copied scripts for N = 2 and N = 4 is script-only (the plant agrees with the kernel there)]: DETECTED (witness compiled: the planted definition violates the datum)
+ok-S1: accepted (want accepted)
+plant-S1: accepted (recorded)
+    copied scripts with an error: first layer: none (all accepted); second layer: none (all accepted)
+  S1 [FR-S: G(t, ·) ↦ G(2t, ·)]: NOT DETECTED: no witness, none attempted. No datum of FR-S at t ≠ 0 exists in the two layers, and at t = 0 the plant is the statement. For N = 1 the planted statement follows from the frozen one (R₁ = 1 at every time), so a witness needs N ≥ 2, t ≠ 0 and the value of a sum of infinitely many line-kernel values. The copied scripts are accepted unchanged.
+ok-S2: accepted (want accepted)
+plant-S2: accepted (recorded)
+    copied scripts with an error: first layer: none (all accepted); second layer: none (all accepted)
+  S2 [FR-S: R_N(t, r) ↦ R_N(−t, r)]: NOT DETECTED: no witness, none attempted. No datum of FR-S at t ≠ 0 exists in the two layers; at t = 0 and for N = 1 (R₁ = 1) the plant agrees with the statement. A witness needs N ≥ 2, t ≠ 0 and the value of a sum of infinitely many line-kernel values. The copied scripts are accepted unchanged.
+ok-CP1: accepted (want accepted)
+plant-CP1: rejected (recorded)
+    first error: plant-CP1.lean:303:39: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: none (all accepted); second layer: chainP_two_one_one, chainP_two_two_two
+  CP1 [FC-P: wall term e^{−(x+y)η} ↦ e^{−2xη}]: NOT DETECTED: no witness, none attempted. For x = y the plant is the statement. For x > y the planted wall term is smaller, but the ring term of the bound is about e^{(x+y−2(M+1))η}, so the planted bound stays of the size e^{−(x+y)η} unless x + y ≤ M. On the chain of 2 sites the only case x > y is (x, y) = (2, 1), and there the plant is not violated in floating point (t = 1/4: left side 0.0051, infimum over η of the planted bound 0.0124; t ∈ [0.05, 3] in steps of 0.05: largest ratio 0.44; exploratory, unregistered): the point suggested in the brief is not a witness. Violations appear for M ≥ 3 (M = 3, (x, y) = (2, 1), t = 0.05: ratio 15), so a witness needs the chain of 3 sites (ring of 8 sites, modes with cos k = ±√2/2) at t ≠ 0 and G(t, 1) to about 5 digits, outside the sizes of this layer. The first-layer scripts are accepted unchanged; the rejection of the second-layer scripts is by the literal form of the conclusion only.
+ok-TW1: accepted (want accepted)
+plant-TW1: rejected (recorded)
+    first error: plant-TW1.lean:66:2: error: Type mismatch
+    copied scripts with an error: first layer: none (all accepted); second layer: ringP_two_two, ringP_neg_time, ringP_neg_time_half
+  TW1 [FR-P: e^{ηN} ↦ e^{η}]: TRUE WEAKENING: for N ≥ 1 and η > 0, 0 < e^{η} − 1 ≤ e^{ηN} − 1 and the numerator is positive, so the planted bound is at least the bound of the frozen statement; no datum can refute it (not proved in Lean: a fact for general N is outside this layer). The rejection of the copied scripts is by the form of the conclusion only.
+ok-TW2: accepted (want accepted)
+plant-TW2: rejected (recorded)
+    first error: plant-TW2.lean:287:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: chainP_one; second layer: chainP_two_one_one, chainP_two_two_two
+  TW2 [FC-P: M + 1 ↦ M in the exponent]: TRUE WEAKENING: the hypotheses 1 ≤ x ≤ M force M ≥ 1, and then 0 < e^{2Mη} − 1 ≤ e^{2(M+1)η} − 1 with a positive numerator, so the planted bound is at least the bound of the frozen statement; no datum can refute it (not proved in Lean). The rejection of the copied scripts is by the form of the conclusion only.
+ok-TW3: accepted (want accepted)
+plant-TW3: rejected (recorded)
+    first error: plant-TW3.lean:285:13: error: Function expected at
+    copied scripts with an error: first layer: chainP_one; second layer: chainP_two_one_one, chainP_two_two_two
+  TW3 [FC-P: the four site hypotheses dropped]: NO VIOLATION KNOWN: no witness, none attempted. The blind referee found no violation of the bound outside the sites 1 ≤ x, y ≤ M; the hypotheses do not bite on tested data, and the two layers have no datum of the left side at such a point with t ≠ 0. Recorded as an open question, not as a true weakening. The rejection of the copied scripts is by the arity of the application only.
+# supplement
+ok-U2: accepted (want accepted)
+plant-U2: rejected (recorded)
+    first error: plant-U2.lean:16:38: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: ringU_mode, ringU_const; second layer: ringU_iMode
+witness-U2: accepted (want accepted)
+  U2 [FR-U: hypothesis 0 < N dropped; witness: N = 0, u = 1, t = 0, x = 0 (the sum over Finset.range 0 is empty: 1 = 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CK6: accepted (want accepted)
+plant-CK6: rejected (recorded)
+    first error: plant-CK6.lean:195:14: error: Function expected at
+    copied scripts with an error: first layer: chainK_unit, chainK_two_offdiag; second layer: chainK_two_lower_offdiag
+witness-CK6: accepted (want accepted)
+  CK6 [FC-K: inner hypothesis 1 ≤ x of the unit datum dropped; witness: M = 1, y = 1, x = −1 (C₁(0; −1, 1) = R₄(0, −2) − R₄(0, 0) = −1, unit datum 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-CK7: accepted (want accepted)
+plant-CK7: rejected (recorded)
+    first error: plant-CK7.lean:195:14: error: Function expected at
+    copied scripts with an error: first layer: chainK_unit, chainK_two_offdiag; second layer: chainK_two_lower_offdiag
+witness-CK7: accepted (want accepted)
+  CK7 [FC-K: inner hypothesis x ≤ M of the unit datum dropped; witness: M = 1, y = 1, x = 3 (C₁(0; 3, 1) = −1 by chainKernel_one_three, unit datum 0)]: DETECTED (witness compiled: ¬ planted statement)
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

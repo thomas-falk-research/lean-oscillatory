@@ -1,0 +1,340 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the batch-PA statements against copies of their sanity theorems.
+
+As the batch-HC generator (docs/replay/plants/2026-11-12-HC/plants_hc.py.txt): for each plant, copy the named defs
+(from OscInt/Statements/PeriodicAnalytic.lean) and the sanity theorems that go through the statement constant (from
+OscInt/Front/PeriodicAnalyticSanity.lean) under the prefix P_, apply exactly one textual mutation to one copied def,
+and compile with `lake env lean -DautoImplicit=false`. The unplanted copy (ok-) must compile. Witness files
+(docs/lessons.md, rule 9): a compiled proof of the negation of the planted statement from unconditional data lemmas
+of the sanity file. No file proves, or uses a proof of, a statement of the batch.
+Verdicts: DETECTED (witness compiled), NOT DETECTED (no witness), TRUE WEAKENING (implied by the frozen statement).
+Usage: plants_pa.py REPO OUTDIR [plant ids]
+"""
+import os, re, subprocess, sys
+from concurrent.futures import ThreadPoolExecutor
+
+REPO, OUT = sys.argv[1], sys.argv[2]
+os.makedirs(OUT, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/PeriodicAnalytic.lean')).read().split('\n')
+SAN = open(os.path.join(REPO, 'OscInt/Front/PeriodicAnalyticSanity.lean')).read().split('\n')
+PA = 'PeriodicAnalyticOn'
+T = 'TrapezoidalRuleStatement'
+C = 'FourierCoeffStripStatement'
+L = 'LatticeKernel1LightConeStatement'
+THMS = {T: ['trapezoid_cos3', 'trapezoid_expDatum'],
+        C: ['fourierCoeff_cos3', 'fourierCoeff_cos3_neg', 'fourierCoeff_expDatum'],
+        L: ['lightCone_five', 'lightCone_five_neg', 'lightCone_origin']}
+
+
+def block(lines, kind, name):
+    pat = re.compile(r'^(noncomputable )?' + kind + r' ' + re.escape(name) + r'\b')
+    for i, l in enumerate(lines):
+        if pat.match(l):
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {kind} {name}')
+
+
+DROP_DIFF = (PA, 'DifferentiableOn ℂ v (openStrip a) ∧ (∀ z', '(∀ z')
+DROP_PER = (PA, ' (∀ z ∈ openStrip a, v (z + ((2 * Real.pi : ℝ) : ℂ)) = v z) ∧', '')
+NUM = {
+    # x = e^{3/2} ≥ 5/2 and y = e^{−3/2} = 1/x
+    'x': '  have hx : (5 / 2 : ℝ) ≤ Real.exp (3 / 2) := by linarith [Real.add_one_le_exp (3 / 2 : ℝ)]\n'
+         '  have hy : Real.exp (-(3 / 2)) * Real.exp (3 / 2) = 1 := by rw [← Real.exp_add]; norm_num\n'
+         '  have hy0 := Real.exp_pos (-(3 / 2))\n  have hpi := Real.pi_pos\n',
+}
+
+W_Ta = ('''by
+  intro h
+  have h1 := h cos3 (1 / 2) (7 * Real.cosh (3 * (1 / 2))) 3 (by norm_num) (by norm_num)
+    (cos3_periodicAnalyticOn (1 / 2) (by norm_num))
+  rw [trapezoidalSum_cos3, integral_cos3, sub_zero, norm_mul_pi, Complex.norm_ofNat, Nat.cast_ofNat,
+    show (3 : ℝ) * (1 / 2) = 3 / 2 by norm_num, show (1 / 2 : ℝ) * 3 = 3 / 2 by norm_num, Real.cosh_eq] at h1
+''' + NUM['x'] + '''  rw [le_div_iff₀ (by linarith)] at h1
+  have h2 : Real.pi * (2 * (Real.exp (3 / 2) - 1)) ≤ Real.pi * (Real.exp (3 / 2) + Real.exp (-(3 / 2))) := by
+    linarith
+  have h3 := le_of_mul_le_mul_left h2 hpi
+  nlinarith''')
+
+W_Tb = ('''by
+  intro h
+  have h1 := h cos3 (1 / 2) (7 * Real.cosh (3 * (1 / 2))) 3 (by norm_num) (by norm_num)
+    (cos3_periodicAnalyticOn (1 / 2) (by norm_num))
+  rw [trapezoidalSum_cos3, integral_cos3, sub_zero, norm_mul_pi, Complex.norm_ofNat, Nat.cast_ofNat,
+    show (3 : ℝ) * (1 / 2) = 3 / 2 by norm_num, show (2 : ℝ) * (1 / 2) * 3 = 3 / 2 + 3 / 2 by norm_num,
+    Real.exp_add, Real.cosh_eq] at h1
+''' + NUM['x'] + '''  rw [le_div_iff₀ (by nlinarith)] at h1
+  have h2 : Real.pi * (Real.exp (3 / 2) * Real.exp (3 / 2) - 1) ≤
+      Real.pi * (Real.exp (3 / 2) + Real.exp (-(3 / 2))) := by linarith
+  have h3 := le_of_mul_le_mul_left h2 hpi
+  have hy1 : Real.exp (-(3 / 2)) ≤ 1 := by nlinarith
+  nlinarith''')
+
+W_Tc = '''by
+  intro h
+  have h1 := h cosRe3 1 7 3 (by norm_num) (by norm_num) ⟨fun z _ => cosRe3_periodic z, fun z _ => norm_cosRe3_le z⟩
+  rw [trapezoidalSum_cosRe3, integral_cosRe3, sub_zero, norm_mul_pi, Complex.norm_ofNat, Nat.cast_ofNat,
+    one_mul] at h1
+  have he : (4 : ℝ) ≤ Real.exp 3 := by linarith [Real.add_one_le_exp (3 : ℝ)]
+  have hpi := Real.pi_pos
+  rw [le_div_iff₀ (by linarith)] at h1
+  nlinarith [mul_le_mul_of_nonneg_left he hpi.le]'''
+
+W_Td = '''by
+  intro h
+  have h1 := h halfExp 10 (Real.exp 5) 1 (by norm_num) (by norm_num)
+    ⟨halfExp_differentiable.differentiableOn, norm_halfExp_le⟩
+  rw [trapezoidalSum_halfExp, integral_halfExp, Nat.cast_one, mul_one,
+    show (10 : ℝ) = 5 + 5 by norm_num, Real.exp_add] at h1
+  have hre : 2 * Real.pi ≤ ‖2 * (Real.pi : ℂ) - 4 * Complex.I‖ := by
+    have := Complex.re_le_norm (2 * (Real.pi : ℂ) - 4 * Complex.I)
+    simpa using this
+  have he : (6 : ℝ) ≤ Real.exp 5 := by linarith [Real.add_one_le_exp (5 : ℝ)]
+  have hpi := Real.pi_pos
+  have h2 := hre.trans h1
+  rw [le_div_iff₀ (by nlinarith)] at h2
+  have h3 : Real.pi * (Real.exp 5 * Real.exp 5 - 1) ≤ Real.pi * (2 * Real.exp 5) := by linarith
+  have h4 := le_of_mul_le_mul_left h3 hpi
+  nlinarith'''
+
+W_Te = '''by
+  intro h
+  have h1 := h expDatum 1 (Real.sqrt 13 * Real.exp 1 + 5) 0 (by norm_num)
+    (expDatum_periodicAnalyticOn 1 (by norm_num))
+  have ht : trapezoidalSum expDatum 0 = 0 := by simp [trapezoidalSum]
+  rw [ht, integral_expDatum, zero_sub, norm_neg, norm_mul_pi, Complex.norm_ofNat, Nat.cast_zero, mul_zero,
+    Real.exp_zero, sub_self, div_zero] at h1
+  linarith [Real.pi_pos]'''
+
+W_Tf = '''by
+  intro h
+  have h1 := h cos3 0 1 3 (by norm_num) (periodicAnalyticOn_of_nonpos cos3 0 1 le_rfl)
+  rw [trapezoidalSum_cos3, integral_cos3, sub_zero, norm_mul_pi, Complex.norm_ofNat, zero_mul, Real.exp_zero,
+    sub_self, div_zero] at h1
+  linarith [Real.pi_pos]'''
+
+W_Ca = '''by
+  intro h
+  have h1 := h expDatum 5 (Real.sqrt 13 * Real.exp 5 + 5) 1 (by norm_num)
+    (expDatum_periodicAnalyticOn 5 (by norm_num))
+  rw [integral_expDatum_one,
+    show 2 * (Real.pi : ℂ) * (2 + 3 * Complex.I) = 2 * (2 + 3 * Complex.I) * (Real.pi : ℂ) by ring,
+    norm_mul_pi, norm_mul, norm_two_add_three_I, Complex.norm_ofNat, Int.cast_one, abs_one, mul_one] at h1
+  have hy : Real.exp (-5) * Real.exp 5 = 1 := by rw [← Real.exp_add]; norm_num
+  have he : (6 : ℝ) ≤ Real.exp 5 := by linarith [Real.add_one_le_exp (5 : ℝ)]
+  have hy0 := Real.exp_pos (-5)
+  have hy6 : Real.exp (-5) ≤ 1 / 6 := by nlinarith
+  have hs : (3 : ℝ) ≤ Real.sqrt 13 := Real.le_sqrt_of_sq_le (by norm_num)
+  have hpi := Real.pi_pos
+  have h2 : Real.pi * (Real.sqrt 13 * Real.exp 5 + 5) * Real.exp (-5) =
+      Real.pi * Real.sqrt 13 + 5 * Real.pi * Real.exp (-5) := by linear_combination (Real.pi * Real.sqrt 13) * hy
+  rw [h2] at h1
+  nlinarith [mul_le_mul_of_nonneg_left hs hpi.le, mul_le_mul_of_nonneg_left hy6 hpi.le]'''
+
+W_Cb = ('''by
+  intro h
+  have h1 := h cos3 (1 / 2) (7 * Real.cosh (3 * (1 / 2))) 3 (by norm_num)
+    (cos3_periodicAnalyticOn (1 / 2) (by norm_num))
+  rw [integral_cos3_three, norm_mul_pi, Complex.norm_ofNat, Int.cast_ofNat, abs_of_pos (by norm_num),
+    show (3 : ℝ) * (1 / 2) = 3 / 2 by norm_num,
+    show -((2 : ℝ) * (1 / 2) * 3) = -(3 / 2) + -(3 / 2) by norm_num, Real.exp_add, Real.cosh_eq] at h1
+''' + NUM['x'] + '''  have hy25 : Real.exp (-(3 / 2)) ≤ 2 / 5 := by nlinarith
+  have h2 : 2 * Real.pi * (7 * ((Real.exp (3 / 2) + Real.exp (-(3 / 2))) / 2)) *
+      (Real.exp (-(3 / 2)) * Real.exp (-(3 / 2))) =
+      7 * Real.pi * (Real.exp (-(3 / 2)) + Real.exp (-(3 / 2)) ^ 3) := by
+    linear_combination (7 * Real.pi * Real.exp (-(3 / 2))) * hy
+  rw [h2] at h1
+  have h3 : Real.exp (-(3 / 2)) ^ 3 ≤ (2 / 5) ^ 3 := pow_le_pow_left₀ hy0.le hy25 3
+  have h4 : Real.exp (-(3 / 2)) + Real.exp (-(3 / 2)) ^ 3 ≤ 58 / 125 := by linarith
+  nlinarith [mul_le_mul_of_nonneg_left h4 hpi.le]''')
+
+W_Cc = '''by
+  intro h
+  have h1 := h cosRe3 1 7 3 (by norm_num) ⟨fun z _ => cosRe3_periodic z, fun z _ => norm_cosRe3_le z⟩
+  rw [integral_cosRe3_three, norm_mul_pi, Complex.norm_ofNat, Int.cast_ofNat, abs_of_pos (by norm_num),
+    one_mul] at h1
+  have hy : Real.exp (-3) * Real.exp 3 = 1 := by rw [← Real.exp_add]; norm_num
+  have he : (4 : ℝ) ≤ Real.exp 3 := by linarith [Real.add_one_le_exp (3 : ℝ)]
+  have hy0 := Real.exp_pos (-3)
+  have hy4 : Real.exp (-3) ≤ 1 / 4 := by nlinarith
+  have hpi := Real.pi_pos
+  nlinarith [mul_le_mul_of_nonneg_left hy4 hpi.le]'''
+
+W_Cd = '''by
+  intro h
+  have h1 := h halfExp 10 (Real.exp 5) 1 (by norm_num) ⟨halfExp_differentiable.differentiableOn, norm_halfExp_le⟩
+  rw [integral_halfExp_one, norm_neg, norm_mul, Complex.norm_ofNat, Complex.norm_I, mul_one, Int.cast_one, abs_one,
+    mul_one, mul_assoc, mul_assoc, ← Real.exp_add, show (5 : ℝ) + -10 = -5 by norm_num] at h1
+  have hy : Real.exp (-5) * Real.exp 5 = 1 := by rw [← Real.exp_add]; norm_num
+  have he : (6 : ℝ) ≤ Real.exp 5 := by linarith [Real.add_one_le_exp (5 : ℝ)]
+  have hy0 := Real.exp_pos (-5)
+  have hy6 : Real.exp (-5) ≤ 1 / 6 := by nlinarith
+  have hpi := Real.pi_pos
+  have hpi4 := Real.pi_le_four
+  nlinarith [mul_le_mul_of_nonneg_left hy6 hpi.le]'''
+
+W_Cf = '''by
+  intro h
+  have h1 := h cos3 (-1) 0 3 (periodicAnalyticOn_of_nonpos cos3 (-1) 0 (by norm_num))
+  rw [integral_cos3_three, norm_mul_pi, Complex.norm_ofNat, mul_zero, zero_mul] at h1
+  linarith [Real.pi_pos]'''
+
+W_La = '''by
+  intro h
+  have h1 := h 0 0 0 le_rfl
+  rw [Int.cast_zero, abs_zero, zero_mul, zero_mul, sub_zero, Real.exp_zero, mul_one,
+    norm_latticeKernel1_zero_zero] at h1
+  linarith [Real.pi_pos]'''
+
+W_Lb = '''by
+  intro h
+  have h1 := h (1 / 4) 8 1 (by norm_num)
+  rw [Int.cast_one, abs_one, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 4),
+    show (1 / 4 : ℝ) * 8 - 1 * 8 = -6 by norm_num] at h1
+  have hl := latticeKernel1_quarter_one_lower
+  have hy : Real.exp (-6) * Real.exp 6 = 1 := by rw [← Real.exp_add]; norm_num
+  have he := hundred_lt_exp_six
+  have hy0 := Real.exp_pos (-6)
+  have hy6 : Real.exp (-6) ≤ 1 / 100 := by nlinarith
+  have hpi := Real.pi_pos
+  nlinarith [mul_le_mul_of_nonneg_left hy6 hpi.le]'''
+
+W_Lc = '''by
+  intro h
+  have h1 := h (-1) 1 0 (by norm_num)
+  rw [Int.cast_zero, abs_zero, zero_mul, sub_zero] at h1
+  have hl := latticeKernel1_zero_freq_lower (-1)
+  have hs : (1 : ℝ) ≤ Real.sinh 1 := Real.self_le_sinh_iff.mpr zero_le_one
+  have h2 : Real.exp (-1 * Real.sinh 1) ≤ Real.exp (-1) := Real.exp_le_exp.mpr (by linarith)
+  have hy : Real.exp (-1) * Real.exp 1 = 1 := by rw [← Real.exp_add]; norm_num
+  have he := Real.exp_one_gt_d9
+  have hy0 := Real.exp_pos (-1)
+  have hy2 : Real.exp (-1) ≤ 1 / 2 := by nlinarith
+  have hpi := Real.pi_pos
+  nlinarith [mul_le_mul_of_nonneg_left (h2.trans hy2) hpi.le]'''
+
+W_Ld = '''by
+  intro h
+  have h1 := h 1 (-1) 0
+  have h2 := lightCone_eta_neg_false
+  rw [Int.cast_zero] at h1 h2
+  exact h2 h1'''
+
+PLANTS = [
+    # (id, statement, (def to mutate, old, new), witness proof of ¬ P_<statement> or None, note)
+    ('PA-T-a', T, (T, '4 * Real.pi * M', '2 * Real.pi * M'), W_Ta,
+     'constant 4π ↦ 2π; witness: cos3, N = 3, a = 1/2'),
+    ('PA-T-b', T, (T, 'Real.exp (a * (N : ℝ))', 'Real.exp (2 * a * (N : ℝ))'), W_Tb,
+     'rate e^{aN} ↦ e^{2aN}; witness: cos3, N = 3, a = 1/2'),
+    ('PA-T-c', T, DROP_DIFF, W_Tc,
+     'DifferentiableOn dropped; witness: 7 cos(3 Re z), N = 3, a = 1, M = 7'),
+    ('PA-T-d', T, DROP_PER, W_Td,
+     'periodicity dropped; witness: e^{iz/2}, N = 1, a = 10, M = e^5'),
+    ('PA-T-e', T, (T, ' 0 < N →', ''), W_Te,
+     '0 < N dropped; witness: expDatum, N = 0 (bound 4πM/(e^0 − 1) = 0 in Lean)'),
+    ('PA-T-f', T, (T, ' 0 < a →', ''), W_Tf,
+     '0 < a dropped; witness: cos3, N = 3, a = 0, M = 1 (empty strip; bound 4π/0 = 0 in Lean)'),
+    ('PA-C-a', C, (C, '2 * Real.pi * M * Real.exp', 'Real.pi * M * Real.exp'), W_Ca,
+     'constant 2π ↦ π; witness: expDatum, k = 1, a = 5'),
+    ('PA-C-b', C, (C, '-(a * |(k : ℝ)|)', '-(2 * a * |(k : ℝ)|)'), W_Cb,
+     'rate e^{−a|k|} ↦ e^{−2a|k|}; witness: cos3, k = 3, a = 1/2'),
+    ('PA-C-c', C, DROP_DIFF, W_Cc,
+     'DifferentiableOn dropped; witness: 7 cos(3 Re z), k = 3, a = 1, M = 7'),
+    ('PA-C-d', C, DROP_PER, W_Cd,
+     'periodicity dropped; witness: e^{iz/2}, k = 1, a = 10, M = e^5'),
+    ('PA-C-e', C, (C, '|(k : ℝ)|', '(k : ℝ)'), None,
+     '|k| ↦ k'),
+    ('PA-C-f', C, (C, ' 0 < a →', ''), W_Cf,
+     '0 < a dropped; witness: cos3, k = 3, a = −1, M = 0 (empty strip)'),
+    ('LC-a', L, (L, '2 * Real.pi * Real.exp', 'Real.pi * Real.exp'), W_La,
+     'constant 2π ↦ π; witness: t = 0, n = 0, η = 0'),
+    ('LC-b', L, (L, 'Real.sinh η', 'η'), W_Lb,
+     'sinh η ↦ η; witness: t = 1/4, n = 1, η = 8 and ‖I(1/4, 1)‖ ≥ π/8'),
+    ('LC-c', L, (L, '|t|', 't'), W_Lc,
+     '|t| ↦ t; witness: t = −1, n = 0, η = 1 and ‖I(−1, 0)‖ ≥ 3π/2'),
+    ('LC-d', L, (L, ', 0 ≤ η →', ','), W_Ld,
+     '0 ≤ η dropped; witness: t = 1, n = 0, η = −1 (lightCone_eta_neg_false)'),
+]
+TRUE_WEAKENING = {
+    'PA-C-e': 'the planted bound 2πM e^{−ak} equals the frozen one for k ≥ 0 and is larger for k < 0 (M ≥ 0 is forced by '
+              'the hypothesis: 0 lies in the strip), so the frozen statement implies the planted one and no datum can '
+              'refute it. The rejection of the three copied scripts is script-only (a rewrite of |·| finds no '
+              'pattern); the only instance whose content changes is k = −3, where the plant gives the bound with '
+              'e^{+3a}.',
+}
+
+HEADER = """import OscInt.Front.PeriodicAnalyticSanity
+
+namespace OscInt.API.PeriodicAnalyticSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+"""
+
+
+def make(stmt, mut, planted, witness=None):
+    target, old, new = mut
+    defs = [target] if target == stmt else [target, stmt]
+    parts = []
+    for d in defs:
+        t = block(STMT, 'def', d)
+        if planted and d == target:
+            assert t.count(old) == 1, (d, old, t.count(old))
+            t = t.replace(old, new)
+        parts.append(t)
+    thms = THMS[stmt] if witness is None else []
+    if witness is None:
+        parts += [block(SAN, 'theorem', th) for th in thms]
+    else:
+        parts.append(f'theorem witness_not_{stmt} : ¬ {stmt} :=\n  {witness}')
+    text = '\n\n'.join(parts)
+    for n in sorted(defs + thms, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r'(?![\w])', 'P_' + n, text)
+    return HEADER + '\n' + text + '\n\nend OscInt.API.PeriodicAnalyticSanity\n'
+
+
+def run(tag, text):
+    src = os.path.join(OUT, tag + '.lean')
+    open(src, 'w').write(text)
+    r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                       cwd=REPO, capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+    errs = [l for l in out.split('\n') if ': error' in l]
+    return ('accepted' if r.returncode == 0 and not errs else 'rejected'), errs
+
+
+ONLY = sys.argv[3:]
+jobs = []
+for pid, stmt, mut, witness, note in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    jobs.append((pid, 'ok-' + pid, make(stmt, mut, False), 'accepted'))
+    jobs.append((pid, 'plant-' + pid, make(stmt, mut, True), None))
+    if witness:
+        jobs.append((pid, 'witness-' + pid, make(stmt, mut, True, witness), 'accepted'))
+with ThreadPoolExecutor(max_workers=int(os.environ.get('PLANT_JOBS', '1'))) as ex:
+    results = list(ex.map(lambda j: run(j[1], j[2]), jobs))
+
+summary, res = [], {}
+for (pid, tag, _, w), (verdict, errs) in zip(jobs, results):
+    res[tag] = verdict
+    line = f"{tag}: {verdict}" + (f" (want {w}){'' if verdict == w else '  <-- MISMATCH'}" if w else ' (recorded)')
+    if errs:
+        line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+    summary.append((pid, line))
+lines = []
+for pid, stmt, mut, witness, note in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    lines += [l for p, l in summary if p == pid]
+    if pid in TRUE_WEAKENING:
+        v = 'TRUE WEAKENING: ' + TRUE_WEAKENING[pid]
+    elif res.get('witness-' + pid) == 'accepted':
+        v = 'DETECTED (witness compiled: ¬ planted statement)'
+    else:
+        v = 'NOT DETECTED (no compiled witness)'
+    lines.append(f"  {pid} [{note}]: {v}")
+print('\n'.join(lines), flush=True)
+open(os.path.join(OUT, 'SUMMARY.txt'), 'w').write('\n'.join(lines) + '\n')

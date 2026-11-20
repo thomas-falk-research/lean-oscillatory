@@ -29,3 +29,7 @@ PASS MINOR-2 85/86 at 97.5% gives lower endpoint 0.928 < 0.95: the pilot passes 
 PASS T5 pass probability at exactly the targets (0.95, 0.05) is 0.95^172 = 1.5e-4; one-sided 95% needs n = 59, one-sided Bonferroni 97.5% needs n = 72 {'p_at_targets': 0.00014738731582510518}
 PASS T2 thresholds with constants 8/18/38 are 2547/16483/61047; with the hand constant 6 (14, 30) they are lower {'with_6': (1334, 8196, 28723)}
 RESULT PASS 26/26
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

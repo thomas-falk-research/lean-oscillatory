@@ -1,0 +1,65 @@
+import OscInt.Front.SecondDerivSharpSanity
+
+namespace OscInt.API.SecondDerivSharpSanity2
+
+open OscInt.Statements OscInt.API.SecondDerivSharpSanity Set
+
+/-- **Small curvature, change of variable `x = 10u`.**
+`∫_{−21}^{21} e^{i(1/100)x²/2} dx = 10 ∫_{−21/10}^{21/10} e^{iu²/2} du`. -/
+theorem smallCurv_integral_eq :
+    ∫ x in (-21 : ℝ)..21, Complex.exp (((1 / 100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I) =
+      (10 : ℝ) • ∫ u in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((u ^ 2 / 2 : ℝ) : ℂ) * Complex.I) := by
+  have h := intervalIntegral.smul_integral_comp_mul_left (a := (-21 : ℝ)) (b := 21)
+    (fun u : ℝ => Complex.exp (((u ^ 2 / 2 : ℝ) : ℂ) * Complex.I)) (1 / 10)
+  have e1 : (1 / 10 : ℝ) * (-21) = -(21 / 10) := by norm_num
+  have e2 : (1 / 10 : ℝ) * 21 = 21 / 10 := by norm_num
+  rw [e1, e2] at h
+  rw [← h, smul_smul]
+  have hf : ∀ x : ℝ, ((1 / 10 * x) ^ 2 / 2 : ℝ) = 1 / 100 * x ^ 2 / 2 := fun x => by ring
+  simp only [hf]
+  norm_num
+
+/-- **A1. Certified value at small curvature.** `33 ≤ |∫_{−21}^{21} e^{i(1/100)x²/2} dx|` (true value `33.6141…`;
+ten times `quad_norm_lower`). -/
+theorem smallCurv_norm_lower :
+    330 / 10 ≤ ‖∫ x in (-21 : ℝ)..21, Complex.exp (((1 / 100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ := by
+  rw [smallCurv_integral_eq, norm_smul, Real.norm_eq_abs, abs_of_pos (by norm_num : (0 : ℝ) < 10)]
+  linarith [quad_norm_lower]
+
+/-- The left side of VC2-K at the small-curvature datum (`p = 0`, `ψ = 1`) is the integral of `smallCurv_norm_lower`. -/
+theorem oscInt_smallCurv :
+    oscInt (fun x => 1 / 100 * x ^ 2 / 2 + 0 * x) (fun _ => 1) (-21) 21 =
+      ∫ x in (-21 : ℝ)..21, Complex.exp (((1 / 100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I) := by
+  unfold oscInt
+  refine intervalIntegral.integral_congr (fun x _ => ?_)
+  simp only [zero_mul, add_zero, mul_one]
+
+/-- `(x^r)^n = x^{rn}` for `x ≥ 0` and a natural number `n`. -/
+theorem rpow_pow_nat {x : ℝ} (hx : 0 ≤ x) (r : ℝ) (n : ℕ) : (x ^ r) ^ n = x ^ (r * (n : ℝ)) := by
+  rw [← Real.rpow_natCast, ← Real.rpow_mul hx]
+
+/-- `(1/100)^{−1/3} ≤ 5` (it is `100^{1/3} = 4.6415…`; its cube is `100 ≤ 125`). -/
+theorem rpow_hundredth_neg_third_le : (1 / 100 : ℝ) ^ (-(1 : ℝ) / 3) ≤ 5 := by
+  have h3 : ((1 / 100 : ℝ) ^ (-(1 : ℝ) / 3)) ^ 3 = 100 := by
+    rw [rpow_pow_nat (by norm_num), show (-(1 : ℝ) / 3) * ((3 : ℕ) : ℝ) = -1 by norm_num, Real.rpow_neg_one]
+    norm_num
+  by_contra hlt
+  rw [not_le] at hlt
+  have h5 := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 5) hlt.le 3
+  rw [h3] at h5
+  norm_num at h5
+
+def P_SecondDerivSevenHalvesStatement : Prop :=
+  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →
+    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b → (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) → AmplitudeOn ψ ψ' a b →
+    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ (7 / 2 : ℝ) * μ ^ (-(1 : ℝ) / 3) * ampNorm ψ ψ' a b
+
+theorem witness_not_SecondDerivSevenHalvesStatement : ¬ P_SecondDerivSevenHalvesStatement := by
+  intro h
+  have h1 := h (fun x => 1 / 100 * x ^ 2 / 2) (fun x => 1 / 100 * x) (fun _ => 1 / 100) (fun _ => 1) (fun _ => 0)
+    (-21) 21 (1 / 100) 0 (by norm_num) (by norm_num) (scaled_hasDerivOn _ _ _) (scaledLinear_hasDerivOn _ _ _)
+    (fun x _ => by simp) (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, oscInt_smallCurv] at h1
+  linarith [smallCurv_norm_lower, rpow_hundredth_neg_third_le]
+
+end OscInt.API.SecondDerivSharpSanity2

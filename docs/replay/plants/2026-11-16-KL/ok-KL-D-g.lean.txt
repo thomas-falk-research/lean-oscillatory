@@ -1,0 +1,34 @@
+import OscInt.Front.KusminLandauSanity
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+
+namespace OscInt.API.KusminLandauSanity
+
+open OscInt.Statements Set
+
+noncomputable def P_expSum (c : ℕ → ℝ) (N : ℕ) : ℂ :=
+  ∑ n ∈ Finset.range (N + 1), Complex.exp (↑(2 * Real.pi * c n) * Complex.I)
+
+def P_KusminLandauStatement : Prop :=
+  ∀ (c : ℕ → ℝ) (N : ℕ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → DiffsMonotoneIn c N k lam →
+    ‖P_expSum c N‖ ≤ Real.cos (Real.pi * lam / 2) / Real.sin (Real.pi * lam / 2)
+
+theorem P_expSum_eq (c : ℕ → ℝ) (N : ℕ) : P_expSum c N = ∑ n ∈ Finset.range (N + 1), eTerm (c n) := rfl
+
+theorem P_expSum_cThird :
+    P_expSum cThird 2 = ((3 / 2 : ℝ) : ℂ) + ((Real.sqrt 3 / 2 : ℝ) : ℂ) * Complex.I := by
+  simp only [P_expSum_eq, Finset.sum_range_succ, Finset.sum_range_zero, cThird, eTerm_zero, eTerm_third, eTerm_one]
+  push_cast
+  ring
+
+theorem P_norm_expSum_cThird : ‖P_expSum cThird 2‖ = Real.sqrt 3 := by
+  rw [P_expSum_cThird, Complex.norm_add_mul_I]
+  congr 1
+  linear_combination (1 / 4 : ℝ) * Real.sq_sqrt (show (0 : ℝ) ≤ 3 by norm_num)
+
+theorem P_kl_third (h : P_KusminLandauStatement) : ‖P_expSum cThird 2‖ ≤ Real.sqrt 3 := by
+  have := h cThird 2 0 (1 / 3) (by norm_num) (by norm_num) diffs_cThird
+  rwa [cot_third] at this
+
+end OscInt.API.KusminLandauSanity

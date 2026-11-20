@@ -588,3 +588,7 @@ RESULT PASS
 real	93m41.414s
 user	32m15.672s
 sys	5m0.869s
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

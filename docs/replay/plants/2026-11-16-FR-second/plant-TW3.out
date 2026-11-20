@@ -1,0 +1,52 @@
+plant-TW3.lean:285:13: error: Function expected at
+  h 1 t η 1 1 hη
+but this term has type
+  ‖chainKernel 1 t 1 1 - lineKernel t (1 - 1)‖ ≤
+    Real.exp (2 * |t| * Real.sinh η) *
+      (Real.exp (-(↑(1 + 1) * η)) +
+        2 * (Real.cosh (↑(1 - 1) * η) + Real.cosh (↑(1 + 1) * η)) / (Real.exp (2 * (↑1 + 1) * η) - 1))
+
+Note: Expected a function because this term is being applied to the argument
+  le_rfl
+plant-TW3.lean:284:88: error: unsolved goals
+h : P_ChainFiniteSizeStatement
+t η : ℝ
+hη : 0 < η
+⊢ ‖Complex.exp (↑(-(2 * t)) * Complex.I) - lineKernel t 0‖ ≤
+    Real.exp (2 * |t| * Real.sinh η) * (Real.exp (-(2 * η)) + 2 * (1 + Real.cosh (2 * η)) / (Real.exp (4 * η) - 1))
+plant-TW3.lean:301:13: error: Function expected at
+  h 2 (1 / 4) η 1 1 hη
+but this term has type
+  ‖chainKernel 2 (1 / 4) 1 1 - lineKernel (1 / 4) (1 - 1)‖ ≤
+    Real.exp (2 * |1 / 4| * Real.sinh η) *
+      (Real.exp (-(↑(1 + 1) * η)) +
+        2 * (Real.cosh (↑(1 - 1) * η) + Real.cosh (↑(1 + 1) * η)) / (Real.exp (2 * (↑2 + 1) * η) - 1))
+
+Note: Expected a function because this term is being applied to the argument
+  le_rfl
+plant-TW3.lean:300:59: error: unsolved goals
+h : P_ChainFiniteSizeStatement
+η : ℝ
+hη : 0 < η
+⊢ 1 / 40 ≤
+    Real.exp (2 * |1 / 4| * Real.sinh η) *
+      (Real.exp (-(↑(1 + 1) * η)) +
+        2 * (Real.cosh (↑(1 - 1) * η) + Real.cosh (↑(1 + 1) * η)) / (Real.exp (2 * (↑2 + 1) * η) - 1))
+plant-TW3.lean:310:13: error: Function expected at
+  h 2 (1 / 4) η 2 2 hη
+but this term has type
+  ‖chainKernel 2 (1 / 4) 2 2 - lineKernel (1 / 4) (2 - 2)‖ ≤
+    Real.exp (2 * |1 / 4| * Real.sinh η) *
+      (Real.exp (-(↑(2 + 2) * η)) +
+        2 * (Real.cosh (↑(2 - 2) * η) + Real.cosh (↑(2 + 2) * η)) / (Real.exp (2 * (↑2 + 1) * η) - 1))
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-TW3.lean:309:59: error: unsolved goals
+h : P_ChainFiniteSizeStatement
+η : ℝ
+hη : 0 < η
+⊢ 1 / 40 ≤
+    Real.exp (2 * |1 / 4| * Real.sinh η) *
+      (Real.exp (-(↑(2 + 2) * η)) +
+        2 * (Real.cosh (↑(2 - 2) * η) + Real.cosh (↑(2 + 2) * η)) / (Real.exp (2 * (↑2 + 1) * η) - 1))

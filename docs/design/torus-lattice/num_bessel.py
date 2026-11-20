@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
 # Numerics (tooling, never evidence): lattice Laplacian kernel, theta = 2cos k1 + 2cos k2.
 # K_t(x) = (2pi)^2 i^{x1+x2} J_{x1}(2t) J_{x2}(2t); sup_x |K_t(x)| = (2pi)^2 (sup_n |J_n(2t)|)^2.
 import numpy as np

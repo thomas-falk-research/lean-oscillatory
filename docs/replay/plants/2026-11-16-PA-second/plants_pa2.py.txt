@@ -1,0 +1,251 @@
+#!/usr/bin/env python3
+"""Second run of planted copies of the batch-PA statements (mutations found by the blind pre-proof reviews).
+
+As the first run (docs/replay/plants/2026-11-16-PA/plants_pa.py.txt): for each plant, copy the named defs (from
+OscInt/Statements/PeriodicAnalytic.lean) and every sanity theorem that goes through the statement constant (from
+OscInt/Front/PeriodicAnalyticSanity.lean and OscInt/Front/PeriodicAnalyticSanity2.lean) under the prefix P_, apply one
+mutation to one copied def, and compile with `lake env lean -DautoImplicit=false`. The unplanted copy (ok-) must
+compile. When the mutated def is `trapezoidalSum`, the four value lemmas `trapezoidalSum_*` are copied with it (they
+are the pins of that def). A mutation is one textual replacement, except the two type changes (ℤ ↦ ℝ), which replace
+the binder and delete the now redundant coercions of the same variable.
+Witness files (docs/lessons.md, rule 9): a compiled proof of the negation of the planted statement from unconditional
+data lemmas of the two sanity files. No file proves, or uses a proof of, a statement of the batch.
+Verdicts: DETECTED (witness compiled), NOT DETECTED (no witness), TRUE WEAKENING (implied by the frozen statement).
+Usage: plants_pa2.py REPO OUTDIR [plant ids]
+"""
+import os, re, subprocess, sys
+from concurrent.futures import ThreadPoolExecutor
+
+REPO, OUT = sys.argv[1], sys.argv[2]
+os.makedirs(OUT, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/PeriodicAnalytic.lean')).read().split('\n')
+SAN = (open(os.path.join(REPO, 'OscInt/Front/PeriodicAnalyticSanity.lean')).read().split('\n') + [''] +
+       open(os.path.join(REPO, 'OscInt/Front/PeriodicAnalyticSanity2.lean')).read().split('\n'))
+PA = 'PeriodicAnalyticOn'
+TS = 'trapezoidalSum'
+T = 'TrapezoidalRuleStatement'
+C = 'FourierCoeffStripStatement'
+L = 'LatticeKernel1LightConeStatement'
+THMS = {T: ['trapezoid_cos3', 'trapezoid_expDatum', 'trapezoid_cos3_six', 'trapezoid_cos3_four'],
+        C: ['fourierCoeff_cos3', 'fourierCoeff_cos3_neg', 'fourierCoeff_expDatum', 'fourierCoeff_expDatum_zero'],
+        L: ['lightCone_five', 'lightCone_five_neg', 'lightCone_origin']}
+TS_PINS = ['trapezoidalSum_cos3', 'trapezoidalSum_expDatum', 'trapezoidalSum_cos3_six', 'trapezoidalSum_cos3_four']
+
+
+def block(lines, kind, name):
+    pat = re.compile(r'^(noncomputable )?' + kind + r' ' + re.escape(name) + r'\b')
+    for i, l in enumerate(lines):
+        if pat.match(l):
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {kind} {name}')
+
+
+REAL_AXIS = [('∀ z ∈ openStrip a, ‖v z‖ ≤ M', '∀ z ∈ openStrip a, z.im = 0 → ‖v z‖ ≤ M', 1)]
+E3 = ('  have hy : Real.exp (-3) * Real.exp 3 = 1 := by rw [← Real.exp_add]; norm_num\n'
+      '  have hy0 := Real.exp_pos (-3)\n'
+      '  have hy1 : Real.exp (-3) ≤ 1 := by nlinarith\n'
+      '  have hpi := Real.pi_pos\n')
+
+W_Tg = ('''by
+  intro h
+  have h1 := h cos3 1 (7 * Real.cosh (3 * 1)) 6 (by norm_num) (by norm_num)
+    (cos3_periodicAnalyticOn 1 (by norm_num))
+  have ht : P_trapezoidalSum cos3 6 = ((7 * Real.pi / 3 : ℝ) : ℂ) := by
+    simp only [P_trapezoidalSum, sum_cos3_half_nodes_six]; push_cast; ring
+  have e6 : Real.exp 6 = Real.exp 3 * Real.exp 3 := by rw [← Real.exp_add]; norm_num
+  rw [ht, integral_cos3, sub_zero, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity), Nat.cast_ofNat,
+    mul_one, one_mul, e6, Real.cosh_eq] at h1
+  have hu : (17 / 2 : ℝ) ≤ Real.exp 3 := by
+    have := Real.quadratic_le_exp_of_nonneg (x := 3) (by norm_num)
+    linarith
+''' + E3 + '''  rw [le_div_iff₀ (by nlinarith)] at h1
+  have h2 : Real.pi * (Real.exp 3 * Real.exp 3 - 1) ≤ Real.pi * (6 * (Real.exp 3 + Real.exp (-3))) := by linarith
+  have h3 := le_of_mul_le_mul_left h2 hpi
+  nlinarith''')
+
+W_Th = ('''by
+  intro h
+  have h1 := h cos3 1 (7 * Real.cosh (3 * 1)) 4 (by norm_num) (by norm_num)
+    (cos3_periodicAnalyticOn 1 (by norm_num))
+  have ht : P_trapezoidalSum cos3 4 = 14 * Real.pi := by
+    simp only [P_trapezoidalSum, sum_cos3_floor_nodes_four]; push_cast; ring
+  have e4 : Real.exp 4 = Real.exp 3 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+  rw [ht, integral_cos3, sub_zero, norm_mul_pi, Complex.norm_ofNat, Nat.cast_ofNat, mul_one, one_mul, e4,
+    Real.cosh_eq] at h1
+  have hu : (4 : ℝ) ≤ Real.exp 3 := by linarith [Real.add_one_le_exp (3 : ℝ)]
+  have he : (2 : ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
+''' + E3 + '''  have hue := mul_le_mul_of_nonneg_left he (by linarith : (0 : ℝ) ≤ Real.exp 3)
+  rw [le_div_iff₀ (by linarith)] at h1
+  have h2 : Real.pi * (Real.exp 3 * Real.exp 1 - 1) ≤ Real.pi * (Real.exp 3 + Real.exp (-3)) := by linarith
+  have h3 := le_of_mul_le_mul_left h2 hpi
+  linarith''')
+
+W_Ti = '''by
+  intro h
+  have hp := cos3_periodicAnalyticOn 1 (by norm_num)
+  have h1 := h cos3 1 7 3 (by norm_num) (by norm_num) ⟨hp.1, hp.2.1, fun z _ hz => cos3_real_axis_bound z hz⟩
+  rw [trapezoidalSum_cos3, integral_cos3, sub_zero, norm_mul_pi, Complex.norm_ofNat, Nat.cast_ofNat,
+    one_mul] at h1
+  have he : (4 : ℝ) ≤ Real.exp 3 := by linarith [Real.add_one_le_exp (3 : ℝ)]
+  have hpi := Real.pi_pos
+  rw [le_div_iff₀ (by linarith)] at h1
+  nlinarith [mul_le_mul_of_nonneg_left he hpi.le]'''
+
+W_Cg = '''by
+  intro h
+  have hp := cos3_periodicAnalyticOn 1 (by norm_num)
+  have h1 := h cos3 1 7 3 (by norm_num) ⟨hp.1, hp.2.1, fun z _ hz => cos3_real_axis_bound z hz⟩
+  rw [integral_cos3_three, norm_mul_pi, Complex.norm_ofNat, Int.cast_ofNat, abs_of_pos (by norm_num),
+    one_mul] at h1
+  have hy : Real.exp (-3) * Real.exp 3 = 1 := by rw [← Real.exp_add]; norm_num
+  have he : (4 : ℝ) ≤ Real.exp 3 := by linarith [Real.add_one_le_exp (3 : ℝ)]
+  have hy0 := Real.exp_pos (-3)
+  have hy4 : Real.exp (-3) ≤ 1 / 4 := by nlinarith
+  have hpi := Real.pi_pos
+  nlinarith [mul_le_mul_of_nonneg_left hy4 hpi.le]'''
+
+W_Ch = '''by
+  intro h
+  have h1 := h (fun _ => 1) 2 1 (1 / 2) (by norm_num)
+    ⟨differentiableOn_const 1, fun _ _ => rfl, fun _ _ => by simp⟩
+  rw [norm_halfMode_integral] at h1
+  exact fourierCoeff_nonInteger_false h1'''
+
+W_Ci = '''by
+  intro h
+  have h1 := h stripExp 2 (Real.exp 1) 1 (by norm_num)
+    ⟨by rw [show (2 : ℝ) / 2 = 1 by norm_num]; exact stripExp_differentiableOn,
+      fun z _ => stripExp_periodic z, fun z _ => norm_stripExp_le z⟩
+  rw [integral_stripExp_one, norm_mul_pi, Complex.norm_ofNat, Int.cast_one, abs_one, mul_one, mul_assoc,
+    ← Real.exp_add, show (1 : ℝ) + -2 = -1 by norm_num] at h1
+  have hy : Real.exp (-1) < Real.exp 0 := Real.exp_lt_exp.mpr (by norm_num)
+  rw [Real.exp_zero] at hy
+  nlinarith [Real.pi_pos]'''
+
+W_Le = '''by
+  intro h
+  exact lightCone_nonInteger_false (h 0 2 (1 / 2) (by norm_num))'''
+
+PLANTS = [
+    # (id, statement, def to mutate, [(old, new, expected count)], witness proof of ¬ P_<statement> or None, note)
+    ('PA-T-g', T, TS, [('2 * Real.pi * (j : ℝ) / (N : ℝ)', 'Real.pi * (j : ℝ) / (N : ℝ)', 1)], W_Tg,
+     'nodes 2πj/N ↦ πj/N in trapezoidalSum; witness: cos3, N = 6, a = 1 (planted I_6 = 7π/3, I = 0)'),
+    ('PA-T-h', T, TS, [('(2 * Real.pi * (j : ℝ) / (N : ℝ) : ℝ)', '((j / N : ℕ) : ℝ)', 1)], W_Th,
+     'nodes 2πj/N ↦ ((j / N : ℕ) : ℝ) = 0 in trapezoidalSum; witness: cos3, N = 4, a = 1 (planted I_4 = 14π, I = 0)'),
+    ('PA-T-i', T, PA, REAL_AXIS, W_Ti,
+     'bound of PeriodicAnalyticOn required on the real axis only; witness: cos3, M = 7, N = 3, a = 1'),
+    ('PA-C-g', C, PA, REAL_AXIS, W_Cg,
+     'bound of PeriodicAnalyticOn required on the real axis only; witness: cos3, M = 7, k = 3, a = 1'),
+    ('PA-C-h', C, C, [('(k : ℝ)', 'k', 2), ('(k : ℤ)', '(k : ℝ)', 1)], W_Ch,
+     'k : ℤ ↦ k : ℝ; witness: v = 1, k = 1/2, a = 2, M = 1 (coefficient −4i)'),
+    ('LC-e', L, L, [('(n : ℝ)', 'n', 2), ('(n : ℤ)', '(n : ℝ)', 1)], W_Le,
+     'n : ℤ ↦ n : ℝ; witness: t = 0, n = 1/2, η = 2 (I(0, 1/2) = 4)'),
+    ('PA-T-j', T, T, [('(Real.exp (a * (N : ℝ)) - 1)', 'Real.exp (a * (N : ℝ))', 1)], None,
+     'denominator e^{aN} − 1 ↦ e^{aN}'),
+    ('LC-f', L, L, [('|t| * Real.sinh η', '|t| / 2 * Real.sinh η', 1)], None,
+     '|t| ↦ |t|/2'),
+    ('PA-C-i', C, PA, [('DifferentiableOn ℂ v (openStrip a)', 'DifferentiableOn ℂ v (openStrip (a / 2))', 1)], W_Ci,
+     'DifferentiableOn on openStrip a ↦ on openStrip (a/2); witness: stripExp (e^{iz} for |Im z| < 1, else 0), '
+     'k = 1, a = 2, M = e'),
+    ('LC-g', L, L, [('|(n : ℝ)|', '(n : ℝ)', 1)], None,
+     '|n| ↦ n'),
+]
+TRUE_WEAKENING = {
+    'LC-g': 'the planted bound 2π e^{|t| sinh η − nη} equals the frozen one for n ≥ 0 and is larger for n < 0 (η ≥ 0), '
+            'so the frozen statement implies the planted one and no datum can refute it. The rejection of the copied '
+            'scripts is script-only (a rewrite of |·| finds no pattern); the only sanity instance whose content '
+            'changes is n = −5, where the plant gives the bound with e^{+10}.',
+}
+NOT_DETECTED = {
+    'PA-T-j': 'no witness attempted (as instructed). The planted statement is reported FALSE by a pre-proof referee '
+              '(numerical counterexample: a trigonometric polynomial of degree 6 at a = ln 3, N = 1, margin 1%), but '
+              'no exact witness is known and no sanity datum refutes it: at cos3, N = 3 the planted bound is '
+              '14π(1 + e^{−6a}) ≥ 14π, at expDatum, N = 1 it is 4π(√13 + 5e^{−a}) ≥ 2π√13, and at N = 4, 6 the left '
+              'side is 0. The rejection of the copied scripts is script-only (the closing `exact` no longer matches).',
+    'LC-f': 'no witness attempted (over the line budget). The planted statement is FALSE, numerically: at t = 1/2, '
+            'n = 2, cosh η = 8, |I| = 2π J_2(1/2) ≈ 2π · 0.03060 against the planted 2π · 0.02864. It fails only for '
+            '|n| ≥ 2 (for n = 1 a scan of 0 < t ≤ 20 gives |J_1(t)| ≤ 0.74 × the planted bound minimised over η; for '
+            'n = 0 take η = 0), and at n = 2 by at most a factor 8/e² ≈ 1.083 (the limit t → 0). A witness therefore '
+            'needs a second-order expansion of I(t, 2) with a cubic remainder at small t (new integral lemmas, about '
+            '90 lines); the first-order `latticeKernel1_one_approx` (n = 1) cannot refute this plant. The rejection '
+            'of the copied scripts is script-only.',
+}
+
+HEADER = """import OscInt.Front.PeriodicAnalyticSanity2
+
+namespace OscInt.API.PeriodicAnalyticSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity
+"""
+
+
+def make(stmt, target, muts, planted, witness=None):
+    defs = [target] if target == stmt else [target, stmt]
+    parts = []
+    for d in defs:
+        t = block(STMT, 'def', d)
+        if planted and d == target:
+            for old, new, cnt in muts:
+                assert t.count(old) == cnt, (d, old, t.count(old))
+                t = t.replace(old, new)
+        parts.append(t)
+    pins = TS_PINS if target == TS and witness is None else []
+    thms = THMS[stmt] if witness is None else []
+    if witness is None:
+        parts += [block(SAN, 'theorem', th) for th in pins + thms]
+    else:
+        parts.append(f'theorem witness_not_{stmt} : ¬ {stmt} :=\n  {witness}')
+    text = '\n\n'.join(parts)
+    for n in sorted(defs + pins + thms, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r'(?![\w])', 'P_' + n, text)
+    return HEADER + '\n' + text + '\n\nend OscInt.API.PeriodicAnalyticSanity2\n'
+
+
+def run(tag, text):
+    src = os.path.join(OUT, tag + '.lean')
+    open(src, 'w').write(text)
+    r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                       cwd=REPO, capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+    errs = [l for l in out.split('\n') if ': error' in l]
+    return ('accepted' if r.returncode == 0 and not errs else 'rejected'), errs
+
+
+ONLY = sys.argv[3:]
+jobs = []
+for pid, stmt, target, muts, witness, note in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    jobs.append((pid, 'ok-' + pid, make(stmt, target, muts, False), 'accepted'))
+    jobs.append((pid, 'plant-' + pid, make(stmt, target, muts, True), None))
+    if witness:
+        jobs.append((pid, 'witness-' + pid, make(stmt, target, muts, True, witness), 'accepted'))
+with ThreadPoolExecutor(max_workers=int(os.environ.get('PLANT_JOBS', '1'))) as ex:
+    results = list(ex.map(lambda j: run(j[1], j[2]), jobs))
+
+summary, res = [], {}
+for (pid, tag, _, w), (verdict, errs) in zip(jobs, results):
+    res[tag] = verdict
+    line = f"{tag}: {verdict}" + (f" (want {w}){'' if verdict == w else '  <-- MISMATCH'}" if w else ' (recorded)')
+    if errs:
+        line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+    summary.append((pid, line))
+lines = []
+for pid, stmt, target, muts, witness, note in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    lines += [l for p, l in summary if p == pid]
+    if pid in TRUE_WEAKENING:
+        v = 'TRUE WEAKENING: ' + TRUE_WEAKENING[pid]
+    elif res.get('witness-' + pid) == 'accepted':
+        v = 'DETECTED (witness compiled: ¬ planted statement)'
+    else:
+        v = 'NOT DETECTED (no compiled witness): ' + NOT_DETECTED.get(pid, '')
+    lines.append(f"  {pid} [{note}]: {v}")
+print('\n'.join(lines), flush=True)
+open(os.path.join(OUT, 'SUMMARY.txt'), 'w').write('\n'.join(lines) + '\n')

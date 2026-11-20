@@ -24,3 +24,7 @@ D5 Kelvin at tan g = 1/(2 sqrt 2), q = 1/sqrt 2: psi' = 0, psi'' = 0, psi''' = -
 RUNTIME python 3.13.18 numpy 2.3.5 scipy 1.17.0 sympy 1.14.0
 RESULT PASS
 # exit status 0
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

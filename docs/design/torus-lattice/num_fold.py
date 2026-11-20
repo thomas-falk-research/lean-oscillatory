@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: CC-BY-4.0
+
 # Numerics (tooling, never evidence): search for 2pi-periodic trig polynomials theta with
 # (i) no point with D^2 theta = 0 and (ii) every rank-one point a fold (D^3[v,v,v] != 0, v in ker).
 import numpy as np, itertools, sys

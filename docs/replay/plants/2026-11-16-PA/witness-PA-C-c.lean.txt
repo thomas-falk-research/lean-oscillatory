@@ -1,0 +1,29 @@
+import OscInt.Front.PeriodicAnalyticSanity
+
+namespace OscInt.API.PeriodicAnalyticSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+
+def P_PeriodicAnalyticOn (v : ℂ → ℂ) (a M : ℝ) : Prop :=
+  (∀ z ∈ openStrip a, v (z + ((2 * Real.pi : ℝ) : ℂ)) = v z) ∧
+    ∀ z ∈ openStrip a, ‖v z‖ ≤ M
+
+def P_FourierCoeffStripStatement : Prop :=
+  ∀ (v : ℂ → ℂ) (a M : ℝ) (k : ℤ), 0 < a → P_PeriodicAnalyticOn v a M →
+    ‖∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ) * Complex.exp (↑(-((k : ℝ) * θ)) * Complex.I)‖ ≤
+      2 * Real.pi * M * Real.exp (-(a * |(k : ℝ)|))
+
+theorem witness_not_FourierCoeffStripStatement : ¬ P_FourierCoeffStripStatement :=
+  by
+  intro h
+  have h1 := h cosRe3 1 7 3 (by norm_num) ⟨fun z _ => cosRe3_periodic z, fun z _ => norm_cosRe3_le z⟩
+  rw [integral_cosRe3_three, norm_mul_pi, Complex.norm_ofNat, Int.cast_ofNat, abs_of_pos (by norm_num),
+    one_mul] at h1
+  have hy : Real.exp (-3) * Real.exp 3 = 1 := by rw [← Real.exp_add]; norm_num
+  have he : (4 : ℝ) ≤ Real.exp 3 := by linarith [Real.add_one_le_exp (3 : ℝ)]
+  have hy0 := Real.exp_pos (-3)
+  have hy4 : Real.exp (-3) ≤ 1 / 4 := by nlinarith
+  have hpi := Real.pi_pos
+  nlinarith [mul_le_mul_of_nonneg_left hy4 hpi.le]
+
+end OscInt.API.PeriodicAnalyticSanity

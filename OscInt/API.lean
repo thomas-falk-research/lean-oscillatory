@@ -25,6 +25,16 @@ import OscInt.Front.LatticeCubeRootSanity
 import OscInt.Front.HypercubicSanity
 import OscInt.Front.LatticeGroupSanity
 import OscInt.Front.D4UniformSanity
+import OscInt.Front.PeriodicAnalyticSanity
+import OscInt.Front.KusminLandauSanity
+import OscInt.Front.PeriodicAnalyticSanity2
+import OscInt.Front.KusminLandauSanity2
+import OscInt.Front.FiniteRingSanity
+import OscInt.Front.FiniteRingSanity2
+import OscInt.Front.SecondDerivSharpSanity
+import OscInt.Front.SecondDerivSharpSanity2
+import OscInt.Front.HadamardWalkSanity
+import OscInt.Front.HadamardWalkSanity2
 import OscInt.Front.GlobalFinal
 import OscInt.Front.LatticeFinal
 import OscInt.Front.LatticeExplicitFinal
@@ -33,6 +43,11 @@ import OscInt.Front.LatticeCubeRootFinal
 import OscInt.Front.HypercubicFinal
 import OscInt.Front.LatticeGroupFinal
 import OscInt.Front.D4UniformFinal
+import OscInt.Front.PeriodicAnalyticFinal
+import OscInt.Front.KusminLandauFinal
+import OscInt.Front.FiniteRingFinal
+import OscInt.Front.HadamardWalkFinal
+import OscInt.Front.SecondDerivSharpFinal
 
 /-!
 # OscInt public API

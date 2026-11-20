@@ -1,0 +1,4 @@
+{"challenge_module": "Challenge", "solution_module": "OscInt",
+ "theorem_names": ["OscInt.API.secondDerivSharp", "OscInt.API.secondDerivAttained", "OscInt.API.vdc2ProfileBound", "OscInt.API.secondDerivSevenHalves"],
+ "definition_names": [],
+ "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]}

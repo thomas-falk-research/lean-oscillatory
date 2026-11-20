@@ -1,0 +1,146 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- `∫_{−π}^{π} cosⁿ k dk` for `n = 1, 2, 3, 4`: `0`, `π`, `0`, `3π/4`. -/
+theorem integral_cos_pows :
+    (∫ k in (-Real.pi)..Real.pi, Real.cos k) = 0 ∧ (∫ k in (-Real.pi)..Real.pi, Real.cos k ^ 2) = Real.pi ∧
+      (∫ k in (-Real.pi)..Real.pi, Real.cos k ^ 3) = 0 ∧
+      (∫ k in (-Real.pi)..Real.pi, Real.cos k ^ 4) = 3 * Real.pi / 4 := by
+  have h2 : (∫ k in (-Real.pi)..Real.pi, Real.cos k ^ 2) = Real.pi := by
+    rw [integral_cos_sq]; simp
+  refine ⟨by simp, h2, by simp, ?_⟩
+  rw [show (4 : ℕ) = 2 + 2 from rfl, integral_cos_pow, h2]
+  simp
+  ring
+
+/-- Taylor polynomial of degree 4 of `e^{ic}` for real `|c| ≤ 1/2`, with the remainder of `Complex.exp_bound`:
+`|e^{ic} − (1 − c²/2 + c⁴/24) − i (c − c³/6)| ≤ |c|⁵ / 100 ≤ 1/3200`. No kernel is mentioned. -/
+theorem norm_exp_sub_taylor_four (c : ℝ) (hc : |c| ≤ 1 / 2) :
+    ‖Complex.exp (↑c * Complex.I) -
+      (((1 - c ^ 2 / 2 + c ^ 4 / 24 : ℝ) : ℂ) + ((c - c ^ 3 / 6 : ℝ) : ℂ) * Complex.I)‖ ≤ 1 / 3200 := by
+  have hx : ‖(↑c : ℂ) * Complex.I‖ = |c| := by
+    rw [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
+  have hb := Complex.exp_bound (x := ↑c * Complex.I) (by rw [hx]; linarith) (n := 5) (by norm_num)
+  have hs : ∑ m ∈ Finset.range 5, (↑c * Complex.I) ^ m / (m.factorial : ℂ) =
+      ((1 - c ^ 2 / 2 + c ^ 4 / 24 : ℝ) : ℂ) + ((c - c ^ 3 / 6 : ℝ) : ℂ) * Complex.I := by
+    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
+      Finset.sum_range_one, show Nat.factorial 0 = 1 from rfl, show Nat.factorial 1 = 1 from rfl,
+      show Nat.factorial 2 = 2 from rfl, show Nat.factorial 3 = 6 from rfl, show Nat.factorial 4 = 24 from rfl]
+    push_cast
+    linear_combination ((c : ℂ) ^ 2 / 2 + (c : ℂ) ^ 3 * Complex.I / 6 +
+      (c : ℂ) ^ 4 * (Complex.I ^ 2 - 1) / 24) * Complex.I_sq
+  have h6 : ((Nat.succ 5 : ℕ) : ℝ) * (((Nat.factorial 5 : ℕ) : ℝ) * ((5 : ℕ) : ℝ))⁻¹ = 1 / 100 := by
+    norm_num [Nat.factorial]
+  have h5 : |c| ^ 5 ≤ (1 / 2) ^ 5 := pow_le_pow_left₀ (abs_nonneg c) hc 5
+  rw [hs, hx, h6] at hb
+  norm_num at h5
+  linarith
+
+/-- `|cos k / 2| ≤ 1/2`. -/
+theorem abs_half_cos_le (k : ℝ) : |1 / 2 * Real.cos k| ≤ 1 / 2 := by
+  rw [abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)]
+  linarith [Real.abs_cos_le_one k]
+
+/-- **Datum: `I(1/2, 0)` to fourth order.** `‖I(1/2, 0) − 2π · 15/16‖ ≤ 2π · 33/25600`: expansion of `e^{i cos(k)/2}`
+to degree 4, `∫ cos² = π`, `∫ cos⁴ = 3π/4`, the odd powers integrate to `0`; the error is `π/512` (the term of
+degree 4) plus `2π/3200` (the remainder). The first layers had the lower bound `latticeKernel1_zero_freq_lower`
+only. -/
+theorem latticeKernel1_half_zero_approx :
+    ‖latticeKernel1 (1 / 2) 0 - ((2 * Real.pi : ℝ) : ℂ) * ((15 / 16 : ℝ) : ℂ)‖ ≤ 2 * Real.pi * (33 / 25600) := by
+  obtain ⟨i1, i2, i3, i4⟩ := integral_cos_pows
+  have hp : (∫ k in (-Real.pi)..Real.pi, (1 - 1 / 8 * Real.cos k ^ 2 + 1 / 384 * Real.cos k ^ 4)) =
+      2 * Real.pi - Real.pi / 8 + Real.pi / 512 := by
+    rw [intervalIntegral.integral_add (Continuous.intervalIntegrable (by fun_prop) _ _)
+        (Continuous.intervalIntegrable (by fun_prop) _ _),
+      intervalIntegral.integral_sub (Continuous.intervalIntegrable (by fun_prop) _ _)
+        (Continuous.intervalIntegrable (by fun_prop) _ _),
+      intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul, i2, i4,
+      intervalIntegral.integral_const]
+    simp
+    ring
+  have hq : (∫ k in (-Real.pi)..Real.pi, (1 / 2 * Real.cos k - 1 / 48 * Real.cos k ^ 3)) = 0 := by
+    rw [intervalIntegral.integral_sub (Continuous.intervalIntegrable (by fun_prop) _ _)
+        (Continuous.intervalIntegrable (by fun_prop) _ _),
+      intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul, i1, i3]
+    ring
+  have hR : ∀ k : ℝ, ‖Complex.exp (↑(1 / 2 * Real.cos k) * Complex.I) -
+      (((1 - 1 / 8 * Real.cos k ^ 2 + 1 / 384 * Real.cos k ^ 4 : ℝ) : ℂ) +
+        ((1 / 2 * Real.cos k - 1 / 48 * Real.cos k ^ 3 : ℝ) : ℂ) * Complex.I)‖ ≤ 1 / 3200 := by
+    intro k
+    have h := norm_exp_sub_taylor_four (1 / 2 * Real.cos k) (abs_half_cos_le k)
+    rw [show 1 - (1 / 2 * Real.cos k) ^ 2 / 2 + (1 / 2 * Real.cos k) ^ 4 / 24 =
+        1 - 1 / 8 * Real.cos k ^ 2 + 1 / 384 * Real.cos k ^ 4 by ring,
+      show 1 / 2 * Real.cos k - (1 / 2 * Real.cos k) ^ 3 / 6 =
+        1 / 2 * Real.cos k - 1 / 48 * Real.cos k ^ 3 by ring] at h
+    exact h
+  have hint : latticeKernel1 (1 / 2) 0 - ((2 * Real.pi - Real.pi / 8 + Real.pi / 512 : ℝ) : ℂ) =
+      ∫ k in (-Real.pi)..Real.pi, (Complex.exp (↑(1 / 2 * Real.cos k) * Complex.I) -
+        (((1 - 1 / 8 * Real.cos k ^ 2 + 1 / 384 * Real.cos k ^ 4 : ℝ) : ℂ) +
+          ((1 / 2 * Real.cos k - 1 / 48 * Real.cos k ^ 3 : ℝ) : ℂ) * Complex.I)) := by
+    rw [intervalIntegral.integral_sub (Continuous.intervalIntegrable (by fun_prop) _ _)
+        (Continuous.intervalIntegrable (by fun_prop) _ _),
+      intervalIntegral.integral_add (Continuous.intervalIntegrable (by fun_prop) _ _)
+        (Continuous.intervalIntegrable (by fun_prop) _ _),
+      intervalIntegral.integral_mul_const, intervalIntegral.integral_ofReal, intervalIntegral.integral_ofReal,
+      hp, hq, latticeKernel1]
+    simp only [zero_mul, add_zero, Complex.ofReal_zero]
+  have hb := intervalIntegral.norm_integral_le_of_norm_le_const (a := -Real.pi) (b := Real.pi) (fun k _ => hR k)
+  rw [show Real.pi - -Real.pi = 2 * Real.pi by ring, abs_of_pos (by positivity), ← hint] at hb
+  have e : latticeKernel1 (1 / 2) 0 - ((2 * Real.pi : ℝ) : ℂ) * ((15 / 16 : ℝ) : ℂ) =
+      (latticeKernel1 (1 / 2) 0 - ((2 * Real.pi - Real.pi / 8 + Real.pi / 512 : ℝ) : ℂ)) +
+        ((Real.pi / 512 : ℝ) : ℂ) := by
+    push_cast; ring
+  rw [e]
+  refine (norm_add_le _ _).trans ?_
+  rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
+  linarith [Real.pi_pos]
+
+/-- **Datum for the planted control L1**: `‖1 − e^{−i/2}‖ ≥ sin(1/2) ≥ 15/32`. A line kernel without the phase factor
+`e^{−2it}` is at distance `≥ (15/16)(15/32) − 33/25600 > 1/384` from `(15/16) e^{−i/2}` at `t = 1/4`, `n = 0`. -/
+theorem norm_one_sub_exp_half_lower : 15 / 32 ≤ ‖1 - Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)‖ := by
+  have hs : 15 / 32 ≤ Real.sin (1 / 2) := by
+    have := Real.sin_gt_sub_cube (x := 1 / 2) (by norm_num)
+    norm_num at this
+    linarith
+  have him : (1 - Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)).im = Real.sin (1 / 2) := by
+    rw [Complex.sub_im, Complex.exp_ofReal_mul_I_im, Real.sin_neg]; simp
+  have h := Complex.abs_im_le_norm (1 - Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I))
+  rw [him, abs_of_nonneg (by linarith)] at h
+  linarith
+
+noncomputable def P_lineKernel (t : ℝ) (n : ℤ) : ℂ :=
+  ((2 * Real.pi : ℝ) : ℂ)⁻¹ * latticeKernel1 (2 * t) (n : ℝ)
+
+theorem witness_L1 :
+    ¬ ‖P_lineKernel (1 / 4) 0 - (15 / 16 : ℝ) * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)‖ ≤ 1 / 384 := by
+  intro h
+  have hpi : ((2 * Real.pi : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (by positivity : (2 * Real.pi : ℝ) ≠ 0)
+  have hc : ((2 * Real.pi : ℝ) : ℂ)⁻¹ * ((2 * Real.pi : ℝ) : ℂ) = 1 := inv_mul_cancel₀ hpi
+  have h0 := latticeKernel1_half_zero_approx
+  have h1 := norm_one_sub_exp_half_lower
+  have e : P_lineKernel (1 / 4) 0 - ((15 / 16 : ℝ) : ℂ) * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) =
+      ((15 / 16 : ℝ) : ℂ) * (1 - Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)) +
+        ((2 * Real.pi : ℝ) : ℂ)⁻¹ *
+          (latticeKernel1 (1 / 2) 0 - ((2 * Real.pi : ℝ) : ℂ) * ((15 / 16 : ℝ) : ℂ)) := by
+    rw [P_lineKernel, show (2 : ℝ) * (1 / 4) = 1 / 2 by norm_num, Int.cast_zero]
+    linear_combination ((15 / 16 : ℝ) : ℂ) * hc
+  have hX : ‖((2 * Real.pi : ℝ) : ℂ)⁻¹ *
+      (latticeKernel1 (1 / 2) 0 - ((2 * Real.pi : ℝ) : ℂ) * ((15 / 16 : ℝ) : ℂ))‖ ≤ 33 / 25600 := by
+    rw [norm_mul, norm_inv, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity),
+      inv_mul_le_iff₀ (by positivity)]
+    exact h0
+  have hY : ‖((15 / 16 : ℝ) : ℂ) * (1 - Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I))‖ =
+      15 / 16 * ‖1 - Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)‖ := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by norm_num)]
+  have h3 := norm_le_add_norm_add
+    (((15 / 16 : ℝ) : ℂ) * (1 - Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)))
+    (((2 * Real.pi : ℝ) : ℂ)⁻¹ * (latticeKernel1 (1 / 2) 0 - ((2 * Real.pi : ℝ) : ℂ) * ((15 / 16 : ℝ) : ℂ)))
+  rw [e] at h
+  rw [hY] at h3
+  linarith
+
+end OscInt.API.FiniteRingSanity2

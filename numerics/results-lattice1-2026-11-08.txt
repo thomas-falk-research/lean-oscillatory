@@ -37,3 +37,7 @@ symmetry max ||I(t,-n)| - |I(t,n)|| = 5.278e-14
 (c3) control wrong factorisation: min |K - I(t,x1+x2) I(t,0)| over x1 x2 != 0 = 1.808e-3: control FAILS (good)
 reported: (A+B) / (2pi * 0.7858) = 13.965
 OVERALL: PASS
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

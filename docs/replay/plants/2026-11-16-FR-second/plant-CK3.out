@@ -1,0 +1,30 @@
+plant-CK3.lean:189:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  1 + 1
+in the target expression
+  HasDerivAt (fun s => chainKernel 1 s 1 1) (Complex.I * (-2 * chainKernel 1 t 1 1)) t
+
+h : P_ChainKernelStatement
+t : ℝ
+hd : HasDerivAt (fun s => chainKernel 1 s 1 1) (Complex.I * (-2 * chainKernel 1 t 1 1)) t
+hw0 : chainKernel 1 t 0 1 = 0
+hw2 : chainKernel 1 t 2 1 = 0
+⊢ deriv (fun s => chainKernel 1 s 1 1) t = -2 * Complex.I * Complex.exp (↑(-(2 * t)) * Complex.I)
+plant-CK3.lean:206:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  2 + 1
+in the target expression
+  HasDerivAt (fun s => chainKernel 1 s 2 1) (Complex.I * (-2 * chainKernel 1 t 2 1)) t
+
+h : P_ChainKernelStatement
+t : ℝ
+h1 : HasDerivAt (fun s => chainKernel 1 s 2 1) (Complex.I * (-2 * chainKernel 1 t 2 1)) t
+⊢ HasDerivAt (fun s => chainKernel 1 s 2 1) 0 t
+plant-CK3.lean:222:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  1 + 1
+in the target expression
+  HasDerivAt (fun s => chainKernel 2 s 1 1) (Complex.I * (-2 * chainKernel 2 t 1 1)) t
+
+h : P_ChainKernelStatement
+t : ℝ
+h1 : HasDerivAt (fun s => chainKernel 2 s 1 1) (Complex.I * (-2 * chainKernel 2 t 1 1)) t
+⊢ HasDerivAt (fun s => chainKernel 2 s 1 1)
+    (-(Complex.exp (↑(-(2 * t)) * Complex.I) * (↑(Real.sin t) + 2 * Complex.I * ↑(Real.cos t)))) t

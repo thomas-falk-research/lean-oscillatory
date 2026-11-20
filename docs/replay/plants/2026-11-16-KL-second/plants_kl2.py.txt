@@ -1,0 +1,263 @@
+#!/usr/bin/env python3
+"""Second run of planted copies of the batch-KL statements (answering the blind pre-proof reviews).
+
+As the first run (docs/replay/plants/2026-11-16-KL/plants_kl.py.txt): for each plant, copy the named defs (from
+OscInt/Statements/KusminLandau.lean) and sanity theorems (from OscInt/Front/KusminLandauSanity.lean and
+OscInt/Front/KusminLandauSanity2.lean) under the prefix P_, apply exactly one textual mutation to one copied def, and
+compile with `lake env lean -DautoImplicit=false`. The unplanted copy (ok-) must compile. Witness files (lessons 44,
+rule 9): the mutated defs followed by a hand-written proof of the negation of the planted statement on closed data; it
+must compile. No file proves, or argues towards, the statements themselves; plants with no possible witness are
+recorded as true weakenings with the reason in prose (not compiled); KL-F-h is recorded with no witness attempted.
+Usage: plants_kl2.py REPO OUTDIR [plant ids]
+"""
+import os, re, subprocess, sys, textwrap
+
+REPO, OUT = sys.argv[1], sys.argv[2]
+os.makedirs(OUT, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/KusminLandau.lean')).read().split('\n')
+SAN = (open(os.path.join(REPO, 'OscInt/Front/KusminLandauSanity.lean')).read().split('\n') + [''] +
+       open(os.path.join(REPO, 'OscInt/Front/KusminLandauSanity2.lean')).read().split('\n'))
+KD, KC, KF = 'KusminLandauStatement', 'KusminLandauTwoOverPiStatement', 'KusminLandauDerivStatement'
+DM = 'DiffsMonotoneIn'
+
+
+def block(lines, kind, name):
+    pat = re.compile(r'^(noncomputable )?' + kind + r' ' + re.escape(name) + r'\b')
+    hits = [i for i, l in enumerate(lines) if pat.match(l)]
+    if len(hits) != 1:
+        raise SystemExit(f'{len(hits)} matches: {kind} {name}')
+    i = j = hits[0]
+    while j < len(lines) and lines[j].strip() != '':
+        j += 1
+    return '\n'.join(lines[i:j])
+
+
+COT = 'Real.cos (Real.pi * lam / 2) / Real.sin (Real.pi * lam / 2)'
+MONO = ('  ((∀ n, n + 1 < N → c (n + 1) - c n ≤ c (n + 2) - c (n + 1)) ∨\n'
+        '      (∀ n, n + 1 < N → c (n + 2) - c (n + 1) ≤ c (n + 1) - c n)) ∧\n')
+MONO_H = MONO.replace('n + 1 < N', 'n + 2 < N')
+assert MONO_H.count('n + 2 < N') == 2 and 'n + 1 < N' not in MONO_H
+LAM = '0 < lam → lam ≤ 1 / 2'
+KD_THMS = ['kl_third', 'kl_anti', 'kl_shift', 'kl_six', 'kl_one_half', 'kl_neg']
+DM_THMS = ['diffs_cThird', 'diffs_cAnti', 'diffs_cShift', 'diffs_cSix', 'diffs_cOne', 'diffs_cNeg', 'not_diffs_cAlt',
+           'not_diffs_cQuarter_third', 'not_diffs_cInt', 'not_diffs_cLast', 'not_diffs_cCells'] + KD_THMS
+KC_THMS = ['klc_six', 'klc_third', 'klc_one_half']
+KF_THMS = ['klf_quarter', 'klf_quarter_shift', 'klf_antitone', 'klf_half', 'klf_fractional', 'klf_empty']
+
+# f = 0, f' = 1/2 (constant functions) on [0, 2], k = 0, lam = 1/2: the sum over n = 0, 1, 2 is 3 > 1 = cot(pi/4).
+# {hd} is the argument for the (mutated) HasDerivOn hypothesis, or empty when that hypothesis is dropped.
+W_CONST = '''theorem witness_not_P_{KF} : ¬ P_{KF} := by
+  intro h
+  have h1 := h (fun _ => 0) (fun _ => 1 / 2) 0 2 0 (1 / 2) (by norm_num) le_rfl{hd}
+    (Or.inl monotoneOn_const) (fun x _ => by norm_num)
+  have hs : ∑ n ∈ Finset.Icc ⌈(0 : ℝ)⌉ ⌊(2 : ℝ)⌋, eTerm 0 = 3 := by
+    rw [Icc_ceil_floor_zero_two]
+    norm_num [eTerm_zero]
+  have h2 : ‖(3 : ℂ)‖ ≤ _ := hs ▸ h1
+  rw [cot_half] at h2
+  norm_num at h2'''
+
+WITNESS = {
+    # cLast, N = 3, lam = 1/3: with the guard n + 2 < 3 only the comparison at n = 0 (1/3 <= 2/3) is asked;
+    # 2 <= cot(pi/6) = sqrt 3 is false.
+    'KL-D-h': f'''theorem witness_not_P_{KD} : ¬ P_{KD} := by
+  intro h
+  have hd : P_{DM} cLast 3 0 (1 / 3) :=
+    ⟨Or.inl fun n hn => by
+        obtain rfl : n = 0 := by omega
+        exact cLast_first,
+      cLast_cell⟩
+  have h1 := h cLast 3 0 (1 / 3) (by norm_num) (by norm_num) hd
+  rw [norm_expSum_cLast, cot_third] at h1
+  have h2 : Real.sqrt 3 < 2 := by
+    rw [Real.sqrt_lt' (by norm_num)]
+    norm_num
+  linarith''',
+    # cCells, N = 4, lam = 1/4: the differences 1/4, 3/4, 5/4, 7/4 are nondecreasing and each lies in some cell;
+    # sqrt 13 <= cot(pi/8) is false (3 sin <= cos would give cos^2 >= 9/10, but cos^2 = 1/2 + sqrt 2 / 4).
+    'KL-D-i': f'''theorem witness_not_P_{KD} : ¬ P_{KD} := by
+  intro h
+  have hd : P_{DM} cCells 4 0 (1 / 4) := ⟨Or.inl cCells_mono, cCells_cells⟩
+  have h1 := h cCells 4 0 (1 / 4) (by norm_num) (by norm_num) hd
+  rw [norm_expSum_cCells, show Real.pi * (1 / 4) / 2 = Real.pi / 8 by ring] at h1
+  have hs : 0 < Real.sin (Real.pi / 8) :=
+    Real.sin_pos_of_pos_of_lt_pi (by positivity) (by linarith [Real.pi_pos])
+  have hc : 2 * Real.cos (Real.pi / 8) ^ 2 - 1 = Real.sqrt 2 / 2 := by
+    rw [← Real.cos_two_mul, show 2 * (Real.pi / 8) = Real.pi / 4 by ring, Real.cos_pi_div_four]
+  have hsc := Real.sin_sq_add_cos_sq (Real.pi / 8)
+  rw [le_div_iff₀ hs] at h1
+  have h13 : (3 : ℝ) < Real.sqrt 13 := by
+    rw [Real.lt_sqrt (by norm_num)]
+    norm_num
+  have h2 : Real.sqrt 2 < 8 / 5 := by
+    rw [Real.sqrt_lt' (by norm_num)]
+    norm_num
+  have h3s : 3 * Real.sin (Real.pi / 8) ≤ Real.cos (Real.pi / 8) := by
+    nlinarith [mul_pos (sub_pos.mpr h13) hs]
+  nlinarith [mul_le_mul h3s h3s (by positivity) (by linarith)]''',
+    # cOne, N = 0, lam = 0: 1 <= 2 / (pi * 0) = 2 / 0 = 0 is false.
+    'KL-C-c': f'''theorem witness_not_P_{KC} : ¬ P_{KC} := by
+  intro h
+  have h1 := h cOne 0 0 0 le_rfl (by norm_num) (diffs_cOne 0 0)
+  rw [expSum_cOne, norm_one, mul_zero, div_zero] at h1
+  norm_num at h1''',
+    # The mutated hypothesis is HasDerivOn f f' 2 0: continuity on Icc 2 0 and a derivative on Ioo 2 0, both empty.
+    'KL-F-d': W_CONST.format(KF=KF, hd='''
+    ⟨continuousOn_const, fun x hx => absurd (hx.1.trans hx.2) (by norm_num)⟩'''),
+    # No hypothesis ties f' to f.
+    'KL-F-e': W_CONST.format(KF=KF, hd=''),
+    # a = b = 1/2, f = f' = 0, k = 0, lam = 1/2 (the hypotheses on the empty open interval are vacuous): the mutated
+    # sum runs over Icc (floor 1/2) (ceil 1/2) = {0, 1} and is 2 > 1 = cot(pi/4).
+    'KL-F-f': f'''theorem witness_not_P_{KF} : ¬ P_{KF} := by
+  intro h
+  have h1 := h (fun _ => 0) (fun _ => 0) (1 / 2) (1 / 2) 0 (1 / 2) (by norm_num) le_rfl
+    ⟨continuousOn_const, fun x _ => hasDerivAt_const x 0⟩ (Or.inl monotoneOn_const)
+    (fun x hx => absurd (hx.1.trans hx.2) (lt_irrefl _))
+  have hI : Finset.Icc ⌊(1 / 2 : ℝ)⌋ ⌈(1 / 2 : ℝ)⌉ = {{0, 1}} := by
+    rw [show ⌊(1 / 2 : ℝ)⌋ = 0 from Int.floor_eq_iff.mpr ⟨by norm_num, by norm_num⟩,
+      show ⌈(1 / 2 : ℝ)⌉ = 1 from Int.ceil_eq_iff.mpr ⟨by norm_num, by norm_num⟩]
+    decide
+  have hs : ∑ n ∈ Finset.Icc ⌊(1 / 2 : ℝ)⌋ ⌈(1 / 2 : ℝ)⌉, eTerm 0 = 2 := by
+    rw [hI, Finset.sum_pair (by norm_num)]
+    norm_num [eTerm_zero]
+  have h2 : ‖(2 : ℂ)‖ ≤ _ := hs ▸ h1
+  rw [cot_half] at h2
+  norm_num at h2''',
+    # lam = 0, a = b = 0, f = f' = 0, k = 0: the sum is the single term e(0) = 1; the bound is cos 0 / sin 0 = 1 / 0
+    # = 0.
+    'KL-F-g': f'''theorem witness_not_P_{KF} : ¬ P_{KF} := by
+  intro h
+  have h1 := h (fun _ => 0) (fun _ => 0) 0 0 0 0 le_rfl (by norm_num)
+    ⟨continuousOn_const, fun x _ => hasDerivAt_const x 0⟩ (Or.inl monotoneOn_const)
+    (fun x hx => absurd (hx.1.trans hx.2) (lt_irrefl _))
+  have hs : ∑ n ∈ Finset.Icc ⌈(0 : ℝ)⌉ ⌊(0 : ℝ)⌋, eTerm 0 = 1 := by
+    rw [Int.ceil_zero, Int.floor_zero]
+    simp [eTerm_zero]
+  have h2 : ‖(1 : ℂ)‖ ≤ _ := hs ▸ h1
+  rw [norm_one, mul_zero, zero_div, Real.sin_zero, div_zero] at h2
+  norm_num at h2''',
+}
+
+TRUE_WEAKENING = {
+    'KL-D-j': ('TRUE WEAKENING (a restriction; in fact equivalent); no witness possible. The planted statement is the '
+               'true statement restricted to the cells with k >= 0 (a natural number k is cast to the integer k in '
+               'DiffsMonotoneIn), so it follows from the true statement and no data can refute it. (Conversely, '
+               'replacing c n by c n + m n for a natural number m changes no term e(c n) and moves the cell from k '
+               'to k + m, so the restricted form should give the full one.) The rejection above is of the proof '
+               'script only: kl_neg applies the statement at k = -1, and -1 is not a natural number (no instance '
+               'Neg Nat); the other five KL-D theorems (k = 0 or 1) are still accepted. Reasoned in prose, not '
+               'compiled (no proof about the statements before review).'),
+    'KL-C-d': ('TRUE WEAKENING (a restriction; in fact equivalent); no witness possible. The planted statement is the '
+               'true statement restricted to lam < 1/2, so it follows from the true statement and no data can refute '
+               'it. (Conversely, DiffsMonotoneIn at lam = 1/2 gives it at every 0 < lam\' < 1/2, and 2/(pi lam\') '
+               'tends to 4/pi, so the restricted form should give the case lam = 1/2.) The rejection above is of '
+               'the proof script only: klc_one_half applies the statement at lam = 1/2 and le_rfl does not prove '
+               '1/2 < 1/2; klc_six and klc_third are still accepted. Reasoned in prose, not compiled.'),
+}
+
+NOTE = {
+    'KL-C-c': ('The planted copy of the sanity theorems is ACCEPTED (every datum has lam > 0 and `by norm_num` also '
+               'proves 0 <= lam): the evidence is the witness alone.'),
+    'KL-F-d': ('The planted copy of the sanity theorems is ACCEPTED (every datum is differentiable on the whole line, '
+               'so its script also proves HasDerivOn f f\' b a): the evidence is the witness alone.'),
+    'KL-F-g': ('The planted copy of the sanity theorems is ACCEPTED (every datum has lam > 0): the evidence is the '
+               'witness alone.'),
+    'KL-F-h': ('No witness attempted (as instructed). The six KL-F data cannot refute it: at lam = 1/2 the planted '
+               'bound is 2/pi + 1 > 1 (klf_half, klf_empty) and at lam = 1/4 it is 4/pi + 1 > 2.27, above sqrt 2 '
+               '(klf_quarter, klf_quarter_shift, klf_fractional) and above |2 + e(5/8)| < 1.48 (klf_antitone). A '
+               'referee reports a numerical ramp at lam = 1/5 with |S| ~ 2.76 > 2.5915 = 5/pi + 1, which has no exact '
+               'closed form; it is not reproduced here. The rejection above is of the proof script only (the '
+               'literal of the bound changed).'),
+}
+
+PLANTS = [
+    # (id, defs copied from the statement file (in order), sanity theorems copied, (mutated def, old, new), note)
+    ('KL-D-h', [DM, KD], DM_THMS, (DM, MONO, MONO_H),
+     'monotonicity guard n + 1 < N -> n + 2 < N in DiffsMonotoneIn (both disjuncts)'),
+    ('KL-D-i', [DM, KD], DM_THMS, (DM, '    ∀ n < N, (k : ℝ) + lam', '    ∀ n < N, ∃ k : ℤ, (k : ℝ) + lam'),
+     'one cell for all differences -> a cell per difference (exists k under the quantifier over n)'),
+    ('KL-D-j', [KD], KD_THMS, (KD, '(k : ℤ)', '(k : ℕ)'), 'k : Int -> k : Nat in KL-D'),
+    ('KL-C-c', [KC], KC_THMS, (KC, LAM, '0 ≤ lam → lam ≤ 1 / 2'), '0 < lam -> 0 <= lam in KL-C'),
+    ('KL-C-d', [KC], KC_THMS, (KC, LAM, '0 < lam → lam < 1 / 2'), 'lam <= 1/2 -> lam < 1/2 in KL-C'),
+    ('KL-F-d', [KF], KF_THMS, (KF, "HasDerivOn f f' a b", "HasDerivOn f f' b a"),
+     "HasDerivOn f f' a b -> HasDerivOn f f' b a"),
+    ('KL-F-e', [KF], KF_THMS, (KF, " HasDerivOn f f' a b →", ''), 'HasDerivOn hypothesis dropped'),
+    ('KL-F-f', [KF], KF_THMS, (KF, 'Finset.Icc ⌈a⌉ ⌊b⌋', 'Finset.Icc ⌊a⌋ ⌈b⌉'),
+     'Finset.Icc (ceil a) (floor b) -> Finset.Icc (floor a) (ceil b)'),
+    ('KL-F-g', [KF], KF_THMS, (KF, LAM, '0 ≤ lam → lam ≤ 1 / 2'), '0 < lam -> 0 <= lam in KL-F'),
+    ('KL-F-h', [KF], KF_THMS, (KF, COT, '1 / (Real.pi * lam) + 1'), 'bound of KL-F -> 1/(pi lam) + 1'),
+]
+
+HEADER = """import OscInt.Front.KusminLandauSanity2
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+
+namespace OscInt.API.KusminLandauSanity2
+
+open OscInt.Statements OscInt.API.KusminLandauSanity Set
+"""
+
+
+def make(defs, thms, mut, planted, witness=None):
+    parts = []
+    for d in defs:
+        t = block(STMT, 'def', d)
+        if planted and d == mut[0]:
+            assert t.count(mut[1]) == 1, (d, mut[1], t.count(mut[1]))
+            t = t.replace(mut[1], mut[2])
+        parts.append(t)
+    if witness is None:
+        parts += [block(SAN, 'theorem', th) for th in thms]
+    text = '\n\n'.join(parts)
+    names = defs + (thms if witness is None else [])
+    for n in sorted(names, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r'(?![\w])', 'P_' + n, text)
+    if witness is not None:
+        text += '\n\n' + witness
+    return HEADER + '\n' + text + '\n\nend OscInt.API.KusminLandauSanity2\n'
+
+
+def run(tag, text):
+    src = os.path.join(OUT, tag + '.lean')
+    open(src, 'w').write(text)
+    r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                       cwd=REPO, capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+    errs = [l for l in out.split('\n') if ': error' in l]
+    return ('accepted' if r.returncode == 0 and not errs else 'rejected'), errs
+
+
+summary = []
+ONLY = sys.argv[3:]
+for pid, defs, thms, mut, note in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    jobs = [('ok-' + pid, make(defs, thms, mut, False), 'accepted'),
+            ('plant-' + pid, make(defs, thms, mut, True), None)]
+    if pid in WITNESS:
+        jobs.append(('witness-' + pid, make(defs, thms, mut, True, WITNESS[pid]), 'accepted'))
+    res = {}
+    for tag, text, w in jobs:
+        verdict, errs = run(tag, text)
+        res[tag.split('-')[0]] = verdict
+        line = f"{tag}: {verdict}" + (f" (want {w}){'' if verdict == w else '  <-- MISMATCH'}" if w else ' (recorded)')
+        if errs:
+            line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+        print(line, flush=True)
+        summary.append(line)
+    if res.get('witness') == 'accepted':
+        v = 'DETECTED (compiled witness of the negation of the planted statement)'
+    elif pid in TRUE_WEAKENING:
+        v = TRUE_WEAKENING[pid]
+    else:
+        v = 'NOT DETECTED' + ('' if res['plant'] == 'accepted' else ' (script-only rejection)')
+    if pid in NOTE:
+        v += '. ' + NOTE[pid]
+    line = textwrap.fill(f"verdict {pid} [{note}]: {v}", width=116, initial_indent='    ',
+                         subsequent_indent='      ')
+    print(line, flush=True)
+    summary.append(line)
+if not ONLY:
+    open(os.path.join(OUT, 'SUMMARY.txt'), 'w').write('\n'.join(summary) + '\n')

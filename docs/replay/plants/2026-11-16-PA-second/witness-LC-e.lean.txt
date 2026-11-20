@@ -1,0 +1,17 @@
+import OscInt.Front.PeriodicAnalyticSanity2
+
+namespace OscInt.API.PeriodicAnalyticSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity
+
+def P_LatticeKernel1LightConeStatement : Prop :=
+  ∀ (t η : ℝ) (n : ℝ), 0 ≤ η →
+    ‖latticeKernel1 t n‖ ≤ 2 * Real.pi * Real.exp (|t| * Real.sinh η - |n| * η)
+
+theorem witness_not_LatticeKernel1LightConeStatement : ¬ P_LatticeKernel1LightConeStatement :=
+  by
+  intro h
+  exact lightCone_nonInteger_false (h 0 2 (1 / 2) (by norm_num))
+
+end OscInt.API.PeriodicAnalyticSanity2

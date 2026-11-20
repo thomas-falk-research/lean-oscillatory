@@ -22,3 +22,7 @@ x²y + y³: c_C A(0) = 0.445074;  t=100: 0.436052+0.000000i  t=300: 0.440901+0.0
 
 RESULT PASS (Part 1 constants; Part 2 is a table for inspection)
 exit 0
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

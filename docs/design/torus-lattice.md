@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 > Provenance (2026-11-07, session 4): design document (P9a) written by an exploration agent and reviewed by the lead;
 > draft statements elaborate against `import OscInt.Statements.D4Limit` but are NOT frozen statements and have no
 > proofs. The lead re-checked §1.4's key claim (the Hessian determinant of a periodic phase integrates to zero, so
@@ -421,10 +427,10 @@ the sweep listed** (PLAUSIBLE-not-novel: the sweep can miss Zulip threads, priva
 | J.-C. Cuenin, I. A. Ikromov, *Sharp time decay estimates for the discrete Klein–Gordon equation*, Nonlinearity 34 (2021) 7938–7962, doi:10.1088/1361-6544/ac2b86, arXiv:2011.12076 | discrete KG on ℤ^d: `\|t\|^{-3/4}` (d = 2), `\|t\|^{-7/6}` (d = 3), `\|t\|^{-3/2} log\|t\|` (d = 4), faster than conjectured by Kevrekidis–Stefanov | arXiv abstract (read) |
 | P. Schultz, *The wave equation on the lattice in two and three dimensions*, Comm. Pure Appl. Math. 51(6) (1998) 663–695 | 2D lattice wave equation decays like `\|t\|^{-3/4}`, 3D like `\|t\|^{-7/6}` | **not re-checked against the original**; bibliographic data and the rates read in Bi–Cheng–Hua arXiv:2312.04130v3 (HTML, read). A web-search summary attributed `\|t\|^{-2/3}` (d = 2) to Schultz in arXiv:2406.00949; that page was not read, discrepancy unresolved |
 | C. Bi, J. Cheng, B. Hua, *The wave equation on lattices and oscillatory integrals*, arXiv:2312.04130 | sharp dispersive estimates for the wave equation on ℤ⁴ (`\|t\|^{-3/2} log\|t\|`), Newton-polyhedron interpretation for d = 2, 3, 4; uses singularity theory (A_k, D4⁻) | arXiv abstract and HTML (read, through the fetch tool's summary) |
-| I. Borovyk, M. Goldberg, *The Klein–Gordon equation on ℤ² and the quantum harmonic lattice*, J. Math. Pures Appl. (9) 107(6) (2017) 667–696 | 2D discrete KG decay | reference list of Bi–Cheng–Hua only; content **not re-checked** |
+| V. Borovyk (the initial was printed "I." here until 2026-11-19), M. Goldberg, *The Klein–Gordon equation on ℤ² and the quantum harmonic lattice*, J. Math. Pures Appl. (9) 107(6) (2017) 667–696 | 2D discrete KG decay | reference list of Bi–Cheng–Hua only; content **not re-checked** |
 | M. Maeda, H. Sasaki, E. Segawa, A. Suzuki, K. Suzuki, *Dispersive estimates for quantum walks on 1D lattice*, J. Math. Soc. Japan 74(1) (2022) 217–246(?), arXiv:1808.05714 | `‖U^t P_c u₀‖_{ℓ^∞} ≲ (1+\|t\|)^{-1/3} ‖u₀‖_{ℓ¹}` for 1D quantum walks with position-dependent coin | arXiv abstract (read); journal volume/issue from the J-STAGE search result; page range **not re-checked** |
-| A. N. Varchenko, *Newton polyhedra and estimates of oscillatory integrals*, Funct. Anal. Appl. 10 (1976) | oscillation indices (1 for A1, 5/6 for A2, 3/4 for A3, 2/3 for D4 in two variables) | reference list of Bi–Cheng–Hua (bibliographic only); the index values are standard (Arnold–Gusein-Zade–Varchenko), **not re-checked** here |
-| L. J. Landau, *Bessel functions: monotonicity and bounds*, J. London Math. Soc. (2000) | `sup_ν \|J_ν(x)\| ≤ b x^{-1/3}`, `b ≈ 0.6749` | **not re-checked** (quoted from memory; the numerics above are consistent) |
+| A. N. Varchenko, *Newton polyhedra and estimation of oscillating integrals* (title as in the Crossref record), Funct. Anal. Appl. 10(3) (1976) 175–196 | oscillation indices (1 for A1, 5/6 for A2, 3/4 for A3, 2/3 for D4 in two variables) | reference list of Bi–Cheng–Hua (bibliographic only); the index values are standard (Arnold–Gusein-Zade–Varchenko), **not re-checked** here |
+| L. J. Landau, *Bessel functions: monotonicity and bounds*, J. London Math. Soc. 61(1) (2000) 197–215 | `sup_ν \|J_ν(x)\| ≤ b x^{-1/3}`, `b ≈ 0.6749` | **not re-checked** (quoted from memory; the numerics above are consistent). Noted 2026-11-19: `docs/prior_art.md` gives 0.7857 for Landau's bound in x^{−1/3} (0.6749 is his constant for the bound in ν^{−1/3}, as line 243 of this page uses it), so the constant in this row does not belong to the bound in this row |
 
 Consequences for scope (PLAUSIBLE): the library's singularity menu (A1, A2, D4) covers the 2D lattice
 **Schrödinger** kernel (T6, sharp) and quantum-walk bands whose dispersion relations have only A1/A2/D4 points; it

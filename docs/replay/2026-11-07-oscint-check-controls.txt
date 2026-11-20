@@ -28,3 +28,7 @@ oscint-check: FAIL: OscInt.d4Limit: statement OscInt.Statements.D4LimitStatement
 M1 (/tmp/adv6/B: OscInt.d4Limit := True.intro added with debug.skipKernelTC in the root module; --no-commitments):
 oscint-check: FAIL: kernel replay rejected module OscInt: declares OscInt.d4Limit or a constant it depends on; OscInt's root module may only import
 (The first hardened version, which replayed only the package's module files, reported PARTIAL with 0 problems on M1; see review/2026-11-07-S44-answers.md.)
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

@@ -1,0 +1,6 @@
+plant-FR-P-f.lean:129:2: error: Type mismatch: After simplification, term
+  h1
+ has type
+  ‖1 - lineKernel t 1‖ ≤ 2 * Real.exp (|t| * Real.sinh η) * Real.cosh η / (Real.exp η - 1)
+but is expected to have type
+  ‖1 - lineKernel t 1‖ ≤ 2 * Real.exp (2 * |t| * Real.sinh η) * Real.cosh η / (Real.exp η - 1)

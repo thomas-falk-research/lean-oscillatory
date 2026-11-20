@@ -1,0 +1,234 @@
+#!/usr/bin/env python3
+"""Supplement to the second run of planted copies of the batch-FR statements: three hypotheses that the list of the
+second run (plants_fr2.py.txt) did not plant.
+
+Same machinery and conventions as plants_fr2.py.txt (the code below, up to the table, is copied from it unchanged):
+every generated file imports OscInt.Front.FiniteRingSanity only and contains, in the namespace of the second layer,
+the unconditional data lemmas of the second layer that the file needs (copied verbatim, selected by name closure),
+then, under the prefix P_, a copy of ONE statement constant and of every sanity theorem of both layers that takes it
+as its hypothesis. Exactly one textual mutation is applied to the copied statement. The unplanted copy (ok-) must
+compile. Witness files: a compiled proof of the negation of the planted statement from unconditional data lemmas (a
+data fact that is not in the second layer is proved inside the witness). No file proves, or uses a proof of, a
+statement of the batch. The second-layer file, the files of the second run and its generator are only read.
+Verdicts: DETECTED (witness compiled), NOT DETECTED (no witness; "script rejected" alone is not a detection).
+Usage: plants_fr2_supplement.py REPO SANITY2_FILE OUTDIR SCRATCHDIR [plant ids]
+"""
+import os, re, subprocess, sys
+
+REPO, SAN2_PATH, OUT, SCR = sys.argv[1:5]
+os.makedirs(OUT, exist_ok=True)
+os.makedirs(SCR, exist_ok=True)
+STMT = open(os.path.join(REPO, 'OscInt/Statements/FiniteRing.lean')).read().split('\n')
+SAN1 = open(os.path.join(REPO, 'OscInt/Front/FiniteRingSanity.lean')).read().split('\n')
+SAN2_ALL = open(SAN2_PATH).read()
+SAN2 = SAN2_ALL[SAN2_ALL.index('namespace OscInt.API.FiniteRingSanity2'):].split('\n')
+K, U, S, P = 'RingKernelStatement', 'RingUniqueStatement', 'RingCosetSumStatement', 'RingFiniteSizeStatement'
+CK, CU, CP = 'ChainKernelStatement', 'ChainUniqueStatement', 'ChainFiniteSizeStatement'
+LINE, RING = 'lineKernel', 'ringKernel'
+# Scripts: for a statement constant, the theorems of the two layers that take it as hypothesis (first layer first);
+# for a kernel definition, the data lemmas that pin it.
+THMS = {
+    K: ['ringK_two_deriv', 'ringK_unit', 'ringK_period', 'ringK_four_deriv', 'ringK_unit_four'],
+    U: ['ringU_mode', 'ringU_const', 'ringU_iMode'],
+    S: ['ringS_origin', 'ringS_two'],
+    P: ['ringP_one', 'ringP_time', 'ringP_neg_one', 'ringP_two_two', 'ringP_neg_time', 'ringP_neg_time_half'],
+    CK: ['chainK_one', 'chainK_unit', 'chainK_two_offdiag', 'chainK_one_wall_site', 'chainK_two_lower_offdiag',
+         'chainK_two_bond'],
+    CU: ['chainU_one', 'chainU_two'],
+    CP: ['chainP_one', 'chainP_one_zero', 'chainP_two_one_one', 'chainP_two_two_two'],
+    LINE: ['lineKernel_zero', 'lineKernel_quarter_zero_approx_sharp', 'lineKernel_quarter_zero_approx',
+           'lineKernel_quarter_one_approx_sharp', 'lineKernel_quarter_one_approx'],
+    RING: ['ringKernel_one', 'ringKernel_two', 'ringKernel_four', 'ringKernel_six', 'ringKernel_six_site_zero',
+           'ringKernel_six_four_pi'],
+}
+FIRST_LAYER = set()
+DECL = re.compile(r"^(?:noncomputable )?(theorem|def) ([A-Za-z_0-9']+)")
+for l in SAN1:
+    m = DECL.match(l)
+    if m:
+        FIRST_LAYER.add(m.group(2))
+
+
+def block(lines, name):
+    """The declaration `name` without its docstring, up to the next blank line; None if absent."""
+    for i, l in enumerate(lines):
+        m = DECL.match(l)
+        if m and m.group(2) == name:
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    return None
+
+
+def script(name):
+    t = block(SAN2, name)
+    return t if t is not None else block(SAN1, name)
+
+
+def data_blocks():
+    """All declarations of the second layer with docstrings, in file order: name -> (index, text)."""
+    res, cur = {}, []
+    for l in SAN2[1:] + ['']:
+        if l.strip() == '':
+            for c in cur:
+                m = DECL.match(c)
+                if m:
+                    res[m.group(2)] = (len(res), '\n'.join(cur))
+                    break
+            cur = []
+        else:
+            cur.append(l)
+    return res
+
+
+DATA = data_blocks()
+
+
+def closure(text, renamed):
+    """Unconditional declarations of the second layer used by `text`, transitively, in file order."""
+    need, todo = set(), [text]
+    while todo:
+        t = todo.pop()
+        for w in set(re.findall(r"[A-Za-z_][A-Za-z_0-9']*", t)):
+            if w in DATA and w not in need and w not in renamed:
+                need.add(w)
+                todo.append(DATA[w][1])
+    return [DATA[n][1] for n in sorted(need, key=lambda n: DATA[n][0])]
+
+
+HEADER = """import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+"""
+FOOTER = '\n\nend OscInt.API.FiniteRingSanity2\n'
+
+
+def make(target, muts, planted, witness=None):
+    """target: the definition copied under P_; muts: [(old, new, count)]; witness: None, a proof term of
+    `¬ P_<target>`, or ('raw', full theorem text) for a planted kernel definition."""
+    t = block(STMT, target)
+    assert t is not None, target
+    if planted:
+        for old, new, count in muts:
+            assert t.count(old) == count, (target, old, t.count(old))
+            t = t.replace(old, new)
+    parts, renamed = [t], [target]
+    if witness is None:
+        for th in THMS[target]:
+            s = script(th)
+            if s is not None:  # scripts of priorities B and C exist only once those parts are written
+                parts.append(s)
+                renamed.append(th)
+    elif isinstance(witness, tuple):
+        parts.append(witness[1])
+    else:
+        parts.append(f'theorem witness_not_{target} : ¬ {target} :=\n  {witness}')
+    text = '\n\n'.join(parts)
+    for n in sorted(renamed, key=len, reverse=True):
+        text = re.sub(r'(?<![\w.])' + re.escape(n) + r"(?![\w'])", 'P_' + n, text)
+    data = closure(text, set(renamed))
+    return HEADER + '\n\n'.join(data + [text]) + FOOTER
+
+
+def run(tag, text):
+    src = os.path.join(SCR, tag + '.lean')
+    open(src, 'w').write(text)
+    open(os.path.join(OUT, tag + '.lean.txt'), 'w').write(text)
+    r = subprocess.run(['nice', '-n', '10', 'lake', 'env', 'lean', '-DautoImplicit=false', os.path.abspath(src)],
+                       cwd=REPO, capture_output=True, text=True)
+    out = r.stdout + r.stderr
+    open(os.path.join(OUT, tag + '.out'), 'w').write(out)
+    errs = [l for l in out.split('\n') if ': error' in l]
+    # the copied scripts in which an error is reported, in file order
+    lines, failing = text.split('\n'), []
+    for e in errs:
+        m = re.search(r'\.lean:(\d+):\d+: error', e)
+        if not m:
+            continue
+        i = int(m.group(1)) - 1
+        while i >= 0 and not DECL.match(lines[i]):
+            i -= 1
+        name = DECL.match(lines[i]).group(2) if i >= 0 else '?'
+        if name not in failing:
+            failing.append(name)
+    return ('accepted' if r.returncode == 0 and not errs else 'rejected'), errs, failing
+
+
+# Table of planted controls, supplement to the second run for batch FR.
+# (id, definition copied under P_, [(old, new, number of textual occurrences)], witness, note)
+
+W_U2 = '''by
+  intro h
+  have h1 := h 0 (fun _ _ => 1) (fun _ _ => rfl)
+    (fun t _ => by convert hasDerivAt_const t (1 : ℂ) using 1; ring) 0 0
+  simp at h1'''
+
+W_CK6 = '''by
+  intro h
+  have h1 := (h 1 0 (-1) 1 le_rfl (by norm_num)).2.2.2 (by norm_num)
+  have e : chainKernel 1 0 (-1) 1 = ringKernel 4 0 (-2) - ringKernel 4 0 0 := by
+    rw [chainKernel]; norm_num
+  rw [e, ringKernel_four_time_zero_neg.2.2, ringKernel_four_time_zero_neg.1, ite_eq_right (by norm_num)] at h1
+  norm_num at h1'''
+
+W_CK7 = '''by
+  intro h
+  have h1 := (h 1 0 3 1 le_rfl (by norm_num)).2.2.2 (by norm_num)
+  rw [chainKernel_one_three, ite_eq_right (by norm_num)] at h1
+  norm_num at h1'''
+
+PLANTS = [
+    ('U2', U, [(' 0 < N →', '', 1)], W_U2,
+     'FR-U: hypothesis 0 < N dropped; witness: N = 0, u = 1, t = 0, x = 0 (the sum over Finset.range 0 is empty: '
+     '1 = 0)'),
+    ('CK6', CK, [('(1 ≤ x → x ≤ (M : ℤ) → chainKernel M 0 x y', '(x ≤ (M : ℤ) → chainKernel M 0 x y', 1)], W_CK6,
+     'FC-K: inner hypothesis 1 ≤ x of the unit datum dropped; witness: M = 1, y = 1, x = −1 '
+     '(C₁(0; −1, 1) = R₄(0, −2) − R₄(0, 0) = −1, unit datum 0)'),
+    ('CK7', CK, [('(1 ≤ x → x ≤ (M : ℤ) → chainKernel M 0 x y', '(1 ≤ x → chainKernel M 0 x y', 1)], W_CK7,
+     'FC-K: inner hypothesis x ≤ M of the unit datum dropped; witness: M = 1, y = 1, x = 3 '
+     '(C₁(0; 3, 1) = −1 by chainKernel_one_three, unit datum 0)'),
+]
+VERDICT = {}
+
+ONLY = sys.argv[5:]
+jobs = []
+for pid, target, muts, witness, note in PLANTS:
+    if ONLY and pid not in ONLY:
+        continue
+    jobs.append((pid, 'ok-' + pid, make(target, muts, False), 'accepted'))
+    jobs.append((pid, 'plant-' + pid, make(target, muts, True), None))
+    if witness:
+        jobs.append((pid, 'witness-' + pid, make(target, muts, True, witness), 'accepted'))
+results = [run(j[1], j[2]) for j in jobs]
+
+by_pid = {}
+for (pid, tag, _, w), (verdict, errs, failing) in zip(jobs, results):
+    line = f"{tag}: {verdict}" + (f" (want {w}){'' if verdict == w else '  <-- MISMATCH'}" if w else ' (recorded)')
+    if errs:
+        line += '\n    first error: ' + errs[0].split('/')[-1][:160]
+    if tag.startswith('plant-'):
+        first = [n[2:] for n in failing if n[2:] in FIRST_LAYER]
+        second = [n[2:] for n in failing if n[2:] not in FIRST_LAYER]
+        line += ('\n    copied scripts with an error: first layer: ' + (', '.join(first) or 'none (all accepted)') +
+                 '; second layer: ' + (', '.join(second) or 'none (all accepted)'))
+    by_pid.setdefault(pid, {})[tag.split('-')[0]] = (verdict, line)
+lines = []
+for pid, target, muts, witness, note in PLANTS:
+    if pid not in by_pid:
+        continue
+    r = by_pid[pid]
+    lines += [r[k][1] for k in ('ok', 'plant', 'witness') if k in r]
+    if witness:
+        what = '¬ planted statement' if not isinstance(witness, tuple) else 'the planted definition violates the datum'
+        v = (f'DETECTED (witness compiled: {what})' if r['witness'][0] == 'accepted'
+             else 'WITNESS FAILED  <-- MISMATCH')
+    else:
+        v = VERDICT[pid]
+    lines.append(f'  {pid} [{note}]: {v}')
+open(os.path.join(OUT, 'SUMMARY.txt' if not ONLY else 'SUMMARY-partial.txt'), 'w').write('\n'.join(lines) + '\n')
+print('\n'.join(lines))

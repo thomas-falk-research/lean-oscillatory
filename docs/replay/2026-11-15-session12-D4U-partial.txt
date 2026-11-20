@@ -28,3 +28,7 @@ tar: lean-4.35.0-linux/lib/lean/Lean/Data/Iterators/Producers.olean.private: Can
 tar: lean-4.35.0-linux/lib/lean/Lean/Data/Iterators/Producers.olean: Cannot write: No space left on device
 tar: lean-4.35.0-linux/lib/lean/Lean/Data/Iterators/Producers.ilean: Cannot write: No space left on device
 tar: lean-4.35.0-linux/lib/lean/Lean/Data/PrefixTree.ir.sig: Cannot write: No space left on device
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

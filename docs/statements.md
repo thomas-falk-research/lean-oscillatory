@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Statements
 
 The mathematics of every frozen statement, in plain notation, with hypotheses, constants and quantifier order.
@@ -976,3 +982,640 @@ FAITHFUL and TRUE ×2, no BLOCKER; the stamp `stamps/20261115T122915Z-33c56db38f
    budget conjunct (bite `const_not_totallyBounded`) and the elliptic umbilic (`phase_elliptic`); planted controls,
    second run, in `docs/replay/2026-11-15-D4U-sanity-plants.txt` (one plant, C⁰ in place of C² in the net, is NOT
    DETECTED and is pinned by the proof).
+
+## Batch PA: periodic functions analytic in a strip; the trapezoidal rule; the lattice light cone (session 13, 2026-11-16)
+
+Order. As batches LS and D4U: statements, `OscInt/Statements/PeriodicAnalytic.lean`, sanity theorems with planted
+controls (`OscInt/Front/PeriodicAnalyticSanity.lean`, record under `docs/replay/plants/2026-11-16-PA/`), challenge
+`Challenge/PeriodicAnalytic.lean` and `comparator-PA.json`, frozen and stamped before the blind pre-proof reviews; no
+Lean proof of these statements exists, in the repository or in scratch, before the reviews are answered and stamped.
+The sanity layer and the plants were written by an agent of the lead under a brief that forbids proving the
+statements.
+
+Why. Four chains of `docs/design/unlock-map.md` (section 2.2: the light cone of the lattice kernel, the ring of N
+sites, the open chain, a certified evaluator by a plain sum) are one mechanism: the Fourier coefficients of a periodic
+function analytic in a strip decay exponentially, and sampling at N points folds them onto each other. The general
+statements are classical. PA-T is Theorem 3.2 of L. N. Trefethen and J. A. C. Weideman, *The exponentially convergent
+trapezoidal rule*, SIAM Review 56 (2014) 385–458 (theorem statement read by two sweep agents of the lead on
+2026-11-16, not by the lead: "v 2π-periodic, analytic with |v| ≤ M in the strip −a < Im θ < a; then for any N ≥ 1,
+|I_N − I| ≤ 4πM/(e^{aN} − 1), and the constant 4π is as small as possible"). LC-1 is Kapteyn's inequality for Bessel
+functions of integer order in a parametrised form (compare DLMF 10.14.5 and 10.14.8; not re-read by the lead). No
+formalisation of any of the three was found by the logged sweep (`docs/prior_art.md`, disclosure of 2026-11-16):
+PLAUSIBLE-not-formalised. The claim, if proved, is "machine-checked", not new mathematics.
+
+Notation. For a > 0 the open strip is S_a = {z ∈ ℂ : |Im z| < a} (Lean `openStrip a`). A function v : ℂ → ℂ is
+**periodic-analytic on S_a with bound M** (Lean `PeriodicAnalyticOn v a M`) if it is complex-differentiable on S_a,
+v(z + 2π) = v(z) for every z ∈ S_a, and |v(z)| ≤ M for every z ∈ S_a. Nothing is assumed outside S_a. The N-point
+trapezoidal sum is I_N(v) = (2π/N) Σ_{j=0}^{N−1} v(2πj/N) (Lean `trapezoidalSum v N`); for a periodic function the
+trapezoidal and the rectangle rule are the same sum. I(t, ξ) = ∫_{−π}^{π} e^{i(t cos k + ξk)} dk is the 1D lattice
+kernel of batch LE (`latticeKernel1`).
+
+**PA-C (Fourier coefficients decay exponentially).** For every a > 0, every M, every v periodic-analytic on S_a with
+bound M and every integer k: |∫_0^{2π} v(θ) e^{−ikθ} dθ| ≤ 2π M e^{−a|k|}.
+
+**PA-T (the trapezoidal rule converges exponentially).** For every a > 0, every M, every v periodic-analytic on S_a
+with bound M and every natural number N ≥ 1: |I_N(v) − ∫_0^{2π} v(θ) dθ| ≤ 4πM / (e^{aN} − 1).
+
+**LC-1 (light cone of the 1D lattice kernel).** For every real t, every integer n and every η ≥ 0:
+|I(t, n)| ≤ 2π e^{|t| sinh η − |n| η}.
+
+Modelling choices and omissions.
+1. v is a function on all of ℂ, constrained only on the open strip. A function given only on the strip is extended
+   arbitrarily; the integrals and the sum use real arguments only, which lie in the strip.
+2. Periodicity is assumed on the strip, not only on the real axis. For a function analytic on the strip the two are
+   equivalent (identity theorem); the statement asks for the stronger form so that no such argument is part of it.
+3. The bound is on the open strip, as in Trefethen and Weideman. No continuity up to the boundary is assumed.
+4. PA-C is stated for the unnormalised integral, so the Fourier coefficient c_k = (2π)^{−1}∫ satisfies
+   |c_k| ≤ M e^{−a|k|}. The sign of k in the exponential is immaterial, since the bound depends on |k| only.
+5. PA-T does not state that 4π is the best constant. It is, as a supremum and not as an attained value: the paper's
+   example for its Theorem 2.2, transplanted to the strip, is v(z) = 2 cos(Nz), for which the ratio of the two sides
+   tends to 1 as aN → ∞ (the sanity layer uses 7 cos(3z) as a datum). Nor does it state the half-plane version with
+   2π (their Theorem 3.1) or the version on the real line.
+5a. The paper's sum is over the nodes 2πk/N, k = 1, …, N; `trapezoidalSum` uses j = 0, …, N − 1. For a 2π-periodic
+   function these are the same sum. History, from the paper's section 11 (quoted by the sweep agent): its Theorem 3.2
+   "is essentially" Theorem 1 of P. J. Davis, *On the numerical integration of periodic analytic functions* (1959),
+   who called the result "folklore"; the idea goes back to Poisson in the 1820s. Davis's paper was not opened.
+6. LC-1 is for integer n only. For non-integer ξ the integrand is not periodic and the bound fails in general: the
+   kernel then decays only like 1/|ξ| as |ξ| → ∞ (an endpoint term). η is a free parameter: for |n| > |t| the best
+   choice is cosh η = |n|/|t|, which gives Kapteyn's bound; η = 0 gives the trivial bound 2π.
+7. LC-1 bounds the kernel, not solutions. With LS-K and TdF it gives, on paper, for a solution u of the lattice
+   Schrödinger equation with ℓ¹ datum f: |u(t, x)| ≤ e^{2d|t| sinh η} Σ_y e^{−η|x − y|₁} |f(y)|. That consequence is not
+   stated in this batch.
+8. Numerical truth checks by the lead before the freeze, in ball arithmetic: PA-C at 195 and PA-T at 105 parameter
+   points on five functions, with ratios of the two sides up to 1.000000 and 0.999877 (the bounds are attained in the
+   limit), four altered statements rejected (`numerics/results-pa-statement-checks-2026-11-16.txt`); LC-1 at 462
+   points (`numerics/results-unlock-chain-checks-2026-11-16.txt`, check K3). These are tooling, not evidence.
+
+Clarifications after the pre-proof reviews (2026-11-16; answers `review/2026-11-16-PA-pre-proof-answers.md`; PA-C, PA-T,
+LC-1 FAITHFUL, no counterexample found, no BLOCKER; the stamp `stamps/20261116T130956Z-276d8d7f9605` stands):
+1. The words in quotation marks after "Theorem 3.2" in "Why" are a condensed paraphrase of the theorem, not the
+   paper's sentence. The paper's sum runs over the nodes 2πk/N, k = 1, …, N (modelling choice 5a).
+2. In modelling choice 6, "cosh η = |n|/|t|" needs t ≠ 0. With that choice LC-1 is the right side of DLMF 10.14.5
+   (Siegel's bound, which the referee compared to 1e-39); DLMF 10.14.8 is the inequality named after Kapteyn.
+3. Modelling choice 8 says both bounds are "attained in the limit". PA-C is attained exactly, by `v = c·e^{ikz}` with
+   `M = |c| e^{a|k|}`; LC-1 is attained exactly at t = 0, n = 0; only PA-T's constant is a supremum. No strict form and
+   no smaller constant is true for PA-C or LC-1.
+4. Where the statements have no content: PA-T for `aN ≤ ln 2` (the right side exceeds the trivial bound); LC-1 inside
+   the light cone `|n| ≤ |t|` and at η = 0; PA-C at k = 0; all three for M < 0 (vacuous) and M = 0 (v = 0).
+5. The "− 1" in PA-T's denominator is not protected by any exact datum of the sanity layer: with `e^{aN}` in its
+   place the statement is false (a referee certified a counterexample in ball arithmetic, ratio 1.00779 at `e^a = 2`,
+   N = 1), but functions of the form c·cos(Nz) satisfy both. It rests on the review and on the proof.
+6. The sanity layer was extended after the reviews (`OscInt/Front/PeriodicAnalyticSanity2.lean`; second plant run
+   `docs/replay/2026-11-16-PA-sanity-plants-second.txt`): node positions, integrality of n and k, the bound off the
+   real axis, a datum at k = 0. The statement file is unchanged.
+7. After the external review of batch PA (2026-11-19, `review/2026-11-19-PA-external-review-answers.md`). In
+   clarification 4, "all three for M < 0 and M = 0" is wrong in scope: only PA-C and PA-T have the parameter M; LC-1
+   has none. At t = 0, n ≠ 0 (clarification 2) the exponent of LC-1 is −|n|η, which has no minimiser: the bound
+   holds for every η ≥ 0 and tends to 0, as it must, since the kernel is then 0. Two docstrings of the sanity layer
+   say more than their theorems: `halfExp_not_periodic` ("no strip and no bound make it admissible") assumes
+   0 < a, and for a ≤ 0 the strip is empty and every function is admissible; `stripExp` ("holomorphic on that strip
+   only") is also holomorphic on the two open regions |Im z| > 1, where it is 0. Both docstrings were corrected
+   the same day (comments only); neither theorem's statement is affected.
+
+Proved (2026-11-16). `OscInt.API.fourierCoeffStrip`, `OscInt.API.trapezoidalRule` and
+`OscInt.API.latticeKernel1LightCone` have exactly these three statements as their types (route `docs/proof-PA.md`;
+post-proof reviews `review/2026-11-16-PA-KL-post-proof-answers.md`). The sentence under "Order" above, "no Lean proof
+of these statements exists, in the repository or in scratch, before the reviews are answered and stamped", is, as
+far as the scratch is concerned, the lead's statement and cannot be checked by a reader; what can be checked, and
+the one disclosed exception (a proof plan on paper older than the freeze), is in `docs/STATUS.md`, paragraph
+"Batches PA and KL (2026-11-16), what the rows rest on".
+
+## Batch KL: the Kusmin–Landau inequality for exponential sums (session 13, 2026-11-16)
+
+Order. As batch PA: statements, `OscInt/Statements/KusminLandau.lean`, sanity theorems with planted controls
+(`OscInt/Front/KusminLandauSanity.lean`, record under `docs/replay/plants/2026-11-16-KL/`), challenge
+`Challenge/KusminLandau.lean` and `comparator-KL.json`, frozen and stamped before the blind pre-proof reviews; no Lean
+proof of these statements exists, in the repository or in scratch, before the reviews are answered and stamped.
+
+Why. Explicit analytic number theory rests on exponential-sum lemmas with explicit constants. One of them, Lemma 2 of
+Y. F. Cheng and S. W. Graham (Rocky Mountain J. Math. 34 (2004)), stated the bound 1/(πθ) + 1 where 2/(πθ) is
+correct. G. A. Hiary, D. Patel and A. Yang (arXiv:2207.02366, read in full by a sweep agent of the lead on
+2026-11-16, not by the lead) write that "the incorrect constant 1/π has impacted all published explicit subconvex
+bounds on |ζ(1/2 + it)|" and that the episode "points to the need for a more automated approach in the future to
+verify explicit theoretical results". The correct inequality is classical: R. Kuzmin (1927) and E. Landau,
+*Über eine trigonometrische Summe*, Nachr. Ges. Wiss. Göttingen (1928) 21–24, with Landau's sharp bound cot(πθ/2)
+(neither original was opened; the statements below follow J. Arias de Reyna, *On Kuzmin–Landau Lemma*,
+arXiv:2002.05982, Lemma 2, and N. Elkies's lecture notes for Harvard Math 229, both read in full by the sweep agent).
+The claim, if proved, is "machine-checked", not new mathematics. Formalisation prior art, found before the freeze
+(`docs/prior_art.md`, section of 2026-11-16 on batches PA and KL): the inequality is already formalised in Lean 4 in
+two public repositories, in difference form, with the weaker constant 1/λ in place of cot(πλ/2); no formalisation
+with the constant 2/π or with Landau's sharp bound was found.
+
+Notation. e(x) = e^{2πix}. For a real sequence c_0, …, c_N the differences are d_n = c_{n+1} − c_n, 0 ≤ n < N. They
+are **monotone in [k + λ, k + 1 − λ]** (Lean `DiffsMonotoneIn c N k lam`) if d_0 ≤ d_1 ≤ … ≤ d_{N−1} or
+d_0 ≥ d_1 ≥ … ≥ d_{N−1}, and k + λ ≤ d_n ≤ k + 1 − λ for every n < N, with k an integer. The sum is
+S = Σ_{n=0}^{N} e(c_n) (Lean `expSum c N`, N + 1 terms).
+
+**KL-D (Landau's form, on differences).** For every real sequence c, every N ≥ 0, every integer k and every λ with
+0 < λ ≤ 1/2: if the differences of c_0, …, c_N are monotone in [k + λ, k + 1 − λ], then |S| ≤ cot(πλ/2).
+
+**KL-C (the constant 2/π).** Under the same hypotheses, |S| ≤ 2/(πλ).
+
+**KL-F (the textbook form).** Let f be continuous on [a, b] with derivative f′ on (a, b), f′ monotone on (a, b), and
+k + λ ≤ f′(x) ≤ k + 1 − λ for every x ∈ (a, b), with k an integer and 0 < λ ≤ 1/2. Then
+|Σ_{n ∈ ℤ, a ≤ n ≤ b} e(f(n))| ≤ cot(πλ/2).
+
+Modelling choices and omissions.
+1. KL-D asks nothing of a function between the integers: only the N differences matter. It is the form of Arias de
+   Reyna's Lemma 2(a) (increasing differences in [θ, 1 − θ]) with Elkies's two additions: either direction of
+   monotonicity, and an integer shift k (which changes no term of the sum).
+2. The hypothesis is "the differences lie in one cell [k + λ, k + 1 − λ]", not "each difference is at distance at
+   least λ from the integers". For a sequence the second is weaker and the inequality fails for it: the differences
+   1/4, 3/4, 5/4, 7/4 are increasing and at distance 1/4 from ℤ, but lie in two cells, and the sum for
+   c = (0, 1/4, 1, 9/4, 4) is 3 + 2i, of modulus √13 > cot(π/8) (the same five terms as control C3 of the numerical
+   checks). For a monotone continuous derivative the two agree, which is why textbooks state the second.
+3. λ ≤ 1/2 is assumed. It follows from the cell condition when N ≥ 1; for N = 0 (one term, |S| = 1) it is what makes
+   cot(πλ/2) ≥ 1.
+4. cot(πλ/2) is written as cos(πλ/2)/sin(πλ/2); sin(πλ/2) > 0 for 0 < λ ≤ 1/2.
+5. KL-F takes the derivative as in S1 (`HasDerivOn`): f continuous on [a, b], differentiable on (a, b). Neither
+   continuity of f′ nor differentiability at the end points is assumed, which is weaker than the textbook's
+   "continuously differentiable". The sum is over `Finset.Icc ⌈a⌉ ⌊b⌋`; it is empty, and the bound trivial, when no
+   integer lies in [a, b]. The bound holds for every sub-interval, so the choice of end points (sources use [a, b],
+   [a, b) and (a, b]) does not matter.
+6. Not stated: Landau's sharpness results (the bound is attained exactly for λ = 1/2 and for fractions with odd
+   numerator and denominator, and is a supremum for every λ; Arias de Reyna, Lemma 2(b)–(d)). The sanity layer uses
+   the attaining sequences 0, 1/3, 1 (|S| = √3 = cot(π/6)) and 0, 1/5, 2/5, 6/5, 2 (|S| = cot(π/10) ≈ 3.0777, above
+   Cheng and Graham's 1/(πθ) + 1 ≈ 2.5915) as data. Also not stated: the asymmetric form (U + V)/π of Hiary, Patel
+   and Yang, and the second- and third-derivative tests for sums.
+7. In the derivative form the bound is not attained by the sequences of item 6 (PLAUSIBLE: a difference equal to λ
+   forces f′ = λ on a whole unit interval, and a derivative cannot jump). KL-F therefore claims the bound only.
+8. Numerical truth checks by the lead before the freeze: KL-D and KL-C on 4000 random rational sequences with no
+   certified violation; five of Landau's sequences attain the bound to 40 digits; KL-F on 20 quadratic phases; five
+   altered statements, among them Cheng and Graham's bound, rejected
+   (`numerics/results-kl-statement-checks-2026-11-16.txt`). Tooling, not evidence.
+
+Clarifications after the pre-proof reviews (2026-11-16; answers `review/2026-11-16-KL-pre-proof-answers.md`; KL-D, KL-C,
+KL-F FAITHFUL, no counterexample found, no BLOCKER; the stamp `stamps/20261116T130956Z-276d8d7f9605` stands):
+1. Modelling choice 6 names the sequence 0, 1/5, 2/5, 6/5, 2 as a datum of the sanity layer. That is wrong: the
+   layer uses 0, 1/6, 1/3, 1/2, 4/3, 13/6, 3 (λ = 1/6, |S| = √13 ≈ 3.606, above Cheng and Graham's 6/π + 1 ≈ 2.910 and
+   below cot(π/12) ≈ 3.732), whose terms are exact with √3 only. The sequence at λ = 1/5 is used in the numerical
+   checks (`numerics/results-kl-statement-checks-2026-11-16.txt`), not in Lean.
+2. Modelling choice 7 is wrong at λ = 1/2: there the derivative form does attain the bound (f′ constant equal to
+   k + 1/2 with an odd number of integers in [a, b]; for example f(x) = x/2 on [0, 2], sum 1 = cot(π/4)). For λ < 1/2
+   a referee found ratios up to 1 − 1.2·10⁻⁶⁵ and no equality; that the bound is a supremum and not attained there is
+   CONJECTURED from that search.
+3. In KL-F the hypothesis `lam ≤ 1/2` matters only when (a, b) is empty and a single integer lies in [a, b]
+   (a = b ∈ ℤ); otherwise the cell condition implies it. KL-F does not ask for a ≤ b: for a > b the sum is empty.
+4. KL-C is a corollary of KL-D (cot x ≤ 1/x on (0, π/2]). "The textbook form" for KL-F means the derivative form of
+   the sources quoted in "Why"; the sources differ in end points and in whether f′ is assumed continuous.
+5. The sanity layer was extended after the reviews (`OscInt/Front/KusminLandauSanity2.lean`; second plant run
+   `docs/replay/2026-11-16-KL-sanity-plants-second.txt`): the last monotonicity comparison, one cell for all
+   differences, a negative k, data at λ = 1/2, non-integer end points, the interval of the derivative hypothesis.
+   The statement file is unchanged.
+
+Proved (2026-11-16). `OscInt.API.kusminLandau`, `OscInt.API.kusminLandauTwoOverPi` and `OscInt.API.kusminLandauDeriv`
+have exactly these three statements as their types (route `docs/proof-KL.md`; post-proof reviews
+`review/2026-11-16-PA-KL-post-proof-answers.md`). The order claim under "Order" above carries the same limit as for
+batch PA (`docs/STATUS.md`, paragraph "Batches PA and KL (2026-11-16), what the rows rest on"). Further
+clarifications after the post-proof reviews:
+1. Where the statements have no content: the bound cot(πλ/2) exceeds the trivial bound N + 1 whenever
+   N + 1 ≤ cot(πλ/2) (for example every sum of up to 63 terms at λ = 1/100); KL-C is weaker than KL-D everywhere.
+2. "Landau's sharp form": that cot(πλ/2) is best possible for every λ is Landau's result as reported by the
+   expositions quoted in "Why"; it is not machine-checked. In Lean the bound is shown attained at λ = 1/3, and data
+   exist at λ = 1/2.
+3. A rational witness against Cheng and Graham's printed bound in the derivative form exists (referee C, certified
+   arithmetic: f′ = 1/5 on [0, 2], linear up to 4/5 on [2, 2.01], 4/5 after, integers 0 to 4: |S| = 3.0681 against
+   1/(π/5) + 1 = 2.5915, and below cot(π/10) = 3.0777). The sanity layer records that mutation of KL-F as not
+   detected; the proof excludes it.
+4. Corrections after the external review of batch KL (2026-11-19, `review/2026-11-19-KL-external-review-answers.md`).
+   Clarification 3 of the first list is false as written. The hypothesis `lam ≤ 1/2` of KL-F is used exactly when
+   (a, b) is empty (a ≥ b), where the cell condition is vacuous: if no integer lies in [a, b] (a > b, or a = b not
+   an integer) the sum is empty and the conclusion reads 0 ≤ cot(πλ/2), which fails for 1 < λ < 2 (at λ = 3/2 the
+   right side is −1); if a = b is an integer the sum has one term and the conclusion reads 1 ≤ cot(πλ/2), which
+   fails for 1/2 < λ < 2. When (a, b) is not empty the cell condition implies λ ≤ 1/2. The referee's remark, the
+   lead's answer to it and the clarification had only the one-term case. In item 1 above, "exceeds" includes
+   equality (N + 1 = cot(πλ/2) is possible, for example one term at λ = 1/2). In the pre-proof answers, "the
+   monotonicity clause is empty for N ≤ 2": for N = 2 the clause has the instance n = 0 and is then true for every
+   sequence (two real numbers are ordered one way or the other); it restricts nothing, but it is not empty. The
+   docstring of `klCore_zeta` now states its domain. The statement file is unchanged.
+
+## Batch FR: the Schrödinger group on a ring of N sites and on an open chain of M sites (session 13, 2026-11-16)
+
+Order. As batches PA and KL: statements, `OscInt/Statements/FiniteRing.lean`, sanity theorems with planted controls
+(`OscInt/Front/FiniteRingSanity.lean`, record under `docs/replay/plants/2026-11-16-FR/`), challenge
+`Challenge/FiniteRing.lean` and `comparator-FR.json`, frozen and stamped before the blind pre-proof reviews. What that
+claim is worth, said at the strength the facts have (post-proof review of batches PA and KL, finding F1): no Lean
+proof of these statements is in the repository history before the stamp of the review answers; the lead states
+that none exists in scratch either, which a reader cannot check. A proof plan on paper does predate the freeze: one
+paragraph of dependencies in `docs/design/batch-FR-draft.md`, committed in 0302925, and the derivation of the two
+finite-size bounds, which the lead worked out while drafting (it is how the first form of FR-P was found not to be
+sharp). The sanity layer and the plants were written by an agent of the lead under a brief that forbids proving the
+statements, against the draft text; that text entered the repository unchanged (SHA-256 of the statement file
+33cbb55f1348163eb0395b7509b09db13ce110aa1e27d5ff4d56293c5717d26b).
+
+Why. Every lattice statement of OscInt so far is about the infinite lattice ℤ^d. A device is finite: a ring of N
+coupled sites, or, far more often, an open chain of M sites (a waveguide array, a line of qubits). Two classical
+facts connect them, and `docs/design/unlock-map.md` (nodes N2, N3; chains K8, K9) names them as the missing link
+between the proved estimates and a prediction a laboratory can test: the propagator on a ring is the propagator on
+the line summed over the images r + Nℤ (periodisation), and the propagator on an open chain with identical sites
+is the odd part of the propagator on a ring of 2(M + 1) sites (reflection). With the light-cone bound LC-1 of batch
+PA the images are small until the wave reaches a wall, with an explicit bound. The mathematics is classical (method
+of images; discrete sine transform); the claim, if proved, is "machine-checked", not new mathematics. Formalisation
+prior art (`docs/prior_art.md`, section of 2026-11-16 on batch FR; four web searches and a reading of Mathlib): no
+formalisation of these propagators, of the method of images or of a finite-size bound was found;
+PLAUSIBLE-not-formalised. The explicit bounds FR-P and FC-P were not looked for in print in this explicit form; they
+follow in a few lines from classical facts, and no claim is made that they are new.
+
+Notation. The equation is i u′ + Δu = 0 with (Δu)(x) = u(x + 1) + u(x − 1) − 2u(x), as in batch LS with d = 1.
+- **Line.** G(t, n) = (2π)^{−1} e^{−2it} I(2t, n) for n ∈ ℤ (Lean `lineKernel t n`), with I the 1D lattice kernel of batch
+  LE. By LS-K and TdF with d = 1 it is the kernel of the group on ℓ²(ℤ); on paper G(t, n) = e^{−2it} i^n J_n(2t).
+- **Ring of N ≥ 1 sites.** A function on the ring is a function on ℤ of period N.
+  R_N(t, r) = N^{−1} Σ_{j=0}^{N−1} e^{i(2t(cos k_j − 1) + r k_j)}, k_j = 2πj/N (Lean `ringKernel N t r`).
+- **Open chain of M sites.** The sites are 1, …, M; the walls are 0 and M + 1, where u = 0 (every site, including the
+  two end sites, has the diagonal term −2: "identical sites").
+  C_M(t; x, y) = R_{2(M+1)}(t, x − y) − R_{2(M+1)}(t, x + y) (Lean `chainKernel M t x y`).
+
+**FR-K (the ring kernel).** For every N ≥ 1, real t and integer r: s ↦ R_N(s, r) has derivative
+i (R_N(t, r + 1) + R_N(t, r − 1) − 2 R_N(t, r)) at t; R_N(0, r) is 1 if N divides r and 0 otherwise;
+R_N(t, r + N) = R_N(t, r).
+
+**FR-U (it is the propagator of the ring).** For every N ≥ 1 and every u : ℝ → ℤ → ℂ with u(t, x + N) = u(t, x) and
+∂_t u(t, x) = i (u(t, x + 1) + u(t, x − 1) − 2u(t, x)) for all t and x: u(t, x) = Σ_{y=0}^{N−1} R_N(t, x − y) u(0, y).
+
+**FR-S (method of images).** For every N ≥ 1, real t and integer r, the series Σ_{m ∈ ℤ} G(t, r + mN) converges
+unconditionally and its sum is R_N(t, r).
+
+**FR-P (finite-size error of the ring).** For every N ≥ 1, real t, integer r and η > 0:
+|R_N(t, r) − G(t, r)| ≤ 2 e^{2|t| sinh η} cosh(rη) / (e^{ηN} − 1).
+
+**FC-K (the chain kernel).** For every M, real t, integers x, y with 1 ≤ y ≤ M: s ↦ C_M(s; x, y) has derivative
+i (C_M(t; x + 1, y) + C_M(t; x − 1, y) − 2 C_M(t; x, y)) at t; C_M(t; 0, y) = 0 and C_M(t; M + 1, y) = 0; and for
+1 ≤ x ≤ M, C_M(0; x, y) is 1 if x = y and 0 otherwise.
+
+**FC-U (it is the propagator of the chain).** For every M and every u : ℝ → ℤ → ℂ with u(t, 0) = u(t, M + 1) = 0 for
+all t and ∂_t u(t, x) = i (u(t, x + 1) + u(t, x − 1) − 2u(t, x)) for all t and 1 ≤ x ≤ M:
+u(t, x) = Σ_{y=1}^{M} C_M(t; x, y) u(0, y) for all t and 1 ≤ x ≤ M.
+
+**FC-P (finite-size error of the chain).** For every M, real t, η > 0 and sites 1 ≤ x, y ≤ M:
+|C_M(t; x, y) − G(t, x − y)| ≤ e^{2|t| sinh η} ( e^{−(x+y)η} + 2 (cosh((x − y)η) + cosh((x + y)η)) / (e^{2(M+1)η} − 1) ).
+
+Modelling choices and omissions.
+1. One dimension only. Rings and boxes in ℤ^d factorise (TdF), but that is not stated here.
+2. A function on the ring is a periodic function on ℤ, not a function on `ZMod N`; a function on the chain is a
+   function on ℤ of which only the values at 0, …, M + 1 are constrained. This keeps the statements free of
+   coercions between `ZMod N`, `Fin N` and ℤ; the price is that FR-U and FC-U quantify over u : ℝ → ℤ → ℂ.
+3. Time derivatives are taken site by site. For finitely many sites this is the derivative of the vector.
+4. N = 1 and N = 2 are included. For N = 1 the "ring" is one site with Δ = 0 and R_1 = 1. For N = 2 the two
+   neighbours of a site coincide, so Δu(x) = 2(u(x + 1) − u(x)): a double bond, which is what the formula gives and
+   not what a two-site device with one bond does (that device is the open chain with M = 2).
+5. M = 0 is included and vacuous in FC-K and FC-P (no y with 1 ≤ y ≤ 0); in FC-U it says nothing.
+6. The chain has Dirichlet walls and the same diagonal −2 at every site. A chain whose end sites have diagonal −1
+   (free ends, the graph Laplacian of a path) is the EVEN reflection and is not covered; its kernel is
+   R_{2M}(t, x − y) + R_{2M}(t, x + y − 1). In the physical normalisation H = −κ Σ (|x⟩⟨x+1| + h.c.) with identical
+   on-site energies, the diagonal is a constant and only changes a global phase: that device is this chain.
+7. FR-P and FC-P have a free parameter η > 0, as LC-1. They say nothing useful once the wave has reached a wall
+   (roughly 2|t| ≥ distance to the nearest image). FR-P is sharp as a supremum: at t = 0, r = N the left side is 1 and the
+   right side is (e^{Nη} + e^{−Nη})/(e^{Nη} − 1), which tends to 1 as η → ∞; no constant smaller than 2 is true (a
+   control with constant 1 fails). A first draft had e^{|r|η} in place of cosh(rη); a planted control ("without the factor 2") did not fail
+   on it, which showed that draft was not sharp, and the statement was sharpened before the freeze.
+8. FC-P keeps three images: the wall at 0 (the term e^{−(x+y)η}), and through the ring bound the wall at M + 1 and all
+   further ones. It is not sharp (largest observed ratio of the two sides 0.36).
+9. Populations: the probability at site x for a unit datum at y is |C_M(t; x, y)|². The statements bound amplitudes;
+   ||a|² − |b|²| ≤ |a − b| (|a| + |b|) ≤ 2|a − b| for amplitudes of modulus at most 1 turns FC-P into a bound for
+   populations. That step is not stated in this batch.
+10. Numerical truth checks by the lead before the freeze, in ball arithmetic, by two methods that share no formula
+   (the kernels as defined against the matrix exponential of the graph Laplacian):
+   `numerics/review/fr_statement_checks.py`, results `numerics/results-fr-statement-checks-2026-11-16.txt`, 12 of 12
+   checks pass and five altered statements are rejected. These are tooling, not evidence.
+11. Not stated, and CONJECTURED only: FR-P may hold without the "− 1" in its denominator. A certified scan by the lead
+   found no violation in 159003 comparisons (N ≤ 13, 0 ≤ t ≤ 8, |r| ≤ 2N, thirteen values of η; largest ratio of the
+   two sides 1.0), and the sanity layer has no datum against it (plant FR-P-e, NOT DETECTED). The route to FR-P
+   (the images bounded one by one with LC-1) gives the "− 1" form and not the stronger one.
+12. The sanity layer: `docs/replay/2026-11-16-FR-sanity-plants.txt`. 26 planted mutations; 23 are refuted by compiled
+   witnesses, 1 is equivalent to the statement (FC-U with the sum from 0 instead of 1), 2 are not detected by any
+   datum (the "− 1" of FR-P; the wall term of FC-P) and rest on the reviews and on the proof. FC-P has no exact datum
+   with a nonzero left side in this layer. FR-K, FC-K and the kernels are tested at N ≤ 4 and M ≤ 2 only.
+
+Clarifications added after the freeze of batch FR (2026-11-16, from the blind pre-proof reviews; the stamped text
+above and the Lean file are unchanged; `review/2026-11-16-FR-pre-proof-answers.md`).
+a. Item 7, "FR-P is sharp". The supremum 1 of the ratio of the two sides is approached at t = 0, r = ±N (η → ∞), where
+   the ring site is the source and the line site is not; it is not attained. It is nearly attained along the whole
+   family r = ±N with t small and N large (certified by referee B: 0.99990 at N = 10⁵, t = 1/100; 0.9858 at N = 400,
+   t = 1/10), so neither the constant 2 nor the factor cosh(rη) has slack there. This is sharpness of the statement
+   as quantified over all integers r, not of the finite-size error where one uses it: R_N(t, ·) has period N and the
+   bound does not, so take the representative with |r| ≤ N/2. For |r| ≤ N/2 the largest ratio found is 1/e
+   (0.36787943 at N = 2, r = 1, t → 0, referee A, 40 digits); with |r| < N and t ≠ 0 the largest certified ratio is
+   0.5809 (N = 5000, r = 4999, t = 37/40, referee B).
+b. Item 8, "largest observed ratio 0.36". That number holds for M ≤ 8 only (0.3666 certified at M = 8). The ratio
+   grows with M at a site next to a wall: 0.4288 (M = 24), 0.4678 (M = 100), 0.4854 (M = 2500, x = y = 2500, t = 61/40,
+   η = 197/100000; all certified by referee B), apparently towards sup |J₂| ≈ 0.4865. "Not sharp" stands.
+c. Item 8 and the header of the Lean file. "FC-P keeps three images" and "up to the two nearest images" are both
+   loose. The statement compares C_M with G(t, x − y) alone and bounds every image: one term for the image in the
+   wall at 0, and the ring bound for the image in the wall at M + 1 and all further ones.
+d. Item 9 uses |C_M(t; x, y)| ≤ 1. That is true (the group on the chain is unitary) and is not a statement of this
+   batch; the definition alone gives |C_M| ≤ 2.
+e. Item 6, physical normalisation: the identification with H = −κ Σ (|x⟩⟨x+1| + h.c.) also rescales time by κ.
+f. FR-U and FC-U are representation formulas for a given solution. Existence of a solution for a given datum is not
+   a separate statement; it follows from FR-K and FC-K by a finite linear combination.
+g. Hypotheses that are present and not needed. In FC-K the derivative clause and the two wall clauses hold for every
+   integer y; only the unit datum needs 1 ≤ y ≤ M (and 1 ≤ x ≤ M). In FC-P referee A found no violation with
+   the four site hypotheses removed (M ≤ 6, all integers |x|, |y| ≤ 3M + 4, floating point; largest ratio 1.000). The statements are
+   weaker than they could be there, as the prose is; they are not changed.
+h. Variants of FC-P that no datum and no scan distinguishes from the frozen text (referee A, floating point, M ≤ 9):
+   the constant 2 of the ring term replaced by 1, the "− 1" removed, cosh((x − y)η) dropped, the wall coefficient
+   1 replaced by 1/2. Whether any of them is true is not known to the lead; the frozen constants are those of the
+   derivation (the images bounded one by one with LC-1), not of a fit.
+i. Added after the post-proof reviews (2026-11-17; `review/2026-11-17-FR-post-proof-answers.md`). FC-P holds for all
+   integers x and y: the four site hypotheses are not needed (a referee compiled a proof of that in its scratch, from
+   FR-P and LC-1; it is not a theorem of the library, and the frozen statement keeps the hypotheses). FR-P says
+   nothing for |r| ≥ N, where its right side exceeds 1. FR-U and FC-U are about solutions defined for all real times
+   (a derivative at every t); a solution given on an interval only is not covered as stated. FR-U needs the period
+   at every time: with the period assumed at t = 0 only the statement is false (a null solution built from a
+   function flat at 0, sites defined by the recursion), and no datum or numerical test could show it; the proof
+   uses the period at every t. All seven theorems of this batch use lemmas of batch PA.
+j. Added 2026-11-19 (found by the lead while answering the external review of batch PA, which reported the same
+   pattern in a sibling script; `review/2026-11-19-PA-external-review-answers.md`). Item 10 overstated one of the
+   twelve checks. The check "FR-S coset sum against the ring kernel, within the certified tail" compared against the
+   tail plus 1e-25, which neither the script's description nor item 10 said. For N = 5 and N = 8 the tail (below
+   1e-250 with |m| ≤ 60) is smaller than the enclosures at the working precision (about 1e-209), so at 46 of the 120
+   points the run of 2026-11-16 showed agreement to within 1e-25 and not to within the tail. The script now sums
+   |m| ≤ ⌈60/N⌉, where every tail exceeds 1e-70, and compares with the tail alone: 120 of 120 pass, and a tail smaller
+   by the factor e^{−4N} fails at 6 points (the 120 of 120 is in `numerics/results-fr-statement-checks-2026-11-19.txt`;
+   the control with the smaller tail was run by the lead the same day and is not kept). Its two "must differ"
+   controls now need certified disjoint enclosures. The statements and their proofs are not affected.
+k. Corrections after the external review of batch FR (2026-11-19, `review/2026-11-19-FR-external-review-answers.md`).
+   (1) Item 8 and clarification b, "FC-P is not sharp": this is an observation and no more. The largest ratio of
+   the two sides found is 0.4854; that the supremum of the ratio is below 1 is CONJECTURED, not proved. (2)
+   Clarification i, "FR-P says nothing for |r| ≥ N, where its right side exceeds 1": the trivial bound on
+   |R_N − G| is 2 (two kernels of modulus at most 1), so the bound still says something while it is below 2. (3)
+   The docstring of the sanity theorem `chainP_half_time_false` said that at η = 3 the planted bound, 0.03041, is
+   "not a violation". It is one: the left side is 0.0304426 and the planted bound 0.0304082 (ball arithmetic by
+   the lead, difference 3.44e-5 certified positive); the proof in that file uses the coarse lower bound 767/25600,
+   which cannot show it at η = 3. The docstring is corrected, and so is the overview of
+   `OscInt/Front/FiniteRingEnergy.lean` ("constant, hence 0" needs the zero datum). (4) The control of the
+   numerical script called "free ends" is the reflected image with the opposite sign on the ring of 2(M + 1)
+   sites; it is not the chain of M sites with free ends. The statement file is unchanged.
+
+## Batch VC2: the second-derivative van der Corput bound with its sharp constant (session 13, 2026-11-16)
+
+Order. As batch FR: statements, `OscInt/Statements/SecondDerivSharp.lean`, sanity theorems with planted controls
+(`OscInt/Front/SecondDerivSharpSanity.lean`, record under `docs/replay/plants/2026-11-16-VC2/`), challenge
+`Challenge/SecondDerivSharp.lean` and `comparator-VC2.json`, frozen and stamped before the blind pre-proof reviews.
+What differs from the earlier batches, said plainly: a complete proof on paper of VC2-S and VC2-A predates the
+freeze. The lead wrote it on 2026-11-16 before drafting these statements (it is how the form of VC2-S was found), a
+fresh referee read it step by step (verdict: correct after the listed repairs; two minor repairs made, not
+re-refereed), and it is in `docs/prior_art.md` in outline. No Lean proof of these statements is in the repository
+history before the stamp of the review answers. The sanity layer and the plants were written by an agent of the
+lead under a brief that forbids proving the statements, against the draft text, which entered the repository
+unchanged (SHA-256 of the statement file b0f5814eabf7541158b81697bf66cd55b01c70177252c6e35d045506b474eabb).
+
+Why. S1.2 (and S1.k at k = 2) has Stein's constant 8. The best constant has been known since Kershner (1935, 1938;
+`docs/prior_art.md`; the lead has not read Kershner's papers): it is the largest modulus of a Fresnel partial
+integral, 3.3643175781…. Every explicit bound of this library that passes through the second-derivative test
+carries the factor 8/3.364… = 2.38 for no reason. The theorem is classical; the claim, if proved, is "machine-checked,
+sharp constant", not new mathematics. The session's map had called the constant open on the word of one paper
+and was corrected the same day (session log, 2026-11-16).
+
+Notation. A(w) = 2 ∫_0^{√(2w)} sin(w − u²/2) du for w ≥ 0 (Lean `vdc2Profile w`). With F(V) = 2 ∫_0^{√(2V)} e^{iu²/2} du
+one has A(w) = Im(e^{iw} · conj F(w)) (substitute v = u²/2), so A(w) ≤ |F(w)|. "f′ increases at rate at least λ on (a, b)" means f′(y) − f′(x) ≥ λ (y − x) for all a < x ≤ y < b (Lean
+`DerivIncreasesAtRate f' a b lam`); it holds if f″ ≥ λ and needs no second derivative.
+
+**VC2-S (sharp second-derivative bound).** For all a ≤ b, λ > 0 and every f continuous on [a, b] with derivative f′ on
+(a, b) that increases at rate at least λ: there is w ∈ [0, π] with |∫_a^b e^{if(x)} dx| ≤ A(w)/√λ.
+
+**VC2-A (attained).** For every w ≥ 0: A(w) ≤ |∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx|. (The right side is |F(w)|; the phase
+x²/2 on a symmetric interval satisfies the hypotheses of VC2-S with λ = 1. So sup_{[0,π]} A is the best constant.)
+
+**VC2-N (a number).** A(w) ≤ 7/2 for 0 ≤ w ≤ π. (The supremum is 3.3643175781…, at w = 2.2974…)
+
+**VC2-K (the test with amplitude, constant 7/2).** As S1.2 with 7/2 in place of 8: for φ with derivatives φ′, φ″ on
+[a, b] in the sense of S1, |φ″| ≥ μ > 0 on (a, b), every real p and every ψ with the amplitude hypothesis of S1:
+|∫_a^b e^{i(φ(x) + px)} ψ(x) dx| ≤ (7/2) μ^{−1/2} A(ψ; a, b).
+
+Modelling choices and omissions.
+1. VC2-S is stated with the profile A and an existential w, not with a supremum: the statement then contains no
+   `sSup` (whose value in Lean for an unbounded or empty set would need a side condition) and is strictly stronger
+   than the bound with the constant sup A. The constant itself enters through VC2-N.
+2. VC2-S assumes only that f is continuous on [a, b] and differentiable inside, with the increment condition on f′;
+   f′ may be unbounded at the ends. VC2-K keeps the hypotheses of S1.2 (φ′ continuous up to the ends, a second
+   derivative), so that it can replace S1.2 where S1.2 is used; a derivative of constant sign follows from |φ″| ≥ μ
+   by Darboux's theorem.
+3. VC2-N is a bound for a number defined by an integral; 7/2 is 4 % above the supremum. A tighter rational
+   (for instance 3.3644) would need a certified evaluation in Lean and is not stated.
+4. The uniqueness of the extremal phase and the first-derivative test with its sharp constant 2 (which the same
+   method gives) are not stated.
+5. Numerical truth checks by the lead before the freeze: `numerics/review/vc2_statement_checks.py`, results
+   `numerics/results-vc2-statement-checks-2026-11-16.txt`, 11 lines, all pass: the maximum of A on [0, π] is
+   3.3643175781559 at w = 2.297439574; A ≤ |F| on a grid and equality at the maximiser; 60000 random phases with
+   piecewise constant second derivative ≥ λ (two methods for the integral: Fresnel closed forms and adaptive
+   quadrature) reach at most 3.363688 √λ^{−1}; 1500 random instances of VC2-K reach the ratio 2.41 against 7/2; three
+   altered statements are rejected. The proof's referee ran a linear programme over nonincreasing densities
+   (supremum 3.36039, from below). Floating point and quadrature: tooling, not evidence.
+6. The sanity layer: `docs/replay/2026-11-16-VC2-sanity-plants.txt`. 62 declarations, 13 through a statement constant.
+   Certified data: 33/10 ≤ A(441/200) and 33/10 ≤ |∫_{−21/10}^{21/10} e^{ix²/2} dx| (so 7/2 is within 6 % of a value of
+   A, and no constant below 33/10 is true in VC2-S, VC2-N or VC2-K). 15 planted mutations: 12 are refuted by compiled
+   witnesses; 2 are true weakenings (the increment condition with an absolute value, which is equivalent to the
+   statement by Darboux's theorem and conjugation, so "increasing" in VC2-S is a normalisation and the decreasing
+   case is the conjugate one; VC2-K with φ″ in place of |φ″|); 1 is not detected and is apparently a true
+   strengthening (VC2-N on [0, 2π]: numerically A ≤ 3.3643… on all of [0, ∞); the statement keeps [0, π], which is
+   what VC2-S needs). The layer proves no upper bound: the instances of VC2-S, VC2-N and VC2-K at the certified data
+   are consistent with it (33/10 ≤ … ≤ 7/2) and not decided by it, and the instance of VC2-A at w = 441/200 (true gap
+   0.0074) is not decided either.
+
+Clarifications added after the freeze of batch VC2 (2026-11-17, from the blind pre-proof reviews; the stamped text
+above and the Lean file are unchanged; `review/2026-11-17-VC2-pre-proof-answers.md`).
+a. Modelling choice 1 is wrong where it says that the existential form of VC2-S "is strictly stronger than the bound
+   with the constant sup A". The profile A is continuous on the compact interval [0, π], so "there is w ∈ [0, π] with
+   X ≤ A(w)" holds exactly when X ≤ max_{[0, π]} A: the two forms are equivalent, and w is not tied to f, a or b.
+   The reason given for avoiding a supremum in the Lean text stands.
+b. The docstring of `vdc2Profile` in the frozen Lean file ("the largest real part, over rotations, that the quadratic
+   phase can reach when its positive arc ends at phase w") does not describe the definition. The accurate
+   description is the one of the Notation paragraph: A(w) = Im(e^{iw} · conj F(w)), the component of the quadratic
+   integral F(w) = ∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx along one fixed rotation; A(w) ≤ |F(w)|, with equality at the
+   maximiser, and A takes negative values (A(5) = −1.585). The file is frozen and is not edited.
+c. "Classical" needs a caveat. The constant 3.3643175781… and its attribution to Kershner are cited from tables
+   and titles; nobody in this project has read Kershner's papers or Finch's account. A referee confirmed that the
+   tabulated constant is the maximum of A at the same maximiser (w = 2.2974396). Whether the classical theorem is
+   stated for the class of VC2-S (an increment condition on f′, no second derivative, f′ possibly unbounded at the
+   ends) is not known to the lead; for that class the evidence is the lead's proof on paper, refereed once. "The
+   largest modulus of a Fresnel partial integral" should read: the largest modulus of the two-sided integral
+   ∫_{−c}^{c} e^{ix²/2} dx, which is twice the largest modulus of ∫_0^c e^{iu²/2} du. That the supremum over all c is
+   reached with w = c²/2 ≤ π was certified by a referee for w ≤ 400 only; the paper proof covers all w.
+d. Superfluous hypotheses and notation. Continuity of f at the end points is not needed in VC2-S (the integral does
+   not see f(a), f(b)); it is kept, so a convex phase that tends to +∞ at an end point is excluded. `0 ≤ w` in VC2-A
+   and the lower end of the range in VC2-N are superfluous under Lean's convention √x = 0 for x < 0 (both sides are
+   0); numerically the upper end is too (A ≤ 3.3643… on [0, 60]). The letter A denotes the profile here and the
+   amplitude norm A(ψ; a, b) of S1 in VC2-K. VC2-K is written with μ^{−1/2} (the shape of S1.k) where S1.2 has 1/√μ;
+   they are equal for μ > 0.
+e. Certified by a referee in ball arithmetic (branch and bound over [0, π], 595 cells), outside Lean: the maximum
+   of A on [0, π] lies in [3.364317578155899106067713, 3.364317578155899106067763], at w in
+   [2.297439573597, 2.297439573620]; so VC2-N holds with a margin of at least 0.1356. Evidence, not a proof.
+f. The sanity layer after the reviews: `OscInt/Front/SecondDerivSharpSanity2.lean`,
+   `docs/replay/2026-11-17-VC2-sanity-plants-second.txt`. Second run, 18 planted mutations: 12 refuted by compiled
+   witnesses (four mutations of the exponent of λ or μ, the constant 67/20 in VC2-N and VC2-K, five hypotheses, one
+   mutation of the amplitude norm), 2 true weakenings (the statements for exact parabolas only), 4 not detected (the
+   range of w in VC2-S from below; f′ in place of f in the exponential; the integrand of VC2-A; the weight of ∫|ψ′|).
+g. Added 2026-11-19 after the post-proof reviews (`review/2026-11-19-VC2-post-proof-answers.md`); the text above is
+   unchanged. (1) "The layer proves no upper bound" (item 6, and the pre-proof answers) is not exact: the first
+   sanity layer proves A(1/2) ≤ 1 and the instance w = 1/2 of VC2-A, and eight witness files of the two plant runs
+   prove A(w) ≤ 26/5 for every w ≤ π; all are older than the stamp and none is used by the proofs. (2) The
+   pre-proof answers say that after a proof of VC2-N the gap of the undetected mutation "range of w in VC2-S cut
+   to [0, 441/200]" closes by itself. It does not: a refutation needs A ≤ c on that range for some c below about
+   3.358, and the proved bound is 7/2. What the proofs settle is that the frozen statements are theorems. (3) No
+   plant mutated the definition of the profile A. Post-proof referee C found one that both sanity layers accept up
+   to a script-only error (the factor 2 replaced by 41/20); it keeps VC2-S and VC2-N true and makes VC2-A false,
+   and the proof of VC2-A rejects it. (4) In the second plant summary, case X1, the value 0.0173 should read
+   0.0167 (2 sin(21)/100); the verdict does not change. (5) The decimal 3.3643… is not a theorem of the library
+   (in Lean: 335007/100000 ≤ A(441/200) and A ≤ 7/2 on [0, π]).
+h. Added 2026-11-19 after an external review (`review/2026-11-19-VC2-external-review-answers.md`); the text above is
+   unchanged. (1) Item 6, "7/2 is within 6 % of a value of A": the denominator matters. Measured against the
+   certified lower bound 33/10 the excess is 2/33 = 6.06 %; measured against 7/2 it is 2/35 = 5.7 %; with the
+   stronger certified lower bound 335007/100000 of the second sanity layer it is below 6 % either way. (2) What the
+   four statements say together, in one place: VC2-A is a one-sided projection inequality, A(w) ≤ |F(w)| for the
+   symmetric Fresnel integral F(w), not an equality for each w; that the constant max A of VC2-S is attained follows
+   from VC2-S, VC2-A and the compactness of [0, π] together (at a maximiser w*, max A = A(w*) ≤ |F(w*)| ≤ max A),
+   and this corollary is not a Lean statement of the batch; VC2-K has the constant 7/2, which is not sharp.
+   (3) Observed by the external reviewer and not statements of the batch: continuity of f at the end points is
+   not needed in VC2-S (trim the interval and pass to the limit), and A(w) ≤ 7/2 holds for every real w (apply
+   VC2-S and VC2-A to the quadratic phase).
+
+## Batch HW: the Hadamard walk on the line, an explicit t^{−1/3} bound (session 13, 2026-11-16)
+
+Order. As batch FR: statements, `OscInt/Statements/HadamardWalk.lean`, sanity theorems with planted controls
+(`OscInt/Front/HadamardWalkSanity.lean`, record under `docs/replay/plants/2026-11-16-HW/`), challenge
+`Challenge/HadamardWalk.lean` and `comparator-HW.json`, frozen and stamped before the blind pre-proof reviews. No Lean
+proof of these statements is in the repository history before the stamp of the review answers. A proof plan on paper
+does predate the freeze, and the constants of HW-K and HW-D are the constants of that plan rounded up: the plan is the
+paragraph "Route" below, written by the lead while drafting. The sanity layer and the plants were written by an agent
+of the lead under a brief that forbids proving the statements, against the draft text; the namespace body of that text
+entered the repository unchanged (the lead removed a copyright header, which statement files do not carry, and
+changed the module comment; SHA-256 of the statement file 2d18f64ff8426c7521542ae0f9d4ba2a5c0dec2dc9e5dd946ef507784c67b319,
+of the draft the agent received 068de485c7c41692cbf0a25a9286c7f01ca58b91dbd72885e4126bf39458d7b9).
+
+Why. `docs/design/unlock-map.md` (row F1 and the applications table) records a statement that algorithm papers quote
+and no paper in the sweep proves with a constant: the amplitudes of the Hadamard walk on the line decay like t^{−1/3},
+so the largest probability at a site decays like t^{−2/3}. Nayak and Vishwanath (arXiv:quant-ph/0010117) give the rate
+with sketched proofs; Sunada and Tate (arXiv:1108.1878) prove Airy asymptotics with implicit constants; Maeda, Sasaki,
+Segawa, Suzuki and Suzuki (arXiv:1808.05714, section 3) state the dispersive estimate for a constant coin as "a direct
+consequence of van der Corput lemma", splitting where the second or the third derivative of the dispersion relation is
+bounded below, with an implicit constant. This batch is that classical argument with every constant written out, for
+the Hadamard coin, as a statement about the walk as it is defined on the lattice (no Fourier transform in the
+definition of the walk). The mathematics is known; the claim, if proved, is "machine-checked, explicit constants",
+not new mathematics. Prior art for the explicit constant (`docs/prior_art.md`, section on batch HW; a logged sweep of
+12 queries, `numerics/results-hw-prior-art-search-2026-11-16.txt`): no explicit constant for this bound was found;
+PLAUSIBLE-not-in-print, and nothing rests on it.
+
+Notation. A state is ψ : ℤ → ℂ², ψ(x) = (ψ₁(x), ψ₂(x)). One step of the walk (Lean `hadamardStep`):
+
+  (Uψ)(x) = ( (ψ₁(x + 1) + ψ₂(x + 1))/√2 , (ψ₁(x − 1) − ψ₂(x − 1))/√2 ),
+
+that is: the coin H = [[1, 1], [1, −1]]/√2 at every site, then the first component moves one site to the left and the
+second one site to the right. ψ_t = U^t ψ₀ (Lean `hadamardWalk ψ₀ t`); δ_{a,b} is the state (a, b) at the origin and 0
+elsewhere (Lean `pointState a b`). ω(k) = arcsin(sin k/√2) (Lean `hadamardDispersion`); at quasi-momentum k the step
+has the eigenvalues e^{−iω(k)} and −e^{iω(k)}. The scalar kernel (Lean `hadamardKernel t x`), for t ∈ ℕ and x ∈ ℤ:
+
+  K(t, x) = (2π)^{−1} ∫_{−π}^{π} (e^{−itω(k)} − (−1)^t e^{itω(k)}) / √(2(1 + cos² k)) · e^{−ixk} dk.
+
+**HW-R (the walk in terms of the kernel).** For all complex a, b, every t ≥ 0 and every site x:
+U^{t+1} δ_{a,b} (x) = ( (a + b)/√2 · K(t + 1, x + 1) + a K(t, x) , (a − b)/√2 · K(t + 1, x − 1) + b K(t, x) ).
+
+**HW-K (the kernel bound).** For every t ≥ 1 and every site x: |K(t, x)| ≤ 7 t^{−1/2} + 12 t^{−1/3}.
+
+**HW-D (decay from a point state).** For all complex a, b, every t ≥ 1 and every site x, each component of
+U^t δ_{a,b} (x) has modulus at most 39 (|a| + |b|) t^{−1/3}.
+
+**HW-L (dispersive estimate, ℓ¹ → ℓ^∞).** For every ψ₀ with finite support, every t ≥ 1 and every site x, each
+component of U^t ψ₀ (x) has modulus at most 39 t^{−1/3} Σ_y (|ψ₀,₁(y)| + |ψ₀,₂(y)|).
+
+Route (for the reviewers' orientation only; no Lean proof exists when this is frozen).
+HW-R: in Fourier variables the step is multiplication by the matrix Û(k) = [[e^{−ik}, e^{−ik}], [e^{ik}, −e^{ik}]]/√2,
+of trace τ = −i√2 sin k and determinant −1, so Û² = τÛ + 1 and Û^t = α_t Û + α_{t−1} with α_0 = 0, α_1 = 1,
+α_{t+1} = τ α_t + α_{t−1}; α_t = (λ₊^t − λ₋^t)/(λ₊ − λ₋) with λ₊ = e^{−iω}, λ₋ = −e^{iω}, λ₊ − λ₋ = 2 cos ω =
+√(2(1 + cos² k)). K(t, ·) is the sequence of Fourier coefficients of α_t. In Lean the plan is an induction on t on
+the lattice: K(0, x) = 0, K(1, x) = δ_{x,0}, K(t + 2, x) = (K(t + 1, x + 1) − K(t + 1, x − 1))/√2 + K(t, x) (the
+recursion of α under the integral), and the same three facts for the walk.
+HW-K: K(t, x) is 0 when t + x is even and otherwise π^{−1} ∫ g(k) e^{−i(tω(k) + xk)} dk over a period, with
+g = 1/√(2(1 + cos² k)); both exponentials are bounded the same way. ω′ = cos k (1 + cos² k)^{−1/2},
+ω″ = −sin k (1 + cos² k)^{−3/2}, ω‴ = −cos k (4 − 2cos² k)(1 + cos² k)^{−5/2}. Split a period into four arcs of
+length π/2. Where |sin k| ≥ 1/√2: |ω″| ≥ 2/(3√3), and S1.k with k = 2 gives 8 (2t/(3√3))^{−1/2} A with
+A = |g(end)| + ∫|g′| = √2 − 1/√3. Where |cos k| ≥ 1/√2: |ω‴| ≥ 2^{−3/2}, and S1.k with k = 3 gives
+18 (2^{−3/2} t)^{−1/3} A with A = √3 − 1. Two arcs of each kind, two exponentials, divided by 2π:
+6.8700 t^{−1/2} + 11.8634 t^{−1/3} (`numerics/results-hw-statement-checks-2026-11-16.txt`), rounded up to 7 and 12.
+HW-D: from HW-R and HW-K; for t ≥ 2, (t − 1)^{−1/3} ≤ 2^{1/3} t^{−1/3} and t^{−1/2} ≤ t^{−1/3}, which gives the constant
+(7 + 12)/√2 + 7√2 + 12·2^{1/3} = 38.4536 ≤ 39; t = 1 directly. HW-L: linearity and translation invariance of the step.
+
+Modelling choices and omissions.
+1. The Hadamard coin only, and one handedness (first component to the left). Other coins have the same structure
+   with another dispersion relation; not stated.
+2. Time is a natural number and the site an integer; t^{−1/2}, t^{−1/3} are real powers of the cast. At t = 0 Lean's
+   0^{−1/3} is 0 and the bounds HW-D, HW-L would be false: the hypothesis t ≥ 1 carries content there. In HW-K it does
+   not (K(0, ·) = 0); it is kept for uniformity.
+3. The constants are not sharp, by a wide margin, and the statements do not say otherwise. Numerically (exact
+   recursion, t ≤ 3000) sup_x |K(t, x)| t^{1/3} stays below 1.0 (0.955 at t = 3000) against 12, and the largest
+   component from a point state with |a| + |b| = 1 is about 1.61 t^{−1/3} against 39 t^{−1/3}. The right side of HW-K is
+   below 1 (the value of |K(1, 0)|) only from t = 2674, and the right side of HW-D is below |a| + |b| only for
+   t > 39³ = 59319.
+   The loss is in the constants 8 and 18 of S1.k, in counting every arc at its worst, and in the amplitude norm. A
+   bound within a small factor of the truth needs the method of batch LE2 (as T0E′ improved T0E); not done here.
+4. Only an upper bound. That the rate t^{−1/3} is attained (a lower bound near x = ±t/√2) is not stated.
+5. HW-L is for finite support; the extension to ℓ¹ is a limit argument, not stated.
+6. Unitarity of the step (conservation of Σ_x |ψ(x)|²) is not a statement of the batch; it is checked numerically
+   only (item 7).
+7. Numerical truth checks by the lead before the freeze, two methods that share no formula (the step recursion on
+   the lattice against the kernel integral of the definition by the trapezoidal rule, itself checked against adaptive
+   quadrature): `numerics/review/hw_statement_checks.py`, results
+   `numerics/results-hw-statement-checks-2026-11-16.txt`, 18 lines, all pass; two altered forms of HW-R (shifts
+   exchanged; the sign of b) are rejected. Floating point, not certified: tooling, not evidence.
+8. The sanity layer: `docs/replay/2026-11-16-HW-sanity-plants.txt`. 76 declarations, 14 through a statement constant.
+   Exact data at t ≤ 2 only: the walk after one and two steps from a point state at every site; K(0, ·) = 0,
+   K(1, ·) = δ, K(2, ∓1) = ±1/√2; the identities of the dispersion relation. HW-R is tested at t = 0 and t = 1 at
+   every site (this pins the handedness, the coin signs, the sign of x and the normalisation of the kernel).
+   23 planted mutations: 19 are refuted by compiled witnesses (all eleven of HW-R, including the three mutations of
+   the kernel and one of the dispersion relation); 1 is a true weakening (HW-K without t ≥ 1, see choice 2); 3 are
+   not detected: HW-K with 19 t^{−1/2}, HW-K with 7 t^{−1/2} alone, HW-D with 39 t^{−1}. No datum lies where a bound
+   beats the trivial one, so the constants 7, 12, 39 are tested only against 1, 1/√2 and 1/2, and the exponents rest
+   on the reviews and on the proof. Found by the sanity agent with exact integer arithmetic, outside Lean: the
+   mutation of HW-D with 39/t first fails at t = 126 (first component at x = −86 from the state (1, 0):
+   2857838189219694731/2⁶³ ≈ 0.30985 against 39/126 ≈ 0.30952).
+
+Clarifications added after the freeze of batch HW (2026-11-17, from the blind pre-proof reviews; the stamped text
+above and the Lean file are unchanged; `review/2026-11-17-HW-pre-proof-answers.md`).
+a. Item 8 overstated the first sanity layer: its data at t ≤ 1 pin the sign of x in the definition of the kernel and
+   in the first summand of HW-R, not in the summands a K(t, x) and b K(t, x) (K(0, ·) and K(1, ·) are even). The second
+   layer (`OscInt/Front/HadamardWalkSanity2.lean`, `docs/replay/2026-11-17-HW-sanity-plants-second.txt`) has the walk
+   after three steps, K(3, ·) = 1/2 at ±2, K(5, ·) = 1/4, 1/2, −1/2, 1/2, 1/4 at −4, −2, 0, 2, 4, and HW-R at t = 2. Second
+   run, 9 planted mutations: 6 refuted by compiled witnesses (the sign of x in each of the two summands; 39 ↦ 1 in
+   HW-D and HW-L; (7, 12) ↦ (1, 0) in HW-K; the support hypothesis on one component), 2 not detected (an exponent
+   mutation of HW-L; the product of the two terms of HW-K), 1 with no known violation (item f).
+b. The numbers of modelling choice 3, corrected and completed by the referees: sup_x |K(t, x)| t^{1/3} equals 1 at
+   t = 1 (K(1, 0) = 1) and is below 1 from t = 2 (largest value 0.9637, at t = 6; 0.9547 at t = 3000; about 0.9544
+   asymptotically). The largest component from the state (1, 0) is 1.6113 t^{−1/3} at t = 3000, 1.6208 t^{−1/3} at most
+   for t ≤ 3000, and about 1.6293 t^{−1/3} asymptotically. So the constants of HW-K and HW-D are about 12.6 and 23.9
+   times the attained values. HW-K is implied by the trivial bound for t ≤ 1679, and HW-D and HW-L by conservation of
+   the ℓ² norm for t ≤ 59319.
+c. The literature locator. In arXiv:1808.05714 the sentence quoted is in Section 3 of version 1 (before Proposition
+   3.12) and in Section 4 of version 3 (before Proposition 4.12). That paper states the estimate for a constant coin
+   with an implicit constant, says it is also proved in two other papers, and credits Sunada and Tate
+   (arXiv:1108.1878); "Airy asymptotics" above undersells that paper. Its conventions differ from this batch: the
+   Euclidean norm on ℂ² and the opposite handedness.
+d. Norms. HW-D and HW-L bound each component of ψ_t(x) (the maximum norm on ℂ²) by the ℓ¹ sum of |ψ₁| + |ψ₂|. With the
+   Euclidean norm on ℂ² on both sides the same statements give the constant 39·2 = 78 (a factor √2 on each side).
+e. The eigenvalue remark of the Notation ("at quasi-momentum k the step has the eigenvalues e^{−iω(k)} and −e^{iω(k)}")
+   is for plane waves v e^{−ikx}, the convention of the kernel. In the Route, 6.8700 should read 6.8699 (6.86990…),
+   and the derivation of HW-D also uses (t − 1)^{−1/2} ≤ √2 t^{−1/2} for t ≥ 2.
+f. CONJECTURED, not a statement of this batch: |K(t, x)| ≤ t^{−1/3} for every t ≥ 1 and every site x. Evidence:
+   floating-point evaluation of the exact recursion at every site for t ≤ 9000 (largest value of
+   sup_x |K| t^{1/3} for t ≥ 2: 0.9637) and on a grid of times up to 1.6·10⁷ (two referees and a sanity agent,
+   independently). What would falsify it: one pair (t, x) with |K(t, x)| t^{1/3} > 1. The route of this batch gives
+   7 t^{−1/2} + 12 t^{−1/3} and cannot reach it.
+g. Added 2026-11-17 after the post-proof reviews (`review/2026-11-17-HW-post-proof-answers.md`); the text above is
+   unchanged. In item 8 and in the plant summary, "HW-K without t ≥ 1" is called a true weakening: dropping a
+   hypothesis strengthens a statement, and here the result is equivalent to HW-K (at t = 0 both sides are 0 in Lean,
+   as the plant summary says); "true and equivalent" is the accurate word. In clarification f, "independently" means: by separate AI agents of one model family, each with
+   its own code, on one machine; not by independent people. HW-L is stated for finitely supported initial states.
+h. Corrections after the external review of batch HW (2026-11-19, `review/2026-11-19-HW-external-review-answers.md`).
+   (1) Clarification b, "1.6208 t^{−1/3} at most for t ≤ 3000", was the maximum rounded down and written as a bound.
+   Exact integer arithmetic (`numerics/review/hw_exact_max_checks.py`, result
+   `numerics/results-hw-exact-max-checks-2026-11-19.txt`): the largest component from the state (1, 0) exceeds
+   1.6208 t^{−1/3} at t = 2990 and t = 2997 and at no other t ≤ 3000; the maximum is 1.620846… at t = 2997,
+   x = −2111, above 1.62084 t^{−1/3} and below 1.62085 t^{−1/3}. (2) The header of the second sanity file said "the
+   first layer tested 39 against 1/2 only"; the first layer has HW-D at t = 1 (1/√2) and t = 2 (1/2), where the
+   constant 1 also holds. Corrected in the file. (3) In the pre-proof answers, "no exact datum can detect a wrong
+   exponent" is too broad: 39/t fails exactly at t = 126 (recorded in the same file). What the finding supports is
+   narrower: because the constants are 12 to 24 times the attained values, an exponent mutation that keeps the
+   bound above the attained values at the times an exact datum reaches is not refuted by such a datum (the
+   recorded cases: the exponent mutation of HW-L, and HW-K with the product of its two terms, first false near
+   t = 7749). (4) The header of `numerics/review/hw_statement_checks.py` announced exact integer-pair arithmetic
+   that the script never had, and its comparison of the trapezoidal rule with adaptive quadrature had one nonzero
+   value among ten; the header is corrected and six points with nonzero values are added. The statement file is
+   unchanged.

@@ -231,3 +231,4 @@ rep("T2 thresholds with constants 8/18/38 are 2547/16483/61047; with the hand co
     orig == (2547, 16483, 61047), with_6=alt)
 
 print("RESULT", "PASS" if all(res.values()) else "FAIL", f"{sum(res.values())}/{len(res)}")
+sys.exit(0 if all(res.values()) else 1)   # a failed check must fail the process (external review of VC2, 2026-11-19)

@@ -1,0 +1,31 @@
+import OscInt.Front.PeriodicAnalyticSanity
+
+namespace OscInt.API.PeriodicAnalyticSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+
+def P_FourierCoeffStripStatement : Prop :=
+  ∀ (v : ℂ → ℂ) (a M : ℝ) (k : ℤ), 0 < a → PeriodicAnalyticOn v a M →
+    ‖∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ) * Complex.exp (↑(-((k : ℝ) * θ)) * Complex.I)‖ ≤
+      Real.pi * M * Real.exp (-(a * |(k : ℝ)|))
+
+theorem witness_not_FourierCoeffStripStatement : ¬ P_FourierCoeffStripStatement :=
+  by
+  intro h
+  have h1 := h expDatum 5 (Real.sqrt 13 * Real.exp 5 + 5) 1 (by norm_num)
+    (expDatum_periodicAnalyticOn 5 (by norm_num))
+  rw [integral_expDatum_one,
+    show 2 * (Real.pi : ℂ) * (2 + 3 * Complex.I) = 2 * (2 + 3 * Complex.I) * (Real.pi : ℂ) by ring,
+    norm_mul_pi, norm_mul, norm_two_add_three_I, Complex.norm_ofNat, Int.cast_one, abs_one, mul_one] at h1
+  have hy : Real.exp (-5) * Real.exp 5 = 1 := by rw [← Real.exp_add]; norm_num
+  have he : (6 : ℝ) ≤ Real.exp 5 := by linarith [Real.add_one_le_exp (5 : ℝ)]
+  have hy0 := Real.exp_pos (-5)
+  have hy6 : Real.exp (-5) ≤ 1 / 6 := by nlinarith
+  have hs : (3 : ℝ) ≤ Real.sqrt 13 := Real.le_sqrt_of_sq_le (by norm_num)
+  have hpi := Real.pi_pos
+  have h2 : Real.pi * (Real.sqrt 13 * Real.exp 5 + 5) * Real.exp (-5) =
+      Real.pi * Real.sqrt 13 + 5 * Real.pi * Real.exp (-5) := by linear_combination (Real.pi * Real.sqrt 13) * hy
+  rw [h2] at h1
+  nlinarith [mul_le_mul_of_nonneg_left hs hpi.le, mul_le_mul_of_nonneg_left hy6 hpi.le]
+
+end OscInt.API.PeriodicAnalyticSanity

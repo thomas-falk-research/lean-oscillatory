@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Route: batch LS (LS-E, LS-K, LS-D, LS-D′)
 
 Lead, session 10, after the pre-proof reviews were answered (`review/2026-11-12-LS-pre-proof-answers.md`).

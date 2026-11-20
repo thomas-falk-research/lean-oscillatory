@@ -1,0 +1,52 @@
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/pa2/plants/final/plant-PA-C-h.lean:16:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (θ : ℝ) in 0..2 * Real.pi, cos3 ↑θ * Complex.exp (↑(-(↑3 * θ)) * Complex.I)
+in the target expression
+  ‖∫ (θ : ℝ) in 0..2 * Real.pi, cos3 ↑θ * Complex.exp (↑(-(3 * θ)) * Complex.I)‖ ≤
+    2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * |3|))
+
+h : P_FourierCoeffStripStatement
+a : ℝ
+ha : 0 < a
+h1 :
+  ‖∫ (θ : ℝ) in 0..2 * Real.pi, cos3 ↑θ * Complex.exp (↑(-(3 * θ)) * Complex.I)‖ ≤
+    2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * |3|))
+⊢ 7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * 3))
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/pa2/plants/final/plant-PA-C-h.lean:22:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (θ : ℝ) in 0..2 * Real.pi, cos3 ↑θ * Complex.exp (↑(-(↑(-3) * θ)) * Complex.I)
+in the target expression
+  ‖∫ (θ : ℝ) in 0..2 * Real.pi, cos3 ↑θ * Complex.exp (↑(-(-3 * θ)) * Complex.I)‖ ≤
+    2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * |(-3)|))
+
+h : P_FourierCoeffStripStatement
+a : ℝ
+ha : 0 < a
+h1 :
+  ‖∫ (θ : ℝ) in 0..2 * Real.pi, cos3 ↑θ * Complex.exp (↑(-(-3 * θ)) * Complex.I)‖ ≤
+    2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * |(-3)|))
+⊢ 7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * 3))
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/pa2/plants/final/plant-PA-C-h.lean:29:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (θ : ℝ) in 0..2 * Real.pi, expDatum ↑θ * Complex.exp (↑(-(↑1 * θ)) * Complex.I)
+in the target expression
+  ‖∫ (θ : ℝ) in 0..2 * Real.pi, expDatum ↑θ * Complex.exp (↑(-(1 * θ)) * Complex.I)‖ ≤
+    2 * Real.pi * (√13 * Real.exp a + 5) * Real.exp (-(a * |1|))
+
+h : P_FourierCoeffStripStatement
+a : ℝ
+ha : 0 < a
+h1 :
+  ‖∫ (θ : ℝ) in 0..2 * Real.pi, expDatum ↑θ * Complex.exp (↑(-(1 * θ)) * Complex.I)‖ ≤
+    2 * Real.pi * (√13 * Real.exp a + 5) * Real.exp (-(a * |1|))
+⊢ 2 * Real.pi * √13 ≤ 2 * Real.pi * (√13 * Real.exp a + 5) * Real.exp (-(a * 1))
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/pa2/plants/final/plant-PA-C-h.lean:37:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (θ : ℝ) in 0..2 * Real.pi, expDatum ↑θ * Complex.exp (↑(-(↑0 * θ)) * Complex.I)
+in the target expression
+  ‖∫ (θ : ℝ) in 0..2 * Real.pi, expDatum ↑θ * Complex.exp (↑(-(0 * θ)) * Complex.I)‖ ≤
+    2 * Real.pi * (√13 * Real.exp a + 5) * Real.exp (-(a * |0|))
+
+h : P_FourierCoeffStripStatement
+a : ℝ
+ha : 0 < a
+h1 :
+  ‖∫ (θ : ℝ) in 0..2 * Real.pi, expDatum ↑θ * Complex.exp (↑(-(0 * θ)) * Complex.I)‖ ≤
+    2 * Real.pi * (√13 * Real.exp a + 5) * Real.exp (-(a * |0|))
+⊢ 10 * Real.pi ≤ 2 * Real.pi * (√13 * Real.exp a + 5) * Real.exp (-(a * 0))

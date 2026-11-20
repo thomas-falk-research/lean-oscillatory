@@ -1,0 +1,84 @@
+Differential test, third run (2026-11-16): Python oscint_cert 0.2.1 against Rust oscint-cert 0.2.0, both at revision 3 of
+docs/contract/certificate-v0.md. Script python/tests/differential.py, fixed seed 20261116; statement list
+stamps/statements.json with SHA-256 adc4c216fb3aab1f407f7cefa922645151ca867515e6227706c629112a33c76a (71 statements, all with proved_by).
+Run by the lead in scratch; the Rust binary was built with cargo build --release --locked from the crate as committed with this record.
+
+corpus: 1463 certificates
+  python CERTIFIED   rust CERTIFIED  : 339
+  python REJECTED    rust REJECTED   : 1107
+  python UNRESOLVED  rust UNRESOLVED : 17
+disagreements: 0
+disagreements in which exactly one side says CERTIFIED: 0
+verdict-shape defects (exit code, key set, certificate hash, list hash, pin flag): 0
+revision-3 cases:
+    c1429 raw-null: python REJECTED, rust REJECTED
+    c1430 raw-number: python REJECTED, rust REJECTED
+    c1431 raw-string: python REJECTED, rust REJECTED
+    c1432 raw-not-utf8: python REJECTED, rust REJECTED
+    c1433 raw-latin1-in-producer: python REJECTED, rust REJECTED
+    c1434 numeral-x-100-chars: python CERTIFIED, rust CERTIFIED
+    c1435 numeral-t-100-chars: python CERTIFIED, rust CERTIFIED
+    c1436 numeral-envelope-t-100-chars: python CERTIFIED, rust CERTIFIED
+    c1437 numeral-vdc-a-100-chars: python CERTIFIED, rust CERTIFIED
+    c1438 numeral-vdc-b-100-chars: python CERTIFIED, rust CERTIFIED
+    c1439 numeral-vdc-mu-100-chars: python CERTIFIED, rust CERTIFIED
+    c1440 numeral-vdc-t-100-chars: python CERTIFIED, rust CERTIFIED
+    c1441 numeral-x-101-chars: python UNRESOLVED, rust UNRESOLVED
+    c1442 numeral-t-101-chars: python UNRESOLVED, rust UNRESOLVED
+    c1443 numeral-envelope-t-101-chars: python UNRESOLVED, rust UNRESOLVED
+    c1444 numeral-vdc-a-101-chars: python UNRESOLVED, rust UNRESOLVED
+    c1445 numeral-vdc-b-101-chars: python UNRESOLVED, rust UNRESOLVED
+    c1446 numeral-vdc-mu-101-chars: python UNRESOLVED, rust UNRESOLVED
+    c1447 numeral-vdc-t-101-chars: python UNRESOLVED, rust UNRESOLVED
+    c1448 numeral-amp-101-chars: python CERTIFIED, rust CERTIFIED
+    c1449 numeral-amp-4000-chars: python CERTIFIED, rust CERTIFIED
+    c1450 numeral-amp-4001-chars: python UNRESOLVED, rust UNRESOLVED
+    c1451 tiny-mu-claim-false: python REJECTED, rust REJECTED
+    c1452 tiny-mu-claim-true: python CERTIFIED, rust CERTIFIED
+    c1453 tiny-t-envelope-is-one: python CERTIFIED, rust CERTIFIED
+    c1454 tiny-t-envelope-false: python REJECTED, rust REJECTED
+    c1455 huge-t-envelope: python CERTIFIED, rust CERTIFIED
+    c1456 fail-on-long-interval: python REJECTED, rust REJECTED
+    c1457 fail-on-long-interval-2: python REJECTED, rust REJECTED
+    c1458 phase-64-terms: python REJECTED, rust REJECTED
+    c1459 phase-65-terms: python UNRESOLVED, rust UNRESOLVED
+    c1460 bessel-large-order: python CERTIFIED, rust CERTIFIED
+    c1461 bessel-order-10001: python UNRESOLVED, rust UNRESOLVED
+    c1462 bessel-x-400: python CERTIFIED, rust CERTIFIED
+command-line cases: 22
+    statement list: bare-array: expected exit 3; python ok; rust ok
+    statement list: empty-object: expected exit 3; python ok; rust ok
+    statement list: no-statements-key: expected exit 3; python ok; rust ok
+    statement list: wrong-format: expected exit 3; python ok; rust ok
+    statement list: duplicate-label: expected exit 3; python ok; rust ok
+    statement list: entry-without-commitment: expected exit 3; python ok; rust ok
+    statement list: entry-with-empty-name: expected exit 3; python ok; rust ok
+    statement list: not-json: expected exit 3; python ok; rust ok
+    statement list: duplicate-key: expected exit 3; python ok; rust ok
+    statement list: not UTF-8: expected exit 3; python ok; rust ok
+    pin: match: expected exit 0; python ok; rust ok
+    pin: match, upper case: expected exit 0; python ok; rust ok
+    pin: mismatch: expected exit 3; python ok; rust ok
+    no subcommand: expected exit 3; python ok; rust ok
+    check without --statements: expected exit 3; python ok; rust ok
+    missing certificate file: expected exit 3; python ok; rust ok
+    missing statement list: expected exit 3; python ok; rust ok
+    make: unknown kind: expected exit 3; python ok; rust ok
+    make: hypothesis fails: expected exit 3; python ok; rust ok
+    make: hypothesis undecided: expected exit 3; python ok; rust ok
+    make: beyond the range: expected exit 3; python ok; rust ok
+    make: outside the statement: expected exit 3; python ok; rust ok
+command-line cases not as specified: 0
+    made by python, checked by rust, lattice-envelope: CERTIFIED
+    made by rust, checked by python, lattice-envelope: CERTIFIED
+    made by python, checked by rust, lattice-population: CERTIFIED
+    made by rust, checked by python, lattice-population: CERTIFIED
+    made by python, checked by rust, bessel-j: CERTIFIED
+    made by rust, checked by python, bessel-j: CERTIFIED
+    made by python, checked by rust, vdc-hypothesis: CERTIFIED
+    made by rust, checked by python, vdc-hypothesis: CERTIFIED
+cross make/check not CERTIFIED: 0
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

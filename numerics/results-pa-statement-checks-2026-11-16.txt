@@ -1,0 +1,14 @@
+# numerics/review/pa_statement_checks.py, run 2026-11-16T12:15:11Z (python-flint from a scratch virtual environment)
+# sha256 of the script: c6ecc38265b831b32e8bad34c67a43434bb1461a4413268c8985e5e8fe80202d
+PA-C: 195 comparisons, largest ratio lhs/rhs 1.000000
+PA-T: 105 comparisons, largest ratio lhs/rhs 0.999877
+C1 PA-T with 2 pi: fails as required
+C2 PA-T with e^{2aN}: fails as required
+C3 PA-C with pi: fails as required
+C4 PA-C with e^{-2a|k|}: fails as required
+python 3.13.18, python-flint 0.9.0, FLINT 3.6.0, 200 bits
+RESULT: PASS
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

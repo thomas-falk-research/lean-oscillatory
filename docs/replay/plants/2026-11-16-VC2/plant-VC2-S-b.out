@@ -1,0 +1,132 @@
+plant-VC2-S-b.lean:290:4: error: Application type mismatch: The argument
+  quad_hasDerivOn ?m.95 ?m.96
+has type
+  HasDerivOn (fun x => x ^ 2 / 2) (fun x => x) ?m.95 ?m.96
+but is expected to have type
+  DerivIncreasesAtRate (fun x => x) (-c) c 1
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) (-c) c 1 ?m.87 ?m.94 (quad_hasDerivOn ?m.95 ?m.96)
+plant-VC2-S-b.lean:289:84: error: Application type mismatch: The argument
+  one_pos
+has type
+  0 < 1
+but is expected to have type
+  HasDerivOn (fun x => x ^ 2 / 2) (fun x => x) (-c) c
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) (-c) c 1
+    (le_of_not_gt fun a =>
+      Mathlib.Tactic.Linarith.lt_irrefl
+        (Eq.mp
+          (congrArg (fun _a => _a < 0)
+            (Mathlib.Tactic.Ring.of_eq
+              (Mathlib.Tactic.Ring.Common.add_congr
+                (Mathlib.Tactic.Ring.Common.mul_congr
+                  (Mathlib.Tactic.Ring.cast_pos (Mathlib.Meta.NormNum.isNat_ofNat ℝ (Eq.refl 2)))
+                  (Mathlib.Tactic.Ring.Common.sub_congr
+                    (Mathlib.Tactic.Ring.cast_zero (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_zero))
+                    (Mathlib.Tactic.Ring.Common.atom_pf c rfl
+                      (Eq.mpr
+                        (id
+                          (congrArg (fun _a => c ^ Nat.rawCast 1 * Nat.rawCast 1 = c ^ Nat.rawCast 1 * _a)
+                            (Eq.symm rfl)))
+                        (Eq.refl (c ^ Nat.rawCast 1 * Nat.rawCast 1))))
+                    (Mathlib.Tactic.Ring.Common.sub_pf
+                      (Mathlib.Tactic.Ring.Common.neg_add
+                        (Mathlib.Tactic.Ring.Common.neg_mul c (Nat.rawCast 1)
+                          (Mathlib.Meta.NormNum.IsInt.to_raw_eq
+                            (Mathlib.Meta.NormNum.isInt_neg (Eq.refl Neg.neg)
+                              (Mathlib.Meta.NormNum.IsNat.to_isInt (Mathlib.Meta.NormNum.IsNat.of_raw ℝ 1))
+                              (Eq.refl (Int.negOfNat 1)))))
+                        Mathlib.Tactic.Ring.Common.neg_zero)
+                      (Mathlib.Tactic.Ring.Common.add_pf_zero_add (c ^ Nat.rawCast 1 * (Int.negOfNat 1).rawCast + 0))))
+                  (Mathlib.Tactic.Ring.Common.add_mul
+                    (Mathlib.Tactic.Ring.Common.mul_add
+                      (Mathlib.Tactic.Ring.Common.mul_pf_right c (Nat.rawCast 1)
+                        (Mathlib.Meta.NormNum.IsInt.to_raw_eq
+                          (Mathlib.Meta.NormNum.isInt_mul (Eq.refl HMul.hMul)
+                            (Mathlib.Meta.NormNum.IsNat.to_isInt (Mathlib.Meta.NormNum.IsNat.of_raw ℝ 2))
+                            (Mathlib.Meta.NormNum.IsInt.of_raw ℝ (Int.negOfNat 1)) (Eq.refl (Int.negOfNat 2)))))
+                      (Mathlib.Tactic.Ring.Common.mul_zero (Nat.rawCast 2))
+                      (Mathlib.Tactic.Ring.Common.add_pf_add_zero (c ^ Nat.rawCast 1 * (Int.negOfNat 2).rawCast + 0)))
+                    (Mathlib.Tactic.Ring.Common.zero_mul (c ^ Nat.rawCast 1 * (Int.negOfNat 1).rawCast + 0))
+                    (Mathlib.Tactic.Ring.Common.add_pf_add_zero (c ^ Nat.rawCast 1 * (Int.negOfNat 2).rawCast + 0))))
+                (Mathlib.Tactic.Ring.Common.sub_congr
+                  (Mathlib.Tactic.Ring.Common.atom_pf c rfl
+                    (Eq.mpr
+                      (id
+                        (congrArg (fun _a => c ^ Nat.rawCast 1 * Nat.rawCast 1 = c ^ Nat.rawCast 1 * _a) (Eq.symm rfl)))
+                      (Eq.refl (c ^ Nat.rawCast 1 * Nat.rawCast 1))))
+                  (Mathlib.Tactic.Ring.Common.neg_congr
+                    (Mathlib.Tactic.Ring.Common.atom_pf c rfl
+                      (Eq.mpr
+                        (id
+                          (congrArg (fun _a => c ^ Nat.rawCast 1 * Nat.rawCast 1 = c ^ Nat.rawCast 1 * _a)
+                            (Eq.symm rfl)))
+                        (Eq.refl (c ^ Nat.rawCast 1 * Nat.rawCast 1))))
+                    (Mathlib.Tactic.Ring.Common.neg_add
+                      (Mathlib.Tactic.Ring.Common.neg_mul c (Nat.rawCast 1)
+                        (Mathlib.Meta.NormNum.IsInt.to_raw_eq
+                          (Mathlib.Meta.NormNum.isInt_neg (Eq.refl Neg.neg)
+                            (Mathlib.Meta.NormNum.IsNat.to_isInt (Mathlib.Meta.NormNum.IsNat.of_raw ℝ 1))
+                            (Eq.refl (Int.negOfNat 1)))))
+                      Mathlib.Tactic.Ring.Common.neg_zero))
+                  (Mathlib.Tactic.Ring.Common.sub_pf
+                    (Mathlib.Tactic.Ring.Common.neg_add
+                      (Mathlib.Tactic.Ring.Common.neg_mul c (Nat.rawCast 1)
+                        (Mathlib.Meta.NormNum.IsNat.to_raw_eq
+                          (Mathlib.Meta.NormNum.IsInt.to_isNat
+                            (Mathlib.Meta.NormNum.isInt_neg (Eq.refl Neg.neg)
+                              (Mathlib.Meta.NormNum.IsInt.of_raw ℝ (Int.negOfNat 1)) (Eq.refl (Int.ofNat 1))))))
+                      Mathlib.Tactic.Ring.Common.neg_zero)
+                    (Mathlib.Tactic.Ring.Common.add_pf_add_overlap
+                      (Mathlib.Tactic.Ring.Common.add_overlap_pf c (Nat.rawCast 1)
+                        (Mathlib.Meta.NormNum.IsNat.to_raw_eq
+                          (Mathlib.Meta.NormNum.isNat_add (Eq.refl HAdd.hAdd) (Mathlib.Meta.NormNum.IsNat.of_raw ℝ 1)
+                            (Mathlib.Meta.NormNum.IsNat.of_raw ℝ 1) (Eq.refl 2))))
+                      (Mathlib.Tactic.Ring.Common.add_pf_zero_add 0))))
+                (Mathlib.Tactic.Ring.Common.add_pf_add_overlap_zero
+                  (Mathlib.Tactic.Ring.Common.add_overlap_pf_zero c (Nat.rawCast 1)
+                    (Mathlib.Meta.NormNum.IsInt.to_isNat
+                      (Mathlib.Meta.NormNum.isInt_add (Eq.refl HAdd.hAdd)
+                        (Mathlib.Meta.NormNum.IsInt.of_raw ℝ (Int.negOfNat 2))
+                        (Mathlib.Meta.NormNum.IsNat.to_isInt (Mathlib.Meta.NormNum.IsNat.of_raw ℝ 2))
+                        (Eq.refl (Int.ofNat 0)))))
+                  (Mathlib.Tactic.Ring.Common.add_pf_zero_add 0)))
+              (Mathlib.Tactic.Ring.cast_zero (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_zero))))
+          (Mathlib.Tactic.Linarith.add_lt_of_le_of_neg
+            (Mathlib.Tactic.Linarith.mul_nonpos (Mathlib.Tactic.Linarith.sub_nonpos_of_le hc)
+              (Mathlib.Meta.NormNum.isNat_lt_true (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_zero)
+                (Mathlib.Meta.NormNum.isNat_ofNat ℝ (Eq.refl 2)) (Eq.refl false)))
+            (Mathlib.Tactic.Linarith.sub_neg_of_lt a))))
+    one_pos
+plant-VC2-S-b.lean:299:18: error: Application type mismatch: The argument
+  scaled_hasDerivOn ?m.145 ?m.146 ?m.147
+has type
+  HasDerivOn (fun x => ?m.145 * x ^ 2 / 2) (fun x => ?m.145 * x) ?m.146 ?m.147
+but is expected to have type
+  DerivIncreasesAtRate (fun x => 100 * x) (-(c / 10)) (c / 10) 100
+in the application
+  h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (-(c / 10)) (c / 10) 100 ?m.143 ?m.144
+    (scaled_hasDerivOn ?m.145 ?m.146 ?m.147)
+plant-VC2-S-b.lean:299:5: error: unsolved goals
+h : P_SecondDerivSharpStatement
+c : ℝ
+hc : 0 ≤ c
+⊢ HasDerivOn (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (-(c / 10)) (c / 10)
+plant-VC2-S-b.lean:298:9: error: Tactic `rcases` failed: `x✝ : ?m.149` is not an inductive datatype
+plant-VC2-S-b.lean:307:4: error: Application type mismatch: The argument
+  quad_hasDerivOn ?m.47 ?m.48
+has type
+  HasDerivOn (fun x => x ^ 2 / 2) (fun x => x) ?m.47 ?m.48
+but is expected to have type
+  DerivIncreasesAtRate (fun x => x) a a 1
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) a a 1 le_rfl ?m.46 (quad_hasDerivOn ?m.47 ?m.48)
+plant-VC2-S-b.lean:306:74: error: Application type mismatch: The argument
+  one_pos
+has type
+  0 < 1
+but is expected to have type
+  HasDerivOn (fun x => x ^ 2 / 2) (fun x => x) a a
+in the application
+  h (fun x => x ^ 2 / 2) (fun x => x) a a 1 le_rfl one_pos

@@ -1,6 +1,12 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Lessons
 
-Read "Rules in force" at the start of every session. It distils the 52 numbered entries below it, which keep the
+Read "Rules in force" at the start of every session. It distils the numbered entries below it, which keep the
 history and evidence behind each rule (what happened, why it mattered, the check). Records elsewhere cite entries by
 number ("lessons 44"); the numbers do not change. When a rule's reason no longer holds, propose a change to the owner
 rather than ignoring it.
@@ -32,9 +38,12 @@ credible, and it rests on stamps and records, not on commit order.
 6. Start the replay detached and keep the session busy with a background wait on the replay log's `finished` line,
    re-armed at the harness's two-hour limit; a container is reclaimed soon after the session goes idle. Record a
    cut-off run as partial. (49, 50)
-7. Before a build or replay, check `df` and keep at least 15 GB free (a session-12 attempt died on a full disk,
-   `docs/replay/2026-11-15-session12-D4U-partial.txt`); unshallow the clone before `stamp-verify` or `verify-all`.
-   (21, 32)
+7. Before a replay, `tools/replay_preflight.py check` must pass (`make verify-all` runs it first): free space of at
+   least the part of the replay's measured footprint that is not on disk yet, plus 5 GB; it names what to delete
+   (the regenerable exports under `build/`, which git ignores). While the replay runs, `tools/replay_preflight.py
+   watch` logs the free space and every foreign Lean process once a minute and stops the replay below 3 GB.
+   Unshallow the clone before `stamp-verify` or `verify-all`. (21, 32, 53; owner decision 2026-11-16, replacing a
+   fixed floor of 15 GB)
 
 **Sanity layers and planted controls.** A sanity layer is the only test of the frozen text itself, so its data must be
 able to fail.
@@ -67,13 +76,31 @@ able to fail.
 **Sessions, pushes and CI.**
 17. First action of a session: read the remote state (`git fetch`, the releases, the latest CI run on `main`) and
     record any difference from the hand-off. (31)
-18. Run `make quick` before every push. Run every new CI command line locally, verbatim, before pushing the workflow.
-    Read the CI result of each push before the next claim. (9, 35, 37, 40, 41)
+18. Before every push run what `tools/push_gate.py` prints (`make push-gate RUN=1` runs it): `make quick` for
+    everything that is not plain documentation, which includes every status claim (STATUS, README, CHANGELOG, the
+    statement prose, the API index) and every path the gate does not know; `make docs-check` for prose and records;
+    the component's own tests for the two certificate checkers. Keep a pull request open for the working branch, so
+    that CI runs on every push, and read the CI result of each push before the next claim (a draft pull request
+    gets `ci.yml` only: the clean-runner replay needs a manual dispatch of `verify.yml` or a pull request marked
+    ready). Run every new CI command line locally, verbatim, before pushing the workflow. (9, 35, 37, 40, 41, 54;
+    owner decision 2026-11-16)
 
 **Privacy (owner rule).**
 19. No chats, prompts or verbatim AI-conversation text in the repository or its history: record external reviews and
     referee reports only as the lead's answers, in the lead's words. Name an external tool only in an AI-use
     disclosure. (46)
+
+**Status words, anchors, long runs (owner decisions 2026-11-16).**
+20. A STATUS row with a proving theorem says "proved in Lean" while its Replay cell says pending, and
+    "machine-checked as stated" only once a replay record is cited; `make docs-check` enforces both directions. (55)
+21. Stamp directories are never rewritten. The Bitcoin anchors of their OpenTimestamps proofs are upgraded copies
+    under `anchors/ots/`, made and checked by `tools/ots_anchor.py` (`make anchors`), a day after a stamp at the
+    latest. Every new stamp covers all earlier stamp directories, since its manifest lists every tracked file:
+    stamp at least once a year, and before the earliest certificate in the authorities' chains expires (DigiCert
+    Trusted Root G4, 2031-11-09, as read from the tokens on 2026-11-16). (56)
+22. A detached replay lives only while the session is busy. Keep a harness background task waiting on its log; make
+    each wait end by itself before the harness limit (110 minutes) and start the next one at once. A scheduled
+    message does not keep the session alive. (50, 57)
 
 **Lean and Mathlib facts at this pin** (not cautions, just facts):
 - `ContDiff ℝ ⊤` means analytic; write `∞` with `open scoped ContDiff`, or a numeral. (12)
@@ -82,7 +109,7 @@ able to fail.
 - `HasCompactSupport.mul_left` against a pointwise lambda times out; use `tsupport_mul_subset_right` with
   `IsCompact.of_isClosed_subset`. (52)
 
-## History and evidence (entries 1–52)
+## History and evidence (the numbered entries)
 
 ## 1. The brief's Mathlib names were wrong at the pin (2026-11-05)
 `exists_smooth_zero_one_of_isClosed`, `fourierIntegral_gaussian_pi` and the import `Mathlib.Data.Real.Basic` do not
@@ -480,3 +507,130 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     `isDefEq` (unifying `f * f'` with the lambda), in a file importing the whole library. Rule: derive it from
     `tsupport_mul_subset_right` (stated for the lambda) and `IsCompact.of_isClosed_subset`. Check:
     `OscInt.D4UniformAux.integrable_osc` (`OscInt/Front/D4UniformParts.lean`).
+53. **A fixed number of free gigabytes is not the invariant.** Rule 7 asked for 15 GB free before a replay. The
+    session machine has a 30 GB disk; after a stamp it had 11 to 12 GB free and the replay's own exports take 4 GB,
+    so the rule could not be kept and was recorded as a deviation each time (session 13). What the rule protects is
+    that a replay never dies on a full disk (32). Rule: require the part of the measured footprint that is not on
+    disk yet plus a margin, check it by program, and log free space during the run. Check:
+    `tools/replay_preflight.py --self-test`; `make verify-all` runs the preflight first.
+54. **Twenty-six commits on a working branch were checked by no second machine.** `ci.yml` and `verify.yml` run on
+    pull requests and on `main` only, and the session's instructions said no pull request unless asked; rule 18's
+    "read the CI result of each push" could not be met and nobody noticed until a referee asked what a stranger
+    could reproduce (session 13). Separately, the lead decided by judgement whether a push was "docs only", and once
+    pushed with a failing docs-check. Rule: the gate script decides from the changed paths, a status claim counts
+    as code, and the branch has a (draft) pull request from its first push. Check: `tools/push_gate.py --self-test`
+    (13 planted cases); the CI run on the pull request's head.
+55. **The status column said "machine-checked" before the replay.** The documentation check required that prefix
+    for every row with a proving theorem, so rows that were only proved carried the stronger word, qualified in
+    the cell and explained in a paragraph; the adversarial referee found it could mislead (session 13, batches PA
+    and KL; the same wording had been used for batch D4U in session 12). Rule: two words for two kinds of evidence,
+    enforced both ways by the check. Check: `tools/check_docs.py --self-test` ("status follows the replay evidence,
+    both ways").
+56. **Twenty-seven stamps had only pending OpenTimestamps proofs, some for eleven days.** A pending proof shows
+    submission to a calendar server and depends on that server; upgrading it in place would rewrite files in stamp
+    directories, which are history, so it was never done. Rule: upgraded copies out of place, checked against two
+    block explorers, originals untouched. Check: `anchors/ots/LOG.txt` (54 proofs anchored, 2026-11-16);
+    `tools/ots_anchor.py --self-test` (six planted defects).
+57. **A replay died after two hours because the lead replaced the keep-alive by a scheduled message.** Session 13:
+    the harness stopped the background task that waited on the replay's log at its two-hour limit, with a note not
+    to restart a command that had the longest timeout. The lead scheduled a check-in instead of re-arming, the
+    session went idle, the container was suspended about three minutes later and every process was gone
+    (`docs/replay/2026-11-16-session13-PA-KL-partial.txt`). Entry 50 had already said to re-arm at once. Rule: the
+    waits are built to end by themselves before the limit, so that nothing is "restarted", and the next wait starts
+    in the same turn. Check: the watcher log of the replay of record has no gap longer than two minutes.
+58. **A new script went up without its licence header; only the CI job `tools` runs `reuse lint`.** Session 13:
+    `numerics/review/vc2_statement_checks.py` was pushed without the two SPDX lines, `make quick` and
+    `make docs-check` passed locally, and the job failed on GitHub ("Files with copyright information: 1567 / 1568").
+    Fixed in the next commit (header added, `reuse lint` run locally: compliant). Check before pushing a new file
+    that is not covered by a `REUSE.toml` pattern: `reuse lint` in a throw-away environment, as the job does.
+59. **The container restarted while nine agents and jobs were running; two referees and their computations died.**
+    Session 13, about 23:57Z on 2026-11-16: the lead's shell command ended with exit code 137 and the machine came
+    back with an uptime of zero minutes. Running at that moment: two blind referees, each with a heavy background
+    computation of its own (a certified evaluation of a walk after 59320 steps; a full adversarial search), a second
+    sanity agent just finished, and the lead's re-run of a plant generator. The cause was not measured; memory
+    exhaustion is the likely one (15 GB, no swap). Nothing in the repository or in scratch was lost; the referees
+    were resumed from their transcripts with an instruction not to relaunch heavy jobs, and their reports say what
+    was left unfinished. Check for a brief that allows computation: a ceiling on memory and time per job, and no
+    more than four compute-heavy agents at once on this machine.
+60. **Three agents in one evening ran `git status` inside the repository although their briefs forbade git.** Session
+    13: the sanity agent of batch HW and the proof agents FR3 and FR4 reported it themselves. Read-only and harmless
+    here (the lead's `git status` was clean each time), but it is a rule broken by habit. The later briefs name the
+    command explicitly ("no git command of any kind, including git status"), and the two agents given that wording
+    reported no such slip.
+61. **A "fresh-context" referee on the lead's machine is isolated by instruction only, and "read-only git" is not a
+    list.** Session 13, post-proof round of batch HW: the adversarial referee reported that it could read the lead's
+    whole scratch directory (paper routes, briefs, earlier reports, the other referees' working files); and its
+    `git fsck --lost-found` wrote 41 files under `.git` although the brief said "no command that changes the
+    repository". Rule from now on: (a) every packet for a referee or prover is a snapshot outside the lead's scratch
+    tree, and the brief says which paths may be read; where that cannot be enforced, the answers file says
+    "isolation by instruction"; (b) a brief that allows git lists the commands (`git log`, `git show`, `git diff`,
+    `git ls-tree`, `git cat-file`, `git rev-parse`) and forbids every other one by name of the rule, not by
+    "read-only"; (c) an agent's report that is returned as text is saved to a file by the lead at once and hashed.
+62. **A usage limit stops the lead and every agent at once, without warning, and for days.** Session 13,
+    2026-11-17 03:15Z to 2026-11-19 09:03Z: two of three post-proof referees were cut off mid-run and the lead with
+    them. Nothing was lost, for three reasons that are rules already and are kept: the tree is frozen while agents
+    run (so nothing was half-written), every unit of work is pushed before the next launch, and launch and finish
+    are recorded separately (so the log showed exactly which launches had no finish). New: a long isolated replay
+    is not started when the remaining allowance is unknown and other agents are running; and when agents are
+    resumed instead of relaunched after such a stop, the answers file says so.
+63. **A workflow file is linted only in CI (`actionlint` with `shellcheck`), like `reuse lint` in lesson 58.** Session
+    13: the job `tools` failed on a style finding (SC2129) in a new workflow, one push after the local checks had
+    passed. Before pushing a change under `.github/workflows/`, run `actionlint` at the version `ci.yml` installs,
+    with `shellcheck` on the path (both install without root: `go install` and the `shellcheck-py` wheel).
+64. **What the first review by another model family found that five same-family reviews had not (VC2, 2026-11-19).**
+    (a) A count in a record header that the lead had taken with a pattern broader than the thing named (202 lines
+    with the word, 201 modules). Rule: a count in a record is produced by a command that matches exactly the thing
+    counted, and the command is in the log. (b) Check scripts that print FAIL and exit 0. Rule: every check script
+    ends by failing the process if a check failed, and a new script is run once with a check forced to fail.
+    (c) A sentence about what an author "did not know", inferred from a preprint; the published version differs.
+    Rule: say what a named version of a text contains, never what its author knew. (d) Packets for a blind phase:
+    the route page carried the history of earlier reviews. Rule: a page given to a blind reader ends before any
+    section that restates reviews, or those sections live in another file.
+65. **What the second external report found (PA, 2026-11-19): acceptance rules that were weaker than their
+    descriptions.** (a) The replay driver exempted a checker's success phrase by switching its scan for
+    PANIC/error/problem off for the whole output; it had been so since the first commit, through every review.
+    Rule: an exemption in an output filter removes the exempt text and nothing else; every acceptance rule of a
+    driver has a test whose input contains the exempt text together with something that must be rejected; the raw
+    output of every checker step is kept. (b) Check scripts whose description said "at most the bound" tested "the
+    bound plus 1e-25", and controls passed when a comparison was merely undecided. In a sibling script the slack
+    had been deciding 46 of 120 comparisons, because the bound was below the working precision. Rule: description
+    and code state the same predicate; a tolerance is named in the description and the output counts the
+    comparisons it decided; a control passes only on a certified violation; a tolerance added because a test fails
+    is a symptom to diagnose before it is a fix. (c) When a review finds a pattern in one file, sweep its siblings
+    the same day; the pattern is rarely alone. (d) A false-alarm rate needs controls fixed and judged before the
+    referee runs; rows the referee itself calls sound are not controls. (e) While fixing (a) the lead wrote into a
+    comment what a tool prints before having its raw output; the sentence was false and was removed before the
+    commit. A statement about a tool's output is a number like any other: after the command.
+66. **What the last three external reports found (FR, KL, HW, 2026-11-19).** (a) The lead departed from a rule
+    of the owner and wrote it down as compliance: sanity-layer MAJORs answered without a re-freeze in six batches,
+    with the sentence "step 5 reserves a new statement for findings against the statement" in three answer files.
+    No post-proof referee of those batches, all of the lead's model family, reported it. Rule: before an answers file
+    says what a rule allows, the rule's text is quoted in it; a departure is named as one and goes to the owner
+    the same day. (b) A clarification that was false (KL-F, the empty sum), endorsed by a referee, the lead and
+    three later reviews. Rule: a sentence of the form "the hypothesis matters only when ..." is checked by
+    writing the conclusion without the hypothesis in every degenerate case of the binders, empty ones first.
+    (c) Rounded numbers written as bounds ("1.6208 at most", "0.03041, not a violation"). Rule: a number called a
+    bound is rounded in the safe direction and comes from exact or enclosure arithmetic; a comment that compares
+    two floating-point values says so. (d) A header describing code that was never written, and a comparison
+    whose ten sample values were nine zeros. Rule: a description of a script is written after the script and
+    checked against it; a comparison reports how many of its values are nonzero. (e) A second miscount in the
+    same record header (22 comparator jobs; 23). Lesson 64a was already the rule; a header written from memory
+    breaks it every time. (f) "Exchangeable" used where independence is needed, and pooled figures over rounds
+    with different scoring rules: an interval is quoted only with the sampling model that gives it, and never
+    pooled across designs. (g) The raw output kept since lesson 65 showed at once two facts no record had: a
+    checker's standing "pretty printer errors" line, and a timing notice that makes a step's output differ from
+    run to run.
+67. **Attribution inside the files, and what it took (2026-11-19).** (a) The files that matter most, the frozen
+    statements, were the ones that named no author: they were created without a header and the pin froze them
+    that way. Rule: a new statement file, and a new record, is written with its copyright and licence lines; a
+    central `REUSE.toml` entry is for machine output only. (b) A frozen file can be extended without weakening its
+    pin if the extension is a constant of the tools at the end of the file and the pin is on the bytes before it;
+    the proof that it is inert is the tools' own recomputation (commitments, challenge exports), not an argument.
+    Before changing how a pin is compared, list every consumer of the pinned hash: here there were three, one of
+    them a script that downstream users copy, and the change breaks old copies of it. (c) The lead edited a rule
+    file (the order sentence of `CONTRIBUTING.md`) while answering a review and later told the owner it had not been
+    edited. Rule: `git log -p` of a rule file is read before saying anything about its state, and an edit to a rule
+    file is its own commit with the owner's decision named in it. (d) Strings that look like licence tags inside
+    code (constants, test patterns) fail `reuse lint`; they are wrapped in REUSE-Ignore markers. (e) A detached
+    replay is stopped by signalling its process group, and the tree is checked for stray processes and a clean
+    status before anything is edited.

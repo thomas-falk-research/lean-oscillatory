@@ -1,0 +1,81 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- **Datum: ring of 2 sites against the line at time 0**, `r = 2`: `R₂(0, 2) − G(0, 2) = 1 − 0`. -/
+theorem ring_two_sub_line_zero : ringKernel 2 0 2 - lineKernel 0 2 = 1 := by
+  rw [ringKernel_two, lineKernel_zero, ite_eq_left (by decide), ite_eq_right (by norm_num)]
+  norm_num
+
+/-- **Datum at a negative time**: `‖G(−1/4, 1)‖ ≤ 1/2`, from `‖I(−1/2, 1) + iπ/2‖ ≤ π/2` (batch PA sanity). -/
+theorem lineKernel_neg_quarter_one_le : ‖lineKernel (-1 / 4) 1‖ ≤ 1 / 2 := by
+  have h := latticeKernel1_one_approx (-1 / 2) (by rw [abs_le]; constructor <;> norm_num)
+  have h2 := norm_le_norm_add_norm_sub' (latticeKernel1 (-1 / 2) 1)
+    ((Real.pi : ℂ) * ((-1 / 2 : ℝ) : ℂ) * Complex.I)
+  have h3 : ‖(Real.pi : ℂ) * ((-1 / 2 : ℝ) : ℂ) * Complex.I‖ = Real.pi / 2 := by
+    rw [norm_mul, norm_mul, Complex.norm_I, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
+      Real.norm_eq_abs, abs_of_pos Real.pi_pos, abs_of_neg (by norm_num)]
+    ring
+  have h4 : 2 * Real.pi * (-1 / 2 : ℝ) ^ 2 = Real.pi / 2 := by ring
+  rw [h3] at h2
+  rw [h4] at h
+  rw [lineKernel, norm_mul, norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, norm_inv, Complex.norm_real,
+    Real.norm_eq_abs, abs_of_pos (by positivity), Int.cast_one, show (2 : ℝ) * (-1 / 4) = -1 / 2 by norm_num,
+    inv_mul_le_iff₀ (by positivity)]
+  linarith
+
+/-- **Datum at a negative time: ring of 1 site against the line**, `t = −1/4`, `r = 1`:
+`|R₁ − G| ≥ 1 − |G| ≥ 1/2`. The witness datum of the planted control P3. -/
+theorem ring_one_sub_line_lower : 1 / 2 ≤ ‖ringKernel 1 (-1 / 4) 1 - lineKernel (-1 / 4) 1‖ := by
+  have h := norm_sub_norm_le (1 : ℂ) (lineKernel (-1 / 4) 1)
+  rw [norm_one] at h
+  rw [ringKernel_one]
+  linarith [lineKernel_neg_quarter_one_le]
+
+def P_RingFiniteSizeStatement : Prop :=
+  ∀ (N : ℕ) (t η : ℝ) (r : ℤ), 0 < N → 0 < η →
+    ‖ringKernel N t r - lineKernel t r‖ ≤
+      2 * Real.exp (2 * |t| * Real.sinh η) * Real.cosh ((r : ℝ) * η) / (Real.exp (η * (N : ℝ) ^ 2) - 1)
+
+theorem P_ringP_one (h : P_RingFiniteSizeStatement) (η : ℝ) (hη : 0 < η) :
+    1 ≤ 2 * Real.cosh η / (Real.exp η - 1) := by
+  have h1 := h 1 0 η 1 (by norm_num) hη
+  rw [ringKernel_one, lineKernel_zero, ite_eq_right (by norm_num)] at h1
+  simpa using h1
+
+theorem P_ringP_time (h : P_RingFiniteSizeStatement) (t η : ℝ) (hη : 0 < η) :
+    ‖1 - lineKernel t 1‖ ≤ 2 * Real.exp (2 * |t| * Real.sinh η) * Real.cosh η / (Real.exp η - 1) := by
+  have h1 := h 1 t η 1 (by norm_num) hη
+  rw [ringKernel_one] at h1
+  simpa using h1
+
+theorem P_ringP_neg_one (h : P_RingFiniteSizeStatement) (η : ℝ) (hη : 0 < η) :
+    1 ≤ 2 * Real.cosh η / (Real.exp η - 1) := by
+  have h1 := h 1 0 η (-1) (by norm_num) hη
+  rw [ringKernel_one, lineKernel_zero, ite_eq_right (by norm_num)] at h1
+  simpa using h1
+
+theorem P_ringP_two_two (h : P_RingFiniteSizeStatement) (η : ℝ) (hη : 0 < η) :
+    (1 : ℝ) ≤ 2 * Real.exp (2 * |(0 : ℝ)| * Real.sinh η) * Real.cosh (((2 : ℤ) : ℝ) * η) /
+      (Real.exp (η * ((2 : ℕ) : ℝ)) - 1) := by
+  have h1 := h 2 0 η 2 (by norm_num) hη
+  rw [ring_two_sub_line_zero, norm_one] at h1
+  exact h1
+
+theorem P_ringP_neg_time (h : P_RingFiniteSizeStatement) (η : ℝ) (hη : 0 < η) :
+    ‖1 - lineKernel (-1 / 4) 1‖ ≤
+      2 * Real.exp (2 * |(-1 / 4 : ℝ)| * Real.sinh η) * Real.cosh (((1 : ℤ) : ℝ) * η) /
+        (Real.exp (η * ((1 : ℕ) : ℝ)) - 1) := by
+  have h1 := h 1 (-1 / 4) η 1 (by norm_num) hη
+  rw [ringKernel_one] at h1
+  exact h1
+
+theorem P_ringP_neg_time_half (h : P_RingFiniteSizeStatement) (η : ℝ) (hη : 0 < η) :
+    1 / 2 ≤ 2 * Real.exp (2 * |(-1 / 4 : ℝ)| * Real.sinh η) * Real.cosh (((1 : ℤ) : ℝ) * η) /
+        (Real.exp (η * ((1 : ℕ) : ℝ)) - 1) :=
+  ring_one_sub_line_lower.trans (h 1 (-1 / 4) η 1 (by norm_num) hη)
+
+end OscInt.API.FiniteRingSanity2

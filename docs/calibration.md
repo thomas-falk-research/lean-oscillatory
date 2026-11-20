@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Referee calibration
 
 Purpose: measure how often a fresh-context AI statement referee, given a statement-review prompt (`review/prompts/calibration-r1.md`, `-r2.md`; the real reviews use
@@ -11,7 +17,10 @@ planted statement error, and how often it raises a false alarm on an unmodified 
 |---|---|---|---|---|---|---|---|
 | 1 | 2026-11-05 | S1 (van der Corput) | 4 (quantifier, hypothesis, definition, weakened conclusion) | 4 | 1.00, [0.397, 1.00] | 2 | 0 (0/2, upper bound 0.842) |
 | 2 | 2026-11-06 | S2.1, S2.2, S3, S4.1 (325 lines) | 4 (same kinds), planted by a separate agent | 4 | 1.00, [0.397, 1.00] | 2 | 0 (0/2, upper bound 0.842) |
-| 1+2 pooled | | | 8 | 8 | 1.00, [0.630, 1.00] | 4 | 0 (0/4, upper bound 0.603) |
+| 1+2 pooled (nominal: correction of 2026-11-19 below) | | | 8 | 8 | 1.00, [0.630, 1.00] | 4 | 0 (0/4, upper bound 0.603) |
+| 3 | 2026-11-16 | batches PA and KL (six statements) | 8 (definition ×3, hypothesis ×2, conclusion ×2, precedence), planted by the lead's script in text-only snapshots | 8 | 1.00, [0.630, 1.00] | 2 (the genuine reviews) | 0 (0/2, upper bound 0.842) |
+| 1+2+3 pooled (nominal: correction of 2026-11-19 below) | | | 16 | 16 | 1.00, [0.794, 1.00] | 6 | 0 (0/6, upper bound 0.460) |
+| 4 (route referee; not pooled) | 2026-11-16 | the routes of batches PA and KL | 8 (a wrong direction, wrong constants ×2, a wrong identity ×2, a false cited fact, an interval closed where it must be open, a wrong factor in a blueprint proposition), planted by the lead | 8 | 1.00, [0.630, 1.00] | none fixed in advance | not measured (the printed "0/5, upper bound 0.522" is withdrawn: correction of 2026-11-19 below) |
 
 Correction, 2026-11-13 (external R3 packet, `review/2026-11-13-external-R3-answers.md`): the bounds in this table are now
 rounded outwards (lower bounds down, upper bounds up). Before, they were rounded to nearest, and three printed values
@@ -19,6 +28,19 @@ were not bounds: 0.40 for the lower bound 0.3976, 0.84 for the upper bound 0.841
 0.6024. The pre-registered and scored sections below keep their original text, where 0.398, 0.631 and 0.602 are also
 rounded to nearest in the unsafe direction (0.842 there is a valid upper bound). Exact values: (1/40)^{1/4} = 0.39764, 1 − (1/40)^{1/2} = 0.84189, (1/40)^{1/8} = 0.63058,
 1 − (1/40)^{1/4} = 0.60236 (`numerics/review/r3_packet_checks.py`). No reading changes.
+
+Correction, 2026-11-19 (external reviews of batches FR and KL, `review/2026-11-19-FR-external-review-answers.md`, R3,
+and `review/2026-11-19-KL-external-review-answers.md`, F6). Two readings on this page claim more than the designs
+give. (1) Round 2 says below that "if the eight plants are regarded as exchangeable draws from these four kinds,
+the miss rate per error is below 37% at 95% confidence". Exchangeability is not enough: eight indicators that are
+all equal are exchangeable, and for them the interval has no coverage. A Clopper–Pearson interval is a statement
+about independent trials with one detection probability. Nothing in these rounds supports independence (the
+plants were chosen by hand, several sat in one file and went to one referee), so every interval on this page is
+arithmetic under that assumption and not a measured rate. (2) The pooled rows of the table add rounds with
+different scoring rules (rounds 1 and 2: a verdict other than FAITHFUL together with the planted clause
+identified; round 3: the planted line named, at any severity), different files and different referees. They have
+no single quantity that they estimate and are kept as arithmetic only. The original sentences below are
+unchanged.
 
 ## Round 1 protocol (pre-registered 2026-11-05, before any referee ran)
 
@@ -146,3 +168,87 @@ the real `sanity_Fold_hyps` uses the same set for `K` and `K'`, so it cannot det
 `sanity_D4_hyps` has `b = c = 0`, so it cannot detect a wrong mixed coefficient (V5; answered by
 `OscInt/D4/Sanity.lean`, coefficients (1, 2, 3, 5)); the real S2.2 sanity theorem states the hypothesis in its own
 words rather than through the statement (V2; lesson 11). See `docs/lessons.md` 17.
+
+## Round 3 (2026-11-16, session 13; batches PA and KL)
+
+Protocol, fixed before the referees were launched (the planting script's SHA-256
+80e5c5525272592f55ec44fcd39a90049c4c4d031ef63cf750834556529dcac3 is in the session log entry that precedes the
+launch; the script is committed as `review/calibration/round3/make_snapshots.py.txt`). Two text-only snapshots of the
+freeze commit acc035d were built, one per batch: the prose, the statement file, the sanity file and the plant
+summary. In each statement file four fidelity errors were planted; nothing else was changed, so docstrings, prose,
+sanity file and plant summary still described the unplanted text. Each snapshot went to one fresh-context referee
+under the same brief as the genuine fidelity review of that batch (brief SHA-256 af41be7c…, session log); the
+referee was not told that anything was planted. The two genuine fidelity reviews of the unplanted batches, under the
+same brief, are the controls. Scoring rule: a plant is detected if the report names the planted line and what is
+wrong with it, at any severity; a false alarm is a BLOCKER or an UNFAITHFUL verdict against an unplanted statement.
+
+| Batch | Plant | Kind | Detected | How the report rated it |
+|---|---|---|---|---|
+| PA | nodes of the trapezoidal sum at πj/N instead of 2πj/N | definition | yes | BLOCKER, with a counterexample |
+| PA | `0 < N` dropped from PA-T | hypothesis | yes | BLOCKER, with a counterexample |
+| PA | the bound of `PeriodicAnalyticOn` required on the real axis only | hypothesis | yes | BLOCKER, with a counterexample |
+| PA | `sinh η` replaced by `cosh η` in LC-1 | weakened conclusion | yes | BLOCKER (UNFAITHFUL-weaker) |
+| KL | the last monotonicity comparison dropped (`n + 2 < N`) in one branch | definition | yes | BLOCKER, with a counterexample |
+| KL | KL-D bound `cot(πλ)` instead of `cot(πλ/2)` | conclusion | yes | BLOCKER, with a counterexample |
+| KL | `⌊a⌋`, `⌈b⌉` swapped in the sum of KL-F | definition | yes | BLOCKER, with a counterexample |
+| KL | `2 / π * lam` instead of `2 / (π * lam)` in KL-C | precedence | yes | BLOCKER, with a counterexample |
+
+Result: 8 of 8 detected; exact (Clopper–Pearson) 95% interval for the detection rate [0.630, 1.00]. Controls: 2
+(the genuine reviews), false alarms 0 of 2 (upper bound 0.842): both returned FAITHFUL for every statement and no
+BLOCKER. Pooled over rounds 1 to 3: 16 of 16, [0.794, 1.00]; false alarms 0 of 6, upper bound 0.460.
+
+What this round does and does not show.
+- It was an easy test in one respect: only the Lean text was mutated, so each plant contradicted the docstring a few
+  lines above it, the prose and the sanity file. Both referees noticed that mismatch as a finding of its own. An error
+  made consistently in the prose and the Lean text, which is the realistic failure, is not measured here.
+- One referee per snapshot; the same model family planted, reviewed and scored. The scoring is by the lead, who knew
+  the plants.
+- The planted kinds were chosen by the lead from errors that occur in practice (a cast or node slip, a dropped
+  hypothesis, an operator-precedence slip, a floor/ceiling swap); they are not a random sample of possible errors.
+- Both calibration referees also raised findings against the unplanted sanity layer that the genuine referees raised
+  independently (the monotonicity guard, the node positions); those are answered in the review answers.
+
+## Round 4 (2026-11-16, session 13; route referees of batches PA and KL)
+
+A different task from rounds 1 to 3: the referee reads a proof on paper (a route), not a Lean statement, and looks
+for wrong steps. It is therefore reported on its own line and not pooled.
+
+Design. Copies of `docs/proof-PA.md` and `docs/proof-KL.md` as committed in 4ff92c3, with eight single-line errors put
+in by the lead (four each), the interface-check sections removed, and one remark of the PA route removed because it
+would have contradicted a plant. The packet had the statements but not the blueprint Lean files. The referee got
+the same brief as the two genuine route referees (the three briefs differ only in packet name and paths); every
+brief said that packets may contain planted errors and asked for every error. The key was written before launch,
+SHA-256 `053f8e6d30663a7f3c0dd7c3c428d64499af8ed263542e3c018c8a51fb369a4a` (`review/calibration/round4/key.txt`; the
+planted routes are next to it as `proof-PA-planted.md.txt` and `proof-KL-planted.md.txt`).
+
+Result. 8 of 8 planted errors found, each with the right correction (table in
+`review/2026-11-16-PA-KL-route-answers.md`); 95% Clopper–Pearson interval [0.630, 1.00] (exact lower bound
+(1/40)^{1/8} = 0.63058, rounded down). No sound part was reported as wrong: 0 of the 5 rows the referee itself marked
+sound; upper bound 1 − (1/40)^{1/5} = 0.52182, rounded up to 0.522. The referee graded the false blueprint bound as a
+BLOCKER and gave a counterexample; it graded two wrong citations as MAJOR and five slips as MINOR.
+
+Correction, 2026-11-19 (external review of batch PA, `review/2026-11-19-PA-external-review-answers.md`). The
+false-alarm figure of this round is withdrawn. Its denominator, "the 5 rows the referee itself marked sound", was
+not fixed before the report and was chosen by the referee under test: a row the referee marks sound cannot also be
+a row it reports as wrong, so "0 of 5" was certain in advance and the bound 0.522 measures nothing. What the
+record supports is a count without a rate: besides the eight plants the report made three further remarks, all on
+the unplanted text, and the lead judged the three correct and took them into the route. No set of sound
+controls was prepared and scored independently in this round; the same sentence in
+`review/2026-11-16-PA-KL-route-answers.md` is a review record and stands as written, with this correction. The
+detection figure (8 of 8) is unaffected. A false-alarm rate needs controls fixed and judged before launch.
+
+Limits. One referee and one run; eight plants, all single-line, chosen by the same lead who wrote the routes; the
+key was sealed by a hash in the session log, not by a timestamp authority; the genuine referees saw more material
+(blueprint and assembly) than the calibration referee. A referee that finds planted single-line errors may still
+miss a structural gap, and referees and lead are of one model family.
+
+Two limits of round 3 that this page did not state (post-proof referee C, 2026-11-16): its eight plants went to two
+referees, four each, so they are not eight independent trials and the pooled interval [0.794, 1.00] is nominal; and
+its two "controls" are the genuine reviews of the statements under test, so "0 false alarms of 2" assumes that
+those statements are faithful, which is the thing being measured.
+
+Rounds not run (2026-11-16/17). No calibration copy with planted errors was given to any referee of batch FR (blind
+pre-proof A and B, the route referee, post-proof A, B and C), to any referee of batch HW (blind pre-proof A and B, the route referee, post-proof A, B and
+C) or to any referee of batch VC2 (the step referee of the paper proof, blind pre-proof A and B, the route
+referee, post-proof A, B and C). The detection rates on this page are those of rounds 1 to 4 and say nothing measured about those reviews; the
+answers files of the three batches say the same.

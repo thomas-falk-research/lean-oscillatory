@@ -1,0 +1,33 @@
+# OscInt
+
+> A Lean 4 + Mathlib library of machine-checked uniform oscillatory-integral estimates with explicit constants: van der Corput (every derivative order, and the sharp second-derivative constant), stationary phase, fold, cusp and D4 umbilic bounds, lattice Schrödinger kernels and groups on Z^d, rings and chains, the Hadamard quantum walk, the exponentially convergent trapezoidal rule, and the Kusmin–Landau inequality. Statements are frozen and timestamped before their Lean proofs; proofs are replayed by six kernel checkers. Author: Thomas Falk III (ORCID 0009-0001-9478-6061). Cite: https://doi.org/10.5281/zenodo.24021328. Code Apache-2.0, documentation CC BY 4.0; see NOTICE for the required attribution.
+
+Proofs and reviews are by AI agents directed by the author; no human expert has reviewed the statements. Read "Known caveats" in the README before relying on a result. Release v0.7.0 has 86 pinned statements, all machine-checked as stated.
+
+## Start here
+
+- [README](README.md): what is proved, how to depend on it, known caveats, how to cite
+- [Which theorem do I need?](docs/which-theorem.md): from a problem to a theorem, with explicit constants
+- [Cookbook](docs/cookbook.md): recipes with compiled examples
+- [API index](docs/api.json): machine-readable list of statements, theorems and Lean signatures
+- [Statement registry](stamps/statements.json): every pinned statement, its proving theorem, commitment and stamp
+
+## The mathematics
+
+- [Statements](docs/statements.md): every statement in prose, with hypotheses, modelling choices and dated clarifications
+- [Prior art](docs/prior_art.md): what is classical, what was found formalised elsewhere, and the search log
+- [References](docs/references.bib): the cited works, with identifiers checked against Crossref and arXiv
+- [Applications](docs/applications.md): where the results apply
+
+## Trust and evidence
+
+- [Status](docs/STATUS.md): the evidence behind each statement, row by row
+- [Policy](docs/policy.md): versions, what is stable, the downstream checker
+- [Lessons](docs/lessons.md): every error made in this project, with the rule that now prevents it
+- [Contributing](CONTRIBUTING.md): how a statement is added, end to end
+
+## Optional
+
+- [Roadmap](docs/ROADMAP.md)
+- [Changelog](CHANGELOG.md)
+- [Citation metadata](CITATION.cff)

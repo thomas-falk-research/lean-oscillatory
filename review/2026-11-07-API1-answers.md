@@ -24,3 +24,7 @@ Statement reviews `review/2026-11-07-API1-pre-proof-{A,B}.md` (FAITHFUL ×2) and
   `consumer_elliptic_limit`. A NIT (STATUS "the brief's S4 as one theorem"): reworded to "the brief's S4 limit with its
   constant as one theorem".
 - B process note (two Lean processes overlapped briefly): noted; no effect on results.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

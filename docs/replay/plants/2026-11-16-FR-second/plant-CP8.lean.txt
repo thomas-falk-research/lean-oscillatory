@@ -1,0 +1,314 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- `w = e^{iπ/3}`, the primitive sixth root of unity: the modes of the ring of 6 sites are `1, w, w², −1, −w, −w²`. -/
+noncomputable def sixRoot : ℂ := Complex.exp (↑(Real.pi / 3) * Complex.I)
+
+/-- `w² = w − 1`, from `w + w⁻¹ = 2 cos(π/3) = 1`. -/
+theorem sixRoot_sq : sixRoot ^ 2 = sixRoot - 1 := by
+  have h1 : Complex.exp (-↑(Real.pi / 3) * Complex.I) * sixRoot = 1 := by
+    rw [sixRoot, ← Complex.exp_add]; simp
+  have hc : Complex.cos (↑(Real.pi / 3)) = 1 / 2 := by
+    rw [← Complex.ofReal_cos, Real.cos_pi_div_three]; norm_num
+  rw [Complex.cos] at hc
+  rw [sixRoot] at h1 ⊢
+  linear_combination (2 * Complex.exp (↑(Real.pi / 3) * Complex.I)) * hc - h1
+
+/-- The modes `k = 2π/3, 4π/3, 5π/3` of the ring of 6 sites: `e^{ik} = w², −w, −w²`. -/
+theorem sixRoot_modes :
+    Complex.exp (↑(2 * (Real.pi / 3)) * Complex.I) = sixRoot ^ 2 ∧
+      Complex.exp (↑(4 * (Real.pi / 3)) * Complex.I) = -sixRoot ∧
+      Complex.exp (↑(5 * (Real.pi / 3)) * Complex.I) = -sixRoot ^ 2 := by
+  have h2 : Complex.exp (↑(2 * (Real.pi / 3)) * Complex.I) = sixRoot ^ 2 := by
+    rw [sixRoot, ← Complex.exp_nat_mul]; congr 1; push_cast; ring
+  refine ⟨h2, ?_, ?_⟩
+  · rw [show (↑(4 * (Real.pi / 3)) : ℂ) * Complex.I = ↑Real.pi * Complex.I + ↑(Real.pi / 3) * Complex.I by
+      push_cast; ring, Complex.exp_add, Complex.exp_pi_mul_I, sixRoot]
+    ring
+  · rw [show (↑(5 * (Real.pi / 3)) : ℂ) * Complex.I = ↑Real.pi * Complex.I + ↑(2 * (Real.pi / 3)) * Complex.I by
+      push_cast; ring, Complex.exp_add, Complex.exp_pi_mul_I, h2]
+    ring
+
+/-- `cos(2π/3) = cos(4π/3) = −1/2` and `cos(5π/3) = 1/2`. -/
+theorem cos_third_pi_multiples :
+    Real.cos (2 * (Real.pi / 3)) = -1 / 2 ∧ Real.cos (4 * (Real.pi / 3)) = -1 / 2 ∧
+      Real.cos (5 * (Real.pi / 3)) = 1 / 2 := by
+  refine ⟨?_, ?_, ?_⟩
+  · rw [Real.cos_two_mul, Real.cos_pi_div_three]; norm_num
+  · rw [show 4 * (Real.pi / 3) = Real.pi / 3 + Real.pi by ring, Real.cos_add_pi, Real.cos_pi_div_three]; norm_num
+  · rw [show 5 * (Real.pi / 3) = 2 * Real.pi - Real.pi / 3 by ring, Real.cos_two_pi_sub, Real.cos_pi_div_three]
+
+/-- **Datum, ring of 6 sites.** With `w = e^{iπ/3}`:
+`R₆(t, r) = (1 + (wʳ + (−w²)ʳ) e^{−it} + (w²ʳ + (−w)ʳ) e^{−3it} + (−1)ʳ e^{−4it}) / 6`: the modes `k = jπ/3` with
+`cos k = 1, 1/2, −1/2, −1, −1/2, 1/2`. -/
+theorem ringKernel_six (t : ℝ) (r : ℤ) :
+    ringKernel 6 t r = (1 + (sixRoot ^ r + (-sixRoot ^ 2) ^ r) * Complex.exp (↑(-t) * Complex.I) +
+      ((sixRoot ^ 2) ^ r + (-sixRoot) ^ r) * Complex.exp (↑(-(3 * t)) * Complex.I) +
+      (-1) ^ r * Complex.exp (↑(-(4 * t)) * Complex.I)) / 6 := by
+  have hθ1 : 2 * Real.pi * ((1 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = Real.pi / 3 := by push_cast; ring
+  have hθ2 : 2 * Real.pi * ((2 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 2 * (Real.pi / 3) := by push_cast; ring
+  have hθ3 : 2 * Real.pi * ((3 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = Real.pi := by push_cast; ring
+  have hθ4 : 2 * Real.pi * ((4 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 4 * (Real.pi / 3) := by push_cast; ring
+  have hθ5 : 2 * Real.pi * ((5 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 5 * (Real.pi / 3) := by push_cast; ring
+  obtain ⟨z2, z4, z5⟩ := sixRoot_modes
+  obtain ⟨c2, c4, c5⟩ := cos_third_pi_multiples
+  have h1 := exp_mode t (Real.pi / 3) (1 / 2) r sixRoot Real.cos_pi_div_three rfl
+  have h2 := exp_mode t (2 * (Real.pi / 3)) (-1 / 2) r (sixRoot ^ 2) c2 z2
+  have h3 := exp_mode t Real.pi (-1) r (-1) Real.cos_pi Complex.exp_pi_mul_I
+  have h4 := exp_mode t (4 * (Real.pi / 3)) (-1 / 2) r (-sixRoot) c4 z4
+  have h5 := exp_mode t (5 * (Real.pi / 3)) (1 / 2) r (-sixRoot ^ 2) c5 z5
+  rw [show 2 * t * ((1 / 2 : ℝ) - 1) = -t by ring] at h1 h5
+  rw [show 2 * t * ((-1 / 2 : ℝ) - 1) = -(3 * t) by ring] at h2 h4
+  rw [show 2 * t * ((-1 : ℝ) - 1) = -(4 * t) by ring] at h3
+  rw [ringKernel, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
+    Finset.sum_range_succ, Finset.sum_range_one, hθ1, hθ2, hθ3, hθ4, hθ5, h1, h2, h3, h4, h5]
+  simp
+  ring
+
+/-- `R₆(t, 0) = (1 + 2 e^{−it} + 2 e^{−3it} + e^{−4it}) / 6`. -/
+theorem ringKernel_six_site_zero (t : ℝ) :
+    ringKernel 6 t 0 = (1 + 2 * Complex.exp (↑(-t) * Complex.I) + 2 * Complex.exp (↑(-(3 * t)) * Complex.I) +
+      Complex.exp (↑(-(4 * t)) * Complex.I)) / 6 := by
+  rw [ringKernel_six]; simp only [zpow_zero]; ring
+
+/-- `R₆(t, 2) = (1 − e^{−it} − e^{−3it} + e^{−4it}) / 6`. -/
+theorem ringKernel_six_site_two (t : ℝ) :
+    ringKernel 6 t 2 = (1 - Complex.exp (↑(-t) * Complex.I) - Complex.exp (↑(-(3 * t)) * Complex.I) +
+      Complex.exp (↑(-(4 * t)) * Complex.I)) / 6 := by
+  rw [ringKernel_six]; simp only [zpow_ofNat]
+  linear_combination ((sixRoot ^ 2 + sixRoot + 1) *
+    (Complex.exp (↑(-t) * Complex.I) + Complex.exp (↑(-(3 * t)) * Complex.I)) / 6) * sixRoot_sq
+
+/-- `R₆(t, 4) = (1 − e^{−it} − e^{−3it} + e^{−4it}) / 6`. -/
+theorem ringKernel_six_site_four (t : ℝ) :
+    ringKernel 6 t 4 = (1 - Complex.exp (↑(-t) * Complex.I) - Complex.exp (↑(-(3 * t)) * Complex.I) +
+      Complex.exp (↑(-(4 * t)) * Complex.I)) / 6 := by
+  rw [ringKernel_six]; simp only [zpow_ofNat]
+  linear_combination ((sixRoot ^ 4 - sixRoot ^ 2 + 1) * (sixRoot ^ 2 + sixRoot + 1) *
+    (Complex.exp (↑(-t) * Complex.I) + Complex.exp (↑(-(3 * t)) * Complex.I)) / 6) * sixRoot_sq
+
+/-- `e^{−2it} cos t = (e^{−it} + e^{−3it}) / 2`. A fact about the exponential; no kernel is mentioned. -/
+theorem exp_two_mul_cos (t : ℝ) :
+    Complex.exp (↑(-(2 * t)) * Complex.I) * ((Real.cos t : ℝ) : ℂ) =
+      (Complex.exp (↑(-t) * Complex.I) + Complex.exp (↑(-(3 * t)) * Complex.I)) / 2 := by
+  have h1 : Complex.exp (↑(-t) * Complex.I) =
+      Complex.exp (↑(-(2 * t)) * Complex.I) * Complex.exp (↑t * Complex.I) := by
+    rw [← Complex.exp_add]; congr 1; push_cast; ring
+  have h3 : Complex.exp (↑(-(3 * t)) * Complex.I) =
+      Complex.exp (↑(-(2 * t)) * Complex.I) * Complex.exp (-↑t * Complex.I) := by
+    rw [← Complex.exp_add]; congr 1; push_cast; ring
+  rw [h1, h3, Complex.ofReal_cos, Complex.cos]
+  ring
+
+/-- **Datum, chain of 2 sites, diagonal.** `C₂(t; 1, 1) = R₆(t, 0) − R₆(t, 2) = e^{−2it} cos t`: the two Dirichlet
+modes have the eigenvalues `−1` and `−3`. -/
+theorem chainKernel_two_diag (t : ℝ) :
+    chainKernel 2 t 1 1 = Complex.exp (↑(-(2 * t)) * Complex.I) * ((Real.cos t : ℝ) : ℂ) := by
+  have h : chainKernel 2 t 1 1 = ringKernel 6 t 0 - ringKernel 6 t 2 := by
+    rw [chainKernel]; norm_num
+  rw [h, ringKernel_six_site_zero, ringKernel_six_site_two, exp_two_mul_cos]; ring
+
+/-- **Datum, chain of 2 sites, diagonal at the second site.** `C₂(t; 2, 2) = R₆(t, 0) − R₆(t, 4) = e^{−2it} cos t`. -/
+theorem chainKernel_two_diag_two (t : ℝ) :
+    chainKernel 2 t 2 2 = Complex.exp (↑(-(2 * t)) * Complex.I) * ((Real.cos t : ℝ) : ℂ) := by
+  have h : chainKernel 2 t 2 2 = ringKernel 6 t 0 - ringKernel 6 t 4 := by
+    rw [chainKernel]; norm_num
+  rw [h, ringKernel_six_site_zero, ringKernel_six_site_four, exp_two_mul_cos]; ring
+
+/-- `∫_{−π}^{π} cosⁿ k dk` for `n = 1, 2, 3, 4`: `0`, `π`, `0`, `3π/4`. -/
+theorem integral_cos_pows :
+    (∫ k in (-Real.pi)..Real.pi, Real.cos k) = 0 ∧ (∫ k in (-Real.pi)..Real.pi, Real.cos k ^ 2) = Real.pi ∧
+      (∫ k in (-Real.pi)..Real.pi, Real.cos k ^ 3) = 0 ∧
+      (∫ k in (-Real.pi)..Real.pi, Real.cos k ^ 4) = 3 * Real.pi / 4 := by
+  have h2 : (∫ k in (-Real.pi)..Real.pi, Real.cos k ^ 2) = Real.pi := by
+    rw [integral_cos_sq]; simp
+  refine ⟨by simp, h2, by simp, ?_⟩
+  rw [show (4 : ℕ) = 2 + 2 from rfl, integral_cos_pow, h2]
+  simp
+  ring
+
+/-- Taylor polynomial of degree 4 of `e^{ic}` for real `|c| ≤ 1/2`, with the remainder of `Complex.exp_bound`:
+`|e^{ic} − (1 − c²/2 + c⁴/24) − i (c − c³/6)| ≤ |c|⁵ / 100 ≤ 1/3200`. No kernel is mentioned. -/
+theorem norm_exp_sub_taylor_four (c : ℝ) (hc : |c| ≤ 1 / 2) :
+    ‖Complex.exp (↑c * Complex.I) -
+      (((1 - c ^ 2 / 2 + c ^ 4 / 24 : ℝ) : ℂ) + ((c - c ^ 3 / 6 : ℝ) : ℂ) * Complex.I)‖ ≤ 1 / 3200 := by
+  have hx : ‖(↑c : ℂ) * Complex.I‖ = |c| := by
+    rw [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
+  have hb := Complex.exp_bound (x := ↑c * Complex.I) (by rw [hx]; linarith) (n := 5) (by norm_num)
+  have hs : ∑ m ∈ Finset.range 5, (↑c * Complex.I) ^ m / (m.factorial : ℂ) =
+      ((1 - c ^ 2 / 2 + c ^ 4 / 24 : ℝ) : ℂ) + ((c - c ^ 3 / 6 : ℝ) : ℂ) * Complex.I := by
+    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
+      Finset.sum_range_one, show Nat.factorial 0 = 1 from rfl, show Nat.factorial 1 = 1 from rfl,
+      show Nat.factorial 2 = 2 from rfl, show Nat.factorial 3 = 6 from rfl, show Nat.factorial 4 = 24 from rfl]
+    push_cast
+    linear_combination ((c : ℂ) ^ 2 / 2 + (c : ℂ) ^ 3 * Complex.I / 6 +
+      (c : ℂ) ^ 4 * (Complex.I ^ 2 - 1) / 24) * Complex.I_sq
+  have h6 : ((Nat.succ 5 : ℕ) : ℝ) * (((Nat.factorial 5 : ℕ) : ℝ) * ((5 : ℕ) : ℝ))⁻¹ = 1 / 100 := by
+    norm_num [Nat.factorial]
+  have h5 : |c| ^ 5 ≤ (1 / 2) ^ 5 := pow_le_pow_left₀ (abs_nonneg c) hc 5
+  rw [hs, hx, h6] at hb
+  norm_num at h5
+  linarith
+
+/-- `|cos k / 2| ≤ 1/2`. -/
+theorem abs_half_cos_le (k : ℝ) : |1 / 2 * Real.cos k| ≤ 1 / 2 := by
+  rw [abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)]
+  linarith [Real.abs_cos_le_one k]
+
+/-- **Datum: `I(1/2, 0)` to fourth order.** `‖I(1/2, 0) − 2π · 15/16‖ ≤ 2π · 33/25600`: expansion of `e^{i cos(k)/2}`
+to degree 4, `∫ cos² = π`, `∫ cos⁴ = 3π/4`, the odd powers integrate to `0`; the error is `π/512` (the term of
+degree 4) plus `2π/3200` (the remainder). The first layers had the lower bound `latticeKernel1_zero_freq_lower`
+only. -/
+theorem latticeKernel1_half_zero_approx :
+    ‖latticeKernel1 (1 / 2) 0 - ((2 * Real.pi : ℝ) : ℂ) * ((15 / 16 : ℝ) : ℂ)‖ ≤ 2 * Real.pi * (33 / 25600) := by
+  obtain ⟨i1, i2, i3, i4⟩ := integral_cos_pows
+  have hp : (∫ k in (-Real.pi)..Real.pi, (1 - 1 / 8 * Real.cos k ^ 2 + 1 / 384 * Real.cos k ^ 4)) =
+      2 * Real.pi - Real.pi / 8 + Real.pi / 512 := by
+    rw [intervalIntegral.integral_add (Continuous.intervalIntegrable (by fun_prop) _ _)
+        (Continuous.intervalIntegrable (by fun_prop) _ _),
+      intervalIntegral.integral_sub (Continuous.intervalIntegrable (by fun_prop) _ _)
+        (Continuous.intervalIntegrable (by fun_prop) _ _),
+      intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul, i2, i4,
+      intervalIntegral.integral_const]
+    simp
+    ring
+  have hq : (∫ k in (-Real.pi)..Real.pi, (1 / 2 * Real.cos k - 1 / 48 * Real.cos k ^ 3)) = 0 := by
+    rw [intervalIntegral.integral_sub (Continuous.intervalIntegrable (by fun_prop) _ _)
+        (Continuous.intervalIntegrable (by fun_prop) _ _),
+      intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul, i1, i3]
+    ring
+  have hR : ∀ k : ℝ, ‖Complex.exp (↑(1 / 2 * Real.cos k) * Complex.I) -
+      (((1 - 1 / 8 * Real.cos k ^ 2 + 1 / 384 * Real.cos k ^ 4 : ℝ) : ℂ) +
+        ((1 / 2 * Real.cos k - 1 / 48 * Real.cos k ^ 3 : ℝ) : ℂ) * Complex.I)‖ ≤ 1 / 3200 := by
+    intro k
+    have h := norm_exp_sub_taylor_four (1 / 2 * Real.cos k) (abs_half_cos_le k)
+    rw [show 1 - (1 / 2 * Real.cos k) ^ 2 / 2 + (1 / 2 * Real.cos k) ^ 4 / 24 =
+        1 - 1 / 8 * Real.cos k ^ 2 + 1 / 384 * Real.cos k ^ 4 by ring,
+      show 1 / 2 * Real.cos k - (1 / 2 * Real.cos k) ^ 3 / 6 =
+        1 / 2 * Real.cos k - 1 / 48 * Real.cos k ^ 3 by ring] at h
+    exact h
+  have hint : latticeKernel1 (1 / 2) 0 - ((2 * Real.pi - Real.pi / 8 + Real.pi / 512 : ℝ) : ℂ) =
+      ∫ k in (-Real.pi)..Real.pi, (Complex.exp (↑(1 / 2 * Real.cos k) * Complex.I) -
+        (((1 - 1 / 8 * Real.cos k ^ 2 + 1 / 384 * Real.cos k ^ 4 : ℝ) : ℂ) +
+          ((1 / 2 * Real.cos k - 1 / 48 * Real.cos k ^ 3 : ℝ) : ℂ) * Complex.I)) := by
+    rw [intervalIntegral.integral_sub (Continuous.intervalIntegrable (by fun_prop) _ _)
+        (Continuous.intervalIntegrable (by fun_prop) _ _),
+      intervalIntegral.integral_add (Continuous.intervalIntegrable (by fun_prop) _ _)
+        (Continuous.intervalIntegrable (by fun_prop) _ _),
+      intervalIntegral.integral_mul_const, intervalIntegral.integral_ofReal, intervalIntegral.integral_ofReal,
+      hp, hq, latticeKernel1]
+    simp only [zero_mul, add_zero, Complex.ofReal_zero]
+  have hb := intervalIntegral.norm_integral_le_of_norm_le_const (a := -Real.pi) (b := Real.pi) (fun k _ => hR k)
+  rw [show Real.pi - -Real.pi = 2 * Real.pi by ring, abs_of_pos (by positivity), ← hint] at hb
+  have e : latticeKernel1 (1 / 2) 0 - ((2 * Real.pi : ℝ) : ℂ) * ((15 / 16 : ℝ) : ℂ) =
+      (latticeKernel1 (1 / 2) 0 - ((2 * Real.pi - Real.pi / 8 + Real.pi / 512 : ℝ) : ℂ)) +
+        ((Real.pi / 512 : ℝ) : ℂ) := by
+    push_cast; ring
+  rw [e]
+  refine (norm_add_le _ _).trans ?_
+  rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
+  linarith [Real.pi_pos]
+
+/-- **Datum: the line kernel at `t = 1/4`, `n = 0`, sharp form.** `‖G(1/4, 0) − (15/16) e^{−i/2}‖ ≤ 33/25600`:
+`G(t, 0) = e^{−2it} J₀(2t)` and `J₀(1/2) = 1 − 1/16 + 1/1024 − …` (true value of the left side `0.00097`). Pins the
+phase factor `e^{−2it}` and the time scale `2t` of `lineKernel`. -/
+theorem lineKernel_quarter_zero_approx_sharp :
+    ‖lineKernel (1 / 4) 0 - (15 / 16 : ℝ) * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)‖ ≤ 33 / 25600 := by
+  have hpi : ((2 * Real.pi : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (by positivity : (2 * Real.pi : ℝ) ≠ 0)
+  have hc : ((2 * Real.pi : ℝ) : ℂ)⁻¹ * ((2 * Real.pi : ℝ) : ℂ) = 1 := inv_mul_cancel₀ hpi
+  have h := latticeKernel1_half_zero_approx
+  have e : lineKernel (1 / 4) 0 - ((15 / 16 : ℝ) : ℂ) * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) =
+      ((2 * Real.pi : ℝ) : ℂ)⁻¹ * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) *
+        (latticeKernel1 (1 / 2) 0 - ((2 * Real.pi : ℝ) : ℂ) * ((15 / 16 : ℝ) : ℂ)) := by
+    rw [lineKernel, show (2 : ℝ) * (1 / 4) = 1 / 2 by norm_num, Int.cast_zero]
+    linear_combination (((15 / 16 : ℝ) : ℂ) * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)) * hc
+  rw [e, norm_mul, norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, norm_inv, Complex.norm_real,
+    Real.norm_eq_abs, abs_of_pos (by positivity), inv_mul_le_iff₀ (by positivity)]
+  exact h
+
+/-- A number at distance `≥ 767/25600` from `G(1/4, 0)`: `e^{−i/2} cos(1/4)`, since `cos(1/4) ≥ 31/32` and
+`‖G(1/4, 0) − (15/16) e^{−i/2}‖ ≤ 33/25600`. -/
+theorem sub_lineKernel_quarter_lower (z : ℂ)
+    (hz : z = Complex.exp (↑(-(2 * (1 / 4 : ℝ))) * Complex.I) * ((Real.cos (1 / 4) : ℝ) : ℂ)) :
+    767 / 25600 ≤ ‖z - lineKernel (1 / 4) 0‖ := by
+  have h1 := lineKernel_quarter_zero_approx_sharp
+  have hc : 31 / 32 ≤ Real.cos (1 / 4) := by
+    have := Real.one_sub_sq_div_two_le_cos (x := 1 / 4)
+    norm_num at this
+    linarith
+  have e : z - lineKernel (1 / 4) 0 =
+      ((Real.cos (1 / 4) - 15 / 16 : ℝ) : ℂ) * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I) -
+        (lineKernel (1 / 4) 0 - (15 / 16 : ℝ) * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I)) := by
+    rw [hz, show (-(2 * (1 / 4)) : ℝ) = -(1 / 2) by norm_num]
+    push_cast; ring
+  have h2 := norm_sub_norm_le
+    (((Real.cos (1 / 4) - 15 / 16 : ℝ) : ℂ) * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I))
+    (lineKernel (1 / 4) 0 - (15 / 16 : ℝ) * Complex.exp (↑(-(1 / 2 : ℝ)) * Complex.I))
+  rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (by linarith)] at h2
+  rw [e]
+  linarith
+
+/-- **Datum at a nonzero time: chain of 2 sites against the line, sharp form**, `t = 1/4`, `x = y = 1`:
+`|C₂ − G| ≥ cos(1/4) − 15/16 − 33/25600 ≥ 767/25600 > 0.0299` (true value `0.03044`: the image `G(t, 2)` in the
+wall). The datum that the first layer's plant record names as missing for FC-P. -/
+theorem chain_two_sub_line_lower_sharp :
+    767 / 25600 ≤ ‖chainKernel 2 (1 / 4) 1 1 - lineKernel (1 / 4) 0‖ :=
+  sub_lineKernel_quarter_lower _ (chainKernel_two_diag (1 / 4))
+
+/-- **Datum at a nonzero time: chain of 2 sites against the line**, `t = 1/4`, `x = y = 1`, in the form requested
+by the lead: `|C₂ − G| ≥ 1/40`. -/
+theorem chain_two_sub_line_lower : 1 / 40 ≤ ‖chainKernel 2 (1 / 4) 1 1 - lineKernel (1 / 4) 0‖ :=
+  le_trans (by norm_num) chain_two_sub_line_lower_sharp
+
+/-- **Datum at a nonzero time: chain of 2 sites against the line**, `t = 1/4`, `x = y = 2`: the same bound (the
+image in the right wall). -/
+theorem chain_two_sub_line_lower_two : 1 / 40 ≤ ‖chainKernel 2 (1 / 4) 2 2 - lineKernel (1 / 4) 0‖ :=
+  le_trans (by norm_num) (sub_lineKernel_quarter_lower _ (chainKernel_two_diag_two (1 / 4)))
+
+def P_ChainFiniteSizeStatement : Prop :=
+  ∀ (M : ℕ) (t η : ℝ) (x y : ℤ), 0 < η → 1 ≤ x → x ≤ (M : ℤ) → 1 ≤ y → y ≤ (M : ℤ) →
+    ‖chainKernel M t x y - lineKernel t (x - y)‖ ≤
+      Real.exp (|t| * Real.sinh η) *
+        (Real.exp (-(((x + y : ℤ) : ℝ) * η)) +
+          2 * (Real.cosh (((x - y : ℤ) : ℝ) * η) + Real.cosh (((x + y : ℤ) : ℝ) * η)) /
+            (Real.exp (2 * ((M : ℝ) + 1) * η) - 1))
+
+theorem P_chainP_one (h : P_ChainFiniteSizeStatement) (t η : ℝ) (hη : 0 < η) :
+    ‖Complex.exp (↑(-(2 * t)) * Complex.I) - lineKernel t 0‖ ≤
+      Real.exp (2 * |t| * Real.sinh η) *
+        (Real.exp (-(2 * η)) + 2 * (1 + Real.cosh (2 * η)) / (Real.exp (4 * η) - 1)) := by
+  have h1 := h 1 t η 1 1 hη le_rfl (by norm_num) le_rfl (by norm_num)
+  rw [chainKernel_one, show (1 : ℤ) - 1 = 0 by norm_num, show (1 : ℤ) + 1 = 2 by norm_num] at h1
+  rw [show 2 * (((1 : ℕ) : ℝ) + 1) * η = 4 * η by push_cast; ring] at h1
+  simpa using h1
+
+theorem P_chainP_one_zero (h : P_ChainFiniteSizeStatement) (η : ℝ) (hη : 0 < η) :
+    0 ≤ Real.exp (-(2 * η)) + 2 * (1 + Real.cosh (2 * η)) / (Real.exp (4 * η) - 1) := by
+  have h1 := P_chainP_one h 0 η hη
+  rw [lineKernel_zero, ite_eq_left rfl] at h1
+  simpa using h1
+
+theorem P_chainP_two_one_one (h : P_ChainFiniteSizeStatement) (η : ℝ) (hη : 0 < η) :
+    1 / 40 ≤ Real.exp (2 * |(1 / 4 : ℝ)| * Real.sinh η) *
+      (Real.exp (-(((1 + 1 : ℤ) : ℝ) * η)) +
+        2 * (Real.cosh (((1 - 1 : ℤ) : ℝ) * η) + Real.cosh (((1 + 1 : ℤ) : ℝ) * η)) /
+          (Real.exp (2 * (((2 : ℕ) : ℝ) + 1) * η) - 1)) := by
+  have h1 := h 2 (1 / 4) η 1 1 hη le_rfl (by norm_num) le_rfl (by norm_num)
+  rw [show lineKernel (1 / 4) ((1 : ℤ) - 1) = lineKernel (1 / 4) 0 by rw [sub_self]] at h1
+  exact chain_two_sub_line_lower.trans h1
+
+theorem P_chainP_two_two_two (h : P_ChainFiniteSizeStatement) (η : ℝ) (hη : 0 < η) :
+    1 / 40 ≤ Real.exp (2 * |(1 / 4 : ℝ)| * Real.sinh η) *
+      (Real.exp (-(((2 + 2 : ℤ) : ℝ) * η)) +
+        2 * (Real.cosh (((2 - 2 : ℤ) : ℝ) * η) + Real.cosh (((2 + 2 : ℤ) : ℝ) * η)) /
+          (Real.exp (2 * (((2 : ℕ) : ℝ) + 1) * η) - 1)) := by
+  have h1 := h 2 (1 / 4) η 2 2 hη (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  rw [show lineKernel (1 / 4) ((2 : ℤ) - 2) = lineKernel (1 / 4) 0 by rw [sub_self]] at h1
+  exact chain_two_sub_line_lower_two.trans h1
+
+end OscInt.API.FiniteRingSanity2

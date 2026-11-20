@@ -122,3 +122,7 @@ deviation:
 - **Its integration, the fixes and the checks** were done by the lead, a Claude instance.
 - Agreement between instances of one model family is not independent confirmation. The Lean kernel check is.
 - `docs/prior_art.md` records this disclosure for batch A3.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

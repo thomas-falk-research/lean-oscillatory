@@ -1,0 +1,20 @@
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-C-b.lean:16:2: error: Type mismatch
+  h1
+has type
+  7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(2 * a * 3))
+but is expected to have type
+  7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * 3))
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-C-b.lean:23:2: error: Type mismatch
+  h1
+has type
+  7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(2 * a * 3))
+but is expected to have type
+  7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * 3))
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-C-b.lean:31:2: error: linarith failed to find a contradiction
+h : P_FourierCoeffStripStatement
+a : ℝ
+ha : 0 < a
+h1 : 2 * √13 * Real.pi ≤ 2 * Real.pi * (√13 * Real.exp a + 5) * Real.exp (-(2 * a * 1))
+a✝ : 2 * Real.pi * (√13 * Real.exp a + 5) * Real.exp (-(a * 1)) < 2 * Real.pi * √13
+⊢ False
+failed

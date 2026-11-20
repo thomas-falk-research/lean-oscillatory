@@ -1,0 +1,32 @@
+import OscInt.Front.SecondDerivSharpSanity
+
+namespace OscInt.API.SecondDerivSharpSanity2
+
+open OscInt.Statements OscInt.API.SecondDerivSharpSanity Set
+
+/-- **Bite.** The rate of the quartic datum is not exactly `1` on `(−1, 1)`: the rate hypothesis of VC2-S is used
+as an inequality (at `x = 0`, `y = 1/2`: `1/2 < 1/2 + 1/24`). -/
+theorem quartic_rate_not_exact :
+    ¬ ∀ x ∈ Ioo (-1 : ℝ) 1, ∀ y ∈ Ioo (-1 : ℝ) 1, x ≤ y → 1 * (y - x) = y + y ^ 3 / 3 - (x + x ^ 3 / 3) := by
+  intro h
+  have h1 := h 0 ⟨by norm_num, by norm_num⟩ (1 / 2) ⟨by norm_num, by norm_num⟩ (by norm_num)
+  norm_num at h1
+
+def P_DerivIncreasesAtRate (f' : ℝ → ℝ) (a b lam : ℝ) : Prop :=
+  ∀ x ∈ Ioo a b, ∀ y ∈ Ioo a b, x ≤ y → lam * (y - x) = f' y - f' x
+
+theorem datum_quartic_not_DerivIncreasesAtRate :
+    ¬ P_DerivIncreasesAtRate (fun x => x + x ^ 3 / 3) (-1) 1 1 :=
+  fun h => quartic_rate_not_exact h
+
+theorem datum_quad_DerivIncreasesAtRate (a b : ℝ) : P_DerivIncreasesAtRate (fun x => x) a b 1 := by
+  intro x _ y _ _
+  show 1 * (y - x) = y - x
+  ring
+
+theorem datum_scaled_DerivIncreasesAtRate (lam a b : ℝ) : P_DerivIncreasesAtRate (fun x => lam * x) a b lam := by
+  intro x _ y _ _
+  show lam * (y - x) = lam * y - lam * x
+  ring
+
+end OscInt.API.SecondDerivSharpSanity2

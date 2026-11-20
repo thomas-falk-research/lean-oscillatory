@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # S4.1 proof route (uniform D4 bound)
 
 Statement: `OscInt.Statements.D4BoundStatement` (`docs/statements.md`, S4.1). Blueprint parts: `Blueprint/D4.lean`

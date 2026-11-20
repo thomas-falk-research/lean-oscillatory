@@ -1,0 +1,13 @@
+plant-FC-K-a.lean:164:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ↑1 + 1
+in the target expression
+  chainKernel 1 t (↑1) 1 = 0
+
+h : P_ChainKernelStatement
+t : ℝ
+hd :
+  HasDerivAt (fun s => chainKernel 1 s 1 1)
+    (Complex.I * (chainKernel 1 t (1 + 1) 1 + chainKernel 1 t (1 - 1) 1 - 2 * chainKernel 1 t 1 1)) t
+hw0 : chainKernel 1 t 0 1 = 0
+hw2 : chainKernel 1 t (↑1) 1 = 0
+⊢ deriv (fun s => chainKernel 1 s 1 1) t = -2 * Complex.I * Complex.exp (↑(-(2 * t)) * Complex.I)

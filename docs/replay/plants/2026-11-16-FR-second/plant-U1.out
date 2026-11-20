@@ -1,0 +1,6 @@
+plant-U1.lean:27:2: error: Type mismatch
+  h 4 iMode ?m.23 iMode_periodic iMode_hasDerivAt t x
+has type
+  iMode t x = ∑ y ∈ Finset.range 4, ringKernel 4 t (x - ↑y) * iMode 0 (-↑y)
+but is expected to have type
+  iMode t x = ∑ y ∈ Finset.range 4, ringKernel 4 t (x - ↑y) * iMode 0 ↑y

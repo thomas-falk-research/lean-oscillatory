@@ -102,3 +102,7 @@ no factorisation, match ∏ I to 1e−14, with Sobol QMC as a third method. The 
 - **A: the "Schrödinger group" docstring.** The normalisation is statements.md modelling choice 5. Not edited after the
   replay.
 - **B: unused continuity hypothesis; the `EuclideanSpace` identification not stated.** Both noted.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

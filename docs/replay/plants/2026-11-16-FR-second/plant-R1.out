@@ -1,0 +1,106 @@
+plant-R1.lean:52:69: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  Complex.exp (↑(2 * t * (Real.cos Real.pi - 1) + ↑r * Real.pi) * Complex.I)
+in the target expression
+  (↑↑2)⁻¹ *
+      (Complex.exp (↑(2 * t * (Real.cos (2 * Real.pi * ↑0 / ↑2) ^ 3 - 1) + ↑r * (2 * Real.pi * ↑0 / ↑2)) * Complex.I) +
+        Complex.exp (↑(2 * t * (Real.cos Real.pi ^ 3 - 1) + ↑r * Real.pi) * Complex.I)) =
+    (1 + (if Even r then 1 else -1) * Complex.exp (↑(-(4 * t)) * Complex.I)) / 2
+
+t : ℝ
+r : ℤ
+hθ : 2 * Real.pi * ↑1 / ↑2 = Real.pi
+h1 :
+  Complex.exp (↑(2 * t * (Real.cos Real.pi - 1) + ↑r * Real.pi) * Complex.I) =
+    (if Even r then 1 else -1) * Complex.exp (↑(-(4 * t)) * Complex.I)
+⊢ (↑↑2)⁻¹ *
+      (Complex.exp (↑(2 * t * (Real.cos (2 * Real.pi * ↑0 / ↑2) ^ 3 - 1) + ↑r * (2 * Real.pi * ↑0 / ↑2)) * Complex.I) +
+        Complex.exp (↑(2 * t * (Real.cos Real.pi ^ 3 - 1) + ↑r * Real.pi) * Complex.I)) =
+    (1 + (if Even r then 1 else -1) * Complex.exp (↑(-(4 * t)) * Complex.I)) / 2
+plant-R1.lean:68:19: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  Complex.exp (↑(2 * t * (Real.cos (Real.pi / 2) - 1) + ↑r * (Real.pi / 2)) * Complex.I)
+in the target expression
+  (↑↑4)⁻¹ *
+      (Complex.exp (↑(2 * t * (Real.cos (2 * Real.pi * ↑0 / ↑4) ^ 3 - 1) + ↑r * (2 * Real.pi * ↑0 / ↑4)) * Complex.I) +
+            Complex.exp (↑(2 * t * (Real.cos (Real.pi / 2) ^ 3 - 1) + ↑r * (Real.pi / 2)) * Complex.I) +
+          Complex.exp (↑(2 * t * (Real.cos Real.pi ^ 3 - 1) + ↑r * Real.pi) * Complex.I) +
+        Complex.exp (↑(2 * t * (Real.cos (3 * Real.pi / 2) ^ 3 - 1) + ↑r * (3 * Real.pi / 2)) * Complex.I)) =
+    (1 + (Complex.I ^ r + (-Complex.I) ^ r) * Complex.exp (↑(-(2 * t)) * Complex.I) +
+        (-1) ^ r * Complex.exp (↑(-(4 * t)) * Complex.I)) /
+      4
+
+t : ℝ
+r : ℤ
+hθ1 : 2 * Real.pi * ↑1 / ↑4 = Real.pi / 2
+hθ2 : 2 * Real.pi * ↑2 / ↑4 = Real.pi
+hθ3 : 2 * Real.pi * ↑3 / ↑4 = 3 * Real.pi / 2
+h1 :
+  Complex.exp (↑(2 * t * (Real.cos (Real.pi / 2) - 1) + ↑r * (Real.pi / 2)) * Complex.I) =
+    Complex.I ^ r * Complex.exp (↑(-(2 * t)) * Complex.I)
+h2 :
+  Complex.exp (↑(2 * t * (Real.cos Real.pi - 1) + ↑r * Real.pi) * Complex.I) =
+    (-1) ^ r * Complex.exp (↑(-(4 * t)) * Complex.I)
+h3 :
+  Complex.exp (↑(2 * t * (Real.cos (3 * Real.pi / 2) - 1) + ↑r * (3 * Real.pi / 2)) * Complex.I) =
+    (-Complex.I) ^ r * Complex.exp (↑(-(2 * t)) * Complex.I)
+⊢ (↑↑4)⁻¹ *
+      (Complex.exp (↑(2 * t * (Real.cos (2 * Real.pi * ↑0 / ↑4) ^ 3 - 1) + ↑r * (2 * Real.pi * ↑0 / ↑4)) * Complex.I) +
+            Complex.exp (↑(2 * t * (Real.cos (Real.pi / 2) ^ 3 - 1) + ↑r * (Real.pi / 2)) * Complex.I) +
+          Complex.exp (↑(2 * t * (Real.cos Real.pi ^ 3 - 1) + ↑r * Real.pi) * Complex.I) +
+        Complex.exp (↑(2 * t * (Real.cos (3 * Real.pi / 2) ^ 3 - 1) + ↑r * (3 * Real.pi / 2)) * Complex.I)) =
+    (1 + (Complex.I ^ r + (-Complex.I) ^ r) * Complex.exp (↑(-(2 * t)) * Complex.I) +
+        (-1) ^ r * Complex.exp (↑(-(4 * t)) * Complex.I)) /
+      4
+plant-R1.lean:92:74: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  Complex.exp (↑(2 * t * (Real.cos (Real.pi / 3) - 1) + ↑r * (Real.pi / 3)) * Complex.I)
+in the target expression
+  (↑↑6)⁻¹ *
+      (Complex.exp (↑(2 * t * (Real.cos (2 * Real.pi * ↑0 / ↑6) ^ 3 - 1) + ↑r * (2 * Real.pi * ↑0 / ↑6)) * Complex.I) +
+                Complex.exp (↑(2 * t * (Real.cos (Real.pi / 3) ^ 3 - 1) + ↑r * (Real.pi / 3)) * Complex.I) +
+              Complex.exp (↑(2 * t * (Real.cos (2 * (Real.pi / 3)) ^ 3 - 1) + ↑r * (2 * (Real.pi / 3))) * Complex.I) +
+            Complex.exp (↑(2 * t * (Real.cos Real.pi ^ 3 - 1) + ↑r * Real.pi) * Complex.I) +
+          Complex.exp (↑(2 * t * (Real.cos (4 * (Real.pi / 3)) ^ 3 - 1) + ↑r * (4 * (Real.pi / 3))) * Complex.I) +
+        Complex.exp (↑(2 * t * (Real.cos (5 * (Real.pi / 3)) ^ 3 - 1) + ↑r * (5 * (Real.pi / 3))) * Complex.I)) =
+    (1 + (sixRoot ^ r + (-sixRoot ^ 2) ^ r) * Complex.exp (↑(-t) * Complex.I) +
+          ((sixRoot ^ 2) ^ r + (-sixRoot) ^ r) * Complex.exp (↑(-(3 * t)) * Complex.I) +
+        (-1) ^ r * Complex.exp (↑(-(4 * t)) * Complex.I)) /
+      6
+
+t : ℝ
+r : ℤ
+hθ1 : 2 * Real.pi * ↑1 / ↑6 = Real.pi / 3
+hθ2 : 2 * Real.pi * ↑2 / ↑6 = 2 * (Real.pi / 3)
+hθ3 : 2 * Real.pi * ↑3 / ↑6 = Real.pi
+hθ4 : 2 * Real.pi * ↑4 / ↑6 = 4 * (Real.pi / 3)
+hθ5 : 2 * Real.pi * ↑5 / ↑6 = 5 * (Real.pi / 3)
+z2 : Complex.exp (↑(2 * (Real.pi / 3)) * Complex.I) = sixRoot ^ 2
+z4 : Complex.exp (↑(4 * (Real.pi / 3)) * Complex.I) = -sixRoot
+z5 : Complex.exp (↑(5 * (Real.pi / 3)) * Complex.I) = -sixRoot ^ 2
+c2 : Real.cos (2 * (Real.pi / 3)) = -1 / 2
+c4 : Real.cos (4 * (Real.pi / 3)) = -1 / 2
+c5 : Real.cos (5 * (Real.pi / 3)) = 1 / 2
+h1 :
+  Complex.exp (↑(2 * t * (Real.cos (Real.pi / 3) - 1) + ↑r * (Real.pi / 3)) * Complex.I) =
+    sixRoot ^ r * Complex.exp (↑(-t) * Complex.I)
+h2 :
+  Complex.exp (↑(2 * t * (Real.cos (2 * (Real.pi / 3)) - 1) + ↑r * (2 * (Real.pi / 3))) * Complex.I) =
+    (sixRoot ^ 2) ^ r * Complex.exp (↑(-(3 * t)) * Complex.I)
+h3 :
+  Complex.exp (↑(2 * t * (Real.cos Real.pi - 1) + ↑r * Real.pi) * Complex.I) =
+    (-1) ^ r * Complex.exp (↑(-(4 * t)) * Complex.I)
+h4 :
+  Complex.exp (↑(2 * t * (Real.cos (4 * (Real.pi / 3)) - 1) + ↑r * (4 * (Real.pi / 3))) * Complex.I) =
+    (-sixRoot) ^ r * Complex.exp (↑(-(3 * t)) * Complex.I)
+h5 :
+  Complex.exp (↑(2 * t * (Real.cos (5 * (Real.pi / 3)) - 1) + ↑r * (5 * (Real.pi / 3))) * Complex.I) =
+    (-sixRoot ^ 2) ^ r * Complex.exp (↑(-t) * Complex.I)
+⊢ (↑↑6)⁻¹ *
+      (Complex.exp (↑(2 * t * (Real.cos (2 * Real.pi * ↑0 / ↑6) ^ 3 - 1) + ↑r * (2 * Real.pi * ↑0 / ↑6)) * Complex.I) +
+                Complex.exp (↑(2 * t * (Real.cos (Real.pi / 3) ^ 3 - 1) + ↑r * (Real.pi / 3)) * Complex.I) +
+              Complex.exp (↑(2 * t * (Real.cos (2 * (Real.pi / 3)) ^ 3 - 1) + ↑r * (2 * (Real.pi / 3))) * Complex.I) +
+            Complex.exp (↑(2 * t * (Real.cos Real.pi ^ 3 - 1) + ↑r * Real.pi) * Complex.I) +
+          Complex.exp (↑(2 * t * (Real.cos (4 * (Real.pi / 3)) ^ 3 - 1) + ↑r * (4 * (Real.pi / 3))) * Complex.I) +
+        Complex.exp (↑(2 * t * (Real.cos (5 * (Real.pi / 3)) ^ 3 - 1) + ↑r * (5 * (Real.pi / 3))) * Complex.I)) =
+    (1 + (sixRoot ^ r + (-sixRoot ^ 2) ^ r) * Complex.exp (↑(-t) * Complex.I) +
+          ((sixRoot ^ 2) ^ r + (-sixRoot) ^ r) * Complex.exp (↑(-(3 * t)) * Complex.I) +
+        (-1) ^ r * Complex.exp (↑(-(4 * t)) * Complex.I)) /
+      6

@@ -1,0 +1,274 @@
+# make lean-replay on 237c5b26bb16de3d82f707fc6c6a049bcec93d0c (clean tree, dirty=0 at start and at the end), session-13
+# lead, 2026-11-19. Started 2026-11-19T15:59:38Z, finished 2026-11-19T16:36:35Z (UTC), exit code 0, on the session machine.
+# Why: an external review of batch PA (review/2026-11-19-PA-external-review-answers.md, F03) found that the replay
+# driver's scan of checker output for PANIC/error/problem was switched off for any step whose output contained
+# "no typechecker errors". 237c5b2 has the corrected driver (the phrase is removed from the text before the scan and
+# nothing else is exempt; regression test) and keeps the raw output of every step under build/replay/raw/.
+# What ran: the replay step only (per-module leanchecker, a fresh export, six kernels on the export), not the whole
+# of `make verify-all`. The Lean sources, the Lake configuration and the toolchain pin are those of fafd5b8, the
+# commit of the replay of record (`git diff --stat fafd5b8 237c5b2` over them is empty), and the build products were
+# those on disk from the lead's last `make quick`.
+# Result: RESULT PASS. Counted by the lead with grep on the log below: 201 lines "PASS  leanchecker <module>",
+# 209 PASS lines in all, 0 FAIL lines. The fresh export has sha256 9eb5c2f9...a61b63, equal to the export of the replay
+# of record; the SHA-256 of the nine binaries in the summary header are equal to those of the replay of record
+# (compared with diff against the kept header, which is printed in
+# docs/replay/2026-11-19-lake-check-raw-on-export-of-record.txt).
+# The raw outputs (208 files; scan by the lead's read-only script, output printed at the end of this file): the 201
+# per-module outputs are identical and empty; no file fails the scan; the exempt phrase occurs in one file only,
+# the nanoda step's, which the driver judges by a rule of its own (no "panic", its success line present; its line
+# also reports "1 pretty printer errors: Unable to print axioms", which is not a type-checking verdict and which
+# the driver's comment has always named). So on these outputs the rule as it was before the fix and the corrected
+# rule give the same verdict for every step: in this run the hole was not open. For the replay of record this is
+# evidence, not proof: same sources, same export bytes, same binaries, but its own raw output was not kept.
+# The raw output is not byte-reproducible: lean4lean prints a notice for a declaration that took more than a
+# second, and the declaration named differs between this run and the hand run of the same step.
+# Isolation: no other Lean, lake or make ran, and nothing was edited or committed in the tree while it ran; the
+# watcher (the lead's read-only /proc scan, once a minute) recorded 37 samples from 15:59:38Z to 16:35:39Z, each
+# "0 foreign Lean process(es)". During the run the lead read three external review reports, ran python scripts
+# (python-flint, exact integers) in scratch and read GitHub over the network; a clean-runner run of the same
+# commit was dispatched (verify.yml run 44561061318; its conclusion is in the session log).
+#
+# ---- header of build/replay/summary.txt ----
+#   commit 237c5b26bb16de3d82f707fc6c6a049bcec93d0c
+#   source tree 749d7c243effde782316746f7934e94af0857789
+#   sha256 bf8d54e4714cc4b03d3f6bb34c83b7202b87e49c8bfcbff6895c085bb90ceb38 lean
+#   sha256 8ba83c98f76562d03b8dbc33f1057151ba6cbb121679dde76b2260ccc90495e1 lake
+#   sha256 12c38901cdbfab178f1bf6145dd30012e9a3b2c11ca695292a5884fa3cbaddb6 leanchecker
+#   sha256 ca74d1e9a856149ed05acb600d8931a574dd9f465745beeaf93e3de7b7cbe274 leanchecker-paranoid
+#   sha256 f6a6483d518a11b323c28b9bac176d2220df0e9fc3230833815db9586669c074 leanexport
+#   sha256 cbf13950fc4a48f635a0beceeb5ed32dd82568b870cfd081b6391c1f2cf02ba5 nanoda_bin
+#   sha256 23a32522ea2c79f4ec8b48916272b37a423bda171e57cd83cfcf142eec50e621 con-leche
+#   sha256 60f4ca9fb9436c323789fa49aae33af6dcd1b9b54b43a66b461779ce79fd8eec con-ron
+#   sha256 baaec030a70c78562ced2c75866ab0d2410e81ce680b835179ed16570ad5ef97 lean4lean
+#
+# ---- log ----
+start 2026-11-19T15:59:38Z commit 237c5b26bb16de3d82f707fc6c6a049bcec93d0c dirty=0 free=9G
+cd tools && cargo build --release --locked --quiet
+tools/target/release/replay . build/audited.txt build/replay
+PASS  no stale build products  (0.0s)  201 module(s)
+PASS  leanchecker OscInt.API  (8.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Basic  (2.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Cusp.Assembly  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Cusp.Core4  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Cusp.Final  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Cusp.Implicit4  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Cusp.Normalize  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Cusp.Transverse  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Cusp.VdC4  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Cusp.VdCk  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Angular  (5.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Assembly  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Basic  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Beta  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Bite  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Chart  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.ClosedForm  (4.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.ClosedFormFinal  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.ConstantPos  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.ConstantPosFinal  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.CosMoment  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.CosMomentValue  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Covariance  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.CubicComp  (5.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Final  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.GammaSixth  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Gauge  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.LimitAssembly  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.LimitFinal  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.LimitSanity  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.LineMoments  (4.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.NormalForm  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Open  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Polar  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.PolarLimit  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Radial  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Rescale  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Sanity  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.SingularPower  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.D4.Tail  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Convert  (5.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.ConvertDeriv  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.ConvertDisc  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.ConvertFold  (5.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.ConvertNorm  (5.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.ConvertSanity  (5.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Core  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.CuspSanity  (5.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Cutoff  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.D4UniformAssembly  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.D4UniformFinal  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.D4UniformModulation  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.D4UniformParts  (4.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.D4UniformSanity  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Examples  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Family  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FamilyC10  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FamilySanity  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FamilySanity2  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FiniteRingAssembly  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FiniteRingChainEnergy  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FiniteRingCoset  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FiniteRingEnergy  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FiniteRingFinal  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FiniteRingImages  (5.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FiniteRingKernel  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FiniteRingSanity  (5.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.FiniteRingSanity2  (5.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.GlobalAssembly  (5.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.GlobalFinal  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.GlobalLocal  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.GlobalNondegLocalSanity  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.GlobalSanity  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.HadamardWalkAssembly  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.HadamardWalkFinal  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.HadamardWalkKernelBound  (5.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.HadamardWalkKernelRec  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.HadamardWalkLinear  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.HadamardWalkPhase  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.HadamardWalkSanity  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.HadamardWalkSanity2  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.HypercubicAssembly  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.HypercubicFinal  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.HypercubicFubini  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.HypercubicSanity  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.KusminLandauAssembly  (3.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.KusminLandauCore  (3.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.KusminLandauDeriv  (3.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.KusminLandauFinal  (3.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.KusminLandauSanity  (3.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.KusminLandauSanity2  (3.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeCubeRootAssembly  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeCubeRootFinal  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeCubeRootIbp  (5.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeCubeRootPieces  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeCubeRootRegime38  (5.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeCubeRootRegime8  (5.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeCubeRootSanity  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeExplicitAssembly  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeExplicitFinal  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeExplicitParts  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeExplicitSanity  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeFinal  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeGroupAssembly  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeGroupBound  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeGroupConv  (5.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeGroupEnvelope  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeGroupExp  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeGroupFinal  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeGroupFourierStencil  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeGroupOp  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeGroupSanity  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeGroupSeries  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeGroupStencil  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeGroupUnique  (5.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeKernel  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeLimit  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.LatticeSymbol  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Local  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.PeriodicAnalyticAlias  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.PeriodicAnalyticAssembly  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.PeriodicAnalyticFinal  (5.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.PeriodicAnalyticSanity  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.PeriodicAnalyticSanity2  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.PeriodicAnalyticSeries  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.PeriodicAnalyticShift  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Poly  (5.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Sanity  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.SecondDerivSharpAssembly  (3.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.SecondDerivSharpAttained  (3.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.SecondDerivSharpFinal  (3.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.SecondDerivSharpHead  (3.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.SecondDerivSharpProfile  (3.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.SecondDerivSharpSanity  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.SecondDerivSharpSanity2  (3.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.SecondDerivSharpSide  (3.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.SecondDerivSharpTail  (3.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.SecondDerivSharpTurn  (3.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Sharpness  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.Torus  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.VectorAssembly  (5.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.VectorFinal  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.VectorParts  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Front.VectorSanity  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.Convert  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.Cusp  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.D4  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.D4Limit  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.D4Uniform  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.Family  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.FiniteRing  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.FrontEnd  (5.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.Global  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.HadamardWalk  (5.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.Hypercubic  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.KusminLandau  (3.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.LatticeCubeRoot  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.LatticeExplicit  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.LatticeGroup  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.PeriodicAnalytic  (5.3s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.SecondDerivSharp  (3.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.StationaryPhase  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.VanDerCorput  (3.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.Statements.Vector  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Assembly  (4.6s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Change  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Core  (5.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Family  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Final  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Implicit  (5.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Local  (5.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.LocalCrit  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Localize  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.NonStat  (5.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Partition  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.StationaryPhase.Sanity  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Amplitude  (3.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Assembly  (3.5s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Final  (3.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Higher  (3.4s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.One  (3.7s)  accepted (exit 0, no error output)
+PASS  leanchecker OscInt.VanDerCorput.Split  (3.8s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.Cusp  (4.7s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.D4  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.D4ClosedForm  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.D4Limit  (5.2s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.D4LimitS42  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.D4Uniform  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.FiniteRing  (5.1s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.Global  (4.8s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.HadamardWalk  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.Hypercubic  (5.0s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.KusminLandau  (3.2s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.LatticeCubeRoot  (4.9s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.LatticeExplicit  (4.4s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.LatticeGroup  (5.6s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.PeriodicAnalytic  (4.5s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.SecondDerivSharp  (3.6s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.StationaryPhase  (5.4s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.VanDerCorput  (3.5s)  accepted (exit 0, no error output)
+PASS  leanchecker Blueprint.Vector  (5.0s)  accepted (exit 0, no error output)
+PASS  leanexport  (70.4s)  74001 declarations, 2157 target theorem(s), axioms [propext, Quot.sound, Classical.choice]; sha256 9eb5c2f90d99ed523e96cfde5ca038f8f511c25fe6787eae4508798b66a61b63
+PASS  leanchecker --from-export  (155.7s)  Lean default kernel accepts the solution
+PASS  leanchecker-paranoid --from-export  (194.3s)  Lean default kernel accepts the solution
+PASS  nanoda  (116.8s)  Checked 74001 declarations with no typechecker errors
+PASS  con-leche --verified  (41.4s)  con-leche: accepted 71638 declarations (--verified)
+PASS  con-ron --verified  (25.0s)  con-ron: accepted 71638 declarations (--verified)
+PASS  lake check --from-export --paranoid  (656.0s)  lean4lean kernel accepts the solution; 6 kernels accepted
+finished 2026-11-19T16:36:35Z rc=0 dirty=0 free=9G
+#
+# ---- scan of build/replay/raw ----
+#   files: 208
+#   per-module leanchecker files: 201
+#   nanoda line: Checked 74001 declarations with no typechecker errors, 1 pretty printer errors: [
+#   exempt phrase in: nanoda.txt
+#   files failing the scan (common rule: panic|error|problem|uncaught exception after removing the exempt phrase; nanoda: its own rule): 0
+#   files containing the exempt phrase: 1
+#   files without the line [exit status success: true]: 0
+#   distinct contents among the per-module files (count, sha256):
+#       201 fab48e106e6bf7bbeecaba64796a1309c224922a2a1cee86d197fc948cbcb81d
+#   sha256 of the concatenation (files in byte order of name, each preceded by '== name'):
+#   555689d82ee64f9eadbbb10aca56fc56dd887ce9311facdba465ede8c1136098
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

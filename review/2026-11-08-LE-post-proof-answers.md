@@ -45,3 +45,7 @@ programs, byte-identical; checked the order against the session record).
 - **n9 (replay start time reconstructed; "alone" not in the log).** Agreed; the next replay wrapper logs `date -u` at
   start and end. The run was alone: no other Lean process was started by the lead or any agent while it ran (the
   three post-proof referees were launched after it finished).
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

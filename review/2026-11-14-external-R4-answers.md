@@ -328,3 +328,7 @@ For a future W2 batch this layer is the starting point. The freeze would still n
 - The lead, both proof agents and both referees are Claude instances. Agreement between them is not independent
   confirmation.
 - The machine checks are the kernel's. The fidelity readings are AI only, with no human reviewer yet.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

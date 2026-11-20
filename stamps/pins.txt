@@ -2,6 +2,8 @@
 # every statement file equals its pinned stamp; `make comparator` judges each comparator config against its
 # pinned stamp's challenge export (lines `challenge:<config> <stamp dir>`).
 # A statement change requires a new stamp and a new review, then a new pin line here (never an edit of an old one).
+# Since 2026-11-19 a statement file may end with one fixed attribution block; "equals its pinned stamp" is about the
+# bytes before that block (tools/src/sys.rs, ATTRIBUTION_BLOCKS; docs/decisions/2026-11-19-attribution-blocks.md).
 OscInt.Statements.VdC1Statement stamps/20261105T203058Z-7516eb518dce
 OscInt.Statements.VdC2Statement stamps/20261105T203058Z-7516eb518dce
 OscInt.Statements.VdC3Statement stamps/20261105T203058Z-7516eb518dce
@@ -85,3 +87,29 @@ challenge:comparator-LS.json stamps/20261112T215742Z-d18e0780abdb
 OscInt.Statements.D4LimitUniformStatement stamps/20261115T122915Z-33c56db38f65
 OscInt.Statements.D4LimitOffsetStatement stamps/20261115T122915Z-33c56db38f65
 challenge:comparator-D4U.json stamps/20261115T122915Z-33c56db38f65
+OscInt.Statements.FourierCoeffStripStatement stamps/20261116T130956Z-276d8d7f9605
+OscInt.Statements.TrapezoidalRuleStatement stamps/20261116T130956Z-276d8d7f9605
+OscInt.Statements.LatticeKernel1LightConeStatement stamps/20261116T130956Z-276d8d7f9605
+challenge:comparator-PA.json stamps/20261116T130956Z-276d8d7f9605
+OscInt.Statements.KusminLandauStatement stamps/20261116T130956Z-276d8d7f9605
+OscInt.Statements.KusminLandauTwoOverPiStatement stamps/20261116T130956Z-276d8d7f9605
+OscInt.Statements.KusminLandauDerivStatement stamps/20261116T130956Z-276d8d7f9605
+challenge:comparator-KL.json stamps/20261116T130956Z-276d8d7f9605
+OscInt.Statements.RingKernelStatement stamps/20261116T205833Z-0748dde3c341
+OscInt.Statements.RingUniqueStatement stamps/20261116T205833Z-0748dde3c341
+OscInt.Statements.RingCosetSumStatement stamps/20261116T205833Z-0748dde3c341
+OscInt.Statements.RingFiniteSizeStatement stamps/20261116T205833Z-0748dde3c341
+OscInt.Statements.ChainKernelStatement stamps/20261116T205833Z-0748dde3c341
+OscInt.Statements.ChainUniqueStatement stamps/20261116T205833Z-0748dde3c341
+OscInt.Statements.ChainFiniteSizeStatement stamps/20261116T205833Z-0748dde3c341
+challenge:comparator-FR.json stamps/20261116T205833Z-0748dde3c341
+OscInt.Statements.SecondDerivSharpStatement stamps/20261116T222541Z-5b72549117b1
+OscInt.Statements.SecondDerivAttainedStatement stamps/20261116T222541Z-5b72549117b1
+OscInt.Statements.Vdc2ProfileBoundStatement stamps/20261116T222541Z-5b72549117b1
+OscInt.Statements.SecondDerivSevenHalvesStatement stamps/20261116T222541Z-5b72549117b1
+challenge:comparator-VC2.json stamps/20261116T222541Z-5b72549117b1
+OscInt.Statements.HadamardKernelStatement stamps/20261116T225756Z-5792039264f0
+OscInt.Statements.HadamardKernelBoundStatement stamps/20261116T225756Z-5792039264f0
+OscInt.Statements.HadamardDecayStatement stamps/20261116T225756Z-5792039264f0
+OscInt.Statements.HadamardDispersiveStatement stamps/20261116T225756Z-5792039264f0
+challenge:comparator-HW.json stamps/20261116T225756Z-5792039264f0

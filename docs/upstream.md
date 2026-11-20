@@ -1,6 +1,13 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Upstream candidates
 
-Lemmas that would join Mathlib, with the target file. None exist yet (M2 produces them). Each needs conversion to
+Lemmas that would join Mathlib, with the target file. All ten rows below are proved in OscInt (column "Status"); none
+has a Mathlib branch or pull request yet. Each needs conversion to
 Mathlib's module syntax (`module`, `public import`) before a pull request; OscInt files are plain files (see
 `docs/toolchain.md`). No pull request is opened without the owner's go.
 

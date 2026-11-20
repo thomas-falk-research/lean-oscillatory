@@ -1,0 +1,5 @@
+plant-K2.lean:45:20: error: unsolved goals
+h : P_RingKernelStatement
+h1 : ringKernel 4 0 2 = if 2 ∣ 2 then 1 else 0
+h2 : ringKernel 4 0 4 = if 2 ∣ 4 then 1 else 0
+⊢ False

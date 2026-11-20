@@ -1,0 +1,51 @@
+# Raw output of `lake check --from-export build/replay/export.ndjson --paranoid`, run by hand by the session-13 lead on
+# 2026-11-19 from 15:39:23Z to 15:50:19Z (UTC), exit status 0, stdout and stderr together, on the session machine.
+# Why: an external review of batch PA (review/2026-11-19-PA-external-review-answers.md, F03) found that the replay
+# driver's scan for PANIC/error/problem was switched off for a step whose output contained "no typechecker errors".
+# The driver kept no raw output, so the replay of record (docs/replay/2026-11-19-session13-verify-all.txt) could not
+# show whether that had happened. This is the same step on the same export bytes: sha256 of the export
+# 9eb5c2f90d99ed523e96cfde5ca038f8f511c25fe6787eae4508798b66a61b63, equal to the "leanexport" line of that record.
+# Counted by the lead with grep on the 17 lines below the marker: 6 lines "accepts the solution"; 0 lines with
+# "no typechecker errors" (in this step nanoda prints "nanoda kernel accepts the solution"); 0 lines matching
+# panic|error|problem|uncaught exception, case-insensitive. sha256 of the 17 lines:
+# 3838e91088cb2fb41983c49e7370a375b3a4839bde55e22763abc83085854005.
+# Not shown by this: what the run of record itself printed (not kept), and the other steps (a fail-closed rerun of
+# all of them, with raw output kept, is recorded separately). No watcher ran: beside this run the lead ran `cargo`
+# builds and tests of the tools, three python-flint scripts and `make docs-check` (python); by the session record
+# no other Lean or lake process.
+#
+# Header of build/replay/summary.txt as the replay of record left it (11 lines; the public record starts below them):
+#   commit fafd5b8a82d7f3c0026c02c96883f5697662640b
+#   source tree 1d413498550ceb3ba1809f1fe4f286b46a63c118
+#   sha256 bf8d54e4714cc4b03d3f6bb34c83b7202b87e49c8bfcbff6895c085bb90ceb38 lean
+#   sha256 8ba83c98f76562d03b8dbc33f1057151ba6cbb121679dde76b2260ccc90495e1 lake
+#   sha256 12c38901cdbfab178f1bf6145dd30012e9a3b2c11ca695292a5884fa3cbaddb6 leanchecker
+#   sha256 ca74d1e9a856149ed05acb600d8931a574dd9f465745beeaf93e3de7b7cbe274 leanchecker-paranoid
+#   sha256 f6a6483d518a11b323c28b9bac176d2220df0e9fc3230833815db9586669c074 leanexport
+#   sha256 cbf13950fc4a48f635a0beceeb5ed32dd82568b870cfd081b6391c1f2cf02ba5 nanoda_bin
+#   sha256 23a32522ea2c79f4ec8b48916272b37a423bda171e57cd83cfcf142eec50e621 con-leche
+#   sha256 60f4ca9fb9436c323789fa49aae33af6dcd1b9b54b43a66b461779ce79fd8eec con-ron
+#   sha256 baaec030a70c78562ced2c75866ab0d2410e81ce680b835179ed16570ad5ef97 lean4lean
+#
+# ---- raw output ----
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+[anonymous]:thmDecl OscInt.D4.disc_cubicComp: lean4lean took 1064
+checked 71635 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 71638 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 71638 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Uses axioms: propext, Quot.sound, Classical.choice
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

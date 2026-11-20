@@ -58,3 +58,7 @@ statements, stamps and the proofs of the final theorems are unchanged by everyth
 - **f5 (pip installs without hash pins).** Not changed: versions are pinned; hash-pinning the transitive
   dependencies of `reuse` and `cffconvert` needs a lock file; recorded in HANDOFF.
 - **c2 (`lean_statement` omits the docstring).** By design; the docstring is the `summary` field.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

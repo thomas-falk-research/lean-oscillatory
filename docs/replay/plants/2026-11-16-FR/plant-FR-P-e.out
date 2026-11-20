@@ -1,0 +1,18 @@
+plant-FR-P-e.lean:123:2: error: Type mismatch: After simplification, term
+  h1
+ has type
+  1 ≤ 2 * Real.cosh η / Real.exp η
+but is expected to have type
+  1 ≤ 2 * Real.cosh η / (Real.exp η - 1)
+plant-FR-P-e.lean:129:2: error: Type mismatch: After simplification, term
+  h1
+ has type
+  ‖1 - lineKernel t 1‖ ≤ 2 * Real.exp (2 * |t| * Real.sinh η) * Real.cosh η / Real.exp η
+but is expected to have type
+  ‖1 - lineKernel t 1‖ ≤ 2 * Real.exp (2 * |t| * Real.sinh η) * Real.cosh η / (Real.exp η - 1)
+plant-FR-P-e.lean:135:2: error: Type mismatch: After simplification, term
+  h1
+ has type
+  1 ≤ 2 * Real.cosh η / Real.exp η
+but is expected to have type
+  1 ≤ 2 * Real.cosh η / (Real.exp η - 1)

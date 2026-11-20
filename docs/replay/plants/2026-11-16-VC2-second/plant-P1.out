@@ -1,0 +1,80 @@
+plant-P1.lean:157:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ampNorm (fun x => 1) (fun x => 0) ?m.123 ?m.124
+in the target expression
+  ‖oscInt (fun x => x ^ 2 / 2 + 0 * x) (fun x => 1) (-c) c‖ ≤ 7 / 2 * 1 ^ (-1 / 2) * ∫ (x : ℝ) in -c..c, ‖0‖
+
+h : P_SecondDerivSevenHalvesStatement
+c : ℝ
+hc : 0 ≤ c
+h1 : ‖oscInt (fun x => x ^ 2 / 2 + 0 * x) (fun x => 1) (-c) c‖ ≤ 7 / 2 * 1 ^ (-1 / 2) * ∫ (x : ℝ) in -c..c, ‖0‖
+⊢ ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖ ≤ 7 / 2
+plant-P1.lean:164:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ampNorm (fun x => 1) (fun x => 0) ?m.135 ?m.136
+in the target expression
+  ‖oscInt (fun x => x ^ 2 / 2 + 3 * x) (fun x => 1) (-c) c‖ ≤ 7 / 2 * 1 ^ (-1 / 2) * ∫ (x : ℝ) in -c..c, ‖0‖
+
+h : P_SecondDerivSevenHalvesStatement
+c : ℝ
+hc : 0 ≤ c
+h1 : ‖oscInt (fun x => x ^ 2 / 2 + 3 * x) (fun x => 1) (-c) c‖ ≤ 7 / 2 * 1 ^ (-1 / 2) * ∫ (x : ℝ) in -c..c, ‖0‖
+⊢ ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2 + 3 * x) * Complex.I)‖ ≤ 7 / 2
+plant-P1.lean:172:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ampNorm (fun x => 1) (fun x => 0) ?m.133 ?m.134
+in the target expression
+  ‖oscInt (fun x => -(x ^ 2 / 2) + 0 * x) (fun x => 1) (-c) c‖ ≤ 7 / 2 * 1 ^ (-1 / 2) * ∫ (x : ℝ) in -c..c, ‖0‖
+
+h : P_SecondDerivSevenHalvesStatement
+c : ℝ
+hc : 0 ≤ c
+h1 : ‖oscInt (fun x => -(x ^ 2 / 2) + 0 * x) (fun x => 1) (-c) c‖ ≤ 7 / 2 * 1 ^ (-1 / 2) * ∫ (x : ℝ) in -c..c, ‖0‖
+⊢ ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(-(x ^ 2 / 2)) * Complex.I)‖ ≤ 7 / 2
+plant-P1.lean:180:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ampNorm (fun x => 1) (fun x => 0) ?m.163 ?m.164
+in the target expression
+  ‖oscInt (fun x => 100 * x ^ 2 / 2 + 0 * x) (fun x => 1) (-(1 / 10)) (1 / 10)‖ ≤
+    7 / 2 * 100 ^ (-1 / 2) * ∫ (x : ℝ) in -(1 / 10)..1 / 10, ‖0‖
+
+h : P_SecondDerivSevenHalvesStatement
+h1 :
+  ‖oscInt (fun x => 100 * x ^ 2 / 2 + 0 * x) (fun x => 1) (-(1 / 10)) (1 / 10)‖ ≤
+    7 / 2 * 100 ^ (-1 / 2) * ∫ (x : ℝ) in -(1 / 10)..1 / 10, ‖0‖
+⊢ ‖∫ (x : ℝ) in -(1 / 10)..1 / 10, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ 7 / 20
+plant-P1.lean:189:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ampNorm (fun x => ↑(1 - x)) (fun x => -1) 0 1
+in the target expression
+  ‖oscInt (fun x => x ^ 2 / 2 + 0 * x) (fun x => ↑(1 - x)) 0 1‖ ≤ 7 / 2 * 1 ^ (-1 / 2) * ∫ (x : ℝ) in 0..1, ‖-1‖
+
+h : P_SecondDerivSevenHalvesStatement
+h1 : ‖oscInt (fun x => x ^ 2 / 2 + 0 * x) (fun x => ↑(1 - x)) 0 1‖ ≤ 7 / 2 * 1 ^ (-1 / 2) * ∫ (x : ℝ) in 0..1, ‖-1‖
+⊢ ‖oscInt (fun x => x ^ 2 / 2 + 0 * x) (fun x => ↑(1 - x)) 0 1‖ ≤ 7 / 2
+plant-P1.lean:195:2: error: Type mismatch
+  h (fun x => 1 / 100 * x ^ 2 / 2) (fun x => 1 / 100 * x) (fun x => 1 / 100) (fun x => 1) (fun x => 0) (-21) 21
+    (1 / 100) 0 ?m.205 ?m.206 (scaled_hasDerivOn (1 / 100) (-21) 21) (scaledLinear_hasDerivOn (1 / 100) (-21) 21)
+    (fun x x_1 => ?m.215) (sanity_amplitude_one (-21) 21).left
+has type
+  ‖oscInt (fun x => 1 / 100 * x ^ 2 / 2 + 0 * x) (fun x => 1) (-21) 21‖ ≤
+    7 / 2 * (1 / 100) ^ (-1 / 2) * ∫ (x : ℝ) in -21..21, ‖0‖
+but is expected to have type
+  ‖oscInt (fun x => 1 / 100 * x ^ 2 / 2 + 0 * x) (fun x => 1) (-21) 21‖ ≤
+    7 / 2 * (1 / 100) ^ (-1 / 2) * ampNorm (fun x => 1) (fun x => 0) (-21) 21
+plant-P1.lean:214:2: error: Type mismatch
+  h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (fun x => 100) (fun x => 1) (fun x => 0) (-(21 / 100)) (21 / 100) 100
+    0 ?m.200 ?m.201 (scaled_hasDerivOn 100 (-(21 / 100)) (21 / 100))
+    (scaledLinear_hasDerivOn 100 (-(21 / 100)) (21 / 100)) (fun x x_1 => ?m.210)
+    (sanity_amplitude_one (-(21 / 100)) (21 / 100)).left
+has type
+  ‖oscInt (fun x => 100 * x ^ 2 / 2 + 0 * x) (fun x => 1) (-(21 / 100)) (21 / 100)‖ ≤
+    7 / 2 * 100 ^ (-1 / 2) * ∫ (x : ℝ) in -(21 / 100)..21 / 100, ‖0‖
+but is expected to have type
+  ‖oscInt (fun x => 100 * x ^ 2 / 2 + 0 * x) (fun x => 1) (-(21 / 100)) (21 / 100)‖ ≤
+    7 / 2 * 100 ^ (-1 / 2) * ampNorm (fun x => 1) (fun x => 0) (-(21 / 100)) (21 / 100)
+plant-P1.lean:238:2: error: Type mismatch
+  h (fun x => x ^ 2 / 2 + x ^ 4 / 12) (fun x => x + x ^ 3 / 3) (fun x => 1 + x ^ 2) (fun x => 1) (fun x => 0) (-c) c 1 0
+    ?m.231 one_pos (quartic_hasDerivOn (-c) c) (quarticDeriv_hasDerivOn (-c) c) (fun x x_1 => quartic_second_ge x)
+    (sanity_amplitude_one (-c) c).left
+has type
+  ‖oscInt (fun x => x ^ 2 / 2 + x ^ 4 / 12 + 0 * x) (fun x => 1) (-c) c‖ ≤
+    7 / 2 * 1 ^ (-1 / 2) * ∫ (x : ℝ) in -c..c, ‖0‖
+but is expected to have type
+  ‖oscInt (fun x => x ^ 2 / 2 + x ^ 4 / 12 + 0 * x) (fun x => 1) (-c) c‖ ≤
+    7 / 2 * 1 ^ (-1 / 2) * ampNorm (fun x => 1) (fun x => 0) (-c) c

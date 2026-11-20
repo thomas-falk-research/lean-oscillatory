@@ -126,14 +126,15 @@ fn enforce_pins(root: &Path) -> Result<usize, String> {
     files.sort();
     for p in files {
         let rel = format!("OscInt/Statements/{}", p.file_name().unwrap().to_string_lossy());
-        let h = sys::sha256_file(&p)?;
+        // the frozen content: the file without one trailing attribution block (`sys::ATTRIBUTION_BLOCKS`)
+        let h = sys::frozen_sha256_file(&p)?;
         let stamped = manifests.iter().any(|dir| {
             fs::read_to_string(root.join(dir).join("manifest.txt"))
                 .map(|m| m.lines().any(|l| l == format!("{h}  {rel}")))
                 .unwrap_or(false)
         });
         if !stamped && unpinned == 0 {
-            return Err(format!("{rel} (sha256 {h}) is not the file recorded in its pinned stamp"));
+            return Err(format!("{rel} (sha256 of its frozen content {h}) is not the file recorded in its pinned stamp"));
         }
     }
     Ok(unpinned)

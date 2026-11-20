@@ -129,3 +129,7 @@ maps onto an item that already exists.
   provides estimates that are uniform with respect to linear perturbations of the phase".
 - **roos-j/lean-oscillatory:** its README lists the order ≥ 2 and order 1 theorems as completed. The file itself was
   not re-read; the lead's 2026-11-05 reading at `cf564e0` is in `docs/prior_art.md`.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

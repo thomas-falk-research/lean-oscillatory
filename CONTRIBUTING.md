@@ -1,14 +1,21 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Contributing
 
-OscInt's value is its trust chain: a reader checks the kernel, three axioms, and a short frozen statement, and
-nothing else. Every contribution keeps that chain intact. Read "Rules in force" at the top of `docs/lessons.md`
+OscInt's value is its trust chain: a reader checks the kernel, three axioms, and a short frozen statement with
+the definitions it unfolds to, in the pinned environment (toolchain, Mathlib revision, source files: the README's
+section "What stays trusted" lists them), and nothing else. Every contribution keeps that chain intact. Read "Rules in force" at the top of `docs/lessons.md`
 first; each rule there is binding.
 
 ## The local loop
 ```bash
 lake exe cache get          # once: Mathlib binaries
 make quick                  # build, guard, axiom audit, statement types, Gamma-free check (minutes)
-make verify-all             # the full replay (about two hours on 4 cores); CI runs it on main and weekly
+make verify-all             # the full replay (three hours or more on 4 cores); CI runs it on main and weekly
 make verify-all ONLY=guard  # one step of verify-all, with the same pass/skip rules
 ```
 Use `nice -n 10 lake env lean -DautoImplicit=false <file>` to iterate on one file (`lake env lean` does not apply
@@ -20,11 +27,21 @@ the lakefile's `leanOptions`). Never run `leanchecker` on the root module `OscIn
   or `set_option` other than `set_option maxHeartbeats N in` in library files. Write `∞` for C^∞ (`ContDiff ℝ ⊤` is
   analytic here, lessons 12).
 - Theorems use only `propext`, `Classical.choice`, `Quot.sound`.
-- A stamped statement file (`OscInt/Statements/`) is never edited. A change is a new statement.
+- A stamped statement file (`OscInt/Statements/`) is never edited. A change is a new statement. The one exception
+  (owner decision 2026-11-19, `docs/decisions/2026-11-19-attribution-blocks.md`): the fixed attribution block at the
+  end of the file, which names the author and the licence. The tools compare the bytes before it with the stamp
+  (`tools/src/sys.rs`, `ATTRIBUTION_BLOCKS`); a byte changed before, inside or after the block fails `make commit`.
+  A new statement file carries an ordinary copyright header from the start, inside its frozen bytes.
+- Records (review answers, replay records, session logs, pre-registrations, decision memos, release notes, result
+  files) are never edited either, with the same single exception: `tools/attribution_blocks.py` appends the
+  attribution block and verifies that nothing else changed. A new record is written with its attribution.
 - No weakened statement or test to get green. A part that is false is reported with a counterexample.
 
 ## Adding a statement, end to end
-The order matters: the statement is frozen and reviewed before any proof exists, so "as stated" can be claimed.
+The order matters: the statement is frozen and reviewed before any Lean proof of it exists, so "as stated" can be
+claimed. (A proof on paper, and Lean proofs of special cases in a sanity layer, may be older; where they are, the
+batch's paragraph in `docs/STATUS.md` says so. Wording of 2026-11-19, ratified by the owner that day:
+`docs/decisions/2026-11-19-step5-waiver-six-batches.md`.)
 1. **Mathematics.** Write the statement in `docs/statements.md`: hypotheses, conclusion, modelling choices, and
    what it omits relative to the source.
 2. **Lean statement.** A `def XStatement : Prop` with a docstring starting `**<label>**` (the label and summary go
@@ -54,14 +71,15 @@ The order matters: the statement is frozen and reviewed before any proof exists,
    assembly `theorem x_of (h₁ : …Facts) … : XStatement` compiled before any part is proved. Check every interface
    numerically. A route referee reads route and blueprint; findings are folded into a "Revision after the route
    referee" section.
-7. **Proofs.** One file per part under `OscInt/<Area>/`, by proof agents or people, under the briefs in
-   `review/prompts/`. Integrate each part: `lake build <Module>`, guard, `#print axioms`, per-module `leanchecker`,
+7. **Proofs.** One file per part under `OscInt/<Area>/`, by proof agents or people (briefs are not committed, step
+   5). Integrate each part: `lake build <Module>`, guard, `#print axioms`, per-module `leanchecker`,
    commit.
 8. **Final theorem.** `theorem OscInt.x : Statements.XStatement := x_of part₁ …` in a short final file; add it to
    `StatementTypes.lean` (`#assert_type_is`) and import it from `OscInt.lean`.
 9. **Replay.** On a frozen, committed tree (lessons 16): `make verify-all`; record the output in `docs/replay/`.
 10. **Post-proof review.** Two blind post-proof referees and an adversarial referee; answers in `review/`.
-11. **Records.** The STATUS row (derived from the evidence, never typed as a claim), a progress-log entry, CHANGELOG,
+11. **Records.** The STATUS row (derived from the evidence, never typed as a claim), an entry in the session's log
+    (`docs/progress/<date>-session<N>-log.md`), CHANGELOG,
     README status table, `docs/HANDOFF.md`. A user-facing theorem also gets an example and a docstring that cites
     the textbook statement it formalises.
 

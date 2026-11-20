@@ -52,3 +52,7 @@ FLOAT T0E' amplitude coefficient C*/(2pi) = 1.547304913; Landau/that = 0.50782
 RESULT 43/43 PASS
 # exit status 0
 # finished 2026-11-10T23:23:06Z
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

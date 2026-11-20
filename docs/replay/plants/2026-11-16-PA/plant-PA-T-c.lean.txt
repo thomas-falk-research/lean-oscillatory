@@ -1,0 +1,30 @@
+import OscInt.Front.PeriodicAnalyticSanity
+
+namespace OscInt.API.PeriodicAnalyticSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+
+def P_PeriodicAnalyticOn (v : ℂ → ℂ) (a M : ℝ) : Prop :=
+  (∀ z ∈ openStrip a, v (z + ((2 * Real.pi : ℝ) : ℂ)) = v z) ∧
+    ∀ z ∈ openStrip a, ‖v z‖ ≤ M
+
+def P_TrapezoidalRuleStatement : Prop :=
+  ∀ (v : ℂ → ℂ) (a M : ℝ) (N : ℕ), 0 < a → 0 < N → P_PeriodicAnalyticOn v a M →
+    ‖trapezoidalSum v N - ∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ)‖ ≤
+      4 * Real.pi * M / (Real.exp (a * (N : ℝ)) - 1)
+
+theorem P_trapezoid_cos3 (h : P_TrapezoidalRuleStatement) (a : ℝ) (ha : 0 < a) :
+    14 * Real.pi ≤ 4 * Real.pi * (7 * Real.cosh (3 * a)) / (Real.exp (a * 3) - 1) := by
+  have h1 := h cos3 a (7 * Real.cosh (3 * a)) 3 ha (by norm_num) (cos3_periodicAnalyticOn a ha)
+  rw [trapezoidalSum_cos3, integral_cos3, sub_zero, norm_mul_pi, Complex.norm_ofNat, Nat.cast_ofNat] at h1
+  exact h1
+
+theorem P_trapezoid_expDatum (h : P_TrapezoidalRuleStatement) (a : ℝ) (ha : 0 < a) :
+    2 * Real.pi * Real.sqrt 13 ≤ 4 * Real.pi * (Real.sqrt 13 * Real.exp a + 5) / (Real.exp (a * 1) - 1) := by
+  have h1 := h expDatum a (Real.sqrt 13 * Real.exp a + 5) 1 ha (by norm_num) (expDatum_periodicAnalyticOn a ha)
+  rw [trapezoidalSum_expDatum, integral_expDatum,
+    show 2 * (Real.pi : ℂ) * (7 + 3 * Complex.I) - 10 * Real.pi = 2 * (2 + 3 * Complex.I) * (Real.pi : ℂ) by ring,
+    norm_mul_pi, norm_mul, norm_two_add_three_I, Complex.norm_ofNat, Nat.cast_one] at h1
+  linarith
+
+end OscInt.API.PeriodicAnalyticSanity

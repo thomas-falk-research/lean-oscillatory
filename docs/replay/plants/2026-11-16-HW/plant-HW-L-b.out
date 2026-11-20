@@ -1,0 +1,38 @@
+plant-HW-L-b.lean:169:14: error: Function expected at
+  h (pointState a b) 1 (-1) (pointState_finite a b)
+but this term has type
+  ‖(hadamardWalk (pointState a b) 1 (-1)).1‖ ≤
+      (39 * ∑ᶠ (y : ℤ), (‖(pointState a b y).1‖ + ‖(pointState a b y).2‖)) * ↑1 ^ (-1 / 3) ∧
+    ‖(hadamardWalk (pointState a b) 1 (-1)).2‖ ≤
+      (39 * ∑ᶠ (y : ℤ), (‖(pointState a b y).1‖ + ‖(pointState a b y).2‖)) * ↑1 ^ (-1 / 3)
+
+Note: Expected a function because this term is being applied to the argument
+  le_rfl
+plant-HW-L-b.lean:168:97: error: unsolved goals
+h : P_HadamardDispersiveStatement
+a b : ℂ
+⊢ ‖(a + b) / ↑√2‖ ≤ 39 * (‖a‖ + ‖b‖) * ↑1 ^ (-1 / 3) ∧ ‖(a - b) / ↑√2‖ ≤ 39 * (‖a‖ + ‖b‖) * ↑1 ^ (-1 / 3)
+plant-HW-L-b.lean:178:13: error: Function expected at
+  h twoSiteState 1 1 twoSiteState_finite
+but this term has type
+  ‖(hadamardWalk twoSiteState 1 1).1‖ ≤
+      (39 * ∑ᶠ (y : ℤ), (‖(twoSiteState y).1‖ + ‖(twoSiteState y).2‖)) * ↑1 ^ (-1 / 3) ∧
+    ‖(hadamardWalk twoSiteState 1 1).2‖ ≤
+      (39 * ∑ᶠ (y : ℤ), (‖(twoSiteState y).1‖ + ‖(twoSiteState y).2‖)) * ↑1 ^ (-1 / 3)
+
+Note: Expected a function because this term is being applied to the argument
+  le_rfl
+plant-HW-L-b.lean:177:67: error: unsolved goals
+h : P_HadamardDispersiveStatement
+⊢ 1 / √2 ≤ 39 * 2 * ↑1 ^ (-1 / 3) ∧ 1 / √2 ≤ 39 * 2 * ↑1 ^ (-1 / 3)
+plant-HW-L-b.lean:184:14: error: Function expected at
+  h fiveState 1 4 fiveState_finite
+but this term has type
+  ‖(hadamardWalk fiveState 1 4).1‖ ≤ (39 * ∑ᶠ (y : ℤ), (‖(fiveState y).1‖ + ‖(fiveState y).2‖)) * ↑1 ^ (-1 / 3) ∧
+    ‖(hadamardWalk fiveState 1 4).2‖ ≤ (39 * ∑ᶠ (y : ℤ), (‖(fiveState y).1‖ + ‖(fiveState y).2‖)) * ↑1 ^ (-1 / 3)
+
+Note: Expected a function because this term is being applied to the argument
+  le_rfl
+plant-HW-L-b.lean:183:65: error: unsolved goals
+h : P_HadamardDispersiveStatement
+⊢ 1 / √2 ≤ 39 * 1 * ↑1 ^ (-1 / 3)

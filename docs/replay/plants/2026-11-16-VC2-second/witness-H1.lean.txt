@@ -1,0 +1,36 @@
+import OscInt.Front.SecondDerivSharpSanity
+
+namespace OscInt.API.SecondDerivSharpSanity2
+
+open OscInt.Statements OscInt.API.SecondDerivSharpSanity Set
+
+/-- (Witness file only: it refutes a planted statement and proves nothing of the batch.) `A(w) ≤ 2B` when
+`2w ≤ B²`, `B ≥ 0`: the trivial bound `A(w) ≤ 2 √(2w)` from `|sin| ≤ 1`. -/
+theorem vdc2Profile_le_of_le (w B : ℝ) (hB : 0 ≤ B) (hw : 2 * w ≤ B ^ 2) : vdc2Profile w ≤ 2 * B := by
+  have h := intervalIntegral.norm_integral_le_of_norm_le_const (a := 0) (b := Real.sqrt (2 * w)) (C := 1)
+    (f := fun u : ℝ => Real.sin (w - u ^ 2 / 2)) (fun u _ => by simpa using Real.abs_sin_le_one _)
+  rw [sub_zero, abs_of_nonneg (Real.sqrt_nonneg _), one_mul, Real.norm_eq_abs] at h
+  have h1 := le_abs_self (∫ u in (0 : ℝ)..Real.sqrt (2 * w), Real.sin (w - u ^ 2 / 2))
+  have h2 : Real.sqrt (2 * w) ≤ B := (Real.sqrt_le_left hB).2 hw
+  unfold vdc2Profile
+  linarith
+
+/-- (Witness file only.) `A(w) ≤ 26/5` for `w ≤ π` (`2π < 6.3 ≤ (13/5)²`). -/
+theorem vdc2Profile_le_pi (w : ℝ) (hw : w ≤ Real.pi) : vdc2Profile w ≤ 26 / 5 := by
+  have h := vdc2Profile_le_of_le w (13 / 5) (by norm_num) (by nlinarith [Real.pi_lt_d2])
+  linarith
+
+def P_SecondDerivSharpStatement : Prop :=
+  ∀ (f f' : ℝ → ℝ) (a b lam : ℝ), 0 < lam → HasDerivOn f f' a b → DerivIncreasesAtRate f' a b lam →
+    ∃ w ∈ Icc (0 : ℝ) Real.pi,
+      ‖∫ x in a..b, Complex.exp (((f x : ℝ) : ℂ) * Complex.I)‖ ≤ vdc2Profile w / Real.sqrt lam
+
+theorem witness_not_SecondDerivSharpStatement : ¬ P_SecondDerivSharpStatement := by
+  intro h
+  obtain ⟨w, hw, hle⟩ := h (fun _ => 0) (fun _ => 0) 6 0 1 one_pos (zero_hasDerivOn _ _)
+    (fun x hx => absurd (hx.1.trans hx.2) (by norm_num))
+  rw [intervalIntegral.integral_symm, norm_neg, norm_integral_exp_zero 0 6 (by norm_num), Real.sqrt_one,
+    div_one] at hle
+  linarith [vdc2Profile_le_pi w hw.2]
+
+end OscInt.API.SecondDerivSharpSanity2

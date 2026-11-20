@@ -1,0 +1,34 @@
+plant-HW-L-a.lean:169:40: error: Application type mismatch: The argument
+  pointState_finite a b
+has type
+  {y | pointState a b y ≠ (0, 0)}.Finite
+but is expected to have type
+  1 ≤ 1
+in the application
+  h (pointState a b) 1 (-1) (pointState_finite a b)
+plant-HW-L-a.lean:168:97: error: unsolved goals
+h : P_HadamardDispersiveStatement
+a b : ℂ
+⊢ ‖(a + b) / ↑√2‖ ≤ 39 * (‖a‖ + ‖b‖) * ↑1 ^ (-1 / 3) ∧ ‖(a - b) / ↑√2‖ ≤ 39 * (‖a‖ + ‖b‖) * ↑1 ^ (-1 / 3)
+plant-HW-L-a.lean:178:32: error: Application type mismatch: The argument
+  twoSiteState_finite
+has type
+  {y | twoSiteState y ≠ (0, 0)}.Finite
+but is expected to have type
+  1 ≤ 1
+in the application
+  h twoSiteState 1 1 twoSiteState_finite
+plant-HW-L-a.lean:177:67: error: unsolved goals
+h : P_HadamardDispersiveStatement
+⊢ 1 / √2 ≤ 39 * 2 * ↑1 ^ (-1 / 3) ∧ 1 / √2 ≤ 39 * 2 * ↑1 ^ (-1 / 3)
+plant-HW-L-a.lean:184:30: error: Application type mismatch: The argument
+  fiveState_finite
+has type
+  {y | fiveState y ≠ (0, 0)}.Finite
+but is expected to have type
+  1 ≤ 1
+in the application
+  h fiveState 1 4 fiveState_finite
+plant-HW-L-a.lean:183:65: error: unsolved goals
+h : P_HadamardDispersiveStatement
+⊢ 1 / √2 ≤ 39 * 1 * ↑1 ^ (-1 / 3)

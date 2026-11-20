@@ -32,3 +32,7 @@ Overall PASS iff (a), (b), both controls outside, and no UNRESOLVED. The sup bou
 ## Program
 `numerics/src/bin/qwz_decay.rs` (Rust, no dependencies), output saved verbatim to
 `numerics/results-qwz-decay-2026-11-08.txt`.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Route: batch LE (T0E, T6F, T6E)
 
 Lead, 2026-11-08, after the pre-proof reviews were committed and stamped (`stamps/20261108T164514Z-c91a9a8bb0b6`).

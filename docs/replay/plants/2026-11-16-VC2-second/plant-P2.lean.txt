@@ -1,0 +1,242 @@
+import OscInt.Front.SecondDerivSharpSanity
+
+namespace OscInt.API.SecondDerivSharpSanity2
+
+open OscInt.Statements OscInt.API.SecondDerivSharpSanity Set
+
+/-- `√(1/100) = 1/10`. -/
+theorem sqrt_hundredth : Real.sqrt (1 / 100) = 1 / 10 := by
+  rw [show (1 / 100 : ℝ) = (1 / 10) ^ 2 by norm_num]
+  exact Real.sqrt_sq (by norm_num)
+
+/-- `(1/100)^{−1/2} = 10`, in the shape of VC2-K. -/
+theorem rpow_neg_half_hundredth : (1 / 100 : ℝ) ^ (-(1 : ℝ) / 2) = 10 := by
+  rw [show (-(1 : ℝ) / 2) = -(1 / 2) by ring, Real.rpow_neg (by norm_num), ← Real.sqrt_eq_rpow, sqrt_hundredth]
+  norm_num
+
+/-- **Small curvature, change of variable `x = 10u`.**
+`∫_{−21}^{21} e^{i(1/100)x²/2} dx = 10 ∫_{−21/10}^{21/10} e^{iu²/2} du`. -/
+theorem smallCurv_integral_eq :
+    ∫ x in (-21 : ℝ)..21, Complex.exp (((1 / 100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I) =
+      (10 : ℝ) • ∫ u in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((u ^ 2 / 2 : ℝ) : ℂ) * Complex.I) := by
+  have h := intervalIntegral.smul_integral_comp_mul_left (a := (-21 : ℝ)) (b := 21)
+    (fun u : ℝ => Complex.exp (((u ^ 2 / 2 : ℝ) : ℂ) * Complex.I)) (1 / 10)
+  have e1 : (1 / 10 : ℝ) * (-21) = -(21 / 10) := by norm_num
+  have e2 : (1 / 10 : ℝ) * 21 = 21 / 10 := by norm_num
+  rw [e1, e2] at h
+  rw [← h, smul_smul]
+  have hf : ∀ x : ℝ, ((1 / 10 * x) ^ 2 / 2 : ℝ) = 1 / 100 * x ^ 2 / 2 := fun x => by ring
+  simp only [hf]
+  norm_num
+
+/-- **Large curvature, change of variable `x = u/10`.**
+`∫_{−21/100}^{21/100} e^{i·100x²/2} dx = (1/10) ∫_{−21/10}^{21/10} e^{iu²/2} du`. -/
+theorem largeCurv_integral_eq :
+    ∫ x in (-(21 / 100 : ℝ))..(21 / 100), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I) =
+      (1 / 10 : ℝ) • ∫ u in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((u ^ 2 / 2 : ℝ) : ℂ) * Complex.I) := by
+  have h := intervalIntegral.smul_integral_comp_mul_left (a := (-(21 / 100) : ℝ)) (b := 21 / 100)
+    (fun u : ℝ => Complex.exp (((u ^ 2 / 2 : ℝ) : ℂ) * Complex.I)) 10
+  have e1 : (10 : ℝ) * (-(21 / 100)) = -(21 / 10) := by norm_num
+  have e2 : (10 : ℝ) * (21 / 100) = 21 / 10 := by norm_num
+  rw [e1, e2] at h
+  rw [← h, smul_smul]
+  have hf : ∀ x : ℝ, ((10 * x) ^ 2 / 2 : ℝ) = 100 * x ^ 2 / 2 := fun x => by ring
+  simp only [hf]
+  norm_num
+
+/-- **A1. Certified value at small curvature.** `33 ≤ |∫_{−21}^{21} e^{i(1/100)x²/2} dx|` (true value `33.6141…`;
+ten times `quad_norm_lower`). -/
+theorem smallCurv_norm_lower :
+    330 / 10 ≤ ‖∫ x in (-21 : ℝ)..21, Complex.exp (((1 / 100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ := by
+  rw [smallCurv_integral_eq, norm_smul, Real.norm_eq_abs, abs_of_pos (by norm_num : (0 : ℝ) < 10)]
+  linarith [quad_norm_lower]
+
+/-- **A2. Certified value at large curvature, at the extremal width.**
+`33/100 ≤ |∫_{−21/100}^{21/100} e^{i·100x²/2} dx|` (true value `0.336141…`; a tenth of `quad_norm_lower`). -/
+theorem largeCurv_norm_lower :
+    33 / 100 ≤
+      ‖∫ x in (-(21 / 100 : ℝ))..(21 / 100), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ := by
+  rw [largeCurv_integral_eq, norm_smul, Real.norm_eq_abs, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 10)]
+  linarith [quad_norm_lower]
+
+/-- The left side of VC2-K at the small-curvature datum (`p = 0`, `ψ = 1`) is the integral of `smallCurv_norm_lower`. -/
+theorem oscInt_smallCurv :
+    oscInt (fun x => 1 / 100 * x ^ 2 / 2 + 0 * x) (fun _ => 1) (-21) 21 =
+      ∫ x in (-21 : ℝ)..21, Complex.exp (((1 / 100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I) := by
+  unfold oscInt
+  refine intervalIntegral.integral_congr (fun x _ => ?_)
+  simp only [zero_mul, add_zero, mul_one]
+
+/-- The left side of VC2-K at the large-curvature datum (`p = 0`, `ψ = 1`) is the integral of `largeCurv_norm_lower`. -/
+theorem oscInt_largeCurv :
+    oscInt (fun x => 100 * x ^ 2 / 2 + 0 * x) (fun _ => 1) (-(21 / 100)) (21 / 100) =
+      ∫ x in (-(21 / 100 : ℝ))..(21 / 100), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I) := by
+  unfold oscInt
+  refine intervalIntegral.integral_congr (fun x _ => ?_)
+  simp only [zero_mul, add_zero, mul_one]
+
+/-- The bound of VC2-K at `μ = 1/100`, `ampNorm = 1` is `35`. -/
+theorem smallCurv_bound_value : (7 / 2 : ℝ) * (1 / 100 : ℝ) ^ (-(1 : ℝ) / 2) * 1 = 35 := by
+  rw [rpow_neg_half_hundredth]
+  norm_num
+
+/-- The bound of VC2-K at `μ = 100`, `ampNorm = 1` is `7/20`. -/
+theorem largeCurv_bound_value : (7 / 2 : ℝ) * (100 : ℝ) ^ (-(1 : ℝ) / 2) * 1 = 7 / 20 := by
+  rw [rpow_neg_half_hundred]
+  norm_num
+
+/-- `2.566 ≤ Re ∫_{−21/10}^{21/10} e^{ix²/2} dx` (true value `2.5698…`; the polynomial bound gives `2.56602…`). -/
+theorem quad_re_lower_sharp :
+    1283 / 500 ≤ (∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)).re := by
+  rw [re_intervalIntegral (by fun_prop)]
+  simp only [Complex.exp_ofReal_mul_I_re]
+  have h := sub_le_integral_of_le (F := cosPrim) (P := fun x => cosLow (x ^ 2 / 2))
+    (g := fun x => Real.cos (x ^ 2 / 2)) (a := -(21 / 10)) (b := 21 / 10) (by norm_num) cosPrim_hasDerivAt
+    (by unfold cosLow; fun_prop) (by fun_prop) (fun x _ => cosLow_le_cos _ (by positivity))
+  have hv : (1283 / 500 : ℝ) ≤ cosPrim (21 / 10) - cosPrim (-(21 / 10)) := by
+    unfold cosPrim
+    norm_num
+  linarith
+
+/-- `2.1666 ≤ Im ∫_{−21/10}^{21/10} e^{ix²/2} dx` (true value `2.1674…`; the polynomial bound gives `2.16669…`). -/
+theorem quad_im_lower_sharp :
+    10833 / 5000 ≤ (∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)).im := by
+  rw [im_intervalIntegral (by fun_prop)]
+  simp only [Complex.exp_ofReal_mul_I_im]
+  have h := sub_le_integral_of_le (F := sinPrim) (P := fun x => sinLow (x ^ 2 / 2))
+    (g := fun x => Real.sin (x ^ 2 / 2)) (a := -(21 / 10)) (b := 21 / 10) (by norm_num) sinPrim_hasDerivAt
+    (by unfold sinLow; fun_prop) (by fun_prop) (fun x _ => sinLow_le_sin _ (by positivity))
+  have hv : (10833 / 5000 : ℝ) ≤ sinPrim (21 / 10) - sinPrim (-(21 / 10)) := by
+    unfold sinPrim
+    norm_num
+  linarith
+
+/-- **Certified value, not rounded.** `3.358 ≤ |∫_{−21/10}^{21/10} e^{ix²/2} dx|` (true value `3.36141…`;
+`2.566² + 2.1666² = 11.2785… ≥ 3.358² = 11.2761…`). -/
+theorem quad_norm_lower_sharp :
+    1679 / 500 ≤ ‖∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ :=
+  le_norm_of_re_im (by norm_num) (by norm_num) (by norm_num) quad_re_lower_sharp quad_im_lower_sharp
+
+/-- The quartic datum `x ↦ x²/2 + x⁴/12` has derivative `x ↦ x + x³/3` on every interval. -/
+theorem quartic_hasDerivOn (a b : ℝ) :
+    HasDerivOn (fun x => x ^ 2 / 2 + x ^ 4 / 12) (fun x => x + x ^ 3 / 3) a b := by
+  have hd : ∀ x : ℝ, HasDerivAt (fun x : ℝ => x ^ 2 / 2 + x ^ 4 / 12) (x + x ^ 3 / 3) x := fun x => by
+    have h := (hasDerivAt_monomial (1 / 2) 1 x).fun_add (hasDerivAt_monomial (1 / 12) 3 x)
+    convert h using 1
+    · funext s
+      ring
+    · push_cast
+      ring
+  exact ⟨fun x _ => (hd x).continuousAt.continuousWithinAt, fun x _ => hd x⟩
+
+/-- `x ↦ x + x³/3` has derivative `x ↦ 1 + x²` on every interval. -/
+theorem quarticDeriv_hasDerivOn (a b : ℝ) : HasDerivOn (fun x => x + x ^ 3 / 3) (fun x => 1 + x ^ 2) a b := by
+  have hd : ∀ x : ℝ, HasDerivAt (fun x : ℝ => x + x ^ 3 / 3) (1 + x ^ 2) x := fun x => by
+    have h := (hasDerivAt_monomial 1 0 x).fun_add (hasDerivAt_monomial (1 / 3) 2 x)
+    convert h using 1
+    · funext s
+      ring
+    · push_cast
+      ring
+  exact ⟨fun x _ => (hd x).continuousAt.continuousWithinAt, fun x _ => hd x⟩
+
+/-- `1 ≤ |1 + x²|`: the second derivative of the quartic datum has modulus at least `1`. -/
+theorem quartic_second_ge (x : ℝ) : 1 ≤ |1 + x ^ 2| := by
+  rw [abs_of_pos (by positivity)]
+  nlinarith [sq_nonneg x]
+
+def P_SecondDerivSevenHalvesStatement : Prop :=
+  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →
+    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b → (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) → AmplitudeOn ψ ψ' a b →
+    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ (7 / 2 : ℝ) * μ ^ (-(1 : ℝ) / 2) * (‖ψ b‖ + (1 / 2) * ∫ x in a..b, ‖ψ' x‖)
+
+theorem P_sevenHalves_quadratic (h : P_SecondDerivSevenHalvesStatement) (c : ℝ) (hc : 0 ≤ c) :
+    ‖∫ x in (-c)..c, Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤ 7 / 2 := by
+  have h1 := h (fun x => x ^ 2 / 2) (fun x => x) (fun _ => 1) (fun _ => 1) (fun _ => 0) (-c) c 1 0 (by linarith)
+    one_pos (quad_hasDerivOn _ _) (id_hasDerivOn _ _) (fun x _ => by simp) (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, Real.one_rpow] at h1
+  simpa [oscInt] using h1
+
+theorem P_sevenHalves_linear (h : P_SecondDerivSevenHalvesStatement) (c : ℝ) (hc : 0 ≤ c) :
+    ‖∫ x in (-c)..c, Complex.exp (((x ^ 2 / 2 + 3 * x : ℝ) : ℂ) * Complex.I)‖ ≤ 7 / 2 := by
+  have h1 := h (fun x => x ^ 2 / 2) (fun x => x) (fun _ => 1) (fun _ => 1) (fun _ => 0) (-c) c 1 3 (by linarith)
+    one_pos (quad_hasDerivOn _ _) (id_hasDerivOn _ _) (fun x _ => by simp) (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, Real.one_rpow] at h1
+  simpa [oscInt] using h1
+
+theorem P_sevenHalves_neg (h : P_SecondDerivSevenHalvesStatement) (c : ℝ) (hc : 0 ≤ c) :
+    ‖∫ x in (-c)..c, Complex.exp (((-(x ^ 2 / 2) : ℝ) : ℂ) * Complex.I)‖ ≤ 7 / 2 := by
+  have h1 := h (fun x => -(x ^ 2 / 2)) (fun x => -x) (fun _ => -1) (fun _ => 1) (fun _ => 0) (-c) c 1 0
+    (by linarith) one_pos (negQuad_hasDerivOn _ _) (negId_hasDerivOn _ _) (fun x _ => by simp)
+    (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, Real.one_rpow] at h1
+  simpa [oscInt] using h1
+
+theorem P_sevenHalves_scaled (h : P_SecondDerivSevenHalvesStatement) :
+    ‖∫ x in (-(1 / 10 : ℝ))..(1 / 10), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤ 7 / 20 := by
+  have h1 := h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (fun _ => 100) (fun _ => 1) (fun _ => 0) (-(1 / 10))
+    (1 / 10) 100 0 (by norm_num) (by norm_num) (scaled_hasDerivOn _ _ _) (scaledLinear_hasDerivOn _ _ _)
+    (fun x _ => by simp) (sanity_amplitude_one _ _).1
+  rw [(sanity_amplitude_one _ _).2, rpow_neg_half_hundred] at h1
+  have h2 : (7 / 2 : ℝ) * (1 / 10) * 1 = 7 / 20 := by norm_num
+  rw [h2] at h1
+  simpa [oscInt] using h1
+
+theorem P_sevenHalves_ramp (h : P_SecondDerivSevenHalvesStatement) :
+    ‖oscInt (fun x => x ^ 2 / 2 + 0 * x) (fun x => ((1 - x : ℝ) : ℂ)) 0 1‖ ≤ 7 / 2 := by
+  have h1 := h (fun x => x ^ 2 / 2) (fun x => x) (fun _ => 1) (fun x => ((1 - x : ℝ) : ℂ)) (fun _ => -1) 0 1 1 0
+    zero_le_one one_pos (quad_hasDerivOn _ _) (id_hasDerivOn _ _) (fun x _ => by simp) ramp_amplitudeOn
+  rw [ampNorm_ramp, Real.one_rpow] at h1
+  linarith
+
+theorem P_sevenHalves_smallCurv_literal (h : P_SecondDerivSevenHalvesStatement) :
+    ‖oscInt (fun x => 1 / 100 * x ^ 2 / 2 + 0 * x) (fun _ => 1) (-21) 21‖ ≤
+      (7 / 2 : ℝ) * (1 / 100 : ℝ) ^ (-(1 : ℝ) / 2) * ampNorm (fun _ => 1) (fun _ => 0) (-21) 21 :=
+  h (fun x => 1 / 100 * x ^ 2 / 2) (fun x => 1 / 100 * x) (fun _ => 1 / 100) (fun _ => 1) (fun _ => 0) (-21) 21
+    (1 / 100) 0 (by norm_num) (by norm_num) (scaled_hasDerivOn _ _ _) (scaledLinear_hasDerivOn _ _ _)
+    (fun x _ => by simp) (sanity_amplitude_one _ _).1
+
+theorem P_sevenHalves_smallCurv (h : P_SecondDerivSevenHalvesStatement) :
+    33 ≤ (7 / 2 : ℝ) * (1 / 100 : ℝ) ^ (-(1 : ℝ) / 2) * 1 := by
+  have h1 := P_sevenHalves_smallCurv_literal h
+  rw [(sanity_amplitude_one _ _).2, oscInt_smallCurv] at h1
+  linarith [smallCurv_norm_lower]
+
+theorem P_sevenHalves_smallCurv_simplified (h : P_SecondDerivSevenHalvesStatement) :
+    ‖∫ x in (-21 : ℝ)..21, Complex.exp (((1 / 100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤ 35 := by
+  have h1 := P_sevenHalves_smallCurv_literal h
+  rw [(sanity_amplitude_one _ _).2, oscInt_smallCurv, smallCurv_bound_value] at h1
+  exact h1
+
+theorem P_sevenHalves_largeCurv_literal (h : P_SecondDerivSevenHalvesStatement) :
+    ‖oscInt (fun x => 100 * x ^ 2 / 2 + 0 * x) (fun _ => 1) (-(21 / 100)) (21 / 100)‖ ≤
+      (7 / 2 : ℝ) * (100 : ℝ) ^ (-(1 : ℝ) / 2) * ampNorm (fun _ => 1) (fun _ => 0) (-(21 / 100)) (21 / 100) :=
+  h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (fun _ => 100) (fun _ => 1) (fun _ => 0) (-(21 / 100))
+    (21 / 100) 100 0 (by norm_num) (by norm_num) (scaled_hasDerivOn _ _ _) (scaledLinear_hasDerivOn _ _ _)
+    (fun x _ => by simp) (sanity_amplitude_one _ _).1
+
+theorem P_sevenHalves_largeCurv (h : P_SecondDerivSevenHalvesStatement) :
+    33 / 100 ≤ (7 / 2 : ℝ) * (100 : ℝ) ^ (-(1 : ℝ) / 2) * 1 := by
+  have h1 := P_sevenHalves_largeCurv_literal h
+  rw [(sanity_amplitude_one _ _).2, oscInt_largeCurv] at h1
+  linarith [largeCurv_norm_lower]
+
+theorem P_sevenHalves_largeCurv_simplified (h : P_SecondDerivSevenHalvesStatement) :
+    ‖∫ x in (-(21 / 100 : ℝ))..(21 / 100), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤ 7 / 20 := by
+  have h1 := P_sevenHalves_largeCurv_literal h
+  rw [(sanity_amplitude_one _ _).2, oscInt_largeCurv, largeCurv_bound_value] at h1
+  exact h1
+
+theorem P_sevenHalves_quad_window (h : P_SecondDerivSevenHalvesStatement) :
+    1679 / 500 ≤ ‖∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ∧
+      ‖∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤ 7 / 2 :=
+  ⟨quad_norm_lower_sharp, P_sevenHalves_quadratic h (21 / 10) (by norm_num)⟩
+
+theorem P_sevenHalves_quartic (h : P_SecondDerivSevenHalvesStatement) (c : ℝ) (hc : 0 ≤ c) :
+    ‖oscInt (fun x => x ^ 2 / 2 + x ^ 4 / 12 + 0 * x) (fun _ => 1) (-c) c‖ ≤
+      (7 / 2 : ℝ) * (1 : ℝ) ^ (-(1 : ℝ) / 2) * ampNorm (fun _ => 1) (fun _ => 0) (-c) c :=
+  h (fun x => x ^ 2 / 2 + x ^ 4 / 12) (fun x => x + x ^ 3 / 3) (fun x => 1 + x ^ 2) (fun _ => 1) (fun _ => 0) (-c)
+    c 1 0 (by linarith) one_pos (quartic_hasDerivOn _ _) (quarticDeriv_hasDerivOn _ _)
+    (fun x _ => quartic_second_ge x) (sanity_amplitude_one _ _).1
+
+end OscInt.API.SecondDerivSharpSanity2

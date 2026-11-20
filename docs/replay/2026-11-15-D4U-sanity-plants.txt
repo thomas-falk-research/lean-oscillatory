@@ -141,3 +141,7 @@ plant-O-forall-y: rejected (recorded)
 # O-limit-zero, O-rate and P-no-disc have refuting witnesses (P-no-disc at the definition level: x³ satisfies the planted
 # phase hypotheses). A plant that drops the uniformity is a true weakening: no sanity layer can detect it semantically;
 # the proofs pin it. The ATB-C0 remark "the proof pins the order" above is an argument, not a detection.
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

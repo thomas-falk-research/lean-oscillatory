@@ -1,0 +1,21 @@
+import OscInt.Front.KusminLandauSanity
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+
+namespace OscInt.API.KusminLandauSanity
+
+open OscInt.Statements Set
+
+def P_KusminLandauStatement : Prop :=
+  ∀ (c : ℕ → ℝ) (N : ℕ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → DiffsMonotoneIn c N k lam →
+    ‖expSum c N‖ ≤ 1 / Real.sin (Real.pi * lam)
+
+theorem witness_not_P_KusminLandauStatement : ¬ P_KusminLandauStatement := by
+  intro h
+  have h1 := h cThird 2 0 (1 / 3) (by norm_num) (by norm_num) diffs_cThird
+  rw [norm_expSum_cThird, show Real.pi * (1 / 3) = Real.pi / 3 by ring, Real.sin_pi_div_three,
+    le_div_iff₀ (by positivity)] at h1
+  nlinarith [Real.sq_sqrt (show (0 : ℝ) ≤ 3 by norm_num)]
+
+end OscInt.API.KusminLandauSanity

@@ -1,0 +1,47 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- **Datum (unconditional): the time derivative of `R₄(·, 1) = (1 − e^{−4is}) / 4`** is `i e^{−4it}`. The check of
+`ringK_four_deriv` and the second derivative at one point in the planted control K1. -/
+theorem ringKernel_four_one_hasDerivAt (t : ℝ) :
+    HasDerivAt (fun s : ℝ => ringKernel 4 s 1) (Complex.I * Complex.exp (↑(-(4 * t)) * Complex.I)) t := by
+  have hf : (fun s : ℝ => ringKernel 4 s 1) = fun s : ℝ => (1 - Complex.exp (↑(-(4 * s)) * Complex.I)) / 4 := by
+    funext s; rw [ringKernel_four_one]
+  rw [hf]
+  convert ((hasDerivAt_exp_neg 4 t).const_sub 1).div_const 4 using 1
+  push_cast; ring
+
+/-- **FR-K through the statement constant**, equation at a site with two different neighbours: at `N = 4`, `r = 1`
+the derivative of `s ↦ R₄(s, 1)` is `i (R₄(t, 2) + R₄(t, 0) − 2 R₄(t, 1)) = i e^{−4it}`. On the ring of 2 sites the two
+neighbours of a site are the same site, so the first layer cannot tell `R(r + 1) + R(r − 1)` from
+`3 R(r + 1) − R(r − 1)`. Plant detected: K1. -/
+theorem ringK_four_deriv (h : RingKernelStatement) (t : ℝ) :
+    HasDerivAt (fun s : ℝ => ringKernel 4 s 1) (Complex.I * Complex.exp (↑(-(4 * t)) * Complex.I)) t := by
+  have h1 := (h 4 t 1 (by norm_num)).1
+  rw [show (1 : ℤ) + 1 = 2 by norm_num, show (1 : ℤ) - 1 = 0 by norm_num, ringKernel_four_two,
+    ringKernel_four_zero, ringKernel_four_one] at h1
+  convert h1 using 1
+  ring
+
+def P_RingKernelStatement : Prop :=
+  ∀ (N : ℕ) (t : ℝ) (r : ℤ), 0 < N →
+    HasDerivAt (fun s : ℝ => ringKernel N s r)
+      (Complex.I * (3 * ringKernel N t (r + 1) - ringKernel N t (r - 1) - 2 * ringKernel N t r)) t ∧
+    ringKernel N 0 r = (if (N : ℤ) ∣ r then 1 else 0) ∧
+    ringKernel N t (r + (N : ℤ)) = ringKernel N t r
+
+theorem witness_not_RingKernelStatement : ¬ P_RingKernelStatement :=
+  by
+  intro h
+  have h1 := (h 4 0 1 (by norm_num)).1
+  have h2 := h1.unique (ringKernel_four_one_hasDerivAt 0)
+  rw [show (1 : ℤ) + 1 = 2 by norm_num, show (1 : ℤ) - 1 = 0 by norm_num, ringKernel_four_two,
+    ringKernel_four_zero, ringKernel_four_one] at h2
+  have h3 := congrArg Complex.im h2
+  norm_num at h3
+
+end OscInt.API.FiniteRingSanity2

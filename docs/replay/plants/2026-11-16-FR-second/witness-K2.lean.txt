@@ -1,0 +1,36 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- **FR-K through the statement constant**, unit datum on the ring of 4 sites: `R₄(0, 2) = 0` (`2 ∣ 2` but `4 ∤ 2`)
+and `R₄(0, 4) = 1`. Plant detected: K2 (`N ∣ r ↦ 2 ∣ r`, which the first layer's unit data, on the ring of 2 sites,
+cannot see). -/
+theorem ringK_unit_four (h : RingKernelStatement) : ringKernel 4 0 2 = 0 ∧ ringKernel 4 0 4 = 1 := by
+  have h1 := (h 4 0 2 (by norm_num)).2.1
+  have h2 := (h 4 0 4 (by norm_num)).2.1
+  rw [ite_eq_right (by norm_num)] at h1
+  rw [ite_eq_left (by norm_num)] at h2
+  exact ⟨h1, h2⟩
+
+/-- **Check (unconditional)**: the instance of FR-K in `ringK_unit_four` is true on the data. -/
+theorem ringK_unit_four_check : ringKernel 4 0 2 = 0 ∧ ringKernel 4 0 4 = 1 :=
+  ⟨ringKernel_four_time_zero.2.1, ringKernel_four_time_zero.2.2.2⟩
+
+def P_RingKernelStatement : Prop :=
+  ∀ (N : ℕ) (t : ℝ) (r : ℤ), 0 < N →
+    HasDerivAt (fun s : ℝ => ringKernel N s r)
+      (Complex.I * (ringKernel N t (r + 1) + ringKernel N t (r - 1) - 2 * ringKernel N t r)) t ∧
+    ringKernel N 0 r = (if (2 : ℤ) ∣ r then 1 else 0) ∧
+    ringKernel N t (r + (N : ℤ)) = ringKernel N t r
+
+theorem witness_not_RingKernelStatement : ¬ P_RingKernelStatement :=
+  by
+  intro h
+  have h1 := (h 4 0 2 (by norm_num)).2.1
+  rw [ringK_unit_four_check.1] at h1
+  norm_num at h1
+
+end OscInt.API.FiniteRingSanity2

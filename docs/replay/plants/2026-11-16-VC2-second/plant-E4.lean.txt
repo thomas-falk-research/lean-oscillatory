@@ -1,0 +1,193 @@
+import OscInt.Front.SecondDerivSharpSanity
+
+namespace OscInt.API.SecondDerivSharpSanity2
+
+open OscInt.Statements OscInt.API.SecondDerivSharpSanity Set
+
+/-- `√(1/100) = 1/10`. -/
+theorem sqrt_hundredth : Real.sqrt (1 / 100) = 1 / 10 := by
+  rw [show (1 / 100 : ℝ) = (1 / 10) ^ 2 by norm_num]
+  exact Real.sqrt_sq (by norm_num)
+
+/-- **Small curvature, change of variable `x = 10u`.**
+`∫_{−21}^{21} e^{i(1/100)x²/2} dx = 10 ∫_{−21/10}^{21/10} e^{iu²/2} du`. -/
+theorem smallCurv_integral_eq :
+    ∫ x in (-21 : ℝ)..21, Complex.exp (((1 / 100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I) =
+      (10 : ℝ) • ∫ u in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((u ^ 2 / 2 : ℝ) : ℂ) * Complex.I) := by
+  have h := intervalIntegral.smul_integral_comp_mul_left (a := (-21 : ℝ)) (b := 21)
+    (fun u : ℝ => Complex.exp (((u ^ 2 / 2 : ℝ) : ℂ) * Complex.I)) (1 / 10)
+  have e1 : (1 / 10 : ℝ) * (-21) = -(21 / 10) := by norm_num
+  have e2 : (1 / 10 : ℝ) * 21 = 21 / 10 := by norm_num
+  rw [e1, e2] at h
+  rw [← h, smul_smul]
+  have hf : ∀ x : ℝ, ((1 / 10 * x) ^ 2 / 2 : ℝ) = 1 / 100 * x ^ 2 / 2 := fun x => by ring
+  simp only [hf]
+  norm_num
+
+/-- **Large curvature, change of variable `x = u/10`.**
+`∫_{−21/100}^{21/100} e^{i·100x²/2} dx = (1/10) ∫_{−21/10}^{21/10} e^{iu²/2} du`. -/
+theorem largeCurv_integral_eq :
+    ∫ x in (-(21 / 100 : ℝ))..(21 / 100), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I) =
+      (1 / 10 : ℝ) • ∫ u in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((u ^ 2 / 2 : ℝ) : ℂ) * Complex.I) := by
+  have h := intervalIntegral.smul_integral_comp_mul_left (a := (-(21 / 100) : ℝ)) (b := 21 / 100)
+    (fun u : ℝ => Complex.exp (((u ^ 2 / 2 : ℝ) : ℂ) * Complex.I)) 10
+  have e1 : (10 : ℝ) * (-(21 / 100)) = -(21 / 10) := by norm_num
+  have e2 : (10 : ℝ) * (21 / 100) = 21 / 10 := by norm_num
+  rw [e1, e2] at h
+  rw [← h, smul_smul]
+  have hf : ∀ x : ℝ, ((10 * x) ^ 2 / 2 : ℝ) = 100 * x ^ 2 / 2 := fun x => by ring
+  simp only [hf]
+  norm_num
+
+/-- **A1. Certified value at small curvature.** `33 ≤ |∫_{−21}^{21} e^{i(1/100)x²/2} dx|` (true value `33.6141…`;
+ten times `quad_norm_lower`). -/
+theorem smallCurv_norm_lower :
+    330 / 10 ≤ ‖∫ x in (-21 : ℝ)..21, Complex.exp (((1 / 100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ := by
+  rw [smallCurv_integral_eq, norm_smul, Real.norm_eq_abs, abs_of_pos (by norm_num : (0 : ℝ) < 10)]
+  linarith [quad_norm_lower]
+
+/-- **A2. Certified value at large curvature, at the extremal width.**
+`33/100 ≤ |∫_{−21/100}^{21/100} e^{i·100x²/2} dx|` (true value `0.336141…`; a tenth of `quad_norm_lower`). -/
+theorem largeCurv_norm_lower :
+    33 / 100 ≤
+      ‖∫ x in (-(21 / 100 : ℝ))..(21 / 100), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ := by
+  rw [largeCurv_integral_eq, norm_smul, Real.norm_eq_abs, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 10)]
+  linarith [quad_norm_lower]
+
+/-- `2.566 ≤ Re ∫_{−21/10}^{21/10} e^{ix²/2} dx` (true value `2.5698…`; the polynomial bound gives `2.56602…`). -/
+theorem quad_re_lower_sharp :
+    1283 / 500 ≤ (∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)).re := by
+  rw [re_intervalIntegral (by fun_prop)]
+  simp only [Complex.exp_ofReal_mul_I_re]
+  have h := sub_le_integral_of_le (F := cosPrim) (P := fun x => cosLow (x ^ 2 / 2))
+    (g := fun x => Real.cos (x ^ 2 / 2)) (a := -(21 / 10)) (b := 21 / 10) (by norm_num) cosPrim_hasDerivAt
+    (by unfold cosLow; fun_prop) (by fun_prop) (fun x _ => cosLow_le_cos _ (by positivity))
+  have hv : (1283 / 500 : ℝ) ≤ cosPrim (21 / 10) - cosPrim (-(21 / 10)) := by
+    unfold cosPrim
+    norm_num
+  linarith
+
+/-- `2.1666 ≤ Im ∫_{−21/10}^{21/10} e^{ix²/2} dx` (true value `2.1674…`; the polynomial bound gives `2.16669…`). -/
+theorem quad_im_lower_sharp :
+    10833 / 5000 ≤ (∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)).im := by
+  rw [im_intervalIntegral (by fun_prop)]
+  simp only [Complex.exp_ofReal_mul_I_im]
+  have h := sub_le_integral_of_le (F := sinPrim) (P := fun x => sinLow (x ^ 2 / 2))
+    (g := fun x => Real.sin (x ^ 2 / 2)) (a := -(21 / 10)) (b := 21 / 10) (by norm_num) sinPrim_hasDerivAt
+    (by unfold sinLow; fun_prop) (by fun_prop) (fun x _ => sinLow_le_sin _ (by positivity))
+  have hv : (10833 / 5000 : ℝ) ≤ sinPrim (21 / 10) - sinPrim (-(21 / 10)) := by
+    unfold sinPrim
+    norm_num
+  linarith
+
+/-- **Certified value, not rounded.** `3.358 ≤ |∫_{−21/10}^{21/10} e^{ix²/2} dx|` (true value `3.36141…`;
+`2.566² + 2.1666² = 11.2785… ≥ 3.358² = 11.2761…`). -/
+theorem quad_norm_lower_sharp :
+    1679 / 500 ≤ ‖∫ x in (-(21 / 10 : ℝ))..(21 / 10), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ :=
+  le_norm_of_re_im (by norm_num) (by norm_num) (by norm_num) quad_re_lower_sharp quad_im_lower_sharp
+
+/-- The quartic datum `x ↦ x²/2 + x⁴/12` has derivative `x ↦ x + x³/3` on every interval. -/
+theorem quartic_hasDerivOn (a b : ℝ) :
+    HasDerivOn (fun x => x ^ 2 / 2 + x ^ 4 / 12) (fun x => x + x ^ 3 / 3) a b := by
+  have hd : ∀ x : ℝ, HasDerivAt (fun x : ℝ => x ^ 2 / 2 + x ^ 4 / 12) (x + x ^ 3 / 3) x := fun x => by
+    have h := (hasDerivAt_monomial (1 / 2) 1 x).fun_add (hasDerivAt_monomial (1 / 12) 3 x)
+    convert h using 1
+    · funext s
+      ring
+    · push_cast
+      ring
+  exact ⟨fun x _ => (hd x).continuousAt.continuousWithinAt, fun x _ => hd x⟩
+
+/-- `x ↦ x + x³/3` increases at rate `1` on every interval: for `x ≤ y`,
+`y − x + (y³ − x³)/3 ≥ y − x` because the cube is monotone (`y³ − x³ = (y − x)(y² + xy + x²)`). -/
+theorem quartic_increases (a b : ℝ) : DerivIncreasesAtRate (fun x => x + x ^ 3 / 3) a b 1 := by
+  intro x _ y _ hxy
+  have h : 0 ≤ (y - x) * (y ^ 2 + x * y + x ^ 2) :=
+    mul_nonneg (sub_nonneg.2 hxy) (by nlinarith [sq_nonneg (x + y), sq_nonneg x, sq_nonneg y])
+  show 1 * (y - x) ≤ y + y ^ 3 / 3 - (x + x ^ 3 / 3)
+  nlinarith [h]
+
+def P_SecondDerivSharpStatement : Prop :=
+  ∀ (f f' : ℝ → ℝ) (a b lam : ℝ), a ≤ b → 0 < lam → HasDerivOn f f' a b → DerivIncreasesAtRate f' a b lam →
+    ∃ w ∈ Icc (0 : ℝ) Real.pi,
+      ‖∫ x in a..b, Complex.exp (((f x : ℝ) : ℂ) * Complex.I)‖ ≤ vdc2Profile w / lam ^ ((3 : ℝ) / 5)
+
+theorem P_sharp_quadratic (h : P_SecondDerivSharpStatement) (c : ℝ) (hc : 0 ≤ c) :
+    ∃ w ∈ Icc (0 : ℝ) Real.pi,
+      ‖∫ x in (-c)..c, Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤ vdc2Profile w := by
+  obtain ⟨w, hw, hle⟩ := h (fun x => x ^ 2 / 2) (fun x => x) (-c) c 1 (by linarith) one_pos
+    (quad_hasDerivOn _ _) (quad_increases _ _)
+  rw [Real.sqrt_one, div_one] at hle
+  exact ⟨w, hw, hle⟩
+
+theorem P_sharp_scaled (h : P_SecondDerivSharpStatement) (c : ℝ) (hc : 0 ≤ c) :
+    ∃ w ∈ Icc (0 : ℝ) Real.pi,
+      ‖∫ x in (-(c / 10))..(c / 10), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤ vdc2Profile w / 10 := by
+  obtain ⟨w, hw, hle⟩ := h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (-(c / 10)) (c / 10) 100 (by linarith)
+    (by norm_num) (scaled_hasDerivOn _ _ _) (scaled_increases _ _ _)
+  rw [sqrt_hundred] at hle
+  exact ⟨w, hw, hle⟩
+
+theorem P_sharp_degenerate (h : P_SecondDerivSharpStatement) (a : ℝ) :
+    ∃ w ∈ Icc (0 : ℝ) Real.pi, 0 ≤ vdc2Profile w := by
+  obtain ⟨w, hw, hle⟩ := h (fun x => x ^ 2 / 2) (fun x => x) a a 1 le_rfl one_pos
+    (quad_hasDerivOn _ _) (quad_increases _ _)
+  rw [intervalIntegral.integral_same, norm_zero, Real.sqrt_one, div_one] at hle
+  exact ⟨w, hw, hle⟩
+
+theorem P_sharp_profile_large (h : P_SecondDerivSharpStatement) :
+    ∃ w ∈ Icc (0 : ℝ) Real.pi, 33 / 10 ≤ vdc2Profile w := by
+  obtain ⟨w, hw, hle⟩ := P_sharp_quadratic h (21 / 10) (by norm_num)
+  exact ⟨w, hw, quad_norm_lower.trans hle⟩
+
+theorem P_sharp_smallCurv_literal (h : P_SecondDerivSharpStatement) :
+    ∃ w ∈ Icc (0 : ℝ) Real.pi,
+      ‖∫ x in (-21 : ℝ)..21, Complex.exp (((1 / 100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤
+        vdc2Profile w / Real.sqrt (1 / 100) :=
+  h (fun x => 1 / 100 * x ^ 2 / 2) (fun x => 1 / 100 * x) (-21) 21 (1 / 100) (by norm_num) (by norm_num)
+    (scaled_hasDerivOn _ _ _) (scaled_increases _ _ _)
+
+theorem P_sharp_smallCurv (h : P_SecondDerivSharpStatement) :
+    ∃ w ∈ Icc (0 : ℝ) Real.pi, 33 ≤ vdc2Profile w / Real.sqrt (1 / 100) := by
+  obtain ⟨w, hw, hle⟩ := P_sharp_smallCurv_literal h
+  exact ⟨w, hw, by linarith [smallCurv_norm_lower]⟩
+
+theorem P_sharp_smallCurv_simplified (h : P_SecondDerivSharpStatement) :
+    ∃ w ∈ Icc (0 : ℝ) Real.pi, 33 / 10 ≤ vdc2Profile w := by
+  obtain ⟨w, hw, hle⟩ := P_sharp_smallCurv h
+  rw [sqrt_hundredth] at hle
+  have h2 : vdc2Profile w / (1 / 10) = 10 * vdc2Profile w := by ring
+  exact ⟨w, hw, by linarith⟩
+
+theorem P_sharp_largeCurv_literal (h : P_SecondDerivSharpStatement) :
+    ∃ w ∈ Icc (0 : ℝ) Real.pi,
+      ‖∫ x in (-(21 / 100 : ℝ))..(21 / 100), Complex.exp (((100 * x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤
+        vdc2Profile w / Real.sqrt 100 :=
+  h (fun x => 100 * x ^ 2 / 2) (fun x => 100 * x) (-(21 / 100)) (21 / 100) 100 (by norm_num) (by norm_num)
+    (scaled_hasDerivOn _ _ _) (scaled_increases _ _ _)
+
+theorem P_sharp_largeCurv (h : P_SecondDerivSharpStatement) :
+    ∃ w ∈ Icc (0 : ℝ) Real.pi, 33 / 100 ≤ vdc2Profile w / Real.sqrt 100 := by
+  obtain ⟨w, hw, hle⟩ := P_sharp_largeCurv_literal h
+  exact ⟨w, hw, by linarith [largeCurv_norm_lower]⟩
+
+theorem P_sharp_largeCurv_simplified (h : P_SecondDerivSharpStatement) :
+    ∃ w ∈ Icc (0 : ℝ) Real.pi, 33 / 10 ≤ vdc2Profile w := by
+  obtain ⟨w, hw, hle⟩ := P_sharp_largeCurv h
+  rw [sqrt_hundred] at hle
+  have h2 : vdc2Profile w / 10 = 1 / 10 * vdc2Profile w := by ring
+  exact ⟨w, hw, by linarith⟩
+
+theorem P_sharp_profile_large_sharp (h : P_SecondDerivSharpStatement) :
+    ∃ w ∈ Icc (0 : ℝ) Real.pi, 1679 / 500 ≤ vdc2Profile w := by
+  obtain ⟨w, hw, hle⟩ := P_sharp_quadratic h (21 / 10) (by norm_num)
+  exact ⟨w, hw, quad_norm_lower_sharp.trans hle⟩
+
+theorem P_sharp_quartic (h : P_SecondDerivSharpStatement) (c : ℝ) (hc : 0 ≤ c) :
+    ∃ w ∈ Icc (0 : ℝ) Real.pi,
+      ‖∫ x in (-c)..c, Complex.exp (((x ^ 2 / 2 + x ^ 4 / 12 : ℝ) : ℂ) * Complex.I)‖ ≤
+        vdc2Profile w / Real.sqrt 1 :=
+  h (fun x => x ^ 2 / 2 + x ^ 4 / 12) (fun x => x + x ^ 3 / 3) (-c) c 1 (by linarith) one_pos
+    (quartic_hasDerivOn _ _) (quartic_increases _ _)
+
+end OscInt.API.SecondDerivSharpSanity2

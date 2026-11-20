@@ -1,0 +1,13 @@
+PASS HadamardPhaseFacts: derivative chain hwD1, hwD2, hwD3 (numerical differentiation, 210 points)  max diff 3.94e-31
+PASS |hwD2| >= 2/(3 sqrt 3) where |sin k| >= 1/sqrt 2 (20000 points of a period)  min 0.384900179459751 bound 0.384900179459751
+PASS |hwD3| >= 1/(2 sqrt 2) where |cos k| >= 1/sqrt 2  min 0.353553390593274 bound 0.353553390593274
+PASS HadamardAmplitudeFacts: hwAmp' is the derivative of hwAmp  max diff 7.4e-32
+PASS ampNorm on the four arcs <= the stated bounds (they are equalities)  largest ampNorm - bound 0.0
+PASS HadamardDecayArithFacts: left/right <= 1 for t = 1..2999 and 10^4..10^15  largest ratio 0.94444885 (t = 1: 0.94444885)
+PASS HadamardKernelRecFacts: K(0,.) = 0, K(1,.) = delta, recursion for t <= 13  max diff 4.48e-16
+PASS HadamardLinearFacts: walk of a 4-site state = sum of translated point-state walks (t = 0, 1, 2, 7)  max diff 3.38e-16
+ALL PASS
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

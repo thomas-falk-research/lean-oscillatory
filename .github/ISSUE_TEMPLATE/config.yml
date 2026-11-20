@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+#
+# SPDX-License-Identifier: Apache-2.0
+
+blank_issues_enabled: true
+contact_links:
+  - name: Which theorem do I need?
+    url: https://github.com/thomas-falk-research/lean-oscillatory/blob/main/docs/which-theorem.md
+    about: The guide from a problem to the theorem that covers it, with the explicit constants.
+  - name: A way around the checks (security)
+    url: https://github.com/thomas-falk-research/lean-oscillatory/blob/main/SECURITY.md
+    about: Report privately anything that makes the verification pass when it should not.

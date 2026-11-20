@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # On-paper proof of S2.1, S2.2, S3 (route for the blueprint)
 
 Status: written by the lead (2026-11-05), refereed (`review/2026-11-05-S2S3-proof-route.md`, no BLOCKER), and

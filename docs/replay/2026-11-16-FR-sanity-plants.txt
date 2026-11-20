@@ -1,0 +1,139 @@
+# Batch FR: planted controls of the sanity layer (docs/lessons.md, rules 8 and 9). Written by an agent of the lead on
+# 2026-11-16 against the draft statement text, under a brief that forbids proving the statements; re-run by the lead
+# (the agent's generator, a fresh directory, finished 20:36Z): all 75 Lean files byte-identical to the agent's, the
+# summary identical, the 75 compiler outputs identical once directory names are removed. Directory:
+# docs/replay/plants/2026-11-16-FR/ (compiler outputs stored with directory names removed; generator plants_fr.py.txt).
+# 26 planted mutations: 23 DETECTED (a compiled proof of the negation of the planted statement), 2 NOT DETECTED
+# (FR-P-e, FC-P-b), 1 TRUE WEAKENING (FC-U-b, equivalent to the statement). All 26 unplanted copies compile and all
+# 26 planted copies are rejected.
+ok-FR-K-a: accepted (want accepted)
+plant-FR-K-a: rejected (recorded)
+    first error: plant-FR-K-a.lean:129:100: error: unsolved goals
+witness-FR-K-a: accepted (want accepted)
+  FR-K-a [Laplacian 2 R(r) ↦ R(r); witness: N = 2, r = 0, t = 0, two derivatives at one point]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-K-b: accepted (want accepted)
+plant-FR-K-b: rejected (recorded)
+    first error: plant-FR-K-b.lean:139:19: error: unsolved goals
+witness-FR-K-b: accepted (want accepted)
+  FR-K-b [unit datum N ∣ r ↦ r = 0; witness: N = 1, r = 1 (R₁ = 1)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-K-c: accepted (want accepted)
+plant-FR-K-c: rejected (recorded)
+    first error: plant-FR-K-c.lean:144:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-FR-K-c: accepted (want accepted)
+  FR-K-c [period N ↦ 1; witness: N = 2, t = 0, r = 0 (R₂(0, 1) = 0 ≠ 1 = R₂(0, 0))]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-K-d: accepted (want accepted)
+plant-FR-K-d: rejected (recorded)
+    first error: plant-FR-K-d.lean:130:14: error: Function expected at
+witness-FR-K-d: accepted (want accepted)
+  FR-K-d [0 < N dropped; witness: N = 0, t = 0, r = 0 (R₀ = 0 in Lean, unit datum 1 since 0 ∣ 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-K-e: accepted (want accepted)
+plant-FR-K-e: rejected (recorded)
+    first error: plant-FR-K-e.lean:129:100: error: unsolved goals
+witness-FR-K-e: accepted (want accepted)
+  FR-K-e [sign of i in the equation; witness: N = 2, r = 0, t = 0, two derivatives at one point]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-U-a: accepted (want accepted)
+plant-FR-U-a: rejected (recorded)
+    first error: plant-FR-U-a.lean:149:38: error: Application type mismatch: The argument
+witness-FR-U-a: accepted (want accepted)
+  FR-U-a [periodicity dropped; witness: N = 1, u(s, x) = x (harmonic, not periodic), t = 0, x = 1]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-U-b: accepted (want accepted)
+plant-FR-U-b: rejected (recorded)
+    first error: plant-FR-U-b.lean:148:54: error: Application type mismatch: The argument
+witness-FR-U-b: accepted (want accepted)
+  FR-U-b [equation dropped; witness: N = 1, u(s, x) = s, t = 1, x = 0]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-U-c: accepted (want accepted)
+plant-FR-U-c: rejected (recorded)
+    first error: plant-FR-U-c.lean:150:29: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-FR-U-c: accepted (want accepted)
+  FR-U-c [range N ↦ N + 1; witness: N = 1, u = 1 (1 = 2)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-U-d: accepted (want accepted)
+plant-FR-U-d: rejected (recorded)
+    first error: plant-FR-U-d.lean:151:2: error: Type mismatch: After simplification, term
+witness-FR-U-d: accepted (want accepted)
+  FR-U-d [R(x − y) ↦ R(x + y); witness: N = 4, u = iˣ e^{−2is} (not even in x), t = 0, x = 1 (i = −i)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-S-a: accepted (want accepted)
+plant-FR-S-a: rejected (recorded)
+    first error: plant-FR-S-a.lean:149:2: error: Type mismatch: After simplification, term
+witness-FR-S-a: accepted (want accepted)
+  FR-S-a [coset step N ↦ N + 1; witness: N = 1, t = 0, r = 1 (all terms 0, sum 1)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-S-b: accepted (want accepted)
+plant-FR-S-b: rejected (recorded)
+    first error: plant-FR-S-b.lean:149:2: error: Type mismatch: After simplification, term
+witness-FR-S-b: accepted (want accepted)
+  FR-S-b [right side R(r) ↦ R(r + 1); witness: N = 2, t = 0, r = 0 (sum 1, right side 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-S-c: accepted (want accepted)
+plant-FR-S-c: rejected (recorded)
+    first error: plant-FR-S-c.lean:143:22: error: unsolved goals
+witness-FR-S-c: accepted (want accepted)
+  FR-S-c [0 < N dropped; witness: N = 0, t = 0, r = 0 (every term is G(0, 0) = 1: not summable)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-P-a: accepted (want accepted)
+plant-FR-P-a: rejected (recorded)
+    first error: plant-FR-P-a.lean:123:2: error: Type mismatch: After simplification, term
+witness-FR-P-a: accepted (want accepted)
+  FR-P-a [constant 2 ↦ 1; witness: N = 1, t = 0, r = 1, η = 2]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-P-b: accepted (want accepted)
+plant-FR-P-b: rejected (recorded)
+    first error: plant-FR-P-b.lean:123:2: error: Type mismatch: After simplification, term
+witness-FR-P-b: accepted (want accepted)
+  FR-P-b [cosh(rη) ↦ 1; witness: N = 1, t = 0, r = 1, η = 2]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-P-c: accepted (want accepted)
+plant-FR-P-c: rejected (recorded)
+    first error: plant-FR-P-c.lean:121:13: error: Function expected at
+witness-FR-P-c: accepted (want accepted)
+  FR-P-c [0 < η dropped; witness: N = 1, t = 0, r = 1, η = −1 (negative bound)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-P-d: accepted (want accepted)
+plant-FR-P-d: rejected (recorded)
+    first error: plant-FR-P-d.lean:121:13: error: Function expected at
+witness-FR-P-d: accepted (want accepted)
+  FR-P-d [0 < N dropped; witness: N = 0, t = 0, r = 0, η = 1 (bound 2/(e^0 − 1) = 0 in Lean, left side 1)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FR-P-e: accepted (want accepted)
+plant-FR-P-e: rejected (recorded)
+    first error: plant-FR-P-e.lean:123:2: error: Type mismatch: After simplification, term
+  FR-P-e [denominator e^{ηN} − 1 ↦ e^{ηN}]: NOT DETECTED: no witness. The copied scripts are rejected by the form of the conclusion only. At t = 0 the left side is 1 exactly when N ∣ r and r ≠ 0, and there the planted bound 2 cosh(rη)/e^{ηN} ≥ e^{(|r| − N)η} ≥ 1 holds, so no datum at t = 0 refutes it. An exploratory floating-point scan (N ≤ 5, |r| ≤ 3N, t ∈ [−2, 4], η ∈ (0, 6]; unregistered) found no violation of the planted bound at all (largest ratio 1.0, at t = 0), so the plant may be a true strengthening that no datum refutes. A witness, if one exists, needs a lower bound for ‖R_N(t, r) − G(t, r)‖ at some t ≠ 0 above 2 e^{2|t| sinh η} cosh(rη) e^{−ηN}; otherwise the "− 1" rests on the fidelity review against docs/statements.md.
+ok-FR-P-f: accepted (want accepted)
+plant-FR-P-f: rejected (recorded)
+    first error: plant-FR-P-f.lean:129:2: error: Type mismatch: After simplification, term
+witness-FR-P-f: accepted (want accepted)
+  FR-P-f [time 2|t| ↦ |t|; witness: N = 2, r = 0, t = 1/4, η = log 16 and ‖R₂ − G‖ ≥ 0.059 (ringP_half_time_false)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FC-K-a: accepted (want accepted)
+plant-FC-K-a: rejected (recorded)
+    first error: plant-FC-K-a.lean:164:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-FC-K-a: accepted (want accepted)
+  FC-K-a [right wall M + 1 ↦ M; witness: M = 1, t = 0 (C₁(0; 1, 1) = 1 ≠ 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FC-K-b: accepted (want accepted)
+plant-FC-K-b: rejected (recorded)
+    first error: plant-FC-K-b.lean:176:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-FC-K-b: accepted (want accepted)
+  FC-K-b [unit datum δ_{xy} ↦ 1; witness: M = 2, x = 1, y = 2 (C₂(0; 1, 2) = R₆(0, −1) − R₆(0, 3) = 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FC-K-c: accepted (want accepted)
+plant-FC-K-c: rejected (recorded)
+    first error: plant-FC-K-c.lean:173:74: error: unsolved goals
+witness-FC-K-c: accepted (want accepted)
+  FC-K-c [chainKernel: odd ↦ even reflection; witness: M = 1, left wall at t = π/4 (2 R₄(π/4, 1) = 1 ≠ 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FC-K-d: accepted (want accepted)
+plant-FC-K-d: rejected (recorded)
+    first error: plant-FC-K-d.lean:173:74: error: unsolved goals
+witness-FC-K-d: accepted (want accepted)
+  FC-K-d [chainKernel: ring size 2(M + 1) ↦ 2M + 1; witness: M = 1, right wall at t = 0 (R₃(0, 1) − R₃(0, 3) = −1)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FC-U-a: accepted (want accepted)
+plant-FC-U-a: rejected (recorded)
+    first error: plant-FC-U-a.lean:136:31: error: Application type mismatch: The argument
+witness-FC-U-a: accepted (want accepted)
+  FC-U-a [wall hypothesis dropped; witness: M = 1, u = 1, t = π/2, x = 1 (1 ≠ e^{−iπ})]: DETECTED (witness compiled: ¬ planted statement)
+ok-FC-U-b: accepted (want accepted)
+plant-FC-U-b: rejected (recorded)
+    first error: plant-FC-U-b.lean:137:20: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  FC-U-b [sum over 1..M ↦ 0..M]: TRUE WEAKENING: the planted sum has one more term, chainKernel M t x 0 * u 0 0. Its first factor is R(t, x − 0) − R(t, x + 0), which is 0 by the definition of chainKernel alone (no evenness is needed), and its second factor is 0 by the wall hypothesis. So the planted statement is equivalent to the draft one for every M and no datum can refute it (not proved in Lean: a lemma for general M is outside this layer). The rejection of the copied script is script-only (Finset.Icc_self finds no pattern).
+ok-FC-P-a: accepted (want accepted)
+plant-FC-P-a: rejected (recorded)
+    first error: plant-FC-P-a.lean:179:25: error: Application type mismatch: The argument
+witness-FC-P-a: accepted (want accepted)
+  FC-P-a [0 < η dropped; witness: M = 1, t = 0, x = y = 1, η = −1 (the bound is −2e²/(e² − 1) < 0)]: DETECTED (witness compiled: ¬ planted statement)
+ok-FC-P-b: accepted (want accepted)
+plant-FC-P-b: rejected (recorded)
+    first error: plant-FC-P-b.lean:181:2: error: Type mismatch: After simplification, term
+  FC-P-b [wall term e^{−(x+y)η} dropped]: NOT DETECTED: no witness in this layer. The copied scripts are rejected by the form of the conclusion only. At M = 1 the planted bound is not violated (scan: ‖C₁(t; 1, 1) − G(t, 0)‖ = |1 − J₀(2t)| stays below it), so M = 1 data cannot refute it. A witness needs M ≥ 2, x = y = 1 and a small t ≠ 0, e.g. M = 2, t = 1/4, η = log 16: left side ≈ 0.0304 (the image G(t, 2) at the wall), planted bound ≈ 0.0008. That needs the ring of 6 sites at t ≠ 0 (C₂(t; 1, 1) = e^{−2it} cos t) and a two-sided value of G(1/4, 0), i.e. an upper bound for Re I(1/2, 0) that the library does not have (it has the lower bound latticeKernel1_zero_freq_lower only).
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

@@ -1,0 +1,95 @@
+# Planted controls for batch PA (OscInt/Front/PeriodicAnalyticSanity.lean), session 13, run before the PA stamp and
+# before any Lean proof of a PA statement (docs/lessons.md, rules 8 and 9). Written by a sanity agent of the lead
+# (finished 2026-11-16 about 12:38Z); re-run by the lead with the committed generator
+# docs/replay/plants/2026-11-16-PA/plants_pa.py.txt from 2026-11-16T12:38:53Z to 12:41:12Z: the 47 generated Lean files are
+# byte-identical to the committed .lean.txt records and the summary is identical. Statement file SHA-256 at run time
+# 08c99173efb62db40227c2705d7a1854563e38a9fd290a4b16388ba33096962c; sanity file SHA-256
+# 3a11a5703f5e0896780d3d3b3fe980f077435adabb8b09670feb809751ca2cff.
+# Verdicts: DETECTED = a compiled proof of the negation of the planted statement (semantic evidence); every plant-
+# rejection below is script-level only and counts for nothing by itself. 15 of 16 plants DETECTED; PA-C-e (|k| replaced
+# by k) is a TRUE WEAKENING: the frozen statement implies it, so no datum can refute it. Not covered by an
+# unconditional bite: that the hypothesis DifferentiableOn is needed (plants PA-T-c and PA-C-c cover it by witness).
+#
+ok-PA-T-a: accepted (want accepted)
+plant-PA-T-a: rejected (recorded)
+    first error: plant-PA-T-a.lean:16:2: error: Type mismatch
+witness-PA-T-a: accepted (want accepted)
+  PA-T-a [constant 4π ↦ 2π; witness: cos3, N = 3, a = 1/2]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-T-b: accepted (want accepted)
+plant-PA-T-b: rejected (recorded)
+    first error: plant-PA-T-b.lean:16:2: error: Type mismatch
+witness-PA-T-b: accepted (want accepted)
+  PA-T-b [rate e^{aN} ↦ e^{2aN}; witness: cos3, N = 3, a = 1/2]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-T-c: accepted (want accepted)
+plant-PA-T-c: rejected (recorded)
+    first error: plant-PA-T-c.lean:18:65: error: Application type mismatch: The argument
+witness-PA-T-c: accepted (want accepted)
+  PA-T-c [DifferentiableOn dropped; witness: 7 cos(3 Re z), N = 3, a = 1, M = 7]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-T-d: accepted (want accepted)
+plant-PA-T-d: rejected (recorded)
+    first error: plant-PA-T-d.lean:18:65: error: Application type mismatch: The argument
+witness-PA-T-d: accepted (want accepted)
+  PA-T-d [periodicity dropped; witness: e^{iz/2}, N = 1, a = 10, M = e^5]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-T-e: accepted (want accepted)
+plant-PA-T-e: rejected (recorded)
+    first error: plant-PA-T-e.lean:14:13: error: Function expected at
+witness-PA-T-e: accepted (want accepted)
+  PA-T-e [0 < N dropped; witness: expDatum, N = 0 (bound 4πM/(e^0 − 1) = 0 in Lean)]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-T-f: accepted (want accepted)
+plant-PA-T-f: rejected (recorded)
+    first error: plant-PA-T-f.lean:14:48: error: Application type mismatch: The argument
+witness-PA-T-f: accepted (want accepted)
+  PA-T-f [0 < a dropped; witness: cos3, N = 3, a = 0, M = 1 (empty strip; bound 4π/0 = 0 in Lean)]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-C-a: accepted (want accepted)
+plant-PA-C-a: rejected (recorded)
+    first error: plant-PA-C-a.lean:16:2: error: Type mismatch
+witness-PA-C-a: accepted (want accepted)
+  PA-C-a [constant 2π ↦ π; witness: expDatum, k = 1, a = 5]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-C-b: accepted (want accepted)
+plant-PA-C-b: rejected (recorded)
+    first error: plant-PA-C-b.lean:16:2: error: Type mismatch
+witness-PA-C-b: accepted (want accepted)
+  PA-C-b [rate e^{−a|k|} ↦ e^{−2a|k|}; witness: cos3, k = 3, a = 1/2]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-C-c: accepted (want accepted)
+plant-PA-C-c: rejected (recorded)
+    first error: plant-PA-C-c.lean:18:51: error: Application type mismatch: The argument
+witness-PA-C-c: accepted (want accepted)
+  PA-C-c [DifferentiableOn dropped; witness: 7 cos(3 Re z), k = 3, a = 1, M = 7]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-C-d: accepted (want accepted)
+plant-PA-C-d: rejected (recorded)
+    first error: plant-PA-C-d.lean:18:51: error: Application type mismatch: The argument
+witness-PA-C-d: accepted (want accepted)
+  PA-C-d [periodicity dropped; witness: e^{iz/2}, k = 1, a = 10, M = e^5]: DETECTED (witness compiled: ¬ planted statement)
+ok-PA-C-e: accepted (want accepted)
+plant-PA-C-e: rejected (recorded)
+    first error: plant-PA-C-e.lean:15:76: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  PA-C-e [|k| ↦ k]: TRUE WEAKENING: the planted bound 2πM e^{−ak} equals the frozen one for k ≥ 0 and is larger for k < 0 (M ≥ 0 is forced by the hypothesis: 0 lies in the strip), so the frozen statement implies the planted one and no datum can refute it. The rejection of the three copied scripts is script-only (a rewrite of |·| finds no pattern); the only instance whose content changes is k = −3, where the plant gives the bound with e^{+3a}.
+ok-PA-C-f: accepted (want accepted)
+plant-PA-C-f: rejected (recorded)
+    first error: plant-PA-C-f.lean:14:48: error: Application type mismatch: The argument
+witness-PA-C-f: accepted (want accepted)
+  PA-C-f [0 < a dropped; witness: cos3, k = 3, a = −1, M = 0 (empty strip)]: DETECTED (witness compiled: ¬ planted statement)
+ok-LC-a: accepted (want accepted)
+plant-LC-a: rejected (recorded)
+    first error: plant-LC-a.lean:16:2: error: Type mismatch
+witness-LC-a: accepted (want accepted)
+  LC-a [constant 2π ↦ π; witness: t = 0, n = 0, η = 0]: DETECTED (witness compiled: ¬ planted statement)
+ok-LC-b: accepted (want accepted)
+plant-LC-b: rejected (recorded)
+    first error: plant-LC-b.lean:16:2: error: Type mismatch
+witness-LC-b: accepted (want accepted)
+  LC-b [sinh η ↦ η; witness: t = 1/4, n = 1, η = 8 and ‖I(1/4, 1)‖ ≥ π/8]: DETECTED (witness compiled: ¬ planted statement)
+ok-LC-c: accepted (want accepted)
+plant-LC-c: rejected (recorded)
+    first error: plant-LC-c.lean:14:22: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-LC-c: accepted (want accepted)
+  LC-c [|t| ↦ t; witness: t = −1, n = 0, η = 1 and ‖I(−1, 0)‖ ≥ 3π/2]: DETECTED (witness compiled: ¬ planted statement)
+ok-LC-d: accepted (want accepted)
+plant-LC-d: rejected (recorded)
+    first error: plant-LC-d.lean:13:13: error: Function expected at
+witness-LC-d: accepted (want accepted)
+  LC-d [0 ≤ η dropped; witness: t = 1, n = 0, η = −1 (lightCone_eta_neg_false)]: DETECTED (witness compiled: ¬ planted statement)
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

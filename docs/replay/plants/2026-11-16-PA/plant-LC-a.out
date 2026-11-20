@@ -1,0 +1,18 @@
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-LC-a.lean:16:2: error: Type mismatch
+  h1
+has type
+  ‖latticeKernel1 1 5‖ ≤ Real.pi * Real.exp (Real.sinh 2 - 10)
+but is expected to have type
+  ‖latticeKernel1 1 5‖ ≤ 2 * Real.pi * Real.exp (Real.sinh 2 - 10)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-LC-a.lean:23:2: error: Type mismatch
+  h1
+has type
+  ‖latticeKernel1 (-1) (-5)‖ ≤ Real.pi * Real.exp (Real.sinh 2 - 10)
+but is expected to have type
+  ‖latticeKernel1 (-1) (-5)‖ ≤ 2 * Real.pi * Real.exp (Real.sinh 2 - 10)
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-LC-a.lean:28:2: error: Type mismatch
+  h1
+has type
+  ‖latticeKernel1 0 0‖ ≤ Real.pi
+but is expected to have type
+  ‖latticeKernel1 0 0‖ ≤ 2 * Real.pi

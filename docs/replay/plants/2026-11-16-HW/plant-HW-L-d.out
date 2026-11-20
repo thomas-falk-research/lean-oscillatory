@@ -1,0 +1,29 @@
+plant-HW-L-d.lean:171:47: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∑ᶠ (y : ℤ), (‖(pointState ?a ?b y).1‖ + ‖(pointState ?a ?b y).2‖)
+in the target expression
+  ‖((a + b) / ↑√2, 0).1‖ ≤ 39 * (‖(pointState a b 0).1‖ + ‖(pointState a b 0).2‖) * ↑1 ^ (-1 / 3)
+
+h : P_HadamardDispersiveStatement
+a b : ℂ
+h1 : ‖((a + b) / ↑√2, 0).1‖ ≤ 39 * (‖(pointState a b 0).1‖ + ‖(pointState a b 0).2‖) * ↑1 ^ (-1 / 3)
+h2 : ‖(hadamardWalk (pointState a b) 1 1).2‖ ≤ 39 * (‖(pointState a b 0).1‖ + ‖(pointState a b 0).2‖) * ↑1 ^ (-1 / 3)
+⊢ ‖(a + b) / ↑√2‖ ≤ 39 * (‖a‖ + ‖b‖) * ↑1 ^ (-1 / 3) ∧ ‖(a - b) / ↑√2‖ ≤ 39 * (‖a‖ + ‖b‖) * ↑1 ^ (-1 / 3)
+plant-HW-L-d.lean:179:29: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∑ᶠ (y : ℤ), (‖(twoSiteState y).1‖ + ‖(twoSiteState y).2‖)
+in the target expression
+  ‖(1 / ↑√2, 1 / ↑√2).1‖ ≤ 39 * (‖(twoSiteState 0).1‖ + ‖(twoSiteState 0).2‖) * ↑1 ^ (-1 / 3) ∧
+    ‖(1 / ↑√2, 1 / ↑√2).2‖ ≤ 39 * (‖(twoSiteState 0).1‖ + ‖(twoSiteState 0).2‖) * ↑1 ^ (-1 / 3)
+
+h : P_HadamardDispersiveStatement
+h1 :
+  ‖(1 / ↑√2, 1 / ↑√2).1‖ ≤ 39 * (‖(twoSiteState 0).1‖ + ‖(twoSiteState 0).2‖) * ↑1 ^ (-1 / 3) ∧
+    ‖(1 / ↑√2, 1 / ↑√2).2‖ ≤ 39 * (‖(twoSiteState 0).1‖ + ‖(twoSiteState 0).2‖) * ↑1 ^ (-1 / 3)
+⊢ 1 / √2 ≤ 39 * 2 * ↑1 ^ (-1 / 3) ∧ 1 / √2 ≤ 39 * 2 * ↑1 ^ (-1 / 3)
+plant-HW-L-d.lean:185:26: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∑ᶠ (y : ℤ), (‖(fiveState y).1‖ + ‖(fiveState y).2‖)
+in the target expression
+  ‖(1 / ↑√2, 0).1‖ ≤ 39 * (‖(fiveState 0).1‖ + ‖(fiveState 0).2‖) * ↑1 ^ (-1 / 3)
+
+h : P_HadamardDispersiveStatement
+h1 : ‖(1 / ↑√2, 0).1‖ ≤ 39 * (‖(fiveState 0).1‖ + ‖(fiveState 0).2‖) * ↑1 ^ (-1 / 3)
+⊢ 1 / √2 ≤ 39 * 1 * ↑1 ^ (-1 / 3)

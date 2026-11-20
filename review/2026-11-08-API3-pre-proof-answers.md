@@ -67,3 +67,7 @@ No Lean proof of an API3 statement exists. The route `docs/proof-API3.md` was dr
 the review window (no Lean proof code; disclosed in its header). `FamilySanity.lean` was written after the reviews
 and before any proof, by a sanity agent under `review/prompts/API3-sanity-brief.md`. The reviews, these answers, the
 route and the sanity file are committed and stamped before any proof agent starts (lessons 29).
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

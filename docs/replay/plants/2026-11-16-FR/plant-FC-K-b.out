@@ -1,0 +1,9 @@
+plant-FC-K-b.lean:176:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  if ?m.57 then ?m.61 else ?m.62
+in the target expression
+  chainKernel 2 0 1 2 = 1
+
+h : P_ChainKernelStatement
+hu : 1 ≤ 1 → 1 ≤ ↑2 → chainKernel 2 0 1 2 = 1
+h1 : chainKernel 2 0 1 2 = 1
+⊢ chainKernel 2 0 1 2 = 0

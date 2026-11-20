@@ -11,3 +11,7 @@ PASS Q6 (L1) holds on a datum with c = 1, L2 = 1 (max |I|/bound < 1) {'max_ratio
 PASS MINOR-1 exact ||A_XY||_1 = ||a'||_1 ||b'||_1 = 4.0797 is below the Cauchy-Schwarz input 5.4191 the packet used (so the L6 rows are valid but loose by a factor 1.33) {'exact': '4.0797106', 'cauchy_schwarz': '5.4190538', 'factor': '1.32829'}
 PASS W1 ||f||^2 = 91 and ||Δf||^2 = 882 (direct) {}
 RESULT PASS 8/8
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

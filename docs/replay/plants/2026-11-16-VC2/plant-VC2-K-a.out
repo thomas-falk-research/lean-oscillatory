@@ -1,0 +1,27 @@
+plant-VC2-K-a.lean:191:2: error: Type mismatch: After simplification, term
+  h1
+ has type
+  ‖∫ (x : ℝ) in -c..c, Complex.exp (↑x ^ 2 / 2 * Complex.I)‖ ≤ 3
+but is expected to have type
+  ‖∫ (x : ℝ) in -c..c, Complex.exp (↑x ^ 2 / 2 * Complex.I)‖ ≤ 7 / 2
+plant-VC2-K-a.lean:199:2: error: Type mismatch: After simplification, term
+  h1
+ has type
+  ‖∫ (x : ℝ) in -c..c, Complex.exp ((↑x ^ 2 / 2 + 3 * ↑x) * Complex.I)‖ ≤ 3
+but is expected to have type
+  ‖∫ (x : ℝ) in -c..c, Complex.exp ((↑x ^ 2 / 2 + 3 * ↑x) * Complex.I)‖ ≤ 7 / 2
+plant-VC2-K-a.lean:208:2: error: Type mismatch: After simplification, term
+  h1
+ has type
+  ‖∫ (x : ℝ) in -c..c, Complex.exp (-(↑x ^ 2 / 2 * Complex.I))‖ ≤ 3
+but is expected to have type
+  ‖∫ (x : ℝ) in -c..c, Complex.exp (-(↑x ^ 2 / 2 * Complex.I))‖ ≤ 7 / 2
+plant-VC2-K-a.lean:219:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  7 / 2 * (1 / 10) * 1
+in the target expression
+  ‖oscInt (fun x => 100 * x ^ 2 / 2 + 0 * x) (fun x => 1) (-(1 / 10)) (1 / 10)‖ ≤ 3 * (1 / 10) * 1
+
+h : P_SecondDerivSevenHalvesStatement
+h1 : ‖oscInt (fun x => 100 * x ^ 2 / 2 + 0 * x) (fun x => 1) (-(1 / 10)) (1 / 10)‖ ≤ 3 * (1 / 10) * 1
+h2 : 7 / 2 * (1 / 10) * 1 = 7 / 20
+⊢ ‖∫ (x : ℝ) in -(1 / 10)..1 / 10, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ 7 / 20

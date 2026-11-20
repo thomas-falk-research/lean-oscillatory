@@ -267,4 +267,88 @@ example : D4LimitUniformStatement := OscInt.API.d4LimitUniform
 
 example : D4LimitOffsetStatement := OscInt.API.d4LimitOffset
 
+/-! ### PA-C: Fourier coefficients of a periodic function analytic in a strip decay exponentially: `|∫_0^{2π} v(θ) e^{−ikθ} dθ| ≤ 2π M e^{−a|k|}`. -/
+
+example : FourierCoeffStripStatement := OscInt.API.fourierCoeffStrip
+
+/-! ### PA-T: The trapezoidal rule converges exponentially for a periodic function analytic in a strip: `|I_N − ∫_0^{2π} v| ≤ 4πM / (e^{aN} − 1)` for every `N ≥ 1` (Trefethen–Weideman 2014, Theorem 3.2). -/
+
+example : TrapezoidalRuleStatement := OscInt.API.trapezoidalRule
+
+/-! ### LC-1: Light-cone bound for the 1D lattice kernel: `|I(t, n)| ≤ 2π e^{|t| sinh η − |n| η}` for every real `t`, integer `n` and `η ≥ 0`. -/
+
+example : LatticeKernel1LightConeStatement := OscInt.API.latticeKernel1LightCone
+
+/-! ### KL-D: The Kusmin–Landau inequality in Landau's sharp form, on differences: `|Σ_{n=0}^{N} e(c_n)| ≤ cot(πλ/2)`. -/
+
+example : KusminLandauStatement := OscInt.API.kusminLandau
+
+/-! ### KL-C: The Kusmin–Landau inequality with the constant `2/π`: `|Σ_{n=0}^{N} e(c_n)| ≤ 2/(πλ)`. -/
+
+example : KusminLandauTwoOverPiStatement := OscInt.API.kusminLandauTwoOverPi
+
+/-! ### KL-F: The Kusmin–Landau inequality in its textbook form: `f′` monotone on `(a, b)` with values in `[k + λ, k + 1 − λ]` gives `|Σ_{a ≤ n ≤ b} e(f(n))| ≤ cot(πλ/2)`. -/
+
+example : KusminLandauDerivStatement := OscInt.API.kusminLandauDeriv
+
+/-! ### FR-K: The ring kernel solves `i ∂_t R + ΔR = 0` in the site variable, equals the unit datum of the ring at `t = 0` (1 on `Nℤ`, 0 elsewhere) and has period `N`. -/
+
+example : RingKernelStatement := OscInt.API.ringKernelSolves
+
+/-! ### FR-U: Every solution of period `N` of `i u′ + Δu = 0` is the kernel sum of its datum over one period: `u(t, x) = Σ_{y<N} R_N(t, x − y) u(0, y)`. -/
+
+example : RingUniqueStatement := OscInt.API.ringUnique
+
+/-! ### FR-S: Method of images: the ring kernel is the line kernel summed over the coset `r + Nℤ`. -/
+
+example : RingCosetSumStatement := OscInt.API.ringCosetSum
+
+/-! ### FR-P: Finite-size error of the ring: `|R_N(t, r) − G(t, r)| ≤ 2 e^{2|t| sinh η} cosh(rη) / (e^{ηN} − 1)` for every `η > 0`. -/
+
+example : RingFiniteSizeStatement := OscInt.API.ringFiniteSize
+
+/-! ### FC-K: The chain kernel solves the equation in the site variable, vanishes at the walls `x = 0` and `x = M + 1`, and is the unit datum at `t = 0` on the sites `1, …, M`. -/
+
+example : ChainKernelStatement := OscInt.API.chainKernelSolves
+
+/-! ### FC-U: Every solution of `i u′ + Δu = 0` on the open chain `1, …, M` with `u = 0` at the walls `0` and `M + 1` is the kernel sum of its datum: `u(t, x) = Σ_{y=1}^{M} C_M(t; x, y) u(0, y)`. -/
+
+example : ChainUniqueStatement := OscInt.API.chainUnique
+
+/-! ### FC-P: Finite-size error of the open chain: for sites `1 ≤ x, y ≤ M` and every `η > 0`, `|C_M(t; x, y) − G(t, x − y)| ≤ e^{2|t| sinh η} (e^{−(x+y)η} + 2 (cosh((x−y)η) + cosh((x+y)η)) / (e^{2(M+1)η} − 1))`. -/
+
+example : ChainFiniteSizeStatement := OscInt.API.chainFiniteSize
+
+/-! ### VC2-S: The second-derivative van der Corput bound with its sharp constant: if `f′` increases at rate at least `λ > 0`, then `|∫_a^b e^{if}| ≤ A(w)/√λ` for some `w ∈ [0, π]`. -/
+
+example : SecondDerivSharpStatement := OscInt.API.secondDerivSharp
+
+/-! ### VC2-A: The bound of VC2-S is attained by the quadratic phase: `A(w) ≤ |∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx|`. -/
+
+example : SecondDerivAttainedStatement := OscInt.API.secondDerivAttained
+
+/-! ### VC2-N: An explicit bound for the sharp constant: `A(w) ≤ 7/2` for `0 ≤ w ≤ π`. -/
+
+example : Vdc2ProfileBoundStatement := OscInt.API.vdc2ProfileBound
+
+/-! ### VC2-K: The second-derivative test with amplitude and a linear term, constant `7/2`: `|∫_a^b e^{i(φ(x) + px)} ψ(x) dx| ≤ (7/2) μ^{−1/2} (|ψ(b)| + ∫_a^b |ψ′|)` when `|φ″| ≥ μ > 0` on `(a, b)`. -/
+
+example : SecondDerivSevenHalvesStatement := OscInt.API.secondDerivSevenHalves
+
+/-! ### HW-R: The walk from a point state in terms of the scalar kernel: for every `t ≥ 0`, `ψ_{t+1}(x) = ((a + b)/√2 · K(t+1, x+1) + a K(t, x), (a − b)/√2 · K(t+1, x−1) + b K(t, x))`. -/
+
+example : HadamardKernelStatement := OscInt.API.hadamardKernelFormula
+
+/-! ### HW-K: Explicit bound for the scalar kernel: `|K(t, x)| ≤ 7 t^{−1/2} + 12 t^{−1/3}` for `t ≥ 1` and every site `x`. -/
+
+example : HadamardKernelBoundStatement := OscInt.API.hadamardKernelBound
+
+/-! ### HW-D: Decay of the Hadamard walk from a point state: each component of `ψ_t(x)` is at most `39 (|a| + |b|) t^{−1/3}`, for `t ≥ 1` and every site `x`. -/
+
+example : HadamardDecayStatement := OscInt.API.hadamardDecay
+
+/-! ### HW-L: The dispersive estimate `ℓ¹ → ℓ^∞` for finitely supported initial states: each component of `ψ_t(x)` is at most `39 t^{−1/3} ∑_y (|ψ₀(y)₁| + |ψ₀(y)₂|)`, for `t ≥ 1` and every site `x`. -/
+
+example : HadamardDispersiveStatement := OscInt.API.hadamardDispersive
+
 end OscIntSnippets

@@ -13,6 +13,7 @@ for a Lean theorem (README).
 | 2026-11-08 | VV-classify | `docs/prereg/2026-11-08-VV-classify.md` | `numerics/src/bin/classify_vv.rs` → `numerics/results-classify-vv-2026-11-08.txt` | Q(1) CUSP; Q(0.5) CUSP; Q(3) NFD4; T CUSP; controls C CUSP, S(0.5) CUSP | Completed; the Q(3) verdict is wrong (exact cusp points missed by the grid), retracted by the erratum `docs/design/vector-amplitudes.md` §6 |
 | 2026-11-08 | VV-qwz-decay | `docs/prereg/2026-11-08-VV-qwz-decay.md` | `numerics/src/bin/qwz_decay.rs` → `numerics/results-qwz-decay-2026-11-08.txt` | (a) FAIL; (b) PASS; OVERALL: NOT PASS | Completed, failed; criterion (b) found non-discriminating afterwards (erratum §6) |
 | 2026-11-09 | CENSUS | spec `docs/prereg/2026-11-09-CENSUS-spec.md`; registration `docs/prereg/2026-11-09-CENSUS-prereg.md` | implementations not yet written | — | Spec FROZEN at 61d227c (2026-11-10, after two spec-fidelity referees); registration DRAFT; no run |
+| 2026-11-16 | CTQW-chain | `docs/prereg/2026-11-16-CTQW-chain.md` | `experiments/ctqw-chain/` (reference, circuits, simulators, analysis); no hardware output yet | — | REGISTERED, NOT RUN (Addendum 1 of 2026-11-16, before any run: the first run on a no-cost plan of IBM Quantum, approved by the owner; to be stamped before the first job): reference values certified, three implementations agree, tolerances fixed from a simulated noise model; a hardware run needs the owner's approval |
 
 Earlier numeric checks were not pre-registered as such: `numerics/results-2026-11-05.txt` (S1 constants, `make numerics`,
 `docs/progress.md`) and `numerics/results-d4const-2026-11-06.txt` (D4 closed forms, `docs/decisions/2026-11-06-S4.md`).
@@ -20,3 +21,7 @@ Symbolic checks of a specification (not tests of a hypothesis) are recorded with
 `numerics/census/spec_checks.py` → `numerics/results-census-spec-2026-11-09.txt`, superseded on 2026-11-10 by
 `numerics/results-census-spec-2026-11-10.txt` after control K-QWZm was added before registration, and regenerated after
 the spec referees' repairs (39/39 at the frozen spec commit 61d227c; checks R4, CORPUS and M07-LINES added) (CENSUS).
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

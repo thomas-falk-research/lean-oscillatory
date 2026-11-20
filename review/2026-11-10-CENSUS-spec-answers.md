@@ -97,3 +97,7 @@ What it confirmed with its own code:
 What it did not check: the literature statements, the drand chain hash against the network, complete Σ sets beyond M07
 and K5, whether Krawczyk tests succeed at the corpus's A3 points, A's charts, the Lean predicates, and whether the GD
 theorems hold.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

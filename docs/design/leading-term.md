@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Design: stationary-phase leading terms (ROADMAP P2) — draft, not frozen
 
 Status: design document with draft statements. Nothing here is a frozen statement; a statement derived from it goes

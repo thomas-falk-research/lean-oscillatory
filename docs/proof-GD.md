@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Proof route: batch GD (GD-C, GD, GD-F, GD-N, SH, T1, T6, T6L)
 
 Drafted by the lead during the pre-proof review window (disclosed, as in batch 3: a route is mathematics with the

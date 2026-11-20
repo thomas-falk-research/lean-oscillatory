@@ -5,6 +5,12 @@ title: "Phase not covered: <short description>"
 labels: ["phase-request"]
 ---
 
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 **The integral.** Write it out: the phase Ψ (a formula), the amplitude's support K (and whether the amplitude is
 smooth with compact support), the linear terms L you need (a compact set, or all of them), the parameter set if the
 phase is a family.

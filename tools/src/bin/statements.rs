@@ -156,7 +156,8 @@ pub fn generate(root: &Path) -> Result<String, String> {
             "{name}: no `def {short} : Prop` with a docstring under OscInt/Statements/ (add a `/-- **label** … -/`)"
         ))?;
         let stamped = file_hash(&m, &file).ok_or(format!("{stamp}/manifest.txt: no hash for {file}"))?;
-        let now = sys::sha256_file(&root.join(&file))?;
+        // the frozen content: the file without one trailing attribution block (`sys::ATTRIBUTION_BLOCKS`)
+        let now = sys::frozen_sha256_file(&root.join(&file))?;
         if now != stamped {
             return Err(format!(
                 "{file} has sha256 {now} but its stamp {stamp} records {stamped}: a frozen statement file was \
@@ -185,7 +186,7 @@ pub fn generate(root: &Path) -> Result<String, String> {
     stamps.dedup();
     let mut sfiles = Vec::new();
     for f in &files {
-        let now = sys::sha256_file(&root.join(f))?;
+        let now = sys::frozen_sha256_file(&root.join(f))?;
         let mut by = None;
         for st in &stamps {
             if file_hash(&read(root, &format!("{st}/manifest.txt"))?, f) == Some(now.as_str()) {

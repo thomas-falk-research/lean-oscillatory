@@ -1,0 +1,34 @@
+import OscInt.Front.PeriodicAnalyticSanity
+
+namespace OscInt.API.PeriodicAnalyticSanity
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+
+def P_PeriodicAnalyticOn (v : ℂ → ℂ) (a M : ℝ) : Prop :=
+  DifferentiableOn ℂ v (openStrip a) ∧
+    ∀ z ∈ openStrip a, ‖v z‖ ≤ M
+
+def P_TrapezoidalRuleStatement : Prop :=
+  ∀ (v : ℂ → ℂ) (a M : ℝ) (N : ℕ), 0 < a → 0 < N → P_PeriodicAnalyticOn v a M →
+    ‖trapezoidalSum v N - ∫ θ in (0 : ℝ)..(2 * Real.pi), v (θ : ℂ)‖ ≤
+      4 * Real.pi * M / (Real.exp (a * (N : ℝ)) - 1)
+
+theorem witness_not_TrapezoidalRuleStatement : ¬ P_TrapezoidalRuleStatement :=
+  by
+  intro h
+  have h1 := h halfExp 10 (Real.exp 5) 1 (by norm_num) (by norm_num)
+    ⟨halfExp_differentiable.differentiableOn, norm_halfExp_le⟩
+  rw [trapezoidalSum_halfExp, integral_halfExp, Nat.cast_one, mul_one,
+    show (10 : ℝ) = 5 + 5 by norm_num, Real.exp_add] at h1
+  have hre : 2 * Real.pi ≤ ‖2 * (Real.pi : ℂ) - 4 * Complex.I‖ := by
+    have := Complex.re_le_norm (2 * (Real.pi : ℂ) - 4 * Complex.I)
+    simpa using this
+  have he : (6 : ℝ) ≤ Real.exp 5 := by linarith [Real.add_one_le_exp (5 : ℝ)]
+  have hpi := Real.pi_pos
+  have h2 := hre.trans h1
+  rw [le_div_iff₀ (by nlinarith)] at h2
+  have h3 : Real.pi * (Real.exp 5 * Real.exp 5 - 1) ≤ Real.pi * (2 * Real.exp 5) := by linarith
+  have h4 := le_of_mul_le_mul_left h3 hpi
+  nlinarith
+
+end OscInt.API.PeriodicAnalyticSanity

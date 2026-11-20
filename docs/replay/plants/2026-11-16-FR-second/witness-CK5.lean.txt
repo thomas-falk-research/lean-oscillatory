@@ -1,0 +1,29 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- **Datum: the hypothesis `1 ≤ y` of FC-K carries content.** `C₁(0; 1, −1) = R₄(0, 2) − R₄(0, 0) = −1`, not the
+unit datum `δ_{1,−1} = 0`. The witness datum of the planted control CK5. -/
+theorem chainKernel_one_source_neg_one : chainKernel 1 0 1 (-1) = -1 := by
+  have h : chainKernel 1 0 1 (-1) = ringKernel 4 0 2 - ringKernel 4 0 0 := by
+    rw [chainKernel]; norm_num
+  rw [h, ringKernel_four_two, ringKernel_four_zero]; norm_num
+
+def P_ChainKernelStatement : Prop :=
+  ∀ (M : ℕ) (t : ℝ) (x y : ℤ), y ≤ (M : ℤ) →
+    HasDerivAt (fun s : ℝ => chainKernel M s x y)
+      (Complex.I * (chainKernel M t (x + 1) y + chainKernel M t (x - 1) y - 2 * chainKernel M t x y)) t ∧
+    chainKernel M t 0 y = 0 ∧ chainKernel M t ((M : ℤ) + 1) y = 0 ∧
+    (1 ≤ x → x ≤ (M : ℤ) → chainKernel M 0 x y = (if x = y then 1 else 0))
+
+theorem witness_not_ChainKernelStatement : ¬ P_ChainKernelStatement :=
+  by
+  intro h
+  have h1 := (h 1 0 1 (-1) (by norm_num)).2.2.2 le_rfl (by norm_num)
+  rw [chainKernel_one_source_neg_one, ite_eq_right (by norm_num)] at h1
+  norm_num at h1
+
+end OscInt.API.FiniteRingSanity2

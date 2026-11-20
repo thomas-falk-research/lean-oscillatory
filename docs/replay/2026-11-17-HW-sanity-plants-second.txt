@@ -1,0 +1,63 @@
+# Batch HW: second run of planted controls (second sanity layer, OscInt/Front/HadamardWalkSanity2.lean), answering
+# blind pre-proof referee A. Written by an agent of the lead on 2026-11-16 under a brief that forbids proving the
+# statements; re-run by the lead (the agent's generator, a fresh directory, 23:46:20Z to 23:48:31Z, exit code 0):
+# all 24 Lean files byte-identical to the agent's, the summary identical, the 24 compiler outputs identical once
+# directory names are removed. Directory: docs/replay/plants/2026-11-16-HW-second/ (generator plants_hw2.py.txt).
+# 9 planted mutations: 6 DETECTED (a compiled proof of the negation of the planted statement), 2 NOT DETECTED
+# (HW-L-f, an exponent of HW-L; HW-K-f, the product of the two terms of HW-K), 1 NO VIOLATION KNOWN (HW-K-g:
+# t^(-1/3) alone, which may be true).
+ok-HW-R-l: accepted (want accepted)
+plant-HW-R-l: rejected (recorded)
+    first error: plant-HW-R-l.lean:77:87: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: hwR_zero, hwR_one; second layer: hwR_two
+witness-HW-R-l: accepted (want accepted)
+  HW-R-l [a K(t, x) ↦ a K(t, −x) in the first component; witness: t = 2, x = −1, (a, b) = (1, 0); K(3, 0) = 0 and K(2, 1) = −1/√2 (1/√2 = −1/√2)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-R-m: accepted (want accepted)
+plant-HW-R-m: rejected (recorded)
+    first error: plant-HW-R-m.lean:77:87: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+    copied scripts with an error: first layer: hwR_zero, hwR_one; second layer: hwR_two
+witness-HW-R-m: accepted (want accepted)
+  HW-R-m [b K(t, x) ↦ b K(t, −x) in the second component; witness: t = 2, x = 1, (a, b) = (0, 1); K(3, 0) = 0 and K(2, −1) = 1/√2 (−1/√2 = 1/√2)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-D-e: accepted (want accepted)
+plant-HW-D-e: rejected (recorded)
+    first error: plant-HW-D-e.lean:42:9: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: hwD_one, hwD_two; second layer: hwD_three
+witness-HW-D-e: accepted (want accepted)
+  HW-D-e [constant 39 ↦ 1 (both components); witness: t = 3, x = −1, (a, b) = (1, 0) (1/√2 ≤ 3^{−1/3} = 0.6934)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-L-e: accepted (want accepted)
+plant-HW-L-e: rejected (recorded)
+    first error: plant-HW-L-e.lean:56:9: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: hwL_point, hwL_two_site, hwL_five; second layer: hwL_point_three, hwL_two_site_two
+witness-HW-L-e: accepted (want accepted)
+  HW-L-e [constant 39 ↦ 1 (both components); witness: the point state (1, 0), t = 3, x = −1 (1/√2 ≤ 3^{−1/3})]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-L-f: accepted (want accepted)
+plant-HW-L-f: rejected (recorded)
+    first error: plant-HW-L-f.lean:56:9: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: hwL_point, hwL_two_site, hwL_five; second layer: hwL_point_three, hwL_two_site_two
+  HW-L-f [exponent −1/3 ↦ 1/3 (both components)]: NOT DETECTED, and no witness can exist: TRUE WEAKENING. Under the hypothesis 1 ≤ t of the statement, t^{−1/3} ≤ 1 ≤ t^{1/3}, and the factor 39 ∑ᶠ (|ψ₀(y)₁| + |ψ₀(y)₂|) is nonnegative, so the planted bound is at least the bound of the frozen statement under the same hypotheses: the frozen statement implies the planted one (not proved in Lean: a conclusion for every t is outside this layer). About mutations of the exponent in general, with the constant 39 kept: the largest datum of the two layers relative to the ℓ¹ sum is 1/√2 (t = 1 and t = 3) and 1/2 (t = 2), and 39 t^e is below it only for e < −6.29 at t = 2 and e < −3.65 at t = 3 (explore_hw2.py.txt, unregistered); for every e ≥ −1 the planted bound is at least 13 times the ℓ¹ sum at t ≤ 3. So no mutation of the exponent to a value e ≥ −3.65 is refutable with data at t ≤ 3: the exponent −1/3 of HW-L (and of HW-D, first run, plant HW-D-d: first violation of 39/t at t = 126) rests on the fidelity review and on the proof. The rejection of the copied scripts is by the literal form of the conclusion only.
+ok-HW-L-g: accepted (want accepted)
+plant-HW-L-g: rejected (recorded)
+    first error: plant-HW-L-g.lean:52:40: error: Application type mismatch: The argument
+    copied scripts with an error: first layer: hwL_point, hwL_two_site, hwL_five; second layer: hwL_point_three, hwL_two_site_two
+witness-HW-L-g: accepted (want accepted)
+  HW-L-g [support hypothesis ψ₀ y ≠ (0, 0) ↦ (ψ₀ y).1 ≠ 0; witness: the constant state (0, 1), t = 1, x = 0; no site has a nonzero first component, the ∑ᶠ is 0 (1/√2 ≤ 39 · 0 · 1)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-K-e: accepted (want accepted)
+plant-HW-K-e: rejected (recorded)
+    first error: plant-HW-K-e.lean:82:2: error: Type mismatch
+    copied scripts with an error: first layer: hwK_one, hwK_two, hwK_eight; second layer: hwK_five
+witness-HW-K-e: accepted (want accepted)
+  HW-K-e [constants (7, 12) ↦ (1, 0) (so t^{−1/2} alone); witness: t = 5, x = 0, |K(5, 0)| = 1/2 (1/2 ≤ 5^{−1/2} = 0.4472)]: DETECTED (witness compiled: ¬ planted statement)
+ok-HW-K-f: accepted (want accepted)
+plant-HW-K-f: rejected (recorded)
+    first error: plant-HW-K-f.lean:82:2: error: Type mismatch
+    copied scripts with an error: first layer: hwK_one, hwK_two, hwK_eight; second layer: hwK_five
+  HW-K-f [+ between the two terms ↦ * (so 84 t^{−5/6})]: NOT DETECTED: no witness. The planted bound is 84 t^{−5/6}; at the exact data of the two layers it holds with a wide margin (t = 1: 1 against 84; t = 2: 1/√2 against 47.1; t = 3: 1/2 against 33.6; t = 5: 1/2 against 22.0). Floating-point scan (explore_hw2.py.txt, unregistered; kernel by FFT, all t ≤ 9000): the first t with sup_x |K(t, x)| > 84 t^{−5/6} is t = 7749 (0.048238 against 0.048222; the blind referee had "near 7700"). A witness needs a lower bound for one value of the kernel at such a time, which no datum at a fixed small time and no short proof gives. That the two terms are added rests on the fidelity review and on the proof. The rejection of the copied scripts is by the literal form of the conclusion only.
+ok-HW-K-g: accepted (want accepted)
+plant-HW-K-g: rejected (recorded)
+    first error: plant-HW-K-g.lean:82:2: error: Type mismatch
+    copied scripts with an error: first layer: hwK_one, hwK_two, hwK_eight; second layer: hwK_five
+  HW-K-g [constants (7, 12) ↦ (0, 1) (so t^{−1/3} alone)]: NO VIOLATION KNOWN: no witness, none exists in the data. The planted bound is t^{−1/3}, stronger than the frozen one. It holds at the exact data: with equality at t = 1 (|K(1, 0)| = 1), and 1/√2 ≤ 2^{−1/3} = 0.794, 1/2 ≤ 3^{−1/3} = 0.693, 1/2 ≤ 5^{−1/3} = 0.585. Floating-point scan (explore_hw2.py.txt, unregistered): the supremum over 2 ≤ t ≤ 9000 of sup_x |K(t, x)| t^{1/3} is 0.9637, attained at t = 6 (the blind referee had at most 0.9637 for 2 ≤ t ≤ 3000). Recorded as an open question, not as a true weakening: the constants (7, 12) of HW-K are those of the route, not sharp, and no datum distinguishes them from (0, 1). The rejection of the copied scripts is by the literal form of the conclusion only.
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

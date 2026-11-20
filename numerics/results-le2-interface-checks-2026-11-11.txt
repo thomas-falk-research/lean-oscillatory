@@ -13,3 +13,7 @@ E1 exact revised-route steps PASS: end values 43732/4725 = 9.2554, 4103/525 = 7.
 RESULT PASS
 # exit status 0
 # finished 2026-11-11T01:27:28Z
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

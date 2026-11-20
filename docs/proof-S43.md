@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # S4.3 proof route (the D4 constant is positive, Gamma-free)
 
 Statement: `OscInt.Statements.D4ConstantPosStatement`. Blueprint parts C1–C5: `Blueprint/D4Limit.lean`. Assembly:

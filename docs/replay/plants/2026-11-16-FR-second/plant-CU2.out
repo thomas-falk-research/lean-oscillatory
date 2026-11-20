@@ -1,0 +1,33 @@
+plant-CU2.lean:57:51: error: Application type mismatch: The argument
+  chainMode_hasDerivAt c
+has type
+  ∀ (t : ℝ) (x : ℤ),
+    1 ≤ x →
+      x ≤ ↑1 →
+        HasDerivAt (fun s => chainMode c s x)
+          (Complex.I * (chainMode c t (x + 1) + chainMode c t (x - 1) - 2 * chainMode c t x)) t
+of sort `Prop` but is expected to have type
+  ℝ
+of sort `Type` in the application
+  h 1 (chainMode c) (chainMode_walls c) (chainMode_hasDerivAt c)
+plant-CU2.lean:64:47: error: Application type mismatch: The argument
+  twoSiteMode_hasDerivAt
+has type
+  ∀ (t : ℝ) (x : ℤ),
+    1 ≤ x →
+      x ≤ ↑2 →
+        HasDerivAt (fun s => twoSiteMode s x)
+          (Complex.I * (twoSiteMode t (x + 1) + twoSiteMode t (x - 1) - 2 * twoSiteMode t x)) t
+of sort `Prop` but is expected to have type
+  ℝ
+of sort `Type` in the application
+  h 2 twoSiteMode twoSiteMode_walls twoSiteMode_hasDerivAt
+plant-CU2.lean:64:75: error: unsolved goals
+h : P_ChainUniqueStatement
+t : ℝ
+⊢ sorry () ≤ 2
+plant-CU2.lean:63:87: error: unsolved goals
+h : P_ChainUniqueStatement
+t : ℝ
+⊢ Complex.I * Complex.exp (↑(-(2 * t)) * Complex.I) * ↑(Real.sin t) =
+    chainKernel 2 t 2 1 * twoSiteMode 0 1 + chainKernel 2 t 2 2 * twoSiteMode 0 2

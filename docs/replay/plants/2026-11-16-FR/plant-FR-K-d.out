@@ -1,0 +1,38 @@
+plant-FR-K-d.lean:130:14: error: Function expected at
+  h 2 t 0
+but this term has type
+  HasDerivAt (fun s => ringKernel 2 s 0)
+      (Complex.I * (ringKernel 2 t (0 + 1) + ringKernel 2 t (0 - 1) - 2 * ringKernel 2 t 0)) t ∧
+    (ringKernel 2 0 0 = if ↑2 ∣ 0 then 1 else 0) ∧ ringKernel 2 t (0 + ↑2) = ringKernel 2 t 0
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-FR-K-d.lean:129:100: error: unsolved goals
+h : P_RingKernelStatement
+t : ℝ
+⊢ deriv (fun s => ringKernel 2 s 0) t = -2 * Complex.I * Complex.exp (↑(-(4 * t)) * Complex.I)
+plant-FR-K-d.lean:136:14: error: Function expected at
+  h 2 0 1
+but this term has type
+  HasDerivAt (fun s => ringKernel 2 s 1)
+      (Complex.I * (ringKernel 2 0 (1 + 1) + ringKernel 2 0 (1 - 1) - 2 * ringKernel 2 0 1)) 0 ∧
+    (ringKernel 2 0 1 = if ↑2 ∣ 1 then 1 else 0) ∧ ringKernel 2 0 (1 + ↑2) = ringKernel 2 0 1
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-FR-K-d.lean:135:98: error: unsolved goals
+h : P_RingKernelStatement
+⊢ ringKernel 2 0 1 = 0 ∧ ringKernel 2 0 2 = 1
+plant-FR-K-d.lean:143:14: error: Function expected at
+  h 2 t 1
+but this term has type
+  HasDerivAt (fun s => ringKernel 2 s 1)
+      (Complex.I * (ringKernel 2 t (1 + 1) + ringKernel 2 t (1 - 1) - 2 * ringKernel 2 t 1)) t ∧
+    (ringKernel 2 0 1 = if ↑2 ∣ 1 then 1 else 0) ∧ ringKernel 2 t (1 + ↑2) = ringKernel 2 t 1
+
+Note: Expected a function because this term is being applied to the argument
+  (by norm_num)
+plant-FR-K-d.lean:142:100: error: unsolved goals
+h : P_RingKernelStatement
+t : ℝ
+⊢ ringKernel 2 t 3 = ringKernel 2 t 1

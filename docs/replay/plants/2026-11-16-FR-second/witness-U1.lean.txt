@@ -1,0 +1,45 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- `R₄(t, −2) = (1 − 2 e^{−2it} + e^{−4it}) / 4`. -/
+theorem ringKernel_four_neg_two (t : ℝ) :
+    ringKernel 4 t (-2) =
+      (1 - 2 * Complex.exp (↑(-(2 * t)) * Complex.I) + Complex.exp (↑(-(4 * t)) * Complex.I)) / 4 := by
+  rw [ringKernel_four]; norm_num [zpow_neg, zpow_ofNat]; ring
+
+/-- **Data for the planted control U1**: `R₄(0, 0) = 1` and `R₄(0, −1) = R₄(0, −2) = 0`. -/
+theorem ringKernel_four_time_zero_neg :
+    ringKernel 4 0 0 = 1 ∧ ringKernel 4 0 (-1) = 0 ∧ ringKernel 4 0 (-2) = 0 := by
+  refine ⟨?_, ?_, ?_⟩
+  · rw [ringKernel_four_zero]; norm_num
+  · rw [ringKernel_four_neg_one]; simp
+  · rw [ringKernel_four_neg_two]; norm_num
+
+/-- **Datum for the planted control U1**: `iMode 0 (−1) = i^{−1} = −i`, not `iMode 0 1 = i`. -/
+theorem iMode_zero_neg_one : iMode 0 (-1) = -Complex.I := by
+  norm_num [iMode, zpow_neg]
+
+def P_RingUniqueStatement : Prop :=
+  ∀ (N : ℕ) (u : ℝ → ℤ → ℂ), 0 < N → (∀ (t : ℝ) (x : ℤ), u t (x + (N : ℤ)) = u t x) →
+    (∀ (t : ℝ) (x : ℤ), HasDerivAt (fun s : ℝ => u s x) (Complex.I * (u t (x + 1) + u t (x - 1) - 2 * u t x)) t) →
+    ∀ (t : ℝ) (x : ℤ), u t x = ∑ y ∈ Finset.range N, ringKernel N t (x - (y : ℤ)) * u 0 (-(y : ℤ))
+
+theorem witness_not_RingUniqueStatement : ¬ P_RingUniqueStatement :=
+  by
+  intro h
+  have h1 := h 4 iMode (by norm_num) iMode_periodic iMode_hasDerivAt 0 1
+  obtain ⟨r0, rm1, rm2⟩ := ringKernel_four_time_zero_neg
+  have e0 : (1 : ℤ) - ((0 : ℕ) : ℤ) = 1 := by norm_num
+  have e1 : (1 : ℤ) - ((1 : ℕ) : ℤ) = 0 := by norm_num
+  have e2 : (1 : ℤ) - ((2 : ℕ) : ℤ) = -1 := by norm_num
+  have e3 : (1 : ℤ) - ((3 : ℕ) : ℤ) = -2 := by norm_num
+  rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one, e0, e1, e2, e3,
+    ringKernel_four_time_zero.1, r0, rm1, rm2, iMode_zero.2.1, Nat.cast_one, iMode_zero_neg_one] at h1
+  have h2 := congrArg Complex.im h1
+  norm_num at h2
+
+end OscInt.API.FiniteRingSanity2

@@ -1,9 +1,23 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Prior art (gate run 2026-11-05)
 
 Searched by a fresh-context search agent (sources it read are marked A) and spot-checked by the lead (L: file
 downloaded and read in this session). Nothing listed was built by us. "Not found" means PLAUSIBLE-not-novel: the
 search can miss work, notably Lean Zulip threads (the archive was not searchable from this session) and private
 repositories.
+
+The works cited on this page, with identifiers and published versions checked against Crossref, arXiv and zbMATH
+Open on 2026-11-19, are collected in `docs/references.bib` (its "annote" fields repeat how each was used). Published
+versions found there for preprints cited below: Hiary–Patel–Yang, J. Number Theory 256 (2024) 195–217; Maeda et al.
+(arXiv:1808.05714), J. Math. Soc. Japan 74(1) (2022) 217–246; Sunada–Tate, J. Funct. Anal. 262(6) (2012) 2608–2645;
+Chou (arXiv:2008.03698), Phys. Lett. A 386 (2021) 126986; Akramov et al. (arXiv:2411.14397), EPL 147(6) (2024) 62001.
+"Ikromov–Müller" without a title, in two places of the documents, may mean their 2016 book or their 2011 paper
+(J. Fourier Anal. Appl. 17(6) 1292–1332); which one was meant is not recorded.
 
 ## Verdicts
 
@@ -81,6 +95,95 @@ Consequences:
   points (`docs/design/vector-amplitudes.md` §6), so no proved theorem applies to it; no non-separable symbol satisfying
   the GD hypotheses has been found yet.
 
+## An explicit, smaller constant for the lattice ℓ¹ → ℓ^∞ estimate is in print (disclosure added 2026-11-16, session 13)
+
+Found by a literature sweep of session 13 and confirmed by a second, separate read of the paper's text. **Severity
+MEDIUM (novelty wording; no proof and no statement is affected).**
+
+E. L. Korotyaev and J. S. Møller, *Weighted estimates for the discrete Laplacian on the cubic lattice*,
+arXiv:1701.03605 (v1 13 January 2017, v2 3 May 2017; journal reference not on the arXiv page; published, by the
+Crossref record read on 2026-11-19, as *Weighted estimates for the Laplacian on the cubic lattice*, Ark. Mat. 57(2)
+(2019) 397–428, DOI 10.4310/arkiv.2019.v57.n2.a8), take
+`(Δf)(n) = ½ Σ_j (f(n + e_j) + f(n − e_j))`, whose group has the kernel `∏_j J_{n_j}(t)` up to a unimodular factor
+(their (1.26), (1.27)), and state in the proof of their Lemma 2.1: "‖e^{itΔ}f‖_∞ ⩽ C_Lan^d t^{−d/3} ‖f‖_1", with
+"C_Lan < 4/5" (Theorem 1.1(a)) "one of Landaus optimal constants" (CITED-READ: the arXiv abstract page and the first
+third of the HTML rendering, verbatim; their appendix and bibliography were not readable in this session). In the
+normalisation of batch LS (hopping 1, kernel `J_n(2t)`) that is
+
+    ‖u(t)‖_∞ ≤ (0.7857…)^d (2|t|)^{−d/3} ‖f‖₁     against LS-D's     (1.5473…)^d (2|t|)^{−d/3} ‖f‖₁.
+
+Consequences for the claims in this file and in the release notes:
+- The rows for TdF/TdE′ and for LS-E, LS-K, LS-D, LS-D′ say the explicit constants are "new only through T0E′". That
+  wording is too strong. For lattice sites (integer ξ) an explicit and smaller constant was published in 2017. What
+  remains true: T0E′ holds for every real ξ, which Landau's theorem on `J_ν`, ν ≥ 0, does not cover (the integral at a
+  non-integer ξ is not a Bessel function of the first kind); and the OscInt statements are machine-checked, while
+  Landau's proof has, by his own survey (Electron. J. Differ. Equ. Conf. 04 (2000) 147–154, read in session 13 by the
+  sweep agent), a step that rests on five computed table values. Whether the journal paper controls that step
+  rigorously was not checked (only its abstract page was read).
+- LS-D's constant is therefore not the best known for lattice sites, by a factor 1.9692 per dimension (computed in ball arithmetic as the ratio of
+  the two numbers above). Texts must not call it sharp or best known. The frozen rows above are not edited; this
+  section is the correction.
+- The sharp constant `sup_{n ∈ ℤ, t > 0} t^{1/3} |J_n(t)| = 0.7857…` is a formalisation target, not an open problem
+  (`docs/design/unlock-map.md`, node N6).
+
+Same sweep, same day (CITED-READ by the sweep agent, not re-read by the lead):
+- Mathlib's master branch has gained `Mathlib/Analysis/SpecialFunctions/Bessel.lean` (2026): `besselJ`, parity,
+  analyticity, a recurrence; no bound, no integral representation. It is not in the Mathlib commit OscInt pins.
+- `bjbraams/lean-DLMF` has Bessel's integral (`besselJ_int_eq_integral_exp`), the generating function, Jacobi–Anger
+  and `|J_n| ≤ 1`; its README reports 820 admissions project-wide. With it, the identification
+  `latticeKernel1 t n = 2π iⁿ J_n(t)`, which OscInt does not formalise, is PLAUSIBLY available outside Mathlib.
+- No formalisation was found of a Landau-type `x^{−1/3}` Bessel bound, of a lattice dispersive estimate, of uniform
+  fold, cusp or umbilic estimates, of the k-th derivative van der Corput lemma with constants (none beyond Roos and
+  Praveen's, which the tables above credit; wording corrected 2026-11-19), or of the exponential
+  convergence of the trapezoidal rule. Absence of a found result is PLAUSIBLE-not-novel. No repository was built or
+  audited, and zbMATH and the Lean Zulip archive were not queried.
+- Continuum (ℝⁿ) dispersive and Strichartz estimates and two Lieb–Robinson developments exist in Lean
+  (`TauCetiProject/TauCeti`, `Robertboy18/PDEAtlas`, `Crotalus/ai-formalized`, `zblore/csd-lean4`); none is a lattice
+  estimate.
+
+## Batches PA and KL: prior art found before the freeze (2026-11-16, session 13)
+
+A targeted check by a fresh-context agent of the lead (128 searches and page reads; repositories cloned and grepped
+by the agent, none built or audited; the lead read its report, not the sources). Labels are the agent's.
+
+**Batch KL (Kusmin–Landau). Verdict: ANTICIPATED with a weaker constant; the sharp form was not found formalised.**
+- `dbsanfte/RiemannGaussian` (read as vendored in `TomasOrtega/Sidon` at 735de6d, files
+  `FiniteKuzminLandau.lean`, `FirstDerivativeTest.lean`; no `sorry` in the files read):
+  `RiemannGaussian.FiniteKuzminLandau.bound`, increments of a phase sequence monotone in `[η, 2π − η]` give a sum of
+  norm at most `2π/η`, which is `1/λ` in the normalisation `e(x) = e^{2πix}`; `FirstDerivativeTest.bound` is the
+  derivative form with the same constant; second- and higher-derivative tests for sums are there too. CITED-READ.
+- `inozemtsev/formal-math` at 43f0988, `Green64/Library/Sieve/Foundation/Lemma9/Part005.lean`:
+  `Salt.ExpSum.kusmin_landau`, differences nondecreasing in `[m + δ, m + 1 − δ]`, bound `1/δ`; its docstring makes the
+  same point as modelling choice 2 of batch KL (one cell, not distance to ℤ). CITED-READ.
+- Not in Mathlib master (2b80d47), not in `AlexKontorovich/PrimeNumberTheoremAnd`, not in `teorth/IEANTN` (d60421f).
+  In the last, the node for Cheng and Graham's paper is a deliberate stub that names the corrected lemmas as what to
+  add first: an unfilled, named dependency of a live community project. CITED-READ.
+- What batch KL adds, if proved: Landau's bound `cot(πλ/2)` and the constant `2/π` (the two existing formalisations
+  have `1/λ`, which is a factor π/2 above `2/(πλ)` and cannot settle the `1/π` against `2/π` question), with data on
+  which the bound is attained. The claim is "machine-checked sharp form"; the inequality itself is not new in Lean.
+- Sources for the mathematics: `docs/statements.md`, Batch KL. Kuzmin 1927, Landau 1928, Mordell 1958 and
+  Graham–Kolesnik were not opened by anyone in this session; two secondary quotations of Graham–Kolesnik's Theorem 2.1
+  disagree on whether it prints `cot(πθ/2)` or `≪ λ^{−1}`.
+
+**Batch PA (periodic-analytic statements). Verdict: not found formalised (PLAUSIBLE-not-formalised).**
+- Trefethen and Weideman's Theorem 3.2, the decay `|c_k| ≤ M e^{−a|k|}` of Fourier coefficients for a function
+  analytic in a strip, the aliasing identity for the trapezoidal rule, and Kapteyn's inequality: none found in Lean,
+  Isabelle's AFP (titles only) or Coq. Nearest: Mathlib's `O(N^{−2})` trapezoidal error
+  (`Mathlib/MeasureTheory/Integral/IntervalIntegral/TrapezoidalRule.lean`), its contour-shift lemmas for q-expansions
+  on the half-plane, and Bernstein-ellipse analogues in `TSGut/LeanFun`. Open Mathlib pull requests and the Lean
+  Zulip archive were not searched.
+- Added 2026-11-19 (named by the external review of batch PA; the entry page and the session's theory listing were
+  fetched that day, the theory files were not read): M. Eberl, *Bessel Functions of the First Kind*, Archive of
+  Formal Proofs, submitted 3 July 2026, Isabelle session `Bessel` with theories `Bessel` and
+  `Bessel_Hankel_Integral`. By its abstract it has J_a and I_a with the series definition, contiguous relations,
+  derivatives, half-integer closed forms and a contour-integral representation of J_a. The entry page names no
+  Kapteyn-type inequality and no bound outside the light cone; whether the theories contain one is not known here.
+  It is the nearest formal Bessel development found outside Lean. It was online when the "titles only" sweep
+  above was made (2026-11-16), and that sweep did not report it.
+- The mathematics is classical and the paper says so: its Theorem 3.2 "is essentially" Theorem 1 of Davis (1959).
+  The agent flags one sentence of the paper's proof sketch (after its (3.18)) as naming the wrong direction of the
+  contour shift for negative indices; the route for PA-C takes the direction from the formula, not from that sentence.
+
 ## Singularities of lattice dispersion relations (CENSUS prior art; added 2026-11-09)
 
 Logged sweep: `review/2026-11-09-CENSUS-prior-art-sweep.md` (244 queries, `review/2026-11-09-CENSUS-prior-art-querylog.tsv`;
@@ -128,3 +231,127 @@ King's graph, lattice wave equation).
 
 S1 must cite roos-j/lean-oscillatory and PR #39406. Building it again from scratch would duplicate open
 upstream work; the decision how to proceed with M1 is the owner's (see `docs/HANDOFF.md`).
+
+## The sharp constant of the second-derivative test is classical (found 2026-11-16, session 13)
+
+What happened. While choosing the next mathematics the lead found a short argument that, for `f″ ≥ λ > 0` on
+`[a, b]`, `|∫_a^b e^{if}| ≤ m/√λ` with `m = max_b 2|∫_0^b e^{iu²/2} du|`, attained by a quadratic phase on a symmetric
+interval. The session's own map (`docs/design/unlock-map.md`, row O1) called this constant open, on the word of
+K. Rogers's paper (arXiv:math/0311013), which proves `3^{3/4}·2 ≈ 4.56` and says that numerical experiments suggest
+3.3643. A short proof of a problem called open is a warning sign, so the lead ran a logged search before anything
+else.
+
+What the search found (log: `numerics/results-vdc2-prior-art-search-2026-11-16.txt`, 14 queries on arXiv, zbMATH Open,
+MathOverflow, Crossref and the OEIS, with positive controls):
+- R. Kershner, *Determination of a van der Corput–Landau absolute constant*, Amer. J. Math. 57 (1935), and
+  *Determination of a van der Corput absolute constant*, Amer. J. Math. 60 (1938) (zbMATH 0012.34801 and 0019.10902;
+  titles and years from zbMATH and Crossref; **neither paper was read**).
+- OEIS A143305, "Decimal expansion of van der Corput's constant", 3.3643175781…, with the formula
+  `2√2 ∫_0^{√(π/2 − c)} cos(x² + c) dx` and the reference S. Finch, *Mathematical Constants* (2003), pp. 245–246 (the
+  OEIS entry was read through its API; Finch's pages were not).
+- Nothing among the ten papers that zbMATH lists as citing Rogers resolves the question differently, and
+  MathOverflow returned no hit for two formulations.
+
+What the lead computed: `m = 3.36431757815589910606…` by two methods that share no code (adaptive quadrature of the
+defining integral with a root search for the maximum; the Fresnel functions C and S), equal to each other to 29
+digits and to the OEIS value to the digits it prints.
+
+Labels. That the sharp constant is 3.3643… and that Kershner determined it: CITED from titles, the OEIS entry and
+the lead's memory of the literature, originals unread (FOLKLORE until someone reads Kershner). About Rogers's paper
+(corrected 2026-11-19 after an external review, `review/2026-11-19-VC2-external-review-answers.md`): the arXiv
+preprint (math/0311013 v1 of 3 November 2003, the only version on arXiv) does not cite Kershner and says that
+numerical experiments suggest the value of the sharp constant for n = 2; the external reviewer reports that the
+published version (Proc. Amer. Math. Soc. 133 (2005) 3543–3550, p. 3549) attributes the sharp constant for n = 2 to
+Kershner (its references [6] and [7]); the lead could not open the published text and has not seen that page.
+Nothing is inferred here about what the author knew. An earlier wording of this paragraph ("Rogers did not know
+it") drew that inference from the preprint alone and is withdrawn. The lead's argument: a proof on paper,
+unrefereed, of a known theorem; whether it differs from Kershner's is unknown. **Nothing here is claimed as new.**
+What remains worth doing is a machine check of the classical sharp theorem, which would replace the constant 8 of
+S1.2 by 3.3643… everywhere downstream; no formalisation of it was searched for yet.
+
+The lead's argument, for the record (not a statement of OscInt, not refereed). Let `x₀` be the point of `[a, b]`
+where the increasing function `f′` changes sign (an end point if it does not). On each side of `x₀` take the phase
+`v = f(x) − f(x₀) ≥ 0` as the variable: `∫_a^b e^{if} = e^{if(x₀)} ∫_0^∞ e^{iv} ρ(v) dv`, where `ρ` is the sum over the two
+sides of `1/|f′|` at the point of phase `v` (zero beyond the phase of each end point). Because `f′(y) − f′(x) ≥ y − x`,
+each summand is nonincreasing in `v` and at most `1/√(2v)`, so `ρ` is nonincreasing and `ρ(v) ≤ √(2/v) =: E(v)`. For
+such `ρ` and any angle θ, pairing each arc where `cos(v − θ) < 0` with the following arc where it is positive gives a
+nonpositive sum, so `∫ cos(v − θ) ρ` is at most the integral over the first positive arc; if that arc starts at 0 it
+is at most `Re(e^{−iθ} ∫_0^{v₁} e^{iv} E) ≤ m`, and if it starts at `v₀ > 0` it is at most
+`∫_0^π sin(s) E(v₀ + s) ds ≤ ∫_0^π sin(s) E(s) ds = Im ∫_0^π e^{iv} E ≤ m`. Equality for `ρ = E` cut at the maximising
+phase, that is, for a quadratic phase on a symmetric interval.
+
+Addendum of the same day (batch VC2). The bound is now stated for a freeze as batch VC2 (`docs/statements.md`),
+in a form with the profile A(w) and no supremum. The lead's proof was read step by step by a fresh referee (same
+model family): correct after two minor repairs, which were made and not re-refereed (the attainment of the maximum
+now rests on a hand bound for |F(2)|, at least √(144/25 + 1600/441) > √(2π); the remark on the first-derivative test
+needs a reflection when the derivative decreases). Label of the theorem: classical, CITED. Label of this proof:
+PROVEN on paper, one fresh referee; not machine-checked. Nothing is claimed as new.
+
+## Batch FR (finite ring, open chain): prior art found before the freeze (2026-11-16)
+
+The mathematics is classical: the propagator of a ring is the propagator of the line summed over images, and the
+open chain with identical sites is the odd part of a ring of twice the size plus two (the discrete sine transform).
+Nothing in the batch is claimed as new mathematics. What was looked for is a formalisation, and the explicit
+finite-size inequalities were not searched for in print.
+
+First pass (lead, two web searches; results pages only, no repository or paper opened):
+- Query 1: Lean 4 / Mathlib formalisation of the continuous-time quantum walk on a cycle, propagator, Bessel, method
+  of images, periodisation. Closest hit: github.com/emberian/graphplay (Lean 4; equitable-partition quotients of
+  quantum walks, perfect state transfer, continuous-time search on K_n; per the search summary no cycle graph, Bessel
+  function or images). Also inQWIRE/LeanQuantum (quantum information; not graph walks).
+- Query 2: Lean / Isabelle / Coq, discrete Schrödinger equation on a finite chain with Dirichlet ends, sine transform,
+  reflection. No formalisation found; analytic papers only (arXiv:2008.03698, arXiv:2608.05338, arXiv:2411.14397).
+- Mathlib has the discrete Fourier transform on ZMod N (read in the second pass, below).
+Label after the first pass: PLAUSIBLE-not-formalised (absence of a hit in two searches is not evidence of novelty).
+Not done in either pass: the Lean Zulip archive was not searched, and the graphplay repository was not opened.
+
+Second pass (2026-11-16, lead, during the replay; two more standard web searches, results pages only; Mathlib
+sources read at the pin):
+- Query 3: Isabelle AFP, circulant matrices, eigenvalues, discrete Fourier transform, cycle-graph spectrum: no
+  formalisation among the results (mathematical papers only).
+- Query 4: the repository emberian/graphplay: per the search summary of its README, "the equitable-partition quotient
+  of quantum walks, formalized in Lean 4", with perfect-state-transfer criteria; the summary found no cycle or path
+  graph in it. The repository itself was not opened (outside this session's GitHub scope); its self-reported build
+  status is not verified.
+- Mathlib at the pin (read by the lead): `Mathlib/Analysis/Fourier/ZMod.lean` has the discrete Fourier transform on
+  `ZMod N` as a linear equivalence with its inversion formula (`ZMod.dft`, `ZMod.dft_dft`);
+  `Mathlib/LinearAlgebra/Matrix/Circulant.lean` has circulant matrices; `Mathlib/Combinatorics/SimpleGraph/Circulant.lean`
+  circulant graphs. None states a propagator, a method of images or a finite-size bound. FR-K's unit datum is a
+  special case of orthogonality of characters, which `ZMod.dft_dft` contains in another form.
+Label unchanged: PLAUSIBLE-not-formalised. The mathematics is classical; nothing in batch FR is claimed as new
+mathematics. One open point recorded as CONJECTURED, not claimed: FR-P without the "− 1" in its denominator (no
+certified violation in 159003 comparisons by the lead; not proved; not in the batch).
+
+## Batch HW (the Hadamard walk on the line): prior art found before the freeze (2026-11-16)
+
+Logged sweep: `numerics/results-hw-prior-art-search-2026-11-16.txt` (12 queries on arXiv, zbMATH Open, Crossref and
+MathOverflow, 20:46Z to 21:36Z; the two Crossref free-text queries returned nothing usable).
+- The rate. A. Nayak and A. Vishwanath, arXiv:quant-ph/0010117 (CITED-READ, full text): the wave function "goes as
+  t^{−1/3}" near the two peaks; the appendices sketch proofs. T. Sunada and T. Tate, arXiv:1108.1878 (CITED-READ,
+  sections 1 and 3): asymptotics of one-dimensional quantum walks, Airy behaviour at the walls, implicit constants.
+  H. A. Carteret, B. Richmond and N. M. Temme, *Evanescence in coined quantum walks* (2005; found by title in zbMATH,
+  CITED-NOT-READ): uniform asymptotics.
+- The dispersive estimate. M. Maeda, H. Sasaki, E. Segawa, A. Suzuki and K. Suzuki, *Dispersive estimates for quantum
+  walks on 1D lattice*, arXiv:1808.05714 (CITED-READ in LaTeX source, section on the constant coin): the estimate
+  ‖U^t u‖_{ℓ^∞} ≲ t^{−1/3} ‖u‖_{ℓ¹} for a constant coin is "a direct consequence of van der Corput lemma", by "dividing
+  the integral in the region" where the second or the third derivative of the dispersion relation is bounded below;
+  the constant is implicit and the result is credited there to Sunada and Tate. This is the route of batch HW.
+  Correction, 2026-11-19 (external review of batch HW; the lead opened both papers that day). Proposition 4.12 of
+  version 3 of that paper bounds the evolution composed with the projection onto one spectral branch,
+  ‖U₀ᵗ P₊‖ ≲ ⟨t⟩^{−1/3} from ℓ¹ to ℓ^∞. The estimate for the whole walk with a constant coin is Theorem 2.1 (equation
+  (2.14)) of the same authors' *Scattering and inverse scattering for nonlinear quantum walks*, arXiv:1801.03214
+  (version 2; Discrete Contin. Dyn. Syst. 38 (2018) 3687–3703): ‖U₀ᵗ u‖_{ℓ^∞} ≤ C t^{−1/3} ‖u‖_{ℓ¹} for t ≥ 1 and a coin
+  entry with 0 < |a| < 1, C depending on a, by the same division of the integral and the van der Corput lemma; it
+  says there that the estimate was first obtained by Sunada and Tate "in a slightly different form". On Sunada
+  and Tate, "implicit constants" above is too coarse according to the reviewer, who read the paper in full: the
+  leading Airy coefficient of their Theorem 1.3 is explicit and the remainder is not (not re-read by the lead).
+  S. Richard and R. Tiedra de Aldecoa, *Decay estimates for unitary representations with applications to continuous-
+  and discrete-time models* (2023; found by title in zbMATH, CITED-NOT-READ).
+- Formalisation: no formal proof of a decay or dispersive estimate for a quantum walk was found (one query in this
+  sweep; the searches of the batch-FR section found a Lean development of quantum walks on graphs without such
+  estimates).
+Labels. The rate t^{−1/3} and the dispersive estimate with an implicit constant: known (CITED). An explicit constant
+for the Hadamard walk: not found in this sweep; PLAUSIBLE-not-in-print, with the stated search limits (no Google
+Scholar, no subscription database, two papers known by title only). The constants of batch HW are far from sharp
+(`docs/statements.md`, Batch HW, choice 3). **Nothing in batch HW is claimed as new mathematics**; the claim, if
+proved, is "machine-checked, explicit constants".

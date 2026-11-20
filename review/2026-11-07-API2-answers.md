@@ -52,3 +52,7 @@ record cited by STATUS.
 | B-MINOR 2 hyperbolic D4 only at hypothesis level | Added `OscInt.API.Examples.fe41_hyperbolic` (x³ + 2x²y + 3xy² + 5y³, disc −367) through `d4BoundFE`. |
 | B-NIT 1 helper location | Answers file corrected: `NormAux.norm_prod_functional` in `ConvertNorm.lean`, an equality. |
 | B-NIT 2, A-NIT 4, A-NIT 5 | Cosmetic / recorded; `coeffs_eq_of_forms` moved into the `ConvertAux` block. |
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

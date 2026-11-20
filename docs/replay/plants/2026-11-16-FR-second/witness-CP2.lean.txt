@@ -1,0 +1,73 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- Rational bounds for `e²`, `e⁴`, `e⁸`, `e^{12}`, `e^{16}`, from `2.718 ≤ e ≤ 2.7183` by squaring. No kernel is
+mentioned. -/
+theorem exp_bounds :
+    (7387 / 1000 : ℝ) ≤ Real.exp 2 ∧ Real.exp 2 ≤ 739 / 100 ∧ (545 / 10 : ℝ) ≤ Real.exp 4 ∧
+      Real.exp 4 ≤ 5462 / 100 ∧ (2970 : ℝ) ≤ Real.exp 8 ∧ Real.exp 8 ≤ 2984 ∧ (161865 : ℝ) ≤ Real.exp 12 ∧
+      (8820900 : ℝ) ≤ Real.exp 16 := by
+  have hl : (2718 / 1000 : ℝ) ≤ Real.exp 1 := by linarith [Real.exp_one_gt_d9]
+  have hu : Real.exp 1 ≤ 27183 / 10000 := by linarith [Real.exp_one_lt_d9]
+  have e2 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+  have e4 : Real.exp 4 = Real.exp 2 * Real.exp 2 := by rw [← Real.exp_add]; norm_num
+  have e8 : Real.exp 8 = Real.exp 4 * Real.exp 4 := by rw [← Real.exp_add]; norm_num
+  have e12 : Real.exp 12 = Real.exp 8 * Real.exp 4 := by rw [← Real.exp_add]; norm_num
+  have e16 : Real.exp 16 = Real.exp 8 * Real.exp 8 := by rw [← Real.exp_add]; norm_num
+  have l2 : (7387 / 1000 : ℝ) ≤ Real.exp 2 := by
+    rw [e2]; exact le_trans (by norm_num) (mul_le_mul hl hl (by norm_num) (by linarith))
+  have u2 : Real.exp 2 ≤ 739 / 100 := by
+    rw [e2]; exact le_trans (mul_le_mul hu hu (by linarith) (by norm_num)) (by norm_num)
+  have l4 : (545 / 10 : ℝ) ≤ Real.exp 4 := by
+    rw [e4]; exact le_trans (by norm_num) (mul_le_mul l2 l2 (by norm_num) (by linarith))
+  have u4 : Real.exp 4 ≤ 5462 / 100 := by
+    rw [e4]; exact le_trans (mul_le_mul u2 u2 (by linarith) (by norm_num)) (by norm_num)
+  have l8 : (2970 : ℝ) ≤ Real.exp 8 := by
+    rw [e8]; exact le_trans (by norm_num) (mul_le_mul l4 l4 (by norm_num) (by linarith))
+  have u8 : Real.exp 8 ≤ 2984 := by
+    rw [e8]; exact le_trans (mul_le_mul u4 u4 (by linarith) (by norm_num)) (by norm_num)
+  have l12 : (161865 : ℝ) ≤ Real.exp 12 := by
+    rw [e12]; exact le_trans (by norm_num) (mul_le_mul l8 l4 (by norm_num) (by linarith))
+  have l16 : (8820900 : ℝ) ≤ Real.exp 16 := by
+    rw [e16]; exact le_trans (by norm_num) (mul_le_mul l8 l8 (by norm_num) (by linarith))
+  exact ⟨l2, u2, l4, u4, l8, u8, l12, l16⟩
+
+/-- **Bite: `e^{−6} + 2 (cosh 2 + cosh 6) / (e^{12} − 1) < 1`**: the bound of FC-P at `M = 2`, `t = 0`, `x = 1`,
+`y = 2`, `η = 2`. With `G(t, 0)` in place of `G(t, x − y)` the left side there is `|C₂(0; 1, 2) − G(0, 0)| = 1`
+(plant CP2). -/
+theorem chainP_offdiag_bound_lt :
+    Real.exp (-6) + 2 * (Real.cosh 2 + Real.cosh 6) / (Real.exp 12 - 1) < 1 := by
+  obtain ⟨l2, u2, l4, u4, l8, u8, l12, l16⟩ := exp_bounds
+  have e6 : Real.exp 6 = Real.exp 4 * Real.exp 2 := by rw [← Real.exp_add]; norm_num
+  have u6 : Real.exp 6 ≤ 404 := by
+    rw [e6]; exact le_trans (mul_le_mul u4 u2 (by linarith) (by norm_num)) (by norm_num)
+  have l6 : (7 : ℝ) ≤ Real.exp 6 := by linarith [Real.add_one_le_exp (6 : ℝ)]
+  have m6 : Real.exp (-6) ≤ 1 / 7 := by rw [Real.exp_neg, one_div]; exact inv_anti₀ (by norm_num) l6
+  have m2 : Real.exp (-2) ≤ 1 := Real.exp_le_one_iff.mpr (by norm_num)
+  have hr : 2 * (Real.cosh 2 + Real.cosh 6) / (Real.exp 12 - 1) ≤ 1 / 2 := by
+    rw [div_le_iff₀ (by linarith), Real.cosh_eq, Real.cosh_eq]; linarith
+  linarith
+
+def P_ChainFiniteSizeStatement : Prop :=
+  ∀ (M : ℕ) (t η : ℝ) (x y : ℤ), 0 < η → 1 ≤ x → x ≤ (M : ℤ) → 1 ≤ y → y ≤ (M : ℤ) →
+    ‖chainKernel M t x y - lineKernel t 0‖ ≤
+      Real.exp (2 * |t| * Real.sinh η) *
+        (Real.exp (-(((x + y : ℤ) : ℝ) * η)) +
+          2 * (Real.cosh (((x - y : ℤ) : ℝ) * η) + Real.cosh (((x + y : ℤ) : ℝ) * η)) /
+            (Real.exp (2 * ((M : ℝ) + 1) * η) - 1))
+
+theorem witness_not_ChainFiniteSizeStatement : ¬ P_ChainFiniteSizeStatement :=
+  by
+  intro h
+  have h1 := h 2 0 2 1 2 (by norm_num) le_rfl (by norm_num) (by norm_num) (by norm_num)
+  rw [chainKernel_two_zero_offdiag, lineKernel_zero, ite_eq_left rfl, zero_sub, norm_neg, norm_one, abs_zero,
+    mul_zero, zero_mul, Real.exp_zero, one_mul, show ((1 + 2 : ℤ) : ℝ) * 2 = 6 by norm_num,
+    show ((1 - 2 : ℤ) : ℝ) * 2 = -2 by norm_num, Real.cosh_neg,
+    show 2 * (((2 : ℕ) : ℝ) + 1) * 2 = 12 by norm_num] at h1
+  linarith [chainP_offdiag_bound_lt]
+
+end OscInt.API.FiniteRingSanity2

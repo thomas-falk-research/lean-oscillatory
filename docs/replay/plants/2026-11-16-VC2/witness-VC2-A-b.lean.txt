@@ -1,0 +1,235 @@
+import OscInt.Statements.VanDerCorput
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
+import Mathlib.Analysis.Real.Pi.Bounds
+
+namespace OscInt.Statements
+
+open Set
+
+/-- `A(w) = 2 ∫_0^{√(2w)} sin(w − u²/2) du`: the largest real part, over rotations, that the quadratic phase can reach
+when its positive arc ends at phase `w`. Its maximum over `[0, π]` is van der Corput's constant. -/
+noncomputable def vdc2Profile (w : ℝ) : ℝ :=
+  2 * ∫ u in (0 : ℝ)..Real.sqrt (2 * w), Real.sin (w - u ^ 2 / 2)
+
+/-- `f′` increases at rate at least `lam` on the open interval `(a, b)`. -/
+def DerivIncreasesAtRate (f' : ℝ → ℝ) (a b lam : ℝ) : Prop :=
+  ∀ x ∈ Ioo a b, ∀ y ∈ Ioo a b, x ≤ y → lam * (y - x) ≤ f' y - f' x
+
+/-- **VC2-S** The second-derivative van der Corput bound with its sharp constant: if `f′` increases at rate at least
+`λ > 0`, then `|∫_a^b e^{if}| ≤ A(w)/√λ` for some `w ∈ [0, π]`. -/
+def SecondDerivSharpStatement : Prop :=
+  ∀ (f f' : ℝ → ℝ) (a b lam : ℝ), a ≤ b → 0 < lam → HasDerivOn f f' a b → DerivIncreasesAtRate f' a b lam →
+    ∃ w ∈ Icc (0 : ℝ) Real.pi,
+      ‖∫ x in a..b, Complex.exp (((f x : ℝ) : ℂ) * Complex.I)‖ ≤ vdc2Profile w / Real.sqrt lam
+
+theorem statement_pin_SecondDerivSharp : SecondDerivSharpStatement = SecondDerivSharpStatement := rfl
+
+/-- **VC2-A** The bound of VC2-S is attained by the quadratic phase: `A(w) ≤ |∫_{−√(2w)}^{√(2w)} e^{ix²/2} dx|`. -/
+def SecondDerivAttainedStatement : Prop :=
+  ∀ w : ℝ, 0 ≤ w →
+    vdc2Profile w ≤
+      ‖∫ x in (-Real.sqrt (2 * w))..(Real.sqrt (2 * w)), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖
+
+theorem statement_pin_SecondDerivAttained : SecondDerivAttainedStatement = SecondDerivAttainedStatement := rfl
+
+/-- **VC2-N** An explicit bound for the sharp constant: `A(w) ≤ 7/2` for `0 ≤ w ≤ π`. -/
+def Vdc2ProfileBoundStatement : Prop :=
+  ∀ w ∈ Icc (0 : ℝ) Real.pi, vdc2Profile w ≤ 7 / 2
+
+theorem statement_pin_Vdc2ProfileBound : Vdc2ProfileBoundStatement = Vdc2ProfileBoundStatement := rfl
+
+/-- **VC2-K** The second-derivative test with amplitude and a linear term, constant `7/2`:
+`|∫_a^b e^{i(φ(x) + px)} ψ(x) dx| ≤ (7/2) μ^{−1/2} (|ψ(b)| + ∫_a^b |ψ′|)` when `|φ″| ≥ μ > 0` on `(a, b)`. -/
+def SecondDerivSevenHalvesStatement : Prop :=
+  ∀ (φ φ' φ'' : ℝ → ℝ) (ψ ψ' : ℝ → ℂ) (a b μ p : ℝ), a ≤ b → 0 < μ →
+    HasDerivOn φ φ' a b → HasDerivOn φ' φ'' a b → (∀ x ∈ Ioo a b, μ ≤ |φ'' x|) → AmplitudeOn ψ ψ' a b →
+    ‖oscInt (fun x => φ x + p * x) ψ a b‖ ≤ (7 / 2 : ℝ) * μ ^ (-(1 : ℝ) / 2) * ampNorm ψ ψ' a b
+
+theorem statement_pin_SecondDerivSevenHalves :
+    SecondDerivSevenHalvesStatement = SecondDerivSevenHalvesStatement := rfl
+
+end OscInt.Statements
+
+namespace OscInt.API.SecondDerivSharpSanity
+
+open OscInt.Statements Set
+
+/-- A function vanishing at `0` whose derivative is nonnegative on `[0, ∞)` is nonnegative there. -/
+theorem nonneg_of_deriv_nonneg {g g' : ℝ → ℝ} (h0 : g 0 = 0) (hd : ∀ t, HasDerivAt g (g' t) t)
+    (hg' : ∀ t, 0 ≤ t → 0 ≤ g' t) (t : ℝ) (ht : 0 ≤ t) : 0 ≤ g t := by
+  have hmono : MonotoneOn g (Ici 0) := by
+    refine monotoneOn_of_deriv_nonneg (convex_Ici 0) (fun x _ => (hd x).continuousAt.continuousWithinAt)
+      (fun x _ => (hd x).differentiableAt.differentiableWithinAt) (fun x hx => ?_)
+    rw [(hd x).deriv]
+    rw [interior_Ici] at hx
+    exact hg' x (le_of_lt hx)
+  have h := hmono self_mem_Ici ht ht
+  rwa [h0] at h
+
+/-- The derivative of the monomial `c x^{n+1}`, in the shape used for the explicit antiderivatives below. -/
+theorem hasDerivAt_monomial (c : ℝ) (n : ℕ) (x : ℝ) :
+    HasDerivAt (fun x : ℝ => c * x ^ (n + 1)) (c * ((n + 1 : ℝ) * x ^ n)) x := by
+  have h := (hasDerivAt_pow (n + 1) x).const_mul c
+  simpa using h
+
+/-- `t − t³/6 ≤ sin t` for `t ≥ 0`. -/
+theorem sub_cube_le_sin (t : ℝ) (ht : 0 ≤ t) : t - t ^ 3 / 6 ≤ Real.sin t := by
+  have hd : ∀ t : ℝ, HasDerivAt (fun t : ℝ => Real.sin t - (t - t ^ 3 / 6))
+      (Real.cos t - (1 - t ^ 2 / 2)) t := by
+    intro t
+    have h := (Real.hasDerivAt_sin t).fun_sub
+      ((hasDerivAt_monomial 1 0 t).fun_add (hasDerivAt_monomial (-1 / 6) 2 t))
+    convert h using 1
+    · funext s
+      ring
+    · push_cast
+      ring
+  have h := nonneg_of_deriv_nonneg (by simp) hd
+    (fun t _ => by linarith [Real.one_sub_sq_div_two_le_cos (x := t)]) t ht
+  linarith
+
+/-- `cos t ≤ 1 − t²/2 + t⁴/24` for `t ≥ 0`. -/
+theorem cos_le_deg_four (t : ℝ) (ht : 0 ≤ t) : Real.cos t ≤ 1 - t ^ 2 / 2 + t ^ 4 / 24 := by
+  have hd : ∀ t : ℝ, HasDerivAt (fun t : ℝ => 1 - t ^ 2 / 2 + t ^ 4 / 24 - Real.cos t)
+      (Real.sin t - (t - t ^ 3 / 6)) t := by
+    intro t
+    have h := (((hasDerivAt_const t (1 : ℝ)).fun_add (hasDerivAt_monomial (-1 / 2) 1 t)).fun_add
+      (hasDerivAt_monomial (1 / 24) 3 t)).fun_sub (Real.hasDerivAt_cos t)
+    convert h using 1
+    · funext s
+      ring
+    · push_cast
+      ring
+  have h := nonneg_of_deriv_nonneg (by simp) hd (fun t ht => by linarith [sub_cube_le_sin t ht]) t ht
+  linarith
+
+/-- `sin t ≤ t − t³/6 + t⁵/120` for `t ≥ 0`. -/
+theorem sin_le_deg_five (t : ℝ) (ht : 0 ≤ t) : Real.sin t ≤ t - t ^ 3 / 6 + t ^ 5 / 120 := by
+  have hd : ∀ t : ℝ, HasDerivAt (fun t : ℝ => t - t ^ 3 / 6 + t ^ 5 / 120 - Real.sin t)
+      (1 - t ^ 2 / 2 + t ^ 4 / 24 - Real.cos t) t := by
+    intro t
+    have h := (((hasDerivAt_monomial 1 0 t).fun_add (hasDerivAt_monomial (-1 / 6) 2 t)).fun_add
+      (hasDerivAt_monomial (1 / 120) 4 t)).fun_sub (Real.hasDerivAt_sin t)
+    convert h using 1
+    · funext s
+      ring
+    · push_cast
+      ring
+  have h := nonneg_of_deriv_nonneg (by simp) hd (fun t ht => by linarith [cos_le_deg_four t ht]) t ht
+  linarith
+
+/-- The Taylor polynomial of `cos` of degree 6: a lower bound of `cos` on `[0, ∞)` (`cosLow_le_cos`). -/
+noncomputable def cosLow (t : ℝ) : ℝ := 1 - t ^ 2 / 2 + t ^ 4 / 24 - t ^ 6 / 720
+
+/-- The Taylor polynomial of `sin` of degree 7: a lower bound of `sin` on `[0, ∞)` (`sinLow_le_sin`). -/
+noncomputable def sinLow (t : ℝ) : ℝ := t - t ^ 3 / 6 + t ^ 5 / 120 - t ^ 7 / 5040
+
+/-- `1 − t²/2 + t⁴/24 − t⁶/720 ≤ cos t` for `t ≥ 0`. -/
+theorem cosLow_le_cos (t : ℝ) (ht : 0 ≤ t) : cosLow t ≤ Real.cos t := by
+  have hd : ∀ t : ℝ, HasDerivAt (fun t : ℝ => Real.cos t - cosLow t)
+      (t - t ^ 3 / 6 + t ^ 5 / 120 - Real.sin t) t := by
+    intro t
+    have h := (Real.hasDerivAt_cos t).fun_sub ((((hasDerivAt_const t (1 : ℝ)).fun_add
+      (hasDerivAt_monomial (-1 / 2) 1 t)).fun_add (hasDerivAt_monomial (1 / 24) 3 t)).fun_add
+      (hasDerivAt_monomial (-1 / 720) 5 t))
+    convert h using 1
+    · funext s
+      unfold cosLow
+      ring
+    · push_cast
+      ring
+  have h := nonneg_of_deriv_nonneg (by simp [cosLow]) hd (fun t ht => by linarith [sin_le_deg_five t ht]) t ht
+  linarith
+
+/-- `t − t³/6 + t⁵/120 − t⁷/5040 ≤ sin t` for `t ≥ 0`. -/
+theorem sinLow_le_sin (t : ℝ) (ht : 0 ≤ t) : sinLow t ≤ Real.sin t := by
+  have hd : ∀ t : ℝ, HasDerivAt (fun t : ℝ => Real.sin t - sinLow t) (Real.cos t - cosLow t) t := by
+    intro t
+    have h := (Real.hasDerivAt_sin t).fun_sub ((((hasDerivAt_monomial 1 0 t).fun_add
+      (hasDerivAt_monomial (-1 / 6) 2 t)).fun_add (hasDerivAt_monomial (1 / 120) 4 t)).fun_add
+      (hasDerivAt_monomial (-1 / 5040) 6 t))
+    convert h using 1
+    · funext s
+      unfold sinLow
+      ring
+    · unfold cosLow
+      push_cast
+      ring
+  have h := nonneg_of_deriv_nonneg (by simp [sinLow]) hd (fun t ht => by linarith [cosLow_le_cos t ht]) t ht
+  linarith
+
+/-- If `P ≤ g` on `[a, b]` and `F` is an antiderivative of `P`, then `F b − F a ≤ ∫_a^b g`. -/
+theorem sub_le_integral_of_le {F P g : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b) (hF : ∀ x, HasDerivAt F (P x) x)
+    (hP : Continuous P) (hg : Continuous g) (h : ∀ x ∈ Icc a b, P x ≤ g x) : F b - F a ≤ ∫ x in a..b, g x := by
+  rw [← intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hF x) (hP.intervalIntegrable a b)]
+  exact intervalIntegral.integral_mono_on hab (hP.intervalIntegrable a b) (hg.intervalIntegrable a b) h
+
+/-- `√(2w) = 21/10` at `w = 441/200`. -/
+theorem sqrt_two_mul_w : Real.sqrt (2 * (441 / 200)) = 21 / 10 := by
+  rw [show (2 * (441 / 200) : ℝ) = (21 / 10) ^ 2 by norm_num]
+  exact Real.sqrt_sq (by norm_num)
+
+/-- An antiderivative of `u ↦ sinLow (441/200 − u²/2)` (exact rational coefficients). -/
+noncomputable def profilePrim (u : ℝ) : ℝ :=
+  821548785505653513 / 1024000000000000000 * u + 3101050253131849 / 30720000000000000 * u ^ 3 -
+    10912994726067 / 512000000000000 * u ^ 5 - 5709340213 / 4300800000000 * u ^ 7 + 743477 / 6144000000 * u ^ 9 +
+    114481 / 3379200000 * u ^ 11 - 49 / 13312000 * u ^ 13 + 1 / 9676800 * u ^ 15
+
+/-- `profilePrim′(u) = sinLow (441/200 − u²/2)`. -/
+theorem profilePrim_hasDerivAt (u : ℝ) : HasDerivAt profilePrim (sinLow (441 / 200 - u ^ 2 / 2)) u := by
+  have h := (((((((hasDerivAt_monomial (821548785505653513 / 1024000000000000000) 0 u).fun_add
+    (hasDerivAt_monomial (3101050253131849 / 30720000000000000) 2 u)).fun_add
+    (hasDerivAt_monomial (-10912994726067 / 512000000000000) 4 u)).fun_add
+    (hasDerivAt_monomial (-5709340213 / 4300800000000) 6 u)).fun_add
+    (hasDerivAt_monomial (743477 / 6144000000) 8 u)).fun_add
+    (hasDerivAt_monomial (114481 / 3379200000) 10 u)).fun_add
+    (hasDerivAt_monomial (-49 / 13312000) 12 u)).fun_add (hasDerivAt_monomial (1 / 9676800) 14 u)
+  convert h using 1
+  · funext s
+    unfold profilePrim
+    ring
+  · unfold sinLow
+    push_cast
+    ring
+
+/-- **Certified value.** `33/10 ≤ A(441/200)` (the true value is `3.35396…`; the polynomial bound gives
+`3.35007…`, margin `0.050` over `33/10`). -/
+theorem vdc2Profile_lower : 33 / 10 ≤ vdc2Profile (441 / 200) := by
+  have h := sub_le_integral_of_le (F := profilePrim) (P := fun u => sinLow (441 / 200 - u ^ 2 / 2))
+    (g := fun u => Real.sin (441 / 200 - u ^ 2 / 2)) (a := 0) (b := 21 / 10) (by norm_num)
+    profilePrim_hasDerivAt (by unfold sinLow; fun_prop) (by fun_prop)
+    (fun u hu => sinLow_le_sin _ (by nlinarith [hu.1, hu.2]))
+  have hv : (33 / 20 : ℝ) ≤ profilePrim (21 / 10) - profilePrim 0 := by
+    unfold profilePrim
+    norm_num
+  unfold vdc2Profile
+  rw [sqrt_two_mul_w]
+  linarith
+
+/-- `|∫_{−s}^{s} e^{ix²/2} dx| ≤ 3` at `s = √(441/200)` (true value `2.8124…`; the trivial bound `2s ≤ 3`). -/
+theorem quad_sqrt_norm_le :
+    ‖∫ x in (-Real.sqrt (441 / 200))..(Real.sqrt (441 / 200)),
+      Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖ ≤ 3 := by
+  have hs : Real.sqrt (441 / 200) ≤ 3 / 2 := (Real.sqrt_le_left (by norm_num)).2 (by norm_num)
+  have h := intervalIntegral.norm_integral_le_of_norm_le_const (a := -Real.sqrt (441 / 200))
+    (b := Real.sqrt (441 / 200)) (C := 1) (f := fun x : ℝ => Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I))
+    (fun x _ => le_of_eq (Complex.norm_exp_ofReal_mul_I _))
+  rw [abs_of_nonneg (by linarith [Real.sqrt_nonneg (441 / 200 : ℝ)])] at h
+  linarith
+
+/-- PLANTED copy of `SecondDerivAttainedStatement`: limits ±√(2w) ↦ ±√w. -/
+def P_SecondDerivAttainedStatement : Prop :=
+  ∀ w : ℝ, 0 ≤ w →
+    vdc2Profile w ≤
+      ‖∫ x in (-Real.sqrt w)..(Real.sqrt w), Complex.exp (((x ^ 2 / 2 : ℝ) : ℂ) * Complex.I)‖
+
+/-- Witness: the planted copy is false (w = 441/200: 33/10 ≤ A(w), and the planted integral is at most 2√w ≤ 3
+(quad_sqrt_norm_le)). -/
+theorem witness_not_SecondDerivAttainedStatement : ¬ P_SecondDerivAttainedStatement := by
+  intro h
+  have h1 := h (441 / 200) (by norm_num)
+  linarith [vdc2Profile_lower, quad_sqrt_norm_le]
+
+end OscInt.API.SecondDerivSharpSanity

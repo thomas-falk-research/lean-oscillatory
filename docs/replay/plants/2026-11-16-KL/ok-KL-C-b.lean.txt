@@ -1,0 +1,22 @@
+import OscInt.Front.KusminLandauSanity
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+
+namespace OscInt.API.KusminLandauSanity
+
+open OscInt.Statements Set
+
+def P_KusminLandauTwoOverPiStatement : Prop :=
+  ∀ (c : ℕ → ℝ) (N : ℕ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → DiffsMonotoneIn c N k lam →
+    ‖expSum c N‖ ≤ 2 / (Real.pi * lam)
+
+theorem P_klc_six (h : P_KusminLandauTwoOverPiStatement) : Real.sqrt 13 ≤ 2 / (Real.pi * (1 / 6)) := by
+  have := h cSix 6 0 (1 / 6) (by norm_num) (by norm_num) diffs_cSix
+  rwa [norm_expSum_cSix] at this
+
+theorem P_klc_third (h : P_KusminLandauTwoOverPiStatement) : Real.sqrt 3 ≤ 2 / (Real.pi * (1 / 3)) := by
+  have := h cThird 2 0 (1 / 3) (by norm_num) (by norm_num) diffs_cThird
+  rwa [norm_expSum_cThird] at this
+
+end OscInt.API.KusminLandauSanity

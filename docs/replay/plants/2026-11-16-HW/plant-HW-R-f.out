@@ -1,0 +1,29 @@
+plant-HW-R-f.lean:283:2: error: unsolved goals
+case pos
+a b : ℂ
+e : P_hadamardWalk (pointState a b) 1 (-1) = P_hadamardStep (pointState a b) (-1)
+⊢ a + b = (a + b) / ↑√2
+plant-HW-R-f.lean:285:4: error: unsolved goals
+case pos
+a b : ℂ
+e : P_hadamardWalk (pointState a b) 1 1 = P_hadamardStep (pointState a b) 1
+h1 : ¬1 = -1
+⊢ a - b = (a - b) / ↑√2
+plant-HW-R-f.lean:296:2: error: unsolved goals
+case pos
+a b : ℂ
+e : P_hadamardWalk (pointState a b) 2 (-2) = P_hadamardStep (P_hadamardWalk (pointState a b) 1) (-2)
+⊢ (a + b) / ↑√2 = (a + b) / 2
+plant-HW-R-f.lean:298:4: error: unsolved goals
+case pos
+a b : ℂ
+e : P_hadamardWalk (pointState a b) 2 0 = P_hadamardStep (P_hadamardWalk (pointState a b) 1) 0
+h1 : ¬0 = -2
+⊢ (a - b) / ↑√2 = (a - b) / 2 ∧ (a + b) / ↑√2 = (a + b) / 2
+plant-HW-R-f.lean:300:6: error: unsolved goals
+case pos
+a b : ℂ
+e : P_hadamardWalk (pointState a b) 2 2 = P_hadamardStep (P_hadamardWalk (pointState a b) 1) 2
+h1 : ¬2 = -2
+h2 : ¬2 = 0
+⊢ (a - b) / ↑√2 = (a - b) / 2

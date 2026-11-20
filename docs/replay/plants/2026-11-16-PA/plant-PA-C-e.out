@@ -1,0 +1,30 @@
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-C-e.lean:15:76: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  |?m.91|
+in the target expression
+  7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * 3))
+
+h : P_FourierCoeffStripStatement
+a : ℝ
+ha : 0 < a
+h1 : 7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * 3))
+⊢ 7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * 3))
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-C-e.lean:21:94: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  |(-?a)|
+in the target expression
+  7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * -3))
+
+h : P_FourierCoeffStripStatement
+a : ℝ
+ha : 0 < a
+h1 : 7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * -3))
+⊢ 7 * Real.pi ≤ 2 * Real.pi * (7 * Real.cosh (3 * a)) * Real.exp (-(a * 3))
+/tmp/claude-0/-home-user-lean-oscillatory/8b39a137-f4a1-539c-86e6-86e956c43264/scratchpad/plants/out_pa/plant-PA-C-e.lean:30:83: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  |1|
+in the target expression
+  2 * √13 * Real.pi ≤ 2 * Real.pi * (√13 * Real.exp a + 5) * Real.exp (-(a * 1))
+
+h : P_FourierCoeffStripStatement
+a : ℝ
+ha : 0 < a
+h1 : 2 * √13 * Real.pi ≤ 2 * Real.pi * (√13 * Real.exp a + 5) * Real.exp (-(a * 1))
+⊢ 2 * Real.pi * √13 ≤ 2 * Real.pi * (√13 * Real.exp a + 5) * Real.exp (-(a * 1))

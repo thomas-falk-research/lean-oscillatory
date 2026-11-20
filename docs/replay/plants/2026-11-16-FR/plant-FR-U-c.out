@@ -1,0 +1,17 @@
+plant-FR-U-c.lean:150:29: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∑ k ∈ Finset.range 1, ?f k
+in the target expression
+  piMode t x = ∑ x_1 ∈ Finset.range 2, ringKernel 2 t (x - ↑x_1) * piMode 0 ↑x_1 + ringKernel 2 t (x - ↑2) * piMode 0 ↑2
+
+h : P_RingUniqueStatement
+t : ℝ
+x : ℤ
+h1 :
+  piMode t x = ∑ x_1 ∈ Finset.range 2, ringKernel 2 t (x - ↑x_1) * piMode 0 ↑x_1 + ringKernel 2 t (x - ↑2) * piMode 0 ↑2
+⊢ (if Even x then 1 else -1) * Complex.exp (↑(-(4 * t)) * Complex.I) = ringKernel 2 t x - ringKernel 2 t (x - 1)
+plant-FR-U-c.lean:156:2: error: Type mismatch: After simplification, term
+  Eq.symm h1
+ has type
+  ∑ x_1 ∈ Finset.range 2, ringKernel 1 t (x - ↑x_1) = 1
+but is expected to have type
+  ringKernel 1 t x = 1

@@ -1,0 +1,24 @@
+plant-VC2-S-c.lean:292:12: error: Application type mismatch: The argument
+  hw
+has type
+  w ∈ Icc 0 1
+but is expected to have type
+  w ∈ Icc 0 Real.pi
+in the application
+  And.intro hw
+plant-VC2-S-c.lean:301:12: error: Application type mismatch: The argument
+  hw
+has type
+  w ∈ Icc 0 1
+but is expected to have type
+  w ∈ Icc 0 Real.pi
+in the application
+  And.intro hw
+plant-VC2-S-c.lean:309:12: error: Application type mismatch: The argument
+  hw
+has type
+  w ∈ Icc 0 1
+but is expected to have type
+  w ∈ Icc 0 Real.pi
+in the application
+  And.intro hw

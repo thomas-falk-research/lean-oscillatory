@@ -1,0 +1,24 @@
+plant-VC2-S-f.lean:292:16: error: Application type mismatch: The argument
+  hle
+has type
+  ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / 2
+but is expected to have type
+  ‖∫ (x : ℝ) in -c..c, Complex.exp (↑(x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w
+in the application
+  ⟨hw, hle⟩
+plant-VC2-S-f.lean:301:16: error: Application type mismatch: The argument
+  hle
+has type
+  ‖∫ (x : ℝ) in -(c / 10)..c / 10, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / 2 / 10
+but is expected to have type
+  ‖∫ (x : ℝ) in -(c / 10)..c / 10, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ vdc2Profile w / 10
+in the application
+  ⟨hw, hle⟩
+plant-VC2-S-f.lean:309:16: error: Application type mismatch: The argument
+  hle
+has type
+  0 ≤ vdc2Profile w / 2
+but is expected to have type
+  0 ≤ vdc2Profile w
+in the application
+  ⟨hw, hle⟩

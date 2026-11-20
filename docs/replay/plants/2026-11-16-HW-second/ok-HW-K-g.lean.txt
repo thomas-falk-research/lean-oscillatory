@@ -1,0 +1,111 @@
+import OscInt.Front.HadamardWalkSanity
+
+namespace OscInt.API.HadamardWalkSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.HadamardWalkSanity
+
+/-- **Datum: the amplitude of the kernel at `t = 5` is `−1/2 + cos 2k + cos 4k / 2`**:
+`cos 5ω = cos 3ω cos 2ω − sin 3ω sin 2ω = (1 − 6 sin² k + 4 sin⁴ k) cos ω` with `sin² ω = sin² k / 2`. -/
+theorem kernel_quotient_five (k : ℝ) :
+    (Complex.exp (↑(-(((5 : ℕ) : ℝ) * hadamardDispersion k)) * Complex.I) -
+        (-1 : ℂ) ^ 5 * Complex.exp (↑(((5 : ℕ) : ℝ) * hadamardDispersion k) * Complex.I)) /
+      ((Real.sqrt (2 * (1 + Real.cos k ^ 2)) : ℝ) : ℂ) =
+      -(1 / 2) * Complex.exp (↑(((0 : ℤ) : ℝ) * k) * Complex.I) +
+        (1 / 2 * Complex.exp (↑(((2 : ℤ) : ℝ) * k) * Complex.I) +
+          1 / 2 * Complex.exp (↑(((-2 : ℤ) : ℝ) * k) * Complex.I)) +
+        (1 / 4 * Complex.exp (↑(((4 : ℤ) : ℝ) * k) * Complex.I) +
+          1 / 4 * Complex.exp (↑(((-4 : ℤ) : ℝ) * k) * Complex.I)) := by
+  have hs : Real.sin (hadamardDispersion k) ^ 2 = Real.sin k ^ 2 / 2 := by
+    rw [sin_hadamardDispersion, sin_div_sqrt_two_sq]
+  have hcs := Real.sin_sq_add_cos_sq (hadamardDispersion k)
+  have hk := Real.sin_sq_add_cos_sq k
+  have h1 : 2 * Real.cos (((5 : ℕ) : ℝ) * hadamardDispersion k) =
+      (-(1 / 2) + Real.cos (2 * k) + 1 / 2 * Real.cos (4 * k)) * Real.sqrt (2 * (1 + Real.cos k ^ 2)) := by
+    rw [show ((5 : ℕ) : ℝ) * hadamardDispersion k = 3 * hadamardDispersion k + 2 * hadamardDispersion k by
+      push_cast; ring, show 4 * k = 2 * (2 * k) by ring, Real.cos_add, Real.cos_three_mul, Real.sin_three_mul,
+      Real.cos_two_mul, Real.sin_two_mul, ← two_cos_hadamardDispersion, Real.cos_two_mul (2 * k),
+      Real.cos_two_mul k]
+    linear_combination
+      (16 * Real.sin k ^ 2 * Real.cos (hadamardDispersion k) - 16 * Real.cos (hadamardDispersion k) ^ 3 +
+        16 * Real.cos (hadamardDispersion k) * Real.sin (hadamardDispersion k) ^ 2 -
+        8 * Real.cos (hadamardDispersion k)) * hs +
+      (-8 * Real.sin k ^ 2 * Real.cos (hadamardDispersion k) + 16 * Real.cos (hadamardDispersion k) ^ 3 -
+        4 * Real.cos (hadamardDispersion k)) * hcs +
+      (-8 * Real.cos k ^ 2 * Real.cos (hadamardDispersion k) + 8 * Real.sin k ^ 2 * Real.cos (hadamardDispersion k) -
+        4 * Real.cos (hadamardDispersion k)) * hk
+  have h2 := exp_neg_add_exp (2 * k)
+  have h4 := exp_neg_add_exp (4 * k)
+  rw [show (-1 : ℂ) ^ 5 = -1 by norm_num, neg_one_mul, sub_neg_eq_add, exp_neg_add_exp, h1, Complex.ofReal_mul,
+    mul_div_assoc, div_self (kernel_denominator_ne_zero k), mul_one]
+  simp only [Int.cast_neg, Int.cast_ofNat, Int.cast_zero, neg_mul, zero_mul, Complex.ofReal_zero, Complex.exp_zero]
+  push_cast at h2 h4 ⊢
+  linear_combination (-1 / 2 : ℂ) * h2 + (-1 / 4 : ℂ) * h4
+
+/-- The normalised integral of a sum of two continuous functions over `[−π, π]`. -/
+theorem fourier_add (f g : ℝ → ℂ) (hf : Continuous f) (hg : Continuous g) :
+    ((2 * Real.pi : ℝ) : ℂ)⁻¹ * ∫ k in (-Real.pi)..Real.pi, (f k + g k) =
+      ((2 * Real.pi : ℝ) : ℂ)⁻¹ * (∫ k in (-Real.pi)..Real.pi, f k) +
+        ((2 * Real.pi : ℝ) : ℂ)⁻¹ * ∫ k in (-Real.pi)..Real.pi, g k := by
+  rw [intervalIntegral.integral_add (hf.intervalIntegrable _ _) (hg.intervalIntegrable _ _), mul_add]
+
+/-- The Fourier coefficients of one exponential with a constant factor. -/
+theorem fourier_single (c : ℂ) (n : ℤ) :
+    ((2 * Real.pi : ℝ) : ℂ)⁻¹ * ∫ k in (-Real.pi)..Real.pi, c * Complex.exp (↑((n : ℝ) * k) * Complex.I) =
+      c * (if n = 0 then 1 else 0) := by
+  rw [intervalIntegral.integral_const_mul, ← fourier_unit n]
+  ring
+
+/-- **Datum: the kernel at `t = 5`, all sites**, as a sum of unit data: `−1/2` at `0`, `1/2` at `±2`, `1/4` at
+`±4`, `0` elsewhere (the integrand is `(−1/2 + cos 2k + cos 4k / 2) e^{−ixk}`). -/
+theorem hadamardKernel_five (x : ℤ) :
+    hadamardKernel 5 x =
+      -(1 / 2) * (if 0 - x = 0 then 1 else 0) +
+        (1 / 2 * (if 2 - x = 0 then 1 else 0) + 1 / 2 * (if -2 - x = 0 then 1 else 0)) +
+        (1 / 4 * (if 4 - x = 0 then 1 else 0) + 1 / 4 * (if -4 - x = 0 then 1 else 0)) := by
+  rw [hadamardKernel]
+  simp only [kernel_quotient_five, add_mul, mul_assoc, exp_mul_exp_site]
+  rw [fourier_add _ _ (by fun_prop) (by fun_prop), fourier_add _ _ (by fun_prop) (by fun_prop), fourier_single,
+    fourier_pair, fourier_pair]
+
+/-- **Datum: `K(5, 0) = −1/2`.** -/
+theorem hadamardKernel_five_zero : hadamardKernel 5 0 = -(1 / 2) := by
+  rw [hadamardKernel_five]; norm_num
+
+def P_HadamardKernelBoundStatement : Prop :=
+  ∀ (t : ℕ) (x : ℤ), 1 ≤ t →
+    ‖hadamardKernel t x‖ ≤ 7 * (t : ℝ) ^ (-(1 : ℝ) / 2) + 12 * (t : ℝ) ^ (-(1 : ℝ) / 3)
+
+theorem P_hwK_one (h : P_HadamardKernelBoundStatement) :
+    (1 : ℝ) ≤ 7 * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 2) + 12 * ((1 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h1 := h 1 0 le_rfl
+  rw [hadamardKernel_one, ite_eq_left rfl, norm_one] at h1
+  exact h1
+
+theorem P_hwK_one_simplified (h : P_HadamardKernelBoundStatement) : (1 : ℝ) ≤ 19 := by
+  have h1 := P_hwK_one h
+  rw [Nat.cast_one, Real.one_rpow, Real.one_rpow] at h1
+  linarith
+
+theorem P_hwK_two (h : P_HadamardKernelBoundStatement) :
+    1 / Real.sqrt 2 ≤ 7 * ((2 : ℕ) : ℝ) ^ (-(1 : ℝ) / 2) + 12 * ((2 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h1 := h 2 (-1) (by norm_num)
+  rw [hadamardKernel_two, ite_eq_left rfl, norm_one_div_sqrt_two] at h1
+  exact h1
+
+theorem P_hwK_eight (h : P_HadamardKernelBoundStatement) (x : ℤ) :
+    ‖hadamardKernel 8 x‖ ≤ 7 * ((8 : ℕ) : ℝ) ^ (-(1 : ℝ) / 2) + 12 * ((8 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) :=
+  h 8 x (by norm_num)
+
+theorem P_hwK_eight_simplified (h : P_HadamardKernelBoundStatement) (x : ℤ) :
+    ‖hadamardKernel 8 x‖ ≤ 7 * ((8 : ℕ) : ℝ) ^ (-(1 : ℝ) / 2) + 6 := by
+  have h1 := P_hwK_eight h x
+  rw [eight_rpow_neg_third] at h1
+  linarith
+
+theorem P_hwK_five (h : P_HadamardKernelBoundStatement) :
+    (1 : ℝ) / 2 ≤ 7 * ((5 : ℕ) : ℝ) ^ (-(1 : ℝ) / 2) + 12 * ((5 : ℕ) : ℝ) ^ (-(1 : ℝ) / 3) := by
+  have h1 := h 5 0 (by norm_num)
+  rw [hadamardKernel_five_zero, norm_neg, norm_div, norm_one, Complex.norm_ofNat] at h1
+  exact h1
+
+end OscInt.API.HadamardWalkSanity2

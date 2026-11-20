@@ -163,3 +163,7 @@ same. A cleanup is a later, separate change.
 - The proofs are unchanged. No BLOCKER remains, and every MAJOR is answered.
 - The STATUS rows for S1.k, S5.1 and S5.1′ become "machine-checked as stated" only after the isolated replay of the
   commit that records these answers (lessons 28, CONTRIBUTING step 11).
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

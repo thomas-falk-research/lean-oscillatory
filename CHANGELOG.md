@@ -1,8 +1,158 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Changelog
 
 Versions follow semantic versioning from v0.3.0 (`docs/policy.md`): before 1.0.0, a minor version (0.y.0) may change
 statements and says so under "Statement changes"; a patch (0.y.Z) changes no statement, commitment, statement file
 or `proved_by` name. Every release lists its statement changes, even when there are none.
+
+## v0.7.0 — 2026-11-20
+
+A minor release (prepared; the owner publishes). Before 1.0.0 a minor release may change statements; this one changes
+no existing statement's text, commitment or stamp. It adds 21 statements (batches PA, KL, FR, VC2 and HW), all proved
+and machine-checked as stated, so all 86 statements are. It also carries the corrections that followed an external
+review, a fix of the replay driver, and attribution inside the files, with one compatibility note for downstream
+users (section "Attribution" below). Statement fidelity has been reviewed by AI referees, among them one of a
+different model family, not yet by a human expert.
+
+### Statement changes
+
+Batch PA (`OscInt/Statements/PeriodicAnalytic.lean`, stamp `stamps/20261116T130956Z-276d8d7f9605`): three new entries,
+- PA-C `FourierCoeffStripStatement` (`proved_by` `OscInt.API.fourierCoeffStrip`);
+- PA-T `TrapezoidalRuleStatement` (`proved_by` `OscInt.API.trapezoidalRule`);
+- LC-1 `LatticeKernel1LightConeStatement` (`proved_by` `OscInt.API.latticeKernel1LightCone`).
+
+Batch KL (`OscInt/Statements/KusminLandau.lean`, same stamp): three new entries,
+- KL-D `KusminLandauStatement` (`proved_by` `OscInt.API.kusminLandau`);
+- KL-C `KusminLandauTwoOverPiStatement` (`proved_by` `OscInt.API.kusminLandauTwoOverPi`);
+- KL-F `KusminLandauDerivStatement` (`proved_by` `OscInt.API.kusminLandauDeriv`).
+
+Batch FR (`OscInt/Statements/FiniteRing.lean`, stamp `stamps/20261116T205833Z-0748dde3c341`): seven new entries,
+the Schrödinger group on a ring of N sites and on an open chain of M sites,
+- FR-K `RingKernelStatement` (`proved_by` `OscInt.API.ringKernelSolves`);
+- FR-U `RingUniqueStatement` (`proved_by` `OscInt.API.ringUnique`);
+- FR-S `RingCosetSumStatement` (`proved_by` `OscInt.API.ringCosetSum`);
+- FR-P `RingFiniteSizeStatement` (`proved_by` `OscInt.API.ringFiniteSize`);
+- FC-K `ChainKernelStatement` (`proved_by` `OscInt.API.chainKernelSolves`);
+- FC-U `ChainUniqueStatement` (`proved_by` `OscInt.API.chainUnique`);
+- FC-P `ChainFiniteSizeStatement` (`proved_by` `OscInt.API.chainFiniteSize`).
+
+Batch VC2 (`OscInt/Statements/SecondDerivSharp.lean`, stamp `stamps/20261116T222541Z-5b72549117b1`): four new
+entries, the second-derivative van der Corput bound with its sharp constant sup A (numerically 3.3643…; in Lean
+3.35 < sup A ≤ 7/2),
+- VC2-S `SecondDerivSharpStatement` (`proved_by` `OscInt.API.secondDerivSharp`);
+- VC2-A `SecondDerivAttainedStatement` (`proved_by` `OscInt.API.secondDerivAttained`);
+- VC2-N `Vdc2ProfileBoundStatement` (`proved_by` `OscInt.API.vdc2ProfileBound`);
+- VC2-K `SecondDerivSevenHalvesStatement` (`proved_by` `OscInt.API.secondDerivSevenHalves`).
+
+Batch HW (`OscInt/Statements/HadamardWalk.lean`, stamp `stamps/20261116T225756Z-5792039264f0`): four new entries,
+the Hadamard walk on the line with explicit and not sharp t^{−1/3} bounds,
+- HW-R `HadamardKernelStatement` (`proved_by` `OscInt.API.hadamardKernelFormula`);
+- HW-K `HadamardKernelBoundStatement` (`proved_by` `OscInt.API.hadamardKernelBound`);
+- HW-D `HadamardDecayStatement` (`proved_by` `OscInt.API.hadamardDecay`);
+- HW-L `HadamardDispersiveStatement` (`proved_by` `OscInt.API.hadamardDispersive`).
+
+`stamps/statements.json` has 86 entries against 65 at v0.6.0: 21 new, all with a proving theorem. No
+existing statement's text, file, commitment or stamp changed. The twenty-one of batches PA, KL, FR, HW and VC2 are
+proved in Lean, post-proof reviewed, and machine-checked as stated since the isolated replay of fafd5b8 on
+2026-11-19 (`docs/replay/2026-11-19-session13-verify-all.txt`: RESULT PASS, six kernels, all 23 comparator
+configurations; a clean-runner run of `verify.yml` on the same commit also passed). The seven of batch FR use
+lemmas of batch PA; HW-K, HW-D and HW-L use S1.2 and S1.3; HW-R, HW-D and HW-L use thirteen lemmas of the first HW
+sanity layer and one of the sanity layer of batch GD (`docs/STATUS.md`, "Batch HW, what the rows rest on"); VC2-K
+uses four lemmas of batch S1 (the amplitude transfer, the mean value inequality, two on `HasDerivOn`).
+
+### Proofs
+
+Statement-first, as before: frozen and stamped, sanity layers with planted controls, blind pre-proof reviews
+(answers stamped `stamps/20261116T152412Z-9c9a8767b806`), routes `docs/proof-PA.md` and `docs/proof-KL.md` with
+blueprints and assemblies compiled before any part, one route referee per batch
+(`review/2026-11-16-PA-KL-route-answers.md`), then the parts by proof agents. Batch FR the same way: blind
+pre-proof reviews (`review/2026-11-16-FR-pre-proof-answers.md`, answers stamped
+`stamps/20261116T225756Z-5792039264f0`), route `docs/proof-FR.md`, route referee
+(`review/2026-11-16-FR-route-answers.md`), five parts by five proof agents, post-proof reviews
+(`review/2026-11-17-FR-post-proof-answers.md`). Batch HW: blind pre-proof reviews
+(`review/2026-11-17-HW-pre-proof-answers.md`, answers stamped `stamps/20261117T010311Z-a93c4e1e44f7`), route
+`docs/proof-HW.md`, four parts by four proof agents launched together with the route referee
+(`review/2026-11-17-HW-route-answers.md`), post-proof reviews (`review/2026-11-17-HW-post-proof-answers.md`).
+Batch VC2: blind pre-proof reviews (`review/2026-11-17-VC2-pre-proof-answers.md`, answers stamped
+`stamps/20261117T010311Z-a93c4e1e44f7`), route `docs/proof-VC2.md`, six parts by six proof agents launched together
+with the route referee (`review/2026-11-17-VC2-route-answers.md`), post-proof reviews
+(`review/2026-11-19-VC2-post-proof-answers.md`). A proof on paper of batch VC2 is older than its freeze. Lead, referees and provers are AI agents
+of one model family.
+
+### Process and tooling (owner decisions of 2026-11-16)
+
+- `tools/push_gate.py` (`make push-gate`): which checks a push needs, from the paths it changes; a status claim
+  counts as code (`docs/lessons.md`, rule 18).
+- `tools/replay_preflight.py`: disk preflight for `make verify-all` (footprint not yet on disk plus 5 GB, replacing
+  the fixed 15 GB floor) and a watcher for free space and foreign Lean processes (rule 7).
+- `tools/check_docs.py`: a STATUS row with a proving theorem says "proved in Lean" until a replay is recorded and
+  "machine-checked as stated" only after; both directions enforced (rule 20).
+- `tools/ots_anchor.py` (`make anchors`) and `anchors/ots/`: Bitcoin anchors of the stamps' OpenTimestamps
+  proofs as upgraded copies, the stamp directories untouched (27 stamps and 54 proofs when the tool was added; 31 of
+  the 32 stamp directories by 2026-11-17, the stamp of 2026-11-19 pending), checked at two block explorers (rule 21).
+- A draft pull request for the working branch, so that CI runs on every push.
+
+### Added
+
+- Tools, experimental and not published: the certificate contract `docs/contract/certificate-v0.md`, a Python
+  checker `python/oscint_cert/` and an independent Rust checker `rust/oscint-cert/`.
+- A registered, not run, protocol for a continuous-time quantum walk on a qubit chain
+  (`docs/prereg/2026-11-16-CTQW-chain.md`, `experiments/ctqw-chain/`).
+- `docs/design/unlock-map.md`, `docs/funding/` (a draft application package), `docs/design/batch-FR-draft.md` (the
+  design draft of batch FR, kept as written; the batch itself is frozen and proved, see above).
+- `examples/consumer/ConsumerSecondDerivSharp.lean`: from VC2-S and VC2-N, the bound (7/2)/√λ for `∫ e^{if}` when
+  f′ increases at rate λ, and for every partial integral of the Fresnel phase e^{iλx²/2}.
+- `examples/consumer/ConsumerHadamardWalk.lean`: from HW-D, a bound for each amplitude and for the probability at a
+  site of the Hadamard walk started at one site in a unit state (probability at most 2 (39 √2 t^{−1/3})² =
+  6084 t^{−2/3}, t ≥ 1; far from sharp, as the constants are: below the trivial bound 1 only for t > 474552).
+- `examples/consumer/ConsumerFiniteRing.lean`: the two finite-size bounds at η = 1 and the closed-form propagator of
+  the chain of two sites, from the seven theorems of batch FR.
+- `examples/consumer/ConsumerPeriodicAnalytic.lean`, `examples/consumer/ConsumerKusminLandau.lean`: unconditional
+  uses of the six new theorems (normalised Fourier coefficients, a stopping rule for the trapezoidal rule, the light
+  cone at one e-folding per site, exponential sums with a linear phase); compiled by `make quick`.
+
+### External review and corrections (2026-11-19)
+
+- Five reviews of the session-13 batches by an AI system of another model family, run by the owner (it could not
+  run Lean): all 21 statements faithful to their prose, true by the reviewer's own arguments, routes sound; no
+  finding against a statement or a proof. Its findings against records, tools and process were each checked and
+  are answered in `review/2026-11-19-{VC2,PA,FR,KL,HW}-external-review-answers.md`.
+- **Replay driver** (`tools/src/bin/replay.rs`): the scan of checker output for PANIC/error/problem could be
+  switched off for a whole step by a checker's success phrase, and acceptance was matched as a bare substring. Both
+  fixed, with regression tests; the driver now keeps the raw output of every step. A rerun of the replay step with
+  the corrected driver found no output on which the old and the corrected rule differ
+  (`docs/replay/2026-11-19-lean-replay-fail-closed.txt`).
+- Records corrected by dated clarifications and errata, never by rewriting: a false clarification of KL-F (the empty
+  sum), the HW maximum 1.6208 (rounded down; exact integers give 1.620846… at t = 2997), "FC-P is not sharp" (now
+  CONJECTURED), two counts in the header of a replay record, readings of the calibration page, two prior-art
+  citations (`docs/statements.md`, `docs/calibration.md`, `docs/prior_art.md`).
+- Check scripts under `numerics/review/` fail the process on a failed check, test the predicate they describe,
+  count proved, undecided and violated comparisons, and need a certified violation for a control;
+  `numerics/review/hw_exact_max_checks.py` is new.
+- Six docstrings in `OscInt/Front/` corrected (comments only; no statement and no proof changed).
+- **Process.** Step 5 of `CONTRIBUTING.md` had not been followed in six batches (sanity-layer MAJORs answered
+  without a re-freeze); the owner ratified a one-time waiver, marked on the 23 rows of `docs/STATUS.md`
+  (`docs/decisions/2026-11-19-step5-waiver-six-batches.md`). The order sentence of `CONTRIBUTING.md` now reads
+  "before any Lean proof of it exists".
+
+### Attribution (owner decision 2026-11-19)
+
+- **Compatibility note for downstream users.** Every file under `OscInt/Statements/` and `Challenge/` now ends with
+  a fixed attribution block (author, licence). The pin of a statement file is on the bytes before the block;
+  `stamps/statements.json` keeps the SHA-256 values it had. `tools/oscint_check.py` of this release strips the block
+  before hashing; **a copy of the checker from v0.6.0 or earlier reports every statement file as edited** and must
+  be replaced by the one shipped with the release. Commitments and challenge exports are unchanged
+  (`docs/decisions/2026-11-19-attribution-blocks.md`).
+- An SPDX header on every living document and source file that had none; a fixed attribution block at the end of
+  199 records, with a recorded check that nothing else changed (`tools/attribution_blocks.py`,
+  `docs/replay/2026-11-19-attribution-blocks.txt`); a `COPYRIGHT` file in each plant-run directory.
+- `NOTICE` (the attribution file of section 4(d) of the Apache License 2.0) and `make sbom` (an SPDX bill of
+  materials listing every file with its copyright text, licence and checksum).
 
 ## v0.6.0 — 2026-11-15
 

@@ -601,3 +601,7 @@ challenge: export ./build/challenge/API3.ndjson sha256 cfb9e77b8076a30c9d79389ba
 challenge: export sha256 cfb9e77b8076a30c9d79389ba41d3cad9e457e779cca01c217c1110f6da80407 matches the stamped manifest
 make: *** [Makefile:72: verify-all] Terminated
 make[1]: *** [Makefile:55: comparator] Terminated
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

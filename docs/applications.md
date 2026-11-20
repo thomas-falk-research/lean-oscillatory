@@ -1,9 +1,17 @@
+<!--
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Applications
 
 What OscInt's verified decay estimates are for. Each entry is marked **demonstrated in this repo** (with the file that
 does it, compiled by `make quick` or the consumer CI job) or **proposed** (a use we expect to work but have not built;
 it says what is missing). A demonstration uses only `import OscInt.API` and Mathlib, so its hypotheses are discharged
 in Lean; numerics in `numerics/` are tooling and are never cited as evidence.
+
+Entries marked **[v0.7.0]** use theorems of batches PA, KL, FR, VC2 and HW, which are new in release v0.7.0.
 
 ## Lattice and photonic dispersion; discrete Schrödinger and quantum walks
 - **Dispersive decay of the 2D lattice Schrödinger group**, `|K(t, x)| ≤ C t^{-2/3}` uniformly in `x ∈ ℤ²`, sharp on the
@@ -24,8 +32,23 @@ in Lean; numerics in `numerics/` are tooling and are never cited as evidence.
   the classification (four D4 points at `(±π/2, ±π/2)`, folds elsewhere; numerically confirmed by a grid method,
   `numerics/results-classify-2026-11-08.txt`, which cannot see sub-grid cusps, lessons 43; re-examined by the census,
   model M11) is discharged in Lean: **proposed**. Uniformly over `(a, b)`: needs a family D4 statement, **proposed** (open analysis).
-- **Single-photon transition probabilities on a cosine-band photonic lattice** (for example a synthetic orbital-angular-momentum lattice): every single-site probability is at most `min(1, b(2κt))²`, with `b` the T0E envelope divided by `2π`, nontrivial for `2κt ≥ 519` (machine-checked threshold), **demonstrated** (`examples/consumer/ConsumerPhotonLattice.lean`; the identification of the amplitude with the physical model is a paper step, `review/2026-11-10-external-followup-answers.md`). With T0E′ (batch LE2, machine-checked) the envelope becomes `(C*/(2π)) (2κt)^{−1/3}` with `C*/(2π) = 1.54730… < 1.548`, below 1 for every `2κt ≥ 4`: **demonstrated** in the same file (`amp_le_cubeRoot`, `amp_cubeRoot_lt_one`). Loss, input/output coupling, finite chains and control are not covered.
-- **Quantum-walk spreading bounds** (ballistic spreading: the bound `t^{-2/3}` uniform over all sites in 2D; the return amplitude at the starting site
+- **Single-photon transition probabilities on a cosine-band photonic lattice** (for example a synthetic orbital-angular-momentum lattice): every single-site probability is at most `min(1, b(2κt))²`, with `b` the T0E envelope divided by `2π`, nontrivial for `2κt ≥ 519` (machine-checked threshold), **demonstrated** (`examples/consumer/ConsumerPhotonLattice.lean`; the identification of the amplitude with the physical model is a paper step, `review/2026-11-10-external-followup-answers.md`). With T0E′ (batch LE2, machine-checked) the envelope becomes `(C*/(2π)) (2κt)^{−1/3}` with `C*/(2π) = 1.54730… < 1.548`, below 1 for every `2κt ≥ 4`: **demonstrated** in the same file (`amp_le_cubeRoot`, `amp_cubeRoot_lt_one`). Loss, input/output coupling and control are not covered; finite rings and chains are the next entry.
+- **[v0.7.0] Finite devices: a ring of `N` sites and an open chain of `M` sites** (batch FR, one dimension): the ring
+  kernel and the chain kernel are the propagators (FR-K, FR-U, FC-K, FC-U), the ring kernel is the line kernel summed
+  over the images `r + Nℤ` (FR-S), and each differs from the kernel of the infinite line by an explicit bound with a
+  free parameter `η > 0` (FR-P, FC-P). FR-P, FC-P and FC-U are **demonstrated**
+  (`examples/consumer/ConsumerFiniteRing.lean`: both bounds at `η = 1`, and the chain of two sites in closed form). The chain has identical sites and Dirichlet walls; a chain
+  with free ends is not covered. The bounds say nothing useful once the wave has reached a wall, and the step from
+  amplitudes to populations is not stated (`docs/statements.md`, Batch FR, items 6, 7 and 9).
+- **[v0.7.0] Light cone of the 1D lattice kernel** (LC-1): `|I(t, n)| ≤ 2π e^{|t| sinh η − |n| η}` for integer `n` and
+  every `η ≥ 0`: **demonstrated** at `η = 1` (`examples/consumer/ConsumerPeriodicAnalytic.lean`,
+  `lightCone_unit_rate`). It bounds the kernel, not solutions.
+- **[v0.7.0] The Hadamard walk on the line** (batch HW): each amplitude of the walk from a point state `(a, b)` is at most
+  `39 (|a| + |b|) t^{−1/3}` for `t ≥ 1` (HW-D): **demonstrated** (`examples/consumer/ConsumerHadamardWalk.lean`). The
+  ℓ¹ → ℓ^∞ form for finitely supported initial states is HW-L (no consumer example). Upper bounds only, for the Hadamard coin only;
+  the constants are explicit and not sharp, and HW-D and HW-L have content only for `t > 59319` (`docs/STATUS.md`,
+  paragraph "Batch HW").
+- **Quantum-walk spreading bounds in two dimensions** (ballistic spreading: the bound `t^{-2/3}` uniform over all sites in 2D; the return amplitude at the starting site
   decays faster, like `t^{-1}`, since its stationary points are nondegenerate): **proposed**; needs
   vector-valued (matrix) amplitudes for the coin space (done for the global theorems: batch VT) and a classified two-band
   symbol (none found yet: `docs/design/vector-amplitudes.md` §6).
@@ -60,8 +83,12 @@ in Lean; numerics in `numerics/` are tooling and are never cited as evidence.
   `foldCrit_fold_bite`).
 - **Umbilic caustics (D4)**: the uniform `t^{-2/3}` bound and the exact leading term with constant
   `Γ(1/3)²/(√3 |Disc|^{1/6})` for `Disc < 0` and `Γ(1/3)²/Disc^{1/6}` for `Disc > 0`, **demonstrated** (`OscInt.API.d4LimitClosedForm`, F2; `examples/consumer/ConsumerFormula.lean`).
+  The limit also holds uniformly over C²-totally bounded families of amplitudes (S4.2U) and over linear offsets
+  `y·κ` with `‖y‖ ≤ R`, not multiplied by `t` (S4.2O); S4.2O is **demonstrated** along offsets that change with `t`
+  (`examples/consumer/ConsumerD4Uniform.lean`). No rate of convergence is stated.
 - **Diffraction integrals with explicit error bars**: **proposed**; needs explicit constants (`docs/constants.md`:
-  the general route gives only crude constants; a certified-numerics demonstrator is ROADMAP P6).
+  the general route gives only crude constants; a certified-numerics demonstrator is named in ROADMAP,
+  "Session-7 order", item 1, where it is called P6).
 
 ## Radar / SAR and seismic imaging
 - **Stationary-phase steps** in range-Doppler and migration formulas (replacing an integral by its stationary-phase
@@ -71,15 +98,38 @@ in Lean; numerics in `numerics/` are tooling and are never cited as evidence.
 
 ## Numerical-PDE error analysis
 - **Decay estimates for semi-discrete schemes** (dispersive decay of a finite-difference Schrödinger or wave equation
-  on a grid is exactly a lattice kernel bound like T6): **proposed** beyond the 2D Laplacian; each new symbol needs its
-  classification discharged (the Lean side is the recipe of `docs/cookbook.md`, "a lattice symbol").
+  on a grid is exactly a lattice kernel bound like T6): proved for the free Laplacian on ℤ^d (TdE′ for the kernel,
+  batch LS for solutions on ℓ²(ℤ^d); `docs/STATUS.md`) and, since v0.7.0, on a ring or an open chain in one dimension
+  (batch FR, above); **proposed** for other symbols; each new symbol needs its
+  classification discharged (the Lean side starts from the rows "Periodic integrals over `[−π, π]²`" and "The 2D
+  lattice Laplacian" of `docs/cookbook.md`).
+- **[v0.7.0] Sampling error of a periodic analytic integrand** (the trapezoidal rule, which for a periodic function is the
+  rectangle rule): for `v` 2π-periodic, analytic and bounded by `M` on the strip `|Im z| < a`, the `N`-point sum
+  differs from `∫_0^{2π} v` by at most `4πM / (e^{aN} − 1)` (PA-T), and `|∫_0^{2π} v(θ) e^{−ikθ} dθ| ≤ 2π M e^{−a|k|}`
+  (PA-C): **demonstrated** (`examples/consumer/ConsumerPeriodicAnalytic.lean`: normalised coefficients, and a
+  stopping rule for the sum). Classical (Trefethen–Weideman 2014, Theorem 3.2, as cited in `docs/statements.md`,
+  Batch PA); the claim is "machine-checked".
 - **Strichartz estimates from decay** (Keel–Tao, discrete and continuous time): **proposed**, design doc pending
-  (ROADMAP P5).
+  (ROADMAP §5, "from decay to Strichartz").
+
+## One-dimensional integrals and exponential sums with explicit constants
+- **[v0.7.0] The second-derivative test with the constant 7/2** (batch VC2): `|∫_a^b e^{if}| ≤ A(w)/√λ` for some
+  `w ∈ [0, π]` when `f′` increases at rate at least `λ > 0` (VC2-S), and `A ≤ 7/2` on `[0, π]` (VC2-N):
+  **demonstrated** (`examples/consumer/ConsumerSecondDerivSharp.lean`: the bound `(7/2)/√λ`, and every partial
+  integral of the Fresnel phase `e^{iλx²/2}`). VC2-K, S1.2 with 7/2 in place of 8, has no consumer example. The
+  constant is classical, and the theorem is classical for f″ ≥ λ by citation, the originals unread; nothing is
+  claimed as new (`docs/STATUS.md`, paragraph "Batch VC2").
+- **[v0.7.0] The Kusmin–Landau inequality for exponential sums** (batch KL; used in explicit analytic number theory):
+  `|Σ_{n=0}^{N} e(c_n)| ≤ cot(πλ/2)` when the differences of `c` are monotone and lie in one cell
+  `[k + λ, k + 1 − λ]`, `0 < λ ≤ 1/2` (KL-D), with the forms `2/(πλ)` (KL-C) and for a monotone derivative (KL-F):
+  **demonstrated** for a linear phase (`examples/consumer/ConsumerKusminLandau.lean`). The second- and
+  third-derivative tests for sums are not stated.
 
 ## Verified reference targets for AI theorem provers
 - Every statement in `stamps/statements.json` is a frozen, reviewed `Prop` with a commitment (SHA-256 of its
-  definitional closure). All but the four batch-LS statements have a machine-checked proof; `docs/STATUS.md` gives
-  each one's replay status (corrected 2026-11-13: this line said every statement was proved). The `Challenge/` files are the same statements with `sorry`
+  definitional closure). All 86 have a proof with the status "machine-checked as stated" in `docs/STATUS.md`, which gives
+  each one's replay record and what it rests on (updated 2026-11-19: the four batch-LS statements, the exception
+  noted here on 2026-11-13, were proved on 2026-11-14). The `Challenge/` files are the same statements with `sorry`
   proofs, accepted by `lake comparator` only for a proof whose statement matches. **Demonstrated** as a mechanism
   (`comparator-*.json`, `make comparator` in `make verify-all`); use as a benchmark (strip a proof, ask a prover to
   re-prove the statement, judge with the comparator) is **proposed**.

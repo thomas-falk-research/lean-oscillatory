@@ -417,3 +417,7 @@ it claims no novelty for the models with published classifications.
   `{pool, examined}`, so that the list of examined sources, which the inclusion rule requires, is under the same
   commitment as the pool; values are printable ASCII. `numerics/census/validate_pool.py` (validation, commitment, draw,
   self-test with planted defects) committed before the pool exists.
+
+<!-- Attribution, appended 2026-11-19 by owner decision; the text above is the record as written.
+SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+SPDX-License-Identifier: CC-BY-4.0 -->

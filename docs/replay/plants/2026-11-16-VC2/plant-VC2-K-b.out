@@ -1,0 +1,8 @@
+plant-VC2-K-b.lean:217:36: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  100 ^ (-1 / 2)
+in the target expression
+  ‖oscInt (fun x => 100 * x ^ 2 / 2 + 0 * x) (fun x => 1) (-(1 / 10)) (1 / 10)‖ ≤ 7 / 2 * 100 ^ (-1) * 1
+
+h : P_SecondDerivSevenHalvesStatement
+h1 : ‖oscInt (fun x => 100 * x ^ 2 / 2 + 0 * x) (fun x => 1) (-(1 / 10)) (1 / 10)‖ ≤ 7 / 2 * 100 ^ (-1) * 1
+⊢ ‖∫ (x : ℝ) in -(1 / 10)..1 / 10, Complex.exp (↑(100 * x ^ 2 / 2) * Complex.I)‖ ≤ 7 / 20

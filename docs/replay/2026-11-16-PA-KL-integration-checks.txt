@@ -1,0 +1,90 @@
+# Batches PA and KL integration checks (lead, session 13): run 2026-11-16T16:24:37Z on git HEAD 2d28449, tree clean
+# toolchain leanprover/lean4:v4.35.0; leanchecker sha256 12c38901cdbfab178f1bf6145dd30012e9a3b2c11ca695292a5884fa3cbaddb6
+leanchecker OscInt.Statements.PeriodicAnalytic rc=0 7s
+leanchecker OscInt.Statements.KusminLandau rc=0 4s
+leanchecker OscInt.Front.PeriodicAnalyticSanity rc=0 7s
+leanchecker OscInt.Front.PeriodicAnalyticSanity2 rc=0 6s
+leanchecker OscInt.Front.KusminLandauSanity rc=0 4s
+leanchecker OscInt.Front.KusminLandauSanity2 rc=0 5s
+leanchecker Blueprint.PeriodicAnalytic rc=0 6s
+leanchecker Blueprint.KusminLandau rc=0 5s
+leanchecker OscInt.Front.PeriodicAnalyticAssembly rc=0 6s
+leanchecker OscInt.Front.PeriodicAnalyticShift rc=0 6s
+leanchecker OscInt.Front.PeriodicAnalyticSeries rc=0 6s
+leanchecker OscInt.Front.PeriodicAnalyticAlias rc=0 6s
+leanchecker OscInt.Front.PeriodicAnalyticFinal rc=0 6s
+leanchecker OscInt.Front.KusminLandauAssembly rc=0 4s
+leanchecker OscInt.Front.KusminLandauCore rc=0 4s
+leanchecker OscInt.Front.KusminLandauDeriv rc=0 5s
+leanchecker OscInt.Front.KusminLandauFinal rc=0 3s
+# axiom audit (build/axioms.out of the make quick run that ended 2026-11-16T16:13:26Z on the tree committed as 2d28449):
+AUDIT-TOTAL 1573 1573
+AUDIT OscInt.API.fourierCoeffStrip propext,Classical.choice,Quot.sound
+AUDIT OscInt.API.kusminLandau propext,Classical.choice,Quot.sound
+AUDIT OscInt.API.kusminLandauDeriv propext,Classical.choice,Quot.sound
+AUDIT OscInt.API.kusminLandauTwoOverPi propext,Classical.choice,Quot.sound
+AUDIT OscInt.API.latticeKernel1LightCone propext,Classical.choice,Quot.sound
+AUDIT OscInt.API.trapezoidalRule propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.expSum_sub_int_mul propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klCoreFacts propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klCore_abel_bound propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klCore_half_minus propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klCore_half_plus propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klCore_norm_one_add_zeta propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klCore_norm_zeta propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klCore_norm_zeta_sub propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klCore_one_le propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klCore_q_anti propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klCore_sbp propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klCore_sin_pos propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klCore_term propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klCore_zeta_mul propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klDerivFacts propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klDeriv_bound_nonneg propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klDeriv_diffs propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klDeriv_mvt propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klDeriv_reindex propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.klDeriv_step propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.kusminLandauDeriv_of propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.kusminLandauTwoOverPi_of propext,Classical.choice,Quot.sound
+AUDIT OscInt.KusminLandauAux.kusminLandau_of propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.aliasBoundFacts propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.alias_exp_mul_eq_one propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.alias_hasSum_majorant propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.alias_hasSum_multiples propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.alias_majorant_value propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.alias_sum_exp_eq_zero propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.coeff_le_of_lt propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.contourShiftFacts propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.contourShift_differentiableOn propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.contourShift_exp_periodic propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.contourShift_mem_openStrip propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.contourShift_of_periodic propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.contourShift_rect_subset propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.fourierCoeffStrip_of propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.fourierSeriesFacts propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.fourierSeries_coeff propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.fourierSeries_continuous propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.fourierSeries_fourier_coe propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.fourierSeries_ofReal_mem propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.fourierSeries_periodic propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.fourierSeries_summable_exp propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.kernelIntegrandFacts propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.kernelIntegrand_latticeKernel1_eq propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.kernelIntegrand_norm_le propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.kernelIntegrand_periodic propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.kernelIntegrand_periodicAnalyticOn propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.kernelIntegrand_re propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.latticeKernel1LightCone_of propext,Classical.choice,Quot.sound
+AUDIT OscInt.PeriodicAnalyticAux.trapezoidalRule_of propext,Classical.choice,Quot.sound
+# statement types (lake env lean StatementTypes.lean):
+TYPE-OK OscInt.API.fourierCoeffStrip : OscInt.Statements.FourierCoeffStripStatement
+TYPE-OK OscInt.API.trapezoidalRule : OscInt.Statements.TrapezoidalRuleStatement
+TYPE-OK OscInt.API.latticeKernel1LightCone : OscInt.Statements.LatticeKernel1LightConeStatement
+TYPE-OK OscInt.API.kusminLandau : OscInt.Statements.KusminLandauStatement
+TYPE-OK OscInt.API.kusminLandauTwoOverPi : OscInt.Statements.KusminLandauTwoOverPiStatement
+TYPE-OK OscInt.API.kusminLandauDeriv : OscInt.Statements.KusminLandauDerivStatement
+
+# Attribution, appended 2026-11-19 by owner decision; the lines above are the record as written.
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

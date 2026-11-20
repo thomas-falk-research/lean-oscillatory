@@ -1,0 +1,76 @@
+import OscInt.Front.KusminLandauSanity
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+
+namespace OscInt.API.KusminLandauSanity
+
+open OscInt.Statements Set
+
+def P_KusminLandauDerivStatement : Prop :=
+  ∀ (f f' : ℝ → ℝ) (a b : ℝ) (k : ℤ) (lam : ℝ), 0 < lam → lam ≤ 1 / 2 → HasDerivOn f f' a b →
+    (∀ x ∈ Ioo a b, (k : ℝ) + lam ≤ f' x ∧ f' x ≤ (k : ℝ) + 1 - lam) →
+    ‖∑ n ∈ Finset.Icc ⌈a⌉ ⌊b⌋, Complex.exp (↑(2 * Real.pi * f (n : ℝ)) * Complex.I)‖ ≤
+      Real.cos (Real.pi * lam / 2) / Real.sin (Real.pi * lam / 2)
+
+/-- `f(x) = x/2 + (cos(πx) − 1)/8`: `f(2m) = m`. -/
+theorem wave_even (m : ℤ) :
+    eTerm (((2 * m : ℤ) : ℝ) / 2 + (Real.cos (Real.pi * ((2 * m : ℤ) : ℝ)) - 1) / 8) = 1 := by
+  rw [show Real.pi * ((2 * m : ℤ) : ℝ) = (m : ℝ) * (2 * Real.pi) by push_cast; ring, Real.cos_int_mul_two_pi,
+    show ((2 * m : ℤ) : ℝ) / 2 + (1 - 1) / 8 = (m : ℝ) by push_cast; ring]
+  exact eTerm_int m
+
+/-- `f(2m + 1) = m + 1/4`. -/
+theorem wave_odd (m : ℤ) :
+    eTerm (((2 * m + 1 : ℤ) : ℝ) / 2 + (Real.cos (Real.pi * ((2 * m + 1 : ℤ) : ℝ)) - 1) / 8) = Complex.I := by
+  rw [show Real.pi * ((2 * m + 1 : ℤ) : ℝ) = (m : ℝ) * (2 * Real.pi) + Real.pi by push_cast; ring,
+    Real.cos_add_pi, Real.cos_int_mul_two_pi,
+    eTerm_of _ (1 / 4) m (show ((2 * m + 1 : ℤ) : ℝ) / 2 + (-1 - 1) / 8 = 1 / 4 + (m : ℝ) by push_cast; ring),
+    eTerm_quarter]
+
+/-- The 21 terms `n = 0, …, 20` sum to `11 + 10i`. -/
+theorem wave_sum :
+    ∑ n ∈ Finset.Icc ⌈(0 : ℝ)⌉ ⌊(20 : ℝ)⌋, eTerm ((n : ℝ) / 2 + (Real.cos (Real.pi * (n : ℝ)) - 1) / 8) =
+      ((11 : ℝ) : ℂ) + ((10 : ℝ) : ℂ) * Complex.I := by
+  have hI : Finset.Icc ⌈(0 : ℝ)⌉ ⌊(20 : ℝ)⌋ =
+      (Finset.range 11).image (fun j : ℕ => 2 * (j : ℤ)) ∪
+        (Finset.range 10).image (fun j : ℕ => 2 * (j : ℤ) + 1) := by
+    rw [Int.ceil_zero, show ⌊(20 : ℝ)⌋ = 20 from Int.floor_ofNat 20]
+    decide
+  rw [hI, Finset.sum_union (by decide), Finset.sum_image (fun x _ y _ hxy => by simpa using hxy),
+    Finset.sum_image (fun x _ y _ hxy => by simpa using hxy),
+    Finset.sum_congr rfl (fun (j : ℕ) _ => wave_even (j : ℤ)),
+    Finset.sum_congr rfl (fun (j : ℕ) _ => wave_odd (j : ℤ))]
+  simp
+
+theorem witness_not_P_KusminLandauDerivStatement : ¬ P_KusminLandauDerivStatement := by
+  intro h
+  have hd : ∀ x : ℝ, HasDerivAt (fun x : ℝ => x / 2 + (Real.cos (Real.pi * x) - 1) / 8)
+      (1 / 2 - Real.pi / 8 * Real.sin (Real.pi * x)) x := by
+    intro x
+    have h0 : HasDerivAt (fun x : ℝ => x / 2 + (Real.cos (Real.pi * x) - 1) / 8)
+        (1 / 2 + (-Real.sin (Real.pi * x) * (Real.pi * 1)) / 8) x :=
+      ((hasDerivAt_id x).div_const 2).add (((((hasDerivAt_id x).const_mul Real.pi).cos).sub_const 1).div_const 8)
+    exact h0.congr_deriv (by ring)
+  have h1 := h (fun x => x / 2 + (Real.cos (Real.pi * x) - 1) / 8)
+    (fun x => 1 / 2 - Real.pi / 8 * Real.sin (Real.pi * x)) 0 20 0 (1 / 10) (by norm_num) (by norm_num)
+    ⟨by fun_prop, fun x _ => hd x⟩
+    (fun x _ => by
+      simp only [Int.cast_zero]
+      constructor <;>
+        nlinarith [Real.sin_le_one (Real.pi * x), Real.neg_one_le_sin (Real.pi * x), Real.pi_pos, Real.pi_lt_d2])
+  have h2 : ‖((11 : ℝ) : ℂ) + ((10 : ℝ) : ℂ) * Complex.I‖ ≤ _ := wave_sum ▸ h1
+  rw [Complex.norm_add_mul_I, show Real.pi * (1 / 10) / 2 = Real.pi / 20 by ring] at h2
+  have hs : 1 / 10 ≤ Real.sin (Real.pi / 20) := by
+    have := Real.mul_le_sin (x := Real.pi / 20) (by positivity) (by linarith [Real.pi_pos])
+    rwa [show 2 / Real.pi * (Real.pi / 20) = 1 / 10 by field_simp; norm_num] at this
+  have hc := Real.cos_le_one (Real.pi / 20)
+  have h221 : (10 : ℝ) < Real.sqrt (11 ^ 2 + 10 ^ 2) := by
+    rw [Real.lt_sqrt (by norm_num)]
+    norm_num
+  have hpos : 0 < Real.sin (Real.pi / 20) := by linarith
+  rw [le_div_iff₀ hpos] at h2
+  have := mul_lt_mul_of_pos_right h221 hpos
+  linarith
+
+end OscInt.API.KusminLandauSanity

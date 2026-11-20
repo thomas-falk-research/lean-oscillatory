@@ -1,0 +1,17 @@
+plant-FR-S-c.lean:143:22: error: unsolved goals
+h : P_RingCosetSumStatement
+⊢ ?m.26 ∈ nhds (ringKernel 1 0 0)
+plant-FR-S-c.lean:142:111: error: unsolved goals
+h : P_RingCosetSumStatement
+⊢ HasSum (fun m => if m = 0 then 1 else 0) 1
+plant-FR-S-c.lean:147:13: error(lean.invalidField): Invalid field notation: Field projection operates on types of the form `C ...` where C is a constant. The expression
+  h 2 0 1 ?m.34
+has type
+  (SummationFilter.unconditional ℤ).filter.1 ((fun s => ∑ b ∈ s, (fun m => lineKernel 0 (1 + m * ↑2)) b) ⁻¹' ?m.33)
+which does not have the necessary form.
+plant-FR-S-c.lean:147:23: error: unsolved goals
+h : P_RingCosetSumStatement
+⊢ ?m.33 ∈ nhds (ringKernel 2 0 1)
+plant-FR-S-c.lean:146:94: error: unsolved goals
+h : P_RingCosetSumStatement
+⊢ ∑' (m : ℤ), lineKernel 0 (1 + m * 2) = 0

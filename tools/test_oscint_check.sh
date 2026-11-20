@@ -39,6 +39,25 @@ expect "wrong pinned hash" 1 "you pinned" -- --oscint ../.. --no-lean --expect-s
 expect "unknown statement" 1 "not a pinned OscInt statement" -- --oscint ../.. --no-lean --statement OscInt.Statements.Nope
 P=$(copy edited); echo "-- edited" >> "$P/OscInt/Statements/D4Limit.lean"
 expect "edited statement file" 1 "frozen statement file was edited" -- --oscint "$P" --no-lean
+# the attribution block (tools/oscint_check.py, ATTRIBUTION_BLOCKS): the frozen bytes with or without it pass; a
+# change before it, inside it or after it is an edit
+P=$(copy noblock); python3 -I - "$P/OscInt/Statements/D4Limit.lean" <<'PY'
+import sys
+sys.path.insert(0, "../../tools")
+from oscint_check import ATTRIBUTION_BLOCKS
+p = sys.argv[1]; d = open(p, "rb").read()
+assert d.endswith(ATTRIBUTION_BLOCKS[0]), "D4Limit.lean does not end with the attribution block"
+open(p, "wb").write(d[:-len(ATTRIBUTION_BLOCKS[0])])
+PY
+expect "frozen bytes without the attribution block" 0 "statement file\(s\) match their stamps" -- --oscint "$P" --no-lean
+P=$(copy before); sed -i '1s/^/-- inserted\n/' "$P/OscInt/Statements/D4Limit.lean"
+expect "text before the attribution block" 1 "frozen statement file was edited" -- --oscint "$P" --no-lean
+# REUSE-IgnoreStart
+P=$(copy inblock); sed -i 's/SPDX-License-Identifier: Apache-2.0 -\/$/SPDX-License-Identifier: Apache-2.0  -\//' "$P/OscInt/Statements/D4Limit.lean"
+# REUSE-IgnoreEnd
+expect "changed attribution block" 1 "frozen statement file was edited" -- --oscint "$P" --no-lean
+P=$(copy twice); tail -c 211 "$P/OscInt/Statements/D4Limit.lean" >> "$P/OscInt/Statements/D4Limit.lean"
+expect "two attribution blocks" 1 "frozen statement file was edited" -- --oscint "$P" --no-lean
 P=$(copy extra); cp "$P/OscInt/Statements/D4.lean" "$P/OscInt/Statements/Extra.lean"
 expect "unstamped statement file" 1 "not in stamps/statements.json" -- --oscint "$P" --no-lean
 P=$(copy unproved); edit "$P/stamps/statements.json" $S proved_by null

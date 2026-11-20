@@ -1,0 +1,49 @@
+import OscInt.Front.FiniteRingSanity
+
+namespace OscInt.API.FiniteRingSanity2
+
+open OscInt.Statements OscInt.API.GlobalSanity OscInt.API.LatticeExplicitSanity OscInt.API.LatticeCubeRootSanity
+  OscInt.API.PeriodicAnalyticSanity OscInt.API.FiniteRingSanity
+
+/-- `cos(2π/3) = cos(4π/3) = −1/2` and `cos(5π/3) = 1/2`. -/
+theorem cos_third_pi_multiples :
+    Real.cos (2 * (Real.pi / 3)) = -1 / 2 ∧ Real.cos (4 * (Real.pi / 3)) = -1 / 2 ∧
+      Real.cos (5 * (Real.pi / 3)) = 1 / 2 := by
+  refine ⟨?_, ?_, ?_⟩
+  · rw [Real.cos_two_mul, Real.cos_pi_div_three]; norm_num
+  · rw [show 4 * (Real.pi / 3) = Real.pi / 3 + Real.pi by ring, Real.cos_add_pi, Real.cos_pi_div_three]; norm_num
+  · rw [show 5 * (Real.pi / 3) = 2 * Real.pi - Real.pi / 3 by ring, Real.cos_two_pi_sub, Real.cos_pi_div_three]
+
+/-- `e^{inπ} = (−1)ⁿ` for an integer `n`. No kernel is mentioned. -/
+theorem exp_int_mul_pi (n : ℤ) : Complex.exp (↑((n : ℝ) * Real.pi) * Complex.I) = (-1) ^ n := by
+  rw [← Complex.exp_pi_mul_I, ← Complex.exp_int_mul]; congr 1; push_cast; ring
+
+noncomputable def P_ringKernel (N : ℕ) (t : ℝ) (r : ℤ) : ℂ :=
+  ((N : ℝ) : ℂ)⁻¹ * ∑ j ∈ Finset.range N,
+    Complex.exp (↑(2 * t * (Real.cos (2 * Real.pi * (j : ℝ) / (N : ℝ)) ^ (3 : ℕ) - 1) +
+      (r : ℝ) * (2 * Real.pi * (j : ℝ) / (N : ℝ))) * Complex.I)
+
+theorem witness_R1 : ¬ P_ringKernel 6 (4 * Real.pi) 0 = 1 := by
+  have hθ1 : 2 * Real.pi * ((1 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = Real.pi / 3 := by push_cast; ring
+  have hθ2 : 2 * Real.pi * ((2 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 2 * (Real.pi / 3) := by push_cast; ring
+  have hθ3 : 2 * Real.pi * ((3 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = Real.pi := by push_cast; ring
+  have hθ4 : 2 * Real.pi * ((4 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 4 * (Real.pi / 3) := by push_cast; ring
+  have hθ5 : 2 * Real.pi * ((5 : ℕ) : ℝ) / ((6 : ℕ) : ℝ) = 5 * (Real.pi / 3) := by push_cast; ring
+  have key : ∀ (θ c : ℝ) (n : ℤ), Real.cos θ = c → 2 * (4 * Real.pi) * (c ^ (3 : ℕ) - 1) = (n : ℝ) * Real.pi →
+      Complex.exp (↑(2 * (4 * Real.pi) * (Real.cos θ ^ (3 : ℕ) - 1) + ((0 : ℤ) : ℝ) * θ) * Complex.I) =
+        (-1) ^ n := by
+    intro θ c n hc hn
+    rw [hc, Int.cast_zero, zero_mul, add_zero, hn]
+    exact exp_int_mul_pi n
+  obtain ⟨c2, c4, c5⟩ := cos_third_pi_multiples
+  have k1 := key (Real.pi / 3) (1 / 2) (-7) Real.cos_pi_div_three (by push_cast; ring)
+  have k2 := key (2 * (Real.pi / 3)) (-1 / 2) (-9) c2 (by push_cast; ring)
+  have k3 := key Real.pi (-1) (-16) Real.cos_pi (by push_cast; ring)
+  have k4 := key (4 * (Real.pi / 3)) (-1 / 2) (-9) c4 (by push_cast; ring)
+  have k5 := key (5 * (Real.pi / 3)) (1 / 2) (-7) c5 (by push_cast; ring)
+  intro h
+  rw [P_ringKernel, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
+    Finset.sum_range_succ, Finset.sum_range_one, hθ1, hθ2, hθ3, hθ4, hθ5, k1, k2, k3, k4, k5] at h
+  norm_num at h
+
+end OscInt.API.FiniteRingSanity2
