@@ -934,9 +934,9 @@ pyspnego==0.12.4 \
     --hash=sha256:a29a34de1abe9e9b30d9aa1d363f8e49fc159eb7355b1f2ee86ccb3a2ce3bba9 \
     --hash=sha256:acb314d6ca5c9ce87994b1eebbe2d8b687e0d564f9d650b306afb4c8f9c2ffd5
     # via requests-ntlm
-python-dateutil==3.0.0 \
-    --hash=sha256:3c79630202e4152c6add678446984236efe4f57e84d8e892aab0637bab82e9fd \
-    --hash=sha256:7ebcb3c29a92f3ceafe79a7a48a5c45677e9e004bbeec5742ac0bbb00560b7a2
+python-dateutil==4.0.0 \
+    --hash=sha256:a5e246f79eb80475e691bf93862cead98decd8a498cf53ba0516fcdc0f50dc1c \
+    --hash=sha256:d7295ff14fdc0f92f662100bfb6c551d160ca090f2939f1ec5b9794265c03f06
     # via
     #   ibm-cloud-sdk-core
     #   qiskit-aer
@@ -1000,9 +1000,9 @@ qiskit-ibm-runtime==0.52.1 \
     --hash=sha256:0e0064ff383676670478e43d679c63f52890b190c1a026bfccd32540af419b53 \
     --hash=sha256:cc0ac529a98a1aacbfa81dd4d473cda4590ee893ef203e22b46f3208896783d8
     # via -r req.in
-qiskit-mitigation==0.1.1 \
-    --hash=sha256:a99c9a9b67a734675ff1f3a1cefdefe06507761b8771e87b1d10fcc9a812f7b0 \
-    --hash=sha256:d527ed3e5a511720394812d628163e19f67e916434e01beb96caf76b34d12ad8
+qiskit-mitigation==0.2.0 \
+    --hash=sha256:7a66ce2105c779b1c4e8398aabf2a4c7339ef8d43c31dc3c819aaf5e5cc5566b \
+    --hash=sha256:cff6f2be4d169ec031dac41631762c042ef1ff3d2378f480c7ba6086c957f375
     # via qiskit-ibm-runtime
 qiskit-qasm3-import==0.6.0 \
     --hash=sha256:2109b65a6859bec4a51e7b61bd525365f298f67f19b3952bf602423c6d21d697 \
