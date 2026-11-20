@@ -13,10 +13,9 @@ below it, and every rule is binding.
 
 - **State at the wrap-up of 2026-11-20, about 12:30Z (read this first).** Everything is pushed; this branch is
   `claude/batch-sp-leading-term`. (1) **Release v0.7.0:** the owner's practice run of `release-candidate` failed at
-  the release body; fixed by pull request 22, merged (`main` at 5d85acb). Owner's next steps: dispatch
-  `release-candidate` on `main` with `0.7.0`, then `tools/publish_release.sh` as the run prints (the notes'
-  "Publishing" section); the metadata date is 2026-11-20, to be changed first if the release is published on a
-  later day. (2) **Batch SPL** (four statements) is machine-checked as stated on this branch and not released
+  the release body; fixed by pull request 22, merged (`main` at 5d85acb). **v0.7.0 was published by the owner on 2026-11-20** (tag
+  `v0.7.0` at 5d85acb; release-candidate run 44722915520). Owner's remaining steps: merge the pull request
+  `release/v0.7.0-pins` that `post-release` opens, and record the Zenodo version DOI when it is minted. (2) **Batch SPL** (four statements) is machine-checked as stated on this branch and not released
   (below). Owner decision (`docs/decisions/2026-11-20-batch-two-saddle.md`): after v0.7.0 and its pins pull
   request, merge `main` into this branch (never rebase), expect conflicts in `README.md` (restructured on `main`)
   and at the end of the session log, re-apply the SPL lines to the new README layout, then this branch goes into
