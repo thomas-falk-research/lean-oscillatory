@@ -139,7 +139,7 @@ use the same `lean-toolchain`, `leanprover/lean4:v4.35.0`):
 [[require]]
 name = "oscint"
 git = "https://github.com/thomas-falk-research/lean-oscillatory"
-rev = "v0.6.0"   # a release tag (pins and notes: docs/release-notes/v0.6.0.md)
+rev = "v0.7.0"   # a release tag (pins and notes: docs/release-notes/v0.7.0.md)
 ```
 
 ```bash
