@@ -126,3 +126,55 @@ existential form of SPL-S by the argument the proof page now uses, and proved SP
 
 What the session did not check, by its own account: compilation; the imported file; the paper proof; the
 numerical optimum; attribution.
+
+## 6. The fold regime, blind (a fifth session; stage 3 of the batch plan)
+
+Asked: a uniform leading-term approximation of `I(λ, ε) = ∫ a(x) e^{iλ(x³/3 − εx)} dx` near `ε = 0`, with an explicit
+remainder. Report (PDF SHA-256 9b28050e…18f5984, archive c8ee6478…565c31ee; in the lead's scratch).
+
+Its result: with `α, β` the two-point interpolation of the amplitude at `±√ε` (at 0 for `ε ≤ 0`) and
+`U = 2π [λ^{−1/3} α Ai(−λ^{2/3} ε) − i λ^{−2/3} β Ai′(−λ^{2/3} ε)]`: `|I − U| ≤ 147 ‖a″‖_∞ / λ` for every `λ > 0` and every
+real ε, for `a ∈ C_c²`; `(‖a‴‖₁/2 + ‖a″‖_∞)/λ` when the third derivative is integrable; two derivatives are the
+least for a class-wide remainder `O(1/λ)`; and no threshold in `λ ε^{3/2}` alone guarantees a relative error of
+the two-saddle formula, because the two saddle terms can cancel.
+
+Checked by an agent of the lead's family (brief SHA-256 18e12b90…82049cf): all five claims confirmed; the main
+theorem re-derived in full with every constant of its table (16/3, 83/9, 1759/12); the scripts rerun with
+byte-identical outputs; a grid of 13 amplitudes of the checker's own found no violation (largest ratio to the
+case constants 0.631 against 146.6). No FATAL or MAJOR finding.
+
+| # | Finding or qualification (lead's words) | Answer |
+|---|---|---|
+| 1 | The lead's brief asked for the range of `λ ε^{3/2}` in which the two-saddle formula has a given relative error. No such range exists for arbitrary amplitudes: for an amplitude equal to 1 near both saddles the two terms cancel at arbitrarily large `λ ε^{3/2}` and the relative error is 1. | Accepted (checker: reproduced numerically for `λ ε^{3/2}` from 8 to 946). A relative statement needs a lower bound on the two-saddle sum as a hypothesis; the report gives that conditional form. |
+| 2 | The constant 147 is far from the truth: the checker's scan of the kernel suggests about 1.36 (cases `ε ≤ 0` and small `λ ε^{3/2}`) and 0.96 (large). | Recorded as numerical only. A sharp-constant version is a possible later statement, as for the quadratic phase. |
+| 3 | The report's own numerics do not test its main bound (it is the binding bound in none of 216 rows). | The proof carries the claim; the checker re-derived it and tested it separately. |
+| 4 | Checker's addition, not refereed: a form with no Airy function, no improper integral and no compact support: for `\|a″\| ≤ M` on `[−T, T]` and `T ≥ 2 max(λ^{−1/3}, √ε₊)`, `\|∫_{−T}^{T} (a − α − βx) e^{iλφ}\| ≤ 164 M/λ` (case constants 41/6, 100/9, 1963/12). | This is the form a Lean statement of stage 3 would take (Mathlib has no Airy function). It needs its own referee before it is used. |
+
+Not checked: the cited Airy remainder bounds beyond numerics; the normal-form theorem cited for a general fold;
+most of the report's table of hypotheses.
+
+## 7. A general-phase proof suited to a proof assistant (a sixth session; stage 2)
+
+Asked: a proof of the general-phase bound with the power `α^{−5/2}` that avoids differentiating an inverse map.
+Report (PDF SHA-256 d8034823…fc0f72, archive ee2294fe…5b4ee; in the lead's scratch).
+
+Its result: for `φ` of class C³ on ℝ with `φ‴` M-Lipschitz and `φ″ ≥ α > 0` on all of ℝ, `a ∈ C_c²`: remainder at most
+`C_F λ^{−3/2}`, `C_F = (14√2/3)(A₂ α^{−3/2} + √2 A₁ √M α^{−2} + (13/12) A₀ M α^{−5/2})`. The proof builds the forward map
+`q = x √H`, two auxiliary expressions with the cancellations `D′ = b q²`, `E′ = 5bD − c w q²`, three "derivative
+certificates" `j₀, j₁, j₂`, and transports the amplitude by the fundamental theorem of calculus; it lists 17
+elementary lemmas.
+
+Checked by an agent of the lead's family (brief SHA-256 0bbf3f35…059d8d): all nine claims re-derived, by hand and
+with computer algebra; own numerics on six phases and five amplitudes found no violation; scripts rerun with the
+recorded outputs. No FATAL finding.
+
+| # | Severity | Finding (lead's words) | Answer |
+|---|---|---|---|
+| 1 | MAJOR (scope) | The proof uses convexity and the Lipschitz bound outside the hull of the support and the stationary point, in one step (`\|φ‴\|² ≤ 2M(φ″ − α)`). The earlier general-phase result (section 3) assumed convexity on the hull only, so "smaller in every coefficient" compares two different theorems. A sufficient hypothesis: the hull enlarged by `sup \|φ‴\| / M`. Under hull-only convexity the constant is neither proved nor refuted (38,639 random cases; largest ratio 0.9965). | Accepted. A statement of stage 2 by this route must carry the enlarged-region hypothesis in its text, and its blind review must test exactly this. Both results stay in the plan: section 3's for hull-only convexity, this one for the cheaper proof. |
+| 2 | MINOR | Its quadratic estimate has the constant `14√2/3 = 6.60`; the best constant for the norm `‖g″‖_∞` is the L¹ norm of the derivative of the kernel of batch SPL, about 2.85 (checker's quadrature), and section 3's `2√π = 3.54` is also better. | Accepted: stage 2 would combine this report's bound on the transported amplitude with the better quadratic estimate. The value 2.85 is numerical only. |
+| 3 | MINOR | Its normalisation of the Fresnel integral uses the bound of SPL-K, which is a frozen statement and not yet a theorem here. | Noted as a dependency: stage 2 comes after the proofs of this batch. |
+| 4 | MINOR | The scripts test only the final inequality on one amplitude. | The intermediate bounds rest on the proofs, re-derived by the checker, which also tested them numerically (largest ratios 0.36 and 0.23 for the two key bounds). |
+| 5 | NIT | The transport step needs one more line (the difference quotient is a positive-weight average); the lemma inventory lacks five supporting items (translation, the bridge between integrals on the line and on intervals, evenisation, extension of a bound by density, the representation of C^{3,1}). | For the blueprint of stage 2. |
+
+Not checked: the report's local estimates for its counterexample to a homotopy shortcut beyond its constants;
+anything in Lean (Mathlib names were found by search, nothing compiled).

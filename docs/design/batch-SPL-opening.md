@@ -152,8 +152,19 @@ four controls came out as required. This is VALIDATED on these five amplitudes a
    `λα² → ∞`. Stage 2 is therefore uniformity in α inside the convex class; its target is the explicit constant of
    that report (phase of class C^{3,1}, constants in `sup |a|, |a′|, |a″|`, `sup |φ‴|`, `Lip φ‴`), proved on paper
    and checked by two model families, not machine-checked. The fold regime is stage 3 and is not convex.
+   **Second update, 2026-11-20 (same answers file, sections 6 and 7).** A further external session proved the same
+   power with a forward change of variable only (no inverse function is differentiated), smaller constants and a
+   list of 17 elementary lemmas, under a stronger hypothesis: convexity and the Lipschitz bound on a region larger
+   than the support hull. Checked, all claims re-derived. Plan: formalise that route, with the enlarged-region
+   hypothesis in the statement and with the better quadratic estimate; the hull-only bound of the earlier report
+   stays as the reference for what is true with less.
 3. **Stage 3: two stationary points that coalesce** (the Airy leading term, `docs/design/leading-term.md` section
    2 in one variable). Not started; no claim.
+   **Update, 2026-11-20 (answers file, section 6).** An external session proved, and a checker re-derived, a
+   uniform approximation for the cubic normal form `x³/3 − εx` with remainder at most `147 ‖a″‖_∞/λ` for every λ and
+   every real ε, and showed that the two-saddle formula has no relative-error range in `λ ε^{3/2}` alone. The
+   checker's Airy-free form (the integral of the amplitude minus its two-point interpolant on a finite interval,
+   at most `164 M/λ`) is the candidate Lean statement; it has not been refereed.
 
 ## 7. What this would and would not give the consumer that prompted it
 

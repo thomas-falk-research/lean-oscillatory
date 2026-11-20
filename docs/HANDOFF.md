@@ -28,10 +28,15 @@ below it, and every rule is binding.
   plants, challenge file and comparator; `make quick`; freeze, `make stamp`, pins; then two blind referees.
   **Done by 2026-11-20 00:10Z:** statement file `OscInt/Statements/StationaryLeading.lean` (draft text unchanged
   since a7fa3dc), sanity layer (96 theorems), 42 planted controls re-run by the lead, challenge file and
-  `comparator-SPL.json`, prose in `docs/statements.md`. **Exact next command:** on a clean tree `make stamp`
-  (launcher in the lead's scratch, or `make stamp` directly), then add the pin lines to `stamps/pins.txt`
-  (statements and `challenge:comparator-SPL.json`), `make statements`, `make api` if `api-check` asks, STATUS
-  rows "not proved", `make quick`, commit, push; then two blind referees from fresh contexts. The owner may bring reports of external sessions of another model family
+  `comparator-SPL.json`, prose in `docs/statements.md`. **Frozen 2026-11-20:** stamp `stamps/20261120T002727Z-5491b10bc8ae` on 5491b10
+  (three RFC 3161 tokens, 00:27:34Z), pinned; registry has 90 statements, 4 not proved. **Exact next step:** two
+  blind referees from fresh contexts on the frozen statements against `docs/statements.md` (no proof shown; step
+  5 of `CONTRIBUTING.md`: a BLOCKER or MAJOR against the Lean text or the sanity layer means a new statement or a
+  decision of the owner before the answers are stamped; quote the rule in the answers file); then answers, stamp
+  of the answers, and only then Lean proofs by the route of `docs/proof-SPL.md`. Release v0.7.0: pull request 19
+  was merged by the owner on 2026-11-20 00:06Z (merge commit 06f8e47 on `main`); the owner dispatches
+  `release-candidate` and publishes; after that, merge `main` into this branch (never rebase: a stamp names
+  5491b10) and run `make anchors` for the three stamps of 2026-11-19/20. The owner may bring reports of external sessions of another model family
   (blind derivation, literature, general phase); answer them under `review/` like the earlier external reviews.
 - **Work item (2026-11-19): release candidate v0.7.0.** All 86 pinned statements are proved; the 21 of session 13
   (batches PA, KL, FR, VC2, HW) were machine-checked as stated by the isolated replay of fafd5b8
