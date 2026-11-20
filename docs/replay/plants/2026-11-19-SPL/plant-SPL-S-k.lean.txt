@@ -1,0 +1,49 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `StationaryLeadingStatement`: "∃ τ, 0 ≤ τ ∧ …" ↦ "∀ τ, 0 ≤ τ → …". -/
+def P_StationaryLeadingStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    ∀ τ : ℝ, 0 ≤ τ → ‖splRemainder g lam‖ ≤ ‖splKernel τ‖ * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2)
+
+/-- SPL-S on the Gaussian family, with `‖G_s‴‖₁ = s²(2 + 8e^{−3/2})`. -/
+theorem P_kernel_gauss (h : P_StationaryLeadingStatement) (s lam : ℝ) (hs : 0 < s) (hlam : 0 < lam) :
+    ∃ τ : ℝ, 0 ≤ τ ∧ ‖gaussRoot s lam - splLead lam‖ ≤
+      ‖splKernel τ‖ * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-(3 : ℝ) / 2) := by
+  obtain ⟨τ, hτ, h1⟩ := h (gauss s) (gauss1 s) (gauss2 s) (gauss3 s) lam (gauss_splAmplitude s hs) hlam
+  rw [splRemainder_gauss s hs, integral_norm_gauss3 s hs] at h1
+  exact ⟨τ, hτ, h1⟩
+
+/-- SPL-S at `G_1`, `λ = 4`, written out. -/
+theorem P_kernel_gauss_one_four (h : P_StationaryLeadingStatement) :
+    ∃ τ : ℝ, 0 ≤ τ ∧ ‖(2 * (Real.pi : ℂ) / (1 - 4 * Complex.I)) ^ (1 / 2 : ℂ) -
+        ((Real.sqrt (2 * Real.pi / 4) : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I)‖ ≤
+      ‖splKernel τ‖ * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8) := by
+  obtain ⟨τ, hτ, h1⟩ := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 4 (gauss_splAmplitude 1 one_pos) (by norm_num)
+  rw [splRemainder_gauss 1 one_pos, gaussRoot_one_four, integral_norm_gauss3 1 one_pos, rpow_four, one_pow,
+    one_mul] at h1
+  exact ⟨τ, hτ, h1⟩
+
+/-- SPL-S at `G_2`, `λ = 9`, written out (`‖G_2‴‖₁ = 4(2 + 8e^{−3/2})`). -/
+theorem P_kernel_gauss_two_nine (h : P_StationaryLeadingStatement) :
+    ∃ τ : ℝ, 0 ≤ τ ∧ ‖(2 * (Real.pi : ℂ) / (4 - 9 * Complex.I)) ^ (1 / 2 : ℂ) -
+        ((Real.sqrt (2 * Real.pi / 9) : ℝ) : ℂ) * Complex.exp (((Real.pi / 4 : ℝ) : ℂ) * Complex.I)‖ ≤
+      ‖splKernel τ‖ * (2 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 27) := by
+  obtain ⟨τ, hτ, h1⟩ := h (gauss 2) (gauss1 2) (gauss2 2) (gauss3 2) 9 (gauss_splAmplitude 2 two_pos) (by norm_num)
+  rw [splRemainder_gauss 2 two_pos, gaussRoot_two_nine, integral_norm_gauss3 2 two_pos, rpow_nine] at h1
+  exact ⟨τ, hτ, h1⟩
+
+/-- SPL-S forces a value of the kernel: some `τ ≥ 0` has `|κ(τ)| ≥ 3/10` (from `G_1`, `λ = 4`:
+`0.151 ≤ |R| ≤ |κ(τ)| · 3.79/8`). The statement is not satisfied by a small kernel. -/
+theorem P_kernel_large (h : P_StationaryLeadingStatement) : ∃ τ : ℝ, 0 ≤ τ ∧ 3 / 10 ≤ ‖splKernel τ‖ := by
+  obtain ⟨τ, hτ, h1⟩ := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 4 (gauss_splAmplitude 1 one_pos) (by norm_num)
+  rw [integral_norm_gauss3 1 one_pos, rpow_four, one_pow, one_mul] at h1
+  refine ⟨τ, hτ, ?_⟩
+  have h2 := splRemainder_gauss_one_four_bounds.1
+  nlinarith [normThree_le, normThree_pos, norm_nonneg (splKernel τ)]
+
+end OscInt.API.StationaryLeadingSanity

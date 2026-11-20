@@ -351,4 +351,20 @@ example : HadamardDecayStatement := OscInt.API.hadamardDecay
 
 example : HadamardDispersiveStatement := OscInt.API.hadamardDispersive
 
+/-! ### SPL-I: The remainder of the quadratic-phase leading term as an integral of `g‴` against the kernel: `R(g, λ) = −i λ^{−3/2} ∫ g‴(t) κ(√λ t) dt`. -/
+
+example : StationaryLeadingIdentityStatement := OscInt.API.stationaryLeadingIdentity
+
+/-! ### SPL-S: The leading term of the quadratic-phase integral with its remainder bounded through the kernel: `|R(g, λ)| ≤ |κ(τ)| ‖g‴‖₁ λ^{−3/2}` for some `τ ≥ 0`. -/
+
+example : StationaryLeadingStatement := OscInt.API.stationaryLeading
+
+/-! ### SPL-K: The leading term of the quadratic-phase integral with remainder at most `(7/8) ‖g‴‖₁ λ^{−3/2}`. -/
+
+example : StationaryLeadingSevenEighthsStatement := OscInt.API.stationaryLeadingSevenEighths
+
+/-! ### SPL-A: The kernel bound of SPL-S is attained in the limit by smooth compactly supported amplitudes: for every `τ ≥ 0` and `ε > 0` some such `g ≠ 0` has `|R(g, 1)| ≥ (|κ(τ)| − ε) ‖g‴‖₁`. -/
+
+example : StationaryLeadingAttainedStatement := OscInt.API.stationaryLeadingAttained
+
 end OscIntSnippets

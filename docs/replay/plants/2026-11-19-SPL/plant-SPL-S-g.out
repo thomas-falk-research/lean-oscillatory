@@ -1,0 +1,58 @@
+plant-SPL-S-g.lean:18:31: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (t : ℝ), ‖gauss3 s t‖
+in the target expression
+  ‖gaussRoot s lam - splLead lam‖ ≤ (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss2 s t‖) * lam ^ (-3 / 2)
+
+h : P_StationaryLeadingStatement
+s lam : ℝ
+hs : 0 < s
+hlam : 0 < lam
+τ : ℝ
+hτ : 0 ≤ τ
+h1 : ‖gaussRoot s lam - splLead lam‖ ≤ (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss2 s t‖) * lam ^ (-3 / 2)
+⊢ ∃ τ,
+    0 ≤ τ ∧ ‖gaussRoot s lam - splLead lam‖ ≤ ‖splKernel τ‖ * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-3 / 2)
+plant-SPL-S-g.lean:27:56: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (t : ℝ), ‖gauss3 1 t‖
+in the target expression
+  ‖(2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - splLead 4‖ ≤
+    (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss2 1 t‖) * 4 ^ (-3 / 2)
+
+h : P_StationaryLeadingStatement
+τ : ℝ
+hτ : 0 ≤ τ
+h1 :
+  ‖(2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - splLead 4‖ ≤
+    (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss2 1 t‖) * 4 ^ (-3 / 2)
+⊢ ∃ τ,
+    0 ≤ τ ∧
+      ‖(2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) -
+            ↑√(2 * Real.pi / 4) * Complex.exp (↑(Real.pi / 4) * Complex.I)‖ ≤
+        ‖splKernel τ‖ * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8)
+plant-SPL-S-g.lean:37:56: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (t : ℝ), ‖gauss3 2 t‖
+in the target expression
+  ‖(2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - splLead 9‖ ≤
+    (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss2 2 t‖) * 9 ^ (-3 / 2)
+
+h : P_StationaryLeadingStatement
+τ : ℝ
+hτ : 0 ≤ τ
+h1 :
+  ‖(2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - splLead 9‖ ≤
+    (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss2 2 t‖) * 9 ^ (-3 / 2)
+⊢ ∃ τ,
+    0 ≤ τ ∧
+      ‖(2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) -
+            ↑√(2 * Real.pi / 9) * Complex.exp (↑(Real.pi / 4) * Complex.I)‖ ≤
+        ‖splKernel τ‖ * (2 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 27)
+plant-SPL-S-g.lean:44:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (t : ℝ), ‖gauss3 1 t‖
+in the target expression
+  ‖splRemainder (gauss 1) 4‖ ≤ (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss2 1 t‖) * 4 ^ (-3 / 2)
+
+h : P_StationaryLeadingStatement
+τ : ℝ
+hτ : 0 ≤ τ
+h1 : ‖splRemainder (gauss 1) 4‖ ≤ (‖splKernel τ‖ * ∫ (t : ℝ), ‖gauss2 1 t‖) * 4 ^ (-3 / 2)
+⊢ ∃ τ, 0 ≤ τ ∧ 3 / 10 ≤ ‖splKernel τ‖

@@ -1,0 +1,28 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `SplAmplitude`: third clause of SplAmplitude: HasDerivAt g₂ (g₃ x) x ↦ HasDerivAt g₁ (g₃ x) x
+(planted copy of the definition). -/
+def P_SplAmplitude (g g₁ g₂ g₃ : ℝ → ℂ) : Prop :=
+  (∀ x, HasDerivAt g (g₁ x) x) ∧ (∀ x, HasDerivAt g₁ (g₂ x) x) ∧ (∀ x, HasDerivAt g₁ (g₃ x) x) ∧
+    Integrable g ∧ Integrable g₁ ∧ Integrable g₂ ∧ Integrable g₃
+
+/-- Copy of `StationaryLeadingSevenEighthsStatement` over the copied definition. -/
+def P_StationaryLeadingSevenEighthsStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), P_SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    ‖splRemainder g lam‖ ≤ (7 / 8 : ℝ) * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2)
+
+theorem witness_not_P_StationaryLeadingSevenEighthsStatement : ¬ P_StationaryLeadingSevenEighthsStatement := by
+  intro h
+  have hamp : P_SplAmplitude (gauss 4) (gauss1 4) (gauss2 4) (gauss2 4) := by
+    obtain ⟨hd, hd₁, -, hi, hi₁, hi₂, -⟩ := gauss_splAmplitude 4 (by norm_num)
+    exact ⟨hd, hd₁, hd₁, hi, hi₁, hi₂, hi₂⟩
+  have h1 := h (gauss 4) (gauss1 4) (gauss2 4) (gauss2 4) 1600 hamp (by norm_num)
+  rw [integral_norm_gauss2 4 (by norm_num), rpow_sixteen_hundred] at h1
+  linarith [splRemainder_gauss_four_sixteen_hundred_lower, exp_neg_half_le]
+
+end OscInt.API.StationaryLeadingSanity

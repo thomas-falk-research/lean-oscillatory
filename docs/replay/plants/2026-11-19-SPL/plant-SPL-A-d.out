@@ -1,0 +1,6 @@
+plant-SPL-A-d.lean:19:9: error: Tactic `rcases` failed: `right✝ : Real.le✝ ((‖splKernel 0‖ - ε) * ∫ (t : ℝ), ‖g₃ t‖)
+  ‖splRemainder g 1‖` is not an inductive datatype
+plant-SPL-A-d.lean:28:9: error: Tactic `rcases` failed: `right✝ : Real.le✝ ((‖splKernel 1‖ - 1 / 100) * ∫ (t : ℝ), ‖g₃ t‖)
+  ‖splRemainder g 1‖` is not an inductive datatype
+plant-SPL-A-d.lean:39:9: error: Tactic `rcases` failed: `right✝ : Real.le✝ ((‖splKernel τ‖ - ε) * ∫ (t : ℝ), ‖g₃ t‖)
+  ‖splRemainder g 1‖` is not an inductive datatype

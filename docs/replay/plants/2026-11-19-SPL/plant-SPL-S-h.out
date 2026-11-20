@@ -1,0 +1,115 @@
+plant-SPL-S-h.lean:22:2: error: unsolved goals
+case refine_1
+s : ℝ
+hs : 0 < s
+u : ℝ
+⊢ ↑(gaussR s u) = gauss1 s u
+plant-SPL-S-h.lean:26:11: error: Tactic `unfold` failed to unfold `gauss1` in
+  (fun u => ↑((0 + -s ^ 2 * u + 0 * u ^ 2 + 0 * u ^ 3) * gaussR s u)) u = gauss2 s u
+plant-SPL-S-h.lean:28:4: error: Type mismatch
+  Integrable.congr (integrable_ofReal (integrable_cubic_mul_gaussR s hs (-s ^ 2) 0 (s ^ 4) 0))
+    (Eventually.of_forall fun u => ?m.123)
+has type
+  Integrable ?m.118 volume
+but is expected to have type
+  AEStronglyMeasurable (gauss3 s) volume
+plant-SPL-S-h.lean:32:4: error: Type mismatch
+  Integrable.congr (integrable_ofReal (integrable_cubic_mul_gaussR s hs 0 (3 * s ^ 4) 0 (-s ^ 6)))
+    (Eventually.of_forall fun u => ?m.172)
+has type
+  Integrable ?m.167 volume
+but is expected to have type
+  HasFiniteIntegral (gauss3 s) volume
+plant-SPL-S-h.lean:23:10: warning: This simp argument is unused:
+  gauss
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+plant-SPL-S-h.lean:40:49: error: Application type mismatch: The argument
+  h
+has type
+  Integrable (fun x => 0) volume
+but is expected to have type
+  Integrable (fun x => 1) volume
+in the application
+  const_eq_zero_of_integrable h
+plant-SPL-S-h.lean:58:66: error: Application type mismatch: The argument
+  HasFiniteIntegral.norm hi₃
+has type
+  HasFiniteIntegral (fun a => ‖g₃ a‖) volume
+but is expected to have type
+  Integrable (fun t => ‖g₃ t‖) ?m.77
+in the application
+  integral_eq_zero_iff_of_nonneg (fun t => norm_nonneg (g₃ t)) (HasFiniteIntegral.norm hi₃)
+plant-SPL-S-h.lean:63:10: error(lean.invalidField): Invalid field `intervalIntegrable`: The environment does not contain `WithTop.LT.intervalIntegrable`, so it is not possible to project the field `intervalIntegrable` from an expression
+  hi₃
+of type
+  WithTop.LT (∫⁻ (a : ℝ), ‖g₃ a‖ₑ) ⊤
+plant-SPL-S-h.lean:70:8: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  g₂
+in the target expression
+  AEStronglyMeasurable g₃ volume
+
+g g₁ g₂ g₃ : ℝ → ℂ
+h0 : ∫ (t : ℝ), ‖g₃ t‖ = 0
+x : ℝ
+hd : ∀ (x : ℝ), HasDerivAt g (g₁ x) x
+hd₁ : ∀ (x : ℝ), HasDerivAt g₁ (g₂ x) x
+hd₂ : ∀ (x : ℝ), HasDerivAt g₂ (g₃ x) x
+hi : Integrable g₁ volume
+hi₁ : Integrable g₂ volume
+hi₂ : AEStronglyMeasurable g₃ volume
+hi₃ : HasFiniteIntegral g₃ volume
+hae : (fun t => ‖g₃ t‖) =ᵐ[volume] 0
+hae' : ∀ᵐ (t : ℝ), g₃ t = 0
+hconst : ∀ (y : ℝ), g₂ y = g₂ 0
+h1 : g₂ = fun x => g₂ 0
+⊢ ∀ (y : ℝ), g₂ y = 0
+plant-SPL-S-h.lean:78:8: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  g₁
+in the target expression
+  Integrable g₂ volume
+
+g g₁ g₂ g₃ : ℝ → ℂ
+h0 : ∫ (t : ℝ), ‖g₃ t‖ = 0
+x : ℝ
+hd : ∀ (x : ℝ), HasDerivAt g (g₁ x) x
+hd₁ : ∀ (x : ℝ), HasDerivAt g₁ (g₂ x) x
+hd₂ : ∀ (x : ℝ), HasDerivAt g₂ (g₃ x) x
+hi : Integrable g₁ volume
+hi₁ : Integrable g₂ volume
+hi₂ : AEStronglyMeasurable g₃ volume
+hi₃ : HasFiniteIntegral g₃ volume
+hae : (fun t => ‖g₃ t‖) =ᵐ[volume] 0
+hae' : ∀ᵐ (t : ℝ), g₃ t = 0
+hconst : ∀ (y : ℝ), g₂ y = g₂ 0
+hz₂ : ∀ (y : ℝ), g₂ y = 0
+hc₁ : ∀ (y : ℝ), g₁ y = g₁ 0
+h1 : g₁ = fun x => g₁ 0
+⊢ ∀ (y : ℝ), g₁ y = 0
+plant-SPL-S-h.lean:85:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  g
+in the target expression
+  Integrable g₁ volume
+
+g g₁ g₂ g₃ : ℝ → ℂ
+h0 : ∫ (t : ℝ), ‖g₃ t‖ = 0
+x : ℝ
+hd : ∀ (x : ℝ), HasDerivAt g (g₁ x) x
+hd₁ : ∀ (x : ℝ), HasDerivAt g₁ (g₂ x) x
+hd₂ : ∀ (x : ℝ), HasDerivAt g₂ (g₃ x) x
+hi : Integrable g₁ volume
+hi₁ : Integrable g₂ volume
+hi₂ : AEStronglyMeasurable g₃ volume
+hi₃ : HasFiniteIntegral g₃ volume
+hae : (fun t => ‖g₃ t‖) =ᵐ[volume] 0
+hae' : ∀ᵐ (t : ℝ), g₃ t = 0
+hconst : ∀ (y : ℝ), g₂ y = g₂ 0
+hz₂ : ∀ (y : ℝ), g₂ y = 0
+hc₁ : ∀ (y : ℝ), g₁ y = g₁ 0
+hz₁ : ∀ (y : ℝ), g₁ y = 0
+hc : ∀ (y : ℝ), g y = g 0
+h1 : g = fun x => g 0
+⊢ g x = 0

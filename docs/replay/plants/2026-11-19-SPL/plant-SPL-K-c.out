@@ -1,0 +1,12 @@
+plant-SPL-K-c.lean:27:68: error: unsolved goals
+s : ℝ
+hs : 0 < s
+lam : ℝ
+⊢ gaussRoot s lam - ↑√(2 * Real.pi / lam) * 1 =
+    gaussRoot s lam - ↑√(2 * Real.pi / lam) * Complex.exp (↑(Real.pi / 4) * Complex.I)
+plant-SPL-K-c.lean:147:4: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ‖Complex.exp (↑?x * Complex.I)‖
+in the target expression
+  ‖↑√(2 * Real.pi / 1)‖ * ‖1‖ = √(2 * Real.pi)
+
+⊢ ‖↑√(2 * Real.pi / 1)‖ * ‖1‖ = √(2 * Real.pi)

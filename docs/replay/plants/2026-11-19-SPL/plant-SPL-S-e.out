@@ -1,0 +1,15 @@
+plant-SPL-S-e.lean:22:35: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  gauss ?s 0
+in the target expression
+  gaussRoot s lam = gaussRoot s lam - ↑√(2 * Real.pi / lam) * Complex.exp (↑(Real.pi / 4) * Complex.I)
+
+s : ℝ
+hs : 0 < s
+lam : ℝ
+⊢ gaussRoot s lam = gaussRoot s lam - ↑√(2 * Real.pi / lam) * Complex.exp (↑(Real.pi / 4) * Complex.I)
+plant-SPL-S-e.lean:139:53: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  0 - ?a
+in the target expression
+  ‖0‖ = √(2 * Real.pi)
+
+⊢ ‖0‖ = √(2 * Real.pi)

@@ -12,7 +12,10 @@ search can miss work, notably Lean Zulip threads (the archive was not searchable
 repositories.
 
 The works cited on this page, with identifiers and published versions checked against Crossref, arXiv and zbMATH
-Open on 2026-11-19, are collected in `docs/references.bib` (its "annote" fields repeat how each was used). Published
+Open on 2026-11-19, are collected in `docs/references.bib` (its "annote" fields repeat how each was used). Exception, found by a
+post-proof referee on 2026-11-20: the works cited in the section on batch SPL (Erdélyi's report of 1955 and book of
+1956, Olver 1974, Ali Mehmeti and Dewez, the external Lean file) are not yet in that file, and their identifiers
+have not been checked in that way. Published
 versions found there for preprints cited below: Hiary–Patel–Yang, J. Number Theory 256 (2024) 195–217; Maeda et al.
 (arXiv:1808.05714), J. Math. Soc. Japan 74(1) (2022) 217–246; Sunada–Tate, J. Funct. Anal. 262(6) (2012) 2608–2645;
 Chou (arXiv:2008.03698), Phys. Lett. A 386 (2021) 126986; Akramov et al. (arXiv:2411.14397), EPL 147(6) (2024) 62001.
@@ -355,3 +358,62 @@ for the Hadamard walk: not found in this sweep; PLAUSIBLE-not-in-print, with the
 Scholar, no subscription database, two papers known by title only). The constants of batch HW are far from sharp
 (`docs/statements.md`, Batch HW, choice 3). **Nothing in batch HW is claimed as new mathematics**; the claim, if
 proved, is "machine-checked, explicit constants".
+
+## Explicit remainders for the stationary-phase leading term (gate of 2026-11-19, batch SPL)
+
+Gate for the batch opened on 2026-11-19 (`docs/design/batch-SPL-opening.md`, section 4, which has the details).
+Sixteen logged queries: `numerics/results-spl-prior-art-search-2026-11-19.txt`. Closest results: Olver, *Error bounds
+for stationary phase approximations*, SIAM J. Math. Anal. 5 (1974) 19–29 (bibliographic data only; text NOT READ);
+Ali Mehmeti and Dewez, arXiv:1412.5789, arXiv:1412.5792, arXiv:1512.05940, after Erdélyi (1956, NOT READ), read in
+part: one variable, explicit constants, the integral split at the stationary point, remainder `O(ω^{−δ})` with
+`δ < 1` after the first term for a regular amplitude; Hörmander, ALPDO I, Theorem 7.7.5 (constant not explicit). The
+two-sided bound of the draft statement SPL-S (remainder at most `sup |κ| · ‖g‴‖₁ · λ^{−3/2}` with an explicit kernel
+κ) was not found. That is a statement about this search, not a claim of novelty: the identity behind it is three
+integrations by parts (corrected 2026-11-20; this sentence said two), and Olver's paper is unread. No formalisation of a stationary-phase leading term was found
+by one arXiv query; Mathlib and the upstream repository are still to be searched.
+
+Addendum, the same day (`review/2026-11-19-SPL-plan-referee-answers.md`, section 2). A reader with a fresh context
+found that the identity behind SPL-S is classical in substance: it is the two-sided case (stationary point of order
+two, regular amplitude, three integrations by parts) of Erdélyi's remainder representation, read in the
+reproduction of Ali Mehmeti and Dewez (arXiv:1412.5789, Theorem 1.3), with the term in `g″(0)` folded into the
+kernel; the relation between the two kernels was checked by the lead numerically. Erdélyi's bound with the separate
+term gives the constant 1.2533. Olver (1974) was read only through a later account of its theorem (one-sided,
+total variations over the large parameter). Mathlib at the pin has no Fresnel integral and no stationary phase.
+Still unread: Olver (1974), Erdélyi's originals, the books of Olver, Wong and Zworski; the upstream repository was
+not inspected. The bound with the constant `sup |κ| = 0.72197` was not found; nothing is claimed as new.
+
+Correction and second addendum, the same day (`review/2026-11-19-SPL-external-sessions-answers.md`). The sentence
+above "No formalisation of a stationary-phase leading term was found" is wrong. A session of another model family,
+run by the owner, found one, and the lead read the source: `openai/math`,
+`lean/OAI/Dynamics/ThreeTorus/StationaryPhase.lean` (commit 4eaee87), lemmas `quadratic_stationary_identity`,
+`quadratic_stationary_error`, `quadratic_stationary_limit`: for a Schwartz amplitude `f` and `t > 0`,
+`|√t ∫ f(x) e^{iπtx²} dx − e^{iπ/4} f(0)| ≤ (π/t) ∫ ξ² |𝓕⁻¹f(ξ)| dξ`. In the normalisation of batch SPL this is the
+leading term with a remainder of order `λ^{−3/2}` in a Fourier-moment norm (the bound of Zworski's proof). The
+value of the Fresnel integral is also formalised in Lean in two public repositories (an FLMF release,
+`tendsto_fresnelC` and `tendsto_fresnelS`; lean-DLMF, `fresnel_integrals_elementary`). The lead read these three
+files and did not compile them. What batch SPL would add: the remainder in `‖g‴‖₁` with an explicit kernel and
+constant, for amplitudes that are not Schwartz; neither bound implies the other. The same session's literature
+search (its ledger has 265 search requests) reached the verdict of the lead's reader: the identity follows from a
+published remainder formula; the folded kernel with `0.72197…` was not found; Olver (1974) and Erdélyi's originals
+are unread, so the evidence justifies calling the refinement neither folklore nor new. A third session derived
+the identity and the constant without sight of the lead's work and got the same kernel up to a factor `i` and the
+same number.
+
+Third addendum, the same day: Erdélyi's original, READ by the lead. The owner's external session identified the
+1956 book as a republication of a technical report (A. Erdélyi, *Asymptotic Expansions*, Technical Report 3,
+contract Nonr-220(11), California Institute of Technology, 1955; DTIC accession AD0055660). The lead found a scan
+of that report, marked as cleared for public release, at the Internet Archive (item `DTIC_AD0055660`; SHA-256 of
+the PDF fetched 799cd55269d1327873cc67d7d0426980586e40af2572104d7c3c334aa81823df), and read its sections 2.8
+(Fourier integrals) and 2.9 (the method of stationary phase), pages 46 to 56, in the scan's text layer, and
+pages 54 and 55 as page images. What is there: the integral is broken at the stationary points into pieces on
+which the phase is monotone, a neutralizer separates the two ends, and after the substitution `u^ρ = h(t) − h(α)`
+the piece is integrated by parts N times against the kernels `φ_{−n−1}(u) = ((−1)^{n+1}/n!) ∫_u^∞ (z − u)^n z^{λ−1}
+exp(ixz^ρ) dz` taken along the ray `arg(z − u) = π/(2ρ)` (its equation (11)); the remainder is
+`R_N(x) = (−1)^{N+1} e^{ixh(α)} ∫ φ_{−N}(u) d^N(ν₁k)/du^N du` (13), bounded through
+`|φ_{−n−1}(u)| ≤ (1/n!) Γ((n+1)/ρ) u^{λ−1} x^{−(n+1)/ρ}` (15, as printed). The theorem itself is stated as an asymptotic
+expansion "to N terms". This confirms the account of Ali Mehmeti and Dewez and of the two readers: the identity
+of SPL-I is the case `ρ = 2, λ = 1, N = 3` of (11) and (13), taken on both sides of the stationary point and added.
+Not in those sections: a kernel for the two-sided integral, the folding of the term in `g″(0)`, or a number for
+the supremum. Limits of this reading: it is the report, which catalogue records give as the source of the Dover
+book, not the printed book; the text layer garbles formulas, and only two pages were read as images. Still
+unread in the original: Olver (1974) and Erdélyi's article of 1955 (J. SIAM 3, 17–27).

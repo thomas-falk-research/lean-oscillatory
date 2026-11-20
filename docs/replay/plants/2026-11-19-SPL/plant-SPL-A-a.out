@@ -1,0 +1,24 @@
+plant-SPL-A-a.lean:21:40: error: Application type mismatch: The argument
+  h5
+has type
+  ‖splRemainder g 1‖ ≤ -ε * ∫ (t : ℝ), ‖g₃ t‖
+but is expected to have type
+  -ε * ∫ (t : ℝ), ‖g₃ t‖ ≤ ‖splRemainder g 1‖
+in the application
+  ⟨h4, h5⟩
+plant-SPL-A-a.lean:30:63: error: Application type mismatch: The argument
+  h5
+has type
+  ‖splRemainder g 1‖ ≤ (‖splKernel 1‖ - 1 / 100) * ∫ (t : ℝ), ‖g₃ t‖
+but is expected to have type
+  (‖splKernel 1‖ - 1 / 100) * ∫ (t : ℝ), ‖g₃ t‖ ≤ ‖splRemainder g 1‖
+in the application
+  (le_div_iff₀ hpos).mpr h5
+plant-SPL-A-a.lean:43:36: error: Application type mismatch: The argument
+  LE.le.trans hle ?m.135
+has type
+  ‖splRemainder g 1‖ ≤ ?m.134
+but is expected to have type
+  ?m.127 * ∫ (t : ℝ), ‖g₃ t‖ ≤ ?m.128 * ∫ (t : ℝ), ‖g₃ t‖
+in the application
+  le_of_mul_le_mul_right (LE.le.trans hle ?m.135)

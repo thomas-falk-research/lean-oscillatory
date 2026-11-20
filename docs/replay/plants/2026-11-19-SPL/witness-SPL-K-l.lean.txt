@@ -1,0 +1,19 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `StationaryLeadingSevenEighthsStatement`: CONTROL: the exponent written -((3 : ℝ) / 2) instead of
+-(3 : ℝ) / 2. -/
+def P_StationaryLeadingSevenEighthsStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    ‖splRemainder g lam‖ ≤ (7 / 8 : ℝ) * (∫ t, ‖g₃ t‖) * lam ^ (-((3 : ℝ) / 2))
+
+theorem planted_iff_StationaryLeadingSevenEighthsStatement : P_StationaryLeadingSevenEighthsStatement ↔ StationaryLeadingSevenEighthsStatement := by
+  have e : (-((3 : ℝ) / 2)) = -(3 : ℝ) / 2 := (neg_div 2 3).symm
+  unfold P_StationaryLeadingSevenEighthsStatement StationaryLeadingSevenEighthsStatement
+  rw [e]
+
+end OscInt.API.StationaryLeadingSanity

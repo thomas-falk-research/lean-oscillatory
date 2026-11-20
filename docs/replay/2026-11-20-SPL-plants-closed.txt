@@ -1,0 +1,31 @@
+# Batch SPL: the conditional and relative planted controls composed with the proofs (2026-11-20, after the integration commit e840f8e).
+# The 14 files closed-*.lean.txt were written by post-proof referee C (an agent of the lead's model family) in its own directory: each is a witness file of
+# docs/replay/plants/2026-11-19-SPL (a planted copy of a statement or definition and the compiled proof that it fails under a hypothesis) followed by a
+# theorem closed_now that discharges the hypothesis from the proofs of the batch: the kernel bound from P-kernel for the 7 conditional plants,
+# OscInt.API.stationaryLeadingIdentity for the 6 plants relative to SPL-I, OscInt.API.stationaryLeadingSevenEighths for the plant relative to SPL-K.
+# Re-run by the lead under the session's Lean lock, 2026-11-20T03:44:29Z to 03:45:14Z, against the build of e840f8e: one line per file below
+# (exit code; number of lines 'depends on axioms: [propext, Classical.choice, Quot.sound]'; number of lines with 'error' or 'warning'); the .out files hold the output.
+# Result: with the 22 plants detected outright before the proofs, 36 of the 42 planted mutations are now refuted by compiled theorems without a hypothesis;
+# the other 6 are the 3 equivalent ones and the 3 true weakenings. This closes what the plant record of 2026-11-19 calls conditional and relative; it adds
+# no plant, and the mutations that the layer cannot see (docs/statements.md, clarifications SPL-c and SPL-d) stay unseen by it.
+# equivalent-SPL-I-kernel-plus-constant: the same referee's theorem that SPL-I stays true when any complex constant is added to the kernel (the integral of g3
+# is zero for every amplitude): a mutation that no datum and no proof can detect, because it is equivalent to the statement.
+CA-c rc=0 axioms-lines=1 error-or-warning-lines=0
+CI-a rc=0 axioms-lines=1 error-or-warning-lines=0
+CI-b rc=0 axioms-lines=1 error-or-warning-lines=0
+CI-cc rc=0 axioms-lines=1 error-or-warning-lines=0
+CI-cd rc=0 axioms-lines=1 error-or-warning-lines=0
+CI-ce rc=0 axioms-lines=1 error-or-warning-lines=0
+CI-d rc=0 axioms-lines=1 error-or-warning-lines=0
+CS-a rc=0 axioms-lines=1 error-or-warning-lines=0
+CS-c rc=0 axioms-lines=1 error-or-warning-lines=0
+CS-d rc=0 axioms-lines=1 error-or-warning-lines=0
+CS-e rc=0 axioms-lines=1 error-or-warning-lines=0
+CS-g rc=0 axioms-lines=1 error-or-warning-lines=0
+CS-i rc=0 axioms-lines=1 error-or-warning-lines=0
+CS-m rc=0 axioms-lines=1 error-or-warning-lines=0
+Shift rc=0 axioms-lines=1 error-or-warning-lines=0
+# (names in this list are the referee's file names: CS = SPL-S, CI = SPL-I, CA = SPL-A, Shift = the equivalent mutation; the directory uses closed-SPL-<statement>-<plant> names)
+
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

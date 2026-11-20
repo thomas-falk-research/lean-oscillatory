@@ -11,6 +11,91 @@ below it, and every rule is binding.
 
 ## Resume here (session 13, 2026-11-16; kept current at every checkpoint)
 
+- **START HERE (state at the end of session 13, 2026-11-20; everything is pushed; nothing is running).**
+  1. **Release.** v0.7.0 is published (annotated tag at 5d85acb), and its pins pull request is merged: `main` is at
+     d1c05fd. Still the owner's: the Zenodo version DOI into `CITATION.cff` and the README when it is minted.
+  2. **This branch**, `claude/batch-sp-leading-term` (no pull request yet), holds batch SPL (four statements,
+     machine-checked as stated, not released) and the opening of batch TSD. **First action of the next session:**
+     merge `main` into it. Never rebase and never squash: three stamps name its commits (5491b10, 3e07630,
+     3c69b82). A trial merge on 2026-11-20 conflicts in exactly two files: `README.md` (restructured on `main`,
+     pins moved to v0.7.0; re-apply this branch's SPL lines to the new layout: 90 statements, the four of SPL on
+     the development branch only) and the end of `docs/progress/2026-11-16-session13-log.md` (keep both sides'
+     rows, in time order). `CHANGELOG.md` merges by itself. Gate with `make quick`, then ask the owner for a pull
+     request into `main` (merge commit; owner decision `docs/decisions/2026-11-20-batch-two-saddle.md`). v0.8.0
+     comes later.
+  3. **External reports are waiting with the owner** (sessions of another model family run from six prompts of
+     2026-11-20; the session log's row of about 13:45 has the prompts' hashes and aims: A explicit zeta bound with
+     the sharp constants; B stationary-phase constants; C lattice decay; D sharp third-derivative constant; E
+     Hankel bound; F audit of the two-saddle lemma in use). For each report: copy to an isolated directory, hash,
+     list an archive before extracting, read scripts before running them, have a fresh agent check it against a
+     brief with a logged hash, answer under `review/`, and only then use anything. A report's "verdict" is a
+     claim until checked. The owner's aim (in conversation, 2026-11-20): a result that is new, not only a
+     formalisation; candidates in the lead's order of promise: A, D, B, then C. Any claim of novelty goes through
+     the prior-art gate and is worded "not found in the literature searched".
+  4. **Batch TSD** (Lemma E.1 of hexagon:2611.00174v1, the two-saddle steepest-descent lemma): no statement is
+     drafted. Three readings agree that the lemma is true as printed, and the statement to freeze is written out
+     in section 4 of `review/2026-11-20-TSD-step-referee-answers.md`. **Next step:** the prose in
+     `docs/statements.md` (a core statement on two analytic functions, whole-line symmetric form; the printed
+     lemma as a corollary with the Hankel function as a parameter and the printed constants), then a registered
+     numeric test, the Lean statements with a sanity layer and plants, freeze, blind review, and only then proofs
+     (blueprint: the estimate part and the deformation part of section 1 there; Mathlib has Cauchy on rectangles
+     and primitives on convex sets). Reports E and F bear on this batch.
+  5. **Smaller open items.** `tools/publish_release.sh` needs GNU `find` and `sha256sum` (it stopped on the
+     owner's macOS; make it portable and name its requirements in the notes' publishing section). The SPL sources
+     are not in `docs/references.bib`. A "replayed" field in the registry is the owner's call. Anchors to run, a
+     day or more after each stamp: 9ae784e8, 1aa26b0f, 5491b10b, 3e07630d, 3c69b821. Certificates for a later
+     SPL-N: `numerics/results-spl-n-certificates-from-checker-2026-11-20.txt`.
+  6. **Working rules learned in session 13** (lessons 62 and 68): push after every unit and record a launch before
+     making it, because a usage limit stops everything at once; while agents write in the tree, run the gate on a
+     clean checkout; every Lean run of every agent, referees included, goes through one lock; text for an agent is
+     never passed through an unquoted shell here-document. The lead's scratch does not survive the container:
+     briefs, referees' scripts and extracted bundles of session 13 are gone unless the owner kept the bundles.
+- **Two branches (owner decision 2026-11-19, `docs/decisions/2026-11-19-next-batch-spl.md`).** The release
+  candidate v0.7.0 is the branch `claude/dreamy-ptolemy-7hs5wb` at 66a88bc (pull request 19) and is not to be
+  changed. This branch, `claude/batch-sp-leading-term`, starts from 66a88bc and carries the next batch, **SPL: the
+  one-variable stationary-phase leading term with an explicit remainder**; no pull request; after v0.7.0 is published, merge `main` into it
+  (never rebase: stamps name its commits; the first bullet above). State of the batch: the session log's last rows. Order of work: prior-art gate,
+  registered numerics, proof plan with a plan referee, statements and freeze, blind review, proofs
+  (`CONTRIBUTING.md`); no Lean proof text before the answers to the blind review are stamped.
+- **Batch SPL, state on 2026-11-19 (nothing is running):** done: opening note
+  (`docs/design/batch-SPL-opening.md`), prior-art gate (identity classical in substance, Erdélyi; constant not
+  found; Olver 1974 unread), registered numeric test PASS 12 of 12 (`docs/prereg/LEDGER.md`), proof on paper in
+  its second version (`docs/proof-SPL.md`), plan referee answered
+  (`review/2026-11-19-SPL-plan-referee-answers.md`). **Exact next step:** write "Batch SPL" in
+  `docs/statements.md` and a new statement file StationaryLeading.lean under OscInt/Statements/ (statements SPL-I, SPL-S, SPL-K with 7/8,
+  SPL-A; class: C³ with `g, g′, g″, g‴` integrable; SPL-N is not in this freeze) with a sanity layer and recorded
+  plants, challenge file and comparator; `make quick`; freeze, `make stamp`, pins; then two blind referees.
+  **Done by 2026-11-20 00:10Z:** statement file `OscInt/Statements/StationaryLeading.lean` (draft text unchanged
+  since a7fa3dc), sanity layer (96 theorems), 42 planted controls re-run by the lead, challenge file and
+  `comparator-SPL.json`, prose in `docs/statements.md`. **Frozen 2026-11-20:** stamp `stamps/20261120T002727Z-5491b10bc8ae` on 5491b10
+  (three RFC 3161 tokens, 00:27:34Z), pinned; registry has 90 statements. **Blind review done 2026-11-20:** four verdicts
+  FAITHFUL, no counterexample, no BLOCKER, no MAJOR (`review/2026-11-20-SPL-preproof-answers.md`); the answers are
+  stamped (`stamps/20261120T011816Z-3e07630da3a5`, 01:18:24Z). **Proved in Lean 2026-11-20:** blueprint of seven
+  propositions (`Blueprint/StationaryLeading.lean`), assembly and seven parts in ten files under `OscInt/Front/`
+  (`StationaryLeadingFinal.lean` has the four theorems under the challenge names); route referee: no FATAL, no
+  MAJOR (`review/2026-11-20-SPL-route-referee-answers.md`); integration checks
+  `docs/replay/2026-11-20-SPL-integration-checks.txt`; registry: 90 statements, all with a proving theorem; STATUS
+  rows say "proved in Lean". **Post-proof reviews done 2026-11-20:** FAITHFUL, SOUND, no failing regime; one BLOCKER and other
+  findings against records, none against a statement, all answered
+  (`review/2026-11-20-SPL-post-proof-answers.md`); the conditional and relative plants are closed
+  (`docs/replay/2026-11-20-SPL-plants-closed.txt`). The answers are stamped (`stamps/20261120T041355Z-3c69b821f0da`, 04:14:03Z).
+  **Replayed 2026-11-20:** `make verify-all` on ff66a2e, RESULT PASS, 04:24:55Z to 07:54:08Z
+  (`docs/replay/2026-11-20-SPL-verify-all.txt`); the four STATUS rows say "machine-checked as stated"; all 90
+  statements are. **Batch SPL, first freeze, is done.** Exact next steps, in this order of value: (1) owner items
+  for release v0.7.0 below, then merge `main` into this branch (never rebase) and `make anchors` for the stamps of
+  2026-11-19/20 (five of them now: 9ae784e8, 1aa26b0f, 5491b10b, 3e07630d, 3c69b821), a day or more after each;
+  (2) the second freeze of the batch, statements first: SPL-N (the constant 73/100 or 3/4 through the certificates
+  kept in the lead's scratch, to be committed when the statement is prepared), a front end for compactly supported
+  C³ amplitudes, the negative phase, sharpness for every λ; (3) open items from the reviews: the SPL sources are
+  not in the bibliography file; a "replayed" field in the registry is the owner's call; a refactoring that frees
+  SPL-I of VC2. While provers write files in the tree, run the gate on a clean
+  checkout (a git worktree with the staged change, sharing the Lake build directory and the tools' cargo target directory by symbolic links), or the axiom audit fails
+  its count on files not yet imported. Nine external reports and their checks are answered in
+  `review/2026-11-19-SPL-external-sessions-answers.md`; section 11 there lists the candidates for later freezes. Release v0.7.0: pull request 19
+  was merged by the owner on 2026-11-20 00:06Z (merge commit 06f8e47 on `main`); the owner dispatches
+  `release-candidate` and publishes; after that, merge `main` into this branch (never rebase: a stamp names
+  5491b10) and run `make anchors` for the three stamps of 2026-11-19/20. The owner may bring reports of external sessions of another model family
+  (blind derivation, literature, general phase); answer them under `review/` like the earlier external reviews.
 - **Work item (2026-11-19): release candidate v0.7.0.** All 86 pinned statements are proved; the 21 of session 13
   (batches PA, KL, FR, VC2, HW) were machine-checked as stated by the isolated replay of fafd5b8
   (`docs/replay/2026-11-19-session13-verify-all.txt`). Since then, on the owner's instruction, the tree was made

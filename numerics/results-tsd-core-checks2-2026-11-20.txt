@@ -1,0 +1,56 @@
+tsd_core_checks2.py sha256 8b09702ee47f1c65ad6292da65d846023b942bdb3c7572bac404a01646fc677c
+base tsd_core_checks.py sha256 c057a781a5dd1db0d09dd48159369c2569d8235d0de3e5299e1de41e6ea0201e (checked)
+run 2026-11-20T17:49:46Z python 3.13.18 numpy 2.5.5 mpmath 1.3.0 dps 40
+mp Gauss-Legendre: sum of weights - 2 = -4.59e-41; max |node - binary64 node| = 1.1e-16
+C1 P1(sigma=1.0) A1(kappa=1.0) delta=0.5 t=60.0: hypotheses (6),(7): all hold
+   J=1.804551952282e-02 lead=1.639434714499e-02 G=2.965792e-01 total=5.7474e-02 E=5.5674e-03 bound/measured=10.32 (a) PASS
+   disagreements/G: R2 vs refined=2.81e-16; R3 vs refined=4.68e-16; R2 vs R3=1.40e-16; R1 vs refined=5.05e-15; R1 vs R2=1.64e-16 (q) PASS
+   |Im J|/G=4.49e-15 (im) PASS
+   controls: wrong quarter phase E=1.0593e+00 (exceeds the bound); alpha halved E=1.7330e-02 (within the bound)
+C2 P1(sigma=0.5) A1(kappa=1.0) delta=0.5 t=200.0: hypotheses (6),(7): all hold
+   J=-3.098948512037e-01 lead=-3.096599218355e-01 G=3.143691e-01 total=9.1592e-02 E=7.4730e-04 bound/measured=122.6 (a) PASS
+   disagreements/G: R2 vs refined=0.00e+00; R3 vs refined=0.00e+00; R2 vs R3=3.53e-16; R1 vs refined=1.28e-14; R1 vs R2=1.59e-15 (q) PASS
+   |Im J|/G=2.89e-15 (im) PASS
+   controls: wrong quarter phase E=1.1582e+00 (exceeds the bound); alpha halved E=4.0726e-01 (exceeds the bound)
+C3 P1(sigma=2.0) A2(gamma=0.5,kappa=1.5) delta=0.4 t=40.0: hypotheses (6),(7): all hold
+   J=5.301210833097e-02 lead=5.326878473857e-02 G=5.567322e-02 total=1.4986e-01 E=4.6104e-03 bound/measured=32.51 (a) PASS
+   disagreements/G: R2 vs refined=3.74e-16; R3 vs refined=4.99e-16; R2 vs R3=0.00e+00; R1 vs refined=7.72e-15; R1 vs R2=7.48e-16 (q) PASS
+   |Im J|/G=4.24e-15 (im) PASS
+   controls: wrong quarter phase E=6.6149e-01 (exceeds the bound); alpha halved E=4.0093e-01 (exceeds the bound)
+C4 P2(x=1.5) A1(kappa=2.0) delta=0.5 t=1200.0: hypotheses (6),(7): all hold
+   J=2.635635927011e-02 lead=2.629496606620e-02 G=3.542686e-02 total=7.5183e-02 E=1.7330e-03 bound/measured=43.38 (a) PASS
+   disagreements/G: R2 vs refined=5.48e-15; R3 vs refined=1.01e-14; R2 vs R3=8.23e-15; R1 vs refined=2.13e-14; R1 vs R2=3.37e-14 (q) PASS
+   |Im J|/G=2.90e-14 (im) PASS
+   controls: wrong quarter phase E=1.4141e+00 (exceeds the bound); alpha halved E=3.0571e-01 (exceeds the bound)
+C5 P2(x=1.1) A2(gamma=-0.8,kappa=1.0) delta=0.3 t=2000.0: hypotheses (6),(7): all hold
+   J=-1.591942185909e-01 lead=-1.590573084582e-01 G=1.671247e-01 total=4.7441e-02 E=8.1921e-04 bound/measured=57.91 (a) PASS
+   disagreements/G: R2 vs refined=5.98e-15; R3 vs refined=1.83e-15; R2 vs R3=9.96e-16; R1 vs refined=6.49e-14; R1 vs R2=1.30e-14 (q) PASS
+   |Im J|/G=2.66e-14 (im) PASS
+   controls: wrong quarter phase E=6.4561e-01 (exceeds the bound); alpha halved E=3.9340e-01 (exceeds the bound)
+C6 P1(sigma=1.0) A3(a=1.5) delta=0.5 t=80.0: hypotheses (6),(7): all hold
+   J=-1.784336312659e-01 lead=-1.791973055761e-01 G=2.743842e-01 total=3.2562e-02 E=2.7832e-03 bound/measured=11.7 (a) PASS
+   disagreements/G: R2 vs refined=9.10e-16; R3 vs refined=1.01e-16; R2 vs R3=2.02e-16 (q) PASS [no line route for this amplitude]
+   |Im J|/G=not measured (im) PASS
+   controls: wrong quarter phase E=1.0698e-01 (exceeds the bound); alpha halved E=2.7330e-01 (exceeds the bound)
+C7 P2(x=3.0) A3(a=1.0) delta=0.4 t=400.0: hypotheses (6),(7): all hold
+   J=1.825346007576e-02 lead=1.827114006230e-02 G=2.868373e-02 total=3.5617e-02 E=6.1638e-04 bound/measured=57.78 (a) PASS
+   disagreements/G: R2 vs refined=4.55e-14; R3 vs refined=4.66e-14; R2 vs R3=2.24e-14 (q) PASS [no line route for this amplitude]
+   |Im J|/G=not measured (im) PASS
+   controls: wrong quarter phase E=1.3451e-01 (exceeds the bound); alpha halved E=2.6446e-01 (exceeds the bound)
+C8 P1(sigma=1.0) A1(kappa=1.0) delta=0.5 t=4.0: hypotheses (6),(7): all hold
+   J=-2.576807283578e-01 lead=-3.509209440156e-01 G=1.148646e+00 total=3.2644e+00 E=8.1174e-02 bound/measured=40.21 (a) PASS
+   disagreements/G: R2 vs refined=9.67e-17; R3 vs refined=4.83e-17; R2 vs R3=0.00e+00; R1 vs refined=1.36e-16; R1 vs R2=4.83e-17 (q) PASS
+   |Im J|/G=4.20e-17 (im) PASS
+   controls: wrong quarter phase E=7.2786e-01 (within the bound); alpha halved E=2.0772e-01 (within the bound)
+C9 P1(sigma=1.0) A1(kappa=20.0) delta=0.05 t=20000.0: hypotheses (6),(7): all hold
+   J=9.609164485427e-11 lead=9.629008406824e-11 G=1.033309e-10 total=1.4111e-01 E=1.9204e-03 bound/measured=73.48 (a) PASS
+   disagreements/G: R2 vs refined=4.53e-14; R3 vs refined=1.51e-13; R2 vs R3=1.29e-13; R1 vs refined=2.16e-10; R1 vs R2=1.18e-13 (q) PASS [R1 in 40-digit arithmetic, X=3.0, 293331 and 586677 panels]
+   |Im J|/G=1.51e-19 (im) PASS
+   controls: wrong quarter phase E=5.6713e-01 (exceeds the bound); alpha halved E=3.8791e-01 (exceeds the bound)
+PASS (h) the inequalities of hypotheses (6) and (7) hold in all cases
+PASS (a) |J - lead| <= G * total in all cases
+PASS (q) quadrature routes and refinements agree within 1e-8 G
+PASS (im) |Im J| < 1e-8 G where the line route exists
+PASS K1 wrong quarter phase exceeds the bound in 8 of 9 cases (required: at least 4)
+PASS K2 halved alpha exceeds the bound in 7 of 9 cases (required: at least 4)
+OVERALL: PASS (6 of 6 lines PASS)

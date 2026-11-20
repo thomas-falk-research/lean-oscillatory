@@ -2115,6 +2115,107 @@
    ],
    "snippet": "example : HadamardDispersiveStatement := OscInt.API.hadamardDispersive",
    "status": "see docs/STATUS.md (row HW-L)"
+  },
+  {
+   "label": "SPL-I",
+   "name": "OscInt.Statements.StationaryLeadingIdentityStatement",
+   "proved_by": "OscInt.API.stationaryLeadingIdentity",
+   "summary": "The remainder of the quadratic-phase leading term as an integral of `g‴` against the kernel: `R(g, λ) = −i λ^{−3/2} ∫ g‴(t) κ(√λ t) dt`.",
+   "file": "OscInt/Statements/StationaryLeading.lean",
+   "commitment": "2ca9a3dad94c0c7d4c42a14292bf7b493bf1e17b7233793b6e837a45c4e42ace",
+   "stamp": "stamps/20261120T002727Z-5491b10bc8ae",
+   "lean_statement": "def StationaryLeadingIdentityStatement : Prop :=\n  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →\n    splRemainder g lam =\n      -Complex.I * ((lam ^ (-(3 : ℝ) / 2) : ℝ) : ℂ) * ∫ t, g₃ t * splKernel (Real.sqrt lam * t)",
+   "hypotheses": [
+    "g with derivatives g₁, g₂, g₃ at every point (HasDerivAt), and g, g₁, g₂, g₃ integrable on ℝ",
+    "λ > 0"
+   ],
+   "conclusion": "R(g, λ) = −i λ^{−3/2} ∫ g₃(t) κ(√λ t) dt, where R(g, λ) = ∫ g(u) e^{iλu²/2} du − g(0) √(2π/λ) e^{iπ/4} and κ is the odd kernel built from the Fresnel primitive (classical in substance: Erdélyi's remainder representation, two-sided)",
+   "rate": "λ^{-3/2}",
+   "uniform_over": "an identity; nothing to be uniform over",
+   "smoothness": "three derivatives given as functions with HasDerivAt at every point; g₃ need not be continuous, but as a derivative it has no jump, so piecewise C³ amplitudes are excluded; no compact support",
+   "see_also": [
+    "SPL-S",
+    "SPL-K",
+    "SPL-A",
+    "VC2-S"
+   ],
+   "snippet": "example : StationaryLeadingIdentityStatement := OscInt.API.stationaryLeadingIdentity",
+   "status": "see docs/STATUS.md (row SPL-I)"
+  },
+  {
+   "label": "SPL-S",
+   "name": "OscInt.Statements.StationaryLeadingStatement",
+   "proved_by": "OscInt.API.stationaryLeading",
+   "summary": "The leading term of the quadratic-phase integral with its remainder bounded through the kernel: `|R(g, λ)| ≤ |κ(τ)| ‖g‴‖₁ λ^{−3/2}` for some `τ ≥ 0`.",
+   "file": "OscInt/Statements/StationaryLeading.lean",
+   "commitment": "09bec1453d5efba9d1bf29e8f58b834a4162db2b359343e5cf0dbc00c652a229",
+   "stamp": "stamps/20261120T002727Z-5491b10bc8ae",
+   "lean_statement": "def StationaryLeadingStatement : Prop :=\n  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →\n    ∃ τ : ℝ, 0 ≤ τ ∧ ‖splRemainder g lam‖ ≤ ‖splKernel τ‖ * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2)",
+   "hypotheses": [
+    "g with derivatives g₁, g₂, g₃ at every point (HasDerivAt), and g, g₁, g₂, g₃ integrable on ℝ",
+    "λ > 0"
+   ],
+   "conclusion": "there is τ ≥ 0 with |R(g, λ)| ≤ |κ(τ)| ‖g₃‖₁ λ^{−3/2}: the leading term of the quadratic-phase integral with its remainder bounded through the kernel",
+   "rate": "λ^{-3/2}",
+   "uniform_over": "g and λ (the witness τ may depend on both)",
+   "smoothness": "three derivatives given as functions with HasDerivAt at every point; g₃ need not be continuous, but as a derivative it has no jump, so piecewise C³ amplitudes are excluded; no compact support",
+   "see_also": [
+    "SPL-I",
+    "SPL-K",
+    "SPL-A"
+   ],
+   "snippet": "example : StationaryLeadingStatement := OscInt.API.stationaryLeading",
+   "status": "see docs/STATUS.md (row SPL-S)"
+  },
+  {
+   "label": "SPL-K",
+   "name": "OscInt.Statements.StationaryLeadingSevenEighthsStatement",
+   "proved_by": "OscInt.API.stationaryLeadingSevenEighths",
+   "summary": "The leading term of the quadratic-phase integral with remainder at most `(7/8) ‖g‴‖₁ λ^{−3/2}`.",
+   "file": "OscInt/Statements/StationaryLeading.lean",
+   "commitment": "2cb17329b81cc8d431c415faa9c68038b5dba5037bd70cca4295bf9a3bb0121d",
+   "stamp": "stamps/20261120T002727Z-5491b10bc8ae",
+   "lean_statement": "def StationaryLeadingSevenEighthsStatement : Prop :=\n  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →\n    ‖splRemainder g lam‖ ≤ (7 / 8 : ℝ) * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2)",
+   "hypotheses": [
+    "g with derivatives g₁, g₂, g₃ at every point (HasDerivAt), and g, g₁, g₂, g₃ integrable on ℝ",
+    "λ > 0"
+   ],
+   "conclusion": "|∫ g(u) e^{iλu²/2} du − g(0) √(2π/λ) e^{iπ/4}| ≤ (7/8) ‖g₃‖₁ λ^{−3/2} (7/8 is not the best constant; numerically the best is about 0.722)",
+   "rate": "λ^{-3/2}",
+   "uniform_over": "g and λ > 0 (every λ, not only large)",
+   "smoothness": "three derivatives given as functions with HasDerivAt at every point; g₃ need not be continuous, but as a derivative it has no jump, so piecewise C³ amplitudes are excluded; no compact support",
+   "see_also": [
+    "SPL-S",
+    "SPL-A",
+    "VC2-N",
+    "S2.2"
+   ],
+   "snippet": "example : StationaryLeadingSevenEighthsStatement := OscInt.API.stationaryLeadingSevenEighths",
+   "status": "see docs/STATUS.md (row SPL-K)"
+  },
+  {
+   "label": "SPL-A",
+   "name": "OscInt.Statements.StationaryLeadingAttainedStatement",
+   "proved_by": "OscInt.API.stationaryLeadingAttained",
+   "summary": "The kernel bound of SPL-S is attained in the limit by smooth compactly supported amplitudes: for every `τ ≥ 0` and `ε > 0` some such `g ≠ 0` has `|R(g, 1)| ≥ (|κ(τ)| − ε) ‖g‴‖₁`.",
+   "file": "OscInt/Statements/StationaryLeading.lean",
+   "commitment": "3ff8b92bd70394bf8bd5506c88d7acc200d7aebcfae95940c7a2c32e6a9de08e",
+   "stamp": "stamps/20261120T002727Z-5491b10bc8ae",
+   "lean_statement": "def StationaryLeadingAttainedStatement : Prop :=\n  ∀ τ ε : ℝ, 0 ≤ τ → 0 < ε →\n    ∃ g g₁ g₂ g₃ : ℝ → ℂ, SplAmplitude g g₁ g₂ g₃ ∧ ContDiff ℝ ∞ g ∧ HasCompactSupport g ∧ (∃ x, g x ≠ 0) ∧\n      (‖splKernel τ‖ - ε) * (∫ t, ‖g₃ t‖) ≤ ‖splRemainder g 1‖",
+   "hypotheses": [
+    "τ ≥ 0",
+    "ε > 0"
+   ],
+   "conclusion": "some infinitely differentiable, compactly supported amplitude g ≠ 0 has |R(g, 1)| ≥ (|κ(τ)| − ε) ‖g₃‖₁: the kernel bound of SPL-S is approached to any tolerance, so no constant below sup |κ| is true in SPL-K",
+   "rate": "— (sharpness)",
+   "uniform_over": "τ and ε",
+   "smoothness": "—",
+   "see_also": [
+    "SPL-S",
+    "SPL-K"
+   ],
+   "snippet": "example : StationaryLeadingAttainedStatement := OscInt.API.stationaryLeadingAttained",
+   "status": "see docs/STATUS.md (row SPL-A)"
   }
  ]
 }

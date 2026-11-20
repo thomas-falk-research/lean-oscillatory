@@ -1,0 +1,32 @@
+plant-SPL-I-a.lean:20:2: error: Type mismatch
+  h1
+has type
+  gaussRoot s lam - splLead lam = Complex.I * ↑(lam ^ (-3 / 2)) * ∫ (t : ℝ), gauss3 s t * splKernel (√lam * t)
+but is expected to have type
+  gaussRoot s lam - splLead lam = -Complex.I * ↑(lam ^ (-3 / 2)) * ∫ (t : ℝ), gauss3 s t * splKernel (√lam * t)
+plant-SPL-I-a.lean:29:2: error: Type mismatch
+  h1
+has type
+  (2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - splLead 4 =
+    Complex.I * ↑(1 / 8) * ∫ (t : ℝ), gauss3 1 t * splKernel (2 * t)
+but is expected to have type
+  (2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - ↑√(2 * Real.pi / 4) * Complex.exp (↑(Real.pi / 4) * Complex.I) =
+    -Complex.I * ↑(1 / 8) * ∫ (t : ℝ), gauss3 1 t * splKernel (2 * t)
+plant-SPL-I-a.lean:38:2: error: Type mismatch
+  h1
+has type
+  (2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - splLead 9 =
+    Complex.I * ↑(1 / 27) * ∫ (t : ℝ), gauss3 2 t * splKernel (3 * t)
+but is expected to have type
+  (2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - ↑√(2 * Real.pi / 9) * Complex.exp (↑(Real.pi / 4) * Complex.I) =
+    -Complex.I * ↑(1 / 27) * ∫ (t : ℝ), gauss3 2 t * splKernel (3 * t)
+plant-SPL-I-a.lean:47:30: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ‖-?a‖
+in the target expression
+  151 / 1000 ≤ ‖Complex.I‖ * ‖↑(1 / 8)‖ * ‖∫ (t : ℝ), gauss3 1 t * splKernel (2 * t)‖
+
+h : P_StationaryLeadingIdentityStatement
+h1 : splRemainder (gauss 1) 4 = Complex.I * ↑(1 / 8) * ∫ (t : ℝ), gauss3 1 t * splKernel (2 * t)
+h2 : 151 / 1000 ≤ ‖Complex.I‖ * ‖↑(1 / 8)‖ * ‖∫ (t : ℝ), gauss3 1 t * splKernel (2 * t)‖
+h3 : ‖Complex.I‖ * ‖↑(1 / 8)‖ * ‖∫ (t : ℝ), gauss3 1 t * splKernel (2 * t)‖ ≤ 305 / 1000
+⊢ 6 / 5 ≤ ‖∫ (t : ℝ), gauss3 1 t * splKernel (2 * t)‖ ∧ ‖∫ (t : ℝ), gauss3 1 t * splKernel (2 * t)‖ ≤ 5 / 2

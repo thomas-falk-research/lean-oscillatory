@@ -1,0 +1,48 @@
+# numerics/review/spl_remainder_checks.py, run 2026-11-19T22:05:36Z
+# sha256 of the script: 80ba7065d7745e2bc36fd909bf287c2d919301fd980323adecea22ab754db5f1
+# python 3.13.18, numpy 2.5.5, scipy 1.18.1, mpmath 1.3.0; binary64; no random numbers
+# claim constant K = 0.721974
+e1 closed form: grid maximum of |kappa| on (0, 40], step 0.001: 0.7219739659 at tau = 1.625; refined tau* = 1.62460061793, K* = 0.721973998998
+e2 definition tau^2 int_tau^inf F(x) x^-3 dx at tau*: |kappa| = 0.7219739990 (quadrature difference 0.0e+00, tail bound 2.6e-09)
+PASS (e) K* by two methods: difference 1.55e-15; K - K* = 1.00e-09
+PASS (e') the maximum is the first local maximum: largest |kappa| on (2.6, 40]: 0.642818
+G1: g(0) = 1.000000, g''(0) = -1.000000, ||g'''||_1 = 3.7850412812 (quadrature difference 8.9e-16)
+  lam =      1: rho = 0.25932050; direct R = 0.1749130369-0.9658280750j (diff 2.5e-16); kernel R = 0.1749130369-0.9658280750j (diff 2.8e-17); |direct - kernel| lam^1.5 = 5.33e-16; |direct - closed form| lam^1.5 = 4.44e-16
+  lam =      4: rho = 0.32427873; direct R = 0.0867826869-0.1265239769j (diff 3.3e-16); kernel R = 0.0867826869-0.1265239769j (diff 3.1e-17); |direct - kernel| lam^1.5 = 2.23e-15; |direct - closed form| lam^1.5 = 8.88e-16
+  lam =     16: rho = 0.33067945; direct R = 0.0131663434-0.0144608416j (diff 7.9e-17); kernel R = 0.0131663434-0.0144608416j (diff 3.9e-18); |direct - kernel| lam^1.5 = 5.31e-15; |direct - closed form| lam^1.5 = 3.55e-15
+  lam =     64: rho = 0.33109519; direct R = 0.0017103674-0.0017509284j (diff 5.6e-17); kernel R = 0.0017103674-0.0017509284j (diff 2.1e-18); |direct - kernel| lam^1.5 = 3.72e-14; |direct - closed form| lam^1.5 = 2.01e-14
+  lam =    256: rho = 0.33112124; direct R = 0.0002157281-0.0002169958j (diff 1.4e-17); kernel R = 0.0002157281-0.0002169958j (diff 1.1e-18); |direct - kernel| lam^1.5 = 2.70e-13; |direct - closed form| lam^1.5 = 2.84e-13
+G2: g(0) = 1.000000, g''(0) = -0.200000, ||g'''||_1 = 5.3812836098 (quadrature difference 0.0e+00)
+  lam =      1: rho = 0.10750956; direct R = 0.4030612593-0.4150295423j (diff 0.0e+00); kernel R = 0.4030612593-0.4150295423j (diff 0.0e+00); |direct - kernel| lam^1.5 = 1.90e-15; |direct - closed form| lam^1.5 = 2.22e-16
+  lam =      4: rho = 0.06216907; direct R = 0.0381755767-0.0170712382j (diff 0.0e+00); kernel R = 0.0381755767-0.0170712382j (diff 7.1e-17); |direct - kernel| lam^1.5 = 9.10e-16; |direct - closed form| lam^1.5 = 8.88e-16
+  lam =     16: rho = 0.04781279; direct R = 0.0032018887-0.0024310680j (diff 5.6e-17); kernel R = 0.0032018887-0.0024310680j (diff 2.0e-17); |direct - kernel| lam^1.5 = 1.00e-14; |direct - closed form| lam^1.5 = 1.00e-14
+  lam =     64: rho = 0.04665893; direct R = 0.0003587145-0.0003343895j (diff 7.9e-17); kernel R = 0.0003587145-0.0003343895j (diff 6.6e-18); |direct - kernel| lam^1.5 = 4.34e-14; |direct - closed form| lam^1.5 = 4.49e-14
+  lam =    256: rho = 0.04658540; direct R = 0.0000436560-0.0000428954j (diff 8.9e-17); kernel R = 0.0000436560-0.0000428954j (diff 2.2e-18); |direct - kernel| lam^1.5 = 5.91e-13; |direct - closed form| lam^1.5 = 6.28e-13
+G3: g(0) = 0.000000, g''(0) = 1.674423, ||g'''||_1 = 10.7993181742 (quadrature difference 0.0e+00)
+  lam =      1: rho = 0.07751364; direct R = 0.5590588515+0.6230412159j (diff 1.6e-16); kernel R = 0.5590588515+0.6230412159j (diff 2.2e-16); |direct - kernel| lam^1.5 = 6.47e-16; |direct - closed form| lam^1.5 = 1.57e-16
+  lam =      4: rho = 0.17665077; direct R = -0.0552756196+0.2319686098j (diff 9.4e-17); kernel R = -0.0552756196+0.2319686098j (diff 4.4e-17); |direct - kernel| lam^1.5 = 2.26e-15; |direct - closed form| lam^1.5 = 2.78e-16
+  lam =     16: rho = 0.19314529; direct R = -0.0195461794+0.0260793752j (diff 3.7e-17); kernel R = -0.0195461794+0.0260793752j (diff 3.5e-17); |direct - kernel| lam^1.5 = 2.22e-15; |direct - closed form| lam^1.5 = 6.66e-16
+  lam =     64: rho = 0.19425108; direct R = -0.0027921600+0.0029985154j (diff 3.6e-17); kernel R = -0.0027921600+0.0029985154j (diff 1.0e-17); |direct - kernel| lam^1.5 = 1.31e-14; |direct - closed form| lam^1.5 = 1.15e-14
+  lam =    256: rho = 0.19432044; direct R = -0.0003590354+0.0003654884j (diff 4.2e-17); kernel R = -0.0003590354+0.0003654884j (diff 4.1e-18); |direct - kernel| lam^1.5 = 1.41e-13; |direct - closed form| lam^1.5 = 1.44e-13
+G4: g(0) = 1.000000, g''(0) = -0.888889, ||g'''||_1 = 5.7801896591 (quadrature difference 0.0e+00)
+  lam =      1: rho = 0.17655170; direct R = 0.2498710250-0.9894389513j (diff 0.0e+00); kernel R = 0.2498710250-0.9894389513j (diff 1.6e-16); |direct - kernel| lam^1.5 = 2.44e-15
+  lam =      4: rho = 0.19200645; direct R = 0.0850456817-0.1096039498j (diff 2.2e-16); kernel R = 0.0850456817-0.1096039498j (diff 8.1e-17); |direct - kernel| lam^1.5 = 2.52e-15
+  lam =     16: rho = 0.19269158; direct R = 0.0119152752-0.0126843067j (diff 0.0e+00); kernel R = 0.0119152752-0.0126843067j (diff 5.1e-17); |direct - kernel| lam^1.5 = 5.15e-15
+  lam =     64: rho = 0.19273427; direct R = 0.0015264988-0.0015505389j (diff 1.7e-16); kernel R = 0.0015264988-0.0015505389j (diff 1.0e-17); |direct - kernel| lam^1.5 = 6.31e-14
+  lam =    256: rho = 0.19273693; direct R = 0.0001919474-0.0001926986j (diff 2.0e-16); kernel R = 0.0001919474-0.0001926986j (diff 2.0e-18); |direct - kernel| lam^1.5 = 1.22e-13
+PASS (a) bound on G1-G4, five values of lam: largest rho = 0.33112124 against K = 0.721974
+PASS (c2) identity on G1-G4: largest |direct - kernel| lam^1.5 = 5.91e-13 (tolerance 1e-6)
+PASS (x) direct quadrature against closed forms, G1-G3: largest scaled difference 6.28e-13 (tolerance 1e-6)
+PASS (b) lam^1.5 |R| against sqrt(2 pi) |g''(0)|/2: ratios G1 1.00000, G2 1.00000, G3 1.00000, G4 (lam 256) 1.00000
+G5: tau = 1.624601, T = 400.0, w = 0.01; g(0) = 161.800227; ||g'''||_1 = 1.00406150 (quadrature 1.00406150); direct R = 0.47031991-0.54440973j (diff 8.1e-11); kernel R = 0.47031991-0.54440973j (diff 1.2e-12)
+PASS (c) near-extremal amplitude: rho = 0.71652210; 0.985 K = 0.71114439; K = 0.721974
+PASS (c2) identity on G5: |direct - kernel| = 9.61e-12 (tolerance 1e-4)
+PASS control C1 (phase factor e^{i pi/4} replaced by 1) violates the bound: rho = 129.4502
+PASS control C2 (constant sqrt(2 pi)/4 in the place of K) is violated by G5: rho = 0.71652210 against 0.62665707
+PASS control C3 (kappa extended as an even function) breaks the identity: largest |direct - kernel| at lam = 1 on G2, G3: 1.3453
+PASS control C4 (remainder of order lam^-2) is refuted: lam^2 |R| grows by the factor 4.005 from lam = 16 to 256 on G1
+OVERALL: PASS (12 of 12 lines PASS)
+exit code 0
+
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

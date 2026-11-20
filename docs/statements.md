@@ -1619,3 +1619,259 @@ h. Corrections after the external review of batch HW (2026-11-19, `review/2026-1
    that the script never had, and its comparison of the trapezoidal rule with adaptive quadrature had one nonzero
    value among ten; the header is corrected and six points with nonzero values are added. The statement file is
    unchanged.
+
+## Batch SPL: the leading term of a quadratic-phase integral with an explicit remainder (session 13, 2026-11-19)
+
+Order. As batch VC2: statements, `OscInt/Statements/StationaryLeading.lean`, sanity theorems with planted controls,
+challenge and comparator, frozen and stamped before the blind pre-proof reviews. What differs from "statement
+first", said plainly: a complete proof on paper of SPL-I, SPL-S, SPL-K and SPL-A predates the freeze
+(`docs/proof-SPL.md`, second version; its first version was read by a plan referee of the lead's model family,
+`review/2026-11-19-SPL-plan-referee-answers.md`), and a registered numeric test of the draft statements was run
+before the freeze (`docs/prereg/2026-11-19-SPL-quadratic-remainder.md`, PASS 12 of 12). No Lean proof of these
+statements is in the repository history before the stamp of the answers to the blind reviews. Owner decision that
+opened the batch: `docs/decisions/2026-11-19-next-batch-spl.md`.
+
+Why. The library bounds oscillatory integrals from above. A consumer that needs an asymptotic formula needs the
+leading term and a bound, with a stated constant and valid for every value of the large parameter, on what is left
+(`docs/ROADMAP.md`, "Asymptotic expansions"; `docs/design/batch-SPL-opening.md`). This batch does that for the
+normal form of a nondegenerate stationary point in one variable, the phase u²/2. The identity SPL-I is classical in
+substance: it is the two-sided case, three integrations by parts, of Erdélyi's remainder representation
+(`docs/prior_art.md`, gate of 2026-11-19). A leading term for the same phase is already formalised in Lean
+elsewhere, for Schwartz amplitudes with a remainder in a Fourier-moment norm (`docs/prior_art.md`, second addendum);
+this batch has the remainder in ‖g₃‖₁ with an explicit kernel and constant, for amplitudes that need not be
+Schwartz. Nothing is claimed as new; the claim, if proved, is "machine-checked, with an explicit constant".
+
+Notation. F(x) = ∫_0^x e^{iv²/2} dv (Lean `fresnelPrim x`); L = √π (1 + i)/2 (Lean `fresnelLimit`; it is the limit of
+F at +∞, which is a fact to be proved and is not used to define anything). The kernel: for τ ≥ 0,
+κ(τ) = F(τ)/2 + τ e^{iτ²/2}/2 + (iτ²/2)(L − F(τ)) (Lean `splKernelPos τ`), and κ(τ) = −κ(−τ) for τ < 0 (Lean
+`splKernel`). An *amplitude* is a function g: ℝ → ℂ together with functions g₁, g₂, g₃ such that g has derivative
+g₁(x) at every x, g₁ has derivative g₂(x), g₂ has derivative g₃(x), and g, g₁, g₂, g₃ are integrable on ℝ (Lean
+`SplAmplitude g g₁ g₂ g₃`). ‖g₃‖₁ = ∫_ℝ |g₃|. For λ > 0,
+R(g, λ) = ∫_ℝ g(u) e^{iλu²/2} du − g(0) √(2π/λ) e^{iπ/4} (Lean `splRemainder g lam`).
+
+**SPL-I (the remainder as an integral).** For every amplitude and every λ > 0:
+R(g, λ) = −i λ^{−3/2} ∫_ℝ g₃(t) κ(√λ t) dt.
+
+**SPL-S (bound through the kernel).** For every amplitude and every λ > 0 there is τ ≥ 0 with
+|R(g, λ)| ≤ |κ(τ)| ‖g₃‖₁ λ^{−3/2}.
+
+**SPL-K (bound with a number).** For every amplitude and every λ > 0: |R(g, λ)| ≤ (7/8) ‖g₃‖₁ λ^{−3/2}.
+
+**SPL-A (sharpness: attained in the limit, not by an extremiser).** For every τ ≥ 0 and ε > 0 there is an amplitude with g infinitely differentiable, of compact
+support and not identically zero, such that |R(g, 1)| ≥ (|κ(τ)| − ε) ‖g₃‖₁. (With SPL-S: the best constant K in
+|R| ≤ K ‖g₃‖₁ λ^{−3/2} is sup |κ|.)
+
+What the statements say and do not say (modelling choices and omissions, for the reviewer).
+1. The phase is exactly u²/2. A general phase with a nondegenerate stationary point is not treated; it is stage 2
+   of the batch plan and has no statement. The sign of the phase is +. For the phase −u²/2 and a complex
+   amplitude the rule is R₋(g, λ) = conj(R₊(conj g, λ)), where R₋ has e^{−iλu²/2} and e^{−iπ/4}; it is not stated in
+   Lean in this freeze.
+2. The amplitude is on the whole line with integrable derivatives; compactly supported functions of class C³ and
+   Schwartz functions are amplitudes. End points are not treated: an integral over a bounded interval with an
+   amplitude that does not vanish at the ends has contributions of order 1/λ that these statements do not describe.
+3. Continuity of g₃ is not asked. Integrability of g₁ and g₂ is asked although it follows from that of g and g₃
+   (proved on paper by an external session and re-derived by a checker,
+   `review/2026-11-19-SPL-external-sessions-answers.md`; not proved in Lean, not used as a claim). A statement
+   with two hypotheses is a possible later corollary.
+4. In Lean `∫` is the Bochner integral, which is 0 for a function that is not integrable; `Integrable g` in the
+   hypothesis is what makes the first term of R the integral it denotes. `√(2π/λ)` is `Real.sqrt`, and `λ^{−3/2}`
+   is `Real.rpow`; both are used only for λ > 0.
+5. SPL-S has the form "there is τ" used by VC2-S for a constant that is a supremum of a profile. It does not say
+   where |κ| is largest or what its largest value is.
+6. The number 7/8 in SPL-K is not the best constant. Numerically sup |κ| = 0.7219740, at τ = 1.6246 (registered
+   test, and since then an exact-arithmetic enclosure by an external session, re-run by a checker; not a Lean
+   theorem; the two decimals are rounded). A statement with a rational close to that value (SPL-N) is not in this
+   batch's first freeze: its proof needs certified enclosures of the Fresnel primitive that the library does not
+   have (`docs/proof-SPL.md`, sections 5 and 9).
+7. SPL-A is stated at λ = 1; other λ follow by scaling, which is not stated. It gives no rate in ε.
+8. The remainder is O(λ^{−3/2}) and the statements give no second term of the expansion. Consistency with the
+   classical second term, of modulus (√(2π)/2) |g″(0)| λ^{−3/2}: since |g″(0)| ≤ ‖g₃‖₁/2, no constant below
+   √(2π)/4 = 0.6267 can be true in SPL-K.
+9. Relative to Erdélyi's theorem (one-sided integrals, stationary points and singularities of real order, any
+   number of terms): one case only, two-sided, with the term in g″(0) not separated.
+Sanity layer and planted controls (written by an agent of the lead against the draft text, under a brief that
+forbids proving the statements; the statement file entered the repository unchanged, SHA-256
+12f8d3b622949cd8a9d3d518236da7f96ae84cc26f3d72dda64bb05bfb40c715). `OscInt/Front/StationaryLeadingSanity.lean`:
+96 theorems. Data: the kernel at 0 and its oddness; the two constants tied to each other
+(`√(2π) e^{iπ/4} = 2 F(∞)`); the Gaussian family `e^{−(su)²/2}` as amplitudes with the closed form of its remainder
+and certified bounds `√(2π) s²/(2√λ √(s⁴+λ²)) ≤ |R| ≤ √(2π) s²/(√λ √(s⁴+λ²))`; `‖g₃‖₁ = s²(2 + 8e^{−3/2})`; two bites
+on the class (the constant 1; a wrong first derivative); a nonzero amplitude has `‖g₃‖₁ > 0`. Each statement is
+instantiated at two Gaussians (s = 1, λ = 4 and s = 2, λ = 9); SPL-K is shown not vacuous there (the left side
+is at least a third of the right side); SPL-A with SPL-K gives `|κ| ≤ 7/8`. Planted controls: 42 mutations,
+`docs/replay/2026-11-19-SPL-sanity-plants.txt` (re-run by the lead, byte-identical): 22 detected, 7 detected only
+under the hypothesis `|κ| ≤ 2` (no Lean proof before the freeze), 7 detected relative to the true statement, 3
+equivalent, 3 true weakenings, none undetected. What the layer cannot see, said before the review: a constant
+between about 0.331 and 7/8 in SPL-K (the Gaussian's ratio stops at 0.331; 7/8 ↦ 1/2 would be false and would not
+be detected); the size of `|κ|` anywhere but at 0; the clauses "compact support" and "infinitely differentiable" of
+SPL-A, and its existence claim for τ > 0. For those the batch rests on the fidelity reviews, on the registered
+numeric test and on the external derivation, not on the sanity layer.
+
+10. Planned for a second freeze of this batch, after a critique of this draft by an external session
+    (`review/2026-11-19-SPL-external-sessions-answers.md`, section 5), and not stated here: a front end for a
+    compactly supported function of class C³ with its canonical derivatives; the phase −u²/2; sharpness for every
+    λ > 0; SPL-N. A user of SPL-K in this freeze supplies the three derivative functions and the four
+    integrability facts.
+
+Clarifications after the blind pre-proof reviews (2026-11-20; `review/2026-11-20-SPL-preproof-answers.md`). The
+statement file is unchanged.
+SPL-a. Item 3 and item 4. "Continuity of g₃ is not asked" does not mean that g₃ may jump: g₂ has the derivative
+   g₃(x) at every point x, so g₃ has the intermediate-value property, and an amplitude whose second derivative has
+   a corner (a cubic spline, a piecewise C³ function) is not an amplitude in the sense of these statements,
+   although the identity holds for it. Admitted: third derivatives that are discontinuous by oscillation, or
+   unbounded near a point, as long as they are integrable. In SPL-I both sides are Bochner integrals; the integrand
+   on the right is integrable once the kernel is known to be bounded, which is part of the proof and not of the
+   statement.
+SPL-b. Three sentences above claim more than is there. (1) "Each statement is instantiated at two Gaussians":
+   true of SPL-I, SPL-S and SPL-K; SPL-A is instantiated at τ = 0 and at τ = 1, with no Gaussian datum. (2) Item 8,
+   "since |g″(0)| ≤ ‖g₃‖₁/2, no constant below √(2π)/4 can be true": the inference needs amplitudes for which that
+   inequality is nearly an equality; the number is right (it is the limit of |κ| at infinity). (3) "The best
+   constant is sup |κ|" is a consequence of SPL-S and SPL-A together with the fact that a nonzero amplitude has
+   ‖g₃‖₁ > 0 (proved in the sanity layer); it is not a Lean statement of this freeze and concerns constants that do
+   not depend on λ.
+SPL-c. What the planted controls do not cover, as the two referees listed it: any change inside the kernel (a
+   sign or coefficient of one of its three terms, the phase or the sign of i in the Fresnel primitive, the value
+   of F(∞) except through SPL-A with SPL-K); the factor g(0) of the leading term replaced by 1, by a conjugate or by
+   a modulus (all data are real even Gaussians with g(0) = 1); `0 < ε` weakened to `0 ≤ ε` in SPL-A;
+   `Integrable g₃` dropped; 7/8 replaced by a number down to about 0.33. Two more would be detected by the existing
+   data and were not planted: the phase `λu²/2` replaced by `λu²`, and the sign of i in the remainder. For all of
+   these the batch rests, until the proofs exist, on the fidelity reviews and on numerics (the registered test and
+   the referees' own), not on the sanity layer.
+SPL-d (2026-11-20, after the proofs; post-proof referee C). The proofs do not turn SPL-I into a characterisation
+   of the kernel: for every amplitude the integral of g₃ is zero, so SPL-I stays true when any complex constant is
+   added to κ (compiled: `docs/replay/plants/2026-11-20-SPL-closed`, the file whose name starts with
+   "equivalent"). What pins the kernel is its oddness, which is part of the frozen definition, together with
+   SPL-I; its supremum is pinned by SPL-S with SPL-A. With the proofs, the 7 planted mutations that were refuted
+   only under a bound on the kernel and the 7 refuted only relative to a true statement are refuted outright
+   (`docs/replay/2026-11-20-SPL-plants-closed.txt`): 36 of 42, the others being 3 equivalent ones and 3 true
+   weakenings. The mutations of SPL-c that the layer cannot see are excluded by the proofs only in the sense that
+   the frozen text, and not a mutation of it, is what was proved. Two more that no datum of the layer sees
+   (same referee): `λ = 1` in SPL-A replaced by another fixed λ, and `HasDerivAt` replaced by an equation with
+   `deriv`.
+
+## Batch TSD: two-saddle steepest descent with an explicit remainder (session 14, 2026-11-20)
+
+Status of this section on 2026-11-20: prose only. No Lean statement of the batch exists, nothing is frozen, and no
+Lean proof of any part exists in the repository or in the lead's scratch. Order, as for batch SPL: this prose, a
+registered numeric test of it, the Lean statements with a sanity layer and planted controls, challenge and
+comparator, freeze and stamp, two blind referees, and only then proofs (`CONTRIBUTING.md`). What predates the
+freeze, said plainly: a proof on paper by the source's authors, re-derived three times
+(`review/2026-11-20-TSD-step-referee-answers.md`: a step referee and a checker of the lead's model family, and a
+session of another model family); no machine check. Owner decision that opened the batch:
+`docs/decisions/2026-11-20-batch-two-saddle.md`; opening note: `docs/design/batch-TSD-opening.md`.
+
+Source. Lemma E.1 of *The spinless modular bootstrap at large central charge* (hexagon:2611.00174v1, CC BY 4.0;
+appendix "Two-saddle steepest descent with a uniform remainder"; the label in the TeX source is `lem:D.1`;
+SHA-256 of the TeX file 6e167ddd9f1c8ba46680c9550fd5d84eacf3d9901d02f4c9b22433d63b2db079, downloaded again on
+2026-11-20 in session 14 and equal to the value recorded in session 13). Cited, not copied.
+
+Why. A lemma on which a current research preprint rests, with a four-page proof by a long chain of explicit
+constants. The mechanism is classical (the ordinary two-saddle formula away from coalescence); this quantified
+general form was not found in the literature searched (the search and its limits: section 2 of the review file
+above). Nothing is claimed as new. The claim, if proved, is "machine-checked, with these constants".
+
+Two statements are planned. **TSD-C**, the core, is about two analytic functions on a strip and has no special
+function in it. **TSD-L** is the lemma in the form in which it is printed, with a function `H` in the place of
+the Hankel function `H₀^{(1)}`, and follows from TSD-C by a change of variables and algebra. The first freeze of
+the batch holds TSD-C only; the Lean text of TSD-L is written after the two external reports that bear on it (a
+proof of the Hankel bound; an audit of how the preprint uses the lemma) have been checked.
+
+Notation for TSD-C. For δ > 0 the closed strip is `S_δ = {z ∈ ℂ : |Im z| ≤ δ}`. A prime is the complex
+derivative. `e = 2.718…` is Euler's number where it appears as a factor of a constant.
+
+**TSD-C (two saddles on the real line, symmetric form).** Let `δ, t, s, α, β, C₂, ℓ, r` be positive real numbers
+and `C₃, M, M′` nonnegative real numbers. Let `U ⊆ ℂ` be open with `S_δ ⊆ U`, and let `φ, A : U → ℂ` be
+holomorphic. Assume:
+
+1. (symmetry) for every `z ∈ S_δ`: `A(z) ≠ 0`, `φ(−z) = −φ(z)`, `φ(z̄) = conj φ(z)` and `A(−z̄) = conj A(z)`;
+2. (integrability) `v ↦ A(v)` is integrable on ℝ;
+3. (saddle) `φ′(s) = 0` and `φ″(s) = −α`;
+4. (slopes) `Re φ′(v) ≥ β (s − v)` for `0 ≤ v ≤ s`, and `Re φ′(v) ≤ −α (v − s)` for `v ≥ s`;
+5. (bounds) for every `z ∈ S_δ`: `|φ‴(z)| ≤ C₂`, `|φ⁗(z)| ≤ C₃`, `|A′(z)/A(z)| ≤ M` and `|(A′/A)′(z)| ≤ M′`;
+6. (window) `ℓ ≤ √2 δ`, `C₂ ℓ ≤ α`, `C₂ ℓ ≤ (3√2/2) β`, `M ℓ ≤ 1`, `r ≤ ℓ` and `t C₂ r³ ≤ 6`;
+7. (largeness) with `u = ℓ/√2`: `2M ≤ t β u` and `t α ≥ 8`.
+
+Put `K = (e − 2)(M² + M′)` and
+
+    ε_core = K/(tα) + (C₃/8 + M C₂/2 + K C₂)/(tα²) + (57/100 + (13/25) M) C₂²/(tα³),
+    ε_tr   = 3 e^{Mℓ} e^{−tα r²/3} / (√(2π) r √(tα)),
+    ε_mid  = 2 e^{Mu} √(α/(2πt)) e^{−tβ u²/4} / (βu),
+    ε_far  = √(2/π) e^{Mu} e^{−tα u²/4} / (u √(tα)).
+
+Then `v ↦ A(v) e^{itφ(v)}` is integrable on ℝ; its integral `J = ∫_ℝ A(v) e^{itφ(v)} dv` is a real number; and
+
+    |J − 2 √(2π/(tα)) Re[e^{−iπ/4} A(s) e^{itφ(s)}]| ≤ 2 |A(s)| √(2π/(tα)) (ε_core + 2 ε_tr + ε_mid + ε_far).
+
+Reading. By (1) the function `φ` is real on ℝ and odd, so `v ↦ tφ(v)` is a real phase with stationary points at
+`s` and `−s` (and possibly at 0); the two saddle contributions are complex conjugates of each other, and the
+leading term is their sum. `α` is the curvature at the saddle, `β` a lower bound for the slope of the chord of
+`φ′` between 0 and `s`; both tend to 0 when the saddles coalesce (`s → 0`), and the right-hand side then
+grows: the statement is the ordinary two-saddle formula with a remainder that is explicit up to coalescence, not
+a uniform (Airy-type) expansion through it.
+
+What TSD-C says and does not say (modelling choices and omissions, for the reviewer).
+1. Relation to the printed lemma. With `z = b − i/2`, `t = c′`, `s = v₀`, `φ(z) = (4π/3) ∫₀^z (x − F)`, that is
+   `φ(z) = −i[Φ₀(z + i/2) − Φ₀(i/2)] + (4π/3) x z`, `α = α_x`, `β = (4π/3) s_ch`, and `A` the printed amplitude at
+   `z + i/2` times the unimodular constant `e^{−iπ/4} e^{c′Φ₀(i/2)}`, the four error terms are the printed ones
+   term by term (`ε_mid` after substituting β), and the printed conclusion is `(2πc′/3) √(2/(πk_x)) e^{−k_x/2} J`.
+2. The window `r` is a parameter with two inequalities; the printed lemma takes the largest admissible value,
+   `r₁ = min{ℓ, (6/(c′C₂))^{1/3}}`. `ε_tr` decreases in `r`, so the printed choice gives the best bound, and
+   TSD-C at that value is the printed form. Likewise `ℓ` is a parameter with inequalities in place of the printed
+   minimum of seven quantities; no division by `C₂`, `M` or `M′` occurs.
+3. Hypotheses of the printed lemma that TSD-C does not have, because its conclusion does not need them
+   (step referee, finding 1; external report, checked): `c′ ≥ 39`; `δ₁ ≤ 1/4`; the lower bound on `c′F(0)`; the
+   bound on the Hankel remainder; evenness of `F` and `h₀` beyond the symmetry in (1); exponential decay of the
+   amplitude below the line (integrability on the line is enough, because the bounded logarithmic derivative
+   carries it down); `ℓ ≤ 1`; `ℓ ≤ v₀` (it follows: `α ≤ C₂ s` because `φ″` is odd, so `ℓ ≤ α/C₂ ≤ s`); the
+   printed condition (ii), `c′ α_x u₀ ≥ 2M` (it follows from (7) and `β ≤ α`, which follows from (3) and (4));
+   `M′ ℓ² ≤ 1` (not needed with the coefficient `K` of item 4).
+4. The amplitude coefficient. The printed lemma has `K_A = (9/2) M² + (13/8) M′`; TSD-C has the smaller
+   `K = (e − 2)(M² + M′)`, from the external session's derivation (`e − 2 < 0.72`). The right-hand side increases
+   with `K`, so TSD-C implies the same statement with the printed coefficient. The decimal constants of the
+   printed core term are the rationals `57/100` and `13/25`.
+5. Hypotheses that are implied by the others and are kept for readability: `φ′(s) = 0` (from (4) at `v = s` and
+   (1)); the positivity of `C₂` (from `0 < α ≤ C₂ s`). `A ≠ 0` is needed in the mathematical reading; in Lean,
+   where `x/0 = 0`, the bound on `A′/A` alone would let an amplitude vanish, and (1) excludes that explicitly.
+6. Hypotheses that the three readings found necessary, each by a computed counterexample when it is dropped or
+   weakened (not Lean theorems; `review/2026-11-20-TSD-step-referee-answers.md`, section 4): the largeness
+   condition on `M` in (7); `φ″(s) = −α` as an equality (an inequality fails); the oddness of `φ`, the symmetry
+   of `A`, and the integrability of `A`. Not decided, and therefore kept: whether `C₂ℓ ≤ α`,
+   `C₂ℓ ≤ (3√2/2)β`, `Mℓ ≤ 1` and `tα ≥ 8` are needed by the statement or only by this proof.
+7. Sharpness. Nothing is claimed about the constants being best. Numerically the bound is attained in the limit
+   on a constructed instance (ratio of bound to measured error 1.0017, step referee), so the core term cannot be
+   lowered in general; this is not a statement of the batch.
+8. In Lean the integral is the Bochner integral over ℝ, which is 0 for a function that is not integrable; the
+   first conclusion (integrability) is what makes `J` the integral it denotes. "`J` is real" is stated as
+   `Im J = 0`. Derivatives are Mathlib's `deriv` of functions `ℂ → ℂ` that are differentiable on the open set
+   `U`; the functions are total and only their values on `U` matter.
+9. Not stated: the contour, the four pieces separately, any expansion beyond the leading term, any statement
+   for a phase that is not odd or for saddles that are not a mirror pair, and uniformity through coalescence.
+
+**TSD-L (the printed lemma, with the Hankel function as a parameter); planned, not in the first freeze.** In
+substance: for functions `h₀, Φ₀, Φ₁, 𝓔` and `H` that satisfy the printed hypotheses (SD1) to (SD4), where `H` is
+only asked to be holomorphic in the upper half-plane and to satisfy the printed bound on the remainder `ε_H`
+that the factorisation `H(z) = √(2/(πz)) e^{i(z − π/4)} (1 + ε_H(z))` defines, and for `ℓ`, `u₀`, `r₁` and the
+largeness conditions (i) to (iii) as printed, the number `N = (2πc′/3) ∫ 𝓘(v + i/2) dv` with
+`𝓘(b) = h₀(b) H(k_x b) b` satisfies `|N − 2 Re W| ≤ 2 |W| (ε_core + 2ε_tr + ε_mid + ε_far)` with
+`W = (2πc′/3) h₀(b₀) H(k_x b₀) b₀ e^{−iπ/4} √(2π/(c′α_x))` and the printed four terms with the printed
+coefficient `K_A`. Here `2 Re W = Amp cos Ψ̂` and `2|W| = Amp` are the printed amplitude and phase (the lemma
+states that they satisfy this identity exactly); writing the conclusion through `W` avoids a choice of argument.
+Open points, to be settled before its Lean text is drafted: whether the printed closed forms of `Amp` and of
+`Ψ̂` are separate conclusions; the form of the edge representation (in the abstract statement the transform
+`ĥ₀(c′x²/3)` is the number `N` by hypothesis); which properties of `H` are hypotheses (holomorphy and the
+remainder bound are used three times: no zero of the amplitude, integrability, and the printed remark on the
+amplitude); whether `H` stays a parameter. What TSD-L would not say in any form: that the preprint's own
+function satisfies (SD1) to (SD4), or anything about the preprint's theorems.
+
+Note of 2026-11-20, after the checks of two external reports (`review/2026-11-20-external-reports-answers.md`,
+sections 2 and 4). (1) The factorisation above must be read with the prefactor `√(2/π) z^{−1/2}`, principal
+power; written as the principal root of the quotient `2/(πz)` it has the other sign on the negative real axis.
+On the open upper half-plane, where TSD-L uses it, the two agree. (2) Hypotheses that a statement of the printed
+lemma needs: bounds `M`, `M′` and the absence of zeros for the whole amplitude, the factor with `H` included;
+evenness of `F`; the two slope inequalities; the symmetry of `𝓘` on the strip; integrability on the edge; `C₂`
+and `C₃` as inequalities. Printed hypotheses that are idle: (SD3), (SD2)(d), (SD2)(e), `c′ ≥ 39`, the lower
+bound on `c′F(0)`. Printed hypotheses that cannot be used as printed: "real on ℝ ∪ iℝ" (the preprint's own
+function has poles on the imaginary axis; the condition is also redundant), "independent of `c`", and the edge
+representation, which only names the integral. (3) A bound for the remainder of the Hankel function of order
+zero that is stronger than the printed one, `|ε_H(z)| ≤ 1/(8|z|)` on the closed upper half-plane, with bounds
+for two derivatives, has a proof on paper that was checked; the bound itself is in print (Nemes 2017). Whether
+`H` stays a parameter is not decided.

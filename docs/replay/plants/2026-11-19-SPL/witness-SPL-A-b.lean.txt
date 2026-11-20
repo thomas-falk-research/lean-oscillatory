@@ -1,0 +1,23 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `StationaryLeadingAttainedStatement`: "(∃ x, g x ≠ 0)" dropped. -/
+def P_StationaryLeadingAttainedStatement : Prop :=
+  ∀ τ ε : ℝ, 0 ≤ τ → 0 < ε →
+    ∃ g g₁ g₂ g₃ : ℝ → ℂ, SplAmplitude g g₁ g₂ g₃ ∧ ContDiff ℝ ∞ g ∧ HasCompactSupport g ∧
+      (‖splKernel τ‖ - ε) * (∫ t, ‖g₃ t‖) ≤ ‖splRemainder g 1‖
+
+theorem planted_StationaryLeadingAttainedStatement_true : P_StationaryLeadingAttainedStatement := by
+  intro τ ε _ _
+  refine ⟨fun _ => 0, fun _ => 0, fun _ => 0, fun _ => 0,
+    ⟨fun x => hasDerivAt_const x 0, fun x => hasDerivAt_const x 0, fun x => hasDerivAt_const x 0,
+      integrable_zero _ _ _, integrable_zero _ _ _, integrable_zero _ _ _, integrable_zero _ _ _⟩,
+    contDiff_const, HasCompactSupport.zero, ?_⟩
+  simp only [norm_zero, integral_zero, mul_zero]
+  exact norm_nonneg _
+
+end OscInt.API.StationaryLeadingSanity

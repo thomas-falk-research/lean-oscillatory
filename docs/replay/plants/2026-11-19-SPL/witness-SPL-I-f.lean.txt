@@ -1,0 +1,37 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `StationaryLeadingIdentityStatement`: g₃ ↦ g₂ in the integrand. -/
+def P_StationaryLeadingIdentityStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    splRemainder g lam =
+      -Complex.I * ((lam ^ (-(3 : ℝ) / 2) : ℝ) : ℂ) * ∫ t, g₂ t * splKernel (Real.sqrt lam * t)
+
+/-- `G_s″` is even. -/
+theorem gauss2_neg (s t : ℝ) : gauss2 s (-t) = gauss2 s t := by
+  unfold gauss2 gaussR
+  congr 1
+  have e : -(s * -t) ^ 2 / 2 = -(s * t) ^ 2 / 2 := by ring
+  rw [e]
+  ring
+
+/-- `G_1″` is even and the kernel is odd, so `∫ G_1″(t) κ(10t) dt = 0`. -/
+theorem integral_gauss2_mul_kernel : ∫ t, gauss2 1 t * splKernel (Real.sqrt 100 * t) = 0 := by
+  refine integral_eq_zero_of_odd fun t => ?_
+  show gauss2 1 (-t) * splKernel (Real.sqrt 100 * -t) = -(gauss2 1 t * splKernel (Real.sqrt 100 * t))
+  rw [gauss2_neg, mul_neg, splKernel_neg]
+  ring
+
+theorem witness_not_P_StationaryLeadingIdentityStatement : ¬ P_StationaryLeadingIdentityStatement := by
+  intro h
+  have h1 := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 100 (gauss_splAmplitude 1 one_pos) (by norm_num)
+  rw [integral_gauss2_mul_kernel, mul_zero] at h1
+  have h3 := splRemainder_gauss_one_hundred_lower
+  rw [h1, norm_zero] at h3
+  norm_num at h3
+
+end OscInt.API.StationaryLeadingSanity

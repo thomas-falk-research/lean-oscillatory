@@ -634,3 +634,19 @@ unseen just the same. Rule (lessons 9 again): read the CI result of each push be
     code (constants, test patterns) fail `reuse lint`; they are wrapped in REUSE-Ignore markers. (e) A detached
     replay is stopped by signalling its process group, and the tree is checked for stray processes and a clean
     status before anything is edited.
+
+68. **Three things the proof phase of batch SPL taught (2026-11-20).** (a) The gate cannot run in a working tree
+    in which proof agents are writing: the axiom audit compares the theorems it enumerates through the imports
+    with the theorems the sources declare, and a part file that nothing imports yet makes the counts differ. Run
+    the gate on a clean checkout: a git worktree at HEAD with exactly the staged change applied, sharing the build
+    directories by symbolic links, under the session's Lean lock. That is also the better gate, because it tests
+    what the commit will contain and nothing else. (b) The lead generated agent briefs with a shell here-document
+    whose delimiter was not quoted; the shell ran every code span of the brief as a command, among them `make`
+    and several git commands without arguments, until one blocked. Nothing changed (checked: clean status, HEAD
+    equal to the pushed commit, empty stash list), by luck and not by design: the same text named two long-running
+    targets further down. Rule: text for an agent is written with the file tool or through a quoted delimiter,
+    never through an unquoted here-document; after any command that misfires, the tree is checked before the next
+    edit. (c) A referee's brief that says nothing about running Lean leaves the referee free to run it, next to
+    provers and outside the lock. Rule: every brief names the one allowed way to run Lean, also for agents that
+    are asked only to read. (d) A referee that proves parts of what it reviews is useful and changes its role:
+    record it where the parts are described, and let a fresh agent rewrite what the referee wrote.

@@ -1,0 +1,25 @@
+plant-SPL-A-c.lean:20:33: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  0 - ?a
+in the target expression
+  (0 + ε) * ∫ (t : ℝ), ‖g₃ t‖ ≤ ‖splRemainder g 1‖
+
+h : P_StationaryLeadingAttainedStatement
+ε : ℝ
+hε : 0 < ε
+g g₁ g₂ g₃ : ℝ → ℂ
+h1 : SplAmplitude g g₁ g₂ g₃
+h2 : ContDiff ℝ ∞ g
+h3 : HasCompactSupport g
+h4 : ∃ x, g x ≠ 0
+h5 : (0 + ε) * ∫ (t : ℝ), ‖g₃ t‖ ≤ ‖splRemainder g 1‖
+⊢ ∃ g g₁ g₂ g₃,
+    SplAmplitude g g₁ g₂ g₃ ∧
+      ContDiff ℝ ∞ g ∧ HasCompactSupport g ∧ (∃ x, g x ≠ 0) ∧ -ε * ∫ (t : ℝ), ‖g₃ t‖ ≤ ‖splRemainder g 1‖
+plant-SPL-A-c.lean:30:63: error: Application type mismatch: The argument
+  h5
+has type
+  (‖splKernel 1‖ + 1 / 100) * ∫ (t : ℝ), ‖g₃ t‖ ≤ ‖splRemainder g 1‖
+but is expected to have type
+  (‖splKernel 1‖ - 1 / 100) * ∫ (t : ℝ), ‖g₃ t‖ ≤ ‖splRemainder g 1‖
+in the application
+  (le_div_iff₀ hpos).mpr h5

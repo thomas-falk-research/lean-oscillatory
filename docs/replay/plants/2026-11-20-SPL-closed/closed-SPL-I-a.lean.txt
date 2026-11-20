@@ -1,0 +1,30 @@
+import OscInt.Front.StationaryLeadingFinal
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `StationaryLeadingIdentityStatement`: −i ↦ +i. -/
+def P_StationaryLeadingIdentityStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    splRemainder g lam =
+      Complex.I * ((lam ^ (-(3 : ℝ) / 2) : ℝ) : ℂ) * ∫ t, g₃ t * splKernel (Real.sqrt lam * t)
+
+theorem witness_StationaryLeadingIdentityStatement_not_P (hS : StationaryLeadingIdentityStatement) : ¬ P_StationaryLeadingIdentityStatement := by
+  intro h
+  have h1 := hS (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 100 (gauss_splAmplitude 1 one_pos) (by norm_num)
+  have h2 := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 100 (gauss_splAmplitude 1 one_pos) (by norm_num)
+  have hne : splRemainder (gauss 1) 100 ≠ 0 := by
+    intro h0
+    have h3 := splRemainder_gauss_one_hundred_lower
+    rw [h0, norm_zero] at h3
+    norm_num at h3
+  exact hne (by linear_combination (1 / 2 : ℂ) * h1 + (1 / 2 : ℂ) * h2)
+
+end OscInt.API.StationaryLeadingSanity
+
+theorem closed_now : ¬ OscInt.API.StationaryLeadingSanity.P_StationaryLeadingIdentityStatement :=
+  OscInt.API.StationaryLeadingSanity.witness_StationaryLeadingIdentityStatement_not_P OscInt.API.stationaryLeadingIdentity
+#print axioms closed_now

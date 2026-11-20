@@ -1,0 +1,29 @@
+import OscInt.Front.StationaryLeadingFinal
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `StationaryLeadingStatement`: |κ(τ)| ↦ |κ(τ)|/8. -/
+def P_StationaryLeadingStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    ∃ τ : ℝ, 0 ≤ τ ∧ ‖splRemainder g lam‖ ≤ ‖splKernel τ‖ / 8 * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2)
+
+theorem witness_not_P_StationaryLeadingStatement (hκ : ∀ τ, ‖splKernel τ‖ ≤ 2) : ¬ P_StationaryLeadingStatement := by
+  intro h
+  obtain ⟨τ, -, h1⟩ := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 100 (gauss_splAmplitude 1 one_pos) (by norm_num)
+  rw [integral_norm_gauss3 1 one_pos, rpow_hundred, one_pow, one_mul] at h1
+  have h2 : ‖splKernel τ‖ * (2 + 8 * Real.exp (-(3 / 2))) ≤ 2 * (379 / 100) :=
+    mul_le_mul (hκ τ) normThree_le normThree_pos.le (by norm_num)
+  linarith [splRemainder_gauss_one_hundred_lower]
+
+end OscInt.API.StationaryLeadingSanity
+
+open OscInt.StationaryLeadingAux OscInt.Blueprint.StationaryLeading in
+theorem closed_now : ¬ OscInt.API.StationaryLeadingSanity.P_StationaryLeadingStatement :=
+  OscInt.API.StationaryLeadingSanity.witness_not_P_StationaryLeadingStatement (fun τ =>
+    le_trans ((splKernelFacts_of (splFresnelFacts_of splFresnelTailFacts splFresnelValueFacts)
+      (splFresnelBoundFacts_of (splFresnelFacts_of splFresnelTailFacts splFresnelValueFacts))).2.2.2.2.2.2.2 τ) (by norm_num))
+#print axioms closed_now

@@ -1,0 +1,14 @@
+# numerics/review/spl_explore_kappa.py, run 2026-11-19T22:03:28Z (scratch virtual environment: mpmath 1.3.0). Exploration, not a registered test.
+# sha256 of the script: a99752ce17c3793691a10422d5b65500d335ac1bba37683c9d66467d3ed7c77c
+tau 0.3 closed (0.260140037541 + 0.0353803418193j) def (0.260139602324 + 0.035380432682j) diff 4.45e-7
+tau 1 closed (0.565178686007 + 0.277039411616j) def (0.565178831774 + 0.277039645756j) diff 2.76e-7
+tau 1.7 closed (0.532968776484 + 0.485310343216j) def (0.532969696307 + 0.485309756656j) diff 1.09e-6
+tau 2.5 closed (0.407206717878 + 0.47271316714j) def (0.407205396534 + 0.472713830154j) diff 1.48e-6
+tau 4 closed (0.445857867779 + 0.457232936579j) def (0.445859332155 + 0.457234161732j) diff 1.91e-6
+grid max |kappa| on (0,30]: 0.721973965874317 at tau = 1.625
+refined: tau* = 1.6246006179324003966  K* = 0.72197399899801734661
+limit |F(inf)|/2 = sqrt(2 pi)/4 = 0.62665706865775 ; supA/4 bound = 0.841079394538975
+first local maxima: [('1.621', '0.7219713'), ('3.811', '0.64281738'), ('5.191', '0.63354217'), ('6.281', '0.63062022'), ('7.211', '0.62929693')]
+
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: Apache-2.0

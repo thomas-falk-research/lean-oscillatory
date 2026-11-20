@@ -1,0 +1,30 @@
+plant-SPL-K-a.lean:18:2: error: Type mismatch
+  h1
+has type
+  ‖gaussRoot s lam - splLead lam‖ ≤ 7 / 8 * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-2)
+but is expected to have type
+  ‖gaussRoot s lam - splLead lam‖ ≤ 7 / 8 * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-3 / 2)
+plant-SPL-K-a.lean:26:88: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  4 ^ (-3 / 2)
+in the target expression
+  ‖(2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - splLead 4‖ ≤
+    7 / 8 * (1 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 4 ^ (-2)
+
+h : P_StationaryLeadingSevenEighthsStatement
+h1 :
+  ‖(2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - splLead 4‖ ≤
+    7 / 8 * (1 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 4 ^ (-2)
+⊢ ‖(2 * ↑Real.pi / (1 - 4 * Complex.I)) ^ (1 / 2) - ↑√(2 * Real.pi / 4) * Complex.exp (↑(Real.pi / 4) * Complex.I)‖ ≤
+    7 / 8 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8)
+plant-SPL-K-a.lean:36:88: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  9 ^ (-3 / 2)
+in the target expression
+  ‖(2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - splLead 9‖ ≤
+    7 / 8 * (2 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 9 ^ (-2)
+
+h : P_StationaryLeadingSevenEighthsStatement
+h1 :
+  ‖(2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - splLead 9‖ ≤
+    7 / 8 * (2 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 9 ^ (-2)
+⊢ ‖(2 * ↑Real.pi / (4 - 9 * Complex.I)) ^ (1 / 2) - ↑√(2 * Real.pi / 9) * Complex.exp (↑(Real.pi / 4) * Complex.I)‖ ≤
+    7 / 8 * (2 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 27)

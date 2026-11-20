@@ -1,0 +1,19 @@
+import OscInt.Front.StationaryLeadingSanity
+
+namespace OscInt.API.StationaryLeadingSanity
+
+open OscInt.Statements MeasureTheory Set Filter
+open scoped ContDiff Topology
+
+/-- PLANTED copy of `StationaryLeadingSevenEighthsStatement`: ‖g₃‖₁ ↦ ‖g₂‖₁. -/
+def P_StationaryLeadingSevenEighthsStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    ‖splRemainder g lam‖ ≤ (7 / 8 : ℝ) * (∫ t, ‖g₂ t‖) * lam ^ (-(3 : ℝ) / 2)
+
+theorem witness_not_P_StationaryLeadingSevenEighthsStatement : ¬ P_StationaryLeadingSevenEighthsStatement := by
+  intro h
+  have h1 := h (gauss 4) (gauss1 4) (gauss2 4) (gauss3 4) 1600 (gauss_splAmplitude 4 (by norm_num)) (by norm_num)
+  rw [integral_norm_gauss2 4 (by norm_num), rpow_sixteen_hundred] at h1
+  linarith [splRemainder_gauss_four_sixteen_hundred_lower, exp_neg_half_le]
+
+end OscInt.API.StationaryLeadingSanity

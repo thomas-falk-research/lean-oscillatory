@@ -1,0 +1,33 @@
+import OscInt.Front.StationaryLeadingFinal
+
+open MeasureTheory OscInt.Statements Filter Topology OscInt.StationaryLeadingAux OscInt.Blueprint.StationaryLeading
+
+/-- For every amplitude the third derivative has integral zero. -/
+theorem refC_integral_g3_zero {g g₁ g₂ g₃ : ℝ → ℂ} (h : SplAmplitude g g₁ g₂ g₃) : ∫ t, g₃ t = 0 := by
+  obtain ⟨-, -, h2, -, -, i2, i3⟩ := h
+  have ht : Tendsto g₂ atTop (𝓝 0) :=
+    tendsto_zero_of_hasDerivAt_of_integrableOn_Ioi (a := 0) (fun x _ => h2 x) i3.integrableOn i2.integrableOn
+  have hb : Tendsto g₂ atBot (𝓝 0) :=
+    tendsto_zero_of_hasDerivAt_of_integrableOn_Iic (a := 0) (fun x _ => h2 x) i3.integrableOn i2.integrableOn
+  have := integral_of_hasDerivAt_of_tendsto h2 i3 hb ht
+  simpa using this
+
+/-- SPL-I with the kernel shifted by ANY constant `a` is equally true: the identity does not determine the kernel. -/
+theorem refC_shifted_identity (a : ℂ) : ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    splRemainder g lam =
+      -Complex.I * ((lam ^ (-(3 : ℝ) / 2) : ℝ) : ℂ) * ∫ t, g₃ t * (splKernel (Real.sqrt lam * t) + a) := by
+  intro g g₁ g₂ g₃ lam hg hlam
+  have hK := splKernelFacts_of (splFresnelFacts_of splFresnelTailFacts splFresnelValueFacts)
+      (splFresnelBoundFacts_of (splFresnelFacts_of splFresnelTailFacts splFresnelValueFacts))
+  obtain ⟨-, -, -, -, -, -, hcont, hb⟩ := hK
+  have hg3 : Integrable g₃ := hg.2.2.2.2.2.2
+  have hint := splB_integrable_mul_kernel hcont hb hg3 (Real.sqrt lam)
+  rw [OscInt.API.stationaryLeadingIdentity g g₁ g₂ g₃ lam hg hlam]
+  congr 1
+  have e : (fun t => g₃ t * (splKernel (Real.sqrt lam * t) + a)) =
+      fun t => g₃ t * splKernel (Real.sqrt lam * t) + g₃ t * a := by
+    funext t; ring
+  rw [e, integral_add hint (hg3.mul_const a), integral_mul_const, refC_integral_g3_zero hg]
+  simp
+
+#print axioms refC_shifted_identity

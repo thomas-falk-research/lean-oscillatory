@@ -1,0 +1,24 @@
+# numerics/review/spl_blueprint_interface_checks.py, run 2026-11-20T01:33:19Z (scratch virtual environment: mpmath 1.3.0), exit code 0. Interface checks of Blueprint/StationaryLeading.lean in floating point (30 digits); not a registered test, not evidence for a statement.
+# sha256 of the script: 95b193197baa25882c56d2a997e142a4e6f8808554e95929eb5f7f3d103d3992
+PASS P-fresnel |F(x)-L| x <= 2: max over grid = 1.0
+PASS P-fresnel oddness: max defect = 0.0
+PASS P-fresnel F' = e: max defect = 2.33e-30
+PASS P-bound |F| <= 7/4: max over grid = 1.6821489
+PASS P-kernel E1' = e: max defect = 1.42e-30
+PASS P-kernel E2' = E1: max defect = 8.02e-30
+PASS P-kernel (i kpos)' = E2 (also at negative arguments): max defect = 2.21e-29
+PASS P-kernel |E1| <= 4 on [0, inf): max over grid = 1.2533141
+PASS P-kernel |E2| <= 3 on [0, inf): max over grid = 1.0
+PASS P-kernel |kappa| <= 7/8: max over grid = 0.7219695972
+PASS P-kernel continuity at 0: |kappa(1e-12)| = 1.0e-12
+PASS P-line identity [gaussian]: defect = 9.63e-30, |lhs| = 2.1078147
+PASS P-line identity [(1+u) gaussian, shifted]: defect = 2.05e-27, |lhs| = 2.3901324
+PASS P-line identity [complex, modulated]: defect = 7.89e-31, |lhs| = 3.5404313
+PASS assembly SPL-I from P-line at lam = 4: defect = 2.57e-28, |R| = 0.052047415
+PASS P-bump [k = kappa] tau = 1.6246, eps = 0.1: (|k(tau)|-eps) N = 0.63974468 <= |int g''' k| = 0.7041178; T = 56.861, w = 0.001
+PASS P-bump [k = kappa] first moment of g''': = 0.0
+PASS P-bump [k = kappa] tau = 0.3, eps = 0.02: (|k(tau)|-eps) N = 0.24392088 <= |int g''' k| = 0.25969381; T = 52.5, w = 0.0002
+PASS P-bump [k = kappa] first moment of g''': = 0.0
+PASS P-bump [k = sin 3t + i t/(1+t^2), M = 3/2] tau = 2.0, eps = 0.05: (|k(tau)|-eps) N = 0.44157666 <= |int g''' k| = 0.48531647; T = 240.0, w = 0.0005
+PASS P-bump [k = sin 3t + i t/(1+t^2), M = 3/2] first moment of g''': = 0.0
+21 of 21 checks pass

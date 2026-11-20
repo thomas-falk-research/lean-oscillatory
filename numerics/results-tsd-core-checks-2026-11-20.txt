@@ -1,0 +1,73 @@
+tsd_core_checks.py sha256 c057a781a5dd1db0d09dd48159369c2569d8235d0de3e5299e1de41e6ea0201e
+run 2026-11-20T17:45:48Z python 3.13.18 numpy 2.5.5
+C1 P1(sigma=1.0) A1(kappa=1.0) delta=0.5 t=60.0: s=1 alpha=2 beta=1 C2=2 C3=0 M=1 M'=1.29845 ell=0.707107 u=0.5 r=0.368403
+   hypotheses (6),(7): all hold
+   J=1.804551952282e-02 lead=1.639434714499e-02 G=2.965792e-01
+   eps: core=4.0766e-02 tr=2.6393e-03 mid=1.1297e-02 far=1.3284e-04 total=5.7474e-02
+   measured E=|J-lead|/G=5.5674e-03 bound/measured=10.32 (a) PASS
+   quadrature: max disagreement/G=5.05e-15 (q) PASS; |Im J|/G=4.49e-15 (im) PASS
+   controls: wrong quarter phase E=1.0593e+00 (exceeds the bound); alpha halved E=1.7330e-02 (within the bound)
+C2 P1(sigma=0.5) A1(kappa=1.0) delta=0.5 t=200.0: s=0.5 alpha=1 beta=0.5 C2=2 C3=0 M=1 M'=1.29845 ell=0.5 u=0.353553 r=0.246621
+   hypotheses (6),(7): all hold
+   J=-3.098948512037e-01 lead=-3.096599218355e-01 G=3.143691e-01
+   eps: core=5.1564e-02 tr=9.8097e-03 mid=1.9970e-02 far=4.3871e-04 total=9.1592e-02
+   measured E=|J-lead|/G=7.4730e-04 bound/measured=122.6 (a) PASS
+   quadrature: max disagreement/G=1.28e-14 (q) PASS; |Im J|/G=2.89e-15 (im) PASS
+   controls: wrong quarter phase E=1.1582e+00 (exceeds the bound); alpha halved E=4.0726e-01 (exceeds the bound)
+C3 P1(sigma=2.0) A2(gamma=0.5,kappa=1.5) delta=0.4 t=40.0: s=2 alpha=4 beta=2 C2=2 C3=0 M=2.125 M'=3.69372 ell=0.470588 u=0.332756 r=0.421716
+   hypotheses (6),(7): all hold
+   J=5.301210833097e-02 lead=5.326878473857e-02 G=5.567322e-02
+   eps: core=6.1218e-02 tr=4.6338e-05 mid=8.3969e-02 far=4.5849e-03 total=1.4986e-01
+   measured E=|J-lead|/G=4.6104e-03 bound/measured=32.51 (a) PASS
+   quadrature: max disagreement/G=7.72e-15 (q) PASS; |Im J|/G=4.24e-15 (im) PASS
+   controls: wrong quarter phase E=6.6149e-01 (exceeds the bound); alpha halved E=4.0093e-01 (exceeds the bound)
+C4 P2(x=1.5) A1(kappa=2.0) delta=0.5 t=1200.0: s=1.11803 alpha=0.745356 beta=0.447214 C2=1.5396 C3=5.33333 M=3.11482 M'=13.7021 ell=0.321046 u=0.227014 r=0.148088
+   hypotheses (6),(7): all hold
+   J=2.635635927011e-02 lead=2.629496606620e-02 G=3.542686e-02
+   eps: core=7.2660e-02 tr=1.0629e-03 mid=3.9469e-04 far=2.3580e-06 total=7.5183e-02
+   measured E=|J-lead|/G=1.7330e-03 bound/measured=43.38 (a) PASS
+   quadrature: max disagreement/G=3.37e-14 (q) PASS; |Im J|/G=2.90e-14 (im) PASS
+   controls: wrong quarter phase E=1.4141e+00 (exceeds the bound); alpha halved E=3.0571e-01 (exceeds the bound)
+C5 P2(x=1.1) A2(gamma=-0.8,kappa=1.0) delta=0.3 t=2000.0: s=0.458258 alpha=0.416598 beta=0.218218 C2=1.15196 C3=3.62275 M=2.05263 M'=2.20372 ell=0.361642 u=0.25572 r=0.137582
+   hypotheses (6),(7): all hold
+   J=-1.591942185909e-01 lead=-1.590573084582e-01 G=1.671247e-01
+   eps: core=4.0565e-02 tr=3.2987e-03 mid=2.7793e-04 far=2.2190e-07 total=4.7441e-02
+   measured E=|J-lead|/G=8.1921e-04 bound/measured=57.91 (a) PASS
+   quadrature: max disagreement/G=6.49e-14 (q) PASS; |Im J|/G=2.66e-14 (im) PASS
+   controls: wrong quarter phase E=6.4561e-01 (exceeds the bound); alpha halved E=3.9340e-01 (exceeds the bound)
+C6 P1(sigma=1.0) A3(a=1.5) delta=0.5 t=80.0: s=1 alpha=2 beta=1 C2=2 C3=0 M=0.755929 M'=1.57143 ell=0.707107 u=0.5 r=0.334716
+   hypotheses (6),(7): all hold
+   J=-1.784336312659e-01 lead=-1.791973055761e-01 G=2.743842e-01
+   eps: core=2.7621e-02 tr=1.2258e-03 mid=2.4809e-03 far=8.3582e-06 total=3.2562e-02
+   measured E=|J-lead|/G=2.7832e-03 bound/measured=11.7 (a) PASS
+   quadrature: max disagreement/G=9.10e-16 (q) PASS; |Im J|/G=0.00e+00 (im) PASS [no line route for this amplitude]
+   controls: wrong quarter phase E=1.0698e-01 (exceeds the bound); alpha halved E=2.7330e-01 (exceeds the bound)
+C7 P2(x=3.0) A3(a=1.0) delta=0.4 t=400.0: s=2.82843 alpha=0.942809 beta=0.707107 C2=1.29892 C3=4.2517 M=1.21268 M'=3.85154 ell=0.565685 u=0.4 r=0.226032
+   hypotheses (6),(7): all hold
+   J=1.825346007576e-02 lead=1.827114006230e-02 G=2.868373e-02
+   eps: core=3.3855e-02 tr=8.7962e-04 mid=2.7149e-06 far=4.6881e-08 total=3.5617e-02
+   measured E=|J-lead|/G=6.1638e-04 bound/measured=57.78 (a) PASS
+   quadrature: max disagreement/G=4.66e-14 (q) PASS; |Im J|/G=0.00e+00 (im) PASS [no line route for this amplitude]
+   controls: wrong quarter phase E=1.3451e-01 (exceeds the bound); alpha halved E=2.6446e-01 (exceeds the bound)
+C8 P1(sigma=1.0) A1(kappa=1.0) delta=0.5 t=4.0: s=1 alpha=2 beta=1 C2=2 C3=0 M=1 M'=1.29845 ell=0.707107 u=0.5 r=0.707107
+   hypotheses (6),(7): all hold
+   J=-2.576807283578e-01 lead=-3.509209440156e-01 G=1.148646e+00
+   eps: core=6.1148e-01 tr=3.1991e-01 mid=1.4489e+00 far=5.6419e-01 total=3.2644e+00
+   measured E=|J-lead|/G=8.1174e-02 bound/measured=40.21 (a) PASS
+   quadrature: max disagreement/G=1.36e-16 (q) PASS; |Im J|/G=4.20e-17 (im) PASS
+   controls: wrong quarter phase E=7.2786e-01 (within the bound); alpha halved E=2.0772e-01 (within the bound)
+C9 P1(sigma=1.0) A1(kappa=20.0) delta=0.05 t=20000.0: s=1 alpha=2 beta=1 C2=2 C3=0 M=31.1482 M'=1370.21 ell=0.0321046 u=0.0227014 r=0.0321046
+   hypotheses (6),(7): all hold
+   J=9.609164485427e-11 lead=9.629008406824e-11 G=1.033309e-10
+   eps: core=8.4862e-02 tr=5.4491e-07 mid=5.4188e-02 far=2.0597e-03 total=1.4111e-01
+   measured E=|J-lead|/G=1.9204e-03 bound/measured=73.48 (a) PASS
+   quadrature: max disagreement/G=7.91e-07 (q) FAIL; |Im J|/G=2.53e-07 (im) FAIL
+   controls: wrong quarter phase E=5.6713e-01 (exceeds the bound); alpha halved E=3.8791e-01 (exceeds the bound)
+I1 (informational, no criterion) P1(sigma=1.0) A1(kappa=30.0) delta=0.04 t=450.0: failing hypotheses: 2M<=t beta u; M=77.1645 ell=0.0129593; formula total=5.3885e+01 measured E=3.8319e+02
+PASS (h) the inequalities of hypotheses (6) and (7) hold in all cases
+PASS (a) |J - lead| <= G * total in all cases
+FAIL (q) quadrature routes and refinements agree within 1e-8 G
+FAIL (im) |Im J| < 1e-8 G where the line route exists
+PASS K1 wrong quarter phase exceeds the bound in 8 of 9 cases (required: at least 4)
+PASS K2 halved alpha exceeds the bound in 7 of 9 cases (required: at least 4)
+OVERALL: FAIL (4 of 6 lines PASS)

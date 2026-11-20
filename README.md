@@ -21,10 +21,10 @@ statements.
 
 | | |
 |---|---|
-| **Proved** | 86 pinned statements, all machine-checked as stated ([`docs/STATUS.md`](docs/STATUS.md)) |
+| **Proved** | 90 pinned statements, all machine-checked as stated ([`docs/STATUS.md`](docs/STATUS.md)); 86 are in release v0.7.0, the 4 of batch SPL are on the development branch only |
 | **Use it** | `import OscInt.API`. Which theorem: [`docs/which-theorem.md`](docs/which-theorem.md). Recipes: [`docs/cookbook.md`](docs/cookbook.md). Machine-readable index: [`docs/api.json`](docs/api.json) |
 | **Built with** | Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0) |
-| **Releases** | v0.7.0 has all 86 statements; v0.6.0 had the first 65 ([`docs/release-notes/`](docs/release-notes/), [`CHANGELOG.md`](CHANGELOG.md)) |
+| **Releases** | v0.7.0 has 86 statements (all but the 4 of batch SPL); v0.6.0 had the first 65 ([`docs/release-notes/`](docs/release-notes/), [`CHANGELOG.md`](CHANGELOG.md)) |
 | **Reviewed by** | AI referees only, not yet a human expert: read [Known caveats](#known-caveats) before relying on a result |
 | **Cite** | [10.5281/zenodo.24021328](https://doi.org/10.5281/zenodo.24021328) (all versions); see [How to cite](#how-to-cite) |
 
@@ -50,6 +50,14 @@ Highlights:
   rule for periodic analytic functions, with the Fourier-coefficient bound behind it; the Kusmin–Landau inequality
   for exponential sums in Landau's sharp form; the Schrödinger group on a ring and on an open chain, with explicit
   finite-size bounds; the Hadamard quantum walk on the line, with an explicit t^{−1/3} bound.
+- **Not released yet (development branch, batch SPL):** the leading term of a quadratic-phase integral with an
+  explicit remainder, `|∫ g(u) e^{iλu²/2} du − g(0) √(2π/λ) e^{iπ/4}| ≤ (7/8) ‖g‴‖₁ λ^{−3/2}`, with the kernel
+  identity behind it, the bound with the kernel's supremum in place of 7/8, and the proof that this supremum
+  (numerically 0.722) and no smaller constant is the best one; 7/8 itself is not sharp. Frozen, blind-reviewed,
+  proved and replayed on 2026-11-20 (`docs/replay/2026-11-20-SPL-verify-all.txt`; post-proof reviews answered,
+  `review/2026-11-20-SPL-post-proof-answers.md`; reviewed by AI agents of one model family only, with no
+  calibration round). The identity is classical in substance, the bounds with this kernel were not found in the
+  literature searched, and nothing is claimed as new.
 
 The bounds at degenerate points and the global bounds are uniform over all linear terms of the phase, which is what
 dispersive estimates need; stationary phase and the fold bound are uniform over compact sets of linear terms.
@@ -167,7 +175,7 @@ derivative data from `OscInt.API.Poly`).
 ## Depending on OscInt
 
 The tag in the line above is the latest published release (the release procedure moves it after each release). Each
-release's notes say which statements it has: v0.6.0 the first 65, v0.7.0 all 86 (`docs/release-notes/`). To use
+release's notes say which statements it has: v0.6.0 the first 65, v0.7.0 the first 86 (`docs/release-notes/`). To use
 work that is not in a published release, set `rev` to a full commit hash and take the SHA-256 of
 `stamps/statements.json` at that commit as your pin. From v0.7.0 use the
 checker shipped with the release: an older copy of `tools/oscint_check.py` reports every statement file as edited
@@ -270,13 +278,15 @@ INCOMPLETE when a step had nothing to check; INCOMPLETE is never reported as PAS
 
 Read these before relying on a row of the table; each is documented where the link points.
 
-- **Reviewed by AI only.** Proofs and reviews are by AI agents directed by the owner (for the 21 newest statements,
-  all of one model family); no human expert has read the statements for fidelity. On 2026-11-19 an AI system of
-  another model family reviewed the 21 newest statements (it could not run Lean): it found them faithful and true
+- **Reviewed by AI only.** Proofs and reviews are by AI agents directed by the owner (for the 21 statements of
+  batches PA, KL, FR, VC2, HW and the 4 of batch SPL, all of one model family); no human expert has read the
+  statements for fidelity. On 2026-11-19 an AI system of another model family reviewed the 21 statements of
+  batches PA, KL, FR, VC2, HW (it could not run Lean; for batch SPL its sessions bore on the draft statements and
+  the proof on paper only, not on the Lean proofs): it found them faithful and true
   by its own arguments, and its findings against records, tools and process were checked and corrected
   (`docs/STATUS.md`, "External reviews of 2026-11-19"; `review/2026-11-19-*-external-review-answers.md`).
 - **The replay driver had a hole.** Until 2026-11-19 its scan of checker output for errors could be switched off by
-  a checker's success phrase. It is fixed and tested, and every statement was replayed again with the corrected
+  a checker's success phrase. It is fixed and tested, and every one of the 86 statements of v0.7.0 was replayed again with the corrected
   driver and the raw output kept (`docs/replay/2026-11-19-v0.7.0-verify-all.txt`). Replay records made before that
   date used the old rule; the paragraph of `docs/STATUS.md` named above says what a rerun showed about them.
 - **A review rule was not followed in six batches.** Findings against the sanity layer were answered without a
