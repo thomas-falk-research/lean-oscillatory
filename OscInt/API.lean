@@ -52,6 +52,7 @@ import OscInt.Front.HadamardWalkFinal
 import OscInt.Front.SecondDerivSharpFinal
 import OscInt.Front.StationaryLeadingAssembly
 import OscInt.Front.StationaryLeadingBounds
+import OscInt.Front.StationaryLeadingFresnelTail
 
 /-!
 # OscInt public API
