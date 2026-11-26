@@ -192,6 +192,70 @@ institution) and uploads it to a session.
   - Numerics: minimum ratio of bound to observed 0.9999966 at an error of 2e−9, which is rounding. A
     double-precision search that reported 1.096 was an artefact: at 50 digits, every case is at most 1.
 
-## 7. Pending at the time of writing
+## 7. The falsification pass on C2 (checker C; the decisive step re-derived by the lead)
 
-Checker C (numerical falsification of C2, and the envelope of the canonical integral).
+**MAJOR: C2 is false for `α₀ ≥ 1/(2√2)`.** At `α* = 1/(2√2) ≈ 0.35355` the phase has an **A5 point**, and the
+supremum over sites decays only like `t^{−2/3}`.
+
+Where the point is: in the anti-diagonal class `cos(x + y) = +1`, at `(θ, −θ)` with `cos θ = −2α`. These points
+exist for `|α| ≤ 1/2`. The kernel direction is `e = (1, 1)/√2` and the transverse eigenvalue is `2α`.
+
+Derivation of the reduced quartic (the lead's, by hand):
+- the only nonzero third derivatives are `Ψ_xxx = sin θ` and `Ψ_yyy = −sin θ`, so `D³[e, e, e] = 0` and
+  `D³[e, e, w] = sin θ/√2`;
+- the fourth derivative along e is `D⁴[e, e, e, e] = 3α`;
+- so `q = D⁴/24 − (D³[e, e, w])²/(8 · 2α) = α/8 − (1 − 4α²)/(32α) = (8α² − 1)/(32α)`.
+
+This agrees with the checker's closed form. Checks:
+- The lead reduced the phase numerically to the kernel line (40 digits, linear term removed) and matched the
+  closed form at α = 0.2, 0.3, 0.4. At α* the remainder is −5.9e−8, the expected sextic term at u = 0.002.
+- The checker: the fifth-order term vanishes by the symmetry `(x, y) → (−y, −x)`, and the sixth-order term is
+  about −0.0147, nonzero.
+- Lattice decay at α*, two methods:
+  - fast Fourier transform: maximizing velocity tends to `(1, −1)/√2`; slope of log max|K| over t from 512 to
+    4096 is −0.688;
+  - Bessel series on the anti-diagonal, up to t = 262144: `t^{2/3} max|K|` levels off at 0.337, while
+    `t^{3/4} max|K|` keeps growing;
+  - the two methods agree to 4.5e−11 at t = 4096.
+
+Labels: the location and the closed form of q are PROVEN (unrefereed: the lead's derivation and the checker's
+agree). That the point is A5 (sextic term nonzero, from a fit) and the decay `t^{−2/3}` at α* are VALIDATED
+numerically. **Prior art for this A5 point has not been searched.**
+- A first logged arXiv probe by the lead did not even find Ge et al., so it is no evidence either way.
+- CENSUS model M04 (α = 1/2) is on the A3 side: q = 1/16 > 0.
+
+**Below α*.**
+- No counterexample to C2 was found for any `α₀ < 1/(2√2)`.
+- The constant must grow as α₀ → α*: the fixed-α A3 limit of the ratio is `0.2814 · |1 − 8α²|^{−1/4}`.
+- There are transient overshoots on the way (about 0.707 near t = 1448 at α = 0.4).
+- The supremum over the scaling regime sits at a ≈ 0, with `R ≈ S(0)/(4π²) ≈ 0.456`.
+
+**The canonical envelope: VALIDATED, together with the 1/4.**
+- `S(a) = sup_b |Q(a, b)|` is even in a (PROVEN, a shift of variables).
+- `S(a)(1 + |a|)^{1/4}` decreases monotonically on the grid, from 17.98 at a = 0 to 11.47 at a = 20.
+- The local exponent between 10 and 20 is −0.268, tending to −1/4.
+- The limit fitted against the A3 heuristic (the Pearcey maximum 2.635108) is about 11.11 to 11.13 (PLAUSIBLE).
+- Error checks:
+  - at a = 0, against the product of two Airy integrals, to 8e−15;
+  - at |a| ≤ 1, against two-dimensional contour quadrature, to 2e−10;
+  - at a = 2, 5, 10, 14, against an independent mpmath evaluation, to 1e−12.
+
+**Smaller findings.**
+- Negative α needs no separate treatment: `Ψ_{−α}(k + (π, π)) = −Ψ_α(k)`, hence `|K_{−α}(t, n)| = |K_α(t, n)|`
+  (PROVEN; numerically to 9e−8).
+- The two D4 classes share the canonical limit but differ at finite α: the anti-diagonal cusp carries the factor
+  `1 − 8α²`. That is where the global maximum sits from α ≈ 0.02 on.
+
+**Consequence.**
+- C2 as briefed must be restated with `α₀ < 1/(2√2)` (for example α₀ = 1/4), and with a constant that blows up like
+  `(1 − 8α₀²)^{−1/4}`.
+- A conjecture worth its own prior-art gate: for the family `cos x + cos y + α cos(x + y)`, the sharp decay of the
+  supremum over sites is `t^{−2/3}` at α = 0 and `|α| = 1/(2√2)`, and `t^{−3/4}` otherwise.
+  - CONJECTURED: no global classification has been made for any α.
+  - Evidence: the A5 computation above, and the decay slopes for α ∈ {0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 1}.
+  - Before the word "found" is used, it needs the census's exact classification over the whole torus and a
+    logged sweep, in particular: Ge et al. and the papers citing them; the higher-order van Hove literature in
+    `docs/prior_art.md`; Bi–Cheng–Hua; Cheng.
+- This is the first item of the session that is a candidate mathematical finding rather than a re-derivation. It
+  is also exactly what the audit's falsification programme said to look for ("inspect α values where the quartic
+  vanishes").
