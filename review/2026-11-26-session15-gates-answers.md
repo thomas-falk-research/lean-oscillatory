@@ -150,6 +150,13 @@ What is known, from secondary sources only:
   parameter and the parameters ("combined estimates") are "a more subtle problem than … uniform estimates (see [16]
   and references in it)".
 
+Second attempt, by the owner's link to the IOP PDF, 2026-11-26: the link returns the article page and not the
+PDF. The page says the article is paywalled: "The computer you are using is not registered by an institution with a
+subscription to this article". The abstract is readable there, with its mathematics stripped. It adds one fact: the
+aim is "asymptotically exact (for [the large parameter] ≫ 1) uniform (with respect to parameters) estimates". An
+asymptotically exact uniform estimate over the parameters of a `D4±` unfolding would come close to C1 and C2 with
+sharp constants. That raises the weight of this source: it must be read before any wording for C1 or C2.
+
 Whether Popov's constants are explicit, and whether his `D4±` result already contains the envelope with constants,
 is **unknown**. Until it is read, the wording of section 1 for C1 and C2 cannot be used. To unblock: the owner
 downloads the PDF (the Russian original is normally free on mathnet.ru; the English translation through an
