@@ -102,8 +102,60 @@ fails, and the cover with one cell removed fails.
 So the arithmetic does not decide the choice of rational. The analytic bridge does: a series enclosure of κ from the
 frozen definitions, an interpolation lemma for vector-valued C² functions, the tail `4/x³`, and `|κ″| ≤ 2/x`.
 
-## 4. Pending at the time of writing
+## 4. The SPL-N prototype that the plan requires (proof agent E; recompiled by the lead)
 
-Checker C (numerical falsification of C2, and the envelope of the canonical integral), checker D (audit items R5, R6,
-R7) and proof agent E (a one-point certified enclosure, the prototype that `docs/proof-SPL.md` section 5 requires).
-Their results are recorded below when they finish.
+Done, and in scratch only: `docs/proof-SPL.md` section 5 asked for "a prototype of one certified enclosure of F at
+one point" before the rational of SPL-N is chosen. Agent E's file (217 lines, SHA-256
+4f160b6ffcd34daef67d97eaf0693b0e4b61267ebc92c81dda2133049f4d2f90) imports `OscInt.Statements.StationaryLeading` and
+proves, about the frozen definitions:
+- `‖fresnelPrim (13/8) − (A + Bi)‖ ≤ 10^−18` (series of degree 24 with the remainder from `Complex.exp_bound'`);
+- the same for `e^{i(13/8)²/2}`;
+- `√π` between two rationals `2·10^−19` apart (`Real.pi_gt_d20`, `Real.pi_lt_d20`);
+- a general lemma carrying the three enclosures through the formula for `κ₊`;
+- `72197/100000 ≤ ‖splKernel (13/8)‖ ≤ 360987/500000` (true value 0.72197396587, margin 3.4e−8).
+
+The lead recompiled it at 5b60142's build (6 s wall clock including imports; agent: about 2.3 s above imports).
+`#print axioms` of the six final theorems: propext, Classical.choice, Quot.sound. No forbidden token. Two negative
+controls fail as they must: a centre shifted by 1e−17, and an upper bound lowered to 72197/100000. A stress run at
+τ = 3.39 (degree 42, radius 10^−15) costs about 1 s.
+
+**Consequence.** The condition of section 5 is met. Point enclosures cost about 45 lines and 1–1.5 s each, so the
+choice between 73/100 and the audit's 360987/500000 no longer depends on the arithmetic. It depends on two analytic
+pieces that do not exist in the library:
+- a second-order interpolation bound for a complex-valued C² function on a cell (agent's estimate 200–400 lines);
+- the tail `|κ − L/2| ≤ 4/τ³` (200–400 lines).
+
+The agent's estimate for the whole bridge is 1000–2000 lines. Statement-first rules apply from here: prose, frozen
+statement with sanity layer and plants, blind review, and only then the proof. The order claim for SPL-N must
+disclose that this one-point prototype existed before the freeze.
+
+## 5. Popov 2008: not read
+
+D. A. Popov, *Remarks on uniform combined estimates of oscillatory integrals with simple singularities*, Izv. Math.
+72 (2008) 793–816, DOI 10.1070/IM2008v072n04ABEH002419; Russian original Izv. RAN Ser. Mat. 72:4, 173–196, DOI
+10.4213/im1141. The owner asked for it to be read. **It was not read: no route to the text works from this
+container.**
+- mathnet.ru: the proxy's tunnel closes mid-exchange (`ws_closed_mid_exchange`), and doi.org's redirect times out.
+- IOP: the article page is behind a browser challenge (HTTP 403).
+- Unpaywall and Semantic Scholar: closed access, no repository copy.
+- Crossref: no abstract.
+- A lookup of archived copies was refused by the session's permission classifier as an access workaround, and was not
+  pursued.
+
+What is known, from secondary sources only:
+- the zbMATH review (Softova, zbMATH 1155.42004): asymptotically exact uniform estimates, for a large parameter,
+  for singularities `A_k` and `D4±`, by a multidimensional analogue of Vinogradov's estimate, with `D5±` as a
+  discussion;
+- Akramov–Ikromov, arXiv:2402.04167, introduction, read by the lead: estimates that depend jointly on the large
+  parameter and the parameters ("combined estimates") are "a more subtle problem than … uniform estimates (see [16]
+  and references in it)".
+
+Whether Popov's constants are explicit, and whether his `D4±` result already contains the envelope with constants,
+is **unknown**. Until it is read, the wording of section 1 for C1 and C2 cannot be used. To unblock: the owner
+downloads the PDF (the Russian original is normally free on mathnet.ru; the English translation through an
+institution) and uploads it to a session.
+
+## 6. Pending at the time of writing
+
+Checker C (numerical falsification of C2, and the envelope of the canonical integral) and checker D (audit items R5,
+R6, R7).
