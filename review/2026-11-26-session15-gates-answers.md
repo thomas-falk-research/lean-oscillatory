@@ -155,7 +155,36 @@ is **unknown**. Until it is read, the wording of section 1 for C1 and C2 cannot 
 downloads the PDF (the Russian original is normally free on mathnet.ru; the English translation through an
 institution) and uploads it to a session.
 
-## 6. Pending at the time of writing
+## 6. Audit items R5, R6, R7 (checker D; R5 spot-checked by the lead)
 
-Checker C (numerical falsification of C2, and the envelope of the canonical integral) and checker D (audit items R5,
-R6, R7).
+- **R5, the real-frequency tail. TRUE, and new to this repository.** The bound is
+  `|∫_{−π}^{π} e^{i(t cos k + ξk)} dk| ≤ 2π e^{|t| sinh η − |ξ|η} + 2|sin πξ|(1 − e^{−|ξ|η})/|ξ|`.
+  - Derivation: the checker re-derived the contour shift, including the signs of the vertical edges and the factor 2.
+    The claims at t = 0, at integer ξ and for the leading term `2e^{−it} sin(πξ)/ξ` all hold.
+  - Numerics: 22,200 points `(t, ξ)` against two independent evaluations (Jacobi–Anger series at 40 digits, and
+    Gauss–Legendre quadrature). Minimum of right side over left side for t > 0: 1.0000000055.
+  - The lead's own check (16 points, mpmath quadrature, a few values of η): minimum 1.0000002, reached at
+    half-integer ξ far outside the light cone, where the endpoint term is the truth.
+  - Relation to the library: at integer ξ it is LC-1 (`OscInt.API.latticeKernel1LightCone`). Off the integers the
+    library says only in words that LC-1 fails (`docs/statements.md`, LC-1 paragraph). T0E′ is a different regime;
+    neither implies the other.
+  - A candidate for a small statement: a real-frequency LC-1 with LC-1 as its integer corollary.
+- **R6, the strip bound and the alias bound for matrix symbols. TRUE, largely a duplicate.**
+  - Its QWZ case, with the sharper `sinh` form, and the alias bound are already in
+    `review/2026-11-10-external-dossier-answers.md` (C5, C6). Its second inequality at d = 2 is T8.3d of
+    `review/2026-11-13-external-R3-answers.md`. The signed grid identity is ROADMAP I7.
+  - New is only the general finite-hopping form.
+  - Three MINOR findings:
+    - `D(η)` can be replaced by `Σ‖H_r‖ sinh(η‖r‖₁)`;
+    - the factor `e^{dηR}` is lossy by about `e^{η(d−1)R}`;
+    - the grid convention must be stated, because on the grid starting at −π with odd N the aliases carry signs.
+  - Numerics on QWZ (324,360 cases): the bound exceeds the observed error by a factor of at least 290.
+- **R7, the first-order product formula `t²‖[A, B]‖/(2m)`. TRUE and FOLKLORE (Childs et al. 2021, first-order
+  case); not in this repository.**
+  - Proof re-derived.
+  - Numerics: minimum ratio of bound to observed 0.9999966 at an error of 2e−9, which is rounding. A
+    double-precision search that reported 1.096 was an artefact: at 50 digits, every case is at most 1.
+
+## 7. Pending at the time of writing
+
+Checker C (numerical falsification of C2, and the envelope of the canonical integral).
