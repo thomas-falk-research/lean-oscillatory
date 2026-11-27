@@ -188,8 +188,10 @@ detected (the sign of the sextic in TRI-W; `docs/replay/plants/2026-11-27-TRI/`)
 classification for general α and the exceptional coupling nowhere in the literature searched; that is not a claim
 of novelty. The blind pre-proof review (2026-11-27, two referees of the lead's model family) gave four verdicts
 FAITHFUL and no counterexample, with no BLOCKER and no MAJOR finding. Its MINOR findings are a prose overstatement in
-TRI-Q and limits of the sanity layer (clarifications TRI-a and TRI-b of `docs/statements.md`). No human has read these
-statements, and no Lean proof of them exists.
+TRI-Q and limits of the sanity layer (clarifications TRI-a and TRI-b of `docs/statements.md`). The answers
+(`review/2026-11-27-TRI-preproof-answers.md`) are stamped: `stamps/20261127T070956Z-e692d7e55078`, 07:10:04Z; no
+Lean proof of a statement of the batch was in the repository before that stamp. No human has read these statements,
+and no Lean proof of them exists.
 
 T6, T6L prior art (2026-11-08, session 7): both are classical, because the 2D kernel factorises into two 1D Bessel
 kernels; the rows above are unchanged (the proofs are unaffected), but they claim "machine-checked", not new
