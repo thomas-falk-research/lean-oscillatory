@@ -1884,7 +1884,9 @@ controls, a challenge file and a comparator, frozen and stamped before the blind
 - A complete proof on paper predates the freeze. It is an external derivation, checked by the lead with SymPy
   computations from the phase itself and by a fresh-context referee (`review/2026-11-26-A5-handoff-answers.md`).
 - A registered numeric test was run before the freeze (`docs/prereg/2026-11-27-TRI.md`, OVERALL FAIL for reasons
-  of resolution; second registration `docs/prereg/2026-11-27-TRI-2.md`).
+  of resolution; second registration `docs/prereg/2026-11-27-TRI-2.md`, OVERALL FAIL, a deduplication defect at the
+  A5 points; third registration `docs/prereg/2026-11-27-TRI-3.md`, OVERALL PASS). The second and third were
+  registered with knowledge of the earlier runs, so they are not independent tests.
 
 No Lean proof of these statements is in the repository history before the stamp of the answers to the blind reviews.
 The batch was opened by the owner's decision of 2026-11-27, recorded in the session log
