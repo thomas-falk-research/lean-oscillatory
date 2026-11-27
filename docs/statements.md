@@ -1939,3 +1939,17 @@ What the statements say and do not say (modelling choices and omissions, for the
    - the off-axis A3 points that exist for some α (their number as a function of α);
    - the mutual exclusivity of the four types;
    - anything about decay.
+
+Clarifications after the blind pre-proof reviews (2026-11-27; `review/2026-11-27-TRI-preproof-answers.md`). The
+statement file is unchanged.
+TRI-a. TRI-Q states that v lies in the Hessian kernel (`D²Ψ[v, z] = 0` for every z). It does not state that v spans
+   the kernel: rank one, `D²Ψ[w, w] = 4α ≠ 0` at both points, is not part of TRI-Q, and the sanity layer computes it
+   separately. In the notation paragraph, `FoldOrNondeg` asks for a nonzero cubic along every *nonzero* kernel
+   vector.
+TRI-b. Limits of the sanity layer, frozen with the statements (referee A, finding A2):
+   - The layer does not test the transverse equation of `ReducedCurve`: replacing it by `True` is not detected.
+   - It does not test the range of orders in `IsA5Point`: `Icc 1 4` in place of `Icc 1 5` is not detected.
+   - With a free curve, an indefinite A3 point would count as A5.
+   The frozen definitions contain neither mutation. A theorem `¬ IsA5Point (triPhase (1/4)) (π/2, π/2)`, which needs
+   the uniqueness of the reduced curve, is owed with the proofs. Plant TRI-X-c is equivalent to the frozen TRI-X, not
+   a true weakening (finding A5).
