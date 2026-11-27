@@ -18,11 +18,16 @@ below it, and every rule is binding.
   deduplication at the A5 points, explained by `numerics/review/tri_diag_a5_dedup.py`), TRI-3 (PASS): rows in
   `docs/prereg/LEDGER.md`. The lead read a T1 (ii) FAIL by the first registration's "until it is explained"; the
   owner may overrule (session log, 03:35). **Frozen 2026-11-27:** stamp `stamps/20261127T060115Z-bb3a05c4b143` on
-  bb3a05c (three RFC 3161 tokens, 06:01:23Z), pinned; registry 94 statements, 4 not proved.
-- **Blind pre-proof review done** (four FAITHFUL, no counterexample, no BLOCKER or MAJOR;
-  `review/2026-11-27-TRI-preproof-answers.md`), answers stamped `stamps/20261127T070956Z-e692d7e55078`. **Exact next
-  step:** the Lean proofs: a route referee on a proof route first, as in batch SPL; owed with them, the bite
-  `¬ IsA5Point (triPhase (1/4)) (π/2, π/2)` and a re-run of plants TRI-W-a and TRI-X-a/b (answers, A2 and A3). After TRI, in the owner's order: K2 as its own batch (generic order-m local lemma
+  bb3a05c (three RFC 3161 tokens, 06:01:23Z), pinned; registry 94 statements, 4 not proved at the freeze (all 94 proved now).
+- **Batch TRI machine-checked as stated (2026-11-27).** Blind pre-proof review: four FAITHFUL, no counterexample
+  (`review/2026-11-27-TRI-preproof-answers.md`, stamped `stamps/20261127T070956Z-e692d7e55078`). Route `docs/proof-TRI.md`,
+  route referee answered (`review/2026-11-27-TRI-route-referee-answers.md`). Final theorems in
+  `OscInt/Front/TriangularAnisoFinal.lean` (`OscInt.API.triClassification`, `triA5Locus`, `triA5Witness`, `triQuartic`,
+  and the bite `triQuarter_halfPi_not_isA5`). Post-proof reviews: four FAITHFUL, SOUND, claims supported, no BLOCKER or
+  MAJOR (`review/2026-11-27-TRI-post-proof-answers.md`, stamped `stamps/20261127T104856Z-9d710be13bd9`). Full replay of
+  2152425: RESULT PASS (`docs/replay/2026-11-27-TRI-verify-all.txt`). Plants TRI-W-a and TRI-X-a/b closed
+  (`docs/replay/2026-11-27-TRI-plants-closed.txt`). Optional follow-up: a Lean "no A4 point" needs the bridge lemma to
+  order 5 (clarification TRI-c of `docs/statements.md`). **Exact next step,** in the owner's order: K2 as its own batch (generic order-m local lemma
   uniform in the velocity, monomial asymptotics, Fourier localisation, the two global statements, the bridge lemma
   of `review/2026-11-27-K2-proof-answers.md`), SPL-N, Report D (38/5), the parameter-uniform A5 crossover.
 - **Owner items open:** the Popov 2008 PDF (paywalled, unread); the human-only Scholar/MathSciNet queries in

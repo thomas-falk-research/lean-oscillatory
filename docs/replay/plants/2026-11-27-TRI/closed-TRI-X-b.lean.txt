@@ -1,0 +1,44 @@
+import OscInt.Front.TriangularAnisoSanity
+import OscInt.Front.TriangularAnisoFinal
+
+namespace OscInt.API.TriangularAnisoSanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity
+open scoped ContDiff
+
+/-- PLANTED copy of `TriA5LocusStatement`: θ = arccos(−2α) ↦ arccos(2α). -/
+def P_TriA5LocusStatement : Prop :=
+  ∀ α : ℝ, ∀ k : ℝ × ℝ, IsA5Point (triPhase α) k →
+    |α| = triExceptional ∧
+      ∃ j₁ j₂ : ℤ,
+        k = (Real.arccos (2 * α) + 2 * Real.pi * j₁, -Real.arccos (2 * α) + 2 * Real.pi * j₂) ∨
+          k = (-Real.arccos (2 * α) + 2 * Real.pi * j₁, Real.arccos (2 * α) + 2 * Real.pi * j₂)
+
+/-- Witness relative to TRI-W: TRI-W's A5 point `(3π/4, −3π/4)` at `α = a*` would equal `(π/4, −π/4)` or
+`(−π/4, π/4)` modulo `2π`, which forces `4 j = 1` or `2 j = 1` for an integer `j`. -/
+theorem witness_TRI_X_b (hW : TriA5WitnessStatement) : ¬ P_TriA5LocusStatement := by
+  intro h
+  obtain ⟨-, j₁, j₂, e | e⟩ := h _ _ (triW_pos hW).1
+  · rw [arccos_two_triExceptional] at e
+    have e1 := congrArg Prod.fst e
+    simp only at e1
+    have hp : Real.pi * (4 * (j₁ : ℝ) - 1) = 0 := by linarith
+    have hj : (4 * (j₁ : ℝ) - 1) = 0 := (mul_eq_zero.mp hp).resolve_left Real.pi_ne_zero
+    have : (4 * j₁ : ℤ) = 1 := by exact_mod_cast (by linarith : (4 : ℝ) * j₁ = 1)
+    omega
+  · rw [arccos_two_triExceptional] at e
+    have e1 := congrArg Prod.fst e
+    simp only at e1
+    have hp : Real.pi * (2 * (j₁ : ℝ) - 1) = 0 := by linarith
+    have hj : (2 * (j₁ : ℝ) - 1) = 0 := (mul_eq_zero.mp hp).resolve_left Real.pi_ne_zero
+    have : (2 * j₁ : ℤ) = 1 := by exact_mod_cast (by linarith : (2 : ℝ) * j₁ = 1)
+    omega
+
+#print axioms witness_TRI_X_b
+
+/-- Closed: the plant is refuted by the proved TRI-W, without a hypothesis. -/
+theorem closed_now : ¬ P_TriA5LocusStatement := witness_TRI_X_b OscInt.API.triA5Witness
+
+#print axioms closed_now
+
+end OscInt.API.TriangularAnisoSanity

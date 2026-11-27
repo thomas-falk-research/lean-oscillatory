@@ -21,7 +21,7 @@ statements.
 
 | | |
 |---|---|
-| **Proved** | 94 pinned statements: 90 machine-checked as stated ([`docs/STATUS.md`](docs/STATUS.md)), 86 of them in release v0.7.0 and the 4 of batch SPL on the development branch only; 4 more (batch TRI, the singularity types of the anisotropic triangular lattice phase, frozen 2026-11-27) proved in Lean on 2026-11-27, full replay and post-proof review pending |
+| **Proved** | 94 pinned statements, all machine-checked as stated ([`docs/STATUS.md`](docs/STATUS.md)): 86 in release v0.7.0; on the development branch only, the 4 of batch SPL and the 4 of batch TRI (the singularity types of the anisotropic triangular lattice phase; frozen, proved and replayed 2026-11-27, `docs/replay/2026-11-27-TRI-verify-all.txt`) |
 | **Use it** | `import OscInt.API`. Which theorem: [`docs/which-theorem.md`](docs/which-theorem.md). Recipes: [`docs/cookbook.md`](docs/cookbook.md). Machine-readable index: [`docs/api.json`](docs/api.json) |
 | **Built with** | Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0) |
 | **Releases** | v0.7.0 has 86 statements (all but the 4 of batch SPL); v0.6.0 had the first 65 ([`docs/release-notes/`](docs/release-notes/), [`CHANGELOG.md`](CHANGELOG.md)) |
