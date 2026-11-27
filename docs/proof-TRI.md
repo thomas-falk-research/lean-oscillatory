@@ -257,3 +257,29 @@ Verdict: proceed after changes; no FATAL, no MAJOR.
 
    All three elaborate. The parts are P-q (TRI-Q, done by the lead), P-alg (with P-EG), P-bridge and P-wit. The last
    three go to agents, one Lean process each.
+
+## 10. As proved (2026-11-27; `review/2026-11-27-TRI-post-proof-answers.md`)
+
+| File | Content |
+|---|---|
+| `OscInt/Front/TriDeriv.lean` | the derivative forms and `triD1` |
+| `OscInt/Front/TriBlueprint.lean` | the interfaces |
+| `OscInt/Front/TriAssembly.lean` | the assembly and the bite |
+| `OscInt/Front/TriQuartic.lean` | P-q |
+| `OscInt/Front/TriAlg.lean` | P-alg, with P-EG as `eg_false`; there is no separate `TriEG` file |
+| `OscInt/Front/ReducedBridge.lean` | P-bridge |
+| `OscInt/Front/TriWitness.lean` | P-wit |
+| `OscInt/Front/TriangularAnisoFinal.lean` | the four final theorems and the bite |
+
+Deviations from sections 2 to 9 (method only; each checked by the soundness referee):
+- **The bridge** proves only orders 3 and 4; `g′(0) = g″(0) = 0` are not stated. Its chain rule is the left-cons form
+  (`iteratedFDeriv_succ_apply_left`), so no `set_option` is used anywhere.
+- **P-alg:**
+  - cases 5(b) and 5(c) are merged into one split on G;
+  - the degenerate cases of `AlgA5` (D ≠ 0, d = 0, c = 0) are refuted directly, with no invariance step;
+  - the kernel vector is the half-angle form of `(cos y, cos x)`.
+- **P-wit:**
+  - the core takes abstract `c₀ = cos x₀` and `s₀ = sin x₀` with `c₀² = s₀² = 1/2`, and never uses the sign of
+    `s₀`. So one w = (1, −1) serves every locus point, and neither device of section 9, item 4 is used;
+  - the curve is `h = ±(arcsin z − arcsin s₀)`, with the bound `cos ψ ≥ 31/32`;
+  - the fourth derivative of `sin⁴` comes from the `cosT` family.

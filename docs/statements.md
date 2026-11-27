@@ -1956,3 +1956,17 @@ TRI-b. Limits of the sanity layer, frozen with the statements (referee A, findin
    Addendum (2026-11-27, route referee, finding M3; `review/2026-11-27-TRI-route-referee-answers.md`): the bite needs
    no uniqueness of the reduced curve. The bridge lemma of `docs/proof-TRI.md`, section 4, holds for every reduced
    curve, so the bite follows from TRI-X.
+TRI-c. (2026-11-27, after the proofs; `review/2026-11-27-TRI-post-proof-answers.md`.)
+   - **"No A4 point" is not proved.** In TRI-K's prose, and in the frozen docstrings, "in particular there is no A4
+     point" is the informal reading, not a consequence of the four Lean theorems. TRI-K's disjunction is not exclusive,
+     and `IsA5Point` asks for some (v, w, curve). Nothing proved excludes another choice at a locus point whose reduced
+     function has `g⁽⁵⁾(0) ≠ 0`.
+   - **What is proved,** through lemmas of the proof modules:
+     - every reduced curve, at any point, with `g‴(0) = g⁗(0) = 0` lies on TRI-X's locus at |α| = a*;
+     - at every locus point, every reduced curve for v = (1, 1), w = (1, −1) has `g⁽¹⁻⁵⁾(0) = 0`.
+   - **"No point with Hessian zero"** does follow from TRI-K: each of its three conditions needs `D²Ψ[w, w] ≠ 0` for
+     some w.
+   - **α = 0.** "The case α = 0 is not stated" refers to its D4 points. TRI-X quantifies over all α and so implies
+     that `triPhase 0` has no A5 point.
+   - **The bite.** `¬ IsA5Point (triPhase (1/4)) (π/2, π/2)` is proved as a corollary of TRI-X, without uniqueness of
+     the reduced curve (TRI-b, addendum).
