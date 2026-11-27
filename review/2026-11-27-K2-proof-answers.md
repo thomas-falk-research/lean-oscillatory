@@ -94,3 +94,24 @@ Not machine-checked. No human has read it. Novelty: as K2 in section 5 of `revie
 - The bridge lemma of section 3 is a part of the K2 route, not of TRI.
 - TRI-W is stated for every reduced curve, so the sextic is available in any transverse coordinates the K2 proof
   chooses. The quartic invariant of TRI-Q is coordinate-free for the A3 case.
+
+## 5. Erratum (2026-11-27, after batch TRI; found by an external reviewer, checked by the lead against the Lean files)
+
+Sections 3 and 4 above are left as written. Three of their statements are corrected here, before any K2 statement is
+frozen:
+
+1. **The A3 bridge identity.** Section 3 writes `24 F_ss g⁗(0) = D²Ψ[w, w] D⁴Ψ[v⁴] − 3(D³Ψ[v, v, w])²`. With `g⁗(0)`
+   the fourth derivative of the reduced function, the identity is
+   `D²Ψ[w, w] · g⁗(0) = D²Ψ[w, w] D⁴Ψ[v⁴] − 3(D³Ψ[v, v, w])²`, with no factor 24. The factor 24 belongs only to the
+   conversion between the fourth derivative and the fourth Taylor coefficient. The correct form is proved in Lean for
+   every smooth phase, every kernel vector v and every w with `D²Ψ[w, w] ≠ 0` (`OscInt.API.ReducedBridge.bridge`,
+   `OscInt/Front/ReducedBridge.lean`). So item 1 of section 3 is closed for A3 by a proved lemma. K2's constants and
+   normalisations must be taken from that lemma, not from the formula in section 3.
+2. **TRI-W fixes the basis.** Section 4 says that the sextic of TRI-W is available "in any transverse coordinates the
+   K2 proof chooses". It is not. TRI-W quantifies over every reduced curve for the fixed vectors v = (1, 1),
+   w = (1, −1) at (θ, −θ), not over every pair (v, w). The K2 local lemma should take its basis and curve as data. At
+   an A5 point it should use the basis and the curve that the TRI proofs construct (`OscInt.API.TriWitness.point_A5`,
+   `exists_curve`), so that no sixth-order coordinate invariance has to be proved.
+3. **α = 0, the lower bound at all real times.** T6L (`LatticeLaplacianLimitStatement`) is stated at integer times n
+   along x = (n, n). A K2 lower bound `sup_n |K₀(t, n)| ≳ t^{−2/3}` for all real t ≥ t₀ does not follow from it. It
+   needs its own proof, for example from the bounded-offset D4 limit S4.2O with the velocity rounded to the lattice.

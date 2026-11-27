@@ -2222,6 +2222,7 @@
    "name": "OscInt.Statements.TriClassificationStatement",
    "proved_by": "OscInt.API.triClassification",
    "summary": "Classification of the anisotropic triangular lattice phase: for `α ≠ 0` every point is of type A1 or A2, A3, or A5 (no A4 and no D-type point).",
+   "summary_note": "The frozen docstring's \"no A4\" is an informal reading, not proved in Lean: the disjunction is not exclusive and IsA5Point asks only for some (v, w, curve). \"No D-type point\" (no Hessian-zero point) does follow. docs/statements.md, clarification TRI-c.",
    "file": "OscInt/Statements/TriangularAniso.lean",
    "commitment": "8e7defff110c6dc0f64d972eed6e7870fe441284f7465f4c9b3dfc6d916940dc",
    "stamp": "stamps/20261127T060115Z-bb3a05c4b143",
@@ -2230,7 +2231,7 @@
     "α ≠ 0",
     "k any point of ℝ × ℝ"
    ],
-   "conclusion": "k is A1 or A2 (FoldOrNondeg), A3 (IsA3Point) or A5 (IsA5Point) for cos k₁ + cos k₂ + α cos(k₁ + k₂): no A4 point and no point with Hessian zero",
+   "conclusion": "k is A1 or A2 (FoldOrNondeg), A3 (IsA3Point) or A5 (IsA5Point) for cos k₁ + cos k₂ + α cos(k₁ + k₂); the three cases are not proved exclusive; no point has Hessian zero (each case needs D²Ψ[w, w] ≠ 0 for some w)",
    "rate": "— (classification)",
    "uniform_over": "α ≠ 0 and k",
    "smoothness": "—",
@@ -2294,6 +2295,7 @@
    "name": "OscInt.Statements.TriQuarticStatement",
    "proved_by": "OscInt.API.triQuartic",
    "summary": "The reduced quartics: for `α ≠ 0`, at `(π/2, π/2)` with `v = (1, −1)`, `w = (1, 1)` the reduced quartic is `−12`; for `0 < |α| ≤ 1/2`, at `(θ, −θ)`, `θ = arccos(−2α)`, with `v = (1, 1)`, `w = (1, −1)` it is `12(8α² − 1)`; in both cases `v` spans the Hessian kernel and the cubic along `v` vanishes.",
+   "summary_note": "v is proved to lie in the Hessian kernel, not to span it; TRI-Q alone does not give IsA3Point. docs/statements.md, clarification TRI-a.",
    "file": "OscInt/Statements/TriangularAniso.lean",
    "commitment": "4705b33e6aa9a1a9c2d754a62cc8f6a1e0d9916718513dfe575ba15e50b280a0",
    "stamp": "stamps/20261127T060115Z-bb3a05c4b143",
@@ -2301,7 +2303,7 @@
    "hypotheses": [
     "α ≠ 0 (second point: also |α| ≤ 1/2)"
    ],
-   "conclusion": "at (π/2, π/2) with v = (1, −1), w = (1, 1): v spans the Hessian kernel, D³Ψ[v, v, v] = 0, and D²Ψ[w, w] D⁴Ψ[v⁴] − 3(D³Ψ[v, v, w])² = −12; at (θ, −θ), θ = arccos(−2α), with v = (1, 1), w = (1, −1): the same with value 12(8α² − 1)",
+   "conclusion": "at (π/2, π/2) with v = (1, −1), w = (1, 1): v lies in the Hessian kernel (∀ z, D²Ψ[v, z] = 0; rank one, D²Ψ[w, w] ≠ 0, is not part of TRI-Q), D³Ψ[v, v, v] = 0, and D²Ψ[w, w] D⁴Ψ[v⁴] − 3(D³Ψ[v, v, w])² = −12; at (θ, −θ), θ = arccos(−2α), with v = (1, 1), w = (1, −1): the same with value 12(8α² − 1)",
    "rate": "—",
    "uniform_over": "α",
    "smoothness": "—",

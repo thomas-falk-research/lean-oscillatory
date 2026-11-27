@@ -30,6 +30,9 @@ below it, and every rule is binding.
   order 5 (clarification TRI-c of `docs/statements.md`). **Exact next step,** in the owner's order: K2 as its own batch (generic order-m local lemma
   uniform in the velocity, monomial asymptotics, Fourier localisation, the two global statements, the bridge lemma
   of `review/2026-11-27-K2-proof-answers.md`), SPL-N, Report D (38/5), the parameter-uniform A5 crossover.
+  Before freezing K2, read section 5 (erratum) of that file: the A3 bridge without the factor 24 (proved,
+  `OscInt.API.ReducedBridge.bridge`), TRI-W's fixed basis v = (1, 1), w = (1, −1), and the α = 0 lower bound at all
+  real times, which T6L (integer times) does not give.
 - **Owner items open:** the Popov 2008 PDF (paywalled, unread); the human-only Scholar/MathSciNet queries in
   `review/2026-11-26-A5-handoff-answers.md`, section 5.
 - Session record: `docs/progress/2026-11-26-session15-log.md`.
