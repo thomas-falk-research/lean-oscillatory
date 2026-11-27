@@ -369,18 +369,18 @@ example : StationaryLeadingAttainedStatement := OscInt.API.stationaryLeadingAtta
 
 /-! ### TRI-K: Classification of the anisotropic triangular lattice phase: for `α ≠ 0` every point is of type A1 or A2, A3, or A5 (no A4 and no D-type point). -/
 
-example (h : TriClassificationStatement) := OscInt.API.TriangularAnisoSanity.triK_kA5 h
+example : TriClassificationStatement := OscInt.API.triClassification
 
 /-! ### TRI-X: The A5 locus: A5 points of the anisotropic triangular lattice phase occur only for `|α| = 1/(2√2)`, and only at `(θ, −θ)` or `(−θ, θ)` modulo `2π`, with `θ = arccos(−2α)`. -/
 
-example (h : TriA5LocusStatement) := OscInt.API.TriangularAnisoSanity.triX_one h
+example : TriA5LocusStatement := OscInt.API.triA5Locus
 
 /-! ### TRI-W: The A5 witness: for `|α| = 1/(2√2)` the points `(θ, −θ)` and `(−θ, θ)`, `θ = arccos(−2α)`, are A5 points, and with `v = (1, 1)`, `w = (1, −1)` every reduced curve at `(θ, −θ)` has reduced sixth derivative `−60√2 · sign α` at `0`. -/
 
-example (h : TriA5WitnessStatement) := OscInt.API.TriangularAnisoSanity.triW_pos h
+example : TriA5WitnessStatement := OscInt.API.triA5Witness
 
 /-! ### TRI-Q: The reduced quartics: for `α ≠ 0`, at `(π/2, π/2)` with `v = (1, −1)`, `w = (1, 1)` the reduced quartic is `−12`; for `0 < |α| ≤ 1/2`, at `(θ, −θ)`, `θ = arccos(−2α)`, with `v = (1, 1)`, `w = (1, −1)` it is `12(8α² − 1)`; in both cases `v` spans the Hessian kernel and the cubic along `v` vanishes. -/
 
-example (h : TriQuarticStatement) := OscInt.API.TriangularAnisoSanity.triQ_quarter h
+example : TriQuarticStatement := OscInt.API.triQuartic
 
 end OscIntSnippets

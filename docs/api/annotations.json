@@ -1470,8 +1470,8 @@
     "TRI-Q",
     "S5.1′"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : TriClassificationStatement) := OscInt.API.TriangularAnisoSanity.triK_kA5 h"
+   "snippet_kind": "type",
+   "snippet": "example : TriClassificationStatement := OscInt.API.triClassification"
   },
   "TRI-X": {
    "hypotheses": [
@@ -1485,8 +1485,8 @@
     "TRI-K",
     "TRI-W"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : TriA5LocusStatement) := OscInt.API.TriangularAnisoSanity.triX_one h"
+   "snippet_kind": "type",
+   "snippet": "example : TriA5LocusStatement := OscInt.API.triA5Locus"
   },
   "TRI-W": {
    "hypotheses": [
@@ -1500,8 +1500,8 @@
     "TRI-X",
     "TRI-Q"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : TriA5WitnessStatement) := OscInt.API.TriangularAnisoSanity.triW_pos h"
+   "snippet_kind": "type",
+   "snippet": "example : TriA5WitnessStatement := OscInt.API.triA5Witness"
   },
   "TRI-Q": {
    "hypotheses": [
@@ -1516,8 +1516,8 @@
     "TRI-W",
     "S5.1′"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : TriQuarticStatement) := OscInt.API.TriangularAnisoSanity.triQ_quarter h"
+   "snippet_kind": "type",
+   "snippet": "example : TriQuarticStatement := OscInt.API.triQuartic"
   }
  },
  "helpers": [

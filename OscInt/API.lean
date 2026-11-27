@@ -53,10 +53,7 @@ import OscInt.Front.FiniteRingFinal
 import OscInt.Front.HadamardWalkFinal
 import OscInt.Front.SecondDerivSharpFinal
 import OscInt.Front.StationaryLeadingFinal
-import OscInt.Front.TriDeriv
-import OscInt.Front.TriAssembly
-import OscInt.Front.TriQuartic
-import OscInt.Front.ReducedBridge
+import OscInt.Front.TriangularAnisoFinal
 
 /-!
 # OscInt public API

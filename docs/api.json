@@ -2220,7 +2220,7 @@
   {
    "label": "TRI-K",
    "name": "OscInt.Statements.TriClassificationStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.triClassification",
    "summary": "Classification of the anisotropic triangular lattice phase: for `α ≠ 0` every point is of type A1 or A2, A3, or A5 (no A4 and no D-type point).",
    "file": "OscInt/Statements/TriangularAniso.lean",
    "commitment": "8e7defff110c6dc0f64d972eed6e7870fe441284f7465f4c9b3dfc6d916940dc",
@@ -2240,13 +2240,13 @@
     "TRI-Q",
     "S5.1′"
    ],
-   "snippet": "example (h : TriClassificationStatement) := OscInt.API.TriangularAnisoSanity.triK_kA5 h",
+   "snippet": "example : TriClassificationStatement := OscInt.API.triClassification",
    "status": "see docs/STATUS.md (row TRI-K)"
   },
   {
    "label": "TRI-X",
    "name": "OscInt.Statements.TriA5LocusStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.triA5Locus",
    "summary": "The A5 locus: A5 points of the anisotropic triangular lattice phase occur only for `|α| = 1/(2√2)`, and only at `(θ, −θ)` or `(−θ, θ)` modulo `2π`, with `θ = arccos(−2α)`.",
    "file": "OscInt/Statements/TriangularAniso.lean",
    "commitment": "3c347461fa78481e8f8dc77a8eaa34c723513562ae4377fcb56827abe5b32c0f",
@@ -2263,13 +2263,13 @@
     "TRI-K",
     "TRI-W"
    ],
-   "snippet": "example (h : TriA5LocusStatement) := OscInt.API.TriangularAnisoSanity.triX_one h",
+   "snippet": "example : TriA5LocusStatement := OscInt.API.triA5Locus",
    "status": "see docs/STATUS.md (row TRI-X)"
   },
   {
    "label": "TRI-W",
    "name": "OscInt.Statements.TriA5WitnessStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.triA5Witness",
    "summary": "The A5 witness: for `|α| = 1/(2√2)` the points `(θ, −θ)` and `(−θ, θ)`, `θ = arccos(−2α)`, are A5 points, and with `v = (1, 1)`, `w = (1, −1)` every reduced curve at `(θ, −θ)` has reduced sixth derivative `−60√2 · sign α` at `0`.",
    "file": "OscInt/Statements/TriangularAniso.lean",
    "commitment": "32c395cddfc80d5a931eb49f53c8dfa816abc12b2142b2f9ab0c2ed3a29d7ca0",
@@ -2286,13 +2286,13 @@
     "TRI-X",
     "TRI-Q"
    ],
-   "snippet": "example (h : TriA5WitnessStatement) := OscInt.API.TriangularAnisoSanity.triW_pos h",
+   "snippet": "example : TriA5WitnessStatement := OscInt.API.triA5Witness",
    "status": "see docs/STATUS.md (row TRI-W)"
   },
   {
    "label": "TRI-Q",
    "name": "OscInt.Statements.TriQuarticStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.triQuartic",
    "summary": "The reduced quartics: for `α ≠ 0`, at `(π/2, π/2)` with `v = (1, −1)`, `w = (1, 1)` the reduced quartic is `−12`; for `0 < |α| ≤ 1/2`, at `(θ, −θ)`, `θ = arccos(−2α)`, with `v = (1, 1)`, `w = (1, −1)` it is `12(8α² − 1)`; in both cases `v` spans the Hessian kernel and the cubic along `v` vanishes.",
    "file": "OscInt/Statements/TriangularAniso.lean",
    "commitment": "4705b33e6aa9a1a9c2d754a62cc8f6a1e0d9916718513dfe575ba15e50b280a0",
@@ -2310,7 +2310,7 @@
     "TRI-W",
     "S5.1′"
    ],
-   "snippet": "example (h : TriQuarticStatement) := OscInt.API.TriangularAnisoSanity.triQ_quarter h",
+   "snippet": "example : TriQuarticStatement := OscInt.API.triQuartic",
    "status": "see docs/STATUS.md (row TRI-Q)"
   }
  ]
