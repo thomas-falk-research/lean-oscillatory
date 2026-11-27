@@ -104,8 +104,7 @@ For `Ψ_α(x, y) = cos x + cos y + α cos(x + y)`, "type" means the singularity 
 - **K2: a correct proof route, not a proof of record** (the MAJOR process gap above). Label until the lemmas are
   written out and refereed: CONJECTURED, with strong support. It is consistent with checker C's decay slopes at
   seven values of α and with the `t^{−2/3}` plateau observed at α* up to t = 262144.
-- **Novelty: unknown.** Checker G's prior-art gate is pending. The handoff's own queries found nothing matching,
-  and it claims no priority.
+- **Novelty: not found in the literature searched** (checker G, section 5).
 
 ## 4. What it changes
 
@@ -121,3 +120,56 @@ For `Ψ_α(x, y) = cos x + cos y + α cos(x + y)`, "type" means the singularity 
   4. the fixed-α lower bound, through the localisation identity.
 
   Which batch comes next is the owner's decision. The handoff's priority order is a proposal.
+
+## 5. Prior-art gate (checker G, 2026-11-27)
+
+Checker G: fresh context, brief SHA-256 91415590…. It ran 47 logged queries (zbMATH, arXiv, Crossref, MathOverflow,
+OpenAlex), web and alphaXiv searches, greps of 11 arXiv LaTeX sources, and a forward and backward chase of two
+levels from Ge–Hua–Jia–Zhou and Bi–Cheng–Hua. Findings in the lead's words:
+
+- **The only published case of this model is the isotropic one**, α = 1: Ge, Hua, Jia, Zhou, Calc. Var. PDE 64
+  (2025) art. 176, arXiv:2412.02947v2, read in full.
+  - Hessian corank at most 1; every degenerate point A2 or A3 (Lemma 4.3); no A4 in one case (Proposition 6.1); the
+    upper bound `C⟨t⟩^{−3/4}` (Theorem 1.3).
+  - Its proof is incomplete: one case is "similar, omitted".
+  - The labels A2 and A3 are interchanged in one case relative to its own expansion; the expansion agrees with K1.
+  - Theorem 1.3 says "sharp", but the checker found no lower-bound argument.
+  - **MAJOR (citation hygiene):** this repository must not cite it for sharpness, or for a complete classification
+    at α = 1. Our own proof must cover α = 1, and the lower bound at every α.
+- **Closest analogues, different models:**
+  - Cuenin–Ikromov (discrete Klein–Gordon): only `A_k` with `k ≤ 3` on ℤ²; an A5 point on ℤ³ at an algebraic
+    parameter value.
+  - Borovyk–Goldberg (Klein–Gordon on ℤ² with two axis couplings): "there is no choice of parameters that generates
+    exceptional degeneracy". Diagonal coupling is the only route to an exceptional A5 that the checker found.
+  - Cheng, arXiv:2403.07445, Theorem 1.1 (`Δ² − γΔ` on ℤ²): the rate is `t^{−3/4}` except at three values of γ.
+    This is the closest structural analogue of K2.
+  - The higher-order van Hove literature (Chandrasekaran et al.; Yuan–Isobe–Fu) treats points where the gradient
+    vanishes. Every degenerate point of K1 has a nonzero gradient, so it does not cover K1.
+- **Verdicts:**
+  - K1 for general α, the A5 point at `|α| = 1/(2√2)`, and the absence of A4 and D-types: **not found in the
+    literature searched**. At α = 1 it is consistent with Ge et al. At α = 0 it is FOLKLORE.
+  - K2 off α ∈ {0, 1}, the two-sided bounds, and the exceptional set `{0, ±1/(2√2)}`: **not found in the literature
+    searched**. α = 0: Stefanov–Kevrekidis 2005, cited, not read. α = 1: an upper bound only, Ge et al.
+  - K3: not found. The checker also recomputed it by a third independent route: raw coefficients
+    `(8α² − 1)/(8α)` for u⁴ and `−1/(192α³)` for u⁶ in its own scaling, the same values in the unit coordinate.
+    MINOR: a paper must state the normalisation of the kernel vector.
+- **Not read:** Schultz 1998; Stefanov–Kevrekidis 2005; Karpushkin 1983/84; Ge–Lu–Yu 2025; the papers on caustics
+  of two-dimensional quantum walks (Baryshnikov–Brady–Bressler–Pemantle); two optics papers on discrete diffraction
+  in triangular arrays; a triangular-lattice Green's function paper (2004).
+- **Human-only queries for the owner:**
+  - Google Scholar: "Cited by" for Ge et al., Borovyk–Goldberg and Cuenin–Ikromov; `"triangular lattice"
+    "dispersive estimate"`; `anisotropic triangular lattice Strichartz`; `"next-nearest-neighbor" "discrete
+    Schrödinger" decay`.
+  - MathSciNet: MSC 35Q41 or 39A12 with "triangular lattice"; papers whose reference lists cite Ge et al.
+
+**Wording available today** (calibrated, not a priority claim): "We could not find the classification for general α,
+the exceptional coupling `|α| = 1/(2√2)`, or the fixed-coupling two-sided decay away from α = 0, 1 in the literature;
+we searched zbMATH Open, arXiv (including LaTeX sources), Crossref, OpenAlex and MathOverflow on 2026-11-27 and
+followed citations from Ge–Hua–Jia–Zhou and Bi–Cheng–Hua. The closest results are Ge–Hua–Jia–Zhou (α = 1, upper bound),
+Cuenin–Ikromov and Cheng (other lattice models with exceptional parameters)."
+
+## 6. State
+
+The owner has more research to deliver before implementation starts. Nothing for batch TRI is registered or frozen.
+A draft of a registered numeric test was written, found defective on reading before any run (signs for α < 0, a
+useless Bessel tail bound, a coarse step), and moved out of the tree unregistered.
