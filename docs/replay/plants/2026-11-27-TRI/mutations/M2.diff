@@ -1,0 +1,11 @@
+--- OscInt/Statements/TriangularAniso.lean	2026-11-27 00:46:32.111793331 +0000
++++ M2/OscInt/Statements/TriangularAniso.lean	2026-11-27 22:26:39.301693722 +0000
+@@ -74,7 +74,7 @@
+ def IsA5Point (Ψ : ℝ × ℝ → ℝ) (k₀ : ℝ × ℝ) : Prop :=
+   ∃ v w : ℝ × ℝ, v ≠ 0 ∧ (∀ z, iteratedFDeriv ℝ 2 Ψ k₀ ![v, z] = 0) ∧ iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] ≠ 0 ∧
+     ∃ ε > 0, ∃ h : ℝ → ℝ, ReducedCurve Ψ k₀ v w ε h ∧
+-      (∀ j ∈ Finset.Icc 1 5, iteratedDeriv j (reducedFn Ψ k₀ v w h) 0 = 0) ∧
++      (∀ j ∈ Finset.Icc 1 4, iteratedDeriv j (reducedFn Ψ k₀ v w h) 0 = 0) ∧
+       iteratedDeriv 6 (reducedFn Ψ k₀ v w h) 0 ≠ 0
+ 
+ /-- **TRI-K** Classification of the anisotropic triangular lattice phase: for `α ≠ 0` every point is of type A1 or

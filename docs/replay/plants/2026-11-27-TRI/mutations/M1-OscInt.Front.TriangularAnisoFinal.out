@@ -1,0 +1,58 @@
+⚠ [9050/9064] Replayed OscInt.Statements.TriangularAniso
+warning: OscInt/Statements/TriangularAniso.lean:64:18: Variable name `Ψ` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _Ψ
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: OscInt/Statements/TriangularAniso.lean:64:34: Variable name `k₀` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _k₀
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: OscInt/Statements/TriangularAniso.lean:64:37: Variable name `v` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _v
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: OscInt/Statements/TriangularAniso.lean:64:39: Variable name `w` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _w
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✖ [9062/9064] Building OscInt.Front.ReducedBridge (5.3s)
+trace: .> LEAN_PATH=/home/user/lean-oscillatory/.lake/packages/Cli/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/batteries/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/Qq/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/aesop/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/importGraph/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/plausible/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/mathlib/.lake/build/lib/lean:M1/.lake/build/lib/lean /root/lean/lean-4.35.0-linux/bin/lean M1/OscInt/Front/ReducedBridge.lean -o M1/.lake/build/lib/lean/OscInt/Front/ReducedBridge.olean -i M1/.lake/build/lib/lean/OscInt/Front/ReducedBridge.ilean -c M1/.lake/build/ir/OscInt/Front/ReducedBridge.c --setup M1/.lake/build/ir/OscInt/Front/ReducedBridge.setup.json --json
+error: OscInt/Front/ReducedBridge.lean:179:67: Type mismatch
+  hred.right.right u hu
+has type
+  True
+but is expected to have type
+  (fderiv ℝ Ψ (curve k₀ v w h u)) w = (fderiv ℝ Ψ k₀) w
+error: OscInt/Front/ReducedBridge.lean:215:4: Type mismatch: After simplification, term
+  this
+ has type
+  True
+but is expected to have type
+  (fderiv ℝ Ψ (k₀ + u • v + h u • w)) w = (fderiv ℝ Ψ k₀) w
+✖ [9063/9064] Building OscInt.Front.TriWitness (6.7s)
+trace: .> LEAN_PATH=/home/user/lean-oscillatory/.lake/packages/Cli/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/batteries/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/Qq/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/aesop/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/importGraph/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/plausible/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/mathlib/.lake/build/lib/lean:M1/.lake/build/lib/lean /root/lean/lean-4.35.0-linux/bin/lean M1/OscInt/Front/TriWitness.lean -o M1/.lake/build/lib/lean/OscInt/Front/TriWitness.olean -i M1/.lake/build/lib/lean/OscInt/Front/TriWitness.ilean -c M1/.lake/build/ir/OscInt/Front/TriWitness.c --setup M1/.lake/build/ir/OscInt/Front/TriWitness.setup.json --json
+error: OscInt/Front/TriWitness.lean:256:6: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (fderiv ℝ (triPhase ?m.91) ((x₀, y₀) + ?u • (1, 1) + ?t • (1, -1))) (1, -1)
+in the target expression
+  True ↔ Real.cos u * (Real.sin x₀ * Real.cos (h u) + Real.cos x₀ * Real.sin (h u)) = Real.sin x₀
+
+α x₀ y₀ : ℝ
+hp : Real.cos (x₀ + y₀) = 1
+hps : Real.sin (x₀ + y₀) = 0
+ε : ℝ
+h : ℝ → ℝ
+u : ℝ
+x✝ : |u| < ε
+⊢ True ↔ Real.cos u * (Real.sin x₀ * Real.cos (h u) + Real.cos x₀ * Real.sin (h u)) = Real.sin x₀
+Some required targets logged failures:
+- OscInt.Front.ReducedBridge
+- OscInt.Front.TriWitness
+error: build failed

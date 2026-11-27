@@ -1,0 +1,27 @@
+import OscInt.Front.TriangularAnisoSanity
+
+namespace OscInt.API.TriangularAnisoSanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity
+open scoped ContDiff
+
+/-- PLANTED copy of `TriA5WitnessStatement`: the second point (−θ, θ) ↦ (θ, θ). -/
+def P_TriA5WitnessStatement : Prop :=
+  ∀ α : ℝ, |α| = triExceptional →
+    IsA5Point (triPhase α) (Real.arccos (-2 * α), -Real.arccos (-2 * α)) ∧
+      IsA5Point (triPhase α) (Real.arccos (-2 * α), Real.arccos (-2 * α)) ∧
+      ∀ (ε : ℝ) (h : ℝ → ℝ), 0 < ε →
+        ReducedCurve (triPhase α) (Real.arccos (-2 * α), -Real.arccos (-2 * α)) (1, 1) (1, -1) ε h →
+          iteratedDeriv 6 (reducedFn (triPhase α) (Real.arccos (-2 * α), -Real.arccos (-2 * α)) (1, 1) (1, -1) h) 0
+            = -60 * Real.sqrt 2 * SignType.sign α
+
+/-- Witness: at `α = a*`, `(3π/4, 3π/4)` has Hessian `(√2/2)·I`, so no nonzero kernel vector (`kDiag_not_isA5`). -/
+theorem witness_TRI_W_b : ¬ P_TriA5WitnessStatement := by
+  intro h
+  have := (h _ (abs_of_pos triExceptional_pos)).2.1
+  rw [arccos_neg_two_triExceptional] at this
+  exact kDiag_not_isA5 this
+
+#print axioms witness_TRI_W_b
+
+end OscInt.API.TriangularAnisoSanity

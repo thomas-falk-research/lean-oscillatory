@@ -1,0 +1,17 @@
+exit code 1
+plant-TRI-W-b.lean:24:17: error: Application type mismatch: The argument
+  this.right.left
+has type
+  IsA5Point (triPhase triExceptional) (3 * Real.pi / 4, 3 * Real.pi / 4)
+but is expected to have type
+  IsA5Point (triPhase triExceptional) (-(3 * Real.pi / 4), 3 * Real.pi / 4)
+in the application
+  ⟨this.left, this.right.left⟩
+plant-TRI-W-b.lean:32:17: error: Application type mismatch: The argument
+  this.right.left
+has type
+  IsA5Point (triPhase (-triExceptional)) (Real.pi / 4, Real.pi / 4)
+but is expected to have type
+  IsA5Point (triPhase (-triExceptional)) (-(Real.pi / 4), Real.pi / 4)
+in the application
+  ⟨this.left, this.right.left⟩

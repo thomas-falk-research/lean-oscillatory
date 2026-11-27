@@ -1,0 +1,3 @@
+'OscInt.API.TriangularAnisoSanity.witness_TRI_X_a_W' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.TriangularAnisoSanity.witness_TRI_X_a_K' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.TriangularAnisoSanity.closed_now' depends on axioms: [propext, Classical.choice, Quot.sound]

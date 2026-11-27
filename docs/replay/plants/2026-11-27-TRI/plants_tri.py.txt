@@ -1,0 +1,277 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the draft batch-TRI statements against copies of their sanity theorems.
+
+As the batch-SPL generator (docs/replay/plants/2026-11-19-SPL/plants_spl.py.txt), simplified. The draft statement
+module (a copy of OscInt/Statements/TriangularAniso.lean, not frozen) and the sanity layer
+(TriangularAnisoSanity.lean, namespace OscInt.API.TriangularAnisoSanity) are compiled into a scratch library placed
+first on LEAN_PATH, so every generated file imports OscInt.Front.TriangularAnisoSanity only and contains, under the
+prefix P_: a copy of ONE statement constant, with exactly one textual mutation in the planted copy (none in the ok-
+copy), followed by copies of every sanity theorem that takes that statement constant as a hypothesis (renamed
+P_..., so that they go through the copy). Witness files contain the planted copy and compiled theorems of one kind:
+  not   : ¬ planted statement, from unconditional data of the sanity layer          -> DETECTED
+  rel   : true statement → ¬ planted statement                                    -> DETECTED RELATIVE TO THE TRUE
+                                                                                     STATEMENT
+  weak  : draft statement → planted statement                                     -> TRUE WEAKENING
+  char  : draft ∧ planted → (what a detection would need does not exist)          -> NOT DETECTED (characterised)
+No file proves, or uses a proof of, a statement of the batch. A rejected script alone is never counted as a
+detection. Compiler output is recorded with the scratch directory removed from the paths.
+Usage: plants_tri.py WORK OUTDIR SCRATCHDIR
+"""
+import os, re, subprocess, sys, textwrap, time
+
+WORK, OUT, SCR = [os.path.abspath(a) for a in sys.argv[1:4]]
+REPO = '/home/user/lean-oscillatory'
+os.makedirs(OUT, exist_ok=True)
+os.makedirs(SCR, exist_ok=True)
+STMT = open(os.path.join(WORK, 'src/OscInt/Statements/TriangularAniso.lean')).read().split('\n')
+SAN_ALL = open(os.path.join(WORK, 'src/OscInt/Front/TriangularAnisoSanity.lean')).read()
+SAN = SAN_ALL[SAN_ALL.index('namespace OscInt.API.TriangularAnisoSanity'):].split('\n')
+K, X, Wt, Q = ('TriClassificationStatement', 'TriA5LocusStatement', 'TriA5WitnessStatement', 'TriQuarticStatement')
+STATEMENTS = [K, X, Wt, Q]
+DECL = re.compile(r"^(?:noncomputable )?(theorem|def) ([A-Za-z_0-9']+)")
+WORD = re.compile(r"[A-Za-z_][A-Za-z_0-9']*")
+
+
+def block(lines, name):
+    for i, l in enumerate(lines):
+        m = DECL.match(l)
+        if m and m.group(2) == name:
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {name}')
+
+
+def data_blocks():
+    res, cur = {}, []
+    for l in SAN[1:] + ['']:
+        if l.strip() == '':
+            for c in cur:
+                m = DECL.match(c)
+                if m:
+                    res[m.group(2)] = (len(res), '\n'.join(cur))
+                    break
+            cur = []
+        else:
+            cur.append(l)
+    return res
+
+
+DATA = data_blocks()
+
+
+def words(t):
+    ls = t.split('\n')
+    k = next(i for i, l in enumerate(ls) if DECL.match(l))
+    return set(WORD.findall('\n'.join(ls[k:])))
+
+
+THROUGH = {st: [n for n, (_, t) in sorted(DATA.items(), key=lambda kv: kv[1][0]) if st in words(t)]
+           for st in STATEMENTS}
+for st in STATEMENTS:
+    assert THROUGH[st], st
+
+OPEN = """import OscInt.Front.TriangularAnisoSanity
+
+namespace OscInt.API.TriangularAnisoSanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity
+open scoped ContDiff
+"""
+CLOSE = '\n\nend OscInt.API.TriangularAnisoSanity\n'
+
+
+def wrap(s):
+    return '\n'.join(textwrap.wrap('/-- ' + s + ' -/', 118))
+
+
+def rename(text, names):
+    ls = text.split('\n')
+    k = next(i for i, l in enumerate(ls) if DECL.match(l))
+    doc, decl = '\n'.join(ls[:k]), '\n'.join(ls[k:])
+    for n in sorted(names, key=len, reverse=True):
+        decl = re.sub(r"(?<![\w.'])" + re.escape(n) + r"(?![\w'])", 'P_' + n, decl)
+    return (doc + '\n' if doc else '') + decl
+
+
+def make(stmt, mut, planted, note, witness=None):
+    old, new, count = mut
+    t = block(STMT, stmt)
+    if planted:
+        assert t.count(old) == count, (stmt, old, t.count(old))
+        t = t.replace(old, new)
+    doc = f'PLANTED copy of `{stmt}`: {note}.' if planted else f'Unplanted copy of `{stmt}`.'
+    parts = [wrap(doc) + '\n' + t]
+    names = [stmt]
+    if witness is None:
+        parts += [DATA[n][1] for n in THROUGH[stmt]]
+        names += THROUGH[stmt]
+    text = '\n\n'.join(rename(p, names) for p in parts)
+    if witness is not None:
+        text += '\n\n' + witness.strip('\n')
+        for n in re.findall(r'^theorem ([A-Za-z_0-9]+)', witness, re.M):
+            text += f'\n\n#print axioms {n}'
+    return OPEN + '\n' + text + CLOSE
+
+
+def compile_text(tag, text):
+    src = os.path.join(SCR, tag + '.lean')
+    open(src, 'w').write(text)
+    t0 = time.time()
+    r = subprocess.run([os.path.join(WORK, 'lean.sh'), src], capture_output=True, text=True, timeout=900)
+    out = (r.stdout + r.stderr).replace(SCR + os.sep, '')
+    out = re.sub(r'elapsed [0-9.]+ s rc=\d+\n?', '', out)
+    return r.returncode, out, time.time() - t0
+
+
+PLANTS = [
+    # id, statement, (old, new, count), note, witness kind, witness text
+    ('TRI-Q-a', Q, ('= -12)', '= 12)', 1), 'the value −12 at (π/2, π/2) ↦ 12', 'not', r'''
+/-- Witness: at `α = 1/4` the quartic at `(π/2, π/2)` is `−12` (exact computation, `quarter_halfPi_quartic`). -/
+theorem witness_TRI_Q_a : ¬ P_TriQuarticStatement := by
+  intro h
+  have := (h (1 / 4) (by norm_num)).1.2.2
+  rw [quarter_halfPi_quartic] at this
+  norm_num at this
+'''),
+    ('TRI-Q-b', Q, ('12 * (8 * α ^ 2 - 1)', '12 * (8 * α ^ 2 + 1)', 1), '12(8α² − 1) ↦ 12(8α² + 1)', 'not', r'''
+/-- Witness: at `α = 1/4` the quartic at `(θ, −θ)` is `−6` (exact computation, `quarter_theta`), not `18`. -/
+theorem witness_TRI_Q_b : ¬ P_TriQuarticStatement := by
+  intro h
+  have h2 := (h (1 / 4) (by norm_num)).2 (by rw [abs_of_pos (by norm_num)]; norm_num)
+  dsimp only at h2
+  have := h2.2.2
+  rw [quarter_theta.2.2] at this
+  norm_num at this
+'''),
+    ('TRI-Q-c', Q, ('|α| ≤ 1 / 2 →', '|α| ≤ 1 →', 1), 'the range |α| ≤ 1/2 ↦ |α| ≤ 1', 'not', r'''
+/-- Witness: at `α = 1`, `arccos(−2) = π` (Lean's clamped value), and `(1, 1)` is not in the Hessian kernel at
+`(π, −π)`: `D²[(1, 1), (1, 0)] = −1`. -/
+theorem witness_TRI_Q_c : ¬ P_TriQuarticStatement := by
+  intro h
+  have h2 := (h 1 one_ne_zero).2 (by norm_num)
+  dsimp only at h2
+  have := h2.1 (1, 0)
+  rw [triD2_mixed, show -2 * (1 : ℝ) = -2 by norm_num, Real.arccos_of_le_neg_one (by norm_num)] at this
+  simp only [add_neg_cancel, Real.cos_zero, Real.cos_neg, Real.cos_pi] at this
+  norm_num at this
+'''),
+    ('TRI-X-a', X, ('|α| = triExceptional ∧', '|α| = 1 / 2 ∧', 1), 'the exceptional value a* ↦ 1/2', 'rel', r'''
+/-- Witness relative to TRI-W: TRI-W gives an A5 point at `α = a* ≠ 1/2`. -/
+theorem witness_TRI_X_a_W (hW : TriA5WitnessStatement) : ¬ P_TriA5LocusStatement := by
+  intro h
+  have := (h _ _ (triW_pos hW).1).1
+  rw [abs_of_pos triExceptional_pos] at this
+  linarith [triExceptional_lt_half]
+
+/-- Witness relative to TRI-K: TRI-K, with the unconditional `kA5_not_foldOrNondeg` and `kA5_not_isA3`, gives an A5
+point at `α = a* ≠ 1/2`. -/
+theorem witness_TRI_X_a_K (hK : TriClassificationStatement) : ¬ P_TriA5LocusStatement := by
+  intro h
+  have := (h _ _ (triK_kA5 hK)).1
+  rw [abs_of_pos triExceptional_pos] at this
+  linarith [triExceptional_lt_half]
+'''),
+    ('TRI-X-b', X, ('Real.arccos (-2 * α)', 'Real.arccos (2 * α)', 4), 'θ = arccos(−2α) ↦ arccos(2α)', 'rel', r'''
+/-- Witness relative to TRI-W: TRI-W's A5 point `(3π/4, −3π/4)` at `α = a*` would equal `(π/4, −π/4)` or
+`(−π/4, π/4)` modulo `2π`, which forces `4 j = 1` or `2 j = 1` for an integer `j`. -/
+theorem witness_TRI_X_b (hW : TriA5WitnessStatement) : ¬ P_TriA5LocusStatement := by
+  intro h
+  obtain ⟨-, j₁, j₂, e | e⟩ := h _ _ (triW_pos hW).1
+  · rw [arccos_two_triExceptional] at e
+    have e1 := congrArg Prod.fst e
+    simp only at e1
+    have hp : Real.pi * (4 * (j₁ : ℝ) - 1) = 0 := by linarith
+    have hj : (4 * (j₁ : ℝ) - 1) = 0 := (mul_eq_zero.mp hp).resolve_left Real.pi_ne_zero
+    have : (4 * j₁ : ℤ) = 1 := by exact_mod_cast (by linarith : (4 : ℝ) * j₁ = 1)
+    omega
+  · rw [arccos_two_triExceptional] at e
+    have e1 := congrArg Prod.fst e
+    simp only at e1
+    have hp : Real.pi * (2 * (j₁ : ℝ) - 1) = 0 := by linarith
+    have hj : (2 * (j₁ : ℝ) - 1) = 0 := (mul_eq_zero.mp hp).resolve_left Real.pi_ne_zero
+    have : (2 * j₁ : ℤ) = 1 := by exact_mod_cast (by linarith : (2 : ℝ) * j₁ = 1)
+    omega
+'''),
+    ('TRI-X-c', X, ('|α| = triExceptional ∧\n      ∃', '∃', 1), 'the conclusion |α| = a* dropped', 'weak', r'''
+/-- The plant is implied by the draft statement: a true weakening (`docs/lessons.md`, rule 9). -/
+theorem weak_TRI_X_c : TriA5LocusStatement → P_TriA5LocusStatement :=
+  fun h α k hk => (h α k hk).2
+'''),
+    ('TRI-W-a', Wt, ('= -60 * Real.sqrt 2 * SignType.sign α', '= 60 * Real.sqrt 2 * SignType.sign α', 1),
+     'the sign of −60√2 flipped', 'char', r'''
+/-- Not a detection: the draft and the plant together say only that no reduced curve exists at `(θ, −θ)` for
+`v = (1, 1)`, `w = (1, −1)`, at `α = a*`. A detection needs such a curve (a smooth solution of the transverse
+equation, with its sixth derivative), which this sanity layer does not construct. -/
+theorem char_TRI_W_a (hW : TriA5WitnessStatement) (hP : P_TriA5WitnessStatement) (ε : ℝ) (hε : 0 < ε)
+    (c : ℝ → ℝ) : ¬ ReducedCurve (triPhase triExceptional)
+      (Real.arccos (-2 * triExceptional), -Real.arccos (-2 * triExceptional)) (1, 1) (1, -1) ε c := by
+  intro hc
+  have h1 := (hW _ (abs_of_pos triExceptional_pos)).2.2 ε c hε hc
+  have h2 := (hP _ (abs_of_pos triExceptional_pos)).2.2 ε c hε hc
+  rw [h1, sign_pos triExceptional_pos] at h2
+  have : 0 < Real.sqrt 2 := by positivity
+  simp at h2
+  linarith
+'''),
+    ('TRI-W-b', Wt, ('IsA5Point (triPhase α) (-Real.arccos (-2 * α), Real.arccos (-2 * α))',
+                     'IsA5Point (triPhase α) (Real.arccos (-2 * α), Real.arccos (-2 * α))', 1),
+     'the second point (−θ, θ) ↦ (θ, θ)', 'not', r'''
+/-- Witness: at `α = a*`, `(3π/4, 3π/4)` has Hessian `(√2/2)·I`, so no nonzero kernel vector (`kDiag_not_isA5`). -/
+theorem witness_TRI_W_b : ¬ P_TriA5WitnessStatement := by
+  intro h
+  have := (h _ (abs_of_pos triExceptional_pos)).2.1
+  rw [arccos_neg_two_triExceptional] at this
+  exact kDiag_not_isA5 this
+'''),
+    ('TRI-K-a', K, (' ∨ IsA5Point (triPhase α) k', '', 1), 'the A5 alternative dropped', 'not', r'''
+/-- Witness: at `α = a*`, `(3π/4, −3π/4)` is neither A1/A2 nor A3 (`kA5_not_foldOrNondeg`, `kA5_not_isA3`). -/
+theorem witness_TRI_K_a : ¬ P_TriClassificationStatement := by
+  intro h
+  rcases h _ triExceptional_pos.ne' kA5 with h1 | h1
+  · exact kA5_not_foldOrNondeg h1
+  · exact kA5_not_isA3 h1
+'''),
+    ('TRI-K-b', K, ('α ≠ 0 → ∀ k', '∀ k', 1), 'the hypothesis α ≠ 0 dropped', 'not', r'''
+/-- Witness: at `α = 0`, `(π/2, π/2)` has Hessian zero, so it is of none of the three types (`zero_halfPi_none`). -/
+theorem witness_TRI_K_b : ¬ P_TriClassificationStatement :=
+  fun h => zero_halfPi_none (h 0 _)
+'''),
+]
+
+VERDICT = {'not': 'DETECTED (witness compiled: ¬ planted statement)',
+           'rel': 'DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: true statement → ¬ planted statement); '
+                  'NOT DETECTED unconditionally',
+           'weak': 'TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it',
+           'char': 'NOT DETECTED (compiled: draft ∧ plant → no reduced curve exists; a detection needs a reduced '
+                   'curve with its sixth derivative, not constructed)'}
+
+summary = []
+for pid, st, mut, note, kind, wit in PLANTS:
+    res = {}
+    for tag, planted, w in (('ok', False, None), ('plant', True, None), ('witness', True, wit)):
+        name = f'{tag}-{pid}'
+        text = make(st, mut, planted, note, w)
+        rc, out, dt = compile_text(name, text)
+        open(os.path.join(OUT, name + '.lean.txt'), 'w').write(text)
+        open(os.path.join(OUT, name + '.out'), 'w').write(f'exit code {rc}\n' + out)
+        errs = [l for l in out.split('\n') if ': error' in l]
+        status = 'accepted' if rc == 0 and not errs else 'rejected'
+        if tag == 'witness':
+            ax = re.findall(r"depends on axioms: \[([^\]]*)\]", out)
+            okax = all(set(x.strip() for x in a.split(',')) <= {'propext', 'Classical.choice', 'Quot.sound'}
+                       for a in ax) and len(ax) == len(re.findall(r'^theorem ', w, re.M))
+            if not okax:
+                status = 'rejected (axioms)'
+        res[tag] = status
+        want = {'ok': 'accepted', 'plant': 'recorded', 'witness': 'accepted'}[tag]
+        line = f'{name}: {status} (want {want}) [{dt:.1f} s]'
+        if errs:
+            line += '\n    first error: ' + errs[0][:160]
+        summary.append(line)
+        print(line, flush=True)
+    good = res['ok'] == 'accepted' and res['witness'] == 'accepted'
+    summary.append(f'  {pid} [{note}]: ' + (VERDICT[kind] if good else 'NOT DETECTED (ok- or witness file failed)'))
+    print(summary[-1], flush=True)
+open(os.path.join(OUT, 'SUMMARY.txt'), 'w').write('\n'.join(summary) + '\n')

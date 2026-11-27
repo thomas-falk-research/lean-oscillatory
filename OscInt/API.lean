@@ -33,6 +33,8 @@ import OscInt.Front.FiniteRingSanity
 import OscInt.Front.FiniteRingSanity2
 import OscInt.Front.SecondDerivSharpSanity
 import OscInt.Statements.StationaryLeading
+import OscInt.Statements.TriangularAniso
+import OscInt.Front.TriangularAnisoSanity
 import OscInt.Front.StationaryLeadingSanity
 import OscInt.Front.SecondDerivSharpSanity2
 import OscInt.Front.HadamardWalkSanity
@@ -51,6 +53,7 @@ import OscInt.Front.FiniteRingFinal
 import OscInt.Front.HadamardWalkFinal
 import OscInt.Front.SecondDerivSharpFinal
 import OscInt.Front.StationaryLeadingFinal
+import OscInt.Front.TriangularAnisoFinal
 
 /-!
 # OscInt public API

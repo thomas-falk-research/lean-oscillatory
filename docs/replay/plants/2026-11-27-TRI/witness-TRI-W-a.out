@@ -1,0 +1,2 @@
+exit code 0
+'OscInt.API.TriangularAnisoSanity.char_TRI_W_a' depends on axioms: [propext, Classical.choice, Quot.sound]

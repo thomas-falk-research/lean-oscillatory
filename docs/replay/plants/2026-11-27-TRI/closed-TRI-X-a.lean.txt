@@ -1,0 +1,41 @@
+import OscInt.Front.TriangularAnisoSanity
+import OscInt.Front.TriangularAnisoFinal
+
+namespace OscInt.API.TriangularAnisoSanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity
+open scoped ContDiff
+
+/-- PLANTED copy of `TriA5LocusStatement`: the exceptional value a* ↦ 1/2. -/
+def P_TriA5LocusStatement : Prop :=
+  ∀ α : ℝ, ∀ k : ℝ × ℝ, IsA5Point (triPhase α) k →
+    |α| = 1 / 2 ∧
+      ∃ j₁ j₂ : ℤ,
+        k = (Real.arccos (-2 * α) + 2 * Real.pi * j₁, -Real.arccos (-2 * α) + 2 * Real.pi * j₂) ∨
+          k = (-Real.arccos (-2 * α) + 2 * Real.pi * j₁, Real.arccos (-2 * α) + 2 * Real.pi * j₂)
+
+/-- Witness relative to TRI-W: TRI-W gives an A5 point at `α = a* ≠ 1/2`. -/
+theorem witness_TRI_X_a_W (hW : TriA5WitnessStatement) : ¬ P_TriA5LocusStatement := by
+  intro h
+  have := (h _ _ (triW_pos hW).1).1
+  rw [abs_of_pos triExceptional_pos] at this
+  linarith [triExceptional_lt_half]
+
+/-- Witness relative to TRI-K: TRI-K, with the unconditional `kA5_not_foldOrNondeg` and `kA5_not_isA3`, gives an A5
+point at `α = a* ≠ 1/2`. -/
+theorem witness_TRI_X_a_K (hK : TriClassificationStatement) : ¬ P_TriA5LocusStatement := by
+  intro h
+  have := (h _ _ (triK_kA5 hK)).1
+  rw [abs_of_pos triExceptional_pos] at this
+  linarith [triExceptional_lt_half]
+
+#print axioms witness_TRI_X_a_W
+
+#print axioms witness_TRI_X_a_K
+
+/-- Closed: the plant is refuted by the proved TRI-W, without a hypothesis. -/
+theorem closed_now : ¬ P_TriA5LocusStatement := witness_TRI_X_a_W OscInt.API.triA5Witness
+
+#print axioms closed_now
+
+end OscInt.API.TriangularAnisoSanity

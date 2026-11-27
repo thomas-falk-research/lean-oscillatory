@@ -1875,3 +1875,98 @@ representation, which only names the integral. (3) A bound for the remainder of 
 zero that is stronger than the printed one, `|ε_H(z)| ≤ 1/(8|z|)` on the closed upper half-plane, with bounds
 for two derivatives, has a proof on paper that was checked; the bound itself is in print (Nemes 2017). Whether
 `H` stays a parameter is not decided.
+
+## Batch TRI: the singularity types of the anisotropic triangular lattice phase (session 15, 2026-11-27)
+
+Order. As batch SPL: the statements in `OscInt/Statements/TriangularAniso.lean`, sanity theorems with planted
+controls, a challenge file and a comparator, frozen and stamped before the blind pre-proof reviews. What differs from
+"statement first", said plainly:
+- A complete proof on paper predates the freeze. It is an external derivation, checked by the lead with SymPy
+  computations from the phase itself and by a fresh-context referee (`review/2026-11-26-A5-handoff-answers.md`).
+- A registered numeric test was run before the freeze (`docs/prereg/2026-11-27-TRI.md`, OVERALL FAIL for reasons
+  of resolution; second registration `docs/prereg/2026-11-27-TRI-2.md`, OVERALL FAIL, a deduplication defect at the
+  A5 points; third registration `docs/prereg/2026-11-27-TRI-3.md`, OVERALL PASS). The second and third were
+  registered with knowledge of the earlier runs, so they are not independent tests.
+
+No Lean proof of these statements is in the repository history before the stamp of the answers to the blind reviews.
+The batch was opened by the owner's decision of 2026-11-27, recorded in the session log
+`docs/progress/2026-11-26-session15-log.md`.
+
+Why. The band `Ψ_α(x, y) = cos x + cos y + α cos(x + y)` is the simplest nonseparable lattice dispersion relation
+with a coupling parameter: the square lattice for α = 0 and the isotropic triangular lattice for α = 1. The
+classification below of its singularity types, for every α, is the input to a sharp fixed-coupling decay theorem
+(K2, a later batch; `review/2026-11-27-K2-proof-answers.md`). The prior-art gate found the classification for
+general α, and the exceptional coupling `|α| = 1/(2√2)` where an A5 point appears, nowhere in the literature
+searched (`review/2026-11-26-A5-handoff-answers.md`, section 5). The isotropic case α = 1 is in Ge–Hua–Jia–Zhou
+(2025), with an incomplete proof. The claim, if proved, is "machine-checked; not found in the literature searched",
+never "new".
+
+Notation.
+- `triPhase α k = cos k₁ + cos k₂ + α cos(k₁ + k₂)` on ℝ × ℝ; `a* = 1/(2√2)` (Lean `triExceptional`).
+- Derivatives are `iteratedFDeriv` applied to lists of vectors, as in `IsA3Point` (batch A3); `FoldOrNondeg`
+  (batch S3) is "nondegenerate, or rank one with a nonzero cubic along every kernel vector", that is A1 or A2.
+- A *reduced curve* at `k₀` for vectors `v, w` and radius ε: a smooth h with h(0) = 0 and
+  `DΨ(k₀ + uv + h(u)w)·w = DΨ(k₀)·w` for |u| < ε (Lean `ReducedCurve`).
+- The *reduced function* `g(u) = Ψ(k₀ + uv + h(u)w) − DΨ(k₀)(uv + h(u)w)` (Lean `reducedFn`).
+- *A5 point* (Lean `IsA5Point`): there are `v ≠ 0` in the Hessian kernel, w with `D²Ψ[w, w] ≠ 0`, ε > 0 and a reduced
+  curve, such that `g⁽ʲ⁾(0) = 0` for j = 1, …, 5 and `g⁽⁶⁾(0) ≠ 0`.
+
+**TRI-K (classification).** For α ≠ 0, every point of ℝ² is A1 or A2, A3, or A5 for `triPhase α`. In particular
+there is no A4 point and no point with Hessian zero.
+
+**TRI-X (the A5 locus).** If k is an A5 point of `triPhase α`, then |α| = a* and k is `(θ, −θ)` or `(−θ, θ)` modulo
+2π in each coordinate, with `θ = arccos(−2α)`. For +a* that is `θ = 3π/4`; for −a* it is `θ = π/4`.
+
+**TRI-W (the A5 witness and its sextic).** For |α| = a* the points `(θ, −θ)` and `(−θ, θ)` are A5 points. With
+v = (1, 1) and w = (1, −1), every reduced curve at `(θ, −θ)` gives `g⁽⁶⁾(0) = −60√2 · sign α`. In the unit kernel
+coordinate s = √2 u this is the coefficient `−sign α/(48√2)` of s⁶.
+
+**TRI-Q (the reduced quartics).** For α ≠ 0, at `(π/2, π/2)` with v = (1, −1) and w = (1, 1): v spans the Hessian
+kernel, `D³Ψ[v, v, v] = 0`, and `D²Ψ[w, w] D⁴Ψ[v⁴] − 3(D³Ψ[v, v, w])² = −12`. For 0 < |α| ≤ 1/2, at `(θ, −θ)` with
+v = (1, 1) and w = (1, −1), the same hold with the value `12(8α² − 1)`. In the unit kernel coordinate the quartic
+coefficients are `−1/(32α)` and `(8α² − 1)/(32α)`.
+
+What the statements say and do not say (modelling choices and omissions, for the reviewer).
+1. **The fixed phase.** Types are of the fixed phase. The linear term `n·k/t` of a lattice kernel changes only
+   first derivatives, so these are the types of `Ψ_α + p·(·)` at its critical points, for every p.
+2. **Points are in ℝ², not on the torus.** TRI-X gives the locus with integer shifts by 2π.
+3. **The witness at one point only.** TRI-W gives the sextic at `(θ, −θ)` only. At `(−θ, θ)` it follows by the
+   symmetry `(x, y) ↦ (y, x)`, which is not stated.
+4. **The A5 definition.** `IsA5Point` asks for some reduced curve, while TRI-W states its value for every reduced
+   curve. The implicit function theorem makes the curve unique near 0 when `D²Ψ[w, w] ≠ 0`; that is not stated.
+5. **Not stated:**
+   - the case α = 0 (four D4 points, from the product structure);
+   - the off-axis A3 points that exist for some α (their number as a function of α);
+   - the mutual exclusivity of the four types;
+   - anything about decay.
+
+Clarifications after the blind pre-proof reviews (2026-11-27; `review/2026-11-27-TRI-preproof-answers.md`). The
+statement file is unchanged.
+TRI-a. TRI-Q states that v lies in the Hessian kernel (`D²Ψ[v, z] = 0` for every z). It does not state that v spans
+   the kernel: rank one, `D²Ψ[w, w] = 4α ≠ 0` at both points, is not part of TRI-Q, and the sanity layer computes it
+   separately. In the notation paragraph, `FoldOrNondeg` asks for a nonzero cubic along every *nonzero* kernel
+   vector.
+TRI-b. Limits of the sanity layer, frozen with the statements (referee A, finding A2):
+   - The layer does not test the transverse equation of `ReducedCurve`: replacing it by `True` is not detected.
+   - It does not test the range of orders in `IsA5Point`: `Icc 1 4` in place of `Icc 1 5` is not detected.
+   - With a free curve, an indefinite A3 point would count as A5.
+   The frozen definitions contain neither mutation. A theorem `¬ IsA5Point (triPhase (1/4)) (π/2, π/2)`, which needs
+   the uniqueness of the reduced curve, is owed with the proofs. Plant TRI-X-c is equivalent to the frozen TRI-X, not
+   a true weakening (finding A5).
+   Addendum (2026-11-27, route referee, finding M3; `review/2026-11-27-TRI-route-referee-answers.md`): the bite needs
+   no uniqueness of the reduced curve. The bridge lemma of `docs/proof-TRI.md`, section 4, holds for every reduced
+   curve, so the bite follows from TRI-X.
+TRI-c. (2026-11-27, after the proofs; `review/2026-11-27-TRI-post-proof-answers.md`.)
+   - **"No A4 point" is not proved.** In TRI-K's prose, and in the frozen docstrings, "in particular there is no A4
+     point" is the informal reading, not a consequence of the four Lean theorems. TRI-K's disjunction is not exclusive,
+     and `IsA5Point` asks for some (v, w, curve). Nothing proved excludes another choice at a locus point whose reduced
+     function has `g⁽⁵⁾(0) ≠ 0`.
+   - **What is proved,** through lemmas of the proof modules:
+     - every reduced curve, at any point, with `g‴(0) = g⁗(0) = 0` lies on TRI-X's locus at |α| = a*;
+     - at every locus point, every reduced curve for v = (1, 1), w = (1, −1) has `g⁽¹⁻⁵⁾(0) = 0`.
+   - **"No point with Hessian zero"** does follow from TRI-K: each of its three conditions needs `D²Ψ[w, w] ≠ 0` for
+     some w.
+   - **α = 0.** "The case α = 0 is not stated" refers to its D4 points. TRI-X quantifies over all α and so implies
+     that `triPhase 0` has no A5 point.
+   - **The bite.** `¬ IsA5Point (triPhase (1/4)) (π/2, π/2)` is proved as a corollary of TRI-X, without uniqueness of
+     the reduced curve (TRI-b, addendum).

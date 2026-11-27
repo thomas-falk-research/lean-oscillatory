@@ -1,0 +1,54 @@
+import OscInt.Front.TriangularAnisoSanity
+import OscInt.Front.TriangularAnisoFinal
+
+namespace OscInt.API.TriangularAnisoSanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity
+open scoped ContDiff
+
+/-- PLANTED copy of `TriA5WitnessStatement`: the sign of −60√2 flipped. -/
+def P_TriA5WitnessStatement : Prop :=
+  ∀ α : ℝ, |α| = triExceptional →
+    IsA5Point (triPhase α) (Real.arccos (-2 * α), -Real.arccos (-2 * α)) ∧
+      IsA5Point (triPhase α) (-Real.arccos (-2 * α), Real.arccos (-2 * α)) ∧
+      ∀ (ε : ℝ) (h : ℝ → ℝ), 0 < ε →
+        ReducedCurve (triPhase α) (Real.arccos (-2 * α), -Real.arccos (-2 * α)) (1, 1) (1, -1) ε h →
+          iteratedDeriv 6 (reducedFn (triPhase α) (Real.arccos (-2 * α), -Real.arccos (-2 * α)) (1, 1) (1, -1) h) 0
+            = 60 * Real.sqrt 2 * SignType.sign α
+
+/-- Not a detection: the draft and the plant together say only that no reduced curve exists at `(θ, −θ)` for
+`v = (1, 1)`, `w = (1, −1)`, at `α = a*`. A detection needs such a curve (a smooth solution of the transverse
+equation, with its sixth derivative), which this sanity layer does not construct. -/
+theorem char_TRI_W_a (hW : TriA5WitnessStatement) (hP : P_TriA5WitnessStatement) (ε : ℝ) (hε : 0 < ε)
+    (c : ℝ → ℝ) : ¬ ReducedCurve (triPhase triExceptional)
+      (Real.arccos (-2 * triExceptional), -Real.arccos (-2 * triExceptional)) (1, 1) (1, -1) ε c := by
+  intro hc
+  have h1 := (hW _ (abs_of_pos triExceptional_pos)).2.2 ε c hε hc
+  have h2 := (hP _ (abs_of_pos triExceptional_pos)).2.2 ε c hε hc
+  rw [h1, sign_pos triExceptional_pos] at h2
+  have : 0 < Real.sqrt 2 := by positivity
+  simp at h2
+  linarith
+
+#print axioms char_TRI_W_a
+
+/-- Closed: the proofs construct a reduced curve at `(θ, −θ)`, `θ = arccos(−2a*)`, for `v = (1, 1)`,
+`w = (1, −1)` (`OscInt.API.TriWitness.exists_curve`, `reducedCurve_iff`), so `char_TRI_W_a` with the proved TRI-W
+refutes the plant without a hypothesis. -/
+theorem closed_now : ¬ P_TriA5WitnessStatement := by
+  intro hP
+  have hα : |triExceptional| = triExceptional := abs_of_pos triExceptional_pos
+  set θ := Real.arccos (-2 * triExceptional)
+  have hcx := OscInt.API.TriWitness.cos_arccos_alpha hα
+  have hα2 := OscInt.API.TriWitness.alpha_sq hα
+  have hc2 : Real.cos θ ^ 2 = 1 / 2 := by rw [hcx]; nlinarith
+  have hs2 : Real.sin θ ^ 2 = 1 / 2 := by nlinarith [Real.sin_sq_add_cos_sq θ]
+  obtain ⟨h, hh, h0, hcu⟩ := OscInt.API.TriWitness.exists_curve hc2 hs2
+  have hp : Real.cos (θ + -θ) = 1 := by simp
+  have hps : Real.sin (θ + -θ) = 0 := by simp
+  exact char_TRI_W_a OscInt.API.triA5Witness hP (1 / 8) (by norm_num) h
+    ((OscInt.API.TriWitness.reducedCurve_iff (α := triExceptional) hp hps (1 / 8) h).2 ⟨hh, h0, hcu⟩)
+
+#print axioms closed_now
+
+end OscInt.API.TriangularAnisoSanity

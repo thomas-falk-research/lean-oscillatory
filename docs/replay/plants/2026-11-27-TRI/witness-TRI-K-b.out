@@ -1,0 +1,2 @@
+exit code 0
+'OscInt.API.TriangularAnisoSanity.witness_TRI_K_b' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,25 @@
+# Batch TRI: the plants not detected outright before the proofs, composed with the proofs (2026-11-27, after the full replay of 2152425).
+# The plant record docs/replay/plants/2026-11-27-TRI (10 planted controls) has 6 detected outright, 2 detected only relative to the true statements
+# (TRI-X-a, the exceptional value a* replaced by 1/2; TRI-X-b, θ = arccos(−2α) replaced by arccos(2α)), 1 true weakening (TRI-X-c) and 1 not
+# detected (TRI-W-a, the sign of the sextic flipped). The answers to the blind pre-proof review (review/2026-11-27-TRI-preproof-answers.md, A2 and A3)
+# owe a re-run of TRI-W-a and TRI-X-a/b against the proofs.
+# Each file closed-<plant>.lean.txt in docs/replay/plants/2026-11-27-TRI is the witness file of that plant, unchanged except for one added import
+# (OscInt.Front.TriangularAnisoFinal), followed by a theorem closed_now : ¬ <planted statement> without a hypothesis:
+#   TRI-X-a: witness_TRI_X_a_W applied to the proved OscInt.API.triA5Witness;
+#   TRI-X-b: witness_TRI_X_b applied to the proved OscInt.API.triA5Witness;
+#   TRI-W-a: char_TRI_W_a (draft ∧ plant → no reduced curve at (θ, −θ) for v = (1, 1), w = (1, −1)) applied to the proved TRI-W and to the reduced
+#            curve that the proofs construct (OscInt.API.TriWitness.exists_curve, reducedCurve_iff). The same refutation was compiled earlier by
+#            post-proof referee A in its own directory (review/2026-11-27-TRI-post-proof-answers.md, A-N2); this file is the lead's own.
+# Written and run by the lead, one Lean process at a time (nice -n 10 lake env lean -DautoImplicit=false), 2026-11-27T14:24:09Z to 14:25:29Z, against
+# the build that the replay of 2152425 left (docs/replay/2026-11-27-TRI-verify-all.txt); one line per file below (exit code; number of lines
+# 'depends on axioms: [propext, Classical.choice, Quot.sound]'; number of lines with 'error' or 'warning'); the .out files hold the output.
+TRI-W-a rc=0 axioms-lines=2 error-or-warning-lines=0
+TRI-X-a rc=0 axioms-lines=3 error-or-warning-lines=0
+TRI-X-b rc=0 axioms-lines=2 error-or-warning-lines=0
+# Result: 9 of the 10 planted mutations are now refuted by compiled theorems without a hypothesis; the tenth, TRI-X-c, is a true weakening that no
+# datum and no proof can refute. This adds no plant. Not re-run: the two mutated definitions of finding A2 (the transverse equation of
+# ReducedCurve replaced by True; the orders 1 to 5 of IsA5Point replaced by 1 to 4) were the referee's mutations, not plants of the record; against
+# them the bite OscInt.API.triQuarter_halfPi_not_isA5 now exists in Lean, but no compile of the mutated layer with the bite was run.
+
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

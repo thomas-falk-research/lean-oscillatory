@@ -1,0 +1,30 @@
+exit code 1
+plant-TRI-K-b.lean:19:3: error: Function expected at
+  h 2 ?m.137
+but this term has type
+  FoldOrNondeg (triPhase 2) ?m.137 ∨ IsA3Point (triPhase 2) ?m.137 ∨ IsA5Point (triPhase 2) ?m.137
+
+Note: Expected a function because this term is being applied to the argument
+  _
+plant-TRI-K-b.lean:19:24: error: Function expected at
+  h (-1 / 3) ?m.149
+but this term has type
+  FoldOrNondeg (triPhase (-1 / 3)) ?m.149 ∨ IsA3Point (triPhase (-1 / 3)) ?m.149 ∨ IsA5Point (triPhase (-1 / 3)) ?m.149
+
+Note: Expected a function because this term is being applied to the argument
+  _
+plant-TRI-K-b.lean:19:8: error: unsolved goals
+h : P_TriClassificationStatement
+⊢ ℝ × ℝ
+plant-TRI-K-b.lean:19:36: error: unsolved goals
+h : P_TriClassificationStatement
+⊢ ℝ × ℝ
+plant-TRI-K-b.lean:24:13: error: Application type mismatch: The argument
+  LT.lt.ne' triExceptional_pos
+has type
+  triExceptional ≠ 0
+of sort `Prop` but is expected to have type
+  ℝ × ℝ
+of sort `Type` in the application
+  h ?m.2 (LT.lt.ne' triExceptional_pos)
+plant-TRI-K-b.lean:24:45: error: Tactic `rcases` failed: `x✝ : ?m.8` is not an inductive datatype

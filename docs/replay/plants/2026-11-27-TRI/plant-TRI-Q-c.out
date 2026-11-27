@@ -1,0 +1,7 @@
+exit code 1
+plant-TRI-Q-c.lean:65:44: error: Type mismatch
+  LT.lt.le triExceptional_lt_half
+has type
+  triExceptional ≤ 1 / 2
+but is expected to have type
+  triExceptional ≤ 1

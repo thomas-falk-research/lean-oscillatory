@@ -1,0 +1,70 @@
+import OscInt.Front.TriangularAnisoSanity
+
+namespace OscInt.API.TriangularAnisoSanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity
+open scoped ContDiff
+
+/-- PLANTED copy of `TriQuarticStatement`: the range |α| ≤ 1/2 ↦ |α| ≤ 1. -/
+def P_TriQuarticStatement : Prop :=
+  ∀ α : ℝ, α ≠ 0 →
+    ((∀ z, iteratedFDeriv ℝ 2 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), z] = 0) ∧
+      iteratedFDeriv ℝ 3 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, -1)] = 0 ∧
+      iteratedFDeriv ℝ 2 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, 1), (1, 1)] *
+          iteratedFDeriv ℝ 4 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, -1), (1, -1)] -
+        3 * iteratedFDeriv ℝ 3 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, 1)] ^ 2 = -12) ∧
+    (|α| ≤ 1 →
+      let θ := Real.arccos (-2 * α)
+      (∀ z, iteratedFDeriv ℝ 2 (triPhase α) (θ, -θ) ![(1, 1), z] = 0) ∧
+        iteratedFDeriv ℝ 3 (triPhase α) (θ, -θ) ![(1, 1), (1, 1), (1, 1)] = 0 ∧
+        iteratedFDeriv ℝ 2 (triPhase α) (θ, -θ) ![(1, -1), (1, -1)] *
+            iteratedFDeriv ℝ 4 (triPhase α) (θ, -θ) ![(1, 1), (1, 1), (1, 1), (1, 1)] -
+          3 * iteratedFDeriv ℝ 3 (triPhase α) (θ, -θ) ![(1, 1), (1, 1), (1, -1)] ^ 2 = 12 * (8 * α ^ 2 - 1))
+
+/-- **TRI-Q** at `α = 1/4`: the values `−12` (at `(π/2, π/2)`) and `12(8α² − 1) = −6` (at `(θ, −θ)`,
+`θ = arccos(−1/2)`). -/
+theorem P_triQ_quarter (h : P_TriQuarticStatement) :
+    iteratedFDeriv ℝ 2 (triPhase (1 / 4)) (Real.pi / 2, Real.pi / 2) ![(1, 1), (1, 1)] *
+          iteratedFDeriv ℝ 4 (triPhase (1 / 4)) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, -1), (1, -1)] -
+        3 * iteratedFDeriv ℝ 3 (triPhase (1 / 4)) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, 1)] ^ 2 = -12 ∧
+    iteratedFDeriv ℝ 2 (triPhase (1 / 4)) (Real.arccos (-2 * (1 / 4)), -Real.arccos (-2 * (1 / 4)))
+          ![(1, -1), (1, -1)] *
+        iteratedFDeriv ℝ 4 (triPhase (1 / 4)) (Real.arccos (-2 * (1 / 4)), -Real.arccos (-2 * (1 / 4)))
+          ![(1, 1), (1, 1), (1, 1), (1, 1)] -
+        3 * iteratedFDeriv ℝ 3 (triPhase (1 / 4)) (Real.arccos (-2 * (1 / 4)), -Real.arccos (-2 * (1 / 4)))
+          ![(1, 1), (1, 1), (1, -1)] ^ 2 = -6 := by
+  have h1 := h (1 / 4) (by norm_num)
+  have h2 := h1.2 (by rw [abs_of_pos (by norm_num)]; norm_num)
+  dsimp only at h2
+  refine ⟨h1.1.2.2, ?_⟩
+  rw [h2.2.2]; norm_num
+
+/-- **TRI-Q** at `α = −1/3` (negative coupling): the values `−12` and `12(8/9 − 1) = −4/3`. -/
+theorem P_triQ_neg_third (h : P_TriQuarticStatement) :
+    iteratedFDeriv ℝ 2 (triPhase (-1 / 3)) (Real.pi / 2, Real.pi / 2) ![(1, 1), (1, 1)] *
+          iteratedFDeriv ℝ 4 (triPhase (-1 / 3)) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, -1), (1, -1)] -
+        3 * iteratedFDeriv ℝ 3 (triPhase (-1 / 3)) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, 1)] ^ 2 = -12 ∧
+    iteratedFDeriv ℝ 2 (triPhase (-1 / 3)) (Real.arccos (-2 * (-1 / 3)), -Real.arccos (-2 * (-1 / 3)))
+          ![(1, -1), (1, -1)] *
+        iteratedFDeriv ℝ 4 (triPhase (-1 / 3)) (Real.arccos (-2 * (-1 / 3)), -Real.arccos (-2 * (-1 / 3)))
+          ![(1, 1), (1, 1), (1, 1), (1, 1)] -
+        3 * iteratedFDeriv ℝ 3 (triPhase (-1 / 3)) (Real.arccos (-2 * (-1 / 3)), -Real.arccos (-2 * (-1 / 3)))
+          ![(1, 1), (1, 1), (1, -1)] ^ 2 = -4 / 3 := by
+  have h1 := h (-1 / 3) (by norm_num)
+  have h2 := h1.2 (by rw [abs_of_neg (by norm_num)]; norm_num)
+  dsimp only at h2
+  refine ⟨h1.1.2.2, ?_⟩
+  rw [h2.2.2]; norm_num
+
+/-- **TRI-Q** at `α = a*`: the anti-diagonal reduced quartic at the A5 point is `0` (consistency with TRI-W). -/
+theorem P_triQ_exceptional (h : P_TriQuarticStatement) :
+    iteratedFDeriv ℝ 2 (triPhase triExceptional) kA5 ![(1, -1), (1, -1)] *
+        iteratedFDeriv ℝ 4 (triPhase triExceptional) kA5 ![(1, 1), (1, 1), (1, 1), (1, 1)] -
+      3 * iteratedFDeriv ℝ 3 (triPhase triExceptional) kA5 ![(1, 1), (1, 1), (1, -1)] ^ 2 = 0 := by
+  have h2 := (h triExceptional triExceptional_pos.ne').2
+    (by rw [abs_of_pos triExceptional_pos]; exact triExceptional_lt_half.le)
+  dsimp only at h2
+  rw [arccos_neg_two_triExceptional] at h2
+  rw [kA5, h2.2.2, triExceptional_sq]; norm_num
+
+end OscInt.API.TriangularAnisoSanity

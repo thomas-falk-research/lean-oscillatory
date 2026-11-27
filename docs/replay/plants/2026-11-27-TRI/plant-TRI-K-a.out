@@ -1,0 +1,50 @@
+exit code 1
+plant-TRI-K-a.lean:19:24: error: Application type mismatch: The argument
+  h (-1 / 3)
+    (Mathlib.Meta.NormNum.isRat_eq_false
+      (Mathlib.Meta.NormNum.isRat_div
+        (Mathlib.Meta.NormNum.isRat_mul (Eq.refl HMul.hMul)
+          (Mathlib.Meta.NormNum.IsInt.to_isRat
+            (Mathlib.Meta.NormNum.isInt_neg (Eq.refl Neg.neg)
+              (Mathlib.Meta.NormNum.IsNat.to_isInt (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_one))
+              (Eq.refl (Int.negOfNat 1))))
+          (Mathlib.Meta.NormNum.IsNNRat.to_isRat
+            (Mathlib.Meta.NormNum.isNNRat_inv_pos
+              (Mathlib.Meta.NormNum.IsNat.to_isNNRat (Mathlib.Meta.NormNum.isNat_ofNat ℝ (Eq.refl 3)))))
+          (Eq.refl ((Int.negOfNat 1).mul (Int.ofNat 1))) (Eq.refl 3)))
+      (Mathlib.Meta.NormNum.IsNNRat.to_isRat
+        (Mathlib.Meta.NormNum.IsNat.to_isNNRat (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_zero)))
+      (Eq.refl false))
+    ?m.151
+has type
+  FoldOrNondeg (triPhase (-1 / 3)) ?m.151 ∨ IsA3Point (triPhase (-1 / 3)) ?m.151
+but is expected to have type
+  FoldOrNondeg (triPhase (-1 / 3)) (2, -5 / 7) ∨
+    IsA3Point (triPhase (-1 / 3)) (2, -5 / 7) ∨ IsA5Point (triPhase (-1 / 3)) (2, -5 / 7)
+in the application
+  ⟨?m.139,
+    h (-1 / 3)
+      (Mathlib.Meta.NormNum.isRat_eq_false
+        (Mathlib.Meta.NormNum.isRat_div
+          (Mathlib.Meta.NormNum.isRat_mul (Eq.refl HMul.hMul)
+            (Mathlib.Meta.NormNum.IsInt.to_isRat
+              (Mathlib.Meta.NormNum.isInt_neg (Eq.refl Neg.neg)
+                (Mathlib.Meta.NormNum.IsNat.to_isInt (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_one))
+                (Eq.refl (Int.negOfNat 1))))
+            (Mathlib.Meta.NormNum.IsNNRat.to_isRat
+              (Mathlib.Meta.NormNum.isNNRat_inv_pos
+                (Mathlib.Meta.NormNum.IsNat.to_isNNRat (Mathlib.Meta.NormNum.isNat_ofNat ℝ (Eq.refl 3)))))
+            (Eq.refl ((Int.negOfNat 1).mul (Int.ofNat 1))) (Eq.refl 3)))
+        (Mathlib.Meta.NormNum.IsNNRat.to_isRat
+          (Mathlib.Meta.NormNum.IsNat.to_isNNRat (Mathlib.Meta.NormNum.isNat_ofNat ℝ Nat.cast_zero)))
+        (Eq.refl false))
+      ?m.151⟩
+plant-TRI-K-a.lean:26:17: error: Application type mismatch: The argument
+  h1
+has type
+  CauSeq ℚ abs
+of sort `Type` but is expected to have type
+  IsA3Point (triPhase triExceptional) kA5
+of sort `Prop` in the application
+  absurd h1
+plant-TRI-K-a.lean:27:2: error: No goals to be solved

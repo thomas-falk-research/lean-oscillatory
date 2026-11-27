@@ -1,0 +1,33 @@
+import OscInt.Front.TriangularAnisoSanity
+
+namespace OscInt.API.TriangularAnisoSanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity
+open scoped ContDiff
+
+/-- PLANTED copy of `TriQuarticStatement`: the value −12 at (π/2, π/2) ↦ 12. -/
+def P_TriQuarticStatement : Prop :=
+  ∀ α : ℝ, α ≠ 0 →
+    ((∀ z, iteratedFDeriv ℝ 2 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), z] = 0) ∧
+      iteratedFDeriv ℝ 3 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, -1)] = 0 ∧
+      iteratedFDeriv ℝ 2 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, 1), (1, 1)] *
+          iteratedFDeriv ℝ 4 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, -1), (1, -1)] -
+        3 * iteratedFDeriv ℝ 3 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, 1)] ^ 2 = 12) ∧
+    (|α| ≤ 1 / 2 →
+      let θ := Real.arccos (-2 * α)
+      (∀ z, iteratedFDeriv ℝ 2 (triPhase α) (θ, -θ) ![(1, 1), z] = 0) ∧
+        iteratedFDeriv ℝ 3 (triPhase α) (θ, -θ) ![(1, 1), (1, 1), (1, 1)] = 0 ∧
+        iteratedFDeriv ℝ 2 (triPhase α) (θ, -θ) ![(1, -1), (1, -1)] *
+            iteratedFDeriv ℝ 4 (triPhase α) (θ, -θ) ![(1, 1), (1, 1), (1, 1), (1, 1)] -
+          3 * iteratedFDeriv ℝ 3 (triPhase α) (θ, -θ) ![(1, 1), (1, 1), (1, -1)] ^ 2 = 12 * (8 * α ^ 2 - 1))
+
+/-- Witness: at `α = 1/4` the quartic at `(π/2, π/2)` is `−12` (exact computation, `quarter_halfPi_quartic`). -/
+theorem witness_TRI_Q_a : ¬ P_TriQuarticStatement := by
+  intro h
+  have := (h (1 / 4) (by norm_num)).1.2.2
+  rw [quarter_halfPi_quartic] at this
+  norm_num at this
+
+#print axioms witness_TRI_Q_a
+
+end OscInt.API.TriangularAnisoSanity

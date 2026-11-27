@@ -1,0 +1,37 @@
+import OscInt.Front.TriangularAnisoSanity
+
+namespace OscInt.API.TriangularAnisoSanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity
+open scoped ContDiff
+
+/-- PLANTED copy of `TriQuarticStatement`: the range |α| ≤ 1/2 ↦ |α| ≤ 1. -/
+def P_TriQuarticStatement : Prop :=
+  ∀ α : ℝ, α ≠ 0 →
+    ((∀ z, iteratedFDeriv ℝ 2 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), z] = 0) ∧
+      iteratedFDeriv ℝ 3 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, -1)] = 0 ∧
+      iteratedFDeriv ℝ 2 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, 1), (1, 1)] *
+          iteratedFDeriv ℝ 4 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, -1), (1, -1)] -
+        3 * iteratedFDeriv ℝ 3 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, 1)] ^ 2 = -12) ∧
+    (|α| ≤ 1 →
+      let θ := Real.arccos (-2 * α)
+      (∀ z, iteratedFDeriv ℝ 2 (triPhase α) (θ, -θ) ![(1, 1), z] = 0) ∧
+        iteratedFDeriv ℝ 3 (triPhase α) (θ, -θ) ![(1, 1), (1, 1), (1, 1)] = 0 ∧
+        iteratedFDeriv ℝ 2 (triPhase α) (θ, -θ) ![(1, -1), (1, -1)] *
+            iteratedFDeriv ℝ 4 (triPhase α) (θ, -θ) ![(1, 1), (1, 1), (1, 1), (1, 1)] -
+          3 * iteratedFDeriv ℝ 3 (triPhase α) (θ, -θ) ![(1, 1), (1, 1), (1, -1)] ^ 2 = 12 * (8 * α ^ 2 - 1))
+
+/-- Witness: at `α = 1`, `arccos(−2) = π` (Lean's clamped value), and `(1, 1)` is not in the Hessian kernel at
+`(π, −π)`: `D²[(1, 1), (1, 0)] = −1`. -/
+theorem witness_TRI_Q_c : ¬ P_TriQuarticStatement := by
+  intro h
+  have h2 := (h 1 one_ne_zero).2 (by norm_num)
+  dsimp only at h2
+  have := h2.1 (1, 0)
+  rw [triD2_mixed, show -2 * (1 : ℝ) = -2 by norm_num, Real.arccos_of_le_neg_one (by norm_num)] at this
+  simp only [add_neg_cancel, Real.cos_zero, Real.cos_neg, Real.cos_pi] at this
+  norm_num at this
+
+#print axioms witness_TRI_Q_c
+
+end OscInt.API.TriangularAnisoSanity

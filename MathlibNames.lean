@@ -331,3 +331,16 @@ import Mathlib
 #check @intervalIntegral.integral_sub
 #check @Real.sin_bound
 #check @Real.sin_lt
+#check @Real.contDiffAt_arcsin
+#check @Real.cos_eq_cos_iff
+#check @Real.sin_eq_zero_iff
+#check @Filter.EventuallyEq.iteratedDeriv_eq
+#check @iteratedDeriv_fun_mul
+#check @iteratedDeriv_mul
+#check @iteratedDeriv_succ'
+#check @ContDiffAt.isSymmSndFDerivAt
+#check @Real.one_sub_sq_div_two_le_cos
+#check @Real.arccos_cos
+#check @Real.cos_arccos
+#check @Real.sin_arccos
+#check @Real.arcsin_lt_pi_div_two

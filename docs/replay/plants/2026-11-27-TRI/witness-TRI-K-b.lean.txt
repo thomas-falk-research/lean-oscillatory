@@ -1,0 +1,19 @@
+import OscInt.Front.TriangularAnisoSanity
+
+namespace OscInt.API.TriangularAnisoSanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity
+open scoped ContDiff
+
+/-- PLANTED copy of `TriClassificationStatement`: the hypothesis α ≠ 0 dropped. -/
+def P_TriClassificationStatement : Prop :=
+  ∀ α : ℝ, ∀ k : ℝ × ℝ,
+    FoldOrNondeg (triPhase α) k ∨ IsA3Point (triPhase α) k ∨ IsA5Point (triPhase α) k
+
+/-- Witness: at `α = 0`, `(π/2, π/2)` has Hessian zero, so it is of none of the three types (`zero_halfPi_none`). -/
+theorem witness_TRI_K_b : ¬ P_TriClassificationStatement :=
+  fun h => zero_halfPi_none (h 0 _)
+
+#print axioms witness_TRI_K_b
+
+end OscInt.API.TriangularAnisoSanity

@@ -9,6 +9,35 @@ SPDX-License-Identifier: CC-BY-4.0
 For a reader who saw nothing. Read "Rules in force" at the top of `docs/lessons.md` first; it distils the numbered entries
 below it, and every rule is binding.
 
+## Resume here (session 15, 2026-11-26/27, branch `claude/jolly-euler-r4c7d1`; read before the session-13 block below)
+
+- **Batch TRI** (owner's decision 2026-11-27: the classification K1 and the coefficients K3 of the phase
+  `cos x + cos y + α cos(x + y)`): four statements in `OscInt/Statements/TriangularAniso.lean`, sanity layer
+  `OscInt/Front/TriangularAnisoSanity.lean`, plants `docs/replay/plants/2026-11-27-TRI/`, challenge
+  `Challenge/TriangularAniso.lean`, `comparator-TRI.json`. Registered tests TRI (FAIL, resolution), TRI-2 (FAIL,
+  deduplication at the A5 points, explained by `numerics/review/tri_diag_a5_dedup.py`), TRI-3 (PASS): rows in
+  `docs/prereg/LEDGER.md`. The lead read a T1 (ii) FAIL by the first registration's "until it is explained"; the
+  owner may overrule (session log, 03:35). **Frozen 2026-11-27:** stamp `stamps/20261127T060115Z-bb3a05c4b143` on
+  bb3a05c (three RFC 3161 tokens, 06:01:23Z), pinned; registry 94 statements, 4 not proved at the freeze (all 94 proved now).
+- **Batch TRI machine-checked as stated (2026-11-27).** Blind pre-proof review: four FAITHFUL, no counterexample
+  (`review/2026-11-27-TRI-preproof-answers.md`, stamped `stamps/20261127T070956Z-e692d7e55078`). Route `docs/proof-TRI.md`,
+  route referee answered (`review/2026-11-27-TRI-route-referee-answers.md`). Final theorems in
+  `OscInt/Front/TriangularAnisoFinal.lean` (`OscInt.API.triClassification`, `triA5Locus`, `triA5Witness`, `triQuartic`,
+  and the bite `triQuarter_halfPi_not_isA5`). Post-proof reviews: four FAITHFUL, SOUND, claims supported, no BLOCKER or
+  MAJOR (`review/2026-11-27-TRI-post-proof-answers.md`, stamped `stamps/20261127T104856Z-9d710be13bd9`). Full replay of
+  2152425: RESULT PASS (`docs/replay/2026-11-27-TRI-verify-all.txt`). Plants TRI-W-a and TRI-X-a/b closed
+  (`docs/replay/2026-11-27-TRI-plants-closed.txt`); definition mutations M1, M2 tested
+  (`docs/replay/2026-11-27-TRI-definition-mutations.txt`). Optional follow-up: a Lean "no A4 point" needs the bridge lemma to
+  order 5 (clarification TRI-c of `docs/statements.md`). **Exact next step,** in the owner's order: K2 as its own batch (generic order-m local lemma
+  uniform in the velocity, monomial asymptotics, Fourier localisation, the two global statements, the bridge lemma
+  of `review/2026-11-27-K2-proof-answers.md`), SPL-N, Report D (38/5), the parameter-uniform A5 crossover.
+  Before freezing K2, read section 5 (erratum) of that file: the A3 bridge without the factor 24 (proved,
+  `OscInt.API.ReducedBridge.bridge`), TRI-W's fixed basis v = (1, 1), w = (1, −1), and the α = 0 lower bound at all
+  real times, which T6L (integer times) does not give.
+- **Owner items open:** the Popov 2008 PDF (paywalled, unread); the human-only Scholar/MathSciNet queries in
+  `review/2026-11-26-A5-handoff-answers.md`, section 5.
+- Session record: `docs/progress/2026-11-26-session15-log.md`.
+
 ## Resume here (session 13, 2026-11-16; kept current at every checkpoint)
 
 - **START HERE (state at the end of session 13, 2026-11-20; everything is pushed; nothing is running).**

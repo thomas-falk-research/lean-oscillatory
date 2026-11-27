@@ -1,0 +1,86 @@
+exit code 1
+plant-TRI-Q-b.lean:35:49: error: unsolved goals
+h : P_TriQuarticStatement
+h1 :
+  ((∀ (z : ℝ × ℝ), (iteratedFDeriv ℝ 2 (triPhase (1 / 4)) (Real.pi / 2, Real.pi / 2)) ![(1, -1), z] = 0) ∧
+      (iteratedFDeriv ℝ 3 (triPhase (1 / 4)) (Real.pi / 2, Real.pi / 2)) ![(1, -1), (1, -1), (1, -1)] = 0 ∧
+        (iteratedFDeriv ℝ 2 (triPhase (1 / 4)) (Real.pi / 2, Real.pi / 2)) ![(1, 1), (1, 1)] *
+              (iteratedFDeriv ℝ 4 (triPhase (1 / 4)) (Real.pi / 2, Real.pi / 2)) ![(1, -1), (1, -1), (1, -1), (1, -1)] -
+            3 * (iteratedFDeriv ℝ 3 (triPhase (1 / 4)) (Real.pi / 2, Real.pi / 2)) ![(1, -1), (1, -1), (1, 1)] ^ 2 =
+          -12) ∧
+    (|1 / 4| ≤ 1 / 2 →
+      have θ := Real.arccos (-2 * (1 / 4));
+      (∀ (z : ℝ × ℝ), (iteratedFDeriv ℝ 2 (triPhase (1 / 4)) (θ, -θ)) ![(1, 1), z] = 0) ∧
+        (iteratedFDeriv ℝ 3 (triPhase (1 / 4)) (θ, -θ)) ![(1, 1), (1, 1), (1, 1)] = 0 ∧
+          (iteratedFDeriv ℝ 2 (triPhase (1 / 4)) (θ, -θ)) ![(1, -1), (1, -1)] *
+                (iteratedFDeriv ℝ 4 (triPhase (1 / 4)) (θ, -θ)) ![(1, 1), (1, 1), (1, 1), (1, 1)] -
+              3 * (iteratedFDeriv ℝ 3 (triPhase (1 / 4)) (θ, -θ)) ![(1, 1), (1, 1), (1, -1)] ^ 2 =
+            12 * (8 * (1 / 4) ^ 2 + 1))
+h2 :
+  (∀ (z : ℝ × ℝ),
+      (iteratedFDeriv ℝ 2 (triPhase (1 / 4)) (Real.arccos (-2 * (1 / 4)), -Real.arccos (-2 * (1 / 4)))) ![(1, 1), z] =
+        0) ∧
+    (iteratedFDeriv ℝ 3 (triPhase (1 / 4)) (Real.arccos (-2 * (1 / 4)), -Real.arccos (-2 * (1 / 4))))
+          ![(1, 1), (1, 1), (1, 1)] =
+        0 ∧
+      (iteratedFDeriv ℝ 2 (triPhase (1 / 4)) (Real.arccos (-2 * (1 / 4)), -Real.arccos (-2 * (1 / 4))))
+              ![(1, -1), (1, -1)] *
+            (iteratedFDeriv ℝ 4 (triPhase (1 / 4)) (Real.arccos (-2 * (1 / 4)), -Real.arccos (-2 * (1 / 4))))
+              ![(1, 1), (1, 1), (1, 1), (1, 1)] -
+          3 *
+            (iteratedFDeriv ℝ 3 (triPhase (1 / 4)) (Real.arccos (-2 * (1 / 4)), -Real.arccos (-2 * (1 / 4))))
+                ![(1, 1), (1, 1), (1, -1)] ^
+              2 =
+        12 * (8 * (1 / 4) ^ 2 + 1)
+⊢ False
+plant-TRI-Q-b.lean:52:53: error: unsolved goals
+h : P_TriQuarticStatement
+h1 :
+  ((∀ (z : ℝ × ℝ), (iteratedFDeriv ℝ 2 (triPhase (-1 / 3)) (Real.pi / 2, Real.pi / 2)) ![(1, -1), z] = 0) ∧
+      (iteratedFDeriv ℝ 3 (triPhase (-1 / 3)) (Real.pi / 2, Real.pi / 2)) ![(1, -1), (1, -1), (1, -1)] = 0 ∧
+        (iteratedFDeriv ℝ 2 (triPhase (-1 / 3)) (Real.pi / 2, Real.pi / 2)) ![(1, 1), (1, 1)] *
+              (iteratedFDeriv ℝ 4 (triPhase (-1 / 3)) (Real.pi / 2, Real.pi / 2))
+                ![(1, -1), (1, -1), (1, -1), (1, -1)] -
+            3 * (iteratedFDeriv ℝ 3 (triPhase (-1 / 3)) (Real.pi / 2, Real.pi / 2)) ![(1, -1), (1, -1), (1, 1)] ^ 2 =
+          -12) ∧
+    (|-1 / 3| ≤ 1 / 2 →
+      have θ := Real.arccos (-2 * (-1 / 3));
+      (∀ (z : ℝ × ℝ), (iteratedFDeriv ℝ 2 (triPhase (-1 / 3)) (θ, -θ)) ![(1, 1), z] = 0) ∧
+        (iteratedFDeriv ℝ 3 (triPhase (-1 / 3)) (θ, -θ)) ![(1, 1), (1, 1), (1, 1)] = 0 ∧
+          (iteratedFDeriv ℝ 2 (triPhase (-1 / 3)) (θ, -θ)) ![(1, -1), (1, -1)] *
+                (iteratedFDeriv ℝ 4 (triPhase (-1 / 3)) (θ, -θ)) ![(1, 1), (1, 1), (1, 1), (1, 1)] -
+              3 * (iteratedFDeriv ℝ 3 (triPhase (-1 / 3)) (θ, -θ)) ![(1, 1), (1, 1), (1, -1)] ^ 2 =
+            12 * (8 * (-1 / 3) ^ 2 + 1))
+h2 :
+  (∀ (z : ℝ × ℝ),
+      (iteratedFDeriv ℝ 2 (triPhase (-1 / 3)) (Real.arccos (-2 * (-1 / 3)), -Real.arccos (-2 * (-1 / 3))))
+          ![(1, 1), z] =
+        0) ∧
+    (iteratedFDeriv ℝ 3 (triPhase (-1 / 3)) (Real.arccos (-2 * (-1 / 3)), -Real.arccos (-2 * (-1 / 3))))
+          ![(1, 1), (1, 1), (1, 1)] =
+        0 ∧
+      (iteratedFDeriv ℝ 2 (triPhase (-1 / 3)) (Real.arccos (-2 * (-1 / 3)), -Real.arccos (-2 * (-1 / 3))))
+              ![(1, -1), (1, -1)] *
+            (iteratedFDeriv ℝ 4 (triPhase (-1 / 3)) (Real.arccos (-2 * (-1 / 3)), -Real.arccos (-2 * (-1 / 3))))
+              ![(1, 1), (1, 1), (1, 1), (1, 1)] -
+          3 *
+            (iteratedFDeriv ℝ 3 (triPhase (-1 / 3)) (Real.arccos (-2 * (-1 / 3)), -Real.arccos (-2 * (-1 / 3))))
+                ![(1, 1), (1, 1), (1, -1)] ^
+              2 =
+        12 * (8 * (-1 / 3) ^ 2 + 1)
+⊢ False
+plant-TRI-Q-b.lean:63:97: error: unsolved goals
+h : P_TriQuarticStatement
+h2 :
+  (∀ (z : ℝ × ℝ),
+      (iteratedFDeriv ℝ 2 (triPhase triExceptional) (3 * Real.pi / 4, -(3 * Real.pi / 4))) ![(1, 1), z] = 0) ∧
+    (iteratedFDeriv ℝ 3 (triPhase triExceptional) (3 * Real.pi / 4, -(3 * Real.pi / 4))) ![(1, 1), (1, 1), (1, 1)] = 0 ∧
+      (iteratedFDeriv ℝ 2 (triPhase triExceptional) (3 * Real.pi / 4, -(3 * Real.pi / 4))) ![(1, -1), (1, -1)] *
+            (iteratedFDeriv ℝ 4 (triPhase triExceptional) (3 * Real.pi / 4, -(3 * Real.pi / 4)))
+              ![(1, 1), (1, 1), (1, 1), (1, 1)] -
+          3 *
+            (iteratedFDeriv ℝ 3 (triPhase triExceptional) (3 * Real.pi / 4, -(3 * Real.pi / 4)))
+                ![(1, 1), (1, 1), (1, -1)] ^
+              2 =
+        12 * (8 * triExceptional ^ 2 + 1)
+⊢ False

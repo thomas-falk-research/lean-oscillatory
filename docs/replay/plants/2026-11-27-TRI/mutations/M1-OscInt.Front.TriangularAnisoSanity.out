@@ -1,0 +1,39 @@
+⚠ [9050/9058] Replayed OscInt.Statements.TriangularAniso
+warning: OscInt/Statements/TriangularAniso.lean:64:18: Variable name `Ψ` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _Ψ
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: OscInt/Statements/TriangularAniso.lean:64:34: Variable name `k₀` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _k₀
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: OscInt/Statements/TriangularAniso.lean:64:37: Variable name `v` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _v
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: OscInt/Statements/TriangularAniso.lean:64:39: Variable name `w` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _w
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✖ [9058/9058] Building OscInt.Front.TriangularAnisoSanity (5.8s)
+trace: .> LEAN_PATH=/home/user/lean-oscillatory/.lake/packages/Cli/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/batteries/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/Qq/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/aesop/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/importGraph/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/plausible/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/mathlib/.lake/build/lib/lean:M1/.lake/build/lib/lean /root/lean/lean-4.35.0-linux/bin/lean M1/OscInt/Front/TriangularAnisoSanity.lean -o M1/.lake/build/lib/lean/OscInt/Front/TriangularAnisoSanity.olean -i M1/.lake/build/lib/lean/OscInt/Front/TriangularAnisoSanity.ilean -c M1/.lake/build/ir/OscInt/Front/TriangularAnisoSanity.c --setup M1/.lake/build/ir/OscInt/Front/TriangularAnisoSanity.setup.json --json
+error: OscInt/Front/TriangularAnisoSanity.lean:363:6: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (fderiv ℝ (model ?m) ?x) ?w
+in the target expression
+  True
+
+m : ℕ
+u : ℝ
+x✝ : |u| < 1
+⊢ True
+Some required targets logged failures:
+- OscInt.Front.TriangularAnisoSanity
+error: build failed

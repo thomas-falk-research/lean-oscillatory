@@ -1,0 +1,44 @@
+# Batch TRI: the two definition mutations of finding A2 of the blind pre-proof review, tested against the proofs
+# (2026-11-27, after the replay of 2152425; owed by review/2026-11-27-TRI-preproof-answers.md, A2, and raised again
+# by an external reviewer, who suggested the A4 datum below).
+# M1: the transverse equation of ReducedCurve replaced by True (`∀ u, |u| < ε → True`).
+# M2: the orders of IsA5Point, Finset.Icc 1 5, replaced by Finset.Icc 1 4.
+# Each mutation was applied to its own disposable copy of the tree at f823b60 (tar copy of the work tree with its build,
+# Mathlib packages linked, outside the repository); the frozen file in the repository is unchanged
+# (`git diff --quiet OscInt/Statements` exit 0). Diffs: docs/replay/plants/2026-11-27-TRI/mutations/M1.diff, M2.diff.
+# In each copy the lead built, one at a time (nice -n 10 lake build <module>), the statement file, the five proof parts,
+# the blueprint, the assembly, the final module and the sanity layer, then compiled two scratch files with
+# lake env lean -DautoImplicit=false: a4datum.lean.txt and a4accept.lean.txt (same directory). Run 2026-11-27T22:26:39Z
+# to 22:30:32Z; one line per build in mutations/SUMMARY.txt, outputs in mutations/<M>-<module>.out.
+#
+# The A4 datum. Φ(x, y) = y² + x⁵ + x⁶ at 0, v = (1, 0), w = (0, 1), reduced curve h = 0. a4datum.lean.txt proves,
+# against the frozen definitions (frozen-a4datum.out: exit 0, axioms propext, Classical.choice, Quot.sound only): v is
+# in the Hessian kernel, D²Φ(0)[w, w] = 2, the curve is a ReducedCurve, the reduced function u⁵ + u⁶ has derivatives
+# 0 at orders 1 to 4, 120 at order 5 and 720 at order 6, and so this witness fails the frozen orders 1 to 5.
+# a4accept.lean.txt adds one theorem, `accepted_as_A5 : IsA5Point Φ 0`, built from that witness.
+#
+# Results.
+# Frozen definitions: a4datum exit 0; a4accept exit 1, "Application type mismatch ... Icc 1 4 ... expected Icc 1 5"
+#   (frozen-a4accept.out). The frozen IsA5Point rejects this witness of an A4 point.
+# M1: statement, TriDeriv, TriBlueprint, TriAssembly, TriQuartic, TriAlg build. ReducedBridge fails at line 179, the
+#   step that uses the transverse equation (`hred.2.2 u hu`); so TriangularAnisoFinal, and with it the proof of TRI-X
+#   and the bite triQuarter_halfPi_not_isA5, cannot be built. TriWitness fails at line 256 (reducedCurve_iff, whose
+#   right side keeps the equation) and the sanity layer at line 363 (a proof script that rewrites the equation);
+#   these two are proof-text failures. The scratch files fail for the same reason (a4datum line 41).
+#   Reading (lead, CONJECTURED, not compiled): under M1 the lemma Bridge is false, because with a free curve the term
+#   h′(0)² D²Ψ[w, w] enters g″(0); so M1 is not compatible with the proved theorems, and the failure at line 179 is
+#   semantic, not only a broken script.
+# M2: statement, parts, blueprint, assembly, ReducedBridge, TriAlg, TriQuartic and the sanity layer build; TriWitness
+#   fails at line 387 only (point_A5 supplies the orders 1 to 5 where M2 asks for 1 to 4, a proof-text failure), and
+#   so TriangularAnisoFinal. Under M2, a4datum exit 0 and a4accept exit 0 (M2-a4accept.out: accepted_as_A5, axioms
+#   propext, Classical.choice, Quot.sound): the mutated IsA5Point counts the A4 point 0 of Φ as an A5 point.
+#   Reading: M2 leaves all four TRI statements true (it weakens IsA5Point, and the proof of TRI-X uses only orders 3
+#   and 4), so no theorem about triPhase can detect it; the A4 datum detects it, as a pair of compiled outcomes
+#   (frozen rejects, mutated accepts). What is not proved: ¬ IsA5Point Φ 0 under the frozen definition (it needs
+#   every kernel vector, every w and every reduced curve, i.e. uniqueness of the curve); only this witness is rejected.
+# Correction of docs/replay/2026-11-27-TRI-plants-closed.txt: its last sentence names the bite against both mutations.
+#   The bite (an A3 point is not A5) bears on M1 only; an A3 point has a nonzero fourth derivative and fails M2 as
+#   well. M2 needs an A4 datum, as above.
+
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0

@@ -1,0 +1,15 @@
+exit code 1
+plant-TRI-W-a.lean:41:2: error: Type mismatch: After simplification, term
+  this hc
+ has type
+  iteratedDeriv 6 (reducedFn (triPhase triExceptional) (3 * Real.pi / 4, -(3 * Real.pi / 4)) (1, 1) (1, -1) c) 0 =
+    60 * √2
+but is expected to have type
+  iteratedDeriv 6 (reducedFn (triPhase triExceptional) (3 * Real.pi / 4, -(3 * Real.pi / 4)) (1, 1) (1, -1) c) 0 =
+    -(60 * √2)
+plant-TRI-W-a.lean:51:2: error: Type mismatch: After simplification, term
+  this hc
+ has type
+  iteratedDeriv 6 (reducedFn (triPhase (-triExceptional)) (Real.pi / 4, -(Real.pi / 4)) (1, 1) (1, -1) c) 0 = -(60 * √2)
+but is expected to have type
+  iteratedDeriv 6 (reducedFn (triPhase (-triExceptional)) (Real.pi / 4, -(Real.pi / 4)) (1, 1) (1, -1) c) 0 = 60 * √2

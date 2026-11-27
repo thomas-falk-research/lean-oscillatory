@@ -1454,6 +1454,72 @@
    ],
    "snippet_kind": "type",
    "snippet": "example : StationaryLeadingAttainedStatement := OscInt.API.stationaryLeadingAttained"
+  },
+  "TRI-K": {
+   "summary_note": "The frozen docstring's \"no A4\" is an informal reading, not proved in Lean: the disjunction is not exclusive and IsA5Point asks only for some (v, w, curve). \"No D-type point\" (no Hessian-zero point) does follow. docs/statements.md, clarification TRI-c.",
+   "hypotheses": [
+    "α ≠ 0",
+    "k any point of ℝ × ℝ"
+   ],
+   "conclusion": "k is A1 or A2 (FoldOrNondeg), A3 (IsA3Point) or A5 (IsA5Point) for cos k₁ + cos k₂ + α cos(k₁ + k₂); the three cases are not proved exclusive; no point has Hessian zero (each case needs D²Ψ[w, w] ≠ 0 for some w)",
+   "rate": "— (classification)",
+   "uniform_over": "α ≠ 0 and k",
+   "smoothness": "—",
+   "see_also": [
+    "TRI-X",
+    "TRI-W",
+    "TRI-Q",
+    "S5.1′"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : TriClassificationStatement := OscInt.API.triClassification"
+  },
+  "TRI-X": {
+   "hypotheses": [
+    "k an A5 point of triPhase α"
+   ],
+   "conclusion": "|α| = 1/(2√2), and k is (θ, −θ) or (−θ, θ) modulo 2π in each coordinate, θ = arccos(−2α)",
+   "rate": "— (classification)",
+   "uniform_over": "α and k",
+   "smoothness": "—",
+   "see_also": [
+    "TRI-K",
+    "TRI-W"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : TriA5LocusStatement := OscInt.API.triA5Locus"
+  },
+  "TRI-W": {
+   "hypotheses": [
+    "|α| = 1/(2√2)"
+   ],
+   "conclusion": "(θ, −θ) and (−θ, θ), θ = arccos(−2α), are A5 points; with v = (1, 1), w = (1, −1) every reduced curve at (θ, −θ) gives reduced sixth derivative −60√2 · sign α at 0 (coefficient −sign α/(48√2) of s⁶ in the unit kernel coordinate s = √2 u)",
+   "rate": "—",
+   "uniform_over": "every reduced curve and every ε > 0",
+   "smoothness": "—",
+   "see_also": [
+    "TRI-X",
+    "TRI-Q"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : TriA5WitnessStatement := OscInt.API.triA5Witness"
+  },
+  "TRI-Q": {
+   "summary_note": "v is proved to lie in the Hessian kernel, not to span it; TRI-Q alone does not give IsA3Point. docs/statements.md, clarification TRI-a.",
+   "hypotheses": [
+    "α ≠ 0 (second point: also |α| ≤ 1/2)"
+   ],
+   "conclusion": "at (π/2, π/2) with v = (1, −1), w = (1, 1): v lies in the Hessian kernel (∀ z, D²Ψ[v, z] = 0; rank one, D²Ψ[w, w] ≠ 0, is not part of TRI-Q), D³Ψ[v, v, v] = 0, and D²Ψ[w, w] D⁴Ψ[v⁴] − 3(D³Ψ[v, v, w])² = −12; at (θ, −θ), θ = arccos(−2α), with v = (1, 1), w = (1, −1): the same with value 12(8α² − 1)",
+   "rate": "—",
+   "uniform_over": "α",
+   "smoothness": "—",
+   "see_also": [
+    "TRI-K",
+    "TRI-W",
+    "S5.1′"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : TriQuarticStatement := OscInt.API.triQuartic"
   }
  },
  "helpers": [
