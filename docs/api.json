@@ -2216,6 +2216,102 @@
    ],
    "snippet": "example : StationaryLeadingAttainedStatement := OscInt.API.stationaryLeadingAttained",
    "status": "see docs/STATUS.md (row SPL-A)"
+  },
+  {
+   "label": "TRI-K",
+   "name": "OscInt.Statements.TriClassificationStatement",
+   "proved_by": null,
+   "summary": "Classification of the anisotropic triangular lattice phase: for `α ≠ 0` every point is of type A1 or A2, A3, or A5 (no A4 and no D-type point).",
+   "file": "OscInt/Statements/TriangularAniso.lean",
+   "commitment": "8e7defff110c6dc0f64d972eed6e7870fe441284f7465f4c9b3dfc6d916940dc",
+   "stamp": "stamps/20261127T060115Z-bb3a05c4b143",
+   "lean_statement": "def TriClassificationStatement : Prop :=\n  ∀ α : ℝ, α ≠ 0 → ∀ k : ℝ × ℝ,\n    FoldOrNondeg (triPhase α) k ∨ IsA3Point (triPhase α) k ∨ IsA5Point (triPhase α) k",
+   "hypotheses": [
+    "α ≠ 0",
+    "k any point of ℝ × ℝ"
+   ],
+   "conclusion": "k is A1 or A2 (FoldOrNondeg), A3 (IsA3Point) or A5 (IsA5Point) for cos k₁ + cos k₂ + α cos(k₁ + k₂): no A4 point and no point with Hessian zero",
+   "rate": "— (classification)",
+   "uniform_over": "α ≠ 0 and k",
+   "smoothness": "—",
+   "see_also": [
+    "TRI-X",
+    "TRI-W",
+    "TRI-Q",
+    "S5.1′"
+   ],
+   "snippet": "example (h : TriClassificationStatement) := OscInt.API.TriangularAnisoSanity.triK_kA5 h",
+   "status": "see docs/STATUS.md (row TRI-K)"
+  },
+  {
+   "label": "TRI-X",
+   "name": "OscInt.Statements.TriA5LocusStatement",
+   "proved_by": null,
+   "summary": "The A5 locus: A5 points of the anisotropic triangular lattice phase occur only for `|α| = 1/(2√2)`, and only at `(θ, −θ)` or `(−θ, θ)` modulo `2π`, with `θ = arccos(−2α)`.",
+   "file": "OscInt/Statements/TriangularAniso.lean",
+   "commitment": "3c347461fa78481e8f8dc77a8eaa34c723513562ae4377fcb56827abe5b32c0f",
+   "stamp": "stamps/20261127T060115Z-bb3a05c4b143",
+   "lean_statement": "def TriA5LocusStatement : Prop :=\n  ∀ α : ℝ, ∀ k : ℝ × ℝ, IsA5Point (triPhase α) k →\n    |α| = triExceptional ∧\n      ∃ j₁ j₂ : ℤ,\n        k = (Real.arccos (-2 * α) + 2 * Real.pi * j₁, -Real.arccos (-2 * α) + 2 * Real.pi * j₂) ∨\n          k = (-Real.arccos (-2 * α) + 2 * Real.pi * j₁, Real.arccos (-2 * α) + 2 * Real.pi * j₂)",
+   "hypotheses": [
+    "k an A5 point of triPhase α"
+   ],
+   "conclusion": "|α| = 1/(2√2), and k is (θ, −θ) or (−θ, θ) modulo 2π in each coordinate, θ = arccos(−2α)",
+   "rate": "— (classification)",
+   "uniform_over": "α and k",
+   "smoothness": "—",
+   "see_also": [
+    "TRI-K",
+    "TRI-W"
+   ],
+   "snippet": "example (h : TriA5LocusStatement) := OscInt.API.TriangularAnisoSanity.triX_one h",
+   "status": "see docs/STATUS.md (row TRI-X)"
+  },
+  {
+   "label": "TRI-W",
+   "name": "OscInt.Statements.TriA5WitnessStatement",
+   "proved_by": null,
+   "summary": "The A5 witness: for `|α| = 1/(2√2)` the points `(θ, −θ)` and `(−θ, θ)`, `θ = arccos(−2α)`, are A5 points, and with `v = (1, 1)`, `w = (1, −1)` every reduced curve at `(θ, −θ)` has reduced sixth derivative `−60√2 · sign α` at `0`.",
+   "file": "OscInt/Statements/TriangularAniso.lean",
+   "commitment": "32c395cddfc80d5a931eb49f53c8dfa816abc12b2142b2f9ab0c2ed3a29d7ca0",
+   "stamp": "stamps/20261127T060115Z-bb3a05c4b143",
+   "lean_statement": "def TriA5WitnessStatement : Prop :=\n  ∀ α : ℝ, |α| = triExceptional →\n    IsA5Point (triPhase α) (Real.arccos (-2 * α), -Real.arccos (-2 * α)) ∧\n      IsA5Point (triPhase α) (-Real.arccos (-2 * α), Real.arccos (-2 * α)) ∧\n      ∀ (ε : ℝ) (h : ℝ → ℝ), 0 < ε →\n        ReducedCurve (triPhase α) (Real.arccos (-2 * α), -Real.arccos (-2 * α)) (1, 1) (1, -1) ε h →\n          iteratedDeriv 6 (reducedFn (triPhase α) (Real.arccos (-2 * α), -Real.arccos (-2 * α)) (1, 1) (1, -1) h) 0\n            = -60 * Real.sqrt 2 * SignType.sign α",
+   "hypotheses": [
+    "|α| = 1/(2√2)"
+   ],
+   "conclusion": "(θ, −θ) and (−θ, θ), θ = arccos(−2α), are A5 points; with v = (1, 1), w = (1, −1) every reduced curve at (θ, −θ) gives reduced sixth derivative −60√2 · sign α at 0 (coefficient −sign α/(48√2) of s⁶ in the unit kernel coordinate s = √2 u)",
+   "rate": "—",
+   "uniform_over": "every reduced curve and every ε > 0",
+   "smoothness": "—",
+   "see_also": [
+    "TRI-X",
+    "TRI-Q"
+   ],
+   "snippet": "example (h : TriA5WitnessStatement) := OscInt.API.TriangularAnisoSanity.triW_pos h",
+   "status": "see docs/STATUS.md (row TRI-W)"
+  },
+  {
+   "label": "TRI-Q",
+   "name": "OscInt.Statements.TriQuarticStatement",
+   "proved_by": null,
+   "summary": "The reduced quartics: for `α ≠ 0`, at `(π/2, π/2)` with `v = (1, −1)`, `w = (1, 1)` the reduced quartic is `−12`; for `0 < |α| ≤ 1/2`, at `(θ, −θ)`, `θ = arccos(−2α)`, with `v = (1, 1)`, `w = (1, −1)` it is `12(8α² − 1)`; in both cases `v` spans the Hessian kernel and the cubic along `v` vanishes.",
+   "file": "OscInt/Statements/TriangularAniso.lean",
+   "commitment": "4705b33e6aa9a1a9c2d754a62cc8f6a1e0d9916718513dfe575ba15e50b280a0",
+   "stamp": "stamps/20261127T060115Z-bb3a05c4b143",
+   "lean_statement": "def TriQuarticStatement : Prop :=\n  ∀ α : ℝ, α ≠ 0 →\n    ((∀ z, iteratedFDeriv ℝ 2 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), z] = 0) ∧\n      iteratedFDeriv ℝ 3 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, -1)] = 0 ∧\n      iteratedFDeriv ℝ 2 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, 1), (1, 1)] *\n          iteratedFDeriv ℝ 4 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, -1), (1, -1)] -\n        3 * iteratedFDeriv ℝ 3 (triPhase α) (Real.pi / 2, Real.pi / 2) ![(1, -1), (1, -1), (1, 1)] ^ 2 = -12) ∧\n    (|α| ≤ 1 / 2 →\n      let θ := Real.arccos (-2 * α)\n      (∀ z, iteratedFDeriv ℝ 2 (triPhase α) (θ, -θ) ![(1, 1), z] = 0) ∧\n        iteratedFDeriv ℝ 3 (triPhase α) (θ, -θ) ![(1, 1), (1, 1), (1, 1)] = 0 ∧\n        iteratedFDeriv ℝ 2 (triPhase α) (θ, -θ) ![(1, -1), (1, -1)] *\n            iteratedFDeriv ℝ 4 (triPhase α) (θ, -θ) ![(1, 1), (1, 1), (1, 1), (1, 1)] -\n          3 * iteratedFDeriv ℝ 3 (triPhase α) (θ, -θ) ![(1, 1), (1, 1), (1, -1)] ^ 2 = 12 * (8 * α ^ 2 - 1))",
+   "hypotheses": [
+    "α ≠ 0 (second point: also |α| ≤ 1/2)"
+   ],
+   "conclusion": "at (π/2, π/2) with v = (1, −1), w = (1, 1): v spans the Hessian kernel, D³Ψ[v, v, v] = 0, and D²Ψ[w, w] D⁴Ψ[v⁴] − 3(D³Ψ[v, v, w])² = −12; at (θ, −θ), θ = arccos(−2α), with v = (1, 1), w = (1, −1): the same with value 12(8α² − 1)",
+   "rate": "—",
+   "uniform_over": "α",
+   "smoothness": "—",
+   "see_also": [
+    "TRI-K",
+    "TRI-W",
+    "S5.1′"
+   ],
+   "snippet": "example (h : TriQuarticStatement) := OscInt.API.TriangularAnisoSanity.triQ_quarter h",
+   "status": "see docs/STATUS.md (row TRI-Q)"
   }
  ]
 }

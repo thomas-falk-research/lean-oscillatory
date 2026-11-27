@@ -9,6 +9,25 @@ SPDX-License-Identifier: CC-BY-4.0
 For a reader who saw nothing. Read "Rules in force" at the top of `docs/lessons.md` first; it distils the numbered entries
 below it, and every rule is binding.
 
+## Resume here (session 15, 2026-11-26/27, branch `claude/jolly-euler-r4c7d1`; read before the session-13 block below)
+
+- **Batch TRI** (owner's decision 2026-11-27: the classification K1 and the coefficients K3 of the phase
+  `cos x + cos y + α cos(x + y)`): four statements in `OscInt/Statements/TriangularAniso.lean`, sanity layer
+  `OscInt/Front/TriangularAnisoSanity.lean`, plants `docs/replay/plants/2026-11-27-TRI/`, challenge
+  `Challenge/TriangularAniso.lean`, `comparator-TRI.json`. Registered tests TRI (FAIL, resolution), TRI-2 (FAIL,
+  deduplication at the A5 points, explained by `numerics/review/tri_diag_a5_dedup.py`), TRI-3 (PASS): rows in
+  `docs/prereg/LEDGER.md`. The lead read a T1 (ii) FAIL by the first registration's "until it is explained"; the
+  owner may overrule (session log, 03:35). **Frozen 2026-11-27:** stamp `stamps/20261127T060115Z-bb3a05c4b143` on
+  bb3a05c (three RFC 3161 tokens, 06:01:23Z), pinned; registry 94 statements, 4 not proved.
+- **Exact next step:** the two blind pre-proof referees (fidelity, truth) from fresh contexts, briefs prepared by the
+  lead in its scratch; launches logged before they are made; then answers under `review/`, stamp of the answers,
+  and only then Lean proofs. After TRI, in the owner's order: K2 as its own batch (generic order-m local lemma
+  uniform in the velocity, monomial asymptotics, Fourier localisation, the two global statements, the bridge lemma
+  of `review/2026-11-27-K2-proof-answers.md`), SPL-N, Report D (38/5), the parameter-uniform A5 crossover.
+- **Owner items open:** the Popov 2008 PDF (paywalled, unread); the human-only Scholar/MathSciNet queries in
+  `review/2026-11-26-A5-handoff-answers.md`, section 5.
+- Session record: `docs/progress/2026-11-26-session15-log.md`.
+
 ## Resume here (session 13, 2026-11-16; kept current at every checkpoint)
 
 - **START HERE (state at the end of session 13, 2026-11-20; everything is pushed; nothing is running).**

@@ -1454,6 +1454,70 @@
    ],
    "snippet_kind": "type",
    "snippet": "example : StationaryLeadingAttainedStatement := OscInt.API.stationaryLeadingAttained"
+  },
+  "TRI-K": {
+   "hypotheses": [
+    "α ≠ 0",
+    "k any point of ℝ × ℝ"
+   ],
+   "conclusion": "k is A1 or A2 (FoldOrNondeg), A3 (IsA3Point) or A5 (IsA5Point) for cos k₁ + cos k₂ + α cos(k₁ + k₂): no A4 point and no point with Hessian zero",
+   "rate": "— (classification)",
+   "uniform_over": "α ≠ 0 and k",
+   "smoothness": "—",
+   "see_also": [
+    "TRI-X",
+    "TRI-W",
+    "TRI-Q",
+    "S5.1′"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : TriClassificationStatement) := OscInt.API.TriangularAnisoSanity.triK_kA5 h"
+  },
+  "TRI-X": {
+   "hypotheses": [
+    "k an A5 point of triPhase α"
+   ],
+   "conclusion": "|α| = 1/(2√2), and k is (θ, −θ) or (−θ, θ) modulo 2π in each coordinate, θ = arccos(−2α)",
+   "rate": "— (classification)",
+   "uniform_over": "α and k",
+   "smoothness": "—",
+   "see_also": [
+    "TRI-K",
+    "TRI-W"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : TriA5LocusStatement) := OscInt.API.TriangularAnisoSanity.triX_one h"
+  },
+  "TRI-W": {
+   "hypotheses": [
+    "|α| = 1/(2√2)"
+   ],
+   "conclusion": "(θ, −θ) and (−θ, θ), θ = arccos(−2α), are A5 points; with v = (1, 1), w = (1, −1) every reduced curve at (θ, −θ) gives reduced sixth derivative −60√2 · sign α at 0 (coefficient −sign α/(48√2) of s⁶ in the unit kernel coordinate s = √2 u)",
+   "rate": "—",
+   "uniform_over": "every reduced curve and every ε > 0",
+   "smoothness": "—",
+   "see_also": [
+    "TRI-X",
+    "TRI-Q"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : TriA5WitnessStatement) := OscInt.API.TriangularAnisoSanity.triW_pos h"
+  },
+  "TRI-Q": {
+   "hypotheses": [
+    "α ≠ 0 (second point: also |α| ≤ 1/2)"
+   ],
+   "conclusion": "at (π/2, π/2) with v = (1, −1), w = (1, 1): v spans the Hessian kernel, D³Ψ[v, v, v] = 0, and D²Ψ[w, w] D⁴Ψ[v⁴] − 3(D³Ψ[v, v, w])² = −12; at (θ, −θ), θ = arccos(−2α), with v = (1, 1), w = (1, −1): the same with value 12(8α² − 1)",
+   "rate": "—",
+   "uniform_over": "α",
+   "smoothness": "—",
+   "see_also": [
+    "TRI-K",
+    "TRI-W",
+    "S5.1′"
+   ],
+   "snippet_kind": "unproved",
+   "snippet": "example (h : TriQuarticStatement) := OscInt.API.TriangularAnisoSanity.triQ_quarter h"
   }
  },
  "helpers": [

@@ -118,3 +118,8 @@ OscInt.Statements.StationaryLeadingStatement stamps/20261120T002727Z-5491b10bc8a
 OscInt.Statements.StationaryLeadingSevenEighthsStatement stamps/20261120T002727Z-5491b10bc8ae
 OscInt.Statements.StationaryLeadingAttainedStatement stamps/20261120T002727Z-5491b10bc8ae
 challenge:comparator-SPL.json stamps/20261120T002727Z-5491b10bc8ae
+OscInt.Statements.TriClassificationStatement stamps/20261127T060115Z-bb3a05c4b143
+OscInt.Statements.TriA5LocusStatement stamps/20261127T060115Z-bb3a05c4b143
+OscInt.Statements.TriA5WitnessStatement stamps/20261127T060115Z-bb3a05c4b143
+OscInt.Statements.TriQuarticStatement stamps/20261127T060115Z-bb3a05c4b143
+challenge:comparator-TRI.json stamps/20261127T060115Z-bb3a05c4b143
