@@ -26,7 +26,8 @@ below it, and every rule is binding.
   and the bite `triQuarter_halfPi_not_isA5`). Post-proof reviews: four FAITHFUL, SOUND, claims supported, no BLOCKER or
   MAJOR (`review/2026-11-27-TRI-post-proof-answers.md`, stamped `stamps/20261127T104856Z-9d710be13bd9`). Full replay of
   2152425: RESULT PASS (`docs/replay/2026-11-27-TRI-verify-all.txt`). Plants TRI-W-a and TRI-X-a/b closed
-  (`docs/replay/2026-11-27-TRI-plants-closed.txt`). Optional follow-up: a Lean "no A4 point" needs the bridge lemma to
+  (`docs/replay/2026-11-27-TRI-plants-closed.txt`); definition mutations M1, M2 tested
+  (`docs/replay/2026-11-27-TRI-definition-mutations.txt`). Optional follow-up: a Lean "no A4 point" needs the bridge lemma to
   order 5 (clarification TRI-c of `docs/statements.md`). **Exact next step,** in the owner's order: K2 as its own batch (generic order-m local lemma
   uniform in the velocity, monomial asymptotics, Fourier localisation, the two global statements, the bridge lemma
   of `review/2026-11-27-K2-proof-answers.md`), SPL-N, Report D (38/5), the parameter-uniform A5 crossover.

@@ -1,0 +1,11 @@
+--- OscInt/Statements/TriangularAniso.lean	2026-11-27 00:46:32.111793331 +0000
++++ M1/OscInt/Statements/TriangularAniso.lean	2026-11-27 22:26:39.301172118 +0000
+@@ -63,7 +63,7 @@
+ /-- `h` is a smooth transverse critical curve of `Ψ − DΨ(k₀)` through `k₀` on `|u| < ε`. -/
+ def ReducedCurve (Ψ : ℝ × ℝ → ℝ) (k₀ v w : ℝ × ℝ) (ε : ℝ) (h : ℝ → ℝ) : Prop :=
+   ContDiff ℝ ∞ h ∧ h 0 = 0 ∧
+-    ∀ u : ℝ, |u| < ε → fderiv ℝ Ψ (k₀ + u • v + h u • w) w = fderiv ℝ Ψ k₀ w
++    ∀ u : ℝ, |u| < ε → True
+ 
+ /-- The phase with its tangent plane at `k₀` removed, along `u ↦ k₀ + u v + h(u) w`. -/
+ noncomputable def reducedFn (Ψ : ℝ × ℝ → ℝ) (k₀ v w : ℝ × ℝ) (h : ℝ → ℝ) (u : ℝ) : ℝ :=

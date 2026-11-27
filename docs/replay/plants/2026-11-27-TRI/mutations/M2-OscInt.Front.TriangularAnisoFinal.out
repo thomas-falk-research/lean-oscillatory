@@ -1,0 +1,11 @@
+✖ [9063/9064] Building OscInt.Front.TriWitness (5.8s)
+trace: .> LEAN_PATH=/home/user/lean-oscillatory/.lake/packages/Cli/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/batteries/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/Qq/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/aesop/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/importGraph/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/plausible/.lake/build/lib/lean:/home/user/lean-oscillatory/.lake/packages/mathlib/.lake/build/lib/lean:M2/.lake/build/lib/lean /root/lean/lean-4.35.0-linux/bin/lean M2/OscInt/Front/TriWitness.lean -o M2/.lake/build/lib/lean/OscInt/Front/TriWitness.olean -i M2/.lake/build/lib/lean/OscInt/Front/TriWitness.ilean -c M2/.lake/build/ir/OscInt/Front/TriWitness.c --setup M2/.lake/build/ir/OscInt/Front/TriWitness.setup.json --json
+error: OscInt/Front/TriWitness.lean:387:30: Type mismatch
+  H1
+has type
+  ∀ j ∈ Finset.Icc 1 5, iteratedDeriv j (gW α (Real.cos x₀) (Real.sin x₀) h) 0 = 0
+but is expected to have type
+  ∀ j ∈ Finset.Icc 1 4, iteratedDeriv j (gW α (Real.cos x₀) (Real.sin x₀) h) 0 = 0
+Some required targets logged failures:
+- OscInt.Front.TriWitness
+error: build failed

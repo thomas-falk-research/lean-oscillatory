@@ -1,0 +1,10 @@
+a4datum.lean:41:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (fderiv ℝ Φ ?k) ?v
+in the target expression
+  True
+
+u : ℝ
+x✝ : |u| < 1
+⊢ True
+'A4Datum.jets' depends on axioms: [propext, Classical.choice, Quot.sound]
+'A4Datum.frozen_rejects_witness' depends on axioms: [propext, Classical.choice, Quot.sound]

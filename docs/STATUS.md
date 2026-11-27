@@ -186,7 +186,10 @@ knowledge of the earlier runs and are not independent tests. The sanity layer ha
 controls: 6 detected with semantic evidence, 2 only relative to the true statements, 1 true weakening, and 1 not
 detected (the sign of the sextic in TRI-W; `docs/replay/plants/2026-11-27-TRI/`). After the proofs, the three that were
 not detected outright (TRI-W-a, TRI-X-a, TRI-X-b) are refuted by compiled theorems without a hypothesis
-(`docs/replay/2026-11-27-TRI-plants-closed.txt`). The prior-art gate found the
+(`docs/replay/2026-11-27-TRI-plants-closed.txt`). The two definition mutations that the layer cannot see (clarification TRI-b) were
+tested against the proofs: M1 (the curve equation dropped) breaks the proof of the bridge lemma; M2 (orders 1 to 4)
+leaves the TRI statements true and is detected only by an A4 datum outside the layer, `y² + x⁵ + x⁶`, which the frozen
+definition rejects and M2 accepts (`docs/replay/2026-11-27-TRI-definition-mutations.txt`). The prior-art gate found the
 classification for general α and the exceptional coupling nowhere in the literature searched; that is not a claim
 of novelty. The blind pre-proof review (2026-11-27, two referees of the lead's model family) gave four verdicts
 FAITHFUL and no counterexample, with no BLOCKER and no MAJOR finding. Its MINOR findings are a prose overstatement in

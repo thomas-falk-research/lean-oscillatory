@@ -1,0 +1,27 @@
+⚠ [9050/9057] Replayed OscInt.Statements.TriangularAniso
+warning: OscInt/Statements/TriangularAniso.lean:64:18: Variable name `Ψ` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _Ψ
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: OscInt/Statements/TriangularAniso.lean:64:34: Variable name `k₀` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _k₀
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: OscInt/Statements/TriangularAniso.lean:64:37: Variable name `v` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _v
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: OscInt/Statements/TriangularAniso.lean:64:39: Variable name `w` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _w
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+✔ [9057/9057] Built OscInt.Front.TriDeriv (5.1s)
+Build completed successfully (9057 jobs).
