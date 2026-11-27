@@ -1953,3 +1953,6 @@ TRI-b. Limits of the sanity layer, frozen with the statements (referee A, findin
    The frozen definitions contain neither mutation. A theorem `¬ IsA5Point (triPhase (1/4)) (π/2, π/2)`, which needs
    the uniqueness of the reduced curve, is owed with the proofs. Plant TRI-X-c is equivalent to the frozen TRI-X, not
    a true weakening (finding A5).
+   Addendum (2026-11-27, route referee, finding M3; `review/2026-11-27-TRI-route-referee-answers.md`): the bite needs
+   no uniqueness of the reduced curve. The bridge lemma of `docs/proof-TRI.md`, section 4, holds for every reduced
+   curve, so the bite follows from TRI-X.

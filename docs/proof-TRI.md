@@ -228,3 +228,32 @@ Risks, said now:
 - P-alg: many cases, but each is algebra.
 
 A route referee reads this document before the blueprint is written.
+
+## 9. Revision after the route referee (2026-11-27; `review/2026-11-27-TRI-route-referee-answers.md`)
+
+Verdict: proceed after changes; no FATAL, no MAJOR.
+
+1. **Bridge symmetry.** Only symmetry of orders 2 and 3 is needed, and it exists in a proof module:
+   `OscInt.API.DerivAux.symm2`, `symm3`, `iter3_eq`. Mathlib's full permutation symmetry needs analyticity and is not
+   used. The bridge stays general, for `ContDiff ℝ ∞`. The fallback for `triPhase` only stays available behind a
+   time box.
+2. **Bridge chain rule.** Expand the varying slots multilinearly, `γ′ = v + h′w` and `γ″ = h″w`. Every term is then
+   a fixed-slot evaluation `u ↦ DⁿΨ(γ u)[a, b, …]` times a scalar function of u. One chain-rule lemma for fixed slots
+   serves all of them (curried form with `HasDerivAt.clm_apply`; `set_option maxSynthPendingDepth 2`).
+3. **Owed items.**
+   - The bite `¬ IsA5Point (triPhase (1/4)) (π/2, π/2)` is a corollary of TRI-X in the assembly. It needs no
+     uniqueness of the curve.
+   - After the proofs: re-run plants TRI-W-a and TRI-X-a/b against the proved statements.
+4. **Witness device at shifted points.** `WitA5` is stated over all of TRI-X's locus. Either:
+   - `x₀ = σθ + 2πj₁`, `y₀ = −x₀ + 2π(j₁ + j₂)`, `w = (σ, −σ)` with one base curve; or
+   - invariance of `IsA5Point` under translations by `2πℤ²` and the swap, which preserve Ψ.
+5. **Section 2, step 1** (the Hessian is not zero) is dropped. The kernel vector `V = (cos y, cos x)` may be used in
+   place of the half-angle form.
+6. **Files.**
+   - `OscInt/Front/TriDeriv.lean`: the derivative forms, re-proved in a proof module.
+   - `OscInt/Front/TriBlueprint.lean`: the interfaces `InLocus`, `qinv`, `AlgClassify`, `AlgA5`, `AlgZero`,
+     `Bridge`, `WitA5`, `WitSextic`.
+   - `OscInt/Front/TriAssembly.lean`: TRI-K, TRI-X, TRI-W from the interfaces, and the bite.
+
+   All three elaborate. The parts are P-q (TRI-Q, done by the lead), P-alg (with P-EG), P-bridge and P-wit. The last
+   three go to agents, one Lean process each.
