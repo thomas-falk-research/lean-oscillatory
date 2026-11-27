@@ -1,0 +1,22 @@
+import OscInt.Front.TriangularAnisoSanity
+
+namespace OscInt.API.TriangularAnisoSanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity
+open scoped ContDiff
+
+/-- PLANTED copy of `TriClassificationStatement`: the A5 alternative dropped. -/
+def P_TriClassificationStatement : Prop :=
+  ∀ α : ℝ, α ≠ 0 → ∀ k : ℝ × ℝ,
+    FoldOrNondeg (triPhase α) k ∨ IsA3Point (triPhase α) k
+
+/-- Witness: at `α = a*`, `(3π/4, −3π/4)` is neither A1/A2 nor A3 (`kA5_not_foldOrNondeg`, `kA5_not_isA3`). -/
+theorem witness_TRI_K_a : ¬ P_TriClassificationStatement := by
+  intro h
+  rcases h _ triExceptional_pos.ne' kA5 with h1 | h1
+  · exact kA5_not_foldOrNondeg h1
+  · exact kA5_not_isA3 h1
+
+#print axioms witness_TRI_K_a
+
+end OscInt.API.TriangularAnisoSanity

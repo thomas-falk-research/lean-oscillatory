@@ -1917,7 +1917,7 @@ there is no A4 point and no point with Hessian zero.
 
 **TRI-W (the A5 witness and its sextic).** For |α| = a* the points `(θ, −θ)` and `(−θ, θ)` are A5 points. With
 v = (1, 1) and w = (1, −1), every reduced curve at `(θ, −θ)` gives `g⁽⁶⁾(0) = −60√2 · sign α`. In the unit kernel
-coordinate u/√2 this is the coefficient `−sign α/(48√2)` of u⁶.
+coordinate s = √2 u this is the coefficient `−sign α/(48√2)` of s⁶.
 
 **TRI-Q (the reduced quartics).** For α ≠ 0, at `(π/2, π/2)` with v = (1, −1) and w = (1, 1): v spans the Hessian
 kernel, `D³Ψ[v, v, v] = 0`, and `D²Ψ[w, w] D⁴Ψ[v⁴] − 3(D³Ψ[v, v, w])² = −12`. For 0 < |α| ≤ 1/2, at `(θ, −θ)` with

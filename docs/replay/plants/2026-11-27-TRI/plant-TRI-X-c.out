@@ -1,0 +1,81 @@
+exit code 1
+plant-TRI-X-c.lean:18:10: error(lean.projNonPropFromProp): Invalid projection: Cannot project a value of non-propositional type
+  ℤ
+from the expression
+  h (1 / 2) (Real.pi, Real.pi) hA
+which has propositional type
+  ∃ j₁ j₂,
+    (Real.pi, Real.pi) =
+        (Real.arccos (-2 * (1 / 2)) + 2 * Real.pi * ↑j₁, -Real.arccos (-2 * (1 / 2)) + 2 * Real.pi * ↑j₂) ∨
+      (Real.pi, Real.pi) =
+        (-Real.arccos (-2 * (1 / 2)) + 2 * Real.pi * ↑j₁, Real.arccos (-2 * (1 / 2)) + 2 * Real.pi * ↑j₂)
+plant-TRI-X-c.lean:16:103: error: unsolved goals
+h : P_TriA5LocusStatement
+hA : IsA5Point (triPhase (1 / 2)) (Real.pi, Real.pi)
+⊢ False
+plant-TRI-X-c.lean:25:10: error(lean.projNonPropFromProp): Invalid projection: Cannot project a value of non-propositional type
+  ℤ
+from the expression
+  h 1 k hA
+which has propositional type
+  ∃ j₁ j₂,
+    k = (Real.arccos (-2 * 1) + 2 * Real.pi * ↑j₁, -Real.arccos (-2 * 1) + 2 * Real.pi * ↑j₂) ∨
+      k = (-Real.arccos (-2 * 1) + 2 * Real.pi * ↑j₁, Real.arccos (-2 * 1) + 2 * Real.pi * ↑j₂)
+plant-TRI-X-c.lean:23:91: error: unsolved goals
+h : P_TriA5LocusStatement
+k : ℝ × ℝ
+hA : IsA5Point (triPhase 1) k
+⊢ False
+plant-TRI-X-c.lean:32:10: error(lean.projNonPropFromProp): Invalid projection: Cannot project a value of non-propositional type
+  ℤ
+from the expression
+  h (-1 / 3) k hA
+which has propositional type
+  ∃ j₁ j₂,
+    k = (Real.arccos (-2 * (-1 / 3)) + 2 * Real.pi * ↑j₁, -Real.arccos (-2 * (-1 / 3)) + 2 * Real.pi * ↑j₂) ∨
+      k = (-Real.arccos (-2 * (-1 / 3)) + 2 * Real.pi * ↑j₁, Real.arccos (-2 * (-1 / 3)) + 2 * Real.pi * ↑j₂)
+plant-TRI-X-c.lean:30:104: error: unsolved goals
+h : P_TriA5LocusStatement
+k : ℝ × ℝ
+hA : IsA5Point (triPhase (-1 / 3)) k
+⊢ False
+plant-TRI-X-c.lean:44:12: error(lean.projNonPropFromProp): Invalid projection: Cannot project a value of non-propositional type
+  ℤ
+from the expression
+  hX 2 (1 / 3, 2 / 5) h5
+which has propositional type
+  ∃ j₁ j₂,
+    (1 / 3, 2 / 5) = (Real.arccos (-2 * 2) + 2 * Real.pi * ↑j₁, -Real.arccos (-2 * 2) + 2 * Real.pi * ↑j₂) ∨
+      (1 / 3, 2 / 5) = (-Real.arccos (-2 * 2) + 2 * Real.pi * ↑j₁, Real.arccos (-2 * 2) + 2 * Real.pi * ↑j₂)
+plant-TRI-X-c.lean:57:2: error: Type mismatch
+  (hX α (Real.arccos (-2 * α), -Real.arccos (-2 * α)) (hW α hα).left).2
+has type
+  ∃ j₂,
+    (Real.arccos (-2 * α), -Real.arccos (-2 * α)) =
+        (Real.arccos (-2 * α) + 2 * Real.pi * ↑⋯.1, -Real.arccos (-2 * α) + 2 * Real.pi * ↑j₂) ∨
+      (Real.arccos (-2 * α), -Real.arccos (-2 * α)) =
+        (-Real.arccos (-2 * α) + 2 * Real.pi * ↑⋯.1, Real.arccos (-2 * α) + 2 * Real.pi * ↑j₂)
+but is expected to have type
+  ∃ j₁ j₂,
+    (Real.arccos (-2 * α), -Real.arccos (-2 * α)) =
+        (Real.arccos (-2 * α) + 2 * Real.pi * ↑j₁, -Real.arccos (-2 * α) + 2 * Real.pi * ↑j₂) ∨
+      (Real.arccos (-2 * α), -Real.arccos (-2 * α)) =
+        (-Real.arccos (-2 * α) + 2 * Real.pi * ↑j₁, Real.arccos (-2 * α) + 2 * Real.pi * ↑j₂)
+plant-TRI-X-c.lean:68:2: error: Type mismatch
+  hX triExceptional kA5 (triK_kA5 hK)
+has type
+  ∃ j₁ j₂,
+    kA5 =
+        (Real.arccos (-2 * triExceptional) + 2 * Real.pi * ↑j₁,
+          -Real.arccos (-2 * triExceptional) + 2 * Real.pi * ↑j₂) ∨
+      kA5 =
+        (-Real.arccos (-2 * triExceptional) + 2 * Real.pi * ↑j₁, Real.arccos (-2 * triExceptional) + 2 * Real.pi * ↑j₂)
+but is expected to have type
+  |triExceptional| = triExceptional ∧
+    ∃ j₁ j₂,
+      kA5 =
+          (Real.arccos (-2 * triExceptional) + 2 * Real.pi * ↑j₁,
+            -Real.arccos (-2 * triExceptional) + 2 * Real.pi * ↑j₂) ∨
+        kA5 =
+          (-Real.arccos (-2 * triExceptional) + 2 * Real.pi * ↑j₁,
+            Real.arccos (-2 * triExceptional) + 2 * Real.pi * ↑j₂)

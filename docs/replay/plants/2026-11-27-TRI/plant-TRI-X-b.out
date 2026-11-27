@@ -1,0 +1,34 @@
+exit code 1
+plant-TRI-X-b.lean:58:2: error: Type mismatch
+  (hX α (Real.arccos (-2 * α), -Real.arccos (-2 * α)) (hW α hα).left).right
+has type
+  ∃ j₁ j₂,
+    (Real.arccos (-2 * α), -Real.arccos (-2 * α)) =
+        (Real.arccos (2 * α) + 2 * Real.pi * ↑j₁, -Real.arccos (2 * α) + 2 * Real.pi * ↑j₂) ∨
+      (Real.arccos (-2 * α), -Real.arccos (-2 * α)) =
+        (-Real.arccos (2 * α) + 2 * Real.pi * ↑j₁, Real.arccos (2 * α) + 2 * Real.pi * ↑j₂)
+but is expected to have type
+  ∃ j₁ j₂,
+    (Real.arccos (-2 * α), -Real.arccos (-2 * α)) =
+        (Real.arccos (-2 * α) + 2 * Real.pi * ↑j₁, -Real.arccos (-2 * α) + 2 * Real.pi * ↑j₂) ∨
+      (Real.arccos (-2 * α), -Real.arccos (-2 * α)) =
+        (-Real.arccos (-2 * α) + 2 * Real.pi * ↑j₁, Real.arccos (-2 * α) + 2 * Real.pi * ↑j₂)
+plant-TRI-X-b.lean:69:2: error: Type mismatch
+  hX triExceptional kA5 (triK_kA5 hK)
+has type
+  |triExceptional| = triExceptional ∧
+    ∃ j₁ j₂,
+      kA5 =
+          (Real.arccos (2 * triExceptional) + 2 * Real.pi * ↑j₁,
+            -Real.arccos (2 * triExceptional) + 2 * Real.pi * ↑j₂) ∨
+        kA5 =
+          (-Real.arccos (2 * triExceptional) + 2 * Real.pi * ↑j₁, Real.arccos (2 * triExceptional) + 2 * Real.pi * ↑j₂)
+but is expected to have type
+  |triExceptional| = triExceptional ∧
+    ∃ j₁ j₂,
+      kA5 =
+          (Real.arccos (-2 * triExceptional) + 2 * Real.pi * ↑j₁,
+            -Real.arccos (-2 * triExceptional) + 2 * Real.pi * ↑j₂) ∨
+        kA5 =
+          (-Real.arccos (-2 * triExceptional) + 2 * Real.pi * ↑j₁,
+            Real.arccos (-2 * triExceptional) + 2 * Real.pi * ↑j₂)

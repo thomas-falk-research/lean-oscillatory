@@ -1,0 +1,21 @@
+import OscInt.Front.TriangularAnisoSanity
+
+namespace OscInt.API.TriangularAnisoSanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity
+open scoped ContDiff
+
+/-- PLANTED copy of `TriA5LocusStatement`: the conclusion |α| = a* dropped. -/
+def P_TriA5LocusStatement : Prop :=
+  ∀ α : ℝ, ∀ k : ℝ × ℝ, IsA5Point (triPhase α) k →
+    ∃ j₁ j₂ : ℤ,
+        k = (Real.arccos (-2 * α) + 2 * Real.pi * j₁, -Real.arccos (-2 * α) + 2 * Real.pi * j₂) ∨
+          k = (-Real.arccos (-2 * α) + 2 * Real.pi * j₁, Real.arccos (-2 * α) + 2 * Real.pi * j₂)
+
+/-- The plant is implied by the draft statement: a true weakening (`docs/lessons.md`, rule 9). -/
+theorem weak_TRI_X_c : TriA5LocusStatement → P_TriA5LocusStatement :=
+  fun h α k hk => (h α k hk).2
+
+#print axioms weak_TRI_X_c
+
+end OscInt.API.TriangularAnisoSanity

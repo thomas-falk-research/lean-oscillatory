@@ -33,7 +33,7 @@ order two or more, so these are the types of `triPhase α + p·(·)` at its crit
   modulo `2π` in each coordinate, with `θ = arccos(−2α)`.
 * TRI-W `TriA5WitnessStatement`: for `|α| = 1/(2√2)` the points `(θ, −θ)` and `(−θ, θ)` are A5 points; and with
   `v = (1, 1)`, `w = (1, −1)`, every reduced curve at `(θ, −θ)` gives sixth derivative `−60√2 · sign α` at `0`
-  (in the unit kernel coordinate `u/√2` the coefficient of `u⁶` is `−sign α/(48√2)`).
+  (in the unit kernel coordinate `s = √2 u` the coefficient of `s⁶` is `−sign α/(48√2)`).
 * TRI-Q `TriQuarticStatement`: for `α ≠ 0`, at `(π/2, π/2)` with `v = (1, −1)`, `w = (1, 1)` the Hessian kernel
   and the vanishing cubic hold and the reduced quartic `D²Ψ[w, w] D⁴Ψ[v⁴] − 3 (D³Ψ[v, v, w])²` equals `−12`; for
   `0 < |α| ≤ 1/2`, at `(θ, −θ)` with `v = (1, 1)`, `w = (1, −1)` the same hold with the value `12(8α² − 1)`. (In

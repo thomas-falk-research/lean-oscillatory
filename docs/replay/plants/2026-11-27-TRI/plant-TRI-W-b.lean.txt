@@ -1,0 +1,63 @@
+import OscInt.Front.TriangularAnisoSanity
+
+namespace OscInt.API.TriangularAnisoSanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity
+open scoped ContDiff
+
+/-- PLANTED copy of `TriA5WitnessStatement`: the second point (−θ, θ) ↦ (θ, θ). -/
+def P_TriA5WitnessStatement : Prop :=
+  ∀ α : ℝ, |α| = triExceptional →
+    IsA5Point (triPhase α) (Real.arccos (-2 * α), -Real.arccos (-2 * α)) ∧
+      IsA5Point (triPhase α) (Real.arccos (-2 * α), Real.arccos (-2 * α)) ∧
+      ∀ (ε : ℝ) (h : ℝ → ℝ), 0 < ε →
+        ReducedCurve (triPhase α) (Real.arccos (-2 * α), -Real.arccos (-2 * α)) (1, 1) (1, -1) ε h →
+          iteratedDeriv 6 (reducedFn (triPhase α) (Real.arccos (-2 * α), -Real.arccos (-2 * α)) (1, 1) (1, -1) h) 0
+            = -60 * Real.sqrt 2 * SignType.sign α
+
+/-- **TRI-W** at `α = +a*`: both points `(3π/4, −3π/4)` and `(−3π/4, 3π/4)` are A5 points. -/
+theorem P_triW_pos (h : P_TriA5WitnessStatement) :
+    IsA5Point (triPhase triExceptional) (3 * Real.pi / 4, -(3 * Real.pi / 4)) ∧
+      IsA5Point (triPhase triExceptional) (-(3 * Real.pi / 4), 3 * Real.pi / 4) := by
+  have := h triExceptional (abs_of_pos triExceptional_pos)
+  rw [arccos_neg_two_triExceptional] at this
+  exact ⟨this.1, this.2.1⟩
+
+/-- **TRI-W** at `α = −a*`: both points `(π/4, −π/4)` and `(−π/4, π/4)` are A5 points. -/
+theorem P_triW_neg (h : P_TriA5WitnessStatement) :
+    IsA5Point (triPhase (-triExceptional)) (Real.pi / 4, -(Real.pi / 4)) ∧
+      IsA5Point (triPhase (-triExceptional)) (-(Real.pi / 4), Real.pi / 4) := by
+  have := h (-triExceptional) (by rw [abs_neg, abs_of_pos triExceptional_pos])
+  rw [show -2 * -triExceptional = 2 * triExceptional by ring, arccos_two_triExceptional] at this
+  exact ⟨this.1, this.2.1⟩
+
+/-- **TRI-W**, the sextic at `+a*`: every reduced curve at `(3π/4, −3π/4)` gives `−60√2`. -/
+theorem P_triW_sextic_pos (h : P_TriA5WitnessStatement) (ε : ℝ) (c : ℝ → ℝ) (hε : 0 < ε)
+    (hc : ReducedCurve (triPhase triExceptional) (3 * Real.pi / 4, -(3 * Real.pi / 4)) (1, 1) (1, -1) ε c) :
+    iteratedDeriv 6 (reducedFn (triPhase triExceptional) (3 * Real.pi / 4, -(3 * Real.pi / 4)) (1, 1) (1, -1) c) 0
+      = -60 * Real.sqrt 2 := by
+  have := (h triExceptional (abs_of_pos triExceptional_pos)).2.2 ε c hε
+  rw [arccos_neg_two_triExceptional, sign_pos triExceptional_pos] at this
+  simpa using this hc
+
+/-- **TRI-W**, the sextic at `−a*`: every reduced curve at `(π/4, −π/4)` gives `+60√2` (the sign flips). -/
+theorem P_triW_sextic_neg (h : P_TriA5WitnessStatement) (ε : ℝ) (c : ℝ → ℝ) (hε : 0 < ε)
+    (hc : ReducedCurve (triPhase (-triExceptional)) (Real.pi / 4, -(Real.pi / 4)) (1, 1) (1, -1) ε c) :
+    iteratedDeriv 6 (reducedFn (triPhase (-triExceptional)) (Real.pi / 4, -(Real.pi / 4)) (1, 1) (1, -1) c) 0
+      = 60 * Real.sqrt 2 := by
+  have := (h (-triExceptional) (by rw [abs_neg, abs_of_pos triExceptional_pos])).2.2 ε c hε
+  rw [show -2 * -triExceptional = 2 * triExceptional by ring, arccos_two_triExceptional,
+    sign_neg (neg_neg_of_pos triExceptional_pos)] at this
+  simpa using this hc
+
+/-- **Consistency TRI-X with TRI-W**: the witness point of TRI-W lies on the locus of TRI-X, for both signs. -/
+theorem P_triX_triW_consistent (hX : TriA5LocusStatement) (hW : P_TriA5WitnessStatement) (α : ℝ)
+    (hα : |α| = triExceptional) :
+    ∃ j₁ j₂ : ℤ,
+      (Real.arccos (-2 * α), -Real.arccos (-2 * α)) =
+          (Real.arccos (-2 * α) + 2 * Real.pi * j₁, -Real.arccos (-2 * α) + 2 * Real.pi * j₂) ∨
+        (Real.arccos (-2 * α), -Real.arccos (-2 * α)) =
+          (-Real.arccos (-2 * α) + 2 * Real.pi * j₁, Real.arccos (-2 * α) + 2 * Real.pi * j₂) :=
+  (hX _ _ (hW α hα).1).2
+
+end OscInt.API.TriangularAnisoSanity

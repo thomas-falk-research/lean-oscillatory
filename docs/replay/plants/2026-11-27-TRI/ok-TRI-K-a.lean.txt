@@ -1,0 +1,51 @@
+import OscInt.Front.TriangularAnisoSanity
+
+namespace OscInt.API.TriangularAnisoSanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity
+open scoped ContDiff
+
+/-- Unplanted copy of `TriClassificationStatement`. -/
+def P_TriClassificationStatement : Prop :=
+  ∀ α : ℝ, α ≠ 0 → ∀ k : ℝ × ℝ,
+    FoldOrNondeg (triPhase α) k ∨ IsA3Point (triPhase α) k ∨ IsA5Point (triPhase α) k
+
+/-- **TRI-K** at `α = 2` and `α = −1/3`, at two generic points: one of the three types. -/
+theorem P_triK_generic (h : P_TriClassificationStatement) :
+    (FoldOrNondeg (triPhase 2) (1 / 3, 2 / 5) ∨ IsA3Point (triPhase 2) (1 / 3, 2 / 5) ∨
+        IsA5Point (triPhase 2) (1 / 3, 2 / 5)) ∧
+      (FoldOrNondeg (triPhase (-1 / 3)) (2, -5 / 7) ∨ IsA3Point (triPhase (-1 / 3)) (2, -5 / 7) ∨
+        IsA5Point (triPhase (-1 / 3)) (2, -5 / 7)) :=
+  ⟨h 2 (by norm_num) _, h (-1 / 3) (by norm_num) _⟩
+
+/-- **TRI-K** at `α = a*`: the point `(3π/4, −3π/4)`, neither A1/A2 nor A3 (unconditional), is an A5 point (a datum in
+the A5 branch of the classification). -/
+theorem P_triK_kA5 (h : P_TriClassificationStatement) : IsA5Point (triPhase triExceptional) kA5 := by
+  rcases h _ triExceptional_pos.ne' kA5 with h1 | h1 | h1
+  · exact absurd h1 kA5_not_foldOrNondeg
+  · exact absurd h1 kA5_not_isA3
+  · exact h1
+
+/-- **TRI-K** with **TRI-X**: away from `|α| = a*` only A1/A2 or A3 remain, at `α = 2` and `α = −1/3`. -/
+theorem P_triK_triX_generic (hK : P_TriClassificationStatement) (hX : TriA5LocusStatement) :
+    (FoldOrNondeg (triPhase 2) (1 / 3, 2 / 5) ∨ IsA3Point (triPhase 2) (1 / 3, 2 / 5)) ∧
+      (FoldOrNondeg (triPhase (-1 / 3)) (2, -5 / 7) ∨ IsA3Point (triPhase (-1 / 3)) (2, -5 / 7)) := by
+  obtain ⟨h1, h2⟩ := P_triK_generic hK
+  refine ⟨h1.elim Or.inl (fun h => h.elim Or.inr fun h5 => ?_), h2.elim Or.inl (fun h => h.elim Or.inr fun h5 => ?_)⟩
+  · have := (hX _ _ h5).1
+    rw [abs_of_pos (by norm_num)] at this
+    linarith [triExceptional_lt_half]
+  · exact absurd h5 (triX_neg_third hX _)
+
+/-- **Consistency TRI-K with TRI-X**: the A5 point that TRI-K forces at `(3π/4, −3π/4)` passes TRI-X's test
+`|α| = a*`, and lies on its locus. -/
+theorem P_triK_triX_consistent (hK : P_TriClassificationStatement) (hX : TriA5LocusStatement) :
+    |triExceptional| = triExceptional ∧
+      ∃ j₁ j₂ : ℤ,
+        kA5 = (Real.arccos (-2 * triExceptional) + 2 * Real.pi * j₁,
+            -Real.arccos (-2 * triExceptional) + 2 * Real.pi * j₂) ∨
+          kA5 = (-Real.arccos (-2 * triExceptional) + 2 * Real.pi * j₁,
+            Real.arccos (-2 * triExceptional) + 2 * Real.pi * j₂) :=
+  hX _ _ (P_triK_kA5 hK)
+
+end OscInt.API.TriangularAnisoSanity

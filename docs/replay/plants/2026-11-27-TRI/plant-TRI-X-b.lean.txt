@@ -1,0 +1,71 @@
+import OscInt.Front.TriangularAnisoSanity
+
+namespace OscInt.API.TriangularAnisoSanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity
+open scoped ContDiff
+
+/-- PLANTED copy of `TriA5LocusStatement`: θ = arccos(−2α) ↦ arccos(2α). -/
+def P_TriA5LocusStatement : Prop :=
+  ∀ α : ℝ, ∀ k : ℝ × ℝ, IsA5Point (triPhase α) k →
+    |α| = triExceptional ∧
+      ∃ j₁ j₂ : ℤ,
+        k = (Real.arccos (2 * α) + 2 * Real.pi * j₁, -Real.arccos (2 * α) + 2 * Real.pi * j₂) ∨
+          k = (-Real.arccos (2 * α) + 2 * Real.pi * j₁, Real.arccos (2 * α) + 2 * Real.pi * j₂)
+
+/-- **TRI-X**, bite at `α = 1/2 ≠ a*`: `(π, π)` is not an A5 point. -/
+theorem P_triX_half (h : P_TriA5LocusStatement) : ¬ IsA5Point (triPhase (1 / 2)) (Real.pi, Real.pi) := by
+  intro hA
+  have := (h _ _ hA).1
+  rw [abs_of_pos (by norm_num)] at this
+  exact absurd this triExceptional_lt_half.ne'
+
+/-- **TRI-X**, bite: the isotropic phase `α = 1` has no A5 point at all. -/
+theorem P_triX_one (h : P_TriA5LocusStatement) (k : ℝ × ℝ) : ¬ IsA5Point (triPhase 1) k := by
+  intro hA
+  have := (h _ _ hA).1
+  rw [abs_one] at this
+  linarith [triExceptional_lt_half]
+
+/-- **TRI-X**, bite with a negative coupling: `α = −1/3` has no A5 point. -/
+theorem P_triX_neg_third (h : P_TriA5LocusStatement) (k : ℝ × ℝ) : ¬ IsA5Point (triPhase (-1 / 3)) k := by
+  intro hA
+  have := (h _ _ hA).1
+  rw [abs_of_neg (by norm_num)] at this
+  have h8 := triExceptional_sq
+  rw [← this] at h8
+  norm_num at h8
+
+/-- **TRI-K** with **TRI-X**: away from `|α| = a*` only A1/A2 or A3 remain, at `α = 2` and `α = −1/3`. -/
+theorem P_triK_triX_generic (hK : TriClassificationStatement) (hX : P_TriA5LocusStatement) :
+    (FoldOrNondeg (triPhase 2) (1 / 3, 2 / 5) ∨ IsA3Point (triPhase 2) (1 / 3, 2 / 5)) ∧
+      (FoldOrNondeg (triPhase (-1 / 3)) (2, -5 / 7) ∨ IsA3Point (triPhase (-1 / 3)) (2, -5 / 7)) := by
+  obtain ⟨h1, h2⟩ := triK_generic hK
+  refine ⟨h1.elim Or.inl (fun h => h.elim Or.inr fun h5 => ?_), h2.elim Or.inl (fun h => h.elim Or.inr fun h5 => ?_)⟩
+  · have := (hX _ _ h5).1
+    rw [abs_of_pos (by norm_num)] at this
+    linarith [triExceptional_lt_half]
+  · exact absurd h5 (P_triX_neg_third hX _)
+
+/-- **Consistency TRI-X with TRI-W**: the witness point of TRI-W lies on the locus of TRI-X, for both signs. -/
+theorem P_triX_triW_consistent (hX : P_TriA5LocusStatement) (hW : TriA5WitnessStatement) (α : ℝ)
+    (hα : |α| = triExceptional) :
+    ∃ j₁ j₂ : ℤ,
+      (Real.arccos (-2 * α), -Real.arccos (-2 * α)) =
+          (Real.arccos (-2 * α) + 2 * Real.pi * j₁, -Real.arccos (-2 * α) + 2 * Real.pi * j₂) ∨
+        (Real.arccos (-2 * α), -Real.arccos (-2 * α)) =
+          (-Real.arccos (-2 * α) + 2 * Real.pi * j₁, Real.arccos (-2 * α) + 2 * Real.pi * j₂) :=
+  (hX _ _ (hW α hα).1).2
+
+/-- **Consistency TRI-K with TRI-X**: the A5 point that TRI-K forces at `(3π/4, −3π/4)` passes TRI-X's test
+`|α| = a*`, and lies on its locus. -/
+theorem P_triK_triX_consistent (hK : TriClassificationStatement) (hX : P_TriA5LocusStatement) :
+    |triExceptional| = triExceptional ∧
+      ∃ j₁ j₂ : ℤ,
+        kA5 = (Real.arccos (-2 * triExceptional) + 2 * Real.pi * j₁,
+            -Real.arccos (-2 * triExceptional) + 2 * Real.pi * j₂) ∨
+          kA5 = (-Real.arccos (-2 * triExceptional) + 2 * Real.pi * j₁,
+            Real.arccos (-2 * triExceptional) + 2 * Real.pi * j₂) :=
+  hX _ _ (triK_kA5 hK)
+
+end OscInt.API.TriangularAnisoSanity

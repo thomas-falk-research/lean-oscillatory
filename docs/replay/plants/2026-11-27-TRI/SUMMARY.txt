@@ -1,0 +1,50 @@
+ok-TRI-Q-a: accepted (want accepted) [4.4 s]
+plant-TRI-Q-a: rejected (want recorded) [4.2 s]
+    first error: plant-TRI-Q-a.lean:39:10: error: Application type mismatch: The argument
+witness-TRI-Q-a: accepted (want accepted) [3.7 s]
+  TRI-Q-a [the value −12 at (π/2, π/2) ↦ 12]: DETECTED (witness compiled: ¬ planted statement)
+ok-TRI-Q-b: accepted (want accepted) [3.9 s]
+plant-TRI-Q-b: rejected (want recorded) [4.7 s]
+    first error: plant-TRI-Q-b.lean:35:49: error: unsolved goals
+witness-TRI-Q-b: accepted (want accepted) [4.6 s]
+  TRI-Q-b [12(8α² − 1) ↦ 12(8α² + 1)]: DETECTED (witness compiled: ¬ planted statement)
+ok-TRI-Q-c: accepted (want accepted) [4.4 s]
+plant-TRI-Q-c: rejected (want recorded) [4.8 s]
+    first error: plant-TRI-Q-c.lean:65:44: error: Type mismatch
+witness-TRI-Q-c: accepted (want accepted) [4.1 s]
+  TRI-Q-c [the range |α| ≤ 1/2 ↦ |α| ≤ 1]: DETECTED (witness compiled: ¬ planted statement)
+ok-TRI-X-a: accepted (want accepted) [4.6 s]
+plant-TRI-X-a: rejected (want recorded) [4.4 s]
+    first error: plant-TRI-X-a.lean:21:20: error: Application type mismatch: The argument
+witness-TRI-X-a: accepted (want accepted) [4.3 s]
+  TRI-X-a [the exceptional value a* ↦ 1/2]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: true statement → ¬ planted statement); NOT DETECTED unconditionally
+ok-TRI-X-b: accepted (want accepted) [4.1 s]
+plant-TRI-X-b: rejected (want recorded) [4.0 s]
+    first error: plant-TRI-X-b.lean:58:2: error: Type mismatch
+witness-TRI-X-b: accepted (want accepted) [5.1 s]
+  TRI-X-b [θ = arccos(−2α) ↦ arccos(2α)]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: true statement → ¬ planted statement); NOT DETECTED unconditionally
+ok-TRI-X-c: accepted (want accepted) [3.8 s]
+plant-TRI-X-c: rejected (want recorded) [4.7 s]
+    first error: plant-TRI-X-c.lean:18:10: error(lean.projNonPropFromProp): Invalid projection: Cannot project a value of non-propositional type
+witness-TRI-X-c: accepted (want accepted) [4.8 s]
+  TRI-X-c [the conclusion |α| = a* dropped]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it
+ok-TRI-W-a: accepted (want accepted) [3.9 s]
+plant-TRI-W-a: rejected (want recorded) [3.8 s]
+    first error: plant-TRI-W-a.lean:41:2: error: Type mismatch: After simplification, term
+witness-TRI-W-a: accepted (want accepted) [3.9 s]
+  TRI-W-a [the sign of −60√2 flipped]: NOT DETECTED (compiled: draft ∧ plant → no reduced curve exists; a detection needs a reduced curve with its sixth derivative, not constructed)
+ok-TRI-W-b: accepted (want accepted) [3.8 s]
+plant-TRI-W-b: rejected (want recorded) [4.4 s]
+    first error: plant-TRI-W-b.lean:24:17: error: Application type mismatch: The argument
+witness-TRI-W-b: accepted (want accepted) [3.8 s]
+  TRI-W-b [the second point (−θ, θ) ↦ (θ, θ)]: DETECTED (witness compiled: ¬ planted statement)
+ok-TRI-K-a: accepted (want accepted) [4.0 s]
+plant-TRI-K-a: rejected (want recorded) [3.8 s]
+    first error: plant-TRI-K-a.lean:19:24: error: Application type mismatch: The argument
+witness-TRI-K-a: accepted (want accepted) [3.8 s]
+  TRI-K-a [the A5 alternative dropped]: DETECTED (witness compiled: ¬ planted statement)
+ok-TRI-K-b: accepted (want accepted) [4.6 s]
+plant-TRI-K-b: rejected (want recorded) [4.5 s]
+    first error: plant-TRI-K-b.lean:19:3: error: Function expected at
+witness-TRI-K-b: accepted (want accepted) [4.5 s]
+  TRI-K-b [the hypothesis α ≠ 0 dropped]: DETECTED (witness compiled: ¬ planted statement)
