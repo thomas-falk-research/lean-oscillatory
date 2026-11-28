@@ -10,7 +10,7 @@ import Blueprint.TriangularCrossover
 /-!
 # Batch A5U, part A10: `PerturbLongitudinalFacts`
 
-Route: `stmts/proof-A5U-draft.md`, section 5. Let `φ(x) = e (cos 2x − 1)` and `P = φ ∘ fst`.
+Route: `docs/proof-A5U.md`, section 5. Let `φ(x) = e (cos 2x − 1)` and `P = φ ∘ fst`.
 * `φ^{(n+1)}(x) = e 2^{n+1} cos(2x + (n+1)π/2)` (induction), so `|φ^{(j)}| ≤ 2^j |e|` for `j ≥ 1`, and
   `|φ| ≤ 2|e|`; hence `|φ^{(j)}| ≤ 16 |e|` for `j ≤ 4`.
 * On the open interval `(−2a, 2a)`, where the reduced function is smooth, `iteratedDeriv` is additive

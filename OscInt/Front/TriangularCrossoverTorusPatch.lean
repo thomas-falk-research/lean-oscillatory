@@ -11,7 +11,7 @@ import OscInt.Front.TriangularDecayPatch
 /-!
 # Batch A5U, part B3: `TorusPatchParamFacts`
 
-Route: `stmts/proof-A5U-draft.md`, section 5. A clone of `OscInt.K2.torusPatch`
+Route: `docs/proof-A5U.md`, section 5. A clone of `OscInt.K2.torusPatch`
 (`OscInt/Front/TriangularDecayPatch.lean`) for a family `Ψ α` with a weight `W α t`:
 
 * T1 (`OscInt.API.torusUnfold`) gives the cutoff `η`, independent of `α`;

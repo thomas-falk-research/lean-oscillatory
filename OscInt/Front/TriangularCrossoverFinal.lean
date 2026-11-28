@@ -26,7 +26,7 @@ import OscInt.Front.TriangularCrossoverTorusPatch
 /-!
 # Batch A5U: the final theorem
 
-Route `docs/proof-A5U.md`; blueprint `Blueprint/TriangularCrossover.lean` (18 parts); assembly
+Route `docs/proof-A5U.md`; blueprint `Blueprint/TriangularCrossover.lean` (17 parts, in 18 modules); assembly
 `OscInt/Front/TriangularCrossoverAssembly.lean`. Parts by proof agents: A1–A3 (`…LevelCrossing`, `…AmpNormRestrict`,
 `…PiecewiseVdC`), A4 (`…CoreMulti`), A5–A7 (`…EvenJetTaylor`, `…JetSeparation`, `…CrossEnvelope`), A8
 (`…FixedChart`), A9 (`…BaseData`), A10 (`…PerturbLongitudinal`), A11 (`…TiltJet`), A12a, A12 (`…CoreWindow`,

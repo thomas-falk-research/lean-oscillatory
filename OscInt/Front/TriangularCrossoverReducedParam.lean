@@ -13,7 +13,7 @@ import OscInt.Front.TriangularDecayCore
 /-!
 # Batch A5U, part B1: K2-L uniformly in a parameter (`ReducedOrderBoundParamFacts`)
 
-Route `stmts/proof-A5U-draft.md`, section 5 (B1). A clone of `OscInt.K2.reducedOrderBound_of` in which every
+Route `docs/proof-A5U.md`, section 5 (B1). A clone of `OscInt.K2.reducedOrderBound_of` in which every
 constant is chosen at the base parameter `α₀`:
 * the chart `κ = k₀ + L k` of K2's P3 (`OscInt.K2.chart`) at `Ψ α₀`, the same `L` for every `α`;
 * the family `Φ α k = Ψ α (k₀ + L k) − Ψ α k₀ − DΨ α (k₀) (L k)`, jointly `C^∞` (`a5uB_family_smooth`), with

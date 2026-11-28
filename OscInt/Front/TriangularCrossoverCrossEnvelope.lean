@@ -10,7 +10,7 @@ import Blueprint.TriangularCrossover
 /-!
 # Batch A5U, part A7: `CrossEnvelopeFacts`
 
-Route: `stmts/proof-A5U-draft.md`, section 4. All powers have positive bases, so each `x ^ r` is written as
+Route: `docs/proof-A5U.md`, section 4. All powers have positive bases, so each `x ^ r` is written as
 `exp (log x * r)` and the inequalities become linear inequalities between the exponents in `log t`, `log ε`,
 `log η`:
 * (i) for `ε t^{1/3} ≤ 1` it is `t^{−3/4} ≤ t^{−2/3}`; otherwise it is `log ε ≤ 0`;

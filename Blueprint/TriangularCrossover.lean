@@ -11,9 +11,9 @@ import OscInt.Statements.TriangularCrossover
 /-!
 # Blueprint for batch A5U: the parts of the route (definitions only)
 
-Route: `stmts/proof-A5U-draft.md` (sections 1–5) and the planning report `a5u-plan/PLAN.md` (section 2); the
-analytic content is the packet's X1–X5 (`a5u-plan/WP-CROSSOVER.md`) with the fixed chart of the route draft.
-Propositions only. Each part is proved as `theorem OscInt.A5U.<lowerCamel name> : OscInt.Blueprint.A5U.<Prop>`.
+Route: `docs/proof-A5U.md` (sections 1–5); the analytic content is the external packet's X1–X5 (its crossover work
+package, `review/2026-11-28-postK2-packet-answers.md`) with the fixed chart of the route.
+Propositions only. Each part is proved as `theorem OscInt.A5UAux.<lowerCamel name> : OscInt.Blueprint.A5U.<Prop>`.
 A conditional part `X → Y → Z` is proved with `X`, `Y` as hypotheses; where a later part needs the conclusion of a
 conditional part, that conclusion has its own name `…Bound` (so the later part does not need the earlier part's
 hypotheses).
@@ -35,7 +35,8 @@ Parts (generic = no lattice; they can be proved first).
 * A8 `A5FixedChartFacts`: closed form of `F_α` in the fixed chart.
 * A9 `A5BaseDataFacts` (from A8): `CoreHypsM 6` data at `a₀` uniformly in the tilt, evenness, jet bounds.
 * A10 `PerturbLongitudinalFacts` (generic): adding `e (cos 2u − 1)` keeps `CoreHypsM`.
-* A11 `A5TiltJetFacts` (from A8): `g″(0) = 4(α* − α)`, `g⁗(0) = 24α* − 3/α* − 4g″(0)` via TRI-Q at `α*`.
+* A11 `A5TiltJetFacts` (from A8): `g″(0) = 4(α* − α)`, `g⁗(0) = 24α* − 3/α* − 4g″(0)` (the route's sketch
+  went via TRI-Q at `α*`; the proof computes the jets directly).
 * A12a `A5CoreWindowFacts` (from A4's bound, A5, A6, A7, A8, A9's bound, A10, A11's bound): the window estimate in
   the chart, near tilt.
 * A12 `A5WindowLocalFacts` (from A8, A12a's bound): the local bound at `k*` uniform in `α` (chart + far tilt).
@@ -177,7 +178,7 @@ def PerturbLongitudinalFacts : Prop :=
     ∀ ν' : ℝ, (∀ x ∈ Icc (-a) a, ν' ≤ |iteratedDeriv m (fun x => Q (x, ys x) + e * (Real.cos (2 * x) - 1)) x|) →
       CoreHypsM m a b μ ν' (D + 16 * |e|) (fun k => Q k + e * (Real.cos (2 * k.1) - 1)) ys
 
-/-- **A13** (route §5, PLAN gap 10) Transfer of a local bound along `κ ↦ σ κ + c`, `σ = ±1`, when the phase is
+/-- **A13** (route §5) Transfer of a local bound along `κ ↦ σ κ + c`, `σ = ±1`, when the phase is
 invariant: a bound `B M` for amplitudes on `closedBall k₀ δ`, uniform in the linear term, holds on
 `closedBall (σ k₀ + c) δ`. Used with `φ = t triPhase α`, `c ∈ 2πℤ²`, for `−k*` and the translates. -/
 def LocalTransferFacts : Prop :=

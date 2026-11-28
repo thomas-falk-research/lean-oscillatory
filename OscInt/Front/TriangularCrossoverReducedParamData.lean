@@ -12,10 +12,10 @@ import OscInt.Front.FamilyC10
 /-!
 # Batch A5U, part B1 (first half): K2's normalised data (P2) uniformly in a parameter
 
-Route `stmts/proof-A5U-draft.md`, section 5 (B1), and `a5u-plan/PLAN.md` (fallback "Gop joint continuity via
-parametric `ContDiff.fderiv`"). For a family `Φ α` that is `C^∞` jointly in `(α, k)` and a normal point of order
-`m` of `Φ α₀` at `0`, the core hypotheses `CoreHypsM m` of `Φ α + q s` hold with one set of constants for all
-`|α − α₀| ≤ ρ`, `|q| ≤ q₀` (`a5uB_paramData`).
+Route `docs/proof-A5U.md`, section 5 (B1), with the fallback "`Gop` joint continuity via parametric
+`ContDiff.fderiv`" of the lead's planning notes (outside the repository). For a family `Φ α` that is `C^∞` jointly
+in `(α, k)` and a normal point of order `m` of `Φ α₀` at `0`, the core hypotheses `CoreHypsM m` of `Φ α + q s` hold
+with one set of constants for all `|α − α₀| ≤ ρ`, `|q| ≤ q₀` (`a5uB_paramData`).
 
 The proof is the one of `OscInt.K2.normalizedDataM` with continuity at `(α₀, 0)` of functions of `(α, k)` in
 place of continuity at `0` of functions of `k`:

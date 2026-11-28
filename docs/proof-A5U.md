@@ -6,7 +6,7 @@ SPDX-License-Identifier: CC-BY-4.0
 
 # Proof route of batch A5U (`TriCrossoverUpperStatement`)
 
-Written by the lead after the blind pre-proof reviews (answers `review/2026-11-28-SPLN-A5U-LOC2-preproof-answers.md`, stamped `stamps/20261128T154444Z-e9c0ea9fb732`). Sources: the external packet's crossover work package
+Drafted by the lead in scratch during the blind pre-proof reviews (which did not see it) and finished after them (answers `review/2026-11-28-SPLN-A5U-LOC2-preproof-answers.md`, stamped `stamps/20261128T154444Z-e9c0ea9fb732`). Sources: the external packet's crossover work package
 (sections X0–X6, `review/2026-11-28-postK2-packet-answers.md`) and a read-only planning agent's map of the K2 code
 (session 17 log). The packet's moving-centre route is replaced by a fixed chart (section 1), which the lead checked by
 hand. Every K2 declaration named below is re-checked at the pin before a part is briefed; Mathlib names are
@@ -75,7 +75,7 @@ Estimated size 3,000–5,000 lines (planning agent: central 3,900). Riskiest: A3
 
 ## Revision after the blueprint and the route referee (2026-11-28; `review/2026-11-28-A5U-route-answers.md`)
 
-The blueprint `Blueprint/TriangularCrossover.lean` (18 interfaces, written by an architect agent from this route and
+The blueprint `Blueprint/TriangularCrossover.lean` (17 interfaces in 18 part modules, written by an architect agent from this route and
 the planning report, reviewed by the lead) made the plan precise; changes against section 5:
 - A1 needs `n ≥ 1` (for `n = 0`, `D 0 ≠ 0` does not bound the number of points where `D 0 = c`).
 - A6 needs no upper bound `C_B` on the quartic jet; η depends on `(c_B, K, d_min, d_max)` only, δ also on L.

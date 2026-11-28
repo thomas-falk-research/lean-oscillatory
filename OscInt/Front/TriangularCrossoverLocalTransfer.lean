@@ -12,7 +12,7 @@ import OscInt.StationaryPhase.Change
 /-!
 # Batch A5U, part A13: `LocalTransferFacts`
 
-Route: `stmts/proof-A5U-draft.md`, section 5 (PLAN gap 10). For `σ = ±1` let `L = σ · id` (a linear equivalence
+Route: `docs/proof-A5U.md`, section 5. For `σ = ±1` let `L = σ · id` (a linear equivalence
 of `ℝ²` with `|det L| = 1` and `‖L‖ ≤ 1`). For an amplitude `A'` on `closedBall (σ k₀ + c) δ`:
 * the affine change `κ = c + L k` (`OscInt.StationaryPhase.affineChange`) turns `oscInt2 (φ + lin y) A'` into
   `oscInt2 (φ (c + L ·) + lin y (c + L ·)) A`, `A = A' (c + L ·)`;

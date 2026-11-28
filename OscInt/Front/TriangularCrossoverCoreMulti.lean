@@ -11,7 +11,7 @@ import OscInt.Front.TriangularDecayCore
 /-!
 # Batch A5U, part A4: `CoreEstimateMultiFacts`
 
-Route: `stmts/proof-A5U-draft.md`, section 4 (packet X4). A clone of `OscInt.K2.coreEstimateM`
+Route: `docs/proof-A5U.md`, section 4 (packet X4). A clone of `OscInt.K2.coreEstimateM`
 (`OscInt/Front/TriangularDecayCore.lean`) of order 6: the amplitude from `CoreAux.amplitude_facts`, the outer
 integral from `Core4Aux.oscInt2_eq_outer_linear`, the derivative chain `t g^{(j)}` of length 6
 (`CoreEstimateMAux.hasDerivOn_iter`), and the piecewise van der Corput bound `PiecewiseVdCBound` (A3's conclusion)

@@ -12,7 +12,7 @@ import OscInt.Front.TriangularDecayNormalized
 /-!
 # Batch A5U, part B2: the complement of the A5 points (`ComplementLocalFacts`)
 
-Route `stmts/proof-A5U-draft.md`, section 5 (B2). A clone of the case logic of
+Route `docs/proof-A5U.md`, section 5 (B2). A clone of the case logic of
 `OscInt.K2.TriDecayUpperAux.local_tri` at the coupling `a₀ ≠ 0`, with B1 (`ReducedOrderBoundParamFacts`) for the
 family `(α, k) ↦ triPhase α k` in place of K2-L. TRI-K (`OscInt.API.triClassification`) at `a₀` gives:
 * a nondegenerate point: P5 and P6 (`OscInt.K2.reducedCurveExists`, `OscInt.K2.reducedOrderTwo`), order 2;

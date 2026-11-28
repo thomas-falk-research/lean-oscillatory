@@ -26,6 +26,39 @@ two-sided case of Erdélyi's remainder representation, with one term folded into
 kernel (SPL-S, SPL-K) and their sharpness (SPL-A: the supremum of the kernel is the best constant; 7/8 is not sharp)
 were not found in the literature searched (`docs/prior_art.md`); nothing is claimed as new.
 
+Batches SPL-N, A5U and LOC2 (stamp `stamps/20261128T135153Z-9d2a650ee1ec`; review answers stamped
+`stamps/20261128T154444Z-e9c0ea9fb732`): six new entries, proved in Lean on 2026-11-28, post-proof reviews answered,
+final replay pending (`docs/STATUS.md` has the current state),
+- SPL-NU `SplKernelCapStatement` (`proved_by` `OscInt.API.splKernelCap`): `|κ(τ)| ≤ 360987/500000` for every real τ;
+- SPL-NL `SplKernelLowerStatement` (`proved_by` `OscInt.API.splKernelLower`): `|κ(8123/5000)| > 72197399/10⁸`, a
+  point value, not the location of the maximum;
+- SPL-NK `StationaryLeadingSharpStatement` (`proved_by` `OscInt.API.stationaryLeadingSharp`): SPL-K with the
+  constant 360987/500000;
+- SPL-NC `StationaryLeadingSharpnessStatement` (`proved_by` `OscInt.API.stationaryLeadingSharpness`): no constant
+  `c ≤ 72197399/10⁸` bounds the remainder;
+- A5U `TriCrossoverUpperStatement` (`proved_by` `OscInt.API.triCrossoverUpper`,
+  `OscInt/Statements/TriangularCrossover.lean`): `|triKernel α t n| ≤ C t^{−2/3} E(|α − a₀| t^{1/3})`, with `E(s) = 1`
+  for `s ≤ 1` and `s^{−1/4}` otherwise, uniformly for `|α − a₀| ≤ r` near each `a₀ = ±1/(2√2)`; an upper bound only,
+  no uniform lower bound is stated;
+- K2-FQ `TorusLocalizationC2Statement` (`proved_by` `OscInt.API.torusLocalizationC2`,
+  `OscInt/Statements/TorusLocalizationC2.lean`): K2-F for `C²` cutoffs with the explicit constant
+  `4((3/2)‖χ‖ + ‖∂₁χ‖ + ‖∂₂χ‖ + ‖Δχ‖)`.
+
+No existing statement's text, commitment or stamp changes. The constants and routes come from an external research
+packet (`review/2026-11-28-postK2-packet-answers.md`); nothing is claimed as new. Report D (the constant 38/5) was not
+opened: its report is not available to the repository.
+
+### Process and tooling (session 17)
+
+- `tools/push_gate.py` fails closed: paths from rename-free diffs and from every commit of the range, every git
+  failure exits 4, `--run` refuses a dirty tree and index entries hidden from `git status`, and a `--pre-push` mode
+  implements Git's pre-push protocol for one fast-forward branch update. `tools/pre-push-hook.sh` is a wrapper a
+  user may install by hand; nothing installs it. Tests `tools/test_push_gate.py`, run by CI's `tools` job. Review:
+  `review/2026-11-28-push-gate-review-answers.md`. CI remains the authority; no server-side check changes.
+- Compiled witnesses for planted controls that the stamped ledgers had as NOT DETECTED or owed: K2's F-a
+  (`docs/replay/plants/2026-11-28-K2-F-a-witness/`), LOC2's L-i and A5U's A-2
+  (`docs/replay/plants/2026-11-28-owed-A-2-L-i/`); the stamped ledgers are not edited.
+
 ### Added
 
 - `examples/consumer/ConsumerStationaryLeading.lean`: the leading term with the remainder written out, and the

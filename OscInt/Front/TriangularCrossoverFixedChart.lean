@@ -11,7 +11,7 @@ import OscInt.Front.TriDeriv
 /-!
 # Batch A5U, part A8: `A5FixedChartFacts`
 
-Route: `stmts/proof-A5U-draft.md`, section 1. In the chart `k* + L(u, s)` with `k* = (θ₀, −θ₀)` the two arguments
+Route: `docs/proof-A5U.md`, section 1. In the chart `k* + L(u, s)` with `k* = (θ₀, −θ₀)` the two arguments
 are `θ₀ + (u + s)` and `−θ₀ + (u − s)`, their sum is `2u`, and `DΨ_α(k*) L(u, s) = −2 s sin θ₀` by
 `OscInt.API.TriDeriv.triD1`; the closed form follows from `cos(x + u) + cos(x − u) = 2 cos x cos u`.
 -/

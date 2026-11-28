@@ -11,7 +11,7 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 /-!
 # Batch A5U, part A11: the tilt jets (`A5TiltJetFacts`)
 
-Route `stmts/proof-A5U-draft.md`, section 2; blueprint `A5TiltJetFacts`. Deviation from the blueprint's sketch: the
+Route `docs/proof-A5U.md`, section 2; blueprint `A5TiltJetFacts`. Deviation from the blueprint's sketch: the
 jets are computed directly in the fixed chart instead of through TRI-Q, P6 and the reduced bridge (the values are
 the same; TRI-Q's quartic `12(8α*² − 1)/(4α*) = 24α* − 3/α*` is what the computation below reproduces).
 

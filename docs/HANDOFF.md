@@ -9,7 +9,47 @@ SPDX-License-Identifier: CC-BY-4.0
 For a reader who saw nothing. Read "Rules in force" at the top of `docs/lessons.md` first; it distils the numbered entries
 below it, and every rule is binding.
 
-## Resume here (session 16, 2026-11-28, branch `claude/friendly-ramanujan-4aivas`, draft pull request 26; read first)
+## Resume here (session 17, 2026-11-28, branch `claude/sleepy-davinci-0hoj9d`, pull request 27; read first)
+
+- **What this session did** (one consolidated branch and pull request at the owner's request, from the post-K2
+  research packet; intake `review/2026-11-28-postK2-packet-answers.md`):
+  - **Three batches, six statements, all proved in Lean**, frozen at `stamps/20261128T135153Z-9d2a650ee1ec` before
+    any proof (registry 106):
+    - SPL-N (`OscInt/Statements/StationaryLeadingSharp.lean`): `splKernelCap`, `splKernelLower`,
+      `stationaryLeadingSharp` and `stationaryLeadingSharpness`. The best constant of SPL-K lies in
+      `(72197399/10⁸, 360987/500000]`; nothing is claimed about where the maximum is.
+    - A5U (`OscInt/Statements/TriangularCrossover.lean`): `triCrossoverUpper`, decay uniform across `a₀ = ±1/(2√2)`
+      with the envelope `E`; an upper bound only.
+    - LOC2 (`OscInt/Statements/TorusLocalizationC2.lean`): `torusLocalizationC2`, K2-F for `C²` cutoffs with an
+      explicit constant.
+  - **Reviews.** Blind pre-proof reviews were answered and stamped (`stamps/20261128T154444Z-e9c0ea9fb732`). The
+    routes are `docs/proof-SPLN.md`, `docs/proof-A5U.md` and `docs/proof-LOC2.md`, with the route-referee answers in
+    `review/`. Post-proof reviews were answered (`review/2026-11-28-SPLN-LOC2-post-proof-answers.md`,
+    `review/2026-11-28-A5U-post-proof-answers.md`): no BLOCKER; one MAJOR against a record, corrected.
+  - **Plants.** The owed plants have compiled witnesses (`docs/replay/plants/2026-11-28-owed-A-2-L-i/`), and so has
+    K2's F-a (`docs/replay/plants/2026-11-28-K2-F-a-witness/`).
+  - **Push gate.** Made fail-closed (`review/2026-11-28-push-gate-review-answers.md`); no hook is installed.
+- **Exact next step.** First check whether the final isolated `make verify-all` of this branch's head has a record in
+  `docs/replay/` (file name 2026-11-28-session17-verify-all.txt).
+  - If it does: the six STATUS rows say "machine-checked as stated (replay of <commit>)".
+  - If it does not, run it alone on the machine, detached:
+    `setsid nohup make verify-all > <scratch>/verify-all.log 2>&1 &`. Run `python3 -I tools/replay_preflight.py`
+    first. Then write the record and change the six STATUS rows, the README line and the CHANGELOG ("final replay
+    pending").
+  - Then mark pull request 27 ready for review, so that `verify.yml` runs on the clean runner. The owner merges.
+- **Not done, with the reason:**
+  - **Report D** (38/5): the report is not available to the repository. The owner must supply it; intake would come
+    first.
+  - **HOP and PDE work packages** of the packet: not started. The three batches above took the session; the scoping
+    note, if written, is in the session log.
+  - **Owner items:** lessons.md entry 54 says "13 planted cases" (stale; rule files change only by owner decision);
+    whether to install `tools/pre-push-hook.sh`; CHANGELOG "Unreleased" lists no TRI or K2 entries (older omission).
+- **Order, said plainly.** Each batch's statements were frozen, stamped and blind-reviewed before any proof. Proof
+  agents drafted parts in scratch while route referees read; for A5U, three of the six agents finished after that
+  review ended, and no part changed in response to it. The answer files give the times.
+- Session record: `docs/progress/2026-11-28-session17-log.md`.
+
+## Resume here (session 16, 2026-11-28, branch `claude/friendly-ramanujan-4aivas`, draft pull request 26; historical)
 
 - **Batch K2** (owner's decision 2026-11-27; integration requested 2026-11-28): sharp fixed-coupling decay of the
   anisotropic triangular lattice kernel, `t^{−2/3}` at α ∈ {0, ±1/(2√2)}, `t^{−3/4}` otherwise: upper bound at every

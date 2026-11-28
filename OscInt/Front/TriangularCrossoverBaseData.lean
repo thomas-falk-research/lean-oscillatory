@@ -13,7 +13,7 @@ import OscInt.Front.TriangularAnisoFinal
 /-!
 # Batch A5U, part A9: base data at `a₀`, uniformly in the tilt (`A5BaseDataFacts`)
 
-Route `stmts/proof-A5U-draft.md`, sections 1 and 5; blueprint `A5BaseDataFacts`.
+Route `docs/proof-A5U.md`, sections 1 and 5; blueprint `A5BaseDataFacts`.
 
 * The normal point: K2's P5 (`OscInt.K2.reducedCurveExists`) gives a reduced curve of `triPhase a₀` at
   `k* = a5Centre a₀` for `v = (1, 1)`, `w = (1, −1)` (`D²Ψ[w, w] = −2 cos θ₀ = 4a₀ ≠ 0`), TRI-W gives the

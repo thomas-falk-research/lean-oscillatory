@@ -10,7 +10,7 @@ import Blueprint.TriangularCrossover
 /-!
 # Batch A5U, part A5: `EvenJetTaylorFacts`
 
-Route: `stmts/proof-A5U-draft.md`, section 3. Write `d j = iteratedDeriv j g`.
+Route: `docs/proof-A5U.md`, section 3. Write `d j = iteratedDeriv j g`.
 * On the open interval `I = (−a, a)`, `d j` has derivative `d (j+1)` (`iteratedDerivWithin_of_isOpen`).
 * Evenness near `0` and `iteratedDeriv_comp_neg` give `d j 0 = (−1)^j d j 0`, so the odd jets vanish.
 * One mean value step (`Convex.norm_image_sub_le_of_norm_deriv_le` on `[0, x]`): if `f 0 = 0` and

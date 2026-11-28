@@ -9,11 +9,11 @@ import Blueprint.TriangularCrossover
 import OscInt.Front.TriangularDecayUpper
 
 /-!
-# Batch A5U: the lead's assembly of `TriCrossoverUpperStatement` against the blueprint interfaces
+# Batch A5U: the assembly of `TriCrossoverUpperStatement` against the blueprint interfaces
 
-Route `stmts/proof-A5U-draft.md`, section 5. Stage A gives the window bound at `k* = (θ₀, −θ₀)`
-(A1–A3 → A4, A5–A11 → A12a → A12); every A5 point of `triPhase a₀` is `σ k* + 2πj` (TRI-X,
-`OscInt.API.triA5Locus`), so A13 moves the window bound there. Every other point has a `t^{−3/4}` bound uniform in
+Drafted by an architect agent, reviewed by the lead. Route `docs/proof-A5U.md`, section 5. Stage A gives the
+window bound at `k* = (θ₀, −θ₀)` (A1–A3 → A4, A5–A11 → A12a → A12); every A5 point of `triPhase a₀` is
+`σ k* + 2πj` (TRI-X, `OscInt.API.triA5Locus`), so A13 moves the window bound there. Every other point has a `t^{−3/4}` bound uniform in
 `α` (B1 → B2), which is at most the weight for `|α − a₀| ≤ 1` (A7(i)). B3 patches the local bounds over the torus
 with the weight `W α t = t^{−2/3} E(|α − a₀| t^{1/3})`.
 -/

@@ -10,7 +10,7 @@ import Blueprint.TriangularCrossover
 /-!
 # Batch A5U, part A6: `JetSeparationFacts`
 
-Route: `stmts/proof-A5U-draft.md`, section 3 (packet X2), in a direct form. Put `s = √ε`, `v = |u|`,
+Route: `docs/proof-A5U.md`, section 3 (packet X2), in a direct form. Put `s = √ε`, `v = |u|`,
 `p₄ = B + D u²/2`, `p₃ = B u + D u³/6`, `p₂ = A + B u²/2 + D u⁴/24`, and suppose all three alternatives fail:
 `|g₂| ≤ η s⁴`, `|g₃| ≤ η s³`, `|g₄| ≤ η s²`. Then `|p₄| ≤ η s² + L v⁴`, `|p₃| ≤ η s³ + L v⁵`,
 `|p₂| ≤ η s⁴ + L v⁶`. Constants: `c = min(1, c_B/(2 d_max))`, `η = min(c_B/8, d_min c³/24)` and, for given `L`,

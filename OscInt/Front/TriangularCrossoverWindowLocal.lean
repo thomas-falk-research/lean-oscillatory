@@ -14,7 +14,7 @@ import OscInt.Cusp.Transverse
 /-!
 # Batch A5U, part A12: the window local bound at the A5 point (`A5WindowLocalFacts`)
 
-Route `stmts/proof-A5U-draft.md`, sections 1 and 4–5. A clone of `OscInt.K2.reducedOrderBound_of` with the fixed
+Route `docs/proof-A5U.md`, sections 1 and 4–5. A clone of `OscInt.K2.reducedOrderBound_of` with the fixed
 chart `κ = k* + L k`, `L (u, s) = u (1, 1) + s (1, −1)` (`a5uX_chartEquiv`): after `OscInt.K2.LocalAux.phase_eq_at`
 the phase is a constant plus `t (Q_{α,q} + p u)`. Near tilts `|q| ≤ q₀` use the core window (A12a's bound). Far tilts
 use `OscInt.Cusp.transverseNonStat` on a box chosen at `a₀` only: by the fixed chart (A8) `∂_s F_α = ∂_s F_{a₀}` and

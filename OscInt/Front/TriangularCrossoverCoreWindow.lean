@@ -12,7 +12,7 @@ import Mathlib.Analysis.Real.Pi.Bounds
 /-!
 # Batch A5U, part A12a: the core window estimate in the chart (`A5CoreWindowFacts`)
 
-Route `stmts/proof-A5U-draft.md`, sections 3–4. Order of choices: the data of A9 at `a₀` (`q₀, a, b, μ, ν, D, L`,
+Route `docs/proof-A5U.md`, sections 3–4. Order of choices: the data of A9 at `a₀` (`q₀, a, b, μ, ν, D, L`,
 the curves `ys q`); `η` from A6 with `c_B = 24`, `K = 10`, `d_min = ν/2`, `d_max = max(ν/2, L + 64)`; `δ` from A6
 with `max L 0 + 256`; `C₇` from A7(iii); the shrunken half-width `a' = min a δ`; `P` from A4 and `C₆` from
 `OscInt.K2.coreEstimateM` (order 6, `ν/2`, `D + 16`); then `q₁ = min q₀ (μ δ⁴/4)` and `r = min (min 1 (ν/128)) (δ⁴/8)`.
