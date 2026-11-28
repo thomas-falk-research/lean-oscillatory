@@ -34,12 +34,19 @@ below it, and every rule is binding.
     - a separable cutoff at α = 0.
   - A draft blueprint, eleven propositions with P4 reused from a proved theorem, exists only in the lead's scratch.
     It has not been elaborated, and it is not to be committed before the answers to the blind review are stamped.
-- **Exact next step.** Finish the blind pre-proof review (referees A and B, launched at ce39fcb). Then, in order:
-  1. answer the review in review/2026-11-28-K2-preproof-answers.md (to be written) and stamp the answers;
-  2. write the route docs/proof-K2.md (to be written), have a route referee read it, then commit the blueprint;
-  3. prove the parts (agents), assemble, run the post-proof reviews and the full replay.
-- **CI on pull request 26.** Job `static` stays INCOMPLETE until the freeze commit's CI; from db43739 on,
-  `statements check` should pass.
+- **State at 04:0x on 2026-11-28 (all pushed).**
+  - Blind pre-proof review answered and stamped: `stamps/20261128T023440Z-e368c37563ab`;
+    `review/2026-11-28-K2-preproof-answers.md`.
+  - Route `docs/proof-K2.md` (section 8 after the route referee, `review/2026-11-28-K2-route-referee-answers.md`).
+  - Blueprint `Blueprint/TriangularDecay.lean`, 14 parts, all proved by agents and verified by the lead.
+  - **All six K2 statements proved in Lean** (`OscInt/Front/TriangularDecayFinal.lean`, axioms propext,
+    Classical.choice, Quot.sound; `comparator-K2.json` accepted by six kernels against the stamped export).
+- **Exact next step.**
+  1. The post-proof reviews (fidelity, soundness, adversarial), then their answers and stamp.
+  2. The owed plants A1 and A2 of the blind-review answers.
+  3. The full isolated replay `make verify-all`; only then do the STATUS rows say "machine-checked as stated".
+- **CI on pull request 26.** Green from ac65d22 on (the pre-freeze `static` and `consumer` failures were the
+  designed state of an unstamped statement file).
 - **Out of scope** (owner): RH/GRH, parameter-uniform crossover, SPL-N, Report D.
 - Session record: `docs/progress/2026-11-28-session16-log.md`.
 
