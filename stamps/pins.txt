@@ -123,3 +123,10 @@ OscInt.Statements.TriA5LocusStatement stamps/20261127T060115Z-bb3a05c4b143
 OscInt.Statements.TriA5WitnessStatement stamps/20261127T060115Z-bb3a05c4b143
 OscInt.Statements.TriQuarticStatement stamps/20261127T060115Z-bb3a05c4b143
 challenge:comparator-TRI.json stamps/20261127T060115Z-bb3a05c4b143
+OscInt.Statements.ReducedOrderBoundStatement stamps/20261128T013824Z-c5c04f495284
+OscInt.Statements.MonomialAsymptoticStatement stamps/20261128T013824Z-c5c04f495284
+OscInt.Statements.MonomialLowerStatement stamps/20261128T013824Z-c5c04f495284
+OscInt.Statements.TorusLocalizationStatement stamps/20261128T013824Z-c5c04f495284
+OscInt.Statements.TriDecayUpperStatement stamps/20261128T013824Z-c5c04f495284
+OscInt.Statements.TriDecayLowerStatement stamps/20261128T013824Z-c5c04f495284
+challenge:comparator-K2.json stamps/20261128T013824Z-c5c04f495284

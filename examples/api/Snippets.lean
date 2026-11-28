@@ -383,4 +383,28 @@ example : TriA5WitnessStatement := OscInt.API.triA5Witness
 
 example : TriQuarticStatement := OscInt.API.triQuartic
 
+/-! ### K2-L: Local bound of order `m`: a nonzero `m`-th derivative of the reduced function gives decay `t^{−(1/2 + 1/m)}` near `k₀`, uniformly over every linear term. -/
+
+example (h : ReducedOrderBoundStatement) := OscInt.API.TriangularDecaySanity.triL_shear h
+
+/-! ### K2-MA: Monomial asymptotics with an explicit remainder: the improper integral `C = ∫_ℝ e^{iσx^m} dx` has `Re C ≥ 1/(12m)`, and a plateau cutoff integral is `t^{−1/m} C` up to `4/(m t r^{m−1})`. -/
+
+example (h : MonomialAsymptoticStatement) := OscInt.API.TriangularDecaySanity.triMA_instances h
+
+/-! ### K2-ML: Monomial lower bound: `|∫ b(x) e^{itσx^m} dx| ≥ t^{−1/m}/(24m)` once `t^{1−1/m} ≥ 96 r^{1−m}`. -/
+
+example (h : MonomialLowerStatement) (σ : ℝ) (hσ : σ = 1 ∨ σ = -1) := OscInt.API.TriangularDecaySanity.triML_instances h σ hσ
+
+/-! ### K2-F: Fourier localisation: for a smooth `χ` supported inside `(−π, π)²`, a bound on every lattice coefficient of `e^{itΨ}` bounds the `χ`-localised integral at every real velocity `p`. -/
+
+example (h : TorusLocalizationStatement) := OscInt.API.TriangularDecaySanity.triF_chi1 h
+
+/-! ### K2-U: Fixed-coupling upper bound: `|triKernel α t n| ≤ C_α t^{−triRate α}` for all real `t ≥ 1` and all `n ∈ ℤ²`. -/
+
+example (h : TriDecayUpperStatement) := OscInt.API.TriangularDecaySanity.triU_zero h
+
+/-! ### K2-D: Fixed-coupling lower bound: for all real `t ≥ T_α` some lattice site has `|triKernel α t n| ≥ c_α t^{−triRate α}`, `c_α > 0`. -/
+
+example (h : TriDecayLowerStatement) := OscInt.API.TriangularDecaySanity.triD_zero h
+
 end OscIntSnippets

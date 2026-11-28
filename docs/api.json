@@ -2314,6 +2314,153 @@
    ],
    "snippet": "example : TriQuarticStatement := OscInt.API.triQuartic",
    "status": "see docs/STATUS.md (row TRI-Q)"
+  },
+  {
+   "label": "K2-L",
+   "name": "OscInt.Statements.ReducedOrderBoundStatement",
+   "proved_by": null,
+   "summary": "Local bound of order `m`: a nonzero `m`-th derivative of the reduced function gives decay `t^{−(1/2 + 1/m)}` near `k₀`, uniformly over every linear term.",
+   "file": "OscInt/Statements/TriangularDecay.lean",
+   "commitment": "05f6c1c1f07cac527c1c51f62150899103c4fcf3c05de77668f980d259b3c676",
+   "stamp": "stamps/20261128T013824Z-c5c04f495284",
+   "lean_statement": "def ReducedOrderBoundStatement : Prop :=\n  ∀ (Ψ : ℝ × ℝ → ℝ) (k₀ v w : ℝ × ℝ) (ε : ℝ) (h : ℝ → ℝ) (m : ℕ), ContDiff ℝ ∞ Ψ → 2 ≤ m →\n    v.1 * w.2 - v.2 * w.1 ≠ 0 → iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] ≠ 0 → 0 < ε → ReducedCurve Ψ k₀ v w ε h →\n      iteratedDeriv m (reducedFn Ψ k₀ v w h) 0 ≠ 0 →\n      ∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (y : ℝ × ℝ) (t : ℝ),\n        AmpBound 2 (Metric.closedBall k₀ δ) A M → 1 ≤ t →\n          ‖oscInt2 (fun κ => t * Ψ κ + lin y κ) A‖ ≤ C * M * t ^ (-(1 / 2 + 1 / (m : ℝ)))",
+   "hypotheses": [
+    "Ψ smooth on ℝ²; v, w spanning ℝ² (implied by the others), D²Ψ(k₀)[w, w] ≠ 0",
+    "h a reduced curve at k₀ for v, w on |u| < ε, ε > 0",
+    "m ≥ 2 with the m-th derivative of the reduced function nonzero at 0",
+    "A ∈ C², supported in closedBall k₀ δ, derivatives of order ≤ 2 bounded by M; t ≥ 1"
+   ],
+   "conclusion": "|∫ e^{i(tΨ(κ) + y·κ)} A(κ) dκ| ≤ C M t^{−(1/2 + 1/m)}, with δ, C independent of A, M, y, t",
+   "rate": "t^{−(1/2 + 1/m)}",
+   "uniform_over": "every linear term y ∈ ℝ², every amplitude in the ball, t ≥ 1",
+   "smoothness": "phase C^∞, amplitude C²",
+   "see_also": [
+    "S5.1′",
+    "S1.k",
+    "TRI-K"
+   ],
+   "snippet": "example (h : ReducedOrderBoundStatement) := OscInt.API.TriangularDecaySanity.triL_shear h",
+   "status": "see docs/STATUS.md (row K2-L)"
+  },
+  {
+   "label": "K2-MA",
+   "name": "OscInt.Statements.MonomialAsymptoticStatement",
+   "proved_by": null,
+   "summary": "Monomial asymptotics with an explicit remainder: the improper integral `C = ∫_ℝ e^{iσx^m} dx` has `Re C ≥ 1/(12m)`, and a plateau cutoff integral is `t^{−1/m} C` up to `4/(m t r^{m−1})`.",
+   "file": "OscInt/Statements/TriangularDecay.lean",
+   "commitment": "3540c466bd53cb1081d1459036d1354fed77407370079abeac462b0813998bf0",
+   "stamp": "stamps/20261128T013824Z-c5c04f495284",
+   "lean_statement": "def MonomialAsymptoticStatement : Prop :=\n  ∀ (m : ℕ) (σ : ℝ), 2 ≤ m → (σ = 1 ∨ σ = -1) →\n    ∃ C : ℂ, 1 / (12 * (m : ℝ)) ≤ C.re ∧\n      Tendsto (fun R : ℝ => ∫ x in -R..R, Complex.exp (↑(σ * x ^ m) * Complex.I)) atTop (𝓝 C) ∧\n      ∀ (b : ℝ → ℝ) (r t : ℝ), PlateauCutoff b r → 0 < t →\n        ‖(∫ x : ℝ, (b x : ℂ) * Complex.exp (↑(t * σ * x ^ m) * Complex.I)) -\n            ((t ^ (-(1 : ℝ) / (m : ℝ)) : ℝ) : ℂ) * C‖ ≤ 4 / ((m : ℝ) * t * r ^ (m - 1))",
+   "hypotheses": [
+    "m ≥ 2, σ = ±1",
+    "(b, r) a plateau cutoff (C¹, compactly supported, even, 1 on [−r, r], nonincreasing on [0, ∞)); t > 0"
+   ],
+   "conclusion": "the improper integral C = ∫ e^{iσx^m} dx (symmetric limit) has Re C ≥ 1/(12m), and |∫ b(x) e^{itσx^m} dx − t^{−1/m} C| ≤ 4/(m t r^{m−1})",
+   "rate": "t^{−1/m} with remainder O(1/t)",
+   "uniform_over": "every plateau cutoff and every t > 0",
+   "smoothness": "cutoff C¹",
+   "see_also": [
+    "K2-ML"
+   ],
+   "snippet": "example (h : MonomialAsymptoticStatement) := OscInt.API.TriangularDecaySanity.triMA_instances h",
+   "status": "see docs/STATUS.md (row K2-MA)"
+  },
+  {
+   "label": "K2-ML",
+   "name": "OscInt.Statements.MonomialLowerStatement",
+   "proved_by": null,
+   "summary": "Monomial lower bound: `|∫ b(x) e^{itσx^m} dx| ≥ t^{−1/m}/(24m)` once `t^{1−1/m} ≥ 96 r^{1−m}`.",
+   "file": "OscInt/Statements/TriangularDecay.lean",
+   "commitment": "ad68f9dc6ad1945755a23b1ad07d72716d6853a4180d343745c9334b40e79e3c",
+   "stamp": "stamps/20261128T013824Z-c5c04f495284",
+   "lean_statement": "def MonomialLowerStatement : Prop :=\n  ∀ (m : ℕ) (σ : ℝ) (b : ℝ → ℝ) (r t : ℝ), 2 ≤ m → (σ = 1 ∨ σ = -1) → PlateauCutoff b r → 0 < t →\n    96 * r ^ (1 - (m : ℝ)) ≤ t ^ (1 - 1 / (m : ℝ)) →\n      t ^ (-(1 : ℝ) / (m : ℝ)) / (24 * (m : ℝ)) ≤\n        ‖∫ x : ℝ, (b x : ℂ) * Complex.exp (↑(t * σ * x ^ m) * Complex.I)‖",
+   "hypotheses": [
+    "m ≥ 2, σ = ±1, (b, r) a plateau cutoff, t > 0",
+    "t^{1−1/m} ≥ 96 r^{1−m}"
+   ],
+   "conclusion": "|∫ b(x) e^{itσx^m} dx| ≥ t^{−1/m}/(24m)",
+   "rate": "t^{−1/m} (lower bound)",
+   "uniform_over": "every plateau cutoff and every t beyond the threshold",
+   "smoothness": "cutoff C¹",
+   "see_also": [
+    "K2-MA"
+   ],
+   "snippet": "example (h : MonomialLowerStatement) (σ : ℝ) (hσ : σ = 1 ∨ σ = -1) := OscInt.API.TriangularDecaySanity.triML_instances h σ hσ",
+   "status": "see docs/STATUS.md (row K2-ML)"
+  },
+  {
+   "label": "K2-F",
+   "name": "OscInt.Statements.TorusLocalizationStatement",
+   "proved_by": null,
+   "summary": "Fourier localisation: for a smooth `χ` supported inside `(−π, π)²`, a bound on every lattice coefficient of `e^{itΨ}` bounds the `χ`-localised integral at every real velocity `p`.",
+   "file": "OscInt/Statements/TriangularDecay.lean",
+   "commitment": "5928e65977f9d3bd10346a567961d933039b04eb6ae54e74c934e383601b053e",
+   "stamp": "stamps/20261128T013824Z-c5c04f495284",
+   "lean_statement": "def TorusLocalizationStatement : Prop :=\n  ∀ χ : ℝ × ℝ → ℂ, ContDiff ℝ ∞ χ →\n    tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi →\n    ∃ D : ℝ, ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →\n      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →\n      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,\n          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →\n        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ D * B",
+   "hypotheses": [
+    "χ smooth with tsupport inside the open box (−π, π)²",
+    "Ψ continuous and 2π-periodic in each variable; t, p real",
+    "every lattice coefficient |∫_{[−π,π]²} e^{i(tΨ + n·k)} dk| ≤ B"
+   ],
+   "conclusion": "|∫_{[−π,π]²} χ(k) e^{it(Ψ(k) + p·k)} dk| ≤ D B, D depending on χ only",
+   "rate": "— (localisation)",
+   "uniform_over": "every phase, every real t and every real velocity p",
+   "smoothness": "cutoff C^∞",
+   "see_also": [
+    "K2-D",
+    "T1"
+   ],
+   "snippet": "example (h : TorusLocalizationStatement) := OscInt.API.TriangularDecaySanity.triF_chi1 h",
+   "status": "see docs/STATUS.md (row K2-F)"
+  },
+  {
+   "label": "K2-U",
+   "name": "OscInt.Statements.TriDecayUpperStatement",
+   "proved_by": null,
+   "summary": "Fixed-coupling upper bound: `|triKernel α t n| ≤ C_α t^{−triRate α}` for all real `t ≥ 1` and all `n ∈ ℤ²`.",
+   "file": "OscInt/Statements/TriangularDecay.lean",
+   "commitment": "7645b969298a05723663a5c0a5e8462365866c02bd9ecf9846f73408a7668d9c",
+   "stamp": "stamps/20261128T013824Z-c5c04f495284",
+   "lean_statement": "def TriDecayUpperStatement : Prop :=\n  ∀ α : ℝ, ∃ C : ℝ, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-triRate α)",
+   "hypotheses": [
+    "α real",
+    "t ≥ 1 real, n ∈ ℤ²"
+   ],
+   "conclusion": "|triKernel α t n| ≤ C_α t^{−triRate α}, triRate α = 2/3 at α ∈ {0, ±1/(2√2)} and 3/4 otherwise (unnormalised kernel, triKernel 0 = latticeKernel)",
+   "rate": "t^{−2/3} or t^{−3/4}",
+   "uniform_over": "every lattice site and every real t ≥ 1 (not uniform in α)",
+   "smoothness": "—",
+   "see_also": [
+    "K2-D",
+    "TRI-K",
+    "T6E′"
+   ],
+   "snippet": "example (h : TriDecayUpperStatement) := OscInt.API.TriangularDecaySanity.triU_zero h",
+   "status": "see docs/STATUS.md (row K2-U)"
+  },
+  {
+   "label": "K2-D",
+   "name": "OscInt.Statements.TriDecayLowerStatement",
+   "proved_by": null,
+   "summary": "Fixed-coupling lower bound: for all real `t ≥ T_α` some lattice site has `|triKernel α t n| ≥ c_α t^{−triRate α}`, `c_α > 0`.",
+   "file": "OscInt/Statements/TriangularDecay.lean",
+   "commitment": "5c3170878ce2c7b0dcc799ec0c3353089fead7ff1fec0eac9e57e20a3386073b",
+   "stamp": "stamps/20261128T013824Z-c5c04f495284",
+   "lean_statement": "def TriDecayLowerStatement : Prop :=\n  ∀ α : ℝ, ∃ c > 0, ∃ T : ℝ, ∀ t : ℝ, T ≤ t → ∃ n : ℤ × ℤ, c * t ^ (-triRate α) ≤ ‖triKernel α t n‖",
+   "hypotheses": [
+    "α real"
+   ],
+   "conclusion": "there are c_α > 0 and T_α with: for every real t ≥ T_α some n ∈ ℤ² has |triKernel α t n| ≥ c_α t^{−triRate α}",
+   "rate": "t^{−2/3} or t^{−3/4} (lower bound; with K2-U the rate is sharp)",
+   "uniform_over": "every real t ≥ T_α (the site depends on t; not uniform in α)",
+   "smoothness": "—",
+   "see_also": [
+    "K2-U",
+    "K2-ML",
+    "K2-F"
+   ],
+   "snippet": "example (h : TriDecayLowerStatement) := OscInt.API.TriangularDecaySanity.triD_zero h",
+   "status": "see docs/STATUS.md (row K2-D)"
   }
  ]
 }
