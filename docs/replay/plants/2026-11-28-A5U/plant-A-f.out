@@ -1,0 +1,41 @@
+exit code 1
+plant-A-f.lean:37:13: error: Application type mismatch: The argument
+  hr
+has type
+  r ≥ 0
+but is expected to have type
+  r > 0
+in the application
+  And.intro hr
+plant-A-f.lean:50:13: error: Application type mismatch: The argument
+  hr
+has type
+  r ≥ 0
+but is expected to have type
+  r > 0
+in the application
+  And.intro hr
+plant-A-f.lean:70:35: error: Application type mismatch: The argument
+  hr
+has type
+  r ≥ 0
+but is expected to have type
+  0 < r
+in the application
+  lt_min hr
+plant-A-f.lean:86:35: error: Application type mismatch: The argument
+  hr
+has type
+  r ≥ 0
+but is expected to have type
+  0 < r
+in the application
+  lt_min hr
+plant-A-f.lean:98:12: error: Application type mismatch: The argument
+  hr
+has type
+  r ≥ 0
+but is expected to have type
+  r > 0
+in the application
+  And.intro hr

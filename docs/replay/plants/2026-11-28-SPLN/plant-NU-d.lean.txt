@@ -1,0 +1,53 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `SplKernelCapStatement`: the cap only for τ ≥ 0 (negative τ dropped). -/
+def P_SplKernelCapStatement : Prop :=
+  ∀ τ : ℝ, 0 ≤ τ → ‖splKernel τ‖ ≤ (360987 / 500000 : ℝ)
+
+/-- SPL-NU at the point of SPL-NL. -/
+theorem P_spln_cap_point (h : P_SplKernelCapStatement) : ‖splKernel (8123 / 5000)‖ ≤ 360987 / 500000 :=
+  h (8123 / 5000)
+
+/-- SPL-NU on the negative branch: at `−τ`, `τ > 0`, it bounds `κ₊(τ)`. -/
+theorem P_spln_cap_neg_branch (h : P_SplKernelCapStatement) (τ : ℝ) (hτ : 0 < τ) :
+    ‖splKernelPos τ‖ ≤ 360987 / 500000 := by
+  have h1 := h (-τ)
+  rw [spln_kernel_neg_branch (by linarith), norm_neg, neg_neg] at h1
+  exact h1
+
+/-- SPL-NU at the point of `spln_kernel_large`: `3/10 ≤ |κ(τ)| ≤ 360987/500000`. -/
+theorem P_spln_cap_large (h : P_SplKernelCapStatement) :
+    ∃ τ : ℝ, 0 ≤ τ ∧ 3 / 10 ≤ ‖splKernel τ‖ ∧ ‖splKernel τ‖ ≤ 360987 / 500000 := by
+  obtain ⟨τ, hτ, h1⟩ := spln_kernel_large
+  exact ⟨τ, hτ, h1, h τ⟩
+
+/-- SPL-NU excludes a lower value `72197401/10⁸` (above the cap) at the point of SPL-NL. -/
+theorem P_spln_cap_excludes_higher_lower (h : P_SplKernelCapStatement) :
+    ¬ ((72197401 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖) := by
+  have := h (8123 / 5000)
+  intro h1
+  linarith
+
+/-- **Consistency of SPL-NK with SPL-NU, through the proved SPL-A**: SPL-NK implies SPL-NU (SPL-A gives `g ≠ 0`
+with `(|κ(|τ|)| − ε) ‖g₃‖₁ ≤ |R(g, 1)|`, SPL-NK bounds `|R(g, 1)|` by `(360987/500000) ‖g₃‖₁`, and `‖g₃‖₁ > 0`). -/
+theorem P_spln_cap_of_sharp (hK : StationaryLeadingSharpStatement) : P_SplKernelCapStatement := by
+  intro τ
+  rw [← norm_splKernel_abs]
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  obtain ⟨g, g₁, g₂, g₃, hamp, -, -, hne, hle⟩ := stationaryLeadingAttained |τ| ε (abs_nonneg τ) hε
+  have hK' := hK g g₁ g₂ g₃ 1 hamp one_pos
+  rw [Real.one_rpow, mul_one] at hK'
+  have hpos := integral_norm_pos_of_splAmplitude hamp hne
+  have h1 := le_of_mul_le_mul_right (hle.trans hK') hpos
+  linarith
+
+/-- **Consistency of SPL-NL with SPL-NU**: both at the point `8123/5000`. -/
+theorem P_spln_lower_and_cap (hU : P_SplKernelCapStatement) (hL : SplKernelLowerStatement) :
+    (72197399 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ ∧ ‖splKernel (8123 / 5000)‖ ≤ 360987 / 500000 :=
+  ⟨hL, hU _⟩
+
+end OscInt.API.StationaryLeadingSharpSanity

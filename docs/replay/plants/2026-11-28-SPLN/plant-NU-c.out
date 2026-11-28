@@ -1,0 +1,35 @@
+exit code 1
+plant-NU-c.lean:13:2: error: Type mismatch
+  h (8123 / 5000)
+has type
+  ‖splKernel (8123 / 5000)‖ ≤ 7 / 8
+but is expected to have type
+  ‖splKernel (8123 / 5000)‖ ≤ 360987 / 500000
+plant-NU-c.lean:20:2: error: Type mismatch
+  h1
+has type
+  ‖splKernelPos τ‖ ≤ 7 / 8
+but is expected to have type
+  ‖splKernelPos τ‖ ≤ 360987 / 500000
+plant-NU-c.lean:26:20: error: Application type mismatch: The argument
+  h τ
+has type
+  ‖splKernel τ‖ ≤ 7 / 8
+but is expected to have type
+  ‖splKernel τ‖ ≤ 360987 / 500000
+in the application
+  ⟨h1, h τ⟩
+plant-NU-c.lean:33:2: error: linarith failed to find a contradiction
+h : P_SplKernelCapStatement
+this : ‖splKernel (8123 / 5000)‖ ≤ 7 / 8
+h1 : 72197401 / 100000000 < ‖splKernel (8123 / 5000)‖
+⊢ False
+failed
+plant-NU-c.lean:51:7: error: Application type mismatch: The argument
+  hU ?m.43
+has type
+  ‖splKernel ?m.43‖ ≤ 7 / 8
+but is expected to have type
+  ‖splKernel (8123 / 5000)‖ ≤ 360987 / 500000
+in the application
+  ⟨hL, hU ?m.43⟩

@@ -1,0 +1,35 @@
+exit code 1
+plant-NL-e.lean:13:70: error: Type mismatch
+  h
+has type
+  P_SplKernelLowerStatement
+but is expected to have type
+  72197399 / 100000000 < ‖splKernel (8123 / 5000)‖
+plant-NL-e.lean:22:2: error: Type mismatch
+  h
+has type
+  P_SplKernelLowerStatement
+but is expected to have type
+  72197399 / 100000000 < ‖splKernel (8123 / 5000)‖
+plant-NL-e.lean:27:70: error: Type mismatch
+  h
+has type
+  P_SplKernelLowerStatement
+but is expected to have type
+  72197399 / 100000000 < ‖splKernel (8123 / 5000)‖
+plant-NL-e.lean:35:3: error: Application type mismatch: The argument
+  h
+has type
+  P_SplKernelLowerStatement
+but is expected to have type
+  72197399 / 100000000 < ‖splKernel (8123 / 5000)‖
+in the application
+  And.intro h
+plant-NL-e.lean:40:3: error: Application type mismatch: The argument
+  hL
+has type
+  P_SplKernelLowerStatement
+but is expected to have type
+  72197399 / 100000000 < ‖splKernel (8123 / 5000)‖
+in the application
+  And.intro hL

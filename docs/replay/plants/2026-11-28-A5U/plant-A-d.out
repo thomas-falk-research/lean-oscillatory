@@ -1,0 +1,142 @@
+exit code 1
+plant-A-d.lean:17:10: error: Function expected at
+  hC a₀ t n ?m.57
+but this term has type
+  ‖triKernel a₀ t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|a₀ - a₀| * t ^ (1 / 3))
+
+Note: Expected a function because this term is being applied to the argument
+  ht
+plant-A-d.lean:14:90: error: unsolved goals
+h : P_TriCrossoverUpperStatement
+a₀ : ℝ
+ha : |a₀| = triExceptional
+r : ℝ
+hr : r > 0
+C : ℝ
+hC :
+  ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+t : ℝ
+n : ℤ × ℤ
+ht : 1 ≤ t
+⊢ ‖triKernel a₀ t n‖ ≤ C * t ^ (-triRate a₀)
+plant-A-d.lean:40:13: error: Function expected at
+  hC α t n hα
+but this term has type
+  ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+
+Note: Expected a function because this term is being applied to the argument
+  ht
+plant-A-d.lean:35:82: error: unsolved goals
+h : P_TriCrossoverUpperStatement
+a₀ : ℝ
+ha : |a₀| = triExceptional
+r : ℝ
+hr : r > 0
+C : ℝ
+hC :
+  ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+α t : ℝ
+n : ℤ × ℤ
+hα : |α - a₀| ≤ r
+hne : α ≠ a₀
+ht : 1 ≤ t
+ht0 : 0 < t
+hε : 0 < |α - a₀|
+⊢ ‖triKernel α t n‖ ≤ C * (|α - a₀| ^ (-1 / 4) * t ^ (-3 / 4))
+plant-A-d.lean:51:13: error: Function expected at
+  hC α t n hα
+but this term has type
+  ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+
+Note: Expected a function because this term is being applied to the argument
+  ht
+plant-A-d.lean:48:107: error: unsolved goals
+h : P_TriCrossoverUpperStatement
+a₀ : ℝ
+ha : |a₀| = triExceptional
+r : ℝ
+hr : r > 0
+C : ℝ
+hC :
+  ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+α t : ℝ
+n : ℤ × ℤ
+hα : |α - a₀| ≤ r
+hne : α ≠ a₀
+ht : 1 ≤ t
+⊢ ‖triKernel α t n‖ ≤ C * min (t ^ (-2 / 3)) (|α - a₀| ^ (-1 / 4) * t ^ (-3 / 4))
+plant-A-d.lean:78:10: error: Function expected at
+  hC (a₀ + min r 1) ((16 / min r 1) ^ 3) n ?m.354
+but this term has type
+  ‖triKernel (a₀ + min r 1) ((16 / min r 1) ^ 3) n‖ ≤
+    C * ((16 / min r 1) ^ 3) ^ (-2 / 3) * crossEnvelope (|a₀ + min r 1 - a₀| * ((16 / min r 1) ^ 3) ^ (1 / 3))
+
+Note: Expected a function because this term is being applied to the argument
+  ht
+plant-A-d.lean:68:95: error: unsolved goals
+h : P_TriCrossoverUpperStatement
+a₀ : ℝ
+ha : |a₀| = triExceptional
+r : ℝ
+hr : r > 0
+C : ℝ
+hC :
+  ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+hδ0 : 0 < min r 1
+n : ℤ × ℤ
+hroot : ((16 / min r 1) ^ 3) ^ (1 / 3) = 16 / min r 1
+ht : 1 ≤ (16 / min r 1) ^ 3
+e : min r 1 * (16 / min r 1) = 16
+⊢ ‖triKernel (a₀ + min r 1) ((16 / min r 1) ^ 3) n‖ ≤ C * ((16 / min r 1) ^ 3) ^ (-2 / 3) * (1 / 2)
+plant-A-d.lean:88:10: error: Function expected at
+  hC (a₀ + min r 1) 1 n ?m.95
+but this term has type
+  ‖triKernel (a₀ + min r 1) 1 n‖ ≤ C * 1 ^ (-2 / 3) * crossEnvelope (|a₀ + min r 1 - a₀| * 1 ^ (1 / 3))
+
+Note: Expected a function because this term is being applied to the argument
+  le_rfl
+plant-A-d.lean:84:67: error: unsolved goals
+h : P_TriCrossoverUpperStatement
+a₀ : ℝ
+ha : |a₀| = triExceptional
+r : ℝ
+hr : r > 0
+C : ℝ
+hC :
+  ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+hδ0 : 0 < min r 1
+n : ℤ × ℤ
+⊢ ‖triKernel (a₀ + min r 1) 1 n‖ ≤ C
+plant-A-d.lean:98:36: error: Application type mismatch: The argument
+  hC
+has type
+  ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+but is expected to have type
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ r → 1 ≤ t → ‖triKernel α t n‖ ≤ ?m.112 * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+in the application
+  a5u_window_lt hD ha hC
+plant-A-d.lean:98:43: error: Application type mismatch: The argument
+  hC
+has type
+  ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+but is expected to have type
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ r → 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+in the application
+  Exists.intro C hC
+plant-A-d.lean:96:99: error: unsolved goals
+h : P_TriCrossoverUpperStatement
+hD : TriDecayLowerStatement
+a₀ : ℝ
+ha : |a₀| = triExceptional
+r : ℝ
+hr : r > 0
+C : ℝ
+hC :
+  ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+⊢ ∃ r > 0,
+    r < triExceptional ∧
+      ∃ C,
+        ∀ (α t : ℝ) (n : ℤ × ℤ),
+          |α - a₀| ≤ r → 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))

@@ -354,3 +354,36 @@ import Mathlib
 #check @intervalIntegral.integral_comp_mul_deriv
 #check @contDiff_succ_iff_fderiv
 #check @Real.rpow_le_rpow_of_exponent_le
+-- Batch SPL-N: the route docs/proof-SPLN.md (2026-11-28, session 17).
+#check @Complex.exp_bound'
+#check @Real.pi_gt_d20
+#check @Real.pi_lt_d20
+#check @Real.sqrt_le_sqrt
+#check @Real.sqrt_le_left
+#check @Real.lt_sqrt
+#check @intervalIntegral.integral_eq_sub_of_hasDerivAt
+#check @intervalIntegral.norm_integral_le_of_norm_le
+#check @MeasureTheory.integral_Ioi_of_hasDerivAt_of_tendsto
+#check @image_le_of_deriv_right_le_deriv_boundary
+#check @exists_hasDerivAt_eq_slope
+#check @Complex.sq_norm
+#check @Complex.normSq_apply
+#check @MeasureTheory.integral_eq_zero_iff_of_nonneg
+-- Batch LOC2: the names the parts use (docs/proof-LOC2.md, revision section; 2026-11-28, session 17).
+#check @UnitAddTorus.hasSum_sq_mFourierCoeff
+#check @UnitAddTorus.measurableEquivPiIoc
+#check @iteratedFDeriv_two_apply
+#check @integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable
+#check @MeasureTheory.integral_mul_le_Lp_mul_Lq_of_nonneg
+#check @abs_sub_round
+-- Batch A5U: the names the parts use (docs/proof-A5U.md; 2026-11-28, session 17).
+#check @exists_hasDerivAt_eq_zero
+#check @iteratedDeriv_comp_neg
+#check @Convex.norm_image_sub_le_of_norm_deriv_le
+#check @iteratedDerivWithin_add
+#check @Real.abs_cos_sub_cos_le
+#check @ContDiffAt.fderiv
+#check @HasCompactSupport.deriv
+#check @convexOn_of_hasDerivWithinAt2_nonneg
+#check @ConvexOn.le_max_of_mem_Icc
+#check @intervalIntegral.integral_finsetSum

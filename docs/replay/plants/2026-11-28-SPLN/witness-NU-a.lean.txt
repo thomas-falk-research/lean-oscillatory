@@ -1,0 +1,20 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `SplKernelCapStatement`: the cap 360987/500000 ↦ 72197399/10⁸ (the two rationals confused). -/
+def P_SplKernelCapStatement : Prop :=
+  ∀ τ : ℝ, ‖splKernel τ‖ ≤ (72197399 / 100000000 : ℝ)
+
+/-- Witness (relative to SPL-NL): SPL-NL's point exceeds the planted cap. -/
+theorem witness_NU_a (hL : SplKernelLowerStatement) : ¬ P_SplKernelCapStatement := by
+  intro h
+  have h1 : (72197399 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ := hL
+  have h2 := h (8123 / 5000)
+  linarith
+
+#print axioms witness_NU_a
+
+end OscInt.API.StationaryLeadingSharpSanity

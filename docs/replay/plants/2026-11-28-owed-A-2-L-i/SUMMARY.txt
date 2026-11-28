@@ -1,0 +1,8 @@
+run start 2026-11-28T17:08:59Z UTC
+ok-A-2: exit code 0, started 2026-11-28T17:08:59Z UTC, 4.0 s (includes waiting for the shared Lean lock)
+plant-A-2: exit code 1, started 2026-11-28T17:09:03Z UTC, 4.3 s (includes waiting for the shared Lean lock)
+witness-A-2: exit code 0, started 2026-11-28T17:09:07Z UTC, 4.6 s (includes waiting for the shared Lean lock)
+ok-L-i: exit code 0, started 2026-11-28T17:09:12Z UTC, 4.2 s (includes waiting for the shared Lean lock)
+plant-L-i: exit code 1, started 2026-11-28T17:09:16Z UTC, 4.2 s (includes waiting for the shared Lean lock)
+witness-L-i: exit code 0, started 2026-11-28T17:09:20Z UTC, 5.6 s (includes waiting for the shared Lean lock)
+run end 2026-11-28T17:09:26Z UTC

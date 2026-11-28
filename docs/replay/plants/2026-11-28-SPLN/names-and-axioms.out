@@ -1,0 +1,152 @@
+@intervalIntegral.integral_comp_neg : ∀ {E : Type u_1} [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℝ E]
+  {a b : ℝ} (f : ℝ → E), ∫ (x : ℝ) in a..b, f (-x) = ∫ (x : ℝ) in -b..-a, f x
+@intervalIntegral.integral_symm : ∀ {E : Type u_1} [inst : NormedAddCommGroup E] [inst_1 : NormedSpace ℝ E] {f : ℝ → E}
+  {μ : MeasureTheory.Measure ℝ} (a b : ℝ), ∫ (x : ℝ) in b..a, f x ∂μ = -∫ (x : ℝ) in a..b, f x ∂μ
+@Real.zero_rpow : ∀ {x : ℝ}, x ≠ 0 → 0 ^ x = 0
+@Real.rpow_neg : ∀ {x : ℝ}, 0 ≤ x → ∀ (y : ℝ), x ^ (-y) = (x ^ y)⁻¹
+Real.rpow_neg_one : ∀ (x : ℝ), x ^ (-1) = x⁻¹
+Real.rpow_natCast : ∀ (x : ℝ) (n : ℕ), x ^ ↑n = x ^ n
+@Real.rpow_mul : ∀ {x : ℝ}, 0 ≤ x → ∀ (y z : ℝ), x ^ (y * z) = (x ^ y) ^ z
+@Real.rpow_nonneg : ∀ {x : ℝ}, 0 ≤ x → ∀ (y : ℝ), 0 ≤ x ^ y
+@Real.rpow_pos_of_pos : ∀ {x : ℝ}, 0 < x → ∀ (y : ℝ), 0 < x ^ y
+Real.one_rpow : ∀ (x : ℝ), 1 ^ x = 1
+@Real.sqrt_le_left : ∀ {x y : ℝ}, 0 ≤ y → (√x ≤ y ↔ x ≤ y ^ 2)
+@Real.sqrt_pos : ∀ {x : ℝ}, 0 < √x ↔ 0 < x
+@Real.sqrt_sq : ∀ {x : ℝ}, 0 ≤ x → √(x ^ 2) = x
+@Real.le_sqrt_of_sq_le : ∀ {x y : ℝ}, x ^ 2 ≤ y → x ≤ √y
+Real.pi_gt_d2 : 3.14 < Real.pi
+Real.pi_gt_three : 3 < Real.pi
+Complex.norm_real : ∀ (r : ℝ), ‖↑r‖ = ‖r‖
+Complex.norm_I : ‖Complex.I‖ = 1
+Complex.ofReal_neg : ∀ (r : ℝ), ↑(-r) = -↑r
+@norm_sub_norm_le : ∀ {E : Type u_1} [inst : SeminormedAddCommGroup E] (a b : E), ‖a‖ - ‖b‖ ≤ ‖a - b‖
+@norm_pow : ∀ {α : Type u_1} [inst : SeminormedRing α] [NormOneClass α] [NormMulClass α] (a : α) (n : ℕ),
+  ‖a ^ n‖ = ‖a‖ ^ n
+@norm_div : ∀ {α : Type u_1} [inst : NormedDivisionRing α] (a b : α), ‖a / b‖ = ‖a‖ / ‖b‖
+@norm_mul : ∀ {α : Type u_1} [inst : Norm α] [inst_1 : Mul α] [NormMulClass α] (a b : α), ‖a * b‖ = ‖a‖ * ‖b‖
+@le_of_mul_le_mul_right : ∀ {α : Type u_1} [inst : Mul α] [inst_1 : Zero α] [inst_2 : Preorder α] {a b c : α}
+  [MulPosReflectLE α], b * a ≤ c * a → 0 < a → b ≤ c
+@lt_of_mul_lt_mul_right : ∀ {α : Type u_1} [inst : Mul α] [inst_1 : Zero α] [inst_2 : Preorder α] {a b c : α}
+  [MulPosReflectLT α], b * a < c * a → 0 ≤ a → b < c
+@le_of_forall_pos_le_add : ∀ {α : Type u_1} [inst : LinearOrder α] [DenselyOrdered α] [inst_2 : AddMonoid α]
+  [ExistsAddOfLE α] [AddLeftReflectLT α] {a b : α}, (∀ (ε : α), 0 < ε → a ≤ b + ε) → a ≤ b
+@mul_lt_mul_of_pos_right : ∀ {α : Type u_1} [inst : Mul α] [inst_1 : Zero α] [inst_2 : Preorder α] {a b c : α}
+  [MulPosStrictMono α], b < c → 0 < a → b * a < c * a
+@mul_nonpos_of_nonpos_of_nonneg : ∀ {α : Type u_1} [inst : MulZeroClass α] {a b : α} [inst_1 : Preorder α]
+  [MulPosMono α], a ≤ 0 → 0 ≤ b → a * b ≤ 0
+@MeasureTheory.integral_nonneg : ∀ {α : Type u_1} {E : Type u_2} [inst : NormedAddCommGroup E]
+  [inst_1 : NormedSpace ℝ E] {m : MeasurableSpace α} {μ : MeasureTheory.Measure α} [inst_2 : PartialOrder E]
+  [IsOrderedAddMonoid E] [IsOrderedModule ℝ E] [ClosedIciTopology E] {f : α → E}, 0 ≤ f → 0 ≤ ∫ (x : α), f x ∂μ
+MeasureTheory.integral_zero : ∀ (α : Type u_1) (G : Type u_2) [inst : NormedAddCommGroup G] [inst_1 : NormedSpace ℝ G]
+  {m : MeasurableSpace α} {μ : MeasureTheory.Measure α}, ∫ (x : α), 0 ∂μ = 0
+@le_div_iff₀ : ∀ {G₀ : Type u_1} [inst : GroupWithZero G₀] [inst_1 : PartialOrder G₀] [MulPosReflectLT G₀] {a b c : G₀},
+  0 < c → (a ≤ b / c ↔ a * c ≤ b)
+@ite_eq_left : ∀ {c : Prop} {h : Decidable c}, c → ∀ {α : Sort u_1} {t e : α}, (if c then t else e) = t
+@ite_eq_right : ∀ {c : Prop} {h : Decidable c}, ¬c → ∀ {α : Sort u_1} {t e : α}, (if c then t else e) = e
+@neg_sq : ∀ {R : Type u_1} [inst : Monoid R] [inst_1 : HasDistribNeg R] (a : R), (-a) ^ 2 = a ^ 2
+'OscInt.API.StationaryLeadingSharpSanity.spln_cap_lt_seven_eighths' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_lower_lt_cap' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_cap_sub_lower' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_kernel_le_seven_eighths' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_kernel_large' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_lower_fails_at_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_cap_bite' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_fresnelPrim_neg' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_kernelPos_neg_add' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_norm_fresnelLimit_sq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_norm_fresnelLimit_ge' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_kernel_pos_branch' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_kernel_neg_branch' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_kernelPos_neg_two' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_rpow_sixteenth' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_rpow_sixteenth_half' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_rpow_hundred_five_halves' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sqrt_sixteenth' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_remainder_gauss_small_lower' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharp_one_four_nontrivial' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharp_one_four_within' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharp_conclusion_fails_lam_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharp_amplitude_bite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharpness_range_bite' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharpness_needs_pos_lam' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharpness_nonpos' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_cap_point' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_cap_neg_branch' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_cap_large' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_cap_excludes_higher_lower' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_cap_of_sharp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_lower_ne_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_lower_neg_point' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_lower_excludes_cap' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_lower_below_seven_eighths' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_lower_and_cap' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharp_gauss' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharp_one_four' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharp_small' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharp_hundred' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharp_sixteen_hundred' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharpness_exists' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharpness_nonzero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharpness_kernel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharpness_refutes' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.spln_sharp_and_sharpness' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

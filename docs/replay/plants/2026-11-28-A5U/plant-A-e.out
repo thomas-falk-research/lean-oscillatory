@@ -1,0 +1,49 @@
+exit code 1
+plant-A-e.lean:15:32: error: Application type mismatch: The argument
+  ha
+has type
+  |a₀| = triExceptional
+but is expected to have type
+  a₀ = triExceptional
+in the application
+  h a₀ ha
+plant-A-e.lean:36:32: error: Application type mismatch: The argument
+  ha
+has type
+  |a₀| = triExceptional
+but is expected to have type
+  a₀ = triExceptional
+in the application
+  h a₀ ha
+plant-A-e.lean:49:32: error: Application type mismatch: The argument
+  ha
+has type
+  |a₀| = triExceptional
+but is expected to have type
+  a₀ = triExceptional
+in the application
+  h a₀ ha
+plant-A-e.lean:69:32: error: Application type mismatch: The argument
+  ha
+has type
+  |a₀| = triExceptional
+but is expected to have type
+  a₀ = triExceptional
+in the application
+  h a₀ ha
+plant-A-e.lean:85:32: error: Application type mismatch: The argument
+  ha
+has type
+  |a₀| = triExceptional
+but is expected to have type
+  a₀ = triExceptional
+in the application
+  h a₀ ha
+plant-A-e.lean:97:32: error: Application type mismatch: The argument
+  ha
+has type
+  |a₀| = triExceptional
+but is expected to have type
+  a₀ = triExceptional
+in the application
+  h a₀ ha

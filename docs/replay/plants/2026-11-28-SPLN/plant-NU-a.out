@@ -1,0 +1,43 @@
+exit code 1
+plant-NU-a.lean:13:2: error: Type mismatch
+  h (8123 / 5000)
+has type
+  ‖splKernel (8123 / 5000)‖ ≤ 72197399 / 100000000
+but is expected to have type
+  ‖splKernel (8123 / 5000)‖ ≤ 360987 / 500000
+plant-NU-a.lean:20:2: error: Type mismatch
+  h1
+has type
+  ‖splKernelPos τ‖ ≤ 72197399 / 100000000
+but is expected to have type
+  ‖splKernelPos τ‖ ≤ 360987 / 500000
+plant-NU-a.lean:26:20: error: Application type mismatch: The argument
+  h τ
+has type
+  ‖splKernel τ‖ ≤ 72197399 / 100000000
+but is expected to have type
+  ‖splKernel τ‖ ≤ 360987 / 500000
+in the application
+  ⟨h1, h τ⟩
+plant-NU-a.lean:46:2: error: linarith failed to find a contradiction
+hK : StationaryLeadingSharpStatement
+τ ε : ℝ
+hε : 0 < ε
+g g₁ g₂ g₃ : ℝ → ℂ
+hamp : SplAmplitude g g₁ g₂ g₃
+hne : ∃ x, g x ≠ 0
+hle : (‖splKernel |τ|‖ - ε) * ∫ (t : ℝ), ‖g₃ t‖ ≤ ‖splRemainder g 1‖
+hK' : ‖splRemainder g 1‖ ≤ 360987 / 500000 * ∫ (t : ℝ), ‖g₃ t‖
+hpos : 0 < ∫ (t : ℝ), ‖g₃ t‖
+h1 : ‖splKernel |τ|‖ - ε ≤ 360987 / 500000
+a✝ : 72197399 / 100000000 + ε < ‖splKernel |τ|‖
+⊢ False
+failed
+plant-NU-a.lean:51:7: error: Application type mismatch: The argument
+  hU ?m.43
+has type
+  ‖splKernel ?m.43‖ ≤ 72197399 / 100000000
+but is expected to have type
+  ‖splKernel (8123 / 5000)‖ ≤ 360987 / 500000
+in the application
+  ⟨hL, hU ?m.43⟩

@@ -1,0 +1,31 @@
+import OscInt.Front.TriangularCrossoverSanity
+
+namespace OscInt.API.TriangularCrossoverSanity
+
+open OscInt.Statements OscInt.API.TriangularDecaySanity OscInt.API.TriangularAnisoSanity
+
+/-- PLANTED copy of `crossEnvelope`: envelope exponent −1/4 ↦ −1/5. -/
+noncomputable def P_crossEnvelope (s : ℝ) : ℝ := if s ≤ 1 then 1 else s ^ (-(1 : ℝ) / 5)
+
+/-- PLANTED copy of `TriCrossoverUpperStatement`: envelope exponent −1/4 ↦ −1/5. -/
+def P_TriCrossoverUpperStatement : Prop :=
+  ∀ a₀ : ℝ, |a₀| = triExceptional → ∃ r > 0, ∃ C : ℝ, ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → 1 ≤ t →
+    ‖triKernel α t n‖ ≤ C * t ^ (-(2 : ℝ) / 3) * P_crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 3))
+
+/-- Witness: the draft implies the planted copy (`s^{−1/4} ≤ s^{−1/5}` for `s > 1`). So `−1/4` is the strongest
+exponent compatible with K2-D (plant A-a), not the only compatible one. -/
+theorem witness_A_k (h : TriCrossoverUpperStatement) : P_TriCrossoverUpperStatement := fun a₀ ha => by
+  obtain ⟨r, hr, C, hC⟩ := h a₀ ha
+  refine ⟨r, hr, C, fun α t n hα ht => ?_⟩
+  have h1 := hC α t n hα ht
+  have hC0 := a5u_const_nonneg (by linarith) h1
+  have hle : ∀ s, crossEnvelope s ≤ P_crossEnvelope s := fun s => by
+    by_cases hs : s ≤ 1
+    · simp [crossEnvelope, P_crossEnvelope, hs]
+    · simp only [crossEnvelope, P_crossEnvelope, hs, ↓reduceIte]
+      exact Real.rpow_le_rpow_of_exponent_le (not_le.mp hs).le (by norm_num)
+  exact h1.trans (mul_le_mul_of_nonneg_left (hle _) (mul_nonneg hC0 (Real.rpow_nonneg (by linarith) _)))
+
+#print axioms witness_A_k
+
+end OscInt.API.TriangularCrossoverSanity

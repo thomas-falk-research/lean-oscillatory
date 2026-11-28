@@ -96,7 +96,10 @@ jobs:
   replay:
     needs: build
     runs-on: ubuntu-24.04
-    timeout-minutes: 75
+    # 42.7 min on PR #26 (a8f6343, 241 modules; lean-replay 38.4, nanoda from source 2.1). 75 -> 120 on PR #27 (owner
+    # approval 2026-11-28): the local lean-replay stage grew 15% to 283 modules, and a runner of that day ran the
+    # consumer's per-module replay 1.56x slower per module, which projects to about 75 min
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

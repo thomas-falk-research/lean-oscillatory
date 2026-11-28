@@ -1,0 +1,27 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `StationaryLeadingSharpStatement`: the constant 360987/500000 ↦ 7/8 (SPL-K). -/
+def P_StationaryLeadingSharpStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    ‖splRemainder g lam‖ ≤ (7 / 8 : ℝ) * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2)
+
+/-- Witness: the draft implies the planted copy (`360987/500000 ≤ 7/8`); the planted copy is the proved SPL-K. -/
+theorem witness_NK_b (h : StationaryLeadingSharpStatement) : P_StationaryLeadingSharpStatement := by
+  intro g g₁ g₂ g₃ lam hA hl
+  refine (h g g₁ g₂ g₃ lam hA hl).trans ?_
+  have h1 : 0 ≤ (∫ t, ‖g₃ t‖) := integral_nonneg fun t => norm_nonneg _
+  have h2 : 0 ≤ lam ^ (-(3 : ℝ) / 2) := Real.rpow_nonneg hl.le _
+  have h3 : (360987 / 500000 : ℝ) ≤ 7 / 8 := by norm_num
+  exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right h3 h1) h2
+
+theorem witness_NK_b_proved : P_StationaryLeadingSharpStatement := stationaryLeadingSevenEighths
+
+#print axioms witness_NK_b
+
+#print axioms witness_NK_b_proved
+
+end OscInt.API.StationaryLeadingSharpSanity

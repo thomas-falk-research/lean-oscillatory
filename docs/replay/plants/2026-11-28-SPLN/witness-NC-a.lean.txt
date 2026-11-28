@@ -1,0 +1,18 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `StationaryLeadingSharpnessStatement`: the range c ≤ 72197399/10⁸ ↦ c ≤ 7/8. -/
+def P_StationaryLeadingSharpnessStatement : Prop :=
+  ∀ c : ℝ, c ≤ (7 / 8 : ℝ) →
+    ¬ ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+      ‖splRemainder g lam‖ ≤ c * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2)
+
+/-- Witness: at `c = 7/8` the negated bound is the proved SPL-K (`spln_sharpness_range_bite`). -/
+theorem witness_NC_a : ¬ P_StationaryLeadingSharpnessStatement := fun h => h (7 / 8) le_rfl spln_sharpness_range_bite
+
+#print axioms witness_NC_a
+
+end OscInt.API.StationaryLeadingSharpSanity

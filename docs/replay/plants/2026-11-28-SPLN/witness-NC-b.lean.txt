@@ -1,0 +1,20 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `StationaryLeadingSharpnessStatement`: the range c ≤ 72197399/10⁸ ↦ c ≤ 360987/500000 (the cap).
+-/
+def P_StationaryLeadingSharpnessStatement : Prop :=
+  ∀ c : ℝ, c ≤ (360987 / 500000 : ℝ) →
+    ¬ ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+      ‖splRemainder g lam‖ ≤ c * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2)
+
+/-- Witness (relative to SPL-NK): at `c = 360987/500000` the negated bound is SPL-NK. -/
+theorem witness_NC_b (hK : StationaryLeadingSharpStatement) : ¬ P_StationaryLeadingSharpnessStatement :=
+  fun h => h _ le_rfl hK
+
+#print axioms witness_NC_b
+
+end OscInt.API.StationaryLeadingSharpSanity

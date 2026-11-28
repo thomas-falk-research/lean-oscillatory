@@ -1,0 +1,9 @@
+exit code 1
+plant-NC-b.lean:19:17: error: Application type mismatch: The argument
+  hc
+has type
+  c ≤ 72197399 / 100000000
+but is expected to have type
+  c ≤ 360987 / 500000
+in the application
+  h c hc

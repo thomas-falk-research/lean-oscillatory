@@ -1,0 +1,45 @@
+import OscInt.Front.TorusLocalizationC2Sanity
+
+namespace OscInt.API.TorusLocalizationC2Sanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularDecaySanity MeasureTheory
+open scoped ContDiff
+
+/-- PLANTED copy of `TorusLocalizationC2Statement`: time t dropped from the lattice coefficients. -/
+def P_TorusLocalizationC2Statement : Prop :=
+  ∀ χ : ℝ × ℝ → ℂ, ContDiff ℝ 2 χ →
+    tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi →
+    ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ locConstC2 χ * B
+
+/-- Witness (relative to K2-U): phase `s · triPhase 0`, `t = 0`, `p = 0`: the planted coefficients are
+`triKernel 0 s n`, at most `C s^{−2/3}` (K2-U at `α = 0`), so the plant claims `‖∫ χ₁‖ ≤ locConstC2 χ₁ · C s^{−2/3}`
+for every `s ≥ 1`, false for large `s`. -/
+theorem witness_L_h_rel (hU : TriDecayUpperStatement) : ¬ P_TorusLocalizationC2Statement := by
+  intro h
+  obtain ⟨C, hC⟩ := hU 0
+  rw [triRate_zero] at hC
+  obtain ⟨h1, h2, h3⟩ := triPhase_periodic 0
+  have hI : 0 < ‖∫ k in torusBox, chi1 k‖ := norm_pos_iff.mpr integral_chi1_ne_zero
+  obtain ⟨s, -, hs1, hlt⟩ :=
+    rate_separation 0 (2 / 3) ‖∫ k in torusBox, chi1 k‖ (locConstC2 chi1 * C) 1 (by norm_num) hI
+  rw [neg_zero, Real.rpow_zero, mul_one] at hlt
+  have hb := h chi1 loc2_chi1_contDiff chi1_tsupport (fun k => s * triPhase 0 k) 0 0 (C * s ^ (-(2 / 3 : ℝ)))
+    (continuous_const.mul h1) (fun k => by beta_reduce; rw [h2 k]) (fun k => by beta_reduce; rw [h3 k])
+    (fun n => hC s n hs1)
+  have e : ∫ k in torusBox, chi1 k * Complex.exp (↑(0 * ((fun k => s * triPhase 0 k) k + lin 0 k)) * Complex.I) =
+      ∫ k in torusBox, chi1 k := by simp
+  rw [e, ← mul_assoc] at hb
+  linarith
+
+/-- Unconditional, from the proved K2-U (`OscInt.API.triDecayUpper`). -/
+theorem witness_L_h : ¬ P_TorusLocalizationC2Statement := witness_L_h_rel OscInt.API.triDecayUpper
+
+#print axioms witness_L_h_rel
+
+#print axioms witness_L_h
+
+end OscInt.API.TorusLocalizationC2Sanity

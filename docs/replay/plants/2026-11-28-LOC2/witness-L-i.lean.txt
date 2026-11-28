@@ -1,0 +1,38 @@
+import OscInt.Front.TorusLocalizationC2Sanity
+
+namespace OscInt.API.TorusLocalizationC2Sanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularDecaySanity MeasureTheory
+open scoped ContDiff
+
+/-- PLANTED copy of `locConstC2`: the factor 4 ↦ 1/8. -/
+noncomputable def P_locConstC2 (χ : ℝ × ℝ → ℂ) : ℝ :=
+  (1 / 8) * ((3 / 2) * boxL2 χ + boxL2 (boxPartial₁ χ) + boxL2 (boxPartial₂ χ) + boxL2 (boxLaplacian χ))
+
+/-- PLANTED copy of `TorusLocalizationC2Statement`: the factor 4 ↦ 1/8. -/
+def P_TorusLocalizationC2Statement : Prop :=
+  ∀ χ : ℝ × ℝ → ℂ, ContDiff ℝ 2 χ →
+    tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi →
+    ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ P_locConstC2 χ * B
+
+/-- Witness (characterisation): the planted constant is `1/32` of the draft's, so the planted copy implies the draft
+(a strengthening); not refuted in Lean. -/
+theorem witness_L_i (h : P_TorusLocalizationC2Statement) : TorusLocalizationC2Statement := by
+  intro χ hχ hs Ψ t p B hΨ h1 h2 hB
+  have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)
+  have hL : P_locConstC2 χ ≤ locConstC2 χ := by
+    unfold P_locConstC2 locConstC2
+    have := loc2_boxL2_nonneg χ
+    have := loc2_boxL2_nonneg (boxPartial₁ χ)
+    have := loc2_boxL2_nonneg (boxPartial₂ χ)
+    have := loc2_boxL2_nonneg (boxLaplacian χ)
+    linarith
+  exact (h χ hχ hs Ψ t p B hΨ h1 h2 hB).trans (mul_le_mul_of_nonneg_right hL hB0)
+
+#print axioms witness_L_i
+
+end OscInt.API.TorusLocalizationC2Sanity

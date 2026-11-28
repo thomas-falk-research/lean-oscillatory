@@ -1,0 +1,19 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `SplKernelLowerStatement`: the point 8123/5000 ↦ 13/8 (= 8125/5000, the point of the session-15
+prototype). -/
+def P_SplKernelLowerStatement : Prop :=
+  (72197399 / 100000000 : ℝ) < ‖splKernel (13 / 8)‖
+
+/-- Characterisation: the planted copy holds iff `|κ(13/8)| ≤ 72197399/10⁸` fails. A detection needs an upper
+enclosure of `|κ(13/8)|` below `72197399/10⁸`, i.e. of width under `3.4·10⁻⁸` (a 60-digit decimal evaluation gives
+`|κ(13/8)| = 0.7219739659…`, so the plant is false); no proved theorem bounds `κ` above by less than `7/8`. -/
+theorem char_NL_d : P_SplKernelLowerStatement ↔ ¬ (‖splKernel (13 / 8)‖ ≤ 72197399 / 100000000) := not_le.symm
+
+#print axioms char_NL_d
+
+end OscInt.API.StationaryLeadingSharpSanity

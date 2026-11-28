@@ -1,0 +1,25 @@
+import OscInt.Front.TriangularCrossoverSanity
+
+namespace OscInt.API.TriangularCrossoverSanity
+
+open OscInt.Statements OscInt.API.TriangularDecaySanity OscInt.API.TriangularAnisoSanity
+
+/-- PLANTED copy of `TriCrossoverUpperStatement`: envelope factor dropped. -/
+def P_TriCrossoverUpperStatement : Prop :=
+  ∀ a₀ : ℝ, |a₀| = triExceptional → ∃ r > 0, ∃ C : ℝ, ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → 1 ≤ t →
+    ‖triKernel α t n‖ ≤ C * t ^ (-(2 : ℝ) / 3)
+
+/-- Witness: the draft implies the planted copy (`E ≤ 1`, `C ≥ 0`). -/
+theorem witness_A_l (h : TriCrossoverUpperStatement) : P_TriCrossoverUpperStatement := fun a₀ ha => by
+  obtain ⟨r, hr, C, hC⟩ := h a₀ ha
+  refine ⟨r, hr, C, fun α t n hα ht => ?_⟩
+  have h1 := hC α t n hα ht
+  have hC0 := a5u_const_nonneg (by linarith) h1
+  calc ‖triKernel α t n‖ ≤ C * t ^ (-(2 : ℝ) / 3) * crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 3)) := h1
+    _ ≤ C * t ^ (-(2 : ℝ) / 3) * 1 :=
+        mul_le_mul_of_nonneg_left (a5u_env_le_one _) (mul_nonneg hC0 (Real.rpow_nonneg (by linarith) _))
+    _ = C * t ^ (-(2 : ℝ) / 3) := mul_one _
+
+#print axioms witness_A_l
+
+end OscInt.API.TriangularCrossoverSanity

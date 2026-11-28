@@ -2073,3 +2073,116 @@ K2-b. (2026-11-28, after the proofs; `review/2026-11-28-K2-post-proof-answers.md
      integer times; K2-D gives neither.
    - "The claim, if proved" in the "Why" paragraph: all six are now proved in Lean. The status is in `docs/STATUS.md`,
      with the replay pending.
+
+## Batch SPL-N: the best constant of the quadratic-phase remainder to within 10⁻⁸ (session 17, 2026-11-28)
+
+Order. As batch K2: the statements in `OscInt/Statements/StationaryLeadingSharp.lean`, sanity theorems with planted
+controls, a challenge file (`Challenge/StationaryLeadingSharp.lean`) and a comparator (`comparator-SPLN.json`), frozen
+and stamped before the blind pre-proof reviews. What differs from "statement first", said plainly:
+- A proof on paper predates the freeze: an external research packet (received 2026-11-28, recorded in
+  `review/2026-11-28-postK2-packet-answers.md`) with the analytic route and an exact rational certificate of 40 cells,
+  which the lead re-ran and re-derived before writing the statements.
+- A one-point Lean prototype predates the freeze: in session 15 a proof agent proved, in scratch and about the frozen
+  definitions, `72197/100000 ≤ |κ(13/8)| ≤ 360987/500000` (`review/2026-11-26-session15-gates-answers.md`, section 4).
+  It is not in the repository and is not used by this batch.
+- In the same session the 40-cell certificate of an earlier audit was checked in Lean by `decide +kernel` (same
+  record, section 3); that file is not in the repository either.
+
+No Lean proof of these statements is in the repository history before the stamp of the answers to the blind reviews.
+The batch was requested by the owner on 2026-11-28 (session 17, `docs/progress/2026-11-28-session17-log.md`).
+
+Why. SPL-K bounds the remainder of the quadratic-phase leading term by `(7/8) ‖g‴‖₁ λ^{−3/2}`, and SPL-A shows that no
+constant below `sup |κ|` can replace `7/8`. So the best constant of SPL-K is `sup_τ |κ(τ)|`. SPL-N locates it to within
+`10⁻⁸`, which is `17.5 %` below `7/8`. It does not identify the supremum, its location or its attainment.
+
+Notation as in batch SPL: `κ = splKernel`, `R(g, λ) = splRemainder g λ`, amplitudes `SplAmplitude`.
+
+**SPL-NU (kernel cap).** For every real τ, `|κ(τ)| ≤ 360987/500000 = 0.721974`.
+
+**SPL-NL (kernel lower point).** `|κ(8123/5000)| > 72197399/10⁸ = 0.72197399`.
+
+**SPL-NK (sharp remainder).** For every amplitude `(g, g₁, g₂, g₃)` of class `SplAmplitude` and every `λ > 0`,
+`|R(g, λ)| ≤ (360987/500000) ‖g₃‖₁ λ^{−3/2}`.
+
+**SPL-NC (no smaller constant).** For every real `c ≤ 72197399/10⁸` there are an amplitude of class `SplAmplitude`
+and `λ > 0` with `|R(g, λ)| > c ‖g₃‖₁ λ^{−3/2}`.
+
+What the statements say and do not say (modelling choices and omissions, for the reviewer).
+1. **Two rationals, not the supremum.** SPL-NK and SPL-NC together put the best constant of SPL-K in
+   `(0.72197399, 0.721974]`. The point `8123/5000` was chosen by an earlier floating-point search; nothing says the
+   supremum is attained there or anywhere, nor that it is attained once.
+2. **SPL-NC's form.** It negates the universal bound for each `c` up to the lower rational; it does not exhibit the
+   amplitude in the statement. Its proof is expected to go through SPL-A and SPL-NL.
+3. **SPL-NK** has exactly the shape of SPL-K (same hypotheses, same norm, same power of λ); only the constant differs.
+   SPL-K is not edited.
+4. **Negative τ** is covered in SPL-NU because κ is odd by definition.
+5. **Not stated:** the value of `sup |κ|` to more digits; any bound for the remainder in terms of other norms.
+
+## Batch A5U: decay uniform across an exceptional coupling of the triangular lattice (session 17, 2026-11-28)
+
+Order. As batch K2: the statement in `OscInt/Statements/TriangularCrossover.lean`, sanity theorems with planted
+controls, a challenge file (`Challenge/TriangularCrossover.lean`) and a comparator (`comparator-A5U.json`), frozen and
+stamped before the blind pre-proof reviews. A proof route on paper predates the freeze: the external research packet
+of 2026-11-28 (`review/2026-11-28-postK2-packet-answers.md`). No Lean proof of this statement is in the repository
+history before the stamp of the answers to the blind reviews. Requested by the owner on 2026-11-28 (session 17).
+
+Why. K2-U gives `|triKernel α t n| ≤ C_α t^{−triRate α}` with `C_α` depending on α in an unknown way. At the
+exceptional couplings `a₀ = ±a*`, `a* = 1/(2√2)`, the rate jumps from `3/4` to `2/3`, so `C_α` must blow up as
+`α → a₀`. A5U says how: with one constant for a whole window around `a₀`,
+`|triKernel α t n| ≤ C t^{−2/3} E(|α − a₀| t^{1/3})`, `E(s) = min(1, s^{−1/4})`; equivalently
+`C min(t^{−2/3}, |α − a₀|^{−1/4} t^{−3/4})`. The crossover time is `t ≈ |α − a₀|^{−3}`.
+
+Notation as in batch K2, and `crossEnvelope s = 1` for `s ≤ 1`, `s^{−1/4}` for `s > 1`.
+
+**A5U (uniform upper bound across a₀).** For each `a₀` with `|a₀| = a*` there are `r > 0` and `C` such that for every
+real α with `|α − a₀| ≤ r`, every real `t ≥ 1` and every `n ∈ ℤ²`,
+`|triKernel α t n| ≤ C t^{−2/3} crossEnvelope(|α − a₀| t^{1/3})`.
+
+What the statement says and does not say (modelling choices and omissions, for the reviewer).
+1. **Quantifiers.** `r` and `C` depend on `a₀` only, and are chosen before α, t and n. Applying K2-U at each α does
+   not give this: its constant depends on α.
+2. **Window.** Only a window around each exceptional coupling; nothing near `α = 0` (where the rate is also `2/3`,
+   a D4 transition) and no global-in-α statement. The window must exclude 0: at `α = 0` K2-D forces rate `2/3`.
+3. **Consistency with K2.** At `α = a₀` the bound is K2-U's `t^{−2/3}`. For fixed `α ≠ a₀` in the window and large
+   t it is `t^{−3/4}`, K2-U's rate there, which K2-D shows cannot be improved. With the scaling variable
+   `|α − a₀| t^{1/3}`, the exponent `−1/4` of the envelope is therefore the strongest one compatible with both ends
+   (weaker envelopes, such as the exponent `−1/5` or the variable `|α − a₀| t^{1/4}`, follow from it); the sanity
+   layer checks the two ends.
+4. **Not stated:** a lower bound uniform in α (the lower crossover); explicit `r` or `C`; the canonical one-variable
+   A5 unfolding estimate (part of the route, not a statement).
+
+## Batch LOC2: torus Fourier localisation for C² cutoffs with an explicit constant (session 17, 2026-11-28)
+
+Order. As batch K2: the statement in `OscInt/Statements/TorusLocalizationC2.lean`, sanity theorems with planted
+controls, a challenge file (`Challenge/TorusLocalizationC2.lean`) and a comparator (`comparator-LOC2.json`), frozen
+and stamped before the blind pre-proof reviews. A proof on paper predates the freeze: the external research packet of
+2026-11-28 (`review/2026-11-28-postK2-packet-answers.md`). No Lean proof of this statement is in the repository
+history before the stamp of the answers to the blind reviews. Requested by the owner on 2026-11-28 (session 17).
+
+Why. K2-F turns bounds on lattice coefficients into a bound on a localised integral, for a smooth cutoff and with an
+existential constant. K2-FQ does the same for a `C²` cutoff, with an explicit constant built from four `L²` norms of
+the cutoff. The constant is independent of the phase, of t and of the velocity p.
+
+Notation as in batch K2 (`torusBox = [−π, π]²`, `lin p k = p·k`), and: `boxL2 f = ((2π)^{−2} ∫_{[−π,π]²} |f|²)^{1/2}`;
+`∂₁χ(k) = Dχ(k)(1, 0)`, `∂₂χ(k) = Dχ(k)(0, 1)`; `Δχ(k) = D²χ(k)[(1,0),(1,0)] + D²χ(k)[(0,1),(0,1)]`;
+`locConstC2 χ = 4 ((3/2) boxL2 χ + boxL2 ∂₁χ + boxL2 ∂₂χ + boxL2 Δχ)`.
+
+**K2-FQ (C² localisation, explicit constant).** Let `χ : ℝ² → ℂ` be `C²` with support inside the open box `(−π, π)²`.
+For every continuous Ψ that is 2π-periodic in each variable, every real t, every `p ∈ ℝ²` and every real B: if
+`|∫_{[−π, π]²} e^{i(tΨ(k) + n·k)} dk| ≤ B` for every `n ∈ ℤ²`, then
+`|∫_{[−π, π]²} χ(k) e^{it(Ψ(k) + p·k)} dk| ≤ locConstC2 χ · B`.
+
+What the statement says and does not say (modelling choices and omissions, for the reviewer).
+1. **Regularity.** `C²` on all of ℝ² (Mathlib's `ContDiff ℝ 2`), support (closure of the nonzero set) inside the
+   open box. Without the support condition the statement is false even for `χ = 1`: plant F-a of batch K2, refuted
+   by a compiled witness (`docs/replay/plants/2026-11-28-K2-F-a-witness/README.md`).
+2. **The constant.** Normalised `L²` norms over the box; the factor 4 dominates `√13`, the bound on
+   `(Σ_n (1 + |n|²)^{−2})^{1/2}` the route uses. Not optimal.
+3. **Relation to K2-F.** K2-FQ implies K2-F (a smooth χ is C²) with an explicit D; K2-F is not edited.
+4. **Not stated:** `H²` or zero-trace variants; higher dimensions; optimality.
+
+Clarification LOC2-a (2026-11-28, after the blind pre-proof reviews, `review/2026-11-28-SPLN-A5U-LOC2-preproof-answers.md`,
+finding A-1 and A-6). The sanity layer does not pin the explicit constant: the plants that change the factor 4 to
+1/8, drop the term `(3/2)‖χ‖`, replace the Laplacian or weaken C² to C¹ are NOT DETECTED
+(`docs/replay/plants/2026-11-28-LOC2/README.md`). The constant rests on the review of the text and on the proof. In
+item 2, `√13` bounds the square root of `Σ_n (1 + |n|²)^{−2}`, which is about 3.227 (square root about 1.80).

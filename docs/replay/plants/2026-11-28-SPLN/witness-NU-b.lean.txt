@@ -1,0 +1,20 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `SplKernelCapStatement`: the cap 360987/500000 ↦ 360987/5000000 (a digit dropped). -/
+def P_SplKernelCapStatement : Prop :=
+  ∀ τ : ℝ, ‖splKernel τ‖ ≤ (360987 / 5000000 : ℝ)
+
+/-- Witness: the proved SPL-S gives `|κ(τ)| ≥ 3/10 > 0.0722` at some `τ ≥ 0` (`spln_kernel_large`). -/
+theorem witness_NU_b : ¬ P_SplKernelCapStatement := by
+  intro h
+  obtain ⟨τ, -, hτ⟩ := spln_kernel_large
+  have := h τ
+  linarith
+
+#print axioms witness_NU_b
+
+end OscInt.API.StationaryLeadingSharpSanity

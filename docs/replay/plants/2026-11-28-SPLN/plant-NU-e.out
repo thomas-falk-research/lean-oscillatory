@@ -1,0 +1,47 @@
+exit code 1
+plant-NU-e.lean:13:2: error: Type mismatch
+  h (8123 / 5000)
+has type
+  ‖splKernelPos (8123 / 5000)‖ ≤ 360987 / 500000
+but is expected to have type
+  ‖splKernel (8123 / 5000)‖ ≤ 360987 / 500000
+plant-NU-e.lean:19:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  splKernel ?m.23
+in the target expression
+  ‖splKernelPos (-τ)‖ ≤ 360987 / 500000
+
+h : P_SplKernelCapStatement
+τ : ℝ
+hτ : 0 < τ
+h1 : ‖splKernelPos (-τ)‖ ≤ 360987 / 500000
+⊢ ‖splKernelPos τ‖ ≤ 360987 / 500000
+plant-NU-e.lean:26:20: error: Application type mismatch: The argument
+  h τ
+has type
+  ‖splKernelPos τ‖ ≤ 360987 / 500000
+but is expected to have type
+  ‖splKernel τ‖ ≤ 360987 / 500000
+in the application
+  ⟨h1, h τ⟩
+plant-NU-e.lean:33:2: error: linarith failed to find a contradiction
+h : P_SplKernelCapStatement
+this : ‖splKernelPos (8123 / 5000)‖ ≤ 360987 / 500000
+h1 : 72197401 / 100000000 < ‖splKernel (8123 / 5000)‖
+⊢ False
+failed
+plant-NU-e.lean:39:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ‖splKernel ?τ‖
+in the target expression
+  ‖splKernelPos τ‖ ≤ 360987 / 500000
+
+hK : StationaryLeadingSharpStatement
+τ : ℝ
+⊢ ‖splKernelPos τ‖ ≤ 360987 / 500000
+plant-NU-e.lean:51:7: error: Application type mismatch: The argument
+  hU ?m.43
+has type
+  ‖splKernelPos ?m.43‖ ≤ 360987 / 500000
+but is expected to have type
+  ‖splKernel (8123 / 5000)‖ ≤ 360987 / 500000
+in the application
+  ⟨hL, hU ?m.43⟩

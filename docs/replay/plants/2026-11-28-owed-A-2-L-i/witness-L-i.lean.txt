@@ -1,0 +1,340 @@
+import OscInt.Front.TorusLocalizationC2Sanity
+
+namespace OscInt.API.TorusLocalizationC2Sanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularDecaySanity MeasureTheory
+open scoped ContDiff
+
+/-- PLANTED copy of `locConstC2`: the factor 4 ↦ 1/8. -/
+noncomputable def P_locConstC2 (χ : ℝ × ℝ → ℂ) : ℝ :=
+  (1 / 8) * ((3 / 2) * boxL2 χ + boxL2 (boxPartial₁ χ) + boxL2 (boxPartial₂ χ) + boxL2 (boxLaplacian χ))
+
+/-- PLANTED copy of `TorusLocalizationC2Statement`: the factor 4 ↦ 1/8. -/
+def P_TorusLocalizationC2Statement : Prop :=
+  ∀ χ : ℝ × ℝ → ℂ, ContDiff ℝ 2 χ →
+    tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi →
+    ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ P_locConstC2 χ * B
+
+/-! ### Witness data: `χ(k) = f(k₁) f(k₂)` with the `C²` bump `f(x) = (9 − x²)₊³` (support `[−3, 3]`, `3 < π`) -/
+
+/-- `y ↦ (y₊)^(n+2)` has derivative `(n+2) (y₊)^(n+1)` everywhere (at `0` because it is `O(y²)`). -/
+theorem wL_pos_hasDerivAt (n : ℕ) (y : ℝ) :
+    HasDerivAt (fun z : ℝ => (max z 0) ^ (n + 2)) (((n : ℝ) + 2) * (max y 0) ^ (n + 1)) y := by
+  rcases lt_trichotomy y 0 with hy | rfl | hy
+  · have he : (fun z : ℝ => (max z 0) ^ (n + 2)) =ᶠ[nhds y] fun _ => (0 : ℝ) := by
+      filter_upwards [Iio_mem_nhds hy] with z hz
+      rw [max_eq_right (le_of_lt hz), zero_pow (by omega)]
+    rw [max_eq_right hy.le, zero_pow (by omega), mul_zero]
+    exact (hasDerivAt_const y (0 : ℝ)).congr_of_eventuallyEq he
+  · rw [hasDerivAt_iff_isLittleO_nhds_zero]
+    simp only [zero_add, max_self, zero_pow (show n + 1 ≠ 0 by omega), zero_pow (show n + 2 ≠ 0 by omega),
+      mul_zero, smul_zero, sub_zero]
+    refine Asymptotics.IsBigO.trans_isLittleO ?_ (Asymptotics.isLittleO_pow_id (n := n + 2) (by omega))
+    refine Asymptotics.IsBigO.of_bound 1 (Filter.Eventually.of_forall fun h => ?_)
+    rw [one_mul, norm_pow, norm_pow]
+    refine pow_le_pow_left₀ (norm_nonneg _) ?_ _
+    rcases le_total h 0 with h' | h'
+    · rw [max_eq_right h', norm_zero]; exact norm_nonneg _
+    · rw [max_eq_left h']
+  · have he : (fun z : ℝ => (max z 0) ^ (n + 2)) =ᶠ[nhds y] fun z => z ^ (n + 2) := by
+      filter_upwards [Ioi_mem_nhds hy] with z hz
+      rw [max_eq_left (le_of_lt hz)]
+    rw [max_eq_left hy.le]
+    have := hasDerivAt_pow (n + 2) y
+    rw [show n + 2 - 1 = n + 1 by omega] at this
+    push_cast at this
+    exact this.congr_of_eventuallyEq he
+
+/-- The bump `f(x) = (9 − x²)₊³`. -/
+noncomputable def wLf (x : ℝ) : ℝ := (max (9 - x ^ 2) 0) ^ 3
+
+/-- `f'(x) = −6x (9 − x²)₊²`. -/
+noncomputable def wLf1 (x : ℝ) : ℝ := -6 * x * (max (9 - x ^ 2) 0) ^ 2
+
+/-- `f''(x) = −6 (9 − x²)₊² + 24x² (9 − x²)₊`. -/
+noncomputable def wLf2 (x : ℝ) : ℝ := -6 * (max (9 - x ^ 2) 0) ^ 2 + 24 * x ^ 2 * max (9 - x ^ 2) 0
+
+theorem wLf_hasDerivAt (x : ℝ) : HasDerivAt wLf (wLf1 x) x := by
+  have h := (wL_pos_hasDerivAt 1 (9 - x ^ 2)).comp x ((hasDerivAt_pow 2 x).const_sub 9)
+  have e : (((1 : ℕ) : ℝ) + 2) * max (9 - x ^ 2) 0 ^ (1 + 1) * -(((2 : ℕ) : ℝ) * x ^ (2 - 1)) = wLf1 x := by
+    unfold wLf1; norm_num; ring
+  rw [e] at h
+  exact h
+
+theorem wLf1_hasDerivAt (x : ℝ) : HasDerivAt wLf1 (wLf2 x) x := by
+  have h := (wL_pos_hasDerivAt 0 (9 - x ^ 2)).comp x ((hasDerivAt_pow 2 x).const_sub 9)
+  have h2 := ((hasDerivAt_id x).const_mul (-6)).mul h
+  convert h2 using 1
+  · funext z; simp [wLf1, Function.comp]
+  · simp only [wLf2, id, Function.comp]; push_cast; ring
+
+theorem wLf_continuous : Continuous wLf := by unfold wLf; fun_prop
+
+theorem wLf2_continuous : Continuous wLf2 := by unfold wLf2; fun_prop
+
+theorem wLf_differentiable : Differentiable ℝ wLf := fun x => (wLf_hasDerivAt x).differentiableAt
+
+theorem wLf1_differentiable : Differentiable ℝ wLf1 := fun x => (wLf1_hasDerivAt x).differentiableAt
+
+theorem wLf_contDiff : ContDiff ℝ 2 wLf := by
+  have hd : deriv wLf = wLf1 := funext fun x => (wLf_hasDerivAt x).deriv
+  have hd1 : deriv wLf1 = wLf2 := funext fun x => (wLf1_hasDerivAt x).deriv
+  rw [show (2 : ℕ∞ω) = 1 + 1 from rfl, contDiff_succ_iff_deriv]
+  refine ⟨wLf_differentiable, by simp, ?_⟩
+  rw [hd, contDiff_one_iff_deriv, hd1]
+  exact ⟨wLf1_differentiable, wLf2_continuous⟩
+
+/-! ### Products on the box -/
+
+/-- `P a b (k) = a(k₁) b(k₂)` as a complex function. -/
+noncomputable def wLP (a b : ℝ → ℝ) (k : ℝ × ℝ) : ℂ := ((a k.1 * b k.2 : ℝ) : ℂ)
+
+/-- The witness cutoff `χ(k) = f(k₁) f(k₂)`. -/
+noncomputable def wLchi : ℝ × ℝ → ℂ := wLP wLf wLf
+
+theorem wLP_differentiable {a b : ℝ → ℝ} (ha : Differentiable ℝ a) (hb : Differentiable ℝ b) :
+    Differentiable ℝ (wLP a b) :=
+  Complex.ofRealCLM.differentiable.comp ((ha.comp differentiable_fst).mul (hb.comp differentiable_snd))
+
+theorem wL_fderiv_line {g : ℝ × ℝ → ℂ} {k v : ℝ × ℝ} {c : ℂ} (hg : DifferentiableAt ℝ g k)
+    (hc : HasDerivAt (fun s : ℝ => g (k + s • v)) c 0) : fderiv ℝ g k v = c := by
+  have hl : HasDerivAt (fun s : ℝ => k + s • v) v 0 := by
+    simpa using ((hasDerivAt_id (0 : ℝ)).smul_const v).const_add k
+  have h1 := hg.hasFDerivAt.comp_hasDerivAt_of_eq (0 : ℝ) hl (by simp)
+  exact h1.unique hc
+
+theorem wLP_d1 {a a' b : ℝ → ℝ} (ha : ∀ x, HasDerivAt a (a' x) x) (hb : Differentiable ℝ b) (k : ℝ × ℝ) :
+    fderiv ℝ (wLP a b) k (1, 0) = wLP a' b k := by
+  apply wL_fderiv_line (wLP_differentiable (fun x => (ha x).differentiableAt) hb k)
+  have e : (fun s : ℝ => wLP a b (k + s • ((1 : ℝ), (0 : ℝ)))) =
+      fun s => ((a (k.1 + s) * b k.2 : ℝ) : ℂ) := by
+    funext s; simp [wLP]
+  rw [e]
+  have h := ((ha (k.1 + 0)).comp (0 : ℝ) ((hasDerivAt_id' (0 : ℝ)).const_add k.1)).mul_const (b k.2)
+  simpa [wLP, Function.comp] using h.ofReal_comp
+
+theorem wLP_d2 {a b b' : ℝ → ℝ} (ha : Differentiable ℝ a) (hb : ∀ x, HasDerivAt b (b' x) x) (k : ℝ × ℝ) :
+    fderiv ℝ (wLP a b) k (0, 1) = wLP a b' k := by
+  apply wL_fderiv_line (wLP_differentiable ha (fun x => (hb x).differentiableAt) k)
+  have e : (fun s : ℝ => wLP a b (k + s • ((0 : ℝ), (1 : ℝ)))) =
+      fun s => ((a k.1 * b (k.2 + s) : ℝ) : ℂ) := by
+    funext s; simp [wLP]
+  rw [e]
+  have h := ((hb (k.2 + 0)).comp (0 : ℝ) ((hasDerivAt_id' (0 : ℝ)).const_add k.2)).const_mul (a k.1)
+  simpa [wLP, Function.comp] using h.ofReal_comp
+
+/-- `∂ᵥ²χ = D²χ(v, v)` for a `C²` function. -/
+theorem wL_iter2 {f : ℝ × ℝ → ℂ} (hf : ContDiff ℝ 2 f) (k v : ℝ × ℝ) :
+    iteratedFDeriv ℝ 2 f k ![v, v] = fderiv ℝ (fun x => fderiv ℝ f x v) k v := by
+  rw [iteratedFDeriv_two_apply]
+  have hd : Differentiable ℝ (fderiv ℝ f) :=
+    (contDiff_succ_iff_fderiv.mp (show ContDiff ℝ (1 + 1) f by rw [one_add_one_eq_two]; exact hf)).2.2.differentiable
+      one_ne_zero
+  rw [fderiv_clm_apply (hd k) (differentiableAt_const v)]
+  simp
+
+theorem wLchi_contDiff : ContDiff ℝ 2 wLchi :=
+  Complex.ofRealCLM.contDiff.comp ((wLf_contDiff.comp contDiff_fst).mul (wLf_contDiff.comp contDiff_snd))
+
+theorem wLchi_tsupport : tsupport wLchi ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi := by
+  have hpi := Real.pi_gt_three
+  have hf : ∀ x : ℝ, wLf x ≠ 0 → x ∈ Set.Icc (-3 : ℝ) 3 := by
+    intro x hx
+    by_contra hn
+    apply hx
+    have h9 : 9 - x ^ 2 ≤ 0 := by
+      simp only [Set.mem_Icc, not_and_or, not_le] at hn
+      rcases hn with h | h <;> nlinarith
+    rw [wLf, max_eq_right h9]; norm_num
+  have hs : Function.support wLchi ⊆ Set.Icc (-3 : ℝ) 3 ×ˢ Set.Icc (-3 : ℝ) 3 := by
+    intro k hk
+    have hk' : wLf k.1 * wLf k.2 ≠ 0 := by
+      intro e; apply hk; simp [wLchi, wLP, e]
+    exact ⟨hf _ (left_ne_zero_of_mul hk'), hf _ (right_ne_zero_of_mul hk')⟩
+  refine (closure_minimal hs (isClosed_Icc.prod isClosed_Icc)).trans ?_
+  exact Set.prod_mono (Set.Icc_subset_Ioo (by linarith) (by linarith))
+    (Set.Icc_subset_Ioo (by linarith) (by linarith))
+
+theorem wLchi_partial₁ : boxPartial₁ wLchi = wLP wLf1 wLf :=
+  funext fun k => wLP_d1 wLf_hasDerivAt wLf_differentiable k
+
+theorem wLchi_partial₂ : boxPartial₂ wLchi = wLP wLf wLf1 :=
+  funext fun k => wLP_d2 wLf_differentiable wLf_hasDerivAt k
+
+theorem wLchi_laplacian (k : ℝ × ℝ) : boxLaplacian wLchi k = wLP wLf2 wLf k + wLP wLf wLf2 k := by
+  unfold boxLaplacian
+  rw [wL_iter2 wLchi_contDiff, wL_iter2 wLchi_contDiff]
+  have e1 : (fun x => fderiv ℝ wLchi x (1, 0)) = wLP wLf1 wLf := wLchi_partial₁
+  have e2 : (fun x => fderiv ℝ wLchi x (0, 1)) = wLP wLf wLf1 := wLchi_partial₂
+  rw [e1, e2, wLP_d1 wLf1_hasDerivAt wLf_differentiable, wLP_d2 wLf_differentiable wLf1_hasDerivAt]
+
+theorem wLP_norm_sq (a b : ℝ → ℝ) (k : ℝ × ℝ) : ‖wLP a b k‖ ^ 2 = a k.1 ^ 2 * b k.2 ^ 2 := by
+  simp [wLP, mul_pow, sq_abs]
+
+/-! ### Integrals -/
+
+theorem wL_compact : IsCompact torusBox := isCompact_Icc.prod isCompact_Icc
+
+theorem wL_intOn {f : ℝ × ℝ → ℝ} (hf : Continuous f) : IntegrableOn f torusBox :=
+  hf.continuousOn.integrableOn_compact wL_compact
+
+theorem wL_box_prod (u v : ℝ → ℝ) :
+    ∫ k in torusBox, u k.1 * v k.2 = (∫ x in Set.Icc (-Real.pi) Real.pi, u x) * ∫ y in Set.Icc (-Real.pi) Real.pi, v y := by
+  rw [torusBox, Measure.volume_eq_prod, ← Measure.prod_restrict]
+  exact integral_prod_mul u v
+
+theorem wL_icc {u p : ℝ → ℝ} (h0 : ∀ x : ℝ, 9 - x ^ 2 ≤ 0 → u x = 0) (hp : ∀ x : ℝ, 0 ≤ 9 - x ^ 2 → u x = p x) :
+    ∫ x in Set.Icc (-Real.pi) Real.pi, u x = ∫ x in (-3 : ℝ)..3, p x := by
+  have hpi := Real.pi_gt_three
+  rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (s := Set.Icc (-3) 3) measurableSet_Icc
+    (Set.Icc_subset_Icc (by linarith) (by linarith)) ?_]
+  · rw [setIntegral_congr_fun measurableSet_Icc (g := p) (fun x hx => hp x (by nlinarith [hx.1, hx.2])),
+      integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le (by norm_num)]
+  · intro x hx
+    apply h0
+    have := hx.2
+    simp only [Set.mem_Icc, not_and_or, not_le] at this
+    rcases this with h | h <;> nlinarith
+
+theorem wL_I0 : ∫ x in Set.Icc (-Real.pi) Real.pi, wLf x = 69984 / 35 := by
+  rw [wL_icc (p := fun x => (729 : ℝ) * x ^ 0 + (-243 : ℝ) * x ^ 2 + (27 : ℝ) * x ^ 4 + (-1 : ℝ) * x ^ 6)
+    (fun x h => by rw [wLf, max_eq_right h]; norm_num)
+    (fun x h => by rw [wLf, max_eq_left h]; ring)]
+  repeat rw [intervalIntegral.integral_add]
+  all_goals try (apply Continuous.intervalIntegrable; fun_prop)
+  simp only [intervalIntegral.integral_const_mul, integral_pow]
+  norm_num
+
+theorem wL_J0 : ∫ x in Set.Icc (-Real.pi) Real.pi, wLf x ^ 2 = 1088391168 / 1001 := by
+  rw [wL_icc (p := fun x => (531441 : ℝ) * x ^ 0 + (-354294 : ℝ) * x ^ 2 + (98415 : ℝ) * x ^ 4 +
+      (-14580 : ℝ) * x ^ 6 + (1215 : ℝ) * x ^ 8 + (-54 : ℝ) * x ^ 10 + (1 : ℝ) * x ^ 12)
+    (fun x h => by rw [wLf, max_eq_right h]; norm_num)
+    (fun x h => by rw [wLf, max_eq_left h]; ring)]
+  repeat rw [intervalIntegral.integral_add]
+  all_goals try (apply Continuous.intervalIntegrable; fun_prop)
+  simp only [intervalIntegral.integral_const_mul, integral_pow]
+  norm_num
+
+theorem wL_J1 : ∫ x in Set.Icc (-Real.pi) Real.pi, wLf1 x ^ 2 = 181398528 / 385 := by
+  rw [wL_icc (p := fun x => (236196 : ℝ) * x ^ 2 + (-104976 : ℝ) * x ^ 4 + (17496 : ℝ) * x ^ 6 +
+      (-1296 : ℝ) * x ^ 8 + (36 : ℝ) * x ^ 10)
+    (fun x h => by rw [wLf1, max_eq_right h]; norm_num)
+    (fun x h => by rw [wLf1, max_eq_left h]; ring)]
+  repeat rw [intervalIntegral.integral_add]
+  all_goals try (apply Continuous.intervalIntegrable; fun_prop)
+  simp only [intervalIntegral.integral_const_mul, integral_pow]
+  norm_num
+
+theorem wL_J2 : ∫ x in Set.Icc (-Real.pi) Real.pi, wLf2 x ^ 2 = 20155392 / 35 := by
+  rw [wL_icc (p := fun x => (236196 : ℝ) * x ^ 0 + (-314928 : ℝ) * x ^ 2 + (134136 : ℝ) * x ^ 4 +
+      (-19440 : ℝ) * x ^ 6 + (900 : ℝ) * x ^ 8)
+    (fun x h => by rw [wLf2, max_eq_right h]; norm_num)
+    (fun x h => by rw [wLf2, max_eq_left h]; ring)]
+  repeat rw [intervalIntegral.integral_add]
+  all_goals try (apply Continuous.intervalIntegrable; fun_prop)
+  simp only [intervalIntegral.integral_const_mul, integral_pow]
+  norm_num
+
+/-- `boxL2 h = √(∫ ‖h‖²) / (2π)`. -/
+theorem wL_boxL2_eq (f : ℝ × ℝ → ℂ) : boxL2 f = Real.sqrt (∫ k in torusBox, ‖f k‖ ^ 2) / (2 * Real.pi) := by
+  have hpi := Real.pi_pos
+  rw [boxL2, Real.sqrt_mul (by positivity),
+    show (1 : ℝ) / (4 * Real.pi ^ 2) = (1 / (2 * Real.pi)) ^ 2 by field_simp; ring,
+    Real.sqrt_sq (by positivity)]
+  ring
+
+theorem wL_sq_prod (a b : ℝ → ℝ) :
+    ∫ k in torusBox, ‖wLP a b k‖ ^ 2 =
+      (∫ x in Set.Icc (-Real.pi) Real.pi, a x ^ 2) * ∫ y in Set.Icc (-Real.pi) Real.pi, b y ^ 2 := by
+  simp_rw [wLP_norm_sq]
+  exact wL_box_prod (fun x => a x ^ 2) (fun y => b y ^ 2)
+
+theorem wL_norm_chi : boxL2 wLchi = (1088391168 / 1001) / (2 * Real.pi) := by
+  rw [wL_boxL2_eq, wLchi, wL_sq_prod, wL_J0, Real.sqrt_mul_self (by norm_num)]
+
+theorem wL_norm_p1 : boxL2 (boxPartial₁ wLchi) ≤ 715752 / (2 * Real.pi) := by
+  rw [wL_boxL2_eq, wLchi_partial₁, wL_sq_prod, wL_J1, wL_J0]
+  gcongr
+  rw [Real.sqrt_le_left (by norm_num)]
+  norm_num
+
+theorem wL_norm_p2 : boxL2 (boxPartial₂ wLchi) ≤ 715752 / (2 * Real.pi) := by
+  rw [wL_boxL2_eq, wLchi_partial₂, wL_sq_prod, wL_J1, wL_J0]
+  gcongr
+  rw [Real.sqrt_le_left (by norm_num)]
+  norm_num
+
+theorem wL_norm_lap : boxL2 (boxLaplacian wLchi) ≤ 1582586 / (2 * Real.pi) := by
+  rw [wL_boxL2_eq]
+  have hc1 : Continuous wLf1 := wLf1_differentiable.continuous
+  have hle : ∫ k in torusBox, ‖boxLaplacian wLchi k‖ ^ 2 ≤
+      ∫ k in torusBox, (2 * (wLf2 k.1 ^ 2 * wLf k.2 ^ 2) + 2 * (wLf k.1 ^ 2 * wLf2 k.2 ^ 2)) := by
+    refine setIntegral_mono_on ?_ ?_ (measurableSet_Icc.prod measurableSet_Icc) fun k _ => ?_
+    · refine wL_intOn (Continuous.pow (Continuous.norm ?_) 2)
+      have : boxLaplacian wLchi = fun k => wLP wLf2 wLf k + wLP wLf wLf2 k := funext wLchi_laplacian
+      rw [this]
+      unfold wLP
+      have := wLf_continuous
+      have := wLf2_continuous
+      fun_prop
+    · exact wL_intOn (by have := wLf_continuous; have := wLf2_continuous; fun_prop)
+    · rw [wLchi_laplacian]
+      have t := norm_add_le (wLP wLf2 wLf k) (wLP wLf wLf2 k)
+      have h1 := wLP_norm_sq wLf2 wLf k
+      have h2 := wLP_norm_sq wLf wLf2 k
+      have n0 := norm_nonneg (wLP wLf2 wLf k + wLP wLf wLf2 k)
+      have n1 := norm_nonneg (wLP wLf2 wLf k)
+      have n2 := norm_nonneg (wLP wLf wLf2 k)
+      nlinarith [sq_nonneg (‖wLP wLf2 wLf k‖ - ‖wLP wLf wLf2 k‖)]
+  have hval : ∫ k in torusBox, (2 * (wLf2 k.1 ^ 2 * wLf k.2 ^ 2) + 2 * (wLf k.1 ^ 2 * wLf2 k.2 ^ 2)) =
+      2 * (20155392 / 35 * (1088391168 / 1001)) + 2 * (1088391168 / 1001 * (20155392 / 35)) := by
+    rw [integral_add (wL_intOn (by have := wLf_continuous; have := wLf2_continuous; fun_prop))
+      (wL_intOn (by have := wLf_continuous; have := wLf2_continuous; fun_prop)),
+      integral_const_mul, integral_const_mul,
+      wL_box_prod (fun x => wLf2 x ^ 2) (fun y => wLf y ^ 2), wL_box_prod (fun x => wLf x ^ 2) (fun y => wLf2 y ^ 2),
+      wL_J0, wL_J2]
+  rw [hval] at hle
+  gcongr
+  rw [Real.sqrt_le_left (by norm_num)]
+  refine hle.trans ?_
+  norm_num
+
+theorem wL_integral : ‖∫ k in torusBox, wLchi k‖ = (69984 / 35) ^ 2 := by
+  have e : ∫ k in torusBox, wLchi k = ((∫ k in torusBox, wLf k.1 * wLf k.2 : ℝ) : ℂ) := integral_ofReal
+  rw [e, wL_box_prod, wL_I0, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by norm_num)]
+  ring
+
+/-- Witness: `χ(k) = (9 − k₁²)₊³ (9 − k₂²)₊³` (`C²`, support `[−3, 3]² ⊂ (−π, π)²`), zero phase, `t = 0`, `p = 0`,
+`B = (2π)²` (`loc2_zero_phase_coeff`). Then `‖∫ χ‖ = (69984/35)² ≈ 3.998·10⁶`, while the plant's right side is
+`(1/8)((3/2)‖χ‖ + ‖∂₁χ‖ + ‖∂₂χ‖ + ‖Δχ‖)(2π)² ≤ (π/4)((3/2)·1088391168/1001 + 2·715752 + 1582586) < 3.66·10⁶`
+(`π < 3.15`; the Laplacian bounded through `|a + b|² ≤ 2|a|² + 2|b|²`). -/
+theorem witness_L_i : ¬ P_TorusLocalizationC2Statement := by
+  intro h
+  have h1 := h wLchi wLchi_contDiff wLchi_tsupport (fun _ => 0) 0 0 ((2 * Real.pi) ^ 2) continuous_const
+    (fun _ => rfl) (fun _ => rfl) (loc2_zero_phase_coeff 0)
+  have h2 : ‖∫ k in torusBox, wLchi k‖ ≤ P_locConstC2 wLchi * (2 * Real.pi) ^ 2 := by simpa using h1
+  rw [wL_integral, P_locConstC2, wL_norm_chi] at h2
+  have hpi := Real.pi_pos
+  have hpi2 := Real.pi_lt_d2
+  have a1 := wL_norm_p1
+  have a2 := wL_norm_p2
+  have a3 := wL_norm_lap
+  have key : (1 / 8 : ℝ) * ((3 / 2) * ((1088391168 / 1001) / (2 * Real.pi)) + boxL2 (boxPartial₁ wLchi) +
+      boxL2 (boxPartial₂ wLchi) + boxL2 (boxLaplacian wLchi)) * (2 * Real.pi) ^ 2 ≤
+      (1 / 8 : ℝ) * ((3 / 2) * (1088391168 / 1001) + 715752 + 715752 + 1582586) * (2 * Real.pi) := by
+    have e : (1 / 8 : ℝ) * ((3 / 2) * (1088391168 / 1001) + 715752 + 715752 + 1582586) * (2 * Real.pi) =
+        (1 / 8 : ℝ) * ((3 / 2) * ((1088391168 / 1001) / (2 * Real.pi)) + 715752 / (2 * Real.pi) +
+          715752 / (2 * Real.pi) + 1582586 / (2 * Real.pi)) * (2 * Real.pi) ^ 2 := by
+      field_simp
+    rw [e]
+    gcongr
+  norm_num at key hpi2 ⊢
+  nlinarith
+
+#print axioms witness_L_i
+
+end OscInt.API.TorusLocalizationC2Sanity

@@ -21,6 +21,9 @@ import Challenge.HadamardWalk
 import Challenge.StationaryLeading
 import Challenge.TriangularAniso
 import Challenge.TriangularDecay
+import Challenge.StationaryLeadingSharp
+import Challenge.TriangularCrossover
+import Challenge.TorusLocalizationC2
 
 /-! Root of the frozen challenge library. Never a default target, never imported. -/
 

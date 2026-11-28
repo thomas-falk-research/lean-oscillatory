@@ -26,6 +26,9 @@ import Blueprint.FiniteRing
 import Blueprint.HadamardWalk
 import Blueprint.SecondDerivSharp
 import Blueprint.StationaryLeading
+import Blueprint.StationaryLeadingSharp
+import Blueprint.TorusLocalizationC2
+import Blueprint.TriangularCrossover
 import Blueprint.TriangularDecay
 
 /-! Root of the blueprint library: intermediate propositions (definitions only, no proofs). -/

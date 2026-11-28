@@ -1,0 +1,18 @@
+import OscInt.Front.TriangularCrossoverSanity
+
+namespace OscInt.API.TriangularCrossoverSanity
+
+open OscInt.Statements OscInt.API.TriangularDecaySanity OscInt.API.TriangularAnisoSanity
+
+/-- PLANTED copy of `TriCrossoverUpperStatement`: |a₀| = a* ↦ a₀ = a* (the centre −a* dropped). -/
+def P_TriCrossoverUpperStatement : Prop :=
+  ∀ a₀ : ℝ, a₀ = triExceptional → ∃ r > 0, ∃ C : ℝ, ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → 1 ≤ t →
+    ‖triKernel α t n‖ ≤ C * t ^ (-(2 : ℝ) / 3) * crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 3))
+
+/-- Witness: the draft implies the planted copy (`a₀ = a*` gives `|a₀| = a*`). -/
+theorem witness_A_e (h : TriCrossoverUpperStatement) : P_TriCrossoverUpperStatement :=
+  fun a₀ ha => h a₀ (by rw [ha]; exact a5u_abs_exceptional)
+
+#print axioms witness_A_e
+
+end OscInt.API.TriangularCrossoverSanity

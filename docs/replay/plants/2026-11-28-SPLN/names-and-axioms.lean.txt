@@ -1,0 +1,83 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+open OscInt.API.StationaryLeadingSharpSanity
+
+#check @intervalIntegral.integral_comp_neg
+#check @intervalIntegral.integral_symm
+#check @Real.zero_rpow
+#check @Real.rpow_neg
+#check @Real.rpow_neg_one
+#check @Real.rpow_natCast
+#check @Real.rpow_mul
+#check @Real.rpow_nonneg
+#check @Real.rpow_pos_of_pos
+#check @Real.one_rpow
+#check @Real.sqrt_le_left
+#check @Real.sqrt_pos
+#check @Real.sqrt_sq
+#check @Real.le_sqrt_of_sq_le
+#check @Real.pi_gt_d2
+#check @Real.pi_gt_three
+#check @Complex.norm_real
+#check @Complex.norm_I
+#check @Complex.ofReal_neg
+#check @norm_sub_norm_le
+#check @norm_pow
+#check @norm_div
+#check @norm_mul
+#check @le_of_mul_le_mul_right
+#check @lt_of_mul_lt_mul_right
+#check @le_of_forall_pos_le_add
+#check @mul_lt_mul_of_pos_right
+#check @mul_nonpos_of_nonpos_of_nonneg
+#check @MeasureTheory.integral_nonneg
+#check @MeasureTheory.integral_zero
+#check @le_div_iff₀
+#check @ite_eq_left
+#check @ite_eq_right
+#check @neg_sq
+#print axioms spln_cap_lt_seven_eighths
+#print axioms spln_lower_lt_cap
+#print axioms spln_cap_sub_lower
+#print axioms spln_kernel_le_seven_eighths
+#print axioms spln_kernel_large
+#print axioms spln_lower_fails_at_zero
+#print axioms spln_cap_bite
+#print axioms spln_fresnelPrim_neg
+#print axioms spln_kernelPos_neg_add
+#print axioms spln_norm_fresnelLimit_sq
+#print axioms spln_norm_fresnelLimit_ge
+#print axioms spln_kernel_pos_branch
+#print axioms spln_kernel_neg_branch
+#print axioms spln_kernelPos_neg_two
+#print axioms spln_rpow_sixteenth
+#print axioms spln_rpow_sixteenth_half
+#print axioms spln_rpow_hundred_five_halves
+#print axioms spln_sqrt_sixteenth
+#print axioms spln_remainder_gauss_small_lower
+#print axioms spln_sharp_one_four_nontrivial
+#print axioms spln_sharp_one_four_within
+#print axioms spln_sharp_conclusion_fails_lam_zero
+#print axioms spln_sharp_amplitude_bite
+#print axioms spln_sharpness_range_bite
+#print axioms spln_sharpness_needs_pos_lam
+#print axioms spln_sharpness_nonpos
+#print axioms spln_cap_point
+#print axioms spln_cap_neg_branch
+#print axioms spln_cap_large
+#print axioms spln_cap_excludes_higher_lower
+#print axioms spln_cap_of_sharp
+#print axioms spln_lower_ne_zero
+#print axioms spln_lower_neg_point
+#print axioms spln_lower_excludes_cap
+#print axioms spln_lower_below_seven_eighths
+#print axioms spln_lower_and_cap
+#print axioms spln_sharp_gauss
+#print axioms spln_sharp_one_four
+#print axioms spln_sharp_small
+#print axioms spln_sharp_hundred
+#print axioms spln_sharp_sixteen_hundred
+#print axioms spln_sharpness_exists
+#print axioms spln_sharpness_nonzero
+#print axioms spln_sharpness_kernel
+#print axioms spln_sharpness_refutes
+#print axioms spln_sharp_and_sharpness

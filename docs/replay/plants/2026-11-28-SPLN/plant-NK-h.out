@@ -1,0 +1,39 @@
+exit code 1
+plant-NK-h.lean:32:2: error: Type mismatch
+  h1
+has type
+  ‖gaussRoot s lam - splLead lam‖ ≤ 360987 / 5000000 * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-3 / 2)
+but is expected to have type
+  ‖gaussRoot s lam - splLead lam‖ ≤ 360987 / 500000 * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-3 / 2)
+plant-NK-h.lean:39:2: error: Type mismatch
+  h1
+has type
+  ‖splRemainder (gauss 1) 4‖ ≤ 360987 / 5000000 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8)
+but is expected to have type
+  ‖splRemainder (gauss 1) 4‖ ≤ 360987 / 500000 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8)
+plant-NK-h.lean:48:2: error: Type mismatch
+  h1
+has type
+  ‖splRemainder (gauss (1 / 2)) (1 / 16)‖ ≤ 360987 / 5000000 * ((1 / 2) ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 64
+but is expected to have type
+  ‖splRemainder (gauss (1 / 2)) (1 / 16)‖ ≤ 360987 / 500000 * ((1 / 2) ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 64
+plant-NK-h.lean:55:2: error: Type mismatch
+  h1
+has type
+  ‖splRemainder (gauss 1) 100‖ ≤ 360987 / 5000000 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 1000)
+but is expected to have type
+  ‖splRemainder (gauss 1) 100‖ ≤ 360987 / 500000 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 1000)
+plant-NK-h.lean:62:2: error: Type mismatch
+  h1
+has type
+  ‖splRemainder (gauss 4) 1600‖ ≤ 360987 / 5000000 * (4 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 64000)
+but is expected to have type
+  ‖splRemainder (gauss 4) 1600‖ ≤ 360987 / 500000 * (4 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 64000)
+plant-NK-h.lean:71:42: error: Application type mismatch: The argument
+  hK g g₁ g₂ g₃ lam hA hl
+has type
+  ‖splRemainder g lam‖ ≤ (360987 / 5000000 * ∫ (t : ℝ), ‖g₃ t‖) * lam ^ (-3 / 2)
+but is expected to have type
+  ‖splRemainder g lam‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖g₃ t‖) * lam ^ (-3 / 2)
+in the application
+  ⟨hlt, hK g g₁ g₂ g₃ lam hA hl⟩

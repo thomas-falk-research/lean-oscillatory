@@ -1,0 +1,25 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `StationaryLeadingSharpStatement`: the power λ^{−3/2} ↦ λ^{−1/2}. -/
+def P_StationaryLeadingSharpStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    ‖splRemainder g lam‖ ≤ (360987 / 500000 : ℝ) * (∫ t, ‖g₃ t‖) * lam ^ (-(1 : ℝ) / 2)
+
+/-- Witness: at `G_{1/2}`, `λ = 1/16` the planted bound is `(360987/500000) · (1/4)(2 + 8e^{−3/2}) · 4 ≤ 2.74`, but
+`|R| ≥ 4.8` (`spln_remainder_gauss_small_lower`). -/
+theorem witness_NK_d : ¬ P_StationaryLeadingSharpStatement := by
+  intro h
+  have h1 := h (gauss (1 / 2)) (gauss1 (1 / 2)) (gauss2 (1 / 2)) (gauss3 (1 / 2)) (1 / 16)
+    (gauss_splAmplitude (1 / 2) (by norm_num)) (by norm_num)
+  rw [integral_norm_gauss3 (1 / 2) (by norm_num), spln_rpow_sixteenth_half] at h1
+  have h2 := spln_remainder_gauss_small_lower
+  have h3 := normThree_le
+  nlinarith
+
+#print axioms witness_NK_d
+
+end OscInt.API.StationaryLeadingSharpSanity

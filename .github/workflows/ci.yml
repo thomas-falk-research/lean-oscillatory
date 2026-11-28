@@ -75,7 +75,7 @@ jobs:
       - name: API index generator self-test (6 planted defects) and drift check
         run: tools/test_gen_api.sh && python3 -I tools/gen_api.py --check .
       - name: Push gate and replay preflight self-tests (planted cases)
-        run: python3 -I tools/push_gate.py --self-test && python3 -I tools/replay_preflight.py --self-test
+        run: python3 -I tools/push_gate.py --self-test && python3 -I tools/test_push_gate.py && python3 -I tools/replay_preflight.py --self-test
       - name: REUSE 3.3 licensing information (reuse lint) and CITATION.cff schema (cffconvert)
         run: |
           python3 -m venv /tmp/meta
@@ -92,8 +92,10 @@ jobs:
   consumer:
     runs-on: ubuntu-24.04
     # build, checker with recomputed commitments and negative controls took 48 min on PR #13 (2026-11-13) and passed 60
-    # on slower runners the same day (checker 26-28 min instead of 19), with every finished step green
-    timeout-minutes: 90
+    # on slower runners the same day (checker 26-28 min instead of 19), with every finished step green. 90 -> 180 on PR
+    # #27 (owner approval 2026-11-28): 74 min on 6ce20df (build 10, checker 28, controls 35; 247 modules), cancelled at
+    # 90 on f5d53bd (283 modules) after build 13 and checker 50, both green; the controls replay every module again
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

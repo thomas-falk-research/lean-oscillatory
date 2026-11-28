@@ -1,0 +1,50 @@
+exit code 1
+plant-NK-e.lean:31:2: error: Type mismatch
+  h1
+has type
+  ‖gaussRoot s lam - splLead lam‖ ≤ 360987 / 500000 * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-5 / 2)
+but is expected to have type
+  ‖gaussRoot s lam - splLead lam‖ ≤ 360987 / 500000 * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-3 / 2)
+plant-NK-e.lean:37:38: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  4 ^ (-3 / 2)
+in the target expression
+  ‖splRemainder (gauss 1) 4‖ ≤ 360987 / 500000 * (1 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 4 ^ (-5 / 2)
+
+h : P_StationaryLeadingSharpStatement
+h1 : ‖splRemainder (gauss 1) 4‖ ≤ 360987 / 500000 * (1 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 4 ^ (-5 / 2)
+⊢ ‖splRemainder (gauss 1) 4‖ ≤ 360987 / 500000 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8)
+plant-NK-e.lean:46:50: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (1 / 16) ^ (-3 / 2)
+in the target expression
+  ‖splRemainder (gauss (1 / 2)) (1 / 16)‖ ≤
+    360987 / 500000 * ((1 / 2) ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 16) ^ (-5 / 2)
+
+h : P_StationaryLeadingSharpStatement
+h1 :
+  ‖splRemainder (gauss (1 / 2)) (1 / 16)‖ ≤
+    360987 / 500000 * ((1 / 2) ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 16) ^ (-5 / 2)
+⊢ ‖splRemainder (gauss (1 / 2)) (1 / 16)‖ ≤ 360987 / 500000 * ((1 / 2) ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 64
+plant-NK-e.lean:53:38: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  100 ^ (-3 / 2)
+in the target expression
+  ‖splRemainder (gauss 1) 100‖ ≤ 360987 / 500000 * (1 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 100 ^ (-5 / 2)
+
+h : P_StationaryLeadingSharpStatement
+h1 : ‖splRemainder (gauss 1) 100‖ ≤ 360987 / 500000 * (1 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 100 ^ (-5 / 2)
+⊢ ‖splRemainder (gauss 1) 100‖ ≤ 360987 / 500000 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 1000)
+plant-NK-e.lean:60:44: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  1600 ^ (-3 / 2)
+in the target expression
+  ‖splRemainder (gauss 4) 1600‖ ≤ 360987 / 500000 * (4 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 1600 ^ (-5 / 2)
+
+h : P_StationaryLeadingSharpStatement
+h1 : ‖splRemainder (gauss 4) 1600‖ ≤ 360987 / 500000 * (4 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 1600 ^ (-5 / 2)
+⊢ ‖splRemainder (gauss 4) 1600‖ ≤ 360987 / 500000 * (4 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 64000)
+plant-NK-e.lean:70:42: error: Application type mismatch: The argument
+  hK g g₁ g₂ g₃ lam hA hl
+has type
+  ‖splRemainder g lam‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖g₃ t‖) * lam ^ (-5 / 2)
+but is expected to have type
+  ‖splRemainder g lam‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖g₃ t‖) * lam ^ (-3 / 2)
+in the application
+  ⟨hlt, hK g g₁ g₂ g₃ lam hA hl⟩

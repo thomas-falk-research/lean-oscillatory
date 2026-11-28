@@ -1,0 +1,17 @@
+#!/bin/bash
+# Compile the six owed files one at a time; record "exit code N" + compiler output (run directory stripped) per file.
+O=/tmp/claude-0/-home-user-lean-oscillatory/355c0606-3536-535a-89a4-8cd50002d6e0/scratchpad/owed
+R=$O/work/run; mkdir -p $R
+LR=/tmp/claude-0/-home-user-lean-oscillatory/355c0606-3536-535a-89a4-8cd50002d6e0/scratchpad/bin/leanrun
+cd /home/user/lean-oscillatory
+LOG=$O/SUMMARY.txt; : > $LOG
+echo "run start $(date -u +%Y-%m-%dT%H:%M:%SZ) UTC" >> $LOG
+for tag in ok-A-2 plant-A-2 witness-A-2 ok-L-i plant-L-i witness-L-i; do
+  cp $O/$tag.lean.txt $R/$tag.lean
+  t0=$(date -u +%Y-%m-%dT%H:%M:%SZ); s0=$(date +%s.%N)
+  out=$($LR nice -n 10 lake env lean -DautoImplicit=false $R/$tag.lean 2>&1); rc=$?
+  s1=$(date +%s.%N)
+  printf 'exit code %s\n%s\n' "$rc" "${out//$R\//}" > $O/$tag.out
+  printf '%s: exit code %s, started %s UTC, %.1f s (includes waiting for the shared Lean lock)\n' "$tag" "$rc" "$t0" "$(echo "$s1 - $s0" | bc)" >> $LOG
+done
+echo "run end $(date -u +%Y-%m-%dT%H:%M:%SZ) UTC" >> $LOG

@@ -1,0 +1,9 @@
+exit code 0
+witness-L-h.lean:31:43: warning: Unused tactic linter: `beta_reduce` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+witness-L-h.lean:31:80: warning: Unused tactic linter: `beta_reduce` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+'OscInt.API.TorusLocalizationC2Sanity.witness_L_h_rel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.TorusLocalizationC2Sanity.witness_L_h' depends on axioms: [propext, Classical.choice, Quot.sound]

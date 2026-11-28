@@ -1,0 +1,120 @@
+ok-NU-a: accepted (want accepted) [2.4 s]
+plant-NU-a: rejected (want recorded) [2.6 s]
+    first error: plant-NU-a.lean:13:2: error: Type mismatch
+witness-NU-a: accepted (want accepted) [2.2 s]
+  NU-a [the cap 360987/500000 ↦ 72197399/10⁸ (the two rationals confused)]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: true statement → ¬ planted statement); NOT DETECTED unconditionally
+ok-NU-b: accepted (want accepted) [2.4 s]
+plant-NU-b: rejected (want recorded) [2.1 s]
+    first error: plant-NU-b.lean:13:2: error: Type mismatch
+witness-NU-b: accepted (want accepted) [2.4 s]
+  NU-b [the cap 360987/500000 ↦ 360987/5000000 (a digit dropped)]: DETECTED (witness compiled: ¬ planted statement)
+ok-NU-c: accepted (want accepted) [3.0 s]
+plant-NU-c: rejected (want recorded) [2.5 s]
+    first error: plant-NU-c.lean:13:2: error: Type mismatch
+witness-NU-c: accepted (want accepted) [2.2 s]
+  NU-c [the cap 360987/500000 ↦ 7/8 (SPL-K's constant)]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it
+ok-NU-d: accepted (want accepted) [2.5 s]
+plant-NU-d: rejected (want recorded) [2.4 s]
+    first error: plant-NU-d.lean:13:2: error: Type mismatch
+witness-NU-d: accepted (want accepted) [2.2 s]
+  NU-d [the cap only for τ ≥ 0 (negative τ dropped)]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it
+ok-NU-e: accepted (want accepted) [2.5 s]
+plant-NU-e: rejected (want recorded) [2.4 s]
+    first error: plant-NU-e.lean:13:2: error: Type mismatch
+witness-NU-e: accepted (want accepted) [2.3 s]
+  NU-e [the odd kernel κ ↦ κ₊ (the definition by cases dropped)]: DETECTED (witness compiled: ¬ planted statement)
+ok-NU-f: accepted (want accepted) [2.4 s]
+plant-NU-f: rejected (want recorded) [2.5 s]
+    first error: plant-NU-f.lean:14:2: error: Type mismatch
+witness-NU-f: accepted (want accepted) [2.1 s]
+  NU-f [the cap 360987/500000 ↦ 721973995/10⁹ (inside the window between the two rationals)]: NOT DETECTED (compiled characterisation of what a detection would have to refute; no refutation)
+ok-NL-a: accepted (want accepted) [2.4 s]
+plant-NL-a: rejected (want recorded) [2.3 s]
+    first error: plant-NL-a.lean:13:70: error: Type mismatch
+witness-NL-a: accepted (want accepted) [2.2 s]
+  NL-a [the point 8123/5000 ↦ 0]: DETECTED (witness compiled: ¬ planted statement)
+ok-NL-b: accepted (want accepted) [2.5 s]
+plant-NL-b: rejected (want recorded) [2.2 s]
+    first error: plant-NL-b.lean:13:70: error: Type mismatch
+witness-NL-b: accepted (want accepted) [2.0 s]
+  NL-b [the lower value 72197399/10⁸ ↦ 72197399/10⁷ (a digit dropped)]: DETECTED (witness compiled: ¬ planted statement)
+ok-NL-c: accepted (want accepted) [2.1 s]
+plant-NL-c: rejected (want recorded) [2.2 s]
+    first error: plant-NL-c.lean:13:70: error: Type mismatch
+witness-NL-c: accepted (want accepted) [2.2 s]
+  NL-c [the lower value 72197399/10⁸ ↦ 72197401/10⁸ (above the cap)]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: true statement → ¬ planted statement); NOT DETECTED unconditionally
+ok-NL-d: accepted (want accepted) [2.1 s]
+plant-NL-d: rejected (want recorded) [2.6 s]
+    first error: plant-NL-d.lean:14:70: error: Type mismatch
+witness-NL-d: accepted (want accepted) [2.3 s]
+  NL-d [the point 8123/5000 ↦ 13/8 (= 8125/5000, the point of the session-15 prototype)]: NOT DETECTED (compiled characterisation of what a detection would have to refute; no refutation)
+ok-NL-e: accepted (want accepted) [2.5 s]
+plant-NL-e: rejected (want recorded) [2.4 s]
+    first error: plant-NL-e.lean:13:70: error: Type mismatch
+witness-NL-e: accepted (want accepted) [2.2 s]
+  NL-e [the strict inequality < ↦ ≤]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it
+ok-NL-f: accepted (want accepted) [2.3 s]
+plant-NL-f: rejected (want recorded) [2.3 s]
+    first error: plant-NL-f.lean:14:70: error: Type mismatch
+witness-NL-f: accepted (want accepted) [2.4 s]
+  NL-f [the lower value 72197399/10⁸ ↦ 7219739995/10¹⁰ (inside the window between the two rationals)]: NOT DETECTED (compiled characterisation of what a detection would have to refute; no refutation)
+ok-NK-a: accepted (want accepted) [2.7 s]
+plant-NK-a: rejected (want recorded) [2.4 s]
+    first error: plant-NK-a.lean:31:2: error: Type mismatch
+witness-NK-a: accepted (want accepted) [2.3 s]
+  NK-a [the constant 360987/500000 ↦ 7/10]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: true statement → ¬ planted statement); NOT DETECTED unconditionally
+ok-NK-b: accepted (want accepted) [2.4 s]
+plant-NK-b: rejected (want recorded) [2.5 s]
+    first error: plant-NK-b.lean:23:2: error: linarith failed to find a contradiction
+witness-NK-b: accepted (want accepted) [2.2 s]
+  NK-b [the constant 360987/500000 ↦ 7/8 (SPL-K)]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it
+ok-NK-c: accepted (want accepted) [2.5 s]
+plant-NK-c: rejected (want recorded) [2.4 s]
+    first error: plant-NK-c.lean:19:14: error: Function expected at
+witness-NK-c: accepted (want accepted) [2.3 s]
+  NK-c [the hypothesis 0 < λ dropped]: DETECTED (witness compiled: ¬ planted statement)
+ok-NK-d: accepted (want accepted) [2.6 s]
+plant-NK-d: rejected (want recorded) [2.4 s]
+    first error: plant-NK-d.lean:31:2: error: Type mismatch
+witness-NK-d: accepted (want accepted) [2.4 s]
+  NK-d [the power λ^{−3/2} ↦ λ^{−1/2}]: DETECTED (witness compiled: ¬ planted statement)
+ok-NK-e: accepted (want accepted) [2.7 s]
+plant-NK-e: rejected (want recorded) [2.4 s]
+    first error: plant-NK-e.lean:31:2: error: Type mismatch
+witness-NK-e: accepted (want accepted) [2.3 s]
+  NK-e [the power λ^{−3/2} ↦ λ^{−5/2}]: DETECTED (witness compiled: ¬ planted statement)
+ok-NK-f: accepted (want accepted) [2.4 s]
+plant-NK-f: rejected (want recorded) [2.2 s]
+    first error: plant-NK-f.lean:22:47: error: Application type mismatch: The argument
+witness-NK-f: accepted (want accepted) [2.2 s]
+  NK-f [the norm ‖g‴‖₁ ↦ ‖g″‖₁]: DETECTED (witness compiled: ¬ planted statement)
+ok-NK-g: accepted (want accepted) [2.4 s]
+plant-NK-g: rejected (want recorded) [2.3 s]
+    first error: plant-NK-g.lean:19:30: error: Application type mismatch: The argument
+witness-NK-g: accepted (want accepted) [2.3 s]
+  NK-g [the hypothesis SplAmplitude dropped]: DETECTED (witness compiled: ¬ planted statement)
+ok-NK-h: accepted (want accepted) [2.5 s]
+plant-NK-h: rejected (want recorded) [2.4 s]
+    first error: plant-NK-h.lean:32:2: error: Type mismatch
+witness-NK-h: accepted (want accepted) [2.4 s]
+  NK-h [the constant 360987/500000 ↦ 360987/5000000 (a digit dropped)]: DETECTED (witness compiled: ¬ planted statement)
+ok-NC-a: accepted (want accepted) [2.4 s]
+plant-NC-a: rejected (want recorded) [2.6 s]
+    first error: plant-NC-a.lean:18:17: error: Application type mismatch: The argument
+witness-NC-a: accepted (want accepted) [2.1 s]
+  NC-a [the range c ≤ 72197399/10⁸ ↦ c ≤ 7/8]: DETECTED (witness compiled: ¬ planted statement)
+ok-NC-b: accepted (want accepted) [2.8 s]
+plant-NC-b: rejected (want recorded) [2.5 s]
+    first error: plant-NC-b.lean:19:17: error: Application type mismatch: The argument
+witness-NC-b: accepted (want accepted) [2.3 s]
+  NC-b [the range c ≤ 72197399/10⁸ ↦ c ≤ 360987/500000 (the cap)]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: true statement → ¬ planted statement); NOT DETECTED unconditionally
+ok-NC-c: accepted (want accepted) [2.7 s]
+plant-NC-c: rejected (want recorded) [3.0 s]
+    first error: plant-NC-c.lean:18:17: error: Application type mismatch: The argument
+witness-NC-c: accepted (want accepted) [2.2 s]
+  NC-c [the range c ≤ 72197399/10⁸ ↦ c ≤ 72197/10⁵]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it
+ok-NC-d: accepted (want accepted) [2.5 s]
+plant-NC-d: rejected (want recorded) [2.6 s]
+    first error: plant-NC-d.lean:20:2: error: Type mismatch
+witness-NC-d: accepted (want accepted) [2.3 s]
+  NC-d [the hypothesis 0 < λ dropped inside the negation]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it

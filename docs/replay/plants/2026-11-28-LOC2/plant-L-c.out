@@ -1,0 +1,17 @@
+exit code 1
+plant-L-c.lean:25:9: error: Application type mismatch: The argument
+  loc2_chi1_contDiff
+has type
+  ContDiff ℝ 2 chi1
+but is expected to have type
+  ContDiff ℝ 1 chi1
+in the application
+  h chi1 loc2_chi1_contDiff
+plant-L-c.lean:62:30: error: Application type mismatch: The argument
+  hχ
+has type
+  ContDiff ℝ 2 χ
+but is expected to have type
+  ContDiff ℝ 1 χ
+in the application
+  h χ hχ

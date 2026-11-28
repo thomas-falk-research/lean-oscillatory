@@ -1,0 +1,66 @@
+ok-A-a: accepted (want accepted) [4.5 s]
+plant-A-a: rejected (want recorded) [4.5 s]
+    first error: plant-A-a.lean:18:89: error: unsolved goals
+witness-A-a: accepted (want accepted) [3.8 s]
+  A-a [envelope exponent −1/4 ↦ −1/3]: DETECTED via the proved batch-K2 statement (witness compiled: true statement → ¬ planted statement, and ¬ planted statement from OscInt.API.*)
+ok-A-b: accepted (want accepted) [4.3 s]
+plant-A-b: rejected (want recorded) [4.2 s]
+    first error: plant-A-b.lean:17:49: error: Type mismatch
+witness-A-b: accepted (want accepted) [4.2 s]
+  A-b [window |α − a₀| ≤ r ↦ ≤ 1 (fixed radius)]: DETECTED via the proved batch-K2 statement (witness compiled: true statement → ¬ planted statement, and ¬ planted statement from OscInt.API.*)
+ok-A-c: accepted (want accepted) [4.3 s]
+plant-A-c: rejected (want recorded) [4.4 s]
+    first error: plant-A-c.lean:20:2: error: Type mismatch
+witness-A-c: accepted (want accepted) [3.9 s]
+  A-c [leading rate t^{−2/3} ↦ t^{−3/4}]: DETECTED via the proved batch-K2 statement (witness compiled: true statement → ¬ planted statement, and ¬ planted statement from OscInt.API.*)
+ok-A-m: accepted (want accepted) [4.3 s]
+plant-A-m: rejected (want recorded) [4.5 s]
+    first error: plant-A-m.lean:18:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-A-m: accepted (want accepted) [4.3 s]
+  A-m [whole bound ↦ C t^{−3/4} (envelope ≡ 1, rate 3/4)]: DETECTED via the proved batch-K2 statement (witness compiled: true statement → ¬ planted statement, and ¬ planted statement from OscInt.API.*)
+ok-A-d: accepted (want accepted) [4.3 s]
+plant-A-d: rejected (want recorded) [4.5 s]
+    first error: plant-A-d.lean:17:10: error: Function expected at
+witness-A-d: accepted (want accepted) [447.5 s]
+  A-d [hypothesis 1 ≤ t dropped]: DETECTED (witness compiled: ¬ planted statement)
+ok-A-e: accepted (want accepted) [4.1 s]
+plant-A-e: rejected (want recorded) [4.4 s]
+    first error: plant-A-e.lean:15:32: error: Application type mismatch: The argument
+witness-A-e: accepted (want accepted) [4.0 s]
+  A-e [|a₀| = a* ↦ a₀ = a* (the centre −a* dropped)]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it
+ok-A-f: accepted (want accepted) [4.4 s]
+plant-A-f: rejected (want recorded) [4.4 s]
+    first error: plant-A-f.lean:37:13: error: Application type mismatch: The argument
+witness-A-f: accepted (want accepted) [4.2 s]
+  A-f [window radius r > 0 ↦ r ≥ 0]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it
+ok-A-g: accepted (want accepted) [4.5 s]
+plant-A-g: rejected (want recorded) [4.5 s]
+    first error: plant-A-g.lean:43:44: error: Application type mismatch: The argument
+witness-A-g: accepted (want accepted) [4.3 s]
+  A-g [crossover scale t^{1/3} ↦ t^{1/2}]: DETECTED via the proved batch-K2 statement (witness compiled: true statement → ¬ planted statement, and ¬ planted statement from OscInt.API.*)
+ok-A-h: accepted (want accepted) [4.5 s]
+plant-A-h: rejected (want recorded) [4.2 s]
+    first error: plant-A-h.lean:43:44: error: Application type mismatch: The argument
+witness-A-h: accepted (want accepted) [4.2 s]
+  A-h [crossover scale t^{1/3} ↦ t^{1/4}]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it
+ok-A-i: accepted (want accepted) [4.4 s]
+plant-A-i: rejected (want recorded) [4.4 s]
+    first error: plant-A-i.lean:15:72: error: unsolved goals
+witness-A-i: accepted (want accepted) [4.2 s]
+  A-i [envelope plateau value 1 ↦ 0]: DETECTED via the proved batch-K2 statement (witness compiled: true statement → ¬ planted statement, and ¬ planted statement from OscInt.API.*)
+ok-A-j: accepted (want accepted) [4.4 s]
+plant-A-j: rejected (want recorded) [4.4 s]
+    first error: plant-A-j.lean:18:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-A-j: accepted (want accepted) [4.2 s]
+  A-j [envelope argument |α − a₀| ↦ |α| (distance to 0, not to a₀)]: DETECTED via the proved batch-K2 statement (witness compiled: true statement → ¬ planted statement, and ¬ planted statement from OscInt.API.*)
+ok-A-k: accepted (want accepted) [4.3 s]
+plant-A-k: rejected (want recorded) [4.5 s]
+    first error: plant-A-k.lean:18:89: error: unsolved goals
+witness-A-k: accepted (want accepted) [4.1 s]
+  A-k [envelope exponent −1/4 ↦ −1/5]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it
+ok-A-l: accepted (want accepted) [3.7 s]
+plant-A-l: rejected (want recorded) [3.8 s]
+    first error: plant-A-l.lean:18:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-A-l: accepted (want accepted) [4.1 s]
+  A-l [envelope factor dropped]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it
+generator run 2026-11-28T13:14:42Z to 2026-11-28T13:24:53Z UTC

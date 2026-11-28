@@ -1,0 +1,23 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `SplKernelCapStatement`: the cap only for τ ≥ 0 (negative τ dropped). -/
+def P_SplKernelCapStatement : Prop :=
+  ∀ τ : ℝ, 0 ≤ τ → ‖splKernel τ‖ ≤ (360987 / 500000 : ℝ)
+
+/-- Witness: the draft implies the planted copy, and conversely (`|κ|` is even): the two are equivalent. -/
+theorem witness_NU_d (h : SplKernelCapStatement) : P_SplKernelCapStatement := fun τ _ => h τ
+
+theorem witness_NU_d_converse (h : P_SplKernelCapStatement) : SplKernelCapStatement := by
+  intro τ
+  rw [← norm_splKernel_abs]
+  exact h |τ| (abs_nonneg τ)
+
+#print axioms witness_NU_d
+
+#print axioms witness_NU_d_converse
+
+end OscInt.API.StationaryLeadingSharpSanity

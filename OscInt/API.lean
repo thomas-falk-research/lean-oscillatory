@@ -35,6 +35,16 @@ import OscInt.Front.SecondDerivSharpSanity
 import OscInt.Statements.StationaryLeading
 import OscInt.Statements.TriangularAniso
 import OscInt.Statements.TriangularDecay
+import OscInt.Statements.StationaryLeadingSharp
+import OscInt.Statements.TriangularCrossover
+import OscInt.Statements.TorusLocalizationC2
+import OscInt.Front.StationaryLeadingSharpSanity
+import OscInt.Front.TriangularCrossoverSanity
+import OscInt.Front.TorusLocalizationC2Sanity
+import OscInt.Front.StationaryLeadingSharpAssembly
+import OscInt.Front.StationaryLeadingSharpFinal
+import OscInt.Front.TorusLocalizationC2Final
+import OscInt.Front.TriangularCrossoverFinal
 import OscInt.Front.TriangularAnisoSanity
 import OscInt.Front.TriangularDecaySanity
 import OscInt.Front.StationaryLeadingSanity

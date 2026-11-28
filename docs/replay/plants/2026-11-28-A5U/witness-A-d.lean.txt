@@ -1,0 +1,22 @@
+import OscInt.Front.TriangularCrossoverSanity
+
+namespace OscInt.API.TriangularCrossoverSanity
+
+open OscInt.Statements OscInt.API.TriangularDecaySanity OscInt.API.TriangularAnisoSanity
+
+/-- PLANTED copy of `TriCrossoverUpperStatement`: hypothesis 1 ≤ t dropped. -/
+def P_TriCrossoverUpperStatement : Prop :=
+  ∀ a₀ : ℝ, |a₀| = triExceptional → ∃ r > 0, ∃ C : ℝ, ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r →
+    ‖triKernel α t n‖ ≤ C * t ^ (-(2 : ℝ) / 3) * crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 3))
+
+/-- Witness: at `t = 0`, `α = a₀ = a*` the right side is `0` (`0^{−2/3} = 0`) but `‖triKernel a* 0 (0, 0)‖ = (2π)²`
+(`a5u_time_zero_bite`). -/
+theorem witness_A_d : ¬ P_TriCrossoverUpperStatement := by
+  intro h
+  obtain ⟨r, hr, C, hC⟩ := h triExceptional a5u_abs_exceptional
+  exact a5u_time_zero_bite triExceptional triExceptional C
+    (hC triExceptional 0 (0, 0) (by rw [sub_self, abs_zero]; exact hr.le))
+
+#print axioms witness_A_d
+
+end OscInt.API.TriangularCrossoverSanity

@@ -1,0 +1,13 @@
+import OscInt.Front.StationaryLeadingSharpCellsData
+namespace OscInt.SPLNAux
+theorem n1 : (splnC_cells.all (splnC_cellOK (360986 / 500000))) = false := by decide +kernel
+theorem n2 : splnC_chain (1 / 2) splnC_cells 5 = false := by decide +kernel
+theorem n3 : splnC_chain (1 / 4) splnC_cells 4 = false := by decide +kernel
+theorem n4 : decide ((72197400 / 100000000 + 2 * splnC_Iq 32 splnC_x0 + (splnC_s1 - splnC_s0) * splnC_x0 ^ 2 / 4) ^ 2 <
+  splnC_re splnC_sm splnC_x0 ^ 2 + splnC_im splnC_sm splnC_x0 ^ 2) = false := by decide +kernel
+theorem n5 : splnC_cells.length = 40 := by decide +kernel
+end OscInt.SPLNAux
+#print axioms OscInt.SPLNAux.n1
+#print axioms OscInt.SPLNAux.n2
+#print axioms OscInt.SPLNAux.n3
+#print axioms OscInt.SPLNAux.n4

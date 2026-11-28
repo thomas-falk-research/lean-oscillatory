@@ -1,0 +1,49 @@
+import OscInt.Front.TriangularCrossoverSanity
+
+namespace OscInt.API.TriangularCrossoverSanity
+
+open OscInt.Statements OscInt.API.TriangularDecaySanity OscInt.API.TriangularAnisoSanity
+
+/-- PLANTED copy of `TriCrossoverUpperStatement`: crossover scale t^{1/3} ↦ t^{1/2}. -/
+def P_TriCrossoverUpperStatement : Prop :=
+  ∀ a₀ : ℝ, |a₀| = triExceptional → ∃ r > 0, ∃ C : ℝ, ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → 1 ≤ t →
+    ‖triKernel α t n‖ ≤ C * t ^ (-(2 : ℝ) / 3) * crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 2))
+
+/-- Witness (relative to K2-D): at `α = a* + δ` (`triRate α = 3/4`) the plant gives
+`C t^{−2/3} (δ t^{1/2})^{−1/4} = C δ^{−1/4} t^{−19/24}`, a faster rate. -/
+theorem witness_A_g_rel (hD : TriDecayLowerStatement) : ¬ P_TriCrossoverUpperStatement := by
+  intro h
+  have hp := triExceptional_pos
+  obtain ⟨r, hr, C, hC⟩ := h triExceptional a5u_abs_exceptional
+  obtain ⟨δ, hδ, hδr, hδa⟩ : ∃ δ : ℝ, 0 < δ ∧ δ ≤ r ∧ δ < triExceptional :=
+    ⟨min r triExceptional / 2, half_pos (lt_min hr hp),
+      (half_le_self (lt_min hr hp).le).trans (min_le_left _ _),
+      (half_lt_self (lt_min hr hp)).trans_le (min_le_right _ _)⟩
+  have hw : |triExceptional + δ - triExceptional| ≤ r := by rw [add_sub_cancel_left, abs_of_pos hδ]; exact hδr
+  have hC0 : 0 ≤ C := a5u_const_nonneg one_pos (hC _ 1 (0, 0) hw le_rfl)
+  refine a5u_rate_clash hD (triExceptional + δ) (19 / 24) (C * δ ^ (-(1 : ℝ) / 4)) 1
+    (by rw [a5u_triRate_window a5u_abs_exceptional hδ hδa]; norm_num) fun t n ht => ?_
+  have ht0 : 0 < t := by linarith
+  have h1 := hC _ t n hw ht
+  rw [add_sub_cancel_left, abs_of_pos hδ, mul_assoc] at h1
+  have e2 : t ^ (-(2 : ℝ) / 3) * (δ * t ^ ((1 : ℝ) / 2)) ^ (-(1 : ℝ) / 4) =
+      δ ^ (-(1 : ℝ) / 4) * t ^ (-(19 / 24 : ℝ)) := by
+    rw [Real.mul_rpow hδ.le (Real.rpow_nonneg ht0.le _), ← Real.rpow_mul ht0.le, mul_left_comm,
+      ← Real.rpow_add ht0]
+    norm_num
+  calc ‖triKernel (triExceptional + δ) t n‖ ≤
+        C * (t ^ (-(2 : ℝ) / 3) * crossEnvelope (δ * t ^ ((1 : ℝ) / 2))) := h1
+    _ ≤ C * (t ^ (-(2 : ℝ) / 3) * (δ * t ^ ((1 : ℝ) / 2)) ^ (-(1 : ℝ) / 4)) :=
+        mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left (a5u_env_le_rpow (by positivity))
+          (Real.rpow_nonneg ht0.le _)) hC0
+    _ = C * δ ^ (-(1 : ℝ) / 4) * t ^ (-(19 / 24 : ℝ)) := by rw [e2, mul_assoc]
+
+/-- Unconditional, from the proved K2-D (`OscInt.API.triDecayLower`). -/
+theorem witness_A_g : ¬ P_TriCrossoverUpperStatement :=
+  witness_A_g_rel OscInt.API.triDecayLower
+
+#print axioms witness_A_g_rel
+
+#print axioms witness_A_g
+
+end OscInt.API.TriangularCrossoverSanity
