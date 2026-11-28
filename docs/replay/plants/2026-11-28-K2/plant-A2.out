@@ -1,0 +1,9 @@
+exit code 1
+plant-A2.lean:26:9: error: Application type mismatch: The argument
+  chi1_contDiff
+has type
+  ContDiff ℝ ∞ chi1
+but is expected to have type
+  tsupport chi1 ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi
+in the application
+  h chi1 chi1_contDiff

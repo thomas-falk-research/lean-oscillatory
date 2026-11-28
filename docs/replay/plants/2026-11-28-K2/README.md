@@ -239,3 +239,78 @@ f5f1743898ac754abf4a394947bb9940030d98cd746af0beeb0b17c896ce1138  witness-U-c.ou
 b941c86808e4fdc91d58f85d8a949bd20c98cda513e4f8b4c3bc44973e83c8dd  witness-U-d.lean.txt
 9074164ce6d7248da3fe2086c340e269869b676722927a9b87b3df02a631b2aa  witness-U-d.out
 ```
+
+## Plants A1 and A2 owed by the blind-review answers (written after the proofs)
+
+Written by the plant agent PL on 2026-11-28 (compiled 2026-11-28, about 04:20Z UTC), as owed by
+`review/2026-11-28-K2-preproof-answers.md`, findings A1 and A2 and section 3. Unlike the 15 plants above, these were
+written after all six K2 statements were proved, so the witnesses may use the proved theorems
+(`OscInt.API.monomialLower`, `torusLocalization`, `triDecayUpper` from `OscInt.Front.TriangularDecayFinal`). A witness
+that uses a proved true statement counts as DETECTED unconditionally.
+
+Inputs. The repository is at HEAD 596bfbf0c44f563f602371d96387c70a4c95d1c6 (nothing written). The statement module
+`OscInt/Statements/TriangularDecay.lean` has SHA-256 32b99c38…cbc, unchanged from the plants above. The sanity layer
+`OscInt/Front/TriangularDecaySanity.lean` has SHA-256 88b88872…8ede, identical to the frozen copy above, and is used
+here as the repository's built module. `OscInt/Front/TriangularDecayFinal.lean` has SHA-256 1ed34f43…9c09.
+
+Harness. Each file was copied to `<name>.lean` and compiled against the repository's built library with
+`cd /home/user/lean-oscillatory && nice -n 10 lake env lean -DautoImplicit=false <name>.lean`, using Lean 4.35.0 and
+Mathlib 56a005855ea1, one Lean process at a time. The scratch directory is removed from the paths in the `.out`
+files. There was no generator. The planted copies are the unplanted copies `ok-L-a.lean.txt` and `ok-F-a.lean.txt`
+from above with one textual mutation each (a scripted replace, checked by `diff`), so the `ok-` files above serve as
+the unplanted controls. Each witness file contains a byte-identical copy of its plant's `P_` definition (checked by
+script). Every `#print axioms` shows only propext, Classical.choice and Quot.sound. No file contains sorry, admit,
+axiom, native_decide or set_option.
+
+| plant | statement | mutation | outcome | evidence |
+|---|---|---|---|---|
+| A1 | K2-L | `ReducedCurve Ψ k₀ v w ε h` ↦ `ContDiff ℝ ∞ h ∧ h 0 = 0` (the curve equation dropped) | DETECTED (via proved K2-ML; also compiled relative to K2-ML) | `x⁶ + y²/2` at `0`, `v = (1, 0)`, `w = (0, 1)`, `h(u) = u²`: reduced function `u⁶ + u⁴/2`, `g⁽⁴⁾(0) = 12`, so the plant claims `t^{−3/4}`. For `b(κ₁)b(κ₂)` the integral factorises, and K2-ML gives `≥ (t^{−1/6}/144)((t/2)^{−1/2}/48)`. At `t = Q¹²` this reads `Q⁻⁸/6912 ≤ C M Q⁻⁹`, false for `Q > 6912 \|C M\|` |
+| A2 | K2-F | hypothesis `ContDiff ℝ ∞ χ` dropped | DETECTED (via proved K2-F and K2-U) | `χ = χ₁ Σ_j 2^{−j} e^{−i 8^j Ψ₀}`, `Ψ₀ = cos k₁ + cos k₂`, support inside `χ₁`'s. At `t = 8^J`, `Ψ = Ψ₀`, `p = 0`, the coefficients are `≤ C₀ 4^{−J}` (K2-U, `α = 0`). The integral is `Σ_j 2^{−j} I(8^J − 8^j)` with `I(s) = ∫ χ₁ e^{isΨ₀}`: the term `j = J` is `2^{−J} ∫ χ₁`, and the rest is `≤ 8 K 4^{−J}` (K2-F∘K2-U for `\|s\| ≥ 1`, with gap `\|8^J − 8^j\| ≥ 8^{J−1}`). So `2^{−J} ∫ χ₁ ≤ (D C₀ + 8K) 4^{−J}`, false for large `J`. Also compiled: `chiA2_not_smooth` |
+| F-a | K2-F | support condition dropped (see above) | NOT DETECTED (unchanged; undecided) | no new compiled evidence; `char_F_a` above stands |
+
+Plant scripts. `plant-A1` is rejected by the copied scripts: `P_triL_model` and `P_triL_shear` pass a `ReducedCurve`
+where the conjunction is now expected. `plant-A2` is rejected too: `P_triF_chi1` passes `chi1_contDiff` where the
+support hypothesis is now expected. These rejections are script-only and are not counted as detections.
+
+Theorems in the witnesses.
+- `witness-A1`: `witness_A1_rel : MonomialLowerStatement → ¬ P_ReducedOrderBoundStatement` and
+  `witness_A1 : ¬ P_ReducedOrderBoundStatement` (from `OscInt.API.monomialLower`).
+  `a1_not_reducedCurve` (ε > 1/2) shows that the datum uses exactly the mutation: `h(u) = u²` is not a reduced curve
+  of `x⁶ + y²/2` (at `u = 1/2` the transverse derivative is `1/4`, not `0`). The genuine reduced curve `h = 0` has
+  `g = u⁶`, whose fourth derivative is `0` (`modelL6_order4`).
+- `witness-A2`: `a2_no_constant` says that no `D` works for `chiA2`. From it, `witness_A2 : ¬ P_TorusLocalizationStatement`,
+  and `chiA2_not_smooth : ¬ ContDiff ℝ ∞ chiA2`, by the proved K2-F. So the datum violates exactly the dropped
+  hypothesis.
+
+Why A2 is detected while F-a is not. Smoothness has bite because a non-smooth `χ` can carry infinitely many
+oscillations `e^{−i 8^j Ψ₀}`, each matched to its own test phase. The resonant term `2^{−J}` then beats the size of
+the lattice coefficients, `4^{−J}`. K2-F (proved) bounds the non-resonant terms. In F-a, `χ` stays smooth on `ℝ²`, so
+`χ·1_box` fails to be smooth only at the box boundary. A refutation would need continuous biperiodic phases whose
+lattice coefficients align with the coefficients of that jump, which decay like `1/|n − q|`, over a logarithmically
+long range of frequencies. The construction above does not transfer, and no such phase was constructed. Two heuristic checks (on paper, not compiled)
+are consistent with the plant: the zero phase, and `Ψ₀` with `p` at the boundary critical points, where the two half
+neighbourhoods cancel to leading order and leave `O(t^{−1})` against coefficients of size `t^{−2/3}`. The failure of
+the ℓ¹ route does not show that F-a is false. Its truth is not decided here, and there is no evidence-based lean
+either way.
+
+Compile log (wall time):
+
+```
+plant-A1: exit 1, 4.1 s
+witness-A1: exit 0, 5.7 s
+plant-A2: exit 1, 4.0 s
+witness-A2: exit 0, 5.7 s
+```
+
+File hashes (SHA-256):
+
+```
+7949f61b21b6f5274e941971ffcc87ec4bee23613e125077f3805a7ad46a3836  plant-A1.lean.txt
+b21ae0d3a4f1438cffa1e69ccd792ce2155a8d7749d6733c42662c44478dfff5  plant-A1.out
+f87f1f770f2ddb0ef192abd47e3448cb19efd62cd8e09e2cbab94c1fe08b561c  witness-A1.lean.txt
+6b8f0b38d27cb1ae639032818f32061455b8f389f3959a9e5f57dbe0144d68b5  witness-A1.out
+8a09a95ea5c6757dd09fdcb6d0c706a563f179d0ed7d6a8590710761fcc5302f  plant-A2.lean.txt
+869301646627ae33cc3494ded4188c080a5a83709308c6c4e05f7c6905f016a0  plant-A2.out
+1e127aaa6f2f2788c2f7034bd492ca5685c208e9464c2d2041c8ed1ad82ae49a  witness-A2.lean.txt
+4f0a916d76e614246d2b716b31040e02b5348f4714f79c80a04c6419a0354044  witness-A2.out
+```

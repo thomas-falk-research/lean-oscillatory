@@ -1,0 +1,3 @@
+exit code 0
+'OscInt.API.TriangularDecaySanity.witness_A2' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.TriangularDecaySanity.chiA2_not_smooth' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,17 @@
+exit code 1
+plant-A1.lean:25:74: error: Application type mismatch: The argument
+  h4
+has type
+  ReducedCurve (modelL m) 0 (1, 0) (0, 1) 1 fun x => 0
+but is expected to have type
+  (ContDiff ℝ ∞ fun x => 0) ∧ 0 = 0
+in the application
+  h (modelL m) 0 (1, 0) (0, 1) 1 (fun x => 0) m h1 hm h2 h3 one_pos h4
+plant-A1.lean:49:112: error: Application type mismatch: The argument
+  h3
+has type
+  ReducedCurve shear 0 (1, 0) (0, 1) 1 fun u => -u ^ 2
+but is expected to have type
+  (ContDiff ℝ ∞ fun u => -u ^ 2) ∧ -0 ^ 2 = 0
+in the application
+  h shear 0 (1, 0) (0, 1) 1 (fun u => -u ^ 2) 4 h1 ?m.112 span_e1_e2 h2 one_pos h3

@@ -1,0 +1,155 @@
+import OscInt.Front.TriangularDecaySanity
+import OscInt.Front.Core
+import OscInt.Front.TriangularDecayFinal
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `ReducedOrderBoundStatement`: `ReducedCurve Ψ k₀ v w ε h` replaced by
+`ContDiff ℝ ∞ h ∧ h 0 = 0` (the curve equation dropped). -/
+def P_ReducedOrderBoundStatement : Prop :=
+  ∀ (Ψ : ℝ × ℝ → ℝ) (k₀ v w : ℝ × ℝ) (ε : ℝ) (h : ℝ → ℝ) (m : ℕ), ContDiff ℝ ∞ Ψ → 2 ≤ m →
+    v.1 * w.2 - v.2 * w.1 ≠ 0 → iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] ≠ 0 → 0 < ε → (ContDiff ℝ ∞ h ∧ h 0 = 0) →
+      iteratedDeriv m (reducedFn Ψ k₀ v w h) 0 ≠ 0 →
+      ∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (y : ℝ × ℝ) (t : ℝ),
+        AmpBound 2 (Metric.closedBall k₀ δ) A M → 1 ≤ t →
+          ‖oscInt2 (fun κ => t * Ψ κ + lin y κ) A‖ ≤ C * M * t ^ (-(1 / 2 + 1 / (m : ℝ)))
+
+/-- Along `h(u) = u²` the function `x⁶ + y²/2` (tangent plane `0`) restricts to `u⁶ + u⁴/2`. -/
+theorem a1_reducedFn :
+    reducedFn (modelL 6) 0 (1, 0) (0, 1) (fun u => u ^ 2) = fun u => u ^ 6 + (1 / 2 : ℝ) * u ^ 4 := by
+  funext u
+  rw [reducedFn, modelL_fderiv_zero 6 (by norm_num)]
+  simp [modelL]; ring
+
+/-- Its fourth derivative at `0` is `12`. -/
+theorem a1_reduced_deriv :
+    iteratedDeriv 4 (reducedFn (modelL 6) 0 (1, 0) (0, 1) (fun u => u ^ 2)) 0 = 12 := by
+  rw [a1_reducedFn, iteratedDeriv_fun_add (by fun_prop) (by fun_prop), iteratedDeriv_fun_pow_zero,
+    iteratedDeriv_const_mul_field, iteratedDeriv_fun_pow_zero]
+  norm_num [Nat.factorial]
+
+/-- The planted hypothesis holds for `h(u) = u²`. -/
+theorem a1_curve_weak : ContDiff ℝ ∞ (fun u : ℝ => u ^ 2) ∧ (fun u : ℝ => u ^ 2) 0 = 0 :=
+  ⟨by fun_prop, by norm_num⟩
+
+/-- The datum uses exactly the mutation: `h(u) = u²` is not a reduced curve of `x⁶ + y²/2` at `0` (at `u = 1/2`
+the transverse derivative is `1/4`, not `0`). -/
+theorem a1_not_reducedCurve (ε : ℝ) (hε : 1 / 2 < ε) :
+    ¬ ReducedCurve (modelL 6) 0 (1, 0) (0, 1) ε (fun u => u ^ 2) := by
+  rintro ⟨-, -, h⟩
+  have := h (1 / 2) (by rw [abs_of_pos (by norm_num)]; exact hε)
+  rw [modelL_fderiv, modelL_fderiv] at this
+  norm_num at this
+
+/-- For `x⁶ + y²/2` the integral factorises: `∫ e^{it(κ₁⁶ + κ₂²/2)} b(κ₁) b(κ₂) =
+(∫ b e^{itx⁶}) (∫ b e^{i(t/2)y²})`. -/
+theorem oscInt2_modelL6_prodAmp (b : ℝ → ℝ) (t : ℝ) :
+    oscInt2 (fun κ => t * modelL 6 κ + lin 0 κ) (prodAmp b) =
+      (∫ x : ℝ, (b x : ℂ) * Complex.exp (((t * 1 * x ^ 6 : ℝ) : ℂ) * Complex.I)) *
+        ∫ y : ℝ, (b y : ℂ) * Complex.exp (((t / 2 * 1 * y ^ 2 : ℝ) : ℂ) * Complex.I) := by
+  rw [oscInt2, Measure.volume_eq_prod, ← integral_prod_mul (μ := volume) (ν := volume)
+    (fun x : ℝ => (b x : ℂ) * Complex.exp (((t * 1 * x ^ 6 : ℝ) : ℂ) * Complex.I))
+    (fun y : ℝ => (b y : ℂ) * Complex.exp (((t / 2 * 1 * y ^ 2 : ℝ) : ℂ) * Complex.I))]
+  congr 1
+  funext κ
+  have e : Complex.exp (((t * modelL 6 κ + lin 0 κ : ℝ) : ℂ) * Complex.I) =
+      Complex.exp (((t * 1 * κ.1 ^ 6 : ℝ) : ℂ) * Complex.I) *
+        Complex.exp (((t / 2 * 1 * κ.2 ^ 2 : ℝ) : ℂ) * Complex.I) := by
+    rw [← Complex.exp_add]; congr 1; simp only [modelL, lin, Prod.fst_zero, Prod.snd_zero]; push_cast; ring
+  rw [e, prodAmp]; push_cast; ring
+
+/-- `(Q^n)^z = Q^k` when `n z = k`. -/
+theorem a1_pow_rpow {Q : ℝ} (hQ : 0 < Q) (n k : ℕ) (z : ℝ) (hz : (n : ℝ) * z = k) : (Q ^ n) ^ z = Q ^ k := by
+  rw [← Real.rpow_natCast_mul hQ.le, hz, Real.rpow_natCast]
+
+/-- `(Q^n)^z = (Q^k)⁻¹` when `n z = −k`. -/
+theorem a1_pow_rpow_inv {Q : ℝ} (hQ : 0 < Q) (n k : ℕ) (z : ℝ) (hz : (n : ℝ) * z = -(k : ℝ)) :
+    (Q ^ n) ^ z = (Q ^ k)⁻¹ := by
+  rw [← Real.rpow_natCast_mul hQ.le, hz, Real.rpow_neg hQ.le, Real.rpow_natCast]
+
+/-- **Witness A1** (relative to K2-ML): with `ReducedCurve` replaced by `h` smooth and `h 0 = 0`, the datum
+`x⁶ + y²/2` at `0`, `v = (1, 0)`, `w = (0, 1)`, `h(u) = u²` (reduced function `u⁶ + u⁴/2`, fourth derivative
+`12`, `m = 4`) would give `t^{−3/4}` for the amplitude `b(κ₁) b(κ₂)`, `b = plat (δ/2) δ`. The integral factorises
+(`oscInt2_modelL6_prodAmp`), and K2-ML bounds the factors below by `t^{−1/6}/144` and `(t/2)^{−1/2}/48`; at
+`t = Q¹²` this is `Q⁻⁸/6912 ≤ C M Q⁻⁹`, false for `Q > 6912 |C M|`. -/
+theorem witness_A1_rel (hML : MonomialLowerStatement) : ¬ P_ReducedOrderBoundStatement := by
+  intro hP
+  obtain ⟨h1, h2, h3, -, -⟩ := modelL_hyps 6 (by norm_num)
+  obtain ⟨δ, hδ, C, hC⟩ := hP (modelL 6) 0 (1, 0) (0, 1) 1 (fun u => u ^ 2) 4 h1 (by norm_num) h2 h3 one_pos
+    a1_curve_weak (by rw [a1_reduced_deriv]; norm_num)
+  set c := δ / 2 with hc
+  have hc0 : 0 < c := by positivity
+  have hcδ : c < δ := by linarith
+  obtain ⟨M, hM⟩ := OscInt.API.ampBoundOfContDiff 2 (Metric.closedBall 0 δ) (prodAmp (plat c δ))
+    (isCompact_closedBall 0 δ) (contDiff_infty.mp (prodAmp_contDiff c δ) 2)
+    (prodAmp_tsupport hc0.le hcδ)
+  set Q := max (max 2 (96 / c)) (6912 * |C * M| + 1) with hQ
+  have hQ2 : 2 ≤ Q := le_max_of_le_left (le_max_left _ _)
+  have hQ0 : 0 < Q := by linarith
+  have hQc : 96 ≤ Q * c := by
+    have : 96 / c ≤ Q := le_max_of_le_left (le_max_right _ _)
+    rwa [div_le_iff₀ hc0] at this
+  have hQK : 6912 * |C * M| + 1 ≤ Q := le_max_right _ _
+  set T := Q ^ 12 with hT
+  have hQ1 : 1 ≤ Q := by linarith
+  have hT1 : 1 ≤ T := one_le_pow₀ hQ1
+  have hT0 : 0 < T := by linarith
+  -- the planted upper bound
+  have hup := hC (prodAmp (plat c δ)) M 0 T hM hT1
+  rw [oscInt2_modelL6_prodAmp, norm_mul,
+    a1_pow_rpow_inv hQ0 12 9 _ (by push_cast; norm_num)] at hup
+  -- K2-ML for the factor `x⁶` (`m = 6`, time `T`)
+  have hl1 := hML 6 1 (plat c δ) c T (by norm_num) (Or.inl rfl) (plat_plateau hc0 hcδ) hT0 (by
+    rw [rpow_one_sub_nat hc0 (by norm_num), a1_pow_rpow hQ0 12 10 _ (by push_cast; norm_num)]
+    have hc5 : 0 < c ^ (6 - 1) := by positivity
+    rw [← div_eq_mul_inv, div_le_iff₀ hc5, show 6 - 1 = 5 from rfl]
+    have hQc1 : 1 ≤ Q * c := by linarith
+    have e5 : 96 ≤ (Q * c) ^ 5 := hQc.trans (le_self_pow₀ hQc1 (by norm_num))
+    have q5 : 1 ≤ Q ^ 5 := one_le_pow₀ hQ1
+    calc (96 : ℝ) ≤ (Q * c) ^ 5 := e5
+      _ ≤ Q ^ 5 * (Q * c) ^ 5 := le_mul_of_one_le_left (by positivity) q5
+      _ = Q ^ 10 * c ^ 5 := by ring)
+  rw [a1_pow_rpow_inv hQ0 12 2 _ (by push_cast; norm_num)] at hl1
+  -- K2-ML for the factor `y²` (`m = 2`, time `T/2`)
+  have hT2 : Q ^ 2 ≤ T / 2 := by
+    have : (2 : ℝ) ≤ Q ^ 10 := hQ2.trans (le_self_pow₀ hQ1 (by norm_num))
+    rw [hT, le_div_iff₀ (by norm_num : (0 : ℝ) < 2), show Q ^ 12 = Q ^ 2 * Q ^ 10 by ring]
+    exact mul_le_mul_of_nonneg_left this (by positivity)
+  have hl2 := hML 2 1 (plat c δ) c (T / 2) le_rfl (Or.inl rfl) (plat_plateau hc0 hcδ) (by positivity) (by
+    rw [rpow_one_sub_nat hc0 (by norm_num), show 2 - 1 = 1 from rfl, pow_one]
+    have hmono : (Q ^ 2) ^ (1 - 1 / ((2 : ℕ) : ℝ)) ≤ (T / 2) ^ (1 - 1 / ((2 : ℕ) : ℝ)) :=
+      Real.rpow_le_rpow (by positivity) hT2 (by norm_num)
+    rw [a1_pow_rpow hQ0 2 1 _ (by push_cast; norm_num), pow_one] at hmono
+    rw [← div_eq_mul_inv, div_le_iff₀ hc0]
+    have : 96 / c ≤ Q := le_max_of_le_left (le_max_right _ _)
+    rw [div_le_iff₀ hc0] at this
+    nlinarith)
+  have hmono2 : T ^ (-(1 : ℝ) / ((2 : ℕ) : ℝ)) ≤ (T / 2) ^ (-(1 : ℝ) / ((2 : ℕ) : ℝ)) :=
+    Real.rpow_le_rpow_of_nonpos (by positivity) (by linarith) (by norm_num)
+  rw [a1_pow_rpow_inv hQ0 12 6 _ (by push_cast; norm_num)] at hmono2
+  set I1 := ‖∫ x : ℝ, (plat c δ x : ℂ) * Complex.exp (((T * 1 * x ^ 6 : ℝ) : ℂ) * Complex.I)‖
+  set I2 := ‖∫ y : ℝ, (plat c δ y : ℂ) * Complex.exp (((T / 2 * 1 * y ^ 2 : ℝ) : ℂ) * Complex.I)‖
+  have hl2' : (Q ^ 6)⁻¹ / (24 * ((2 : ℕ) : ℝ)) ≤ I2 :=
+    le_trans (div_le_div_of_nonneg_right hmono2 (by positivity)) hl2
+  have key : (Q ^ 2)⁻¹ / (24 * ((6 : ℕ) : ℝ)) * ((Q ^ 6)⁻¹ / (24 * ((2 : ℕ) : ℝ))) ≤ C * M * (Q ^ 9)⁻¹ :=
+    le_trans (mul_le_mul hl1 hl2' (by positivity) (norm_nonneg _)) hup
+  have key2 : Q ≤ 6912 * (C * M) := by
+    have := mul_le_mul_of_nonneg_left key (by positivity : (0 : ℝ) ≤ 6912 * Q ^ 9)
+    have e1 : 6912 * Q ^ 9 * ((Q ^ 2)⁻¹ / (24 * ((6 : ℕ) : ℝ)) * ((Q ^ 6)⁻¹ / (24 * ((2 : ℕ) : ℝ)))) = Q := by
+      field_simp; push_cast; ring
+    have e2 : 6912 * Q ^ 9 * (C * M * (Q ^ 9)⁻¹) = 6912 * (C * M) := by field_simp
+    linarith
+  linarith [le_abs_self (C * M)]
+
+/-- **Witness A1**, unconditional: K2-ML is proved (`OscInt.API.monomialLower`). -/
+theorem witness_A1 : ¬ P_ReducedOrderBoundStatement := witness_A1_rel OscInt.API.monomialLower
+
+#print axioms witness_A1_rel
+#print axioms witness_A1
+#print axioms a1_not_reducedCurve
+
+end OscInt.API.TriangularDecaySanity
