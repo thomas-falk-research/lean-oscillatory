@@ -91,6 +91,8 @@ opened: its report is not available to the repository.
 - Compiled witnesses for planted controls that the stamped ledgers had as NOT DETECTED or owed: K2's F-a
   (`docs/replay/plants/2026-11-28-K2-F-a-witness/`), LOC2's L-i and A5U's A-2
   (`docs/replay/plants/2026-11-28-owed-A-2-L-i/`); the stamped ledgers are not edited.
+- CI time limits (owner approval 2026-11-28): `ci.yml` job `consumer` 90 → 180 minutes, `verify.yml` job `replay`
+  75 → 120 minutes, each with its measured timings in a comment. No step, check or negative control changes.
 
 ### Added
 
