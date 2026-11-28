@@ -41,6 +41,7 @@ import OscInt.Statements.TorusLocalizationC2
 import OscInt.Front.StationaryLeadingSharpSanity
 import OscInt.Front.TriangularCrossoverSanity
 import OscInt.Front.TorusLocalizationC2Sanity
+import OscInt.Front.StationaryLeadingSharpAssembly
 import OscInt.Front.TriangularAnisoSanity
 import OscInt.Front.TriangularDecaySanity
 import OscInt.Front.StationaryLeadingSanity
