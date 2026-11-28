@@ -104,7 +104,7 @@ Every repository declaration named below was opened and its hypotheses read, at 
   in the single transverse parameter q. Its proof text is order-independent except for the exponent and the names of
   the order-4 parts.
 
-**Correction to the packet's plan (lead's, MINOR).** The packet proposes extending the explicit order-by-order
+**Correction to the packet's plan (lead's, MINOR; the route chosen in section 7 is referee J's repair J-1 instead, which keeps the repository's existing uniformity lemma).** The packet proposes extending the explicit order-by-order
 derivative formulas of `StationaryPhase/Implicit.lean` and `Cusp/Implicit4.lean` (`Y1`, `Y2`, `G2`, `G3`, `dddd`,
 `d3Graph`) for the high-order root regularity. To order 6 that is the most expensive way. Mathlib at the pin has the
 Cⁿ implicit function theorem with a parameter in any Banach space (`ContDiffAt.implicitFunction`,
@@ -168,10 +168,76 @@ it has `hasFDerivAt_integral_of_dominated_of_fderiv_le` (`Mathlib/Analysis/Calcu
 line 206) but no `ContDiff` corollary. A reusable lemma "f ∈ Cⁿ ⇒ x ↦ ∫₀¹ f(x, τ) dτ ∈ Cⁿ" is therefore new work,
 by induction on n. It is the one piece of analysis both lower-bound normal forms share.
 
-## 6. Referee J
+## 6. Referee J (route referee, fresh context)
 
-(To be completed when the referee reports.)
+Launched 00:08, finished 00:44 (harness 2146 s, 92 tool uses); brief SHA-256 9010de69…333e1a9; lead's model family;
+no Lean; repository sources at aa42df2. Its report came as a hand-back and is not reproduced. Its scripts are in the
+lead's scratch, not in the tree. Findings in the lead's words, with the lead's answer to each.
 
-## 7. Decision record
+**Verdict: no FATAL finding.** All five of the packet's contracts are true as written. Both routes are correct,
+given the frozen TRI statements and standard analysis. Every constant of L1–L5 was re-derived, and most were also
+checked numerically.
 
-(To be completed after section 6.)
+| ID | Severity | Finding | Lead's answer |
+|---|---|---|---|
+| J-1 | MAJOR | The uniform lower bound on the order-m reduced derivative, uniform in the transverse velocity, is the cost centre. The repository gets uniformity from `ImplicitAux.exists_coreHyps` (`OscInt/StationaryPhase/Implicit.lean`, line 507), generic in the order and fed by an explicit formula G (G2, G3; G4 in `Implicit4.lean`). Done that way, order 6 needs explicit Y4, Y5, G5, G6. The packet costs none of this, and `CoreHyps` carries the root only as C³. Repair: with `Y1 = −Q_xy/Q_yy` and `D f = f_x + Y1 f_y`, `dʲ/dxʲ Q(x, ys x) = (D^{j−1} Q_x)(x, ys x)` for j ≥ 1, by induction from `ys′ = Y1`. Take `G := D^{m−1}Q_x` in `exists_coreHyps`, generalise `SliceHyps.contDiffAt` from C³ to Cⁿ (Mathlib's theorem takes any n), and use a hypothesis bundle that carries `ys ∈ C^{m−1}`. The identity was checked at 60 digits (relative error 1.4e−60). | **Accepted; supersedes the lead's correction of section 5.1.** It is closer to the repository than the joint implicit function theorem of section 5.1: it keeps the existing per-phase root and the existing uniformity lemma, and replaces only the order-specific formula by one operator. It is the planned route for the order-m local lemma. |
+| J-2 | MINOR | `OscInt.Cusp.cuspBoundGen_of` is already K2-L at m = 4 for all y, and the packet does not name it. FE-S2.2l and FE-S3l are uniform only over a compact set of linear terms, and need an openness lemma for `FoldOrNondeg` that the repository does not have. | Accepted. The order-m assembly is a clone of `cuspBoundGen_of` with the exponent generalised; the far branch is `transverseNonStat`. |
+| J-3 | MINOR | Nothing frozen supplies a reduced curve at Morse, fold or A3 points; the bridge has no order-2 case. | Accepted; the same two lemmas as the lead's section 5.1 (existence of a reduced curve; the order-2 Schur identity) are planned parts. |
+| J-4 | MINOR | L3 asserts a 2D diffeomorphism and its inverse without showing them. | Answered by J's question 5, below. |
+| J-5 | MINOR | L4b ignores Mathlib's multivariate torus Fourier series (`AddCircleMulti.lean`: `mFourierCoeff_eq_integral`, Parseval `hasSum_prod_mFourierCoeff`, `hasSum_mFourier_series_apply_of_summable`). | Accepted; agrees with the lead's R2. |
+| J-6 | MINOR | The packet's "explicit coefficient" variant at A5 is not supported by the frozen text. TRI-W gives the raw-basis sixth derivative, but no frozen statement gives the raw-basis fifth derivative. | Accepted: the lower bound at ±a* uses only the existential witness of `IsA5Point`. K2-MA and K2-ML cover both signs, so the unknown sign is no obstacle. |
+| J-7 | MINOR | The product normal form, the largest new piece of the lower route, has no contract. | Answered: it becomes a blueprint interface (a part with its own proposition), not a frozen statement. The frozen set stays minimal, and the interface is checked numerically before agents are launched (`docs/lessons.md`, blueprint rules). |
+| J-8 | NIT | K2-F needs only bounds on `∂₁ᵃ∂₂ᵇχ` with a, b ≤ 2, and the series proof does not use periodicity of Ψ. | Noted. The draft keeps χ C^∞ (simplest to state; every planned χ is smooth) and keeps periodicity, which a Parseval proof uses. |
+| J-9 | NIT | U2's sentence on the factor 24 is garbled (correct: `G₀⁗(0) = Q/A`, Taylor coefficient `Q/(24A)`). 400B is valid but very loose (0.892 against 1.69e6 for a test bump). The L2 tail constant is a factor 2 above the indicator limit. | Noted; the constants are used existentially, except in K2-MA and K2-ML, where the stated ones are proved valid. |
+| J-10 | NIT | `CosMoment` has fixed exponents (ν = 2/3, where L1's step `1 − ν ≥ 1/2` fails) and no explicit margin. | Noted; L1's margin is re-derived for ν = 1/m, as the packet itself says. |
+| J-11 | NIT | In the lead's alternative, the factor is `1/J`, not "times the affine Jacobian". | Correct; the lead's wording was loose. |
+| J-12 | MINOR | Exponent fits of `sup_n \|K\|` for t ≤ 256 come out steeper than −3/4 (−0.79 to −0.85). An exact one-variable Bessel representation, checked against the FFT, shows the right behaviour up to t = 2048: `t^{3/4}` times the window maximum falls toward the local cusp constant from above. A slope test at short times would falsely refute K2-D. | Accepted before the numeric registration: the lattice criterion of `docs/prereg/2026-11-28-K2.md` is a bounded band, not a slope, and says that it cannot separate 2/3 from 3/4. |
+
+**J's question 5, the lead's alternative to L3: valid (PROVEN, VALIDATED by J).** Take
+`χ̃ = J⁻¹ b₁(z(u)) z′(u) b₂(w(u, s)) ∂ₛw(u, s)`. Fubini applies, then `intervalIntegral.integral_comp_mul_deriv` in s,
+which needs only a C¹ map, then the same in u. The range covers the supports once `ρ₂ < (3h/4)√(μ/2)`. χ̃ is smooth
+and vanishes near the chart's edges. It is the packet's own "simpler equivalent choice": only the proof of the
+identity changes. The alternative removes the 2D change of variables, the inverse map, the injectivity and image
+arguments, and any inverse function theorem. It does not remove the 1D implicit function theorem for `S(u)` at the
+generic witness. Numerically the identity holds to relative error 3e−12 to 6e−11 on triPhase charts at t = 7.3,
+61.7 and 240.
+
+**J's other simplification, accepted as an option.** At the A5 points the transverse root is explicit for every
+transverse velocity: `h = arcsin((sin θ + q/2)/cos u) − θ`, with the other branch at θ = 3π/4. So no implicit function
+theorem is needed there. It is kept as a fallback if the generic order-m lemma is delayed.
+
+## 7. Decision record (lead, 2026-11-28; the owner may overrule before the freeze)
+
+1. **Upper bound: reuse, route U-R.** The order-m local lemma (K2-L) is a clone of the A3 assembly
+   `cuspBoundGen_of`. Its parts:
+   - the existing amplitude engine (`amplitude_facts`, `oscInt2_eq_outer_linear`);
+   - S1.k (`vdCk`) of order m;
+   - the existing far branch (`transverseNonStat`);
+   - normalised data of order m from `exists_coreHyps` with J's graph operator (J-1);
+   - two small lemmas: the existence of a reduced curve, and the order-2 identity.
+
+   The global upper bound patches K2-L by compactness with T1 and a telescoping partition. α = 0 is T6E′.
+2. **Lower bound: the packet's elementary route L-R**, with three changes:
+   - the lead's triangular substitution in place of the 2D change of variables (validated by J);
+   - Parseval on the torus (Mathlib) in place of pointwise reconstruction or Fejér;
+   - the separable product cutoff for α = 0.
+
+   No complex Gamma formalisation is needed.
+3. **Statements: six, drafted** in `OscInt/Statements/TriangularDecay.lean`:
+   - K2-L, generic in m;
+   - K2-MA, "monomial asymptotics" with an explicit remainder for plateau cutoffs, the owner's listed item (R4);
+   - K2-ML, the monomial lower bound;
+   - K2-F, the localisation, stated without a supremum;
+   - K2-U and K2-D.
+
+   The kernel is unnormalised, as `latticeKernel`. The product normal form and the parametric smoothness of
+   integrals are blueprint parts, not statements.
+4. **Rejected or not adopted from the packet:**
+   - extending the explicit order-by-order derivative formulas to order 6 (superseded by J-1);
+   - the Fejér reconstruction (superseded by Parseval);
+   - the explicit raw-basis coefficient variant at A5 (J-6);
+   - the normalised kernel convention (the repository's convention is kept, and the conversion is a sanity theorem);
+   - the finite Taylor-disc certificates (they bear on no K2 claim);
+   - "explicit 400B" as a frozen constant (existential D suffices, and J shows 400B is loose).
+5. **Out of scope, unchanged:** RH/GRH; parameter-uniform crossover near α = 0 and ±a*; sharp constants; fixed
+   lattice sites; SPL-N and report D.
