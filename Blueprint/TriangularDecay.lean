@@ -18,7 +18,8 @@ proved as `theorem OscInt.K2.<lowerCamel name> : OscInt.Blueprint.K2.<Prop>` (fo
 
 Assemblies (the lead's):
 * K2-L from P1, P2, P3 and the proved far branch `OscInt.Cusp.transverseNonStat` (`TransverseNonStatFacts`);
-* K2-U from K2-L, P5, P6, P7, `ReducedBridge.bridge`, S5.1′ and TRI-K/X, and T6E′ at α = 0;
+* K2-U from K2-L, P5, P6, P7, `ReducedBridge.bridge` and TRI-K/X (the A3 branch through P5, the bridge and K2-L
+  with m = 4), and T6E′ at α = 0;
 * K2-MA from P10a and P10b; K2-ML from K2-MA;
 * K2-F from P13 and P14;
 * K2-D from P5, P6, `bridge`, TRI-Q/W, P11, P12, K2-F and K2-ML (P11 and P12 take P9 as a hypothesis).

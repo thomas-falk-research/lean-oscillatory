@@ -1,0 +1,33 @@
+import OscInt.Front.TriangularDecayFinal
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `TriDecayUpperStatement`: triRate ↦ 3/4 (exceptional branches dropped). -/
+def P_TriDecayUpperStatement : Prop :=
+  ∀ α : ℝ, ∃ C : ℝ, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-(3 / 4 : ℝ))
+
+/-- Witness (relative to K2-D): at `α = 0` K2-D gives `c t^{−2/3}` at some site, against `C t^{−3/4}`
+(`rate_separation`). -/
+theorem witness_U_a (hD : TriDecayLowerStatement) : ¬ P_TriDecayUpperStatement := by
+  intro h
+  obtain ⟨C, hC⟩ := h 0
+  obtain ⟨c, hc, T, hT⟩ := hD 0
+  rw [triRate_zero] at hT
+  obtain ⟨t, hTt, ht1, hlt⟩ := rate_separation (2 / 3) (3 / 4) c C T (by norm_num) hc
+  obtain ⟨n, hn⟩ := hT t hTt
+  have := hC t n ht1
+  linarith
+
+
+end OscInt.API.TriangularDecaySanity
+
+/-- Closed after the proofs: the planted copy is refuted by the proved true statement, with no hypothesis. -/
+theorem OscInt.API.TriangularDecaySanity.closed_now_U_a : ¬ OscInt.API.TriangularDecaySanity.P_TriDecayUpperStatement :=
+  OscInt.API.TriangularDecaySanity.witness_U_a OscInt.API.triDecayLower
+
+#print axioms OscInt.API.TriangularDecaySanity.closed_now_U_a

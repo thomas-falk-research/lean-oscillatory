@@ -219,9 +219,16 @@ predate the freeze (an external proof, `review/2026-11-27-K2-proof-answers.md`, 
 family, no FATAL finding). A registered numeric test passed before the freeze (`docs/prereg/LEDGER.md`, row K2); it
 was registered after a smoke test and cannot separate the exponents 2/3 and 3/4 at the times it reaches. The sanity
 layer has 101 theorems and 15 planted controls: 7 detected with compiled witnesses, 4 only relative to the true
-statements, 3 true weakenings, 1 not detected (`docs/replay/plants/2026-11-28-K2/`). No Lean proof of any K2
-statement exists. The blind pre-proof review (2026-11-28, two referees of the lead's model family) gave six verdicts
-FAITHFUL and no counterexample, with no BLOCKER and no MAJOR finding (`review/2026-11-28-K2-preproof-answers.md`).
+statements, 3 true weakenings, 1 not detected (`docs/replay/plants/2026-11-28-K2/`). The blind pre-proof review
+(2026-11-28, two referees of the lead's model family) gave six verdicts FAITHFUL and no counterexample, with no
+BLOCKER and no MAJOR finding (`review/2026-11-28-K2-preproof-answers.md`; answers stamped
+`stamps/20261128T023440Z-e368c37563ab`). After that stamp: route `docs/proof-K2.md` (route referee: no FATAL); 13
+blueprint parts proved by agents and verified by the lead; all six statements proved in Lean
+(`OscInt/Front/TriangularDecayFinal.lean`; axioms propext, Classical.choice, Quot.sound); `comparator-K2.json` accepted
+by six kernels against the stamped export (`docs/replay/2026-11-28-K2-integration-checks.txt`); the four relative
+plants closed without hypotheses (`docs/replay/2026-11-28-K2-plants-closed.txt`). Post-proof reviews: FAITHFUL x6,
+SOUND, claims supported after changes (`review/2026-11-28-K2-post-proof-answers.md`). The proofs of K2-U and K2-D use
+the sanity layer's `span_of_hyps` (stamped with the statements). The full replay is pending.
 
 T6, T6L prior art (2026-11-08, session 7): both are classical, because the 2D kernel factorises into two 1D Bessel
 kernels; the rows above are unchanged (the proofs are unaffected), but they claim "machine-checked", not new

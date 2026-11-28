@@ -12,8 +12,8 @@ below it, and every rule is binding.
 ## Resume here (session 16, 2026-11-28, branch `claude/friendly-ramanujan-4aivas`, draft pull request 26; read first)
 
 - **Batch K2** (owner's decision 2026-11-27; integration requested 2026-11-28): sharp fixed-coupling decay of the
-  anisotropic triangular lattice kernel, `t^{−2/3}` at α ∈ {0, ±1/(2√2)}, `t^{−3/4}` otherwise, two-sided, all real
-  times. Six statements in `OscInt/Statements/TriangularDecay.lean`:
+  anisotropic triangular lattice kernel, `t^{−2/3}` at α ∈ {0, ±1/(2√2)}, `t^{−3/4}` otherwise: upper bound at every
+  site for real `t ≥ 1`, lower bound at some site for real `t ≥ T_α` (sup over sites). Six statements in `OscInt/Statements/TriangularDecay.lean`:
   - K2-L, the local bound of order m;
   - K2-MA and K2-ML, the monomial asymptotics and the monomial lower bound;
   - K2-F, the Fourier localisation;
@@ -22,28 +22,28 @@ below it, and every rule is binding.
   Sanity layer `OscInt/Front/TriangularDecaySanity.lean` (101 theorems); plants `docs/replay/plants/2026-11-28-K2/`
   (15 plants); challenge `Challenge/TriangularDecay.lean`; `comparator-K2.json`. Registered test K2: OVERALL PASS
   (`docs/prereg/LEDGER.md`). **Frozen 2026-11-28:** stamp `stamps/20261128T013824Z-c5c04f495284` on c5c04f4 (three
-  RFC 3161 tokens, 01:38:31Z), pinned; registry 100 statements, 6 not proved.
+  RFC 3161 tokens, 01:38:31Z), pinned; registry 100 statements (all 100 with a proving theorem since 96f003e; the six of K2 not yet replayed).
 - **Evidence before the freeze:** the external packet and its route referee J, answered in
   `review/2026-11-28-K2-packet-answers.md` (sections 6 and 7 hold the findings and the decision record).
-- **Route chosen** (section 7 there):
-  - Upper bound: clone `OscInt.Cusp.cuspBoundGen_of` at order m, with referee J's graph operator in
-    `ImplicitAux.exists_coreHyps` (finding J-1).
-  - Lower bound: the packet's elementary route, with three changes:
-    - the triangular substitution in place of a 2D change of variables;
-    - Parseval on `UnitAddTorus (Fin 2)`;
-    - a separable cutoff at α = 0.
-  - A draft blueprint, eleven propositions with P4 reused from a proved theorem, exists only in the lead's scratch.
-    It has not been elaborated, and it is not to be committed before the answers to the blind review are stamped.
+- **Route as proved** (`docs/proof-K2.md`, sections 8 and 9):
+  - Upper bound: order-m clone of `OscInt.Cusp.cuspBoundGen_of` (`TriangularDecayLocal`), with the operator
+    `Gop` of `TriangularDecayNormalized` (route section 8, item 1, option (a)). The global patching uses the
+    repository's partition of unity (`TriangularDecayPatch`), and the case split is in `TriangularDecayUpper`.
+  - Lower bound: monomial bounds (`TriangularDecayMonomial`), the product normal forms (`TriangularDecayNormalForm`,
+    with the 1D triangular substitution and no separate plateau), the Fourier decay and the torus expansion
+    (`TriangularDecayFourier`, `TriangularDecayTorus`), and the witnesses in `TriangularDecayLower`.
+  - Blueprint `Blueprint/TriangularDecay.lean`: 13 propositions, plus P4, the reused proved
+    `OscInt.Cusp.transverseNonStat`.
 - **State at 04:0x on 2026-11-28 (all pushed).**
   - Blind pre-proof review answered and stamped: `stamps/20261128T023440Z-e368c37563ab`;
     `review/2026-11-28-K2-preproof-answers.md`.
   - Route `docs/proof-K2.md` (section 8 after the route referee, `review/2026-11-28-K2-route-referee-answers.md`).
-  - Blueprint `Blueprint/TriangularDecay.lean`, 14 parts, all proved by agents and verified by the lead.
+  - Blueprint `Blueprint/TriangularDecay.lean`: 13 parts, all proved by agents and verified by the lead.
   - **All six K2 statements proved in Lean** (`OscInt/Front/TriangularDecayFinal.lean`, axioms propext,
     Classical.choice, Quot.sound; `comparator-K2.json` accepted by six kernels against the stamped export).
 - **Exact next step.**
-  1. The post-proof reviews (fidelity, soundness, adversarial), then their answers and stamp.
-  2. The owed plants A1 and A2 of the blind-review answers.
+  1. Post-proof reviews done and answered (`review/2026-11-28-K2-post-proof-answers.md`); stamp the answers.
+  2. The owed plants A1 and A2 (agent PL, launched 04:18).
   3. The full isolated replay `make verify-all`; only then do the STATUS rows say "machine-checked as stated".
 - **CI on pull request 26.** Green from ac65d22 on (the pre-freeze `static` and `consumer` failures were the
   designed state of an unstamped statement file).

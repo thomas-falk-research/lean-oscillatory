@@ -1,0 +1,73 @@
+import OscInt.Front.TriangularDecayFinal
+import OscInt.Front.TriangularDecaySanity
+import OscInt.Front.Core
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `ReducedOrderBoundStatement`: the hypothesis D²Ψ(k₀)[w, w] ≠ 0 dropped. -/
+def P_ReducedOrderBoundStatement : Prop :=
+  ∀ (Ψ : ℝ × ℝ → ℝ) (k₀ v w : ℝ × ℝ) (ε : ℝ) (h : ℝ → ℝ) (m : ℕ), ContDiff ℝ ∞ Ψ → 2 ≤ m →
+    v.1 * w.2 - v.2 * w.1 ≠ 0 → 0 < ε → ReducedCurve Ψ k₀ v w ε h →
+      iteratedDeriv m (reducedFn Ψ k₀ v w h) 0 ≠ 0 →
+      ∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (y : ℝ × ℝ) (t : ℝ),
+        AmpBound 2 (Metric.closedBall k₀ δ) A M → 1 ≤ t →
+          ‖oscInt2 (fun κ => t * Ψ κ + lin y κ) A‖ ≤ C * M * t ^ (-(1 / 2 + 1 / (m : ℝ)))
+
+/-- Witness (relative to K2-ML): `x²` at `0` (`modelX_hyps`, `m = 2`) would give `t^{−1}` for the amplitude
+`b(κ₁) b(κ₂)`, `b = plat (δ/2) δ`; the integral factorises (`oscInt2_modelX_prodAmp`) and K2-ML bounds the first
+factor below by `t^{−1/2}/48` at `t = s²` once `s δ/2 ≥ 96`, while `∫ b ≥ δ`; impossible for large `s`. -/
+theorem witness_L_a (hML : MonomialLowerStatement) : ¬ P_ReducedOrderBoundStatement := by
+  intro hP
+  obtain ⟨h1, h2, -, h4, h5⟩ := modelX_hyps
+  obtain ⟨δ, hδ, C, hC⟩ := hP modelX 0 (1, 0) (0, 1) 1 (fun _ => 0) 2 h1 le_rfl h2 one_pos h4
+    (by rw [h5]; norm_num)
+  set c := δ / 2 with hc
+  have hc0 : 0 < c := by positivity
+  have hcδ : c < δ := by linarith
+  obtain ⟨M, hM⟩ := OscInt.API.ampBoundOfContDiff 2 (Metric.closedBall 0 δ) (prodAmp (plat c δ))
+    (isCompact_closedBall 0 δ) (contDiff_infty.mp (prodAmp_contDiff c δ) 2)
+    (prodAmp_tsupport hc0.le hcδ)
+  have hI : 2 * c ≤ ∫ x, plat c δ x := integral_plat_ge hc0.le hcδ
+  set s := max (max 1 (96 / c)) (24 * |C * M| / c + 1) with hs
+  have hs1 : 1 ≤ s := le_max_of_le_left (le_max_left _ _)
+  have hs0 : 0 < s := by linarith
+  have hsc : 96 ≤ s * c := by
+    have : 96 / c ≤ s := le_max_of_le_left (le_max_right _ _)
+    rwa [div_le_iff₀ hc0] at this
+  have hsK : 24 * |C * M| / c + 1 ≤ s := le_max_right _ _
+  have hlow := triML_plat hML 2 le_rfl 1 (Or.inl rfl) hc0 hcδ s hs0
+    (by rw [show 2 - 1 = 1 from rfl, pow_one]; exact hsc)
+  have hup := hC (prodAmp (plat c δ)) M 0 (s ^ 2) hM (by nlinarith)
+  rw [oscInt2_modelX_prodAmp] at hup
+  have e1 : (s ^ 2) ^ (-(1 / 2 + 1 / ((2 : ℕ) : ℝ))) = (s ^ 2)⁻¹ := by
+    rw [← Real.rpow_natCast_mul hs0.le]; norm_num
+  rw [e1, norm_mul] at hup
+  have e2 : ∫ y : ℝ, ((plat c δ y : ℝ) : ℂ) = ((∫ y, plat c δ y : ℝ) : ℂ) := integral_ofReal
+  rw [e2, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)] at hup
+  set I := ‖∫ x : ℝ, (plat c δ x : ℂ) * Complex.exp (((s ^ 2 * 1 * x ^ 2 : ℝ) : ℂ) * Complex.I)‖
+  have key : s⁻¹ / (24 * ((2 : ℕ) : ℝ)) * (2 * c) ≤ C * M * (s ^ 2)⁻¹ := by
+    calc s⁻¹ / (24 * ((2 : ℕ) : ℝ)) * (2 * c) ≤ I * (∫ x, plat c δ x) :=
+          mul_le_mul hlow hI (by positivity) (norm_nonneg _)
+      _ ≤ C * M * (s ^ 2)⁻¹ := hup
+  have key2 : s * c ≤ 24 * (C * M) := by
+    have : s⁻¹ / (24 * ((2 : ℕ) : ℝ)) * (2 * c) * (24 * s ^ 2) ≤ C * M * (s ^ 2)⁻¹ * (24 * s ^ 2) :=
+      mul_le_mul_of_nonneg_right key (by positivity)
+    field_simp at this
+    push_cast at this
+    nlinarith
+  have : (24 * |C * M| / c + 1) * c ≤ s * c := mul_le_mul_of_nonneg_right hsK hc0.le
+  rw [add_mul, div_mul_cancel₀ _ hc0.ne'] at this
+  linarith [le_abs_self (C * M)]
+
+
+end OscInt.API.TriangularDecaySanity
+
+/-- Closed after the proofs: the planted copy is refuted by the proved true statement, with no hypothesis. -/
+theorem OscInt.API.TriangularDecaySanity.closed_now_L_a : ¬ OscInt.API.TriangularDecaySanity.P_ReducedOrderBoundStatement :=
+  OscInt.API.TriangularDecaySanity.witness_L_a OscInt.API.monomialLower
+
+#print axioms OscInt.API.TriangularDecaySanity.closed_now_L_a

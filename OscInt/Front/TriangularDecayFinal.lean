@@ -23,8 +23,8 @@ import OscInt.Front.TriangularDecayLower
 /-!
 # Batch K2: the final theorems under the challenge names
 
-`docs/proof-K2.md`. Each theorem is an assembly of `OscInt/Front/TriangularDecayAssembly.lean` or
-`OscInt/Front/TriangularDecayLocal.lean` applied to the proved parts. The statement-type checks are in
+`docs/proof-K2.md`. Each theorem is an assembly (`OscInt/Front/TriangularDecayAssembly.lean`,
+`TriangularDecayLocal.lean`, `TriangularDecayUpper.lean`, `TriangularDecayLower.lean`) applied to the proved parts. The statement-type checks are in
 `StatementTypes.lean`; the comparator is `comparator-K2.json`.
 -/
 

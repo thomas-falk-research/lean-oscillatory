@@ -1,0 +1,25 @@
+# Batch K2: relative plants closed after the proofs (2026-11-28)
+
+Four plants of docs/replay/plants/2026-11-28-K2/ were detected only relative to a true statement before the proofs
+(L-a via K2-ML, U-a and U-b via K2-D, D-a via K2-U). Each closed file is the original witness file plus
+`closed_now_* : ¬ <plant>` applied to the proved theorem, with no hypothesis, compiled against the build of
+96f003e (`lake env lean -DautoImplicit=false`). Outputs:
+
+### closed-L-a
+'OscInt.API.TriangularDecaySanity.closed_now_L_a' depends on axioms: [propext, Classical.choice, Quot.sound]
+exit=0
+
+### closed-U-a
+'OscInt.API.TriangularDecaySanity.closed_now_U_a' depends on axioms: [propext, Classical.choice, Quot.sound]
+exit=0
+
+### closed-U-b
+/tmp/claude-0/-home-user-lean-oscillatory/13ccdd33-31f2-5b54-b822-54eeb9095f75/scratchpad/closed/closed-U-b.lean:21:13: warning: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+'OscInt.API.TriangularDecaySanity.closed_now_U_b' depends on axioms: [propext, Classical.choice, Quot.sound]
+exit=0
+
+### closed-D-a
+'OscInt.API.TriangularDecaySanity.closed_now_D_a' depends on axioms: [propext, Classical.choice, Quot.sound]
+exit=0
+

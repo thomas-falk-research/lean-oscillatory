@@ -2064,3 +2064,12 @@ K2-a. "Every real time" in the "Why" paragraph means every real `t ≥ 1` in K2-
    negative times are not stated (modelling choice 7). The sanity layer's docstring says that the plants are not in
    the repository; since the integration of 2026-11-28 they are, in `docs/replay/plants/2026-11-28-K2/` (the sanity
    file is stamped and is not edited).
+K2-b. (2026-11-28, after the proofs; `review/2026-11-28-K2-post-proof-answers.md`.)
+   - K2-L's reduced curve is on `|u| < ε` with `ε > 0` (the Lean hypothesis `0 < ε`; with ε ≤ 0 the curve condition
+     would be empty).
+   - "The closed ball of radius δ" is the ball of the max norm on ℝ × ℝ (a square), as in every local statement of the
+     repository. Since δ is existential, this is at least as strong as a Euclidean reading.
+   - Modelling choice 3 compares times only. T6L gives an explicit site `(n, n)` and an explicit limit constant at
+     integer times; K2-D gives neither.
+   - "The claim, if proved" in the "Why" paragraph: all six are now proved in Lean. The status is in `docs/STATUS.md`,
+     with the replay pending.

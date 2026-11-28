@@ -241,3 +241,22 @@ Sections 1 to 7 are left as written; this section supersedes them where they dif
    the repository name `OscInt.D4.CosMomentAux.integral_period_pos` (N2).
 
 Agents: P1; P2 with P5 and P6; P3; P7; P9; P10a with P10b; P11 with P12; P13; P14.
+
+## 9. As proved (2026-11-28; post-proof referees B and C)
+
+Where the proofs differ from sections 1 to 8, as their module docstrings say:
+- **P2.** Section 8, item 1, option (a). `Gop` is the operator, `Gop_addq` its q-independence, and the constants come
+  from continuity at 0 of functions of k alone.
+- **P7.** The repository's partition of unity `StationaryPhase.PartitionAux.exists_smooth_partition_compact` replaces
+  the telescoping product. The exponent conversion to `triRate α` is in `TriDecayUpperAux.local_bound` (with
+  `max C 0`).
+- **P10a.** A direct lower bound replaces the substitution and the half-period pairing. With `a = 2^{1/m}`,
+  `cos(x^m) ≥ 1 − x^{2m}/2` on `[0, a]` and a tail bound `a/m` give a real part of at least
+  `a(1 − 2/(2m + 1) − 1/m) ≥ 1/(24m)` per half-line, since `a ≥ 1`. Convergence is by the Cauchy criterion.
+- **P11.** No separate spatial plateau. The smooth substitutes for the roots are bounded below everywhere, so the
+  cutoff's support already lies where the normal form holds. The 1D substitution `subst_line` needs `|φ(x)| ≥ c|x|`,
+  not injectivity.
+- **P12.** The same monomial-coordinate lemma, applied to `a − sin a` with m = 3.
+- **P13.** Integration by parts on the whole plane (`integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable`).
+- **P14.** `hasSum_integral_of_summable_integral_norm` instead of `integral_tsum`.
+- **K2-U, the A3 branch.** P5, the bridge and K2-L with m = 4, not S5.1′ (section 2 allowed either).
