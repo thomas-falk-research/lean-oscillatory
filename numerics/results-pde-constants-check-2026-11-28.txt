@@ -1,0 +1,7 @@
+pde_constants_check: python 3.13.18, mpmath 1.3.0; script SHA-256 01a89f870cd9aa2917afacc6ec47a18982baf9402c427dfcc0654a03429132bc; run 2026-11-28T17:42:14Z
+P1 ||k||_2^2 formula, worst relative error over 16 (s, C): 5.3455e-51
+P3 lam=1 A=1: Lipschitz 1/2 (want <= 1/2), self-map ratio 81/160 (want < 1)
+P3 lam=-3/7 A=5/2: Lipschitz 1/2 (want <= 1/2), self-map ratio 81/160 (want < 1)
+P3 lam=10 A=13/10: Lipschitz 1/2 (want <= 1/2), self-map ratio 81/160 (want < 1)
+P3 pointwise quintic difference bound, violations in 200000 seeded samples: 0
+H2 tail bound, violations (truncated tails, 400 terms) over b = 1..24, R on a 1/4 grid below b+1: 0

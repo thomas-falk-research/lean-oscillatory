@@ -41,8 +41,9 @@ below it, and every rule is binding.
 - **Not done, with the reason:**
   - **Report D** (38/5): the report is not available to the repository. The owner must supply it; intake would come
     first.
-  - **HOP and PDE work packages** of the packet: not started. The three batches above took the session; the scoping
-    note, if written, is in the session log.
+  - **HOP and PDE work packages** of the packet: not started as batches (the three batches above took the session).
+    Scoping, the lead's checks of the packet's constants and the plan (HOP-1, PDE-1, PDE-2):
+    `docs/design/2026-11-28-HOP-PDE-scoping.md`.
   - **Owner items:** lessons.md entry 54 says "13 planted cases" (stale; rule files change only by owner decision);
     whether to install `tools/pre-push-hook.sh`; CHANGELOG "Unreleased" lists no TRI or K2 entries (older omission).
 - **Order, said plainly.** Each batch's statements were frozen, stamped and blind-reviewed before any proof. Proof
