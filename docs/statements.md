@@ -2180,3 +2180,9 @@ What the statement says and does not say (modelling choices and omissions, for t
    `(Σ_n (1 + |n|²)^{−2})^{1/2}` the route uses. Not optimal.
 3. **Relation to K2-F.** K2-FQ implies K2-F (a smooth χ is C²) with an explicit D; K2-F is not edited.
 4. **Not stated:** `H²` or zero-trace variants; higher dimensions; optimality.
+
+Clarification LOC2-a (2026-11-28, after the blind pre-proof reviews, `review/2026-11-28-SPLN-A5U-LOC2-preproof-answers.md`,
+finding A-1 and A-6). The sanity layer does not pin the explicit constant: the plants that change the factor 4 to
+1/8, drop the term `(3/2)‖χ‖`, replace the Laplacian or weaken C² to C¹ are NOT DETECTED
+(`docs/replay/plants/2026-11-28-LOC2/README.md`). The constant rests on the review of the text and on the proof. In
+item 2, `√13` bounds the square root of `Σ_n (1 + |n|²)^{−2}`, which is about 3.227 (square root about 1.80).
