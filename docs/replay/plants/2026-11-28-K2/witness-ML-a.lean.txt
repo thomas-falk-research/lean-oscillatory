@@ -1,0 +1,26 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `MonomialLowerStatement`: the threshold constant 96 ↦ 0. -/
+def P_MonomialLowerStatement : Prop :=
+  ∀ (m : ℕ) (σ : ℝ) (b : ℝ → ℝ) (r t : ℝ), 2 ≤ m → (σ = 1 ∨ σ = -1) → PlateauCutoff b r → 0 < t →
+    0 * r ^ (1 - (m : ℝ)) ≤ t ^ (1 - 1 / (m : ℝ)) →
+      t ^ (-(1 : ℝ) / (m : ℝ)) / (24 * (m : ℝ)) ≤
+        ‖∫ x : ℝ, (b x : ℂ) * Complex.exp (↑(t * σ * x ^ m) * Complex.I)‖
+
+/-- Witness: with threshold `0` the claim applies at `m = 2`, `t = (1/200)²`, `b = plat 1 2`, where
+`t^{−1/2}/48 = 200/48 > 4 ≥ ‖∫ b e^{itx²}‖` (`ml_threshold_bite`). -/
+theorem witness_ML_a : ¬ P_MonomialLowerStatement := by
+  intro h
+  apply ml_threshold_bite
+  exact h 2 1 (plat 1 2) 1 ((1 / 200 : ℝ) ^ 2) le_rfl (Or.inl rfl) (plat_plateau one_pos (by norm_num))
+    (by positivity) (by rw [zero_mul]; exact Real.rpow_nonneg (by positivity) _)
+
+#print axioms witness_ML_a
+
+end OscInt.API.TriangularDecaySanity

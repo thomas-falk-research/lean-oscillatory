@@ -1,0 +1,9 @@
+exit code 1
+plant-MA-a.lean:25:12: error: Application type mismatch: The argument
+  hC
+has type
+  12 / ↑m ≤ C.re
+but is expected to have type
+  1 / (12 * ↑m) ≤ C.re
+in the application
+  And.intro hC

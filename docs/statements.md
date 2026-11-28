@@ -1970,3 +1970,90 @@ TRI-c. (2026-11-27, after the proofs; `review/2026-11-27-TRI-post-proof-answers.
      that `triPhase 0` has no A5 point.
    - **The bite.** `¬ IsA5Point (triPhase (1/4)) (π/2, π/2)` is proved as a corollary of TRI-X, without uniqueness of
      the reduced curve (TRI-b, addendum).
+
+## Batch K2: sharp fixed-coupling decay on the anisotropic triangular lattice (session 16, 2026-11-28)
+
+Order. As batch TRI: the statements in `OscInt/Statements/TriangularDecay.lean`, sanity theorems with planted
+controls, a challenge file (`Challenge/TriangularDecay.lean`) and a comparator (`comparator-K2.json`), frozen and
+stamped before the blind pre-proof reviews. What differs from "statement first", said plainly:
+- Proofs on paper predate the freeze. One is an external proof reviewed on 2026-11-27
+  (`review/2026-11-27-K2-proof-answers.md`, with its erratum in section 5). The other is an external research packet
+  with upper and lower routes, reviewed by the lead and by a fresh-context route referee on 2026-11-28
+  (`review/2026-11-28-K2-packet-answers.md`). The statements were drafted by the lead after both reviews; the
+  referee did not see them.
+- A registered numeric test (`docs/prereg/2026-11-28-K2.md`) runs before the freeze.
+
+No Lean proof of these statements is in the repository history before the stamp of the answers to the blind reviews.
+The batch was opened by the owner's decision of 2026-11-27 (K2 as its own batch after TRI) and its integration
+requested in session 16 (`docs/progress/2026-11-28-session16-log.md`).
+
+Why. TRI classifies the singularity types of `Ψ_α(k) = cos k₁ + cos k₂ + α cos(k₁ + k₂)`. K2 turns that
+classification into the decay theorem a dispersive estimate needs. The lattice Schrödinger kernel decays like
+`t^{−2/3}` exactly at α ∈ {0, ±1/(2√2)}, and like `t^{−3/4}` at every other α, two-sided, for every real time. The
+upper bound holds at every site; the lower bound holds at some site at each time. Three reusable statements come with
+it:
+- a local bound of any order m, uniform in the linear term;
+- monomial asymptotics with an explicit remainder;
+- Fourier localisation from a smooth bump to lattice sites.
+
+The prior-art gate of 2026-11-27 (`review/2026-11-26-A5-handoff-answers.md`, section 5) found the two-sided bounds
+away from α ∈ {0, 1}, and the exceptional set, nowhere in the literature searched. α = 0 is classical; α = 1 has an
+upper bound in Ge–Hua–Jia–Zhou (2025). The claim, if proved, is "machine-checked; not found in the literature
+searched", never "new".
+
+Notation (in addition to batch TRI's).
+- `triKernel α t n = ∫_{[−π, π]²} e^{i(t Ψ_α(k) + n·k)} dk` for `n ∈ ℤ²`. It is unnormalised, as `latticeKernel` of
+  batch GD, so `triKernel 0 = latticeKernel`; the normalised kernel is `(2π)^{−2} triKernel`.
+- `triRate α = 2/3` if `α = 0` or `|α| = a*`, and `3/4` otherwise.
+- A *plateau cutoff* `(b, r)` (Lean `PlateauCutoff`): b is C¹, compactly supported and even; `b = 1` on `[−r, r]`;
+  b is nonincreasing on `[0, ∞)`; and `r > 0`. Then `0 ≤ b ≤ 1` follows, and `∫_r^∞ |b′| = 1`.
+- `oscInt2`, `lin`, `AmpBound`, `ReducedCurve`, `reducedFn` as in batches S2, A3 and TRI.
+
+**K2-L (local bound of order m).** Let Ψ be smooth and `k₀, v, w ∈ ℝ²` with `v₁w₂ − v₂w₁ ≠ 0` and
+`D²Ψ(k₀)[w, w] ≠ 0`. Let h be a reduced curve on `|u| < ε`, and let `m ≥ 2` with `g⁽ᵐ⁾(0) ≠ 0` for the reduced function
+g. Then there are `δ > 0` and C such that, for every `C²` amplitude A with support in the closed ball of radius δ
+about k₀ and derivatives of order ≤ 2 bounded by M, every `y ∈ ℝ²` and every `t ≥ 1`,
+`|∫ e^{i(tΨ(κ) + y·κ)} A(κ) dκ| ≤ C M t^{−(1/2 + 1/m)}`.
+
+**K2-MA (monomial asymptotics).** For `m ≥ 2` and `σ = ±1` there is `C ∈ ℂ` with:
+- `Re C ≥ 1/(12m)`;
+- `∫_{−R}^{R} e^{iσx^m} dx → C` as `R → ∞`;
+- for every plateau cutoff `(b, r)` and every `t > 0`, `|∫ b(x) e^{itσx^m} dx − t^{−1/m} C| ≤ 4/(m t r^{m−1})`.
+
+**K2-ML (monomial lower bound).** For m, σ, `(b, r)` as above and `t > 0` with `t^{1−1/m} ≥ 96 r^{1−m}`:
+`|∫ b(x) e^{itσx^m} dx| ≥ t^{−1/m}/(24m)`.
+
+**K2-F (Fourier localisation).** For a smooth `χ : ℝ² → ℂ` with support inside the open box `(−π, π)²` there is D
+such that, for every continuous Ψ that is 2π-periodic in each variable, every real t, every `p ∈ ℝ²` and every B:
+if `|∫_{[−π, π]²} e^{i(tΨ(k) + n·k)} dk| ≤ B` for every `n ∈ ℤ²`, then
+`|∫_{[−π, π]²} χ(k) e^{it(Ψ(k) + p·k)} dk| ≤ D B`.
+
+**K2-U (upper bound).** For every real α there is C with `|triKernel α t n| ≤ C t^{−triRate α}` for every real
+`t ≥ 1` and every `n ∈ ℤ²`.
+
+**K2-D (lower bound).** For every real α there are `c > 0` and T such that, for every real `t ≥ T`, some `n ∈ ℤ²` has
+`|triKernel α t n| ≥ c t^{−triRate α}`.
+
+What the statements say and do not say (modelling choices and omissions, for the reviewer).
+1. **Constants.** They are existential in K2-L, K2-F, K2-U and K2-D, where they depend on the phase, the point,
+   the cutoff or α. They are explicit in K2-MA and K2-ML. Nothing is uniform in α: the constants of K2-U and K2-D may
+   degenerate as α approaches 0 or ±a*, and no crossover is stated. No best constant is stated. The explicit
+   constants of K2-MA and K2-ML are far from sharp: the true `Re C = 2Γ(1 + 1/m) cos(π/(2m))` is 30 times the bound
+   `1/(12m)` at m = 2 and 129 times at m = 6.
+2. **The lower bound's site.** K2-D gives some site at each time; it does not say which. In particular it says
+   nothing about the site nearest a critical velocity, nor about a fixed ray.
+3. **Real times.** Every time in K2-U and K2-D is real. At α = 0 this is more than T6L (integer times on the
+   diagonal) gives.
+4. **K2-L's hypotheses.** Only the m-th reduced derivative is assumed nonzero; lower orders are unrestricted, so
+   the bound may be weaker than the true one. Nothing is assumed about `D²Ψ(k₀)[v, ·]`. The curve is data, as in
+   `IsA5Point`. The spanning condition `v₁w₂ − v₂w₁ ≠ 0` restricts nothing: it follows from the other hypotheses
+   (sanity theorem `span_of_hyps`, finding K-1 of the sanity agent). It is kept in the frozen text for readability.
+5. **K2-MA's constant.** C is the improper integral as a symmetric limit; `∫_ℝ e^{iσx^m} dx` is not a Lebesgue
+   integral. Its closed form `(2/m)Γ(1/m) e^{iσπ/(2m)}` (m even) or `(2/m)Γ(1/m) cos(π/(2m))` (m odd) is not stated.
+6. **K2-F's form.** It is stated without a supremum: a bound B on every lattice coefficient gives `D B`. The
+   localised integral may have any real velocity p; the cutoff's support must stay away from the box's boundary.
+7. **Not stated:**
+   - the convolution or ℓ¹ → ℓ^∞ operator form of K2-U and K2-D;
+   - negative times;
+   - uniformity over compact sets of α;
+   - the product normal form and the parametric Taylor remainder (parts of the proof, not statements).

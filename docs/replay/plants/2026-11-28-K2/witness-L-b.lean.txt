@@ -1,0 +1,26 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `ReducedOrderBoundStatement`: the spanning hypothesis dropped. -/
+def P_ReducedOrderBoundStatement : Prop :=
+  ∀ (Ψ : ℝ × ℝ → ℝ) (k₀ v w : ℝ × ℝ) (ε : ℝ) (h : ℝ → ℝ) (m : ℕ), ContDiff ℝ ∞ Ψ → 2 ≤ m →
+    iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] ≠ 0 → 0 < ε → ReducedCurve Ψ k₀ v w ε h →
+      iteratedDeriv m (reducedFn Ψ k₀ v w h) 0 ≠ 0 →
+      ∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (y : ℝ × ℝ) (t : ℝ),
+        AmpBound 2 (Metric.closedBall k₀ δ) A M → 1 ≤ t →
+          ‖oscInt2 (fun κ => t * Ψ κ + lin y κ) A‖ ≤ C * M * t ^ (-(1 / 2 + 1 / (m : ℝ)))
+
+/-- Witness: the draft implies the planted copy, since the spanning condition follows from the other hypotheses
+(`span_of_hyps`); the two are equivalent. -/
+theorem witness_L_b (h : ReducedOrderBoundStatement) : P_ReducedOrderBoundStatement := by
+  intro Ψ k₀ v w ε c m hΨ hm hw hε hc hd
+  exact h Ψ k₀ v w ε c m hΨ hm (span_of_hyps Ψ k₀ v w ε c m hΨ (by omega) hw hε hc hd) hw hε hc hd
+
+#print axioms witness_L_b
+
+end OscInt.API.TriangularDecaySanity

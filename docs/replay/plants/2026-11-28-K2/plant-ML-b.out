@@ -1,0 +1,25 @@
+exit code 1
+plant-ML-b.lean:22:2: error: Tactic `apply` failed: could not unify the conclusion of `h1`
+  s⁻¹ / (↑m / 40) ≤ ‖∫ (x : ℝ), ↑(plat r R x) * Complex.exp (↑(s ^ m * σ * x ^ m) * Complex.I)‖
+with the goal
+  s⁻¹ / (24 * ↑m) ≤ ‖∫ (x : ℝ), ↑(plat r R x) * Complex.exp (↑(s ^ m * σ * x ^ m) * Complex.I)‖
+
+Note: The full type of `h1` is
+  96 * r ^ (1 - ↑m) ≤ (s ^ m) ^ (1 - 1 / ↑m) →
+    s⁻¹ / (↑m / 40) ≤ ‖∫ (x : ℝ), ↑(plat r R x) * Complex.exp (↑(s ^ m * σ * x ^ m) * Complex.I)‖
+
+h : P_MonomialLowerStatement
+m : ℕ
+hm : 2 ≤ m
+σ : ℝ
+hσ : σ = 1 ∨ σ = -1
+r R : ℝ
+hr : 0 < r
+hrR : r < R
+s : ℝ
+hs : 0 < s
+hth : 96 ≤ (s * r) ^ (m - 1)
+h1 :
+  96 * r ^ (1 - ↑m) ≤ (s ^ m) ^ (1 - 1 / ↑m) →
+    s⁻¹ / (↑m / 40) ≤ ‖∫ (x : ℝ), ↑(plat r R x) * Complex.exp (↑(s ^ m * σ * x ^ m) * Complex.I)‖
+⊢ s⁻¹ / (24 * ↑m) ≤ ‖∫ (x : ℝ), ↑(plat r R x) * Complex.exp (↑(s ^ m * σ * x ^ m) * Complex.I)‖

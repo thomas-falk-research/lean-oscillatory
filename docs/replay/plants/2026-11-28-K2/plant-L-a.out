@@ -1,0 +1,17 @@
+exit code 1
+plant-L-a.lean:24:63: error: Application type mismatch: The argument
+  h3
+has type
+  (iteratedFDeriv ℝ 2 (modelL m) 0) ![(0, 1), (0, 1)] ≠ 0
+but is expected to have type
+  0 < 1
+in the application
+  h (modelL m) 0 (1, 0) (0, 1) 1 (fun x => 0) m h1 hm h2 h3
+plant-L-a.lean:48:101: error: Application type mismatch: The argument
+  h2
+has type
+  (iteratedFDeriv ℝ 2 shear 0) ![(0, 1), (0, 1)] ≠ 0
+but is expected to have type
+  0 < 1
+in the application
+  h shear 0 (1, 0) (0, 1) 1 (fun u => -u ^ 2) 4 h1 ?m.112 span_e1_e2 h2

@@ -1,0 +1,33 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `MonomialLowerStatement`: the constant 1/(24m) ↦ 40/m. -/
+def P_MonomialLowerStatement : Prop :=
+  ∀ (m : ℕ) (σ : ℝ) (b : ℝ → ℝ) (r t : ℝ), 2 ≤ m → (σ = 1 ∨ σ = -1) → PlateauCutoff b r → 0 < t →
+    96 * r ^ (1 - (m : ℝ)) ≤ t ^ (1 - 1 / (m : ℝ)) →
+      t ^ (-(1 : ℝ) / (m : ℝ)) / ((m : ℝ) / 40) ≤
+        ‖∫ x : ℝ, (b x : ℂ) * Complex.exp (↑(t * σ * x ^ m) * Complex.I)‖
+
+/-- Witness: at `m = 6`, `t = (5/2)⁶` (`t^{5/6} = (5/2)⁵ ≥ 96`), `b = plat 1 (5/4)`, `r = 1`, the planted bound is
+`(2/5)·(40/6) = 8/3`, but `‖∫ b e^{itx⁶}‖ ≤ 5/2` (`norm_integral_plat_le`). -/
+theorem witness_ML_b : ¬ P_MonomialLowerStatement := by
+  intro h
+  have h1 := h 6 1 (plat 1 (5 / 4)) 1 ((5 / 2 : ℝ) ^ 6) (by norm_num) (Or.inl rfl)
+    (plat_plateau one_pos (by norm_num)) (by positivity)
+    (by rw [Real.one_rpow, pow_rpow_one_sub (by norm_num) (by norm_num)]; norm_num)
+  rw [pow_rpow_neg_inv (by norm_num) (by norm_num)] at h1
+  have h2 := norm_integral_plat_le (r := 1) (R := 5 / 4) (by norm_num) (by norm_num)
+    (fun x => (5 / 2 : ℝ) ^ 6 * 1 * x ^ 6)
+  beta_reduce at h2
+  have e : (5 / 2 : ℝ)⁻¹ / (((6 : ℕ) : ℝ) / 40) = 8 / 3 := by norm_num
+  rw [e] at h1
+  linarith
+
+#print axioms witness_ML_b
+
+end OscInt.API.TriangularDecaySanity

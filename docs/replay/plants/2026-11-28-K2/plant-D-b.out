@@ -1,0 +1,60 @@
+exit code 1
+plant-D-b.lean:17:22: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  triRate 0
+in the target expression
+  ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(3 / 4)) ≤ ‖latticeKernel t n‖
+
+h : P_TriDecayLowerStatement
+h1 : ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(3 / 4)) ≤ ‖latticeKernel t n‖
+⊢ ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(2 / 3)) ≤ ‖latticeKernel t n‖
+plant-D-b.lean:27:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  triRate triExceptional
+in the target expression
+  ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(3 / 4)) ≤ ‖triKernel triExceptional t n‖
+
+h : P_TriDecayLowerStatement
+h1 : ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(3 / 4)) ≤ ‖triKernel triExceptional t n‖
+h2 : ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(3 / 4)) ≤ ‖triKernel (-triExceptional) t n‖
+⊢ (∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(2 / 3)) ≤ ‖triKernel triExceptional t n‖) ∧
+    ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(2 / 3)) ≤ ‖triKernel (-triExceptional) t n‖
+plant-D-b.lean:36:9: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  triRate (1 / 4)
+in the target expression
+  ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(3 / 4)) ≤ ‖triKernel (1 / 4) t n‖
+
+case inl
+h : P_TriDecayLowerStatement
+h1 : ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(3 / 4)) ≤ ‖triKernel (1 / 4) t n‖
+⊢ ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(3 / 4)) ≤ ‖triKernel (1 / 4) t n‖
+plant-D-b.lean:37:9: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  triRate 1
+in the target expression
+  ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(3 / 4)) ≤ ‖triKernel 1 t n‖
+
+case inr.inl
+h : P_TriDecayLowerStatement
+h1 : ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(3 / 4)) ≤ ‖triKernel 1 t n‖
+⊢ ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(3 / 4)) ≤ ‖triKernel 1 t n‖
+plant-D-b.lean:38:9: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  triRate (-2)
+in the target expression
+  ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(3 / 4)) ≤ ‖triKernel (-2) t n‖
+
+case inr.inr
+h : P_TriDecayLowerStatement
+h1 : ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(3 / 4)) ≤ ‖triKernel (-2) t n‖
+⊢ ∃ c > 0, ∃ T, ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-(3 / 4)) ≤ ‖triKernel (-2) t n‖
+plant-D-b.lean:46:2: error: Type mismatch
+  LE.le.trans hn (norm_triKernel_le α t n)
+has type
+  c * t ^ (-(3 / 4)) ≤ (2 * Real.pi) ^ 2
+but is expected to have type
+  c * t ^ (-triRate α) ≤ (2 * Real.pi) ^ 2
+plant-D-b.lean:59:31: error: Application type mismatch: The argument
+  this
+has type
+  c * t ^ (-(3 / 4)) ≤ C * t ^ (-triRate α)
+but is expected to have type
+  c * t ^ (-triRate α) ≤ C * t ^ (-triRate α)
+in the application
+  le_of_mul_le_mul_right this

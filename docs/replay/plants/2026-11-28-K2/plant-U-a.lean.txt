@@ -1,0 +1,71 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `TriDecayUpperStatement`: triRate ↦ 3/4 (exceptional branches dropped). -/
+def P_TriDecayUpperStatement : Prop :=
+  ∀ α : ℝ, ∃ C : ℝ, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-(3 / 4 : ℝ))
+
+/-- **K2-U** at `α = 0` is the lattice Laplacian bound of batch GD (`triKernel 0 = latticeKernel`, rate `2/3`). -/
+theorem P_triU_zero (h : P_TriDecayUpperStatement) : LatticeLaplacianDecayStatement := by
+  obtain ⟨C, hC⟩ := h 0
+  refine ⟨C, fun t x ht => ?_⟩
+  have := hC t x ht
+  rw [triKernel_zero, triRate_zero] at this
+  rw [show -(2 : ℝ) / 3 = -(2 / 3) by ring]
+  exact this
+
+/-- **K2-U** at `±a*`: rate `2/3`. -/
+theorem P_triU_exceptional (h : P_TriDecayUpperStatement) :
+    (∃ C : ℝ, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel triExceptional t n‖ ≤ C * t ^ (-(2 / 3 : ℝ))) ∧
+      ∃ C : ℝ, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel (-triExceptional) t n‖ ≤ C * t ^ (-(2 / 3 : ℝ)) := by
+  have h1 := h triExceptional
+  have h2 := h (-triExceptional)
+  rw [triRate_exceptional] at h1
+  rw [triRate_neg_exceptional] at h2
+  exact ⟨h1, h2⟩
+
+/-- **K2-U** at `α = 1/4`, `1`, `−2`: rate `3/4`. -/
+theorem P_triU_generic (h : P_TriDecayUpperStatement) (α : ℝ) (hα : α = 1 / 4 ∨ α = 1 ∨ α = -2) :
+    ∃ C : ℝ, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-(3 / 4 : ℝ)) := by
+  have h1 := h α
+  rcases hα with rfl | rfl | rfl
+  · rwa [triRate_quarter] at h1
+  · rwa [triRate_one] at h1
+  · rwa [triRate_neg_two] at h1
+
+/-- **K2-U** off the exceptional set (generic `α`): rate `3/4`. -/
+theorem P_triU_off (h : P_TriDecayUpperStatement) (α : ℝ) (h0 : α ≠ 0) (h1 : |α| ≠ triExceptional) :
+    ∃ C : ℝ, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-(3 / 4 : ℝ)) := by
+  have h2 := h α
+  rwa [triRate_generic α h0 h1] at h2
+
+/-- **Consistency K2-U with K2-D** at every `α`: the constants satisfy `c ≤ C`. -/
+theorem P_triU_triD_consistent (hU : P_TriDecayUpperStatement) (hD : TriDecayLowerStatement) (α : ℝ) :
+    ∃ c > 0, ∃ C : ℝ, c ≤ C := by
+  obtain ⟨C, hC⟩ := hU α
+  obtain ⟨c, hc, T, hT⟩ := hD α
+  refine ⟨c, hc, C, ?_⟩
+  set t := max T 1
+  obtain ⟨n, hn⟩ := hT t (le_max_left _ _)
+  have h1 := hC t n (le_max_right _ _)
+  have hp : 0 < t ^ (-triRate α) := Real.rpow_pos_of_pos (by positivity) _
+  have := hn.trans h1
+  exact le_of_mul_le_mul_right this hp
+
+/-- **Consistency K2-F with K2-U**: the lattice coefficients of `triPhase α` are `triKernel α t n`, so the
+`χ₁`-localised integral at every real velocity decays at the rate `triRate α`. -/
+theorem P_triF_triU_consistent (hF : TorusLocalizationStatement) (hU : P_TriDecayUpperStatement) (α : ℝ) :
+    ∃ D C : ℝ, ∀ (t : ℝ) (p : ℝ × ℝ), 1 ≤ t →
+      ‖∫ k in torusBox, chi1 k * Complex.exp (↑(t * (triPhase α k + lin p k)) * Complex.I)‖ ≤
+        D * (C * t ^ (-triRate α)) := by
+  obtain ⟨D, hD⟩ := triF_chi1 hF
+  obtain ⟨C, hC⟩ := hU α
+  obtain ⟨h1, h2, h3⟩ := triPhase_periodic α
+  exact ⟨D, C, fun t p ht => hD _ t p _ h1 h2 h3 fun n => hC t n ht⟩
+
+end OscInt.API.TriangularDecaySanity

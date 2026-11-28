@@ -1,0 +1,36 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `TorusLocalizationStatement`: the zero mode n = 0 dropped from the hypothesis. -/
+def P_TorusLocalizationStatement : Prop :=
+  ∀ χ : ℝ × ℝ → ℂ, ContDiff ℝ ∞ χ →
+    tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi →
+    ∃ D : ℝ, ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, n ≠ 0 → ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ D * B
+
+/-- Witness: the zero phase has all nonzero lattice coefficients `0` (`lattice_coeff_zero_phase`), so `B = 0` and
+the planted copy forces `∫ χ₁ = 0`; but `∫ χ₁ > 0` (`integral_chi1_ne_zero`). -/
+theorem witness_F_b : ¬ P_TorusLocalizationStatement := by
+  intro h
+  obtain ⟨D, hD⟩ := h chi1 chi1_contDiff chi1_tsupport
+  have h1 := hD (fun _ => 0) 1 0 0 continuous_const (fun _ => rfl) (fun _ => rfl)
+    (fun n hn => by rw [lattice_coeff_zero_phase 1 n hn, norm_zero])
+  rw [mul_zero] at h1
+  apply integral_chi1_ne_zero
+  have e : ∀ k : ℝ × ℝ,
+      chi1 k * Complex.exp (↑(1 * ((fun _ : ℝ × ℝ => (0 : ℝ)) k + lin 0 k)) * Complex.I) = chi1 k := by
+    intro k; simp [lin]
+  simp_rw [e] at h1
+  exact norm_le_zero_iff.mp h1
+
+#print axioms witness_F_b
+
+end OscInt.API.TriangularDecaySanity
