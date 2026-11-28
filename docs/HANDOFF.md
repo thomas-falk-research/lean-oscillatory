@@ -25,7 +25,8 @@ below it, and every rule is binding.
   - **Reviews.** Blind pre-proof reviews were answered and stamped (`stamps/20261128T154444Z-e9c0ea9fb732`). The
     routes are `docs/proof-SPLN.md`, `docs/proof-A5U.md` and `docs/proof-LOC2.md`, with the route-referee answers in
     `review/`. Post-proof reviews were answered (`review/2026-11-28-SPLN-LOC2-post-proof-answers.md`,
-    `review/2026-11-28-A5U-post-proof-answers.md`): no BLOCKER; one MAJOR against a record, corrected.
+    `review/2026-11-28-A5U-post-proof-answers.md`), stamped `stamps/20261128T174120Z-0300fe13b7d5`: no BLOCKER; one
+    MAJOR against a record, corrected.
   - **Plants.** The owed plants have compiled witnesses (`docs/replay/plants/2026-11-28-owed-A-2-L-i/`), and so has
     K2's F-a (`docs/replay/plants/2026-11-28-K2-F-a-witness/`).
   - **Push gate.** Made fail-closed (`review/2026-11-28-push-gate-review-answers.md`); no hook is installed.
