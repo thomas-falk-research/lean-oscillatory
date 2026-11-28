@@ -2057,3 +2057,10 @@ What the statements say and do not say (modelling choices and omissions, for the
    - negative times;
    - uniformity over compact sets of α;
    - the product normal form and the parametric Taylor remainder (parts of the proof, not statements).
+
+Clarifications after the blind pre-proof reviews (2026-11-28; `review/2026-11-28-K2-preproof-answers.md`). The
+statement file is unchanged.
+K2-a. "Every real time" in the "Why" paragraph means every real `t ≥ 1` in K2-U and every real `t ≥ T_α` in K2-D;
+   negative times are not stated (modelling choice 7). The sanity layer's docstring says that the plants are not in
+   the repository; since the integration of 2026-11-28 they are, in `docs/replay/plants/2026-11-28-K2/` (the sanity
+   file is stamped and is not edited).
