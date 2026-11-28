@@ -21,3 +21,4 @@ numerics/census/out/heldout_verdict.txt  # same
 review/census-falsification         # post-run falsification pass (prereg §6)
 docs/release-notes/v0.6.0.commit    # written by post-release after v0.6.0 is tagged (docs/release-notes/v0.6.0.md)
 docs/release-notes/v0.7.0.commit    # written by post-release after v0.7.0 is tagged (docs/release-notes/v0.7.0.md)
+docs/X.md                           # illustrative rename target in review/2026-11-28-push-gate-review-answers.md, not a file
