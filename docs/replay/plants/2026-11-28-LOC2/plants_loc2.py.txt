@@ -1,0 +1,326 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the draft batch-LOC2 statement against copies of its sanity theorems.
+
+As the batch-K2 generator (docs/replay/plants/2026-11-28-K2/plants_k2.py.txt). The draft statement module
+(OscInt/Statements/TorusLocalizationC2.lean, not frozen, already built in the repository) is read from a copy
+(stmt/TorusLocalizationC2.lean); the sanity layer (src/OscInt/Front/TorusLocalizationC2Sanity.lean, namespace
+OscInt.API.TorusLocalizationC2Sanity) is compiled into a scratch library placed first on LEAN_PATH, so every
+generated file imports OscInt.Front.TorusLocalizationC2Sanity and contains, under the prefix P_: a copy of the
+statement constant (and, for a plant in a definition, copies of that definition and of every definition between it
+and the statement), with exactly one textual mutation in the planted copy (none in the ok- copy), followed by copies
+of every sanity declaration whose text names a copied constant (renamed P_..., so that they go through the copy).
+Witness files contain the planted copy and compiled theorems of one kind:
+  not   : ¬ planted statement, from unconditional data                              -> DETECTED
+  relp  : true statement → ¬ planted statement, and ¬ planted statement from the     -> DETECTED (via the proved
+          proved true statement (OscInt.API.*, batch K2)                               statement)
+  weak  : draft statement → planted statement                                     -> TRUE WEAKENING
+  str   : planted statement → draft statement (a strengthening), no refutation     -> NOT DETECTED
+  char  : the planted definition differs from the draft's on a datum, no refutation -> NOT DETECTED
+The witness of L-a also contains, before the sanity namespace, the auxiliary namespace OscInt.FaWitnessAux copied
+verbatim from the lead's compiled K2 witness (gen/witness-F-a-compiled.lean.txt = the repository's
+docs/replay/plants/2026-11-28-K2-F-a-witness/witness-F-a-compiled.lean.txt), from the line after its import to
+`end OscInt.FaWitnessAux`; its theorem `refute` is used at `D = locConstC2 1`.
+No file proves, or uses a proof of, the batch-LOC2 statement. A rejected script alone is never counted as a
+detection. Compiler output is recorded with the scratch directory removed from the paths.
+Usage: plants_loc2.py WORK OUTDIR SCRATCHDIR
+"""
+import os, re, subprocess, sys, textwrap, time
+
+WORK, OUT, SCR = [os.path.abspath(a) for a in sys.argv[1:4]]
+os.makedirs(OUT, exist_ok=True)
+os.makedirs(SCR, exist_ok=True)
+STMT = open(os.path.join(WORK, 'stmt/TorusLocalizationC2.lean')).read().split('\n')
+SAN_ALL = open(os.path.join(WORK, 'src/OscInt/Front/TorusLocalizationC2Sanity.lean')).read()
+NS = 'OscInt.API.TorusLocalizationC2Sanity'
+SAN = SAN_ALL[SAN_ALL.index('namespace ' + NS):].split('\n')
+FA_SRC = open(os.path.join(WORK, 'gen/witness-F-a-compiled.lean.txt')).read()
+FA_AUX = FA_SRC[FA_SRC.index('\n') + 1:FA_SRC.index('end OscInt.FaWitnessAux') + len('end OscInt.FaWitnessAux')]
+ST, L2, LAP, LC = 'TorusLocalizationC2Statement', 'boxL2', 'boxLaplacian', 'locConstC2'
+DECL = re.compile(r"^(?:noncomputable )?(theorem|def) ([^\s:({\[]+)")
+WORD = re.compile(r"[^\W\d][\w']*")
+
+
+def block(lines, name):
+    for i, l in enumerate(lines):
+        m = DECL.match(l)
+        if m and m.group(2) == name:
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {name}')
+
+
+def data_blocks():
+    res, cur = {}, []
+    for l in SAN[1:] + ['']:
+        if l.strip() == '':
+            for c in cur:
+                m = DECL.match(c)
+                if m:
+                    res[m.group(2)] = (len(res), '\n'.join(cur))
+                    break
+            cur = []
+        else:
+            cur.append(l)
+    return res
+
+
+DATA = data_blocks()
+
+
+def words(t):
+    ls = t.split('\n')
+    k = next(i for i, l in enumerate(ls) if DECL.match(l))
+    return set(WORD.findall('\n'.join(ls[k:])))
+
+
+def through(names):
+    """Sanity declarations (in file order) whose text names one of `names` or an earlier selected declaration."""
+    sel, known = [], set(names)
+    for n, (_, t) in sorted(DATA.items(), key=lambda kv: kv[1][0]):
+        if words(t) & known:
+            sel.append(n)
+            known.add(n)
+    return sel
+
+
+assert through([ST]), ST
+
+HEAD = f"""namespace {NS}
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularDecaySanity MeasureTheory
+open scoped ContDiff
+"""
+CLOSE = f'\n\nend {NS}\n'
+
+
+def wrap(s):
+    return '\n'.join(textwrap.wrap('/-- ' + s + ' -/', 118))
+
+
+def rename(text, names):
+    ls = text.split('\n')
+    k = next(i for i, l in enumerate(ls) if DECL.match(l))
+    doc, decl = '\n'.join(ls[:k]), '\n'.join(ls[k:])
+    for n in sorted(names, key=len, reverse=True):
+        decl = re.sub(r"(?<![\w.'])" + re.escape(n) + r"(?![\w'])", 'P_' + n, decl)
+    return (doc + '\n' if doc else '') + decl
+
+
+def make(copies, mut, planted, note, witness=None, pre=''):
+    old, new, count = mut
+    blocks = [block(STMT, c) for c in copies]
+    joined = '\n\n'.join(blocks)
+    if planted:
+        assert joined.count(old) == count, (copies, old, joined.count(old))
+        joined = joined.replace(old, new)
+    blocks = joined.split('\n\n')
+    assert len(blocks) == len(copies)
+    parts = []
+    for c, b in zip(copies, blocks):
+        doc = f'PLANTED copy of `{c}`: {note}.' if planted else f'Unplanted copy of `{c}`.'
+        parts.append(wrap(doc) + '\n' + b)
+    names = list(copies)
+    if witness is None:
+        th = through(copies)
+        parts += [DATA[n][1] for n in th]
+        names += th
+    text = '\n\n'.join(rename(p, names) for p in parts)
+    if witness is not None:
+        text += '\n\n' + witness.strip('\n')
+        for n in re.findall(r'^theorem ([A-Za-z_0-9]+)', witness, re.M):
+            text += f'\n\n#print axioms {n}'
+    pre = (pre.strip('\n') + '\n\n') if (pre and witness is not None) else ''
+    return 'import OscInt.Front.TorusLocalizationC2Sanity\n\n' + pre + HEAD + '\n' + text + CLOSE
+
+
+def compile_text(tag, text):
+    src = os.path.join(SCR, tag + '.lean')
+    open(src, 'w').write(text)
+    t0 = time.time()
+    r = subprocess.run([os.path.join(WORK, 'lean.sh'), src], capture_output=True, text=True, timeout=1800)
+    out = (r.stdout + r.stderr).replace(SCR + os.sep, '').replace(WORK + os.sep, '')
+    out = re.sub(r'elapsed [0-9.]+ s rc=\d+\n?', '', out)
+    return r.returncode, out, time.time() - t0
+
+
+HYPS = 'intro χ hχ hs Ψ t p B hΨ h1 h2 hB'
+B0 = '  have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)'
+SUPPORT = '    tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi →\n'
+
+PLANTS = [
+    # id, copies, (old, new, count), note, witness kind, witness text, preamble
+    ('L-a', [ST], (SUPPORT, '', 1), 'support condition tsupport χ ⊆ (−π, π)² dropped', 'not', r'''
+/-- Witness: at `χ = 1` (`C²`, `locConstC2 1 = 6`), `t = 1`, `p = (1/2, 0)`, the lead's compiled K2 witness gives,
+for `D = locConstC2 1`, a continuous biperiodic phase and a valid coefficient bound `B` with
+`D B < ‖∫ e^{i(Ψ + k₁/2)}‖` (`OscInt.FaWitnessAux.refute`, copied above). -/
+theorem witness_L_a : ¬ P_TorusLocalizationC2Statement := by
+  intro h
+  obtain ⟨Ψ, B, hc, h1, h2, h3, h4⟩ := OscInt.FaWitnessAux.refute (locConstC2 (fun _ => (1 : ℂ)))
+  exact absurd (h (fun _ => 1) contDiff_const Ψ 1 (1 / 2, 0) B hc h1 h2 h3) (not_le.2 h4)
+
+/-- The constant the refutation beats: `locConstC2 1 = 6`. -/
+theorem witness_L_a_six : locConstC2 (fun _ => (1 : ℂ)) = 6 := by
+  rw [loc2_locConstC2_const, norm_one, mul_one]
+''', FA_AUX),
+    ('L-b', [LC, ST], ('4 * ((3 / 2) * boxL2 χ', '0 * ((3 / 2) * boxL2 χ', 1), 'the factor 4 ↦ 0', 'not', r'''
+/-- Witness: zero phase, `t = 0`, `p = 0`, `B = (2π)²` (`loc2_zero_phase_coeff`): the plant claims `‖∫ χ₁‖ ≤ 0`, but
+`∫ χ₁ ≠ 0` (`integral_chi1_ne_zero`). -/
+theorem witness_L_b : ¬ P_TorusLocalizationC2Statement := by
+  intro h
+  have h1 := h chi1 loc2_chi1_contDiff chi1_tsupport (fun _ => 0) 0 0 ((2 * Real.pi) ^ 2) continuous_const
+    (fun _ => rfl) (fun _ => rfl) (loc2_zero_phase_coeff 0)
+  rw [P_locConstC2, zero_mul, zero_mul] at h1
+  apply integral_chi1_ne_zero
+  simpa using h1
+''', ''),
+    ('L-c', [ST], ('ContDiff ℝ 2 χ', 'ContDiff ℝ 1 χ', 1), 'regularity C² ↦ C¹', 'str', r'''
+/-- Witness (characterisation): the planted copy implies the draft (a strengthening); not refuted. -/
+theorem witness_L_c (h : P_TorusLocalizationC2Statement) : TorusLocalizationC2Statement :=
+  fun χ hχ => h χ (hχ.of_le (WithTop.coe_le_coe.mpr (by norm_num)))
+''', ''),
+    ('L-d', [ST], ('(∀ n : ℤ × ℤ, ‖∫ k in torusBox,', '(∀ n : ℤ × ℤ, n ≠ 0 → ‖∫ k in torusBox,', 1),
+     'hypothesis on all n ↦ on n ≠ 0 (zero mode dropped)', 'not', r'''
+/-- Witness: zero phase, `t = 0`: the coefficients vanish off `n = 0`, so `B = 0` is valid, and the plant claims
+`‖∫ χ₁‖ ≤ 0`. -/
+theorem witness_L_d : ¬ P_TorusLocalizationC2Statement := by
+  intro h
+  have h1 := h chi1 loc2_chi1_contDiff chi1_tsupport (fun _ => 0) 0 0 0 continuous_const
+    (fun _ => rfl) (fun _ => rfl) (fun n hn => by rw [lattice_coeff_zero_phase 0 n hn, norm_zero])
+  rw [mul_zero] at h1
+  apply integral_chi1_ne_zero
+  simpa using h1
+''', ''),
+    ('L-e', [LC, ST], ('4 * ((3 / 2) * boxL2 χ', '4 * (0 * boxL2 χ', 1), 'the coefficient 3/2 of ‖χ‖ ↦ 0', 'str', r'''
+/-- Witness (characterisation): the planted constant is at most the draft's, so the planted copy implies the draft
+(a strengthening); not refuted. -/
+theorem witness_L_e (h : P_TorusLocalizationC2Statement) : TorusLocalizationC2Statement := by
+  ''' + HYPS + '\n' + B0 + r'''
+  have hL : P_locConstC2 χ ≤ locConstC2 χ := by
+    unfold P_locConstC2 locConstC2
+    have := loc2_boxL2_nonneg χ
+    linarith
+  exact (h χ hχ hs Ψ t p B hΨ h1 h2 hB).trans (mul_le_mul_of_nonneg_right hL hB0)
+''', ''),
+    ('L-f', [LAP, LC, ST], ('iteratedFDeriv ℝ 2 χ k ![(0, 1), (0, 1)]', 'iteratedFDeriv ℝ 2 χ k ![(1, 0), (1, 0)]', 1),
+     'Laplacian ∂₁² + ∂₂² ↦ 2∂₁²', 'char', r'''
+/-- Witness (characterisation): on `q(k) = k₁² + 3k₂²` the planted Laplacian at `0` is `4`, the draft's `8`; no
+refutation of the planted statement. -/
+theorem witness_L_f : P_boxLaplacian loc2Quad 0 = 4 ∧ boxLaplacian loc2Quad 0 = 8 := by
+  refine ⟨?_, loc2_quad_laplacian⟩
+  rw [P_boxLaplacian, loc2_quad_d11]
+  norm_num
+''', ''),
+    ('L-g', [L2, LC, ST], ('(1 / (4 * Real.pi ^ 2))', '1', 1), 'normalisation (2π)^{−2} of boxL2 dropped', 'weak', r'''
+/-- Witness: the unnormalised norm is `2π` times the normalised one, so the draft implies the planted copy. -/
+theorem witness_L_g (h : TorusLocalizationC2Statement) : P_TorusLocalizationC2Statement := by
+  ''' + HYPS + '\n' + B0 + r'''
+  have hpi : 1 / (4 * Real.pi ^ 2) ≤ 1 := by
+    rw [div_le_one (by positivity)]
+    nlinarith [Real.pi_gt_three]
+  have hmono : ∀ f : ℝ × ℝ → ℂ, boxL2 f ≤ P_boxL2 f := fun f => by
+    unfold boxL2 P_boxL2
+    apply Real.sqrt_le_sqrt
+    have hI : 0 ≤ ∫ k in torusBox, ‖f k‖ ^ 2 := integral_nonneg (fun _ => by positivity)
+    nlinarith
+  have hL : locConstC2 χ ≤ P_locConstC2 χ := by
+    unfold locConstC2 P_locConstC2
+    have := hmono χ
+    have := hmono (boxPartial₁ χ)
+    have := hmono (boxPartial₂ χ)
+    have := hmono (boxLaplacian χ)
+    linarith
+  exact (h χ hχ hs Ψ t p B hΨ h1 h2 hB).trans (mul_le_mul_of_nonneg_right hL hB0)
+''', ''),
+    ('L-h', [ST], ('↑(t * Ψ k + ((n.1', '↑(Ψ k + ((n.1', 1), 'time t dropped from the lattice coefficients', 'relp', r'''
+/-- Witness (relative to K2-U): phase `s · triPhase 0`, `t = 0`, `p = 0`: the planted coefficients are
+`triKernel 0 s n`, at most `C s^{−2/3}` (K2-U at `α = 0`), so the plant claims `‖∫ χ₁‖ ≤ locConstC2 χ₁ · C s^{−2/3}`
+for every `s ≥ 1`, false for large `s`. -/
+theorem witness_L_h_rel (hU : TriDecayUpperStatement) : ¬ P_TorusLocalizationC2Statement := by
+  intro h
+  obtain ⟨C, hC⟩ := hU 0
+  rw [triRate_zero] at hC
+  obtain ⟨h1, h2, h3⟩ := triPhase_periodic 0
+  have hI : 0 < ‖∫ k in torusBox, chi1 k‖ := norm_pos_iff.mpr integral_chi1_ne_zero
+  obtain ⟨s, -, hs1, hlt⟩ :=
+    rate_separation 0 (2 / 3) ‖∫ k in torusBox, chi1 k‖ (locConstC2 chi1 * C) 1 (by norm_num) hI
+  rw [neg_zero, Real.rpow_zero, mul_one] at hlt
+  have hb := h chi1 loc2_chi1_contDiff chi1_tsupport (fun k => s * triPhase 0 k) 0 0 (C * s ^ (-(2 / 3 : ℝ)))
+    (continuous_const.mul h1) (fun k => by beta_reduce; rw [h2 k]) (fun k => by beta_reduce; rw [h3 k])
+    (fun n => hC s n hs1)
+  have e : ∫ k in torusBox, chi1 k * Complex.exp (↑(0 * ((fun k => s * triPhase 0 k) k + lin 0 k)) * Complex.I) =
+      ∫ k in torusBox, chi1 k := by simp
+  rw [e, ← mul_assoc] at hb
+  linarith
+
+/-- Unconditional, from the proved K2-U (`OscInt.API.triDecayUpper`). -/
+theorem witness_L_h : ¬ P_TorusLocalizationC2Statement := witness_L_h_rel OscInt.API.triDecayUpper
+''', ''),
+    ('L-i', [LC, ST], ('4 * ((3 / 2) * boxL2 χ', '(1 / 8) * ((3 / 2) * boxL2 χ', 1), 'the factor 4 ↦ 1/8', 'str', r'''
+/-- Witness (characterisation): the planted constant is `1/32` of the draft's, so the planted copy implies the draft
+(a strengthening); not refuted in Lean. -/
+theorem witness_L_i (h : P_TorusLocalizationC2Statement) : TorusLocalizationC2Statement := by
+  ''' + HYPS + '\n' + B0 + r'''
+  have hL : P_locConstC2 χ ≤ locConstC2 χ := by
+    unfold P_locConstC2 locConstC2
+    have := loc2_boxL2_nonneg χ
+    have := loc2_boxL2_nonneg (boxPartial₁ χ)
+    have := loc2_boxL2_nonneg (boxPartial₂ χ)
+    have := loc2_boxL2_nonneg (boxLaplacian χ)
+    linarith
+  exact (h χ hχ hs Ψ t p B hΨ h1 h2 hB).trans (mul_le_mul_of_nonneg_right hL hB0)
+''', ''),
+    ('L-j', [ST], ('(B : ℝ), Continuous Ψ →', '(B : ℝ),', 1), 'hypothesis Continuous Ψ dropped', 'str', r'''
+/-- Witness (characterisation): the planted copy implies the draft (a strengthening); not refuted in Lean. -/
+theorem witness_L_j (h : P_TorusLocalizationC2Statement) : TorusLocalizationC2Statement :=
+  fun χ hχ hs Ψ t p B _ h1 h2 hB => h χ hχ hs Ψ t p B h1 h2 hB
+''', ''),
+    ('L-k', [ST], ('(∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → ', '', 1),
+     'periodicity of Ψ in k₁ dropped', 'str', r'''
+/-- Witness (characterisation): the planted copy implies the draft (a strengthening); not refuted. -/
+theorem witness_L_k (h : P_TorusLocalizationC2Statement) : TorusLocalizationC2Statement :=
+  fun χ hχ hs Ψ t p B hΨ _ h2 hB => h χ hχ hs Ψ t p B hΨ h2 hB
+''', ''),
+]
+
+VERDICT = {
+    'not': 'DETECTED (witness compiled: ¬ planted statement)',
+    'relp': 'DETECTED via the proved batch-K2 statement (witness compiled: true statement → ¬ planted statement, '
+            'and ¬ planted statement from OscInt.API.*)',
+    'weak': 'TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it',
+    'str': 'NOT DETECTED (compiled: planted statement → draft statement, a strengthening; no refutation)',
+    'char': 'NOT DETECTED (compiled characterisation: the planted definition differs on a datum; no refutation)',
+}
+
+only = set(os.environ.get('ONLY', '').split(',')) - {''}
+log = []
+t_start = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+for pid, copies, mut, note, kind, wit, pre in PLANTS:
+    if only and pid not in only:
+        continue
+    for tag, planted, w in (('ok-' + pid, False, None), ('plant-' + pid, True, None), ('witness-' + pid, True, wit)):
+        text = make(copies, mut, planted, note, w, pre)
+        rc, out, dt = compile_text(tag, text)
+        want = 'recorded' if tag.startswith('plant-') else 'accepted'
+        got = 'accepted' if rc == 0 else 'rejected'
+        if w is not None and rc == 0:
+            ax = re.findall(r"depends on axioms: \[([^\]]*)\]", out)
+            nth = len(re.findall(r'^theorem ', w, re.M))
+            if len(ax) != nth or any(a.replace(' ', '') != 'propext,Classical.choice,Quot.sound' for a in ax):
+                got = 'rejected (axioms)'
+        open(os.path.join(OUT, tag + '.lean.txt'), 'w').write(text)
+        open(os.path.join(OUT, tag + '.out'), 'w').write(f'exit code {rc}\n' + out)
+        line = f'{tag}: {got} (want {want}) [{dt:.1f} s]'
+        if rc != 0:
+            first = next((l for l in out.split('\n') if 'error' in l), '')
+            line += '\n    first error: ' + first[:110]
+        log.append(line)
+        print(line, flush=True)
+        if tag.startswith('witness-'):
+            v = VERDICT[kind] if got == 'accepted' else 'NOT DETECTED (witness did not compile)'
+            log.append(f'  {pid} [{note}]: {v}')
+            print(log[-1], flush=True)
+t_end = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+log.append(f'generator run {t_start} to {t_end} UTC')
+open(os.path.join(OUT, 'SUMMARY.txt' if not only else 'SUMMARY-partial.txt'), 'w').write('\n'.join(log) + '\n')

@@ -1,0 +1,25 @@
+exit code 1
+plant-L-a.lean:24:28: error: Application type mismatch: The argument
+  chi1_tsupport
+has type
+  tsupport chi1 ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi
+of sort `Prop` but is expected to have type
+  ℝ × ℝ → ℝ
+of sort `Type` in the application
+  h chi1 loc2_chi1_contDiff chi1_tsupport
+plant-L-a.lean:50:51: error: Application type mismatch: The argument
+  hs
+has type
+  tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi
+of sort `Prop` but is expected to have type
+  ℝ × ℝ → ℝ
+of sort `Type` in the application
+  h χ (ContDiff.of_le hχ (WithTop.coe_le_coe.mpr le_top)) hs
+plant-L-a.lean:61:33: error: Application type mismatch: The argument
+  hs
+has type
+  tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi
+of sort `Prop` but is expected to have type
+  ℝ × ℝ → ℝ
+of sort `Type` in the application
+  h χ hχ hs

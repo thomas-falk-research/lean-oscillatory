@@ -2144,8 +2144,10 @@ What the statement says and does not say (modelling choices and omissions, for t
 2. **Window.** Only a window around each exceptional coupling; nothing near `α = 0` (where the rate is also `2/3`,
    a D4 transition) and no global-in-α statement. The window must exclude 0: at `α = 0` K2-D forces rate `2/3`.
 3. **Consistency with K2.** At `α = a₀` the bound is K2-U's `t^{−2/3}`. For fixed `α ≠ a₀` in the window and large
-   t it is `t^{−3/4}`, K2-U's rate there, which K2-D shows cannot be improved. The exponent `−1/4` of the envelope is
-   therefore the only one compatible with both ends; the sanity layer checks the two ends.
+   t it is `t^{−3/4}`, K2-U's rate there, which K2-D shows cannot be improved. With the scaling variable
+   `|α − a₀| t^{1/3}`, the exponent `−1/4` of the envelope is therefore the strongest one compatible with both ends
+   (weaker envelopes, such as the exponent `−1/5` or the variable `|α − a₀| t^{1/4}`, follow from it); the sanity
+   layer checks the two ends.
 4. **Not stated:** a lower bound uniform in α (the lower crossover); explicit `r` or `C`; the canonical one-variable
    A5 unfolding estimate (part of the route, not a statement).
 
@@ -2172,7 +2174,8 @@ For every continuous Ψ that is 2π-periodic in each variable, every real t, eve
 
 What the statement says and does not say (modelling choices and omissions, for the reviewer).
 1. **Regularity.** `C²` on all of ℝ² (Mathlib's `ContDiff ℝ 2`), support (closure of the nonzero set) inside the
-   open box. Without the support condition the statement is false even for `χ = 1` (plant F-a of batch K2).
+   open box. Without the support condition the statement is false even for `χ = 1`: plant F-a of batch K2, refuted
+   by a compiled witness (`docs/replay/plants/2026-11-28-K2-F-a-witness/README.md`).
 2. **The constant.** Normalised `L²` norms over the box; the factor 4 dominates `√13`, the bound on
    `(Σ_n (1 + |n|²)^{−2})^{1/2}` the route uses. Not optimal.
 3. **Relation to K2-F.** K2-FQ implies K2-F (a smooth χ is C²) with an explicit D; K2-F is not edited.

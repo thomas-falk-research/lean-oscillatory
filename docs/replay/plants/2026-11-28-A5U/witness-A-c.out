@@ -1,0 +1,3 @@
+exit code 0
+'OscInt.API.TriangularCrossoverSanity.witness_A_c_rel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.TriangularCrossoverSanity.witness_A_c' depends on axioms: [propext, Classical.choice, Quot.sound]

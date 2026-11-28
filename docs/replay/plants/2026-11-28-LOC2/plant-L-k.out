@@ -1,0 +1,34 @@
+exit code 1
+plant-L-k.lean:25:2: error: Type mismatch
+  h chi1 loc2_chi1_contDiff chi1_tsupport
+has type
+  ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ),
+    Continuous Ψ →
+      (∀ (k : ℝ × ℝ), Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+        (∀ (n : ℤ × ℤ),
+            ‖∫ (k : ℝ × ℝ) in torusBox, Complex.exp (↑(t * Ψ k + (↑n.1 * k.1 + ↑n.2 * k.2)) * Complex.I)‖ ≤ B) →
+          ‖∫ (k : ℝ × ℝ) in torusBox, chi1 k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ locConstC2 chi1 * B
+but is expected to have type
+  ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ),
+    Continuous Ψ →
+      (∀ (k : ℝ × ℝ), Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) →
+        (∀ (k : ℝ × ℝ), Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+          (∀ (n : ℤ × ℤ),
+              ‖∫ (k : ℝ × ℝ) in torusBox, Complex.exp (↑(t * Ψ k + (↑n.1 * k.1 + ↑n.2 * k.2)) * Complex.I)‖ ≤ B) →
+            ‖∫ (k : ℝ × ℝ) in torusBox, chi1 k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ locConstC2 chi1 * B
+plant-L-k.lean:51:65: error: Application type mismatch: The argument
+  h1
+has type
+  ∀ (k : ℝ × ℝ), Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k
+but is expected to have type
+  ∀ (k : ℝ × ℝ), Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k
+in the application
+  h χ (ContDiff.of_le hχ (WithTop.coe_le_coe.mpr le_top)) hs Ψ t p B hΨ h1
+plant-L-k.lean:62:47: error: Application type mismatch: The argument
+  h2
+has type
+  ∀ (k : ℝ × ℝ), triPhase α (k.1 + 2 * Real.pi, k.2) = triPhase α k
+but is expected to have type
+  ∀ (k : ℝ × ℝ), triPhase α (k.1, k.2 + 2 * Real.pi) = triPhase α k
+in the application
+  h χ hχ hs (triPhase α) t p ?m.113 h1 h2

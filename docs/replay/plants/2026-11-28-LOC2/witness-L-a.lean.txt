@@ -1,0 +1,800 @@
+import OscInt.Front.TorusLocalizationC2Sanity
+
+/-!
+Compiled witness refuting the planted proposition F-a (`P_TorusLocalizationStatement`, the planted copy of
+`TorusLocalizationStatement` with the support condition dropped), at `χ = 1`, `t = 1`, `p = (1/2, 0)`.
+Phase: `Ψ_N(x, y) = G(arccos(cos y)) · arccos(f_N(x))`, with `f_N` a sine polynomial and `G` a continuous
+Rudin–Shapiro sign profile. Every lattice coefficient is at most `5π²/N`, while the half-integer box integral is
+at least `(2π H_N − 3π²)/N`, `H_N` the harmonic number; harmonic divergence contradicts any fixed `D`.
+-/
+
+open MeasureTheory
+
+namespace OscInt.FaWitnessAux
+
+
+/-- The exponential `x ↦ e^{i a x}`. -/
+noncomputable def E (a x : ℝ) : ℂ := Complex.exp (↑(a * x) * Complex.I)
+
+lemma continuous_E (a : ℝ) : Continuous (E a) := by
+  unfold E; fun_prop
+
+lemma norm_E (a x : ℝ) : ‖E a x‖ = 1 := Complex.norm_exp_ofReal_mul_I _
+
+/-- `S a = ∫_{-π}^{π} e^{i a x} dx`. -/
+noncomputable def S (a : ℝ) : ℂ := ∫ x in (-Real.pi)..Real.pi, E a x
+
+lemma S_eq (a : ℝ) (ha : a ≠ 0) : S a = 2 * (Real.sin (a * Real.pi) : ℂ) / a := by
+  unfold S E
+  have hc : ((a : ℂ) * Complex.I) ≠ 0 := by simp [ha]
+  have h1 : ∀ x : ℝ, (↑(a * x) * Complex.I) = ((a : ℂ) * Complex.I) * ↑x := by
+    intro x; push_cast; ring
+  simp_rw [h1]
+  rw [integral_exp_mul_complex hc]
+  have e1 : ((a : ℂ) * Complex.I) * ↑Real.pi = ↑(a * Real.pi) * Complex.I := by push_cast; ring
+  have e2 : ((a : ℂ) * Complex.I) * ↑(-Real.pi) = (-↑(a * Real.pi)) * Complex.I := by push_cast; ring
+  rw [e1, e2, Complex.exp_mul_I, Complex.exp_mul_I, Complex.cos_neg, Complex.sin_neg,
+    ← Complex.ofReal_sin]
+  have ha' : (a : ℂ) ≠ 0 := by exact_mod_cast ha
+  field_simp
+  ring_nf
+
+lemma S_zero : S 0 = 2 * Real.pi := by
+  unfold S E; simp; ring
+
+lemma S_int (n : ℤ) (hn : n ≠ 0) : S n = 0 := by
+  rw [S_eq _ (by exact_mod_cast hn), Real.sin_int_mul_pi]; simp
+
+lemma norm_S_int_le (n : ℤ) : ‖S n‖ ≤ if n = 0 then 2 * Real.pi else 0 := by
+  split_ifs with h
+  · subst h; rw [show ((0:ℤ):ℝ) = 0 by simp, S_zero]
+    rw [show (2 * (Real.pi : ℂ)) = ((2 * Real.pi : ℝ) : ℂ) by push_cast; ring, Complex.norm_real]
+    simp
+  · rw [S_int n h]; simp
+
+/-- The sine polynomial `f_N(x) = (1/(2N)) Σ_{k<N} (-1)^k sin((k+1)x)`. -/
+noncomputable def fN (N : ℕ) (x : ℝ) : ℝ :=
+  (1 / (2 * N)) * ∑ k ∈ Finset.range N, (-1 : ℝ) ^ k * Real.sin ((k + 1) * x)
+
+lemma continuous_fN (N : ℕ) : Continuous (fN N) := by
+  unfold fN; fun_prop
+
+lemma abs_fN_le (N : ℕ) (x : ℝ) : |fN N x| ≤ 1 / 2 := by
+  unfold fN
+  rcases Nat.eq_zero_or_pos N with h | h
+  · subst h; simp
+  have hN : (0 : ℝ) < N := by exact_mod_cast h
+  rw [abs_mul, abs_of_pos (by positivity)]
+  have : |∑ k ∈ Finset.range N, (-1 : ℝ) ^ k * Real.sin ((k + 1) * x)| ≤ N := by
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    calc ∑ k ∈ Finset.range N, |(-1 : ℝ) ^ k * Real.sin ((k + 1) * x)|
+        ≤ ∑ k ∈ Finset.range N, (1 : ℝ) := Finset.sum_le_sum (fun k _ => by
+          rw [abs_mul]; simp [Real.abs_sin_le_one])
+      _ = N := by simp
+  calc 1 / (2 * N) * |∑ k ∈ Finset.range N, (-1 : ℝ) ^ k * Real.sin ((k + 1) * x)|
+      ≤ 1 / (2 * N) * N := by gcongr
+    _ = 1 / 2 := by field_simp
+
+lemma fN_periodic (N : ℕ) (x : ℝ) : fN N (x + 2 * Real.pi) = fN N x := by
+  unfold fN
+  congr 1
+  refine Finset.sum_congr rfl (fun k _ => ?_)
+  congr 1
+  have : ((k : ℝ) + 1) * (x + 2 * Real.pi) = ((k : ℝ) + 1) * x + ((k + 1 : ℕ) : ℤ) * (2 * Real.pi) := by
+    push_cast; ring
+  rw [this, Real.sin_add_int_mul_two_pi]
+
+lemma sin_mul_E (K ν x : ℝ) :
+    (Real.sin (K * x) : ℂ) * E ν x = (E (ν - K) x - E (ν + K) x) * Complex.I / 2 := by
+  have h1 : E (ν - K) x = E ν x * Complex.exp (-↑(K * x) * Complex.I) := by
+    unfold E; rw [← Complex.exp_add]; congr 1; push_cast; ring
+  have h2 : E (ν + K) x = E ν x * Complex.exp (↑(K * x) * Complex.I) := by
+    unfold E; rw [← Complex.exp_add]; congr 1; push_cast; ring
+  rw [h1, h2, Complex.ofReal_sin, Complex.sin.eq_1]
+  ring
+
+
+lemma S_eq' (a : ℝ) (ha : a ≠ 0) : S a = ((2 * Real.sin (a * Real.pi) / a : ℝ) : ℂ) := by
+  rw [S_eq a ha]; push_cast; ring
+
+/-- `F N ν = ∫_{-π}^{π} f_N(x) e^{iνx} dx`. -/
+noncomputable def F (N : ℕ) (ν : ℝ) : ℂ := ∫ x in (-Real.pi)..Real.pi, (fN N x : ℂ) * E ν x
+
+lemma F_eq (N : ℕ) (ν : ℝ) : F N ν = ∑ k ∈ Finset.range N,
+    ((1 / (2 * N) : ℂ) * (-1) ^ k * Complex.I / 2) *
+      (S (ν - (k + 1)) - S (ν + (k + 1))) := by
+  have hpt : ∀ x, (fN N x : ℂ) * E ν x = ∑ k ∈ Finset.range N,
+      ((1 / (2 * N) : ℂ) * (-1) ^ k * Complex.I / 2) *
+        (E (ν - (k + 1)) x - E (ν + (k + 1)) x) := by
+    intro x
+    unfold fN
+    push_cast
+    rw [mul_assoc, Finset.sum_mul, Finset.mul_sum]
+    refine Finset.sum_congr rfl (fun k _ => ?_)
+    have := sin_mul_E ((k : ℝ) + 1) ν x
+    push_cast at this
+    rw [mul_assoc, this]
+    ring
+  unfold F
+  simp_rw [hpt]
+  rw [intervalIntegral.integral_finsetSum]
+  swap
+  · intro k _
+    exact (continuous_const.mul ((continuous_E _).sub (continuous_E _))).intervalIntegrable _ _
+  refine Finset.sum_congr rfl (fun k _ => ?_)
+  rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_sub
+    ((continuous_E _).intervalIntegrable _ _) ((continuous_E _).intervalIntegrable _ _)]
+  rfl
+
+lemma sum_ite_le_of_unique {c : ℝ} (hc : 0 ≤ c) (s : Finset ℕ) (p : ℕ → Prop) [DecidablePred p]
+    (hp : ∀ a b, p a → p b → a = b) : ∑ k ∈ s, (if p k then c else 0) ≤ c := by
+  rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const, nsmul_eq_mul]
+  have h1 : (s.filter p).card ≤ 1 := Finset.card_le_one.mpr (fun a ha b hb =>
+    hp a b (Finset.mem_filter.1 ha).2 (Finset.mem_filter.1 hb).2)
+  calc ((s.filter p).card : ℝ) * c ≤ 1 * c := by gcongr; exact_mod_cast h1
+    _ = c := one_mul c
+
+lemma norm_F_int_le (N : ℕ) (hN : 0 < N) (n : ℤ) : ‖F N n‖ ≤ Real.pi / N := by
+  rw [F_eq]
+  have hN' : (0 : ℝ) < N := by exact_mod_cast hN
+  have hterm : ∀ k ∈ Finset.range N, ‖((1 / (2 * N) : ℂ) * (-1) ^ k * Complex.I / 2) *
+      (S ((n : ℝ) - (k + 1)) - S ((n : ℝ) + (k + 1)))‖ ≤
+      (1 / (4 * N)) * ((if n - (k + 1 : ℤ) = 0 then 2 * Real.pi else 0) +
+        (if n + (k + 1 : ℤ) = 0 then 2 * Real.pi else 0)) := by
+    intro k _
+    rw [norm_mul]
+    have h1 : ‖((1 / (2 * N) : ℂ) * (-1) ^ k * Complex.I / 2)‖ = 1 / (4 * N) := by
+      simp; field_simp; ring
+    rw [h1]
+    gcongr
+    refine (norm_sub_le _ _).trans (add_le_add ?_ ?_)
+    · have := norm_S_int_le (n - (k + 1)); push_cast at this; exact this
+    · have := norm_S_int_le (n + (k + 1)); push_cast at this; exact this
+  refine (norm_sum_le _ _).trans ((Finset.sum_le_sum hterm).trans ?_)
+  rw [← Finset.mul_sum, Finset.sum_add_distrib]
+  have hpi := Real.pi_pos
+  have e1 := sum_ite_le_of_unique (c := 2 * Real.pi) (by positivity) (Finset.range N)
+    (fun k => n - (k + 1 : ℤ) = 0) (fun a b ha hb => by omega)
+  have e2 := sum_ite_le_of_unique (c := 2 * Real.pi) (by positivity) (Finset.range N)
+    (fun k => n + (k + 1 : ℤ) = 0) (fun a b ha hb => by omega)
+  calc 1 / (4 * N) * (∑ k ∈ Finset.range N, (if n - (k + 1 : ℤ) = 0 then 2 * Real.pi else 0) +
+        ∑ k ∈ Finset.range N, (if n + (k + 1 : ℤ) = 0 then 2 * Real.pi else 0))
+      ≤ 1 / (4 * N) * (2 * Real.pi + 2 * Real.pi) := by gcongr
+    _ = Real.pi / N := by field_simp; ring
+
+lemma half_term (k : ℕ) : (-1 : ℂ) ^ k * ((S (1 / 2 - (k + 1)) - S (1 / 2 + (k + 1))) * Complex.I / 2) =
+    ((2 * ((k : ℝ) + 1) / (((k : ℝ) + 1) ^ 2 - 1 / 4) : ℝ) : ℂ) * Complex.I := by
+  have hK : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+  have h1 : (1 / 2 - ((k : ℝ) + 1)) ≠ 0 := by linarith
+  have h2 : (1 / 2 + ((k : ℝ) + 1)) ≠ 0 := by linarith
+  have h3 : ((k : ℝ) + 1) ^ 2 - 1 / 4 ≠ 0 := by nlinarith
+  have hs1 : Real.sin ((1 / 2 - ((k : ℝ) + 1)) * Real.pi) = (-1) ^ (k + 1) := by
+    rw [show (1 / 2 - ((k : ℝ) + 1)) * Real.pi = Real.pi / 2 - ((k + 1 : ℕ) : ℝ) * Real.pi by
+      push_cast; ring, Real.sin_pi_div_two_sub, Real.cos_nat_mul_pi]
+  have hs2 : Real.sin ((1 / 2 + ((k : ℝ) + 1)) * Real.pi) = (-1) ^ (k + 1) := by
+    rw [show (1 / 2 + ((k : ℝ) + 1)) * Real.pi = ((k + 1 : ℕ) : ℝ) * Real.pi + Real.pi / 2 by
+      push_cast; ring, Real.sin_add_pi_div_two, Real.cos_nat_mul_pi]
+  rw [S_eq' _ h1, S_eq' _ h2, hs1, hs2]
+  have hr : (-1 : ℝ) ^ k * ((2 * (-1) ^ (k + 1) / (1 / 2 - ((k : ℝ) + 1)) -
+      2 * (-1) ^ (k + 1) / (1 / 2 + ((k : ℝ) + 1)))) / 2 =
+      2 * ((k : ℝ) + 1) / (((k : ℝ) + 1) ^ 2 - 1 / 4) := by
+    have hm : (-1 : ℝ) ^ k * (-1) ^ k = 1 := by
+      rw [← pow_add, ← two_mul, pow_mul]; simp
+    rw [pow_succ]
+    generalize (-1 : ℝ) ^ k = c at hm ⊢
+    generalize (k : ℝ) + 1 = K at h1 h2 h3 ⊢
+    have h1' : 1 - 2 * K ≠ 0 := by intro h; apply h1; linarith
+    have h2' : 1 + 2 * K ≠ 0 := by intro h; apply h2; linarith
+    have e1 : 1 / 2 - K = (1 - 2 * K) / 2 := by ring
+    have e2 : 1 / 2 + K = (1 + 2 * K) / 2 := by ring
+    have e3 : K ^ 2 - 1 / 4 = -((1 - 2 * K) * (1 + 2 * K)) / 4 := by ring
+    have : c * ((2 * (c * -1) / (1 / 2 - K) - 2 * (c * -1) / (1 / 2 + K))) / 2 =
+        (c * c) * (2 * K / (K ^ 2 - 1 / 4)) := by
+      rw [e1, e2, e3]; field_simp; ring
+    rw [this, hm, one_mul]
+  rw [← hr]
+  push_cast
+  ring
+
+lemma norm_F_half_ge (N : ℕ) (hN : 0 < N) :
+    (1 / N) * ∑ k ∈ Finset.range N, 1 / ((k : ℝ) + 1) ≤ ‖F N (1 / 2)‖ := by
+  rw [F_eq]
+  have hN' : (0 : ℝ) < N := by exact_mod_cast hN
+  have hsum : ∑ k ∈ Finset.range N, ((1 / (2 * N) : ℂ) * (-1) ^ k * Complex.I / 2) *
+      (S (1 / 2 - (k + 1)) - S (1 / 2 + (k + 1))) =
+      ((1 / (2 * N) * ∑ k ∈ Finset.range N, 2 * ((k : ℝ) + 1) / (((k : ℝ) + 1) ^ 2 - 1 / 4) : ℝ) : ℂ) *
+        Complex.I := by
+    push_cast
+    rw [mul_assoc, Finset.sum_mul, Finset.mul_sum]
+    refine Finset.sum_congr rfl (fun k _ => ?_)
+    have := half_term k
+    push_cast at this
+    rw [← this]; ring
+  rw [hsum, norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
+  have hterm : ∀ k ∈ Finset.range N, 2 * (1 / ((k : ℝ) + 1)) ≤
+      2 * ((k : ℝ) + 1) / (((k : ℝ) + 1) ^ 2 - 1 / 4) := by
+    intro k _
+    have hK : (1 : ℝ) ≤ (k : ℝ) + 1 := by linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+    rw [mul_one_div, div_le_div_iff₀ (by positivity) (by nlinarith)]
+    nlinarith
+  have hs := Finset.sum_le_sum hterm
+  rw [← Finset.mul_sum] at hs
+  have hpos : 0 ≤ ∑ k ∈ Finset.range N, 1 / ((k : ℝ) + 1) := Finset.sum_nonneg (fun k _ => by positivity)
+  rw [abs_of_nonneg (mul_nonneg (by positivity) (by linarith))]
+  calc (1 / N) * ∑ k ∈ Finset.range N, 1 / ((k : ℝ) + 1)
+      = 1 / (2 * N) * (2 * ∑ k ∈ Finset.range N, 1 / ((k : ℝ) + 1)) := by field_simp
+    _ ≤ _ := by gcongr
+
+
+/-- Rudin–Shapiro coefficients: `rs j true` gives `P_j`, `rs j false` gives `Q_j`. -/
+def rs : ℕ → Bool → ℕ → ℝ
+  | 0, _, _ => 1
+  | j + 1, b, m => if m < 2 ^ j then rs j true m else (if b then 1 else -1) * rs j false (m - 2 ^ j)
+
+lemma rs_sq (j : ℕ) (b : Bool) (m : ℕ) : rs j b m ^ 2 = 1 := by
+  induction j generalizing b m with
+  | zero => simp [rs]
+  | succ j ih =>
+    simp only [rs]
+    split_ifs
+    · exact ih _ _
+    · simp [ih]
+    · rw [neg_one_mul, neg_sq, ih]
+
+/-- The Rudin–Shapiro polynomial `Σ_{m < 2^j} rs j b m z^m`. -/
+noncomputable def rsPoly (j : ℕ) (b : Bool) (z : ℂ) : ℂ :=
+  ∑ m ∈ Finset.range (2 ^ j), (rs j b m : ℂ) * z ^ m
+
+lemma rsPoly_succ (j : ℕ) (b : Bool) (z : ℂ) : rsPoly (j + 1) b z =
+    rsPoly j true z + (if b then 1 else -1) * z ^ (2 ^ j) * rsPoly j false z := by
+  unfold rsPoly
+  rw [pow_succ, mul_two, Finset.sum_range_add]
+  congr 1
+  · refine Finset.sum_congr rfl (fun m hm => ?_)
+    have hm' : m < 2 ^ j := Finset.mem_range.1 hm
+    simp only [rs, hm', ite_true]
+  · rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl (fun m _ => ?_)
+    have hm' : ¬ (2 ^ j + m < 2 ^ j) := by omega
+    simp only [rs, hm', ite_false, Nat.add_sub_cancel_left, pow_add]
+    cases b <;> simp <;> ring
+
+lemma rsPoly_norm (j : ℕ) (z : ℂ) (hz : ‖z‖ = 1) :
+    ‖rsPoly j true z‖ ^ 2 + ‖rsPoly j false z‖ ^ 2 = 2 ^ (j + 1) := by
+  induction j with
+  | zero => simp [rsPoly, rs]; norm_num
+  | succ j ih =>
+    rw [rsPoly_succ, rsPoly_succ]
+    simp only [ite_true, Bool.false_eq_true, ite_false]
+    have h := parallelogram_law_with_norm ℝ (rsPoly j true z) (z ^ (2 ^ j) * rsPoly j false z)
+    have hc : ‖z ^ (2 ^ j) * rsPoly j false z‖ = ‖rsPoly j false z‖ := by
+      rw [norm_mul, norm_pow, hz, one_pow, one_mul]
+    rw [hc, ih] at h
+    rw [show (-1 : ℂ) * z ^ 2 ^ j * rsPoly j false z = -(z ^ 2 ^ j * rsPoly j false z) by ring,
+      ← sub_eq_add_neg, one_mul, h, pow_succ 2 (j + 1)]
+    ring
+
+lemma rsPoly_sq_le (j : ℕ) (z : ℂ) (hz : ‖z‖ = 1) : ‖rsPoly j true z‖ ^ 2 ≤ 2 ^ (j + 1) := by
+  have := rsPoly_norm j z hz
+  nlinarith [sq_nonneg ‖rsPoly j false z‖]
+
+/-- Trapezoid bump on `[0, w]` with ramps of width `δ`. -/
+noncomputable def tau (w δ u : ℝ) : ℝ := max 0 (min 1 (min u (w - u) / δ))
+
+lemma continuous_tau (w δ : ℝ) : Continuous (tau w δ) := by
+  unfold tau
+  exact continuous_const.max (continuous_const.min
+    ((continuous_id.min (continuous_const.sub continuous_id)).div_const _))
+
+lemma tau_eq_zero_of_nonpos (w δ u : ℝ) (hδ : 0 < δ) (hu : u ≤ 0) : tau w δ u = 0 := by
+  unfold tau
+  have : min u (w - u) / δ ≤ 0 := div_nonpos_of_nonpos_of_nonneg (min_le_left _ _ |>.trans hu) hδ.le
+  exact max_eq_left ((min_le_right _ _).trans this)
+
+lemma tau_eq_zero_of_ge (w δ u : ℝ) (hδ : 0 < δ) (hu : w ≤ u) : tau w δ u = 0 := by
+  unfold tau
+  have : min u (w - u) / δ ≤ 0 :=
+    div_nonpos_of_nonpos_of_nonneg (min_le_right _ _ |>.trans (by linarith)) hδ.le
+  exact max_eq_left ((min_le_right _ _).trans this)
+
+lemma tau_eq_one (w δ u : ℝ) (hδ : 0 < δ) (h1 : δ ≤ u) (h2 : u ≤ w - δ) : tau w δ u = 1 := by
+  unfold tau
+  have : 1 ≤ min u (w - u) / δ := by
+    rw [le_div_iff₀ hδ, one_mul]; exact le_min h1 (by linarith)
+  rw [min_eq_left this]; simp
+
+/-- The continuous Rudin–Shapiro sign profile on `[0, 2^j w]`. -/
+noncomputable def G (j : ℕ) (w δ s : ℝ) : ℝ :=
+  ∑ m ∈ Finset.range (2 ^ j), rs j true m * tau w δ (s - m * w)
+
+lemma continuous_G (j : ℕ) (w δ : ℝ) : Continuous (G j w δ) := by
+  unfold G
+  exact continuous_finsetSum _ (fun m _ =>
+    continuous_const.mul ((continuous_tau w δ).comp (continuous_id.sub continuous_const)))
+
+lemma G_mid (j : ℕ) (w δ s : ℝ) (hw : 0 < w) (hδ : 0 < δ) (m : ℕ) (hm : m < 2 ^ j)
+    (h1 : m * w + δ ≤ s) (h2 : s ≤ (m + 1) * w - δ) : G j w δ s = rs j true m := by
+  unfold G
+  rw [Finset.sum_eq_single m]
+  · rw [tau_eq_one w δ _ hδ (by linarith) (by linarith), mul_one]
+  · intro m' _ hne
+    rcases lt_or_gt_of_ne hne with hlt | hlt
+    · have : (m' : ℝ) + 1 ≤ m := by exact_mod_cast hlt
+      rw [tau_eq_zero_of_ge w δ _ hδ (by nlinarith), mul_zero]
+    · have : (m : ℝ) + 1 ≤ m' := by exact_mod_cast hlt
+      rw [tau_eq_zero_of_nonpos w δ _ hδ (by nlinarith), mul_zero]
+  · intro h; exact absurd (Finset.mem_range.2 hm) h
+
+/-- `Ky ν s = e^{iνs} + e^{-iνs}`. -/
+noncomputable def Ky (ν s : ℝ) : ℂ := E ν s + E (-ν) s
+
+lemma continuous_Ky (ν : ℝ) : Continuous (Ky ν) := (continuous_E ν).add (continuous_E (-ν))
+
+lemma norm_Ky_le (ν s : ℝ) : ‖Ky ν s‖ ≤ 2 := by
+  unfold Ky; refine (norm_add_le _ _).trans ?_; rw [norm_E, norm_E]; norm_num
+
+lemma E_neg_arg (ν s : ℝ) : E ν (-s) = E (-ν) s := by unfold E; ring_nf
+
+lemma symm_integral (φ : ℝ → ℂ) (hφ : Continuous φ) (ν : ℝ) :
+    ∫ y in (-Real.pi)..Real.pi, φ (Real.arccos (Real.cos y)) * E ν y =
+      ∫ s in (0 : ℝ)..Real.pi, φ s * Ky ν s := by
+  have hc : Continuous (fun y => φ (Real.arccos (Real.cos y)) * E ν y) :=
+    (hφ.comp (Real.continuous_arccos.comp Real.continuous_cos)).mul (continuous_E ν)
+  rw [← intervalIntegral.integral_add_adjacent_intervals (b := 0) (hc.intervalIntegrable _ _)
+    (hc.intervalIntegrable _ _)]
+  have hu : Set.uIcc 0 Real.pi = Set.Icc 0 Real.pi := Set.uIcc_of_le Real.pi_pos.le
+  have h1 : ∫ y in (-Real.pi)..0, φ (Real.arccos (Real.cos y)) * E ν y =
+      ∫ s in (0 : ℝ)..Real.pi, φ s * E (-ν) s := by
+    have h := intervalIntegral.integral_comp_neg (a := 0) (b := Real.pi)
+      (fun y => φ (Real.arccos (Real.cos y)) * E ν y)
+    simp only [neg_zero] at h
+    rw [← h]
+    refine intervalIntegral.integral_congr (fun s hs => ?_)
+    rw [hu] at hs
+    simp only [Real.cos_neg, E_neg_arg, Real.arccos_cos hs.1 hs.2]
+  have h2 : ∫ y in (0 : ℝ)..Real.pi, φ (Real.arccos (Real.cos y)) * E ν y =
+      ∫ s in (0 : ℝ)..Real.pi, φ s * E ν s := by
+    refine intervalIntegral.integral_congr (fun s hs => ?_)
+    rw [hu] at hs
+    simp only [Real.arccos_cos hs.1 hs.2]
+  rw [h1, h2, ← intervalIntegral.integral_add (f := fun s => φ s * E (-ν) s)
+    (g := fun s => φ s * E ν s) ((hφ.mul (continuous_E _)).intervalIntegrable _ _)
+    ((hφ.mul (continuous_E _)).intervalIntegrable _ _)]
+  refine intervalIntegral.integral_congr (fun s _ => ?_)
+  simp only [Ky]; ring
+
+lemma norm_exp_sub_mul_Ky_le (a b ν s : ℝ) :
+    ‖(Complex.exp (↑a * Complex.I) - Complex.exp (↑b * Complex.I)) * Ky ν s‖ ≤ 4 := by
+  rw [norm_mul]
+  have h1 : ‖Complex.exp (↑a * Complex.I) - Complex.exp (↑b * Complex.I)‖ ≤ 2 := by
+    refine (norm_sub_le _ _).trans ?_
+    rw [Complex.norm_exp_ofReal_mul_I, Complex.norm_exp_ofReal_mul_I]; norm_num
+  have h2 := norm_Ky_le ν s
+  nlinarith [norm_nonneg (Complex.exp (↑a * Complex.I) - Complex.exp (↑b * Complex.I)),
+    norm_nonneg (Ky ν s)]
+
+lemma cell_err (j : ℕ) (w δ θ ν : ℝ) (hw : 0 < w) (hδ : 0 < δ) (hδw : 2 * δ ≤ w)
+    (m : ℕ) (hm : m < 2 ^ j) :
+    ‖∫ s in (m * w)..((m + 1) * w), (Complex.exp (↑(G j w δ s * θ) * Complex.I) -
+      Complex.exp (↑(rs j true m * θ) * Complex.I)) * Ky ν s‖ ≤ 8 * δ := by
+  set D : ℝ → ℂ := fun s => (Complex.exp (↑(G j w δ s * θ) * Complex.I) -
+      Complex.exp (↑(rs j true m * θ) * Complex.I)) * Ky ν s with hD
+  have hDc : Continuous D := by
+    rw [hD]
+    exact (((Complex.continuous_ofReal.comp ((continuous_G j w δ).mul continuous_const)).mul
+      continuous_const).cexp.sub continuous_const).mul (continuous_Ky ν)
+  have hint : ∀ a b : ℝ, IntervalIntegrable D volume a b := fun a b => hDc.intervalIntegrable a b
+  rw [← intervalIntegral.integral_add_adjacent_intervals (b := m * w + δ) (hint _ _) (hint _ _),
+    ← intervalIntegral.integral_add_adjacent_intervals (a := m * w + δ) (b := (m + 1) * w - δ)
+      (hint _ _) (hint _ _)]
+  have hmid : ∫ s in (m * w + δ)..((m + 1) * w - δ), D s = 0 := by
+    rw [← intervalIntegral.integral_zero (a := m * w + δ) (b := (m + 1) * w - δ) (μ := volume)
+      (E := ℂ)]
+    refine intervalIntegral.integral_congr (fun s hs => ?_)
+    rw [Set.uIcc_of_le (by nlinarith)] at hs
+    simp only [hD, G_mid j w δ s hw hδ m hm hs.1 hs.2, sub_self, zero_mul]
+  rw [hmid, zero_add]
+  have hb : ∀ a b : ℝ, ‖∫ s in a..b, D s‖ ≤ 4 * |b - a| := fun a b =>
+    intervalIntegral.norm_integral_le_of_norm_le_const (fun s _ => norm_exp_sub_mul_Ky_le _ _ _ _)
+  refine (norm_add_le _ _).trans ?_
+  have e1 := hb (m * w) (m * w + δ)
+  have e2 := hb ((m + 1) * w - δ) ((m + 1) * w)
+  rw [show m * w + δ - m * w = δ by ring, abs_of_pos hδ] at e1
+  rw [show (m + 1) * w - ((m + 1) * w - δ) = δ by ring, abs_of_pos hδ] at e2
+  linarith
+
+lemma cells_sum (j : ℕ) (w : ℝ) (hπ : (2 ^ j : ℝ) * w = Real.pi) (g : ℝ → ℂ) (hg : Continuous g) :
+    ∑ m ∈ Finset.range (2 ^ j), ∫ s in (m * w)..((m + 1) * w), g s =
+      ∫ s in (0 : ℝ)..Real.pi, g s := by
+  have h := intervalIntegral.sum_integral_adjacent_intervals (a := fun k : ℕ => (k : ℝ) * w)
+    (n := 2 ^ j) (f := g) (μ := volume) (fun k _ => hg.intervalIntegrable _ _)
+  simp only [Nat.cast_zero, zero_mul, Nat.cast_add, Nat.cast_one, Nat.cast_pow, Nat.cast_ofNat,
+    hπ] at h
+  exact h
+
+lemma exp_eps (ε θ : ℝ) (hε : ε ^ 2 = 1) :
+    Complex.exp (↑(ε * θ) * Complex.I) = ↑(Real.cos θ) + ↑ε * ↑(Real.sin θ) * Complex.I := by
+  have : (ε - 1) * (ε + 1) = 0 := by ring_nf; linarith
+  rcases mul_eq_zero.1 this with h | h
+  · rw [show ε = 1 by linarith]
+    rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin]; simp
+  · rw [show ε = -1 by linarith]
+    rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin]; simp
+
+/-- The `y`-coefficient of the sign profile. -/
+noncomputable def Hy (j : ℕ) (w ν : ℝ) : ℂ :=
+  ∑ m ∈ Finset.range (2 ^ j), (rs j true m : ℂ) * ∫ s in (m * w)..((m + 1) * w), Ky ν s
+
+lemma main_cells (j : ℕ) (w θ ν : ℝ) (hπ : (2 ^ j : ℝ) * w = Real.pi) :
+    ∑ m ∈ Finset.range (2 ^ j), ∫ s in (m * w)..((m + 1) * w),
+      Complex.exp (↑(rs j true m * θ) * Complex.I) * Ky ν s =
+    ↑(Real.cos θ) * (∫ s in (0 : ℝ)..Real.pi, Ky ν s) + ↑(Real.sin θ) * Complex.I * Hy j w ν := by
+  rw [← cells_sum j w hπ _ (continuous_Ky ν), Finset.mul_sum, Hy, Finset.mul_sum,
+    ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl (fun m _ => ?_)
+  rw [exp_eps _ θ (rs_sq j true m), intervalIntegral.integral_const_mul]
+  ring
+
+lemma y_decomp (j : ℕ) (w δ θ ν : ℝ) (hw : 0 < w) (hδ : 0 < δ) (hδw : 2 * δ ≤ w)
+    (hπ : (2 ^ j : ℝ) * w = Real.pi) :
+    ‖(∫ s in (0 : ℝ)..Real.pi, Complex.exp (↑(G j w δ s * θ) * Complex.I) * Ky ν s) -
+      (↑(Real.cos θ) * (∫ s in (0 : ℝ)..Real.pi, Ky ν s) + ↑(Real.sin θ) * Complex.I * Hy j w ν)‖ ≤
+      8 * δ * 2 ^ j := by
+  have hc : Continuous (fun s => Complex.exp (↑(G j w δ s * θ) * Complex.I) * Ky ν s) :=
+    ((Complex.continuous_ofReal.comp ((continuous_G j w δ).mul continuous_const)).mul
+      continuous_const).cexp.mul (continuous_Ky ν)
+  rw [← cells_sum j w hπ _ hc, ← main_cells j w θ ν hπ, ← Finset.sum_sub_distrib]
+  have hc2 : ∀ m : ℕ, Continuous (fun s => Complex.exp (↑(rs j true m * θ) * Complex.I) * Ky ν s) :=
+    fun m => continuous_const.mul (continuous_Ky ν)
+  refine (norm_sum_le _ _).trans ?_
+  calc ∑ m ∈ Finset.range (2 ^ j), ‖(∫ s in (m * w)..((m + 1) * w),
+        Complex.exp (↑(G j w δ s * θ) * Complex.I) * Ky ν s) -
+        ∫ s in (m * w)..((m + 1) * w), Complex.exp (↑(rs j true m * θ) * Complex.I) * Ky ν s‖
+      ≤ ∑ m ∈ Finset.range (2 ^ j), 8 * δ := by
+        refine Finset.sum_le_sum (fun m hm => ?_)
+        rw [← intervalIntegral.integral_sub (hc.intervalIntegrable _ _)
+          ((hc2 m).intervalIntegrable _ _)]
+        simp_rw [← sub_mul]
+        exact cell_err j w δ θ ν hw hδ hδw m (Finset.mem_range.1 hm)
+    _ = 8 * δ * 2 ^ j := by simp; ring
+
+lemma cell_E (ν w : ℝ) (m : ℕ) :
+    ∫ s in (m * w)..((m + 1) * w), E ν s = E ν w ^ m * ∫ u in (0 : ℝ)..w, E ν u := by
+  have h := intervalIntegral.integral_comp_add_right (E ν) ((m : ℝ) * w) (a := 0) (b := w)
+  rw [zero_add, show w + (m : ℝ) * w = ((m : ℝ) + 1) * w by ring] at h
+  rw [← h, ← intervalIntegral.integral_const_mul]
+  refine intervalIntegral.integral_congr (fun u _ => ?_)
+  simp only [E]
+  rw [← Complex.exp_nat_mul, ← Complex.exp_add]
+  congr 1; push_cast; ring
+
+lemma norm_int_E_le (ν w : ℝ) (hw : 0 < w) : ‖∫ u in (0 : ℝ)..w, E ν u‖ ≤ w := by
+  have := intervalIntegral.norm_integral_le_of_norm_le_const (a := 0) (b := w) (C := 1)
+    (f := E ν) (fun u _ => (norm_E ν u).le)
+  rwa [sub_zero, abs_of_pos hw, one_mul] at this
+
+lemma Hy_eq (j : ℕ) (w ν : ℝ) : Hy j w ν =
+    (∫ u in (0 : ℝ)..w, E ν u) * rsPoly j true (E ν w) +
+      (∫ u in (0 : ℝ)..w, E (-ν) u) * rsPoly j true (E (-ν) w) := by
+  unfold Hy rsPoly
+  rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl (fun m _ => ?_)
+  rw [show (fun s => Ky ν s) = fun s => E ν s + E (-ν) s from rfl,
+    intervalIntegral.integral_add ((continuous_E _).intervalIntegrable _ _)
+      ((continuous_E _).intervalIntegrable _ _), cell_E, cell_E]
+  ring
+
+lemma norm_Hy_le (j N : ℕ) (w ν : ℝ) (hw : 0 < w) (hN : 0 < N) (hπ : (2 ^ j : ℝ) * w = Real.pi)
+    (hj : 8 * (N : ℝ) ^ 2 ≤ 2 ^ j) : ‖Hy j w ν‖ ≤ Real.pi / N := by
+  have hN' : (0 : ℝ) < N := by exact_mod_cast hN
+  have key : ∀ a : ℝ, ‖(∫ u in (0 : ℝ)..w, E a u) * rsPoly j true (E a w)‖ ≤ Real.pi / (2 * N) := by
+    intro a
+    rw [norm_mul]
+    have h1 := norm_int_E_le a w hw
+    have h2 := rsPoly_sq_le j (E a w) (norm_E a w)
+    have h3 : (w * ‖rsPoly j true (E a w)‖) ^ 2 ≤ (Real.pi / (2 * N)) ^ 2 := by
+      have hM : (0 : ℝ) < 2 ^ j := by positivity
+      have hw' : w = Real.pi / 2 ^ j := by field_simp; linarith
+      rw [pow_succ (2 : ℝ) j] at h2
+      rw [mul_pow]
+      calc w ^ 2 * ‖rsPoly j true (E a w)‖ ^ 2 ≤ w ^ 2 * (2 ^ j * 2) := by gcongr
+        _ = 2 * Real.pi ^ 2 / 2 ^ j := by rw [hw']; field_simp
+        _ ≤ 2 * Real.pi ^ 2 / (8 * (N : ℝ) ^ 2) := by gcongr
+        _ = (Real.pi / (2 * N)) ^ 2 := by field_simp; ring
+    have h4 : w * ‖rsPoly j true (E a w)‖ ≤ Real.pi / (2 * N) :=
+      (pow_le_pow_iff_left₀ (by positivity) (by positivity) two_ne_zero).1 h3
+    calc ‖∫ u in (0 : ℝ)..w, E a u‖ * ‖rsPoly j true (E a w)‖
+        ≤ w * ‖rsPoly j true (E a w)‖ := by gcongr
+      _ ≤ _ := h4
+  rw [Hy_eq]
+  refine (norm_add_le _ _).trans ?_
+  have := key ν; have := key (-ν)
+  calc _ ≤ Real.pi / (2 * N) + Real.pi / (2 * N) := by linarith
+    _ = Real.pi / N := by field_simp; ring
+
+lemma box_integral (g : ℝ × ℝ → ℂ) (hg : Continuous g) :
+    ∫ k in OscInt.Statements.torusBox, g k =
+      ∫ x in (-Real.pi)..Real.pi, ∫ y in (-Real.pi)..Real.pi, g (x, y) := by
+  have hpi : -Real.pi ≤ Real.pi := by linarith [Real.pi_pos]
+  have hint : IntegrableOn g (Set.Icc (-Real.pi) Real.pi ×ˢ Set.Icc (-Real.pi) Real.pi)
+      ((volume : Measure ℝ).prod (volume : Measure ℝ)) := by
+    rw [← Measure.volume_eq_prod]
+    exact hg.continuousOn.integrableOn_compact (isCompact_Icc.prod isCompact_Icc)
+  unfold OscInt.Statements.torusBox
+  rw [Measure.volume_eq_prod, setIntegral_prod _ hint, intervalIntegral.integral_of_le hpi,
+    ← integral_Icc_eq_integral_Ioc]
+  refine setIntegral_congr_fun measurableSet_Icc (fun x _ => ?_)
+  rw [intervalIntegral.integral_of_le hpi, integral_Icc_eq_integral_Ioc]
+
+/-- Cell width `π / 2^j`. -/
+noncomputable def wP (j : ℕ) : ℝ := Real.pi / 2 ^ j
+
+/-- Ramp width `π / (16 · 2^j · N)`. -/
+noncomputable def dP (j N : ℕ) : ℝ := Real.pi / (16 * 2 ^ j * N)
+
+/-- `θ_N(x) = arccos f_N(x)`. -/
+noncomputable def th (N : ℕ) (x : ℝ) : ℝ := Real.arccos (fN N x)
+
+lemma continuous_th (N : ℕ) : Continuous (th N) := Real.continuous_arccos.comp (continuous_fN N)
+
+/-- The refuting phase `Ψ(x, y) = G(arccos(cos y)) · arccos(f_N(x))`. -/
+noncomputable def Psi (N j : ℕ) (k : ℝ × ℝ) : ℝ :=
+  G j (wP j) (dP j N) (Real.arccos (Real.cos k.2)) * th N k.1
+
+lemma continuous_Gc (N j : ℕ) :
+    Continuous (fun y : ℝ => G j (wP j) (dP j N) (Real.arccos (Real.cos y))) :=
+  (continuous_G _ _ _).comp (Real.continuous_arccos.comp Real.continuous_cos)
+
+lemma continuous_Psi (N j : ℕ) : Continuous (Psi N j) := by
+  unfold Psi
+  exact ((continuous_Gc N j).comp continuous_snd).mul ((continuous_th N).comp continuous_fst)
+
+lemma Psi_per1 (N j : ℕ) (k : ℝ × ℝ) : Psi N j (k.1 + 2 * Real.pi, k.2) = Psi N j k := by
+  simp only [Psi, th, fN_periodic]
+
+lemma Psi_per2 (N j : ℕ) (k : ℝ × ℝ) : Psi N j (k.1, k.2 + 2 * Real.pi) = Psi N j k := by
+  simp only [Psi, Real.cos_add_two_pi]
+
+/-- The `y`-integral at fixed amplitude `θ`. -/
+noncomputable def Jy (N j : ℕ) (θ ν : ℝ) : ℂ :=
+  ∫ y in (-Real.pi)..Real.pi,
+    Complex.exp (↑(G j (wP j) (dP j N) (Real.arccos (Real.cos y)) * θ) * Complex.I) * E ν y
+
+lemma continuous_Jy (N j : ℕ) (ν : ℝ) : Continuous (fun x => Jy N j (th N x) ν) := by
+  unfold Jy
+  refine intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' (μ := volume)
+    (f := fun x y => Complex.exp (↑(G j (wP j) (dP j N) (Real.arccos (Real.cos y)) * th N x) *
+      Complex.I) * E ν y) ?_ _ _
+  exact ((Complex.continuous_ofReal.comp (((continuous_Gc N j).comp continuous_snd).mul
+    ((continuous_th N).comp continuous_fst))).mul continuous_const).cexp.mul
+    ((continuous_E ν).comp continuous_snd)
+
+lemma box_eq (N j : ℕ) (ν₁ ν₂ : ℝ) :
+    ∫ k in OscInt.Statements.torusBox,
+      Complex.exp (↑(Psi N j k + (ν₁ * k.1 + ν₂ * k.2)) * Complex.I) =
+    ∫ x in (-Real.pi)..Real.pi, E ν₁ x * Jy N j (th N x) ν₂ := by
+  rw [box_integral]
+  · refine intervalIntegral.integral_congr (fun x _ => ?_)
+    simp only [Jy]
+    rw [← intervalIntegral.integral_const_mul]
+    refine intervalIntegral.integral_congr (fun y _ => ?_)
+    simp only [E, Psi, ← Complex.exp_add]
+    congr 1; push_cast; ring
+  · exact ((Complex.continuous_ofReal.comp ((continuous_Psi N j).add ((continuous_const.mul
+      continuous_fst).add (continuous_const.mul continuous_snd)))).mul continuous_const).cexp
+
+lemma S_eq_Ky (ν : ℝ) : S ν = ∫ s in (0 : ℝ)..Real.pi, Ky ν s := by
+  have h := symm_integral (fun _ => (1 : ℂ)) continuous_const ν
+  simp only [one_mul] at h
+  exact h
+
+lemma Jy_decomp (N j : ℕ) (hN : 0 < N) (θ ν : ℝ) :
+    ‖Jy N j θ ν - (↑(Real.cos θ) * S ν + ↑(Real.sin θ) * Complex.I * Hy j (wP j) ν)‖ ≤
+      Real.pi / (2 * N) := by
+  have hN' : (0 : ℝ) < N := by exact_mod_cast hN
+  have hM : (0 : ℝ) < 2 ^ j := by positivity
+  have hw : 0 < wP j := by unfold wP; positivity
+  have hδ : 0 < dP j N := by unfold dP; positivity
+  have hδw : 2 * dP j N ≤ wP j := by
+    have e : 2 * dP j N = wP j * (1 / (8 * N)) := by unfold dP wP; field_simp; ring
+    have h1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
+    rw [e]
+    exact mul_le_of_le_one_right hw.le (by rw [div_le_one (by positivity)]; linarith)
+  have hπ : (2 ^ j : ℝ) * wP j = Real.pi := by unfold wP; field_simp
+  have h := y_decomp j (wP j) (dP j N) θ ν hw hδ hδw hπ
+  have h8 : 8 * dP j N * 2 ^ j = Real.pi / (2 * N) := by unfold dP; field_simp; ring
+  rw [h8] at h
+  unfold Jy
+  rw [symm_integral (fun s => Complex.exp (↑(G j (wP j) (dP j N) s * θ) * Complex.I))
+    ((Complex.continuous_ofReal.comp ((continuous_G _ _ _).mul continuous_const)).mul
+      continuous_const).cexp, S_eq_Ky]
+  exact h
+
+/-- The `x`-coefficient of `sin θ_N`. -/
+noncomputable def Gt (N : ℕ) (ν : ℝ) : ℂ := ∫ x in (-Real.pi)..Real.pi, (Real.sin (th N x) : ℂ) * E ν x
+
+lemma norm_Gt_le (N : ℕ) (ν : ℝ) : ‖Gt N ν‖ ≤ 2 * Real.pi := by
+  have := intervalIntegral.norm_integral_le_of_norm_le_const (a := -Real.pi) (b := Real.pi) (C := 1)
+    (f := fun x => (Real.sin (th N x) : ℂ) * E ν x) (fun x _ => by
+      rw [norm_mul, norm_E, mul_one, Complex.norm_real, Real.norm_eq_abs]; exact Real.abs_sin_le_one _)
+  unfold Gt
+  rw [abs_of_pos (by linarith [Real.pi_pos])] at this
+  linarith
+
+lemma F_eq_cos (N : ℕ) (ν : ℝ) :
+    F N ν = ∫ x in (-Real.pi)..Real.pi, (Real.cos (th N x) : ℂ) * E ν x := by
+  unfold F
+  refine intervalIntegral.integral_congr (fun x _ => ?_)
+  have h := abs_fN_le N x
+  rw [th, Real.cos_arccos (by linarith [(abs_le.1 h).1]) (by linarith [(abs_le.1 h).2])]
+
+lemma decomp (N j : ℕ) (hN : 0 < N) (ν₁ ν₂ : ℝ) :
+    ‖(∫ k in OscInt.Statements.torusBox,
+      Complex.exp (↑(Psi N j k + (ν₁ * k.1 + ν₂ * k.2)) * Complex.I)) -
+      (S ν₂ * F N ν₁ + Complex.I * Hy j (wP j) ν₂ * Gt N ν₁)‖ ≤ Real.pi ^ 2 / N := by
+  have hN' : (0 : ℝ) < N := by exact_mod_cast hN
+  have hcE := continuous_E ν₁
+  have hcos : Continuous (fun x => (Real.cos (th N x) : ℂ) * E ν₁ x) :=
+    (Complex.continuous_ofReal.comp (Real.continuous_cos.comp (continuous_th N))).mul hcE
+  have hsin : Continuous (fun x => (Real.sin (th N x) : ℂ) * E ν₁ x) :=
+    (Complex.continuous_ofReal.comp (Real.continuous_sin.comp (continuous_th N))).mul hcE
+  have i1 : Continuous (fun x => S ν₂ * (↑(Real.cos (th N x)) * E ν₁ x)) :=
+    continuous_const.mul hcos
+  have i2 : Continuous (fun x => Complex.I * Hy j (wP j) ν₂ * (↑(Real.sin (th N x)) * E ν₁ x)) :=
+    continuous_const.mul hsin
+  have main : S ν₂ * F N ν₁ + Complex.I * Hy j (wP j) ν₂ * Gt N ν₁ =
+      ∫ x in (-Real.pi)..Real.pi, E ν₁ x *
+        (↑(Real.cos (th N x)) * S ν₂ + ↑(Real.sin (th N x)) * Complex.I * Hy j (wP j) ν₂) := by
+    have hc : ∫ x in (-Real.pi)..Real.pi, E ν₁ x *
+        (↑(Real.cos (th N x)) * S ν₂ + ↑(Real.sin (th N x)) * Complex.I * Hy j (wP j) ν₂) =
+        ∫ x in (-Real.pi)..Real.pi, (S ν₂ * (↑(Real.cos (th N x)) * E ν₁ x) +
+          Complex.I * Hy j (wP j) ν₂ * (↑(Real.sin (th N x)) * E ν₁ x)) :=
+      intervalIntegral.integral_congr (fun x _ => by ring)
+    rw [hc, intervalIntegral.integral_add (i1.intervalIntegrable (μ := volume) _ _)
+      (i2.intervalIntegrable (μ := volume) _ _), intervalIntegral.integral_const_mul,
+      intervalIntegral.integral_const_mul, F_eq_cos, Gt]
+  have hm : Continuous (fun x => E ν₁ x *
+      (↑(Real.cos (th N x)) * S ν₂ + ↑(Real.sin (th N x)) * Complex.I * Hy j (wP j) ν₂)) :=
+    hcE.mul (((Complex.continuous_ofReal.comp (Real.continuous_cos.comp (continuous_th N))).mul
+      continuous_const).add (((Complex.continuous_ofReal.comp (Real.continuous_sin.comp
+        (continuous_th N))).mul continuous_const).mul continuous_const))
+  have j1 : Continuous (fun x => E ν₁ x * Jy N j (th N x) ν₂) := hcE.mul (continuous_Jy N j ν₂)
+  rw [box_eq, main, ← intervalIntegral.integral_sub (j1.intervalIntegrable (μ := volume) _ _)
+    (hm.intervalIntegrable (μ := volume) _ _)]
+  refine (intervalIntegral.norm_integral_le_of_norm_le_const (C := Real.pi / (2 * N))
+    (fun x _ => ?_)).trans ?_
+  · rw [← mul_sub, norm_mul, norm_E, one_mul]
+    exact Jy_decomp N j hN (th N x) ν₂
+  · rw [abs_of_pos (by linarith [Real.pi_pos])]
+    apply le_of_eq; field_simp; ring
+
+lemma norm_S_int_le' (n : ℤ) : ‖S n‖ ≤ 2 * Real.pi := by
+  have h := norm_S_int_le n
+  split_ifs at h
+  · exact h
+  · linarith [Real.pi_pos]
+
+lemma int_bound (N j : ℕ) (hN : 0 < N) (hj : 8 * (N : ℝ) ^ 2 ≤ 2 ^ j) (n : ℤ × ℤ) :
+    ‖∫ k in OscInt.Statements.torusBox,
+      Complex.exp (↑(1 * Psi N j k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤
+      5 * Real.pi ^ 2 / N := by
+  have hN' : (0 : ℝ) < N := by exact_mod_cast hN
+  have hw : 0 < wP j := by unfold wP; positivity
+  have hπ : (2 ^ j : ℝ) * wP j = Real.pi := by unfold wP; field_simp
+  simp only [one_mul]
+  have d := decomp N j hN n.1 n.2
+  have h1 : ‖S n.2 * F N n.1‖ ≤ 2 * Real.pi * (Real.pi / N) := by
+    rw [norm_mul]
+    exact mul_le_mul (norm_S_int_le' _) (norm_F_int_le N hN _) (norm_nonneg _) (by positivity)
+  have h2 : ‖Complex.I * Hy j (wP j) n.2 * Gt N n.1‖ ≤ Real.pi / N * (2 * Real.pi) := by
+    rw [norm_mul, norm_mul, Complex.norm_I, one_mul]
+    exact mul_le_mul (norm_Hy_le j N _ _ hw hN hπ hj) (norm_Gt_le _ _) (norm_nonneg _) (by positivity)
+  have h3 := norm_sub_norm_le (∫ k in OscInt.Statements.torusBox,
+      Complex.exp (↑(Psi N j k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I))
+    (S n.2 * F N n.1 + Complex.I * Hy j (wP j) n.2 * Gt N n.1)
+  have h4 := norm_add_le (S n.2 * F N n.1) (Complex.I * Hy j (wP j) n.2 * Gt N n.1)
+  have e : 5 * Real.pi ^ 2 / N = 2 * Real.pi * (Real.pi / N) + Real.pi / N * (2 * Real.pi) +
+      Real.pi ^ 2 / N := by field_simp; ring
+  rw [e]; linarith
+
+lemma half_bound (N j : ℕ) (hN : 0 < N) (hj : 8 * (N : ℝ) ^ 2 ≤ 2 ^ j) :
+    (2 * Real.pi * ∑ k ∈ Finset.range N, 1 / ((k : ℝ) + 1) - 3 * Real.pi ^ 2) / N ≤
+    ‖∫ k in OscInt.Statements.torusBox,
+      Complex.exp (↑(Psi N j k + (1 / 2 * k.1 + 0 * k.2)) * Complex.I)‖ := by
+  have hN' : (0 : ℝ) < N := by exact_mod_cast hN
+  have hw : 0 < wP j := by unfold wP; positivity
+  have hπ : (2 ^ j : ℝ) * wP j = Real.pi := by unfold wP; field_simp
+  have d := decomp N j hN (1 / 2) 0
+  have hS : ‖S 0‖ = 2 * Real.pi := by
+    rw [S_zero, show (2 * (Real.pi : ℂ)) = ((2 * Real.pi : ℝ) : ℂ) by push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith [Real.pi_pos])]
+  have h1 : 2 * Real.pi * ((1 / N) * ∑ k ∈ Finset.range N, 1 / ((k : ℝ) + 1)) ≤
+      ‖S 0 * F N (1 / 2)‖ := by
+    rw [norm_mul, hS]
+    exact mul_le_mul_of_nonneg_left (norm_F_half_ge N hN) (by linarith [Real.pi_pos])
+  have h2 : ‖Complex.I * Hy j (wP j) 0 * Gt N (1 / 2)‖ ≤ Real.pi / N * (2 * Real.pi) := by
+    rw [norm_mul, norm_mul, Complex.norm_I, one_mul]
+    exact mul_le_mul (norm_Hy_le j N _ _ hw hN hπ hj) (norm_Gt_le _ _) (norm_nonneg _) (by positivity)
+  have h3 := norm_sub_norm_le (S 0 * F N (1 / 2) + Complex.I * Hy j (wP j) 0 * Gt N (1 / 2))
+    (∫ k in OscInt.Statements.torusBox,
+      Complex.exp (↑(Psi N j k + (1 / 2 * k.1 + 0 * k.2)) * Complex.I))
+  rw [norm_sub_rev] at h3
+  have h4 := norm_sub_norm_le (S 0 * F N (1 / 2)) (-(Complex.I * Hy j (wP j) 0 * Gt N (1 / 2)))
+  rw [sub_neg_eq_add, norm_neg] at h4
+  have e : (2 * Real.pi * ∑ k ∈ Finset.range N, 1 / ((k : ℝ) + 1) - 3 * Real.pi ^ 2) / N =
+      2 * Real.pi * ((1 / N) * ∑ k ∈ Finset.range N, 1 / ((k : ℝ) + 1)) -
+        Real.pi / N * (2 * Real.pi) - Real.pi ^ 2 / N := by field_simp; ring
+  rw [e]; linarith
+
+lemma two_pow_bound (N : ℕ) : 8 * (N : ℝ) ^ 2 ≤ 2 ^ (2 * N + 3) := by
+  have h1 : N ^ 2 ≤ (2 ^ N) ^ 2 := Nat.pow_le_pow_left (Nat.lt_two_pow_self).le 2
+  have h2 : 8 * N ^ 2 ≤ 2 ^ (2 * N + 3) := by
+    rw [pow_add, mul_comm 2 N, pow_mul]; norm_num; linarith
+  exact_mod_cast h2
+
+theorem refute (D : ℝ) : ∃ (Ψ : ℝ × ℝ → ℝ) (B : ℝ), Continuous Ψ ∧
+    (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) ∧
+    (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) ∧
+    (∀ n : ℤ × ℤ, ‖∫ k in OscInt.Statements.torusBox,
+      Complex.exp (↑(1 * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) ∧
+    D * B < ‖∫ k in OscInt.Statements.torusBox,
+      (1 : ℂ) * Complex.exp (↑(1 * (Ψ k + OscInt.Statements.lin (1 / 2, 0) k)) * Complex.I)‖ := by
+  have hpi := Real.pi_pos
+  obtain ⟨N₀, hN₀⟩ := Filter.eventually_atTop.1 (Filter.tendsto_atTop.1
+    Real.tendsto_sum_range_one_div_nat_succ_atTop ((5 * Real.pi * |D| + 3 * Real.pi) / 2 + 1))
+  obtain ⟨N, hN, hH⟩ : ∃ N : ℕ, 0 < N ∧ (5 * Real.pi * |D| + 3 * Real.pi) / 2 + 1 ≤
+      ∑ i ∈ Finset.range N, 1 / ((i : ℝ) + 1) :=
+    ⟨max N₀ 1, lt_of_lt_of_le one_pos (le_max_right _ _), hN₀ _ (le_max_left _ _)⟩
+  have hN' : (0 : ℝ) < N := by exact_mod_cast hN
+  refine ⟨Psi N (2 * N + 3), 5 * Real.pi ^ 2 / N, continuous_Psi _ _, Psi_per1 _ _, Psi_per2 _ _,
+    int_bound N _ hN (two_pow_bound N), ?_⟩
+  have hI : ∫ k in OscInt.Statements.torusBox,
+      (1 : ℂ) * Complex.exp (↑(1 * (Psi N (2 * N + 3) k + OscInt.Statements.lin (1 / 2, 0) k)) *
+        Complex.I) = ∫ k in OscInt.Statements.torusBox,
+      Complex.exp (↑(Psi N (2 * N + 3) k + (1 / 2 * k.1 + 0 * k.2)) * Complex.I) := by
+    refine integral_congr_ae (ae_of_all _ (fun k => ?_))
+    simp [OscInt.Statements.lin]
+  rw [hI]
+  refine lt_of_lt_of_le ?_ (half_bound N _ hN (two_pow_bound N))
+  have k1 : D * (5 * Real.pi ^ 2) ≤ |D| * (5 * Real.pi ^ 2) :=
+    mul_le_mul_of_nonneg_right (le_abs_self D) (by positivity)
+  have k0 := mul_le_mul_of_nonneg_left hH (by positivity : (0 : ℝ) ≤ 2 * Real.pi)
+  have k2 : |D| * (5 * Real.pi ^ 2) <
+      2 * Real.pi * ∑ i ∈ Finset.range N, 1 / ((i : ℝ) + 1) - 3 * Real.pi ^ 2 := by
+    nlinarith [abs_nonneg D]
+  rw [mul_div_assoc', div_lt_div_iff_of_pos_right hN']
+  linarith
+
+end OscInt.FaWitnessAux
+
+namespace OscInt.API.TorusLocalizationC2Sanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularDecaySanity MeasureTheory
+open scoped ContDiff
+
+/-- PLANTED copy of `TorusLocalizationC2Statement`: support condition tsupport χ ⊆ (−π, π)² dropped. -/
+def P_TorusLocalizationC2Statement : Prop :=
+  ∀ χ : ℝ × ℝ → ℂ, ContDiff ℝ 2 χ →
+    ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ locConstC2 χ * B
+
+/-- Witness: at `χ = 1` (`C²`, `locConstC2 1 = 6`), `t = 1`, `p = (1/2, 0)`, the lead's compiled K2 witness gives,
+for `D = locConstC2 1`, a continuous biperiodic phase and a valid coefficient bound `B` with
+`D B < ‖∫ e^{i(Ψ + k₁/2)}‖` (`OscInt.FaWitnessAux.refute`, copied above). -/
+theorem witness_L_a : ¬ P_TorusLocalizationC2Statement := by
+  intro h
+  obtain ⟨Ψ, B, hc, h1, h2, h3, h4⟩ := OscInt.FaWitnessAux.refute (locConstC2 (fun _ => (1 : ℂ)))
+  exact absurd (h (fun _ => 1) contDiff_const Ψ 1 (1 / 2, 0) B hc h1 h2 h3) (not_le.2 h4)
+
+/-- The constant the refutation beats: `locConstC2 1 = 6`. -/
+theorem witness_L_a_six : locConstC2 (fun _ => (1 : ℂ)) = 6 := by
+  rw [loc2_locConstC2_const, norm_one, mul_one]
+
+#print axioms witness_L_a
+
+#print axioms witness_L_a_six
+
+end OscInt.API.TorusLocalizationC2Sanity

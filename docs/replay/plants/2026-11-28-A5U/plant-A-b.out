@@ -1,0 +1,162 @@
+exit code 1
+plant-A-b.lean:17:49: error: Type mismatch
+  LT.lt.le hr
+has type
+  (0 : ℕ) ≤ r
+but is expected to have type
+  (0 : ℝ) ≤ 1
+plant-A-b.lean:37:13: error: Application type mismatch: The argument
+  hr
+has type
+  r > 0
+but is expected to have type
+  ↑r > 0
+in the application
+  And.intro hr
+plant-A-b.lean:40:22: error: Application type mismatch: The argument
+  hα
+has type
+  |α - a₀| ≤ ↑r
+but is expected to have type
+  |α - a₀| ≤ 1
+in the application
+  hC α t n hα
+plant-A-b.lean:50:13: error: Application type mismatch: The argument
+  hr
+has type
+  r > 0
+but is expected to have type
+  ↑r > 0
+in the application
+  And.intro hr
+plant-A-b.lean:51:22: error: Application type mismatch: The argument
+  hα
+has type
+  |α - a₀| ≤ ↑r
+but is expected to have type
+  |α - a₀| ≤ 1
+in the application
+  hC α t n hα
+plant-A-b.lean:71:19: error: Application type mismatch: The argument
+  hδ0
+has type
+  0 < min r 1
+but is expected to have type
+  min (↑r) 1 > 0
+in the application
+  And.intro hδ0
+plant-A-b.lean:72:15: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  HPow ℕ ℝ ℕ
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+plant-A-b.lean:73:8: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ?x ^ ?n
+in the target expression
+  ((16 / min r 1) ^ 3) ^ (1 / 3) = 16 / min r 1
+
+h : P_TriCrossoverUpperStatement
+a₀ : ℝ
+ha : |a₀| = triExceptional
+r : ℕ
+hr : r > 0
+C : ℝ
+hC :
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ 1 → 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+hδ0 : 0 < min r 1
+n : ℤ × ℤ
+⊢ ((16 / min r 1) ^ 3) ^ (1 / 3) = 16 / min r 1
+plant-A-b.lean:76:24: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ?m.280 ≤ @HDiv.hDiv ?m.276 ?m.276 ?m.276 (@instHDiv ?m.276 GroupWithZero.toDivInvMonoid.toDiv) ?m.281 ?m.282
+in the target expression
+  1 ≤ @HDiv.hDiv ℕ ℕ ℕ (@instHDiv ℕ Nat.instDiv) 16 (min r 1)
+
+h : P_TriCrossoverUpperStatement
+a₀ : ℝ
+ha : |a₀| = triExceptional
+r : ℕ
+hr : r > 0
+C : ℝ
+hC :
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ 1 → 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+hδ0 : 0 < min r 1
+n : ℤ × ℤ
+⊢ 1 ≤ 16 / min r 1
+plant-A-b.lean:77:47: error: `field_simp` made no progress on the goal
+plant-A-b.lean:79:44: error: Application type mismatch: The argument
+  hδ0
+has type
+  (0 : ℕ) < min r 1
+but is expected to have type
+  (0 : ℝ) < ↑(min r 1)
+in the application
+  abs_of_pos hδ0
+plant-A-b.lean:87:19: error: Application type mismatch: The argument
+  hδ0
+has type
+  0 < min r 1
+but is expected to have type
+  min (↑r) 1 > 0
+in the application
+  And.intro hδ0
+plant-A-b.lean:88:72: error: Application type mismatch: The argument
+  hδ0
+has type
+  (0 : ℕ) < min r 1
+but is expected to have type
+  (0 : ℝ) < ↑(min r 1)
+in the application
+  abs_of_pos hδ0
+plant-A-b.lean:89:39: error: Application type mismatch: The argument
+  hδ0
+has type
+  (0 : ℕ) < min r 1
+but is expected to have type
+  (0 : ℝ) < ↑(min r 1)
+in the application
+  abs_of_pos hδ0
+plant-A-b.lean:98:12: error: Application type mismatch: The argument
+  hr
+has type
+  r > 0
+but is expected to have type
+  ↑r > 0
+in the application
+  And.intro hr
+plant-A-b.lean:98:36: error: Application type mismatch: The argument
+  hC
+has type
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ 1 → 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+but is expected to have type
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ ↑r → 1 ≤ t → ‖triKernel α t n‖ ≤ ?m.112 * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+in the application
+  a5u_window_lt hD ha hC
+plant-A-b.lean:98:43: error: Application type mismatch: The argument
+  hC
+has type
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ 1 → 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+but is expected to have type
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ ↑r → 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+in the application
+  Exists.intro C hC
+plant-A-b.lean:96:99: error: unsolved goals
+h : P_TriCrossoverUpperStatement
+hD : TriDecayLowerStatement
+a₀ : ℝ
+ha : |a₀| = triExceptional
+r : ℕ
+hr : r > 0
+C : ℝ
+hC :
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ 1 → 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+⊢ ∃ r > 0,
+    r < triExceptional ∧
+      ∃ C,
+        ∀ (α t : ℝ) (n : ℤ × ℤ),
+          |α - a₀| ≤ r → 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))

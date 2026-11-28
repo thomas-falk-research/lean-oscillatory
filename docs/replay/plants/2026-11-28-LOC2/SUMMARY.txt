@@ -1,0 +1,56 @@
+ok-L-a: accepted (want accepted) [4.2 s]
+plant-L-a: rejected (want recorded) [4.3 s]
+    first error: plant-L-a.lean:24:28: error: Application type mismatch: The argument
+witness-L-a: accepted (want accepted) [6.4 s]
+  L-a [support condition tsupport χ ⊆ (−π, π)² dropped]: DETECTED (witness compiled: ¬ planted statement)
+ok-L-b: accepted (want accepted) [4.3 s]
+plant-L-b: rejected (want recorded) [4.4 s]
+    first error: plant-L-b.lean:23:81: error: unsolved goals
+witness-L-b: accepted (want accepted) [3.9 s]
+  L-b [the factor 4 ↦ 0]: DETECTED (witness compiled: ¬ planted statement)
+ok-L-c: accepted (want accepted) [4.0 s]
+plant-L-c: rejected (want recorded) [4.3 s]
+    first error: plant-L-c.lean:25:9: error: Application type mismatch: The argument
+witness-L-c: accepted (want accepted) [3.8 s]
+  L-c [regularity C² ↦ C¹]: NOT DETECTED (compiled: planted statement → draft statement, a strengthening; no refutation)
+ok-L-d: accepted (want accepted) [4.0 s]
+plant-L-d: rejected (want recorded) [4.4 s]
+    first error: plant-L-d.lean:25:2: error: Type mismatch
+witness-L-d: accepted (want accepted) [4.0 s]
+  L-d [hypothesis on all n ↦ on n ≠ 0 (zero mode dropped)]: DETECTED (witness compiled: ¬ planted statement)
+ok-L-e: accepted (want accepted) [4.4 s]
+plant-L-e: rejected (want recorded) [4.2 s]
+    first error: plant-L-e.lean:23:81: error: unsolved goals
+witness-L-e: accepted (want accepted) [4.3 s]
+  L-e [the coefficient 3/2 of ‖χ‖ ↦ 0]: NOT DETECTED (compiled: planted statement → draft statement, a strengthening; no refutation)
+ok-L-f: accepted (want accepted) [4.3 s]
+plant-L-f: rejected (want recorded) [4.2 s]
+    first error: plant-L-f.lean:46:37: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-L-f: accepted (want accepted) [4.1 s]
+  L-f [Laplacian ∂₁² + ∂₂² ↦ 2∂₁²]: NOT DETECTED (compiled characterisation: the planted definition differs on a datum; no refutation)
+ok-L-g: accepted (want accepted) [4.3 s]
+plant-L-g: rejected (want recorded) [4.4 s]
+    first error: plant-L-g.lean:31:4: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-L-g: accepted (want accepted) [4.4 s]
+  L-g [normalisation (2π)^{−2} of boxL2 dropped]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it
+ok-L-h: accepted (want accepted) [4.1 s]
+plant-L-h: rejected (want recorded) [4.4 s]
+    first error: plant-L-h.lean:25:2: error: Type mismatch
+witness-L-h: accepted (want accepted) [4.2 s]
+  L-h [time t dropped from the lattice coefficients]: DETECTED via the proved batch-K2 statement (witness compiled: true statement → ¬ planted statement, and ¬ planted statement from OscInt.API.*)
+ok-L-i: accepted (want accepted) [4.2 s]
+plant-L-i: rejected (want recorded) [4.2 s]
+    first error: plant-L-i.lean:23:81: error: unsolved goals
+witness-L-i: accepted (want accepted) [4.0 s]
+  L-i [the factor 4 ↦ 1/8]: NOT DETECTED (compiled: planted statement → draft statement, a strengthening; no refutation)
+ok-L-j: accepted (want accepted) [4.3 s]
+plant-L-j: rejected (want recorded) [4.3 s]
+    first error: plant-L-j.lean:25:2: error: Type mismatch
+witness-L-j: accepted (want accepted) [4.1 s]
+  L-j [hypothesis Continuous Ψ dropped]: NOT DETECTED (compiled: planted statement → draft statement, a strengthening; no refutation)
+ok-L-k: accepted (want accepted) [4.0 s]
+plant-L-k: rejected (want recorded) [4.2 s]
+    first error: plant-L-k.lean:25:2: error: Type mismatch
+witness-L-k: accepted (want accepted) [4.1 s]
+  L-k [periodicity of Ψ in k₁ dropped]: NOT DETECTED (compiled: planted statement → draft statement, a strengthening; no refutation)
+generator run 2026-11-28T13:24:53Z to 2026-11-28T13:27:13Z UTC

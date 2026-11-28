@@ -1,0 +1,121 @@
+import OscInt.Front.TorusLocalizationC2Sanity
+
+namespace OscInt.API.TorusLocalizationC2Sanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularDecaySanity MeasureTheory
+open scoped ContDiff
+
+/-- PLANTED copy of `boxL2`: normalisation (2π)^{−2} of boxL2 dropped. -/
+noncomputable def P_boxL2 (f : ℝ × ℝ → ℂ) : ℝ :=
+  Real.sqrt (1 * ∫ k in torusBox, ‖f k‖ ^ 2)
+
+/-- PLANTED copy of `locConstC2`: normalisation (2π)^{−2} of boxL2 dropped. -/
+noncomputable def P_locConstC2 (χ : ℝ × ℝ → ℂ) : ℝ :=
+  4 * ((3 / 2) * P_boxL2 χ + P_boxL2 (boxPartial₁ χ) + P_boxL2 (boxPartial₂ χ) + P_boxL2 (boxLaplacian χ))
+
+/-- PLANTED copy of `TorusLocalizationC2Statement`: normalisation (2π)^{−2} of boxL2 dropped. -/
+def P_TorusLocalizationC2Statement : Prop :=
+  ∀ χ : ℝ × ℝ → ℂ, ContDiff ℝ 2 χ →
+    tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi →
+    ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ P_locConstC2 χ * B
+
+theorem P_loc2_boxL2_nonneg (f : ℝ × ℝ → ℂ) : 0 ≤ P_boxL2 f := Real.sqrt_nonneg _
+
+/-- The box has mass `1` for the normalised norm: `boxL2 c = ‖c‖`. -/
+theorem P_loc2_boxL2_const (c : ℂ) : P_boxL2 (fun _ => c) = ‖c‖ := by
+  rw [P_boxL2, setIntegral_const, volume_real_torusBox, smul_eq_mul,
+    show 1 / (4 * Real.pi ^ 2) * ((2 * Real.pi) ^ 2 * ‖c‖ ^ 2) = ‖c‖ ^ 2 by field_simp; ring]
+  exact Real.sqrt_sq (norm_nonneg c)
+
+theorem P_loc2_boxL2_zero : P_boxL2 0 = 0 := by
+  rw [show (0 : ℝ × ℝ → ℂ) = fun _ => (0 : ℂ) from rfl, P_loc2_boxL2_const, norm_zero]
+
+/-- A generic constant: `boxL2 (1 + 2i) = √5`. -/
+theorem P_loc2_boxL2_one_two : P_boxL2 (fun _ => (1 + 2 * Complex.I : ℂ)) = Real.sqrt 5 := by
+  rw [P_loc2_boxL2_const, Complex.norm_def, Complex.normSq_apply]
+  congr 1
+  simp
+  norm_num
+
+/-- `locConstC2 c = 4 · (3/2) ‖c‖ = 6 ‖c‖` for a constant. -/
+theorem P_loc2_locConstC2_const (c : ℂ) : P_locConstC2 (fun _ => c) = 6 * ‖c‖ := by
+  rw [P_locConstC2, loc2_boxPartial₁_const, loc2_boxPartial₂_const, loc2_boxLaplacian_const, P_loc2_boxL2_const,
+    P_loc2_boxL2_zero]
+  ring
+
+theorem P_loc2_locConstC2_nonneg (χ : ℝ × ℝ → ℂ) : 0 ≤ P_locConstC2 χ := by
+  unfold P_locConstC2
+  have := P_loc2_boxL2_nonneg χ
+  have := P_loc2_boxL2_nonneg (boxPartial₁ χ)
+  have := P_loc2_boxL2_nonneg (boxPartial₂ χ)
+  have := P_loc2_boxL2_nonneg (boxLaplacian χ)
+  positivity
+
+/-- **K2-FQ** with `χ₁`: the constant `locConstC2 χ₁` for every continuous biperiodic phase, time and velocity. -/
+theorem P_loc2_chi1 (h : P_TorusLocalizationC2Statement) :
+    ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, chi1 k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ P_locConstC2 chi1 * B :=
+  h chi1 loc2_chi1_contDiff chi1_tsupport
+
+/-- **K2-FQ** with `χ₁` and the zero phase: `‖∫ χ₁ e^{it p·k}‖ ≤ locConstC2 χ₁ (2π)²`. -/
+theorem P_loc2_chi1_zero_phase (h : P_TorusLocalizationC2Statement) (t : ℝ) (p : ℝ × ℝ) :
+    ‖∫ k in torusBox, chi1 k * Complex.exp (↑(t * ((fun _ : ℝ × ℝ => (0 : ℝ)) k + lin p k)) * Complex.I)‖ ≤
+      P_locConstC2 chi1 * (2 * Real.pi) ^ 2 :=
+  P_loc2_chi1 h _ t p _ continuous_const (fun _ => rfl) (fun _ => rfl) (loc2_zero_phase_coeff t)
+
+/-- **K2-FQ** at `t = 0`: `‖∫ χ₁‖ ≤ locConstC2 χ₁ (2π)²`. -/
+theorem P_loc2_chi1_time_zero (h : P_TorusLocalizationC2Statement) :
+    ‖∫ k in torusBox, chi1 k‖ ≤ P_locConstC2 chi1 * (2 * Real.pi) ^ 2 := by
+  have := P_loc2_chi1_zero_phase h 0 0
+  simpa using this
+
+/-- **K2-FQ forces `0 < locConstC2 χ₁`** (`∫ χ₁ ≠ 0`): the constant cannot vanish on a cutoff with nonzero mass. -/
+theorem P_loc2_locConst_chi1_pos (h : P_TorusLocalizationC2Statement) : 0 < P_locConstC2 chi1 := by
+  have h1 := P_loc2_chi1_time_zero h
+  have h2 : 0 < ‖∫ k in torusBox, chi1 k‖ := norm_pos_iff.mpr integral_chi1_ne_zero
+  by_contra hn
+  have : P_locConstC2 chi1 * (2 * Real.pi) ^ 2 ≤ 0 :=
+    mul_nonpos_of_nonpos_of_nonneg (not_lt.mp hn) (by positivity)
+  linarith
+
+/-- **K2-FQ implies K2-F** (prose, item 3), with `D = locConstC2 χ`. -/
+theorem P_loc2_implies_K2F (h : P_TorusLocalizationC2Statement) : TorusLocalizationStatement :=
+  fun χ hχ hs => ⟨P_locConstC2 χ, fun Ψ t p B hΨ h1 h2 hB =>
+    h χ (hχ.of_le (WithTop.coe_le_coe.mpr le_top)) hs Ψ t p B hΨ h1 h2 hB⟩
+
+/-- **K2-FQ with K2-U**: for a `C²` cutoff supported in the box, the localised `triPhase α` integral at every real
+velocity is at most `locConstC2 χ · C t^{−triRate α}`. -/
+theorem P_loc2_triU (h : P_TorusLocalizationC2Statement) (hU : TriDecayUpperStatement) (χ : ℝ × ℝ → ℂ)
+    (hχ : ContDiff ℝ 2 χ) (hs : tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi) (α : ℝ) :
+    ∃ C : ℝ, ∀ (t : ℝ) (p : ℝ × ℝ), 1 ≤ t →
+      ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (triPhase α k + lin p k)) * Complex.I)‖ ≤
+        P_locConstC2 χ * (C * t ^ (-triRate α)) := by
+  obtain ⟨C, hC⟩ := hU α
+  obtain ⟨h1, h2, h3⟩ := triPhase_periodic α
+  exact ⟨C, fun t p ht => h χ hχ hs _ t p _ h1 h2 h3 fun n => hC t n ht⟩
+
+/-- **K2-FQ in the non-trivial regime** (lessons 47), with the proved K2-U at `α = 0`: for `χ₁` and the phase
+`triPhase 0` there are `t ≥ 1` and a valid coefficient bound `B` with `locConstC2 χ₁ · B < ∫ χ₁`, the trivial bound
+(`loc2_trivial_bound`); K2-FQ then bounds the localised integral at every velocity by `locConstC2 χ₁ · B`. -/
+theorem P_loc2_nontrivial (h : P_TorusLocalizationC2Statement) :
+    ∃ t B : ℝ, 1 ≤ t ∧ (∀ n : ℤ × ℤ, ‖triKernel 0 t n‖ ≤ B) ∧ P_locConstC2 chi1 * B < ∫ k, bump1 k ∧
+      ∀ p : ℝ × ℝ,
+        ‖∫ k in torusBox, chi1 k * Complex.exp (↑(t * (triPhase 0 k + lin p k)) * Complex.I)‖ ≤
+          P_locConstC2 chi1 * B := by
+  obtain ⟨C, hC⟩ := OscInt.API.triDecayUpper 0
+  rw [triRate_zero] at hC
+  have hI : 0 < ∫ k, bump1 k := bump1.integral_pos
+  obtain ⟨t, -, ht1, hlt⟩ := rate_separation 0 (2 / 3) (∫ k, bump1 k) (P_locConstC2 chi1 * C) 1 (by norm_num) hI
+  rw [neg_zero, Real.rpow_zero, mul_one] at hlt
+  obtain ⟨h1, h2, h3⟩ := triPhase_periodic 0
+  refine ⟨t, C * t ^ (-(2 / 3 : ℝ)), ht1, fun n => hC t n ht1, by rw [← mul_assoc]; exact hlt,
+    fun p => P_loc2_chi1 h _ t p _ h1 h2 h3 fun n => hC t n ht1⟩
+
+end OscInt.API.TorusLocalizationC2Sanity

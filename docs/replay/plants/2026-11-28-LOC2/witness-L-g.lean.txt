@@ -1,0 +1,49 @@
+import OscInt.Front.TorusLocalizationC2Sanity
+
+namespace OscInt.API.TorusLocalizationC2Sanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularDecaySanity MeasureTheory
+open scoped ContDiff
+
+/-- PLANTED copy of `boxL2`: normalisation (2π)^{−2} of boxL2 dropped. -/
+noncomputable def P_boxL2 (f : ℝ × ℝ → ℂ) : ℝ :=
+  Real.sqrt (1 * ∫ k in torusBox, ‖f k‖ ^ 2)
+
+/-- PLANTED copy of `locConstC2`: normalisation (2π)^{−2} of boxL2 dropped. -/
+noncomputable def P_locConstC2 (χ : ℝ × ℝ → ℂ) : ℝ :=
+  4 * ((3 / 2) * P_boxL2 χ + P_boxL2 (boxPartial₁ χ) + P_boxL2 (boxPartial₂ χ) + P_boxL2 (boxLaplacian χ))
+
+/-- PLANTED copy of `TorusLocalizationC2Statement`: normalisation (2π)^{−2} of boxL2 dropped. -/
+def P_TorusLocalizationC2Statement : Prop :=
+  ∀ χ : ℝ × ℝ → ℂ, ContDiff ℝ 2 χ →
+    tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi →
+    ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ P_locConstC2 χ * B
+
+/-- Witness: the unnormalised norm is `2π` times the normalised one, so the draft implies the planted copy. -/
+theorem witness_L_g (h : TorusLocalizationC2Statement) : P_TorusLocalizationC2Statement := by
+  intro χ hχ hs Ψ t p B hΨ h1 h2 hB
+  have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)
+  have hpi : 1 / (4 * Real.pi ^ 2) ≤ 1 := by
+    rw [div_le_one (by positivity)]
+    nlinarith [Real.pi_gt_three]
+  have hmono : ∀ f : ℝ × ℝ → ℂ, boxL2 f ≤ P_boxL2 f := fun f => by
+    unfold boxL2 P_boxL2
+    apply Real.sqrt_le_sqrt
+    have hI : 0 ≤ ∫ k in torusBox, ‖f k‖ ^ 2 := integral_nonneg (fun _ => by positivity)
+    nlinarith
+  have hL : locConstC2 χ ≤ P_locConstC2 χ := by
+    unfold locConstC2 P_locConstC2
+    have := hmono χ
+    have := hmono (boxPartial₁ χ)
+    have := hmono (boxPartial₂ χ)
+    have := hmono (boxLaplacian χ)
+    linarith
+  exact (h χ hχ hs Ψ t p B hΨ h1 h2 hB).trans (mul_le_mul_of_nonneg_right hL hB0)
+
+#print axioms witness_L_g
+
+end OscInt.API.TorusLocalizationC2Sanity

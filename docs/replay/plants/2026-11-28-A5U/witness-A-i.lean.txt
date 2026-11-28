@@ -1,0 +1,36 @@
+import OscInt.Front.TriangularCrossoverSanity
+
+namespace OscInt.API.TriangularCrossoverSanity
+
+open OscInt.Statements OscInt.API.TriangularDecaySanity OscInt.API.TriangularAnisoSanity
+
+/-- PLANTED copy of `crossEnvelope`: envelope plateau value 1 ↦ 0. -/
+noncomputable def P_crossEnvelope (s : ℝ) : ℝ := if s ≤ 1 then 0 else s ^ (-(1 : ℝ) / 4)
+
+/-- PLANTED copy of `TriCrossoverUpperStatement`: envelope plateau value 1 ↦ 0. -/
+def P_TriCrossoverUpperStatement : Prop :=
+  ∀ a₀ : ℝ, |a₀| = triExceptional → ∃ r > 0, ∃ C : ℝ, ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → 1 ≤ t →
+    ‖triKernel α t n‖ ≤ C * t ^ (-(2 : ℝ) / 3) * P_crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 3))
+
+/-- Witness (relative to K2-D): at the centre the planted envelope is `0`, so the plant claims `‖triKernel a* t n‖ ≤
+0`, against K2-D's `c t^{−2/3} > 0`. -/
+theorem witness_A_i_rel (hD : TriDecayLowerStatement) : ¬ P_TriCrossoverUpperStatement := by
+  intro h
+  obtain ⟨r, hr, C, hC⟩ := h triExceptional a5u_abs_exceptional
+  refine a5u_rate_clash hD triExceptional 1 0 1 (by rw [triRate_exceptional]; norm_num) fun t n ht => ?_
+  have h1 := hC triExceptional t n (by rw [sub_self, abs_zero]; exact hr.le) ht
+  have e : P_crossEnvelope (|triExceptional - triExceptional| * t ^ ((1 : ℝ) / 3)) = 0 := by
+    simp [P_crossEnvelope]
+  rw [e, mul_zero] at h1
+  rw [zero_mul]
+  exact h1
+
+/-- Unconditional, from the proved K2-D (`OscInt.API.triDecayLower`). -/
+theorem witness_A_i : ¬ P_TriCrossoverUpperStatement :=
+  witness_A_i_rel OscInt.API.triDecayLower
+
+#print axioms witness_A_i_rel
+
+#print axioms witness_A_i
+
+end OscInt.API.TriangularCrossoverSanity

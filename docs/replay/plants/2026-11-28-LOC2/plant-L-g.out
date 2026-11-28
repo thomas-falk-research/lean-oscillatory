@@ -1,0 +1,8 @@
+exit code 1
+plant-L-g.lean:31:4: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  1 / (4 * Real.pi ^ 2) * ((2 * Real.pi) ^ 2 * ‖c‖ ^ 2)
+in the target expression
+  √(1 * ((2 * Real.pi) ^ 2 * ‖c‖ ^ 2)) = ‖c‖
+
+c : ℂ
+⊢ √(1 * ((2 * Real.pi) ^ 2 * ‖c‖ ^ 2)) = ‖c‖

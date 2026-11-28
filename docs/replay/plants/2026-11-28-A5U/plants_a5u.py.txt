@@ -1,0 +1,397 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the draft batch-A5U statement against copies of its sanity theorems.
+
+As the batch-K2 generator (docs/replay/plants/2026-11-28-K2/plants_k2.py.txt). The draft statement module
+(OscInt/Statements/TriangularCrossover.lean, not frozen, already built in the repository) is read from a copy
+(stmt/TriangularCrossover.lean); the sanity layer (src/OscInt/Front/TriangularCrossoverSanity.lean, namespace
+OscInt.API.TriangularCrossoverSanity) is compiled into a scratch library placed first on LEAN_PATH, so every generated
+file imports OscInt.Front.TriangularCrossoverSanity and contains, under the prefix P_: a copy of the statement
+constant (and, for a plant in the definition `crossEnvelope`, a copy of that definition too), with exactly one
+textual mutation in the planted copy (none in the ok- copy), followed by copies of every sanity declaration whose
+text names a copied constant (renamed P_..., so that they go through the copy). Witness files contain the planted
+copy and compiled theorems of one kind:
+  not   : ¬ planted statement, from unconditional data                              -> DETECTED
+  relp  : true statement → ¬ planted statement, and ¬ planted statement from the     -> DETECTED (via the proved
+          proved true statement (OscInt.API.*, batch K2)                               statement)
+  weak  : draft statement → planted statement                                     -> TRUE WEAKENING
+No file proves, or uses a proof of, the batch-A5U statement. A rejected script alone is never counted as a detection.
+Compiler output is recorded with the scratch directory removed from the paths.
+Usage: plants_a5u.py WORK OUTDIR SCRATCHDIR
+"""
+import os, re, subprocess, sys, textwrap, time
+
+WORK, OUT, SCR = [os.path.abspath(a) for a in sys.argv[1:4]]
+os.makedirs(OUT, exist_ok=True)
+os.makedirs(SCR, exist_ok=True)
+STMT = open(os.path.join(WORK, 'stmt/TriangularCrossover.lean')).read().split('\n')
+SAN_ALL = open(os.path.join(WORK, 'src/OscInt/Front/TriangularCrossoverSanity.lean')).read()
+NS = 'OscInt.API.TriangularCrossoverSanity'
+SAN = SAN_ALL[SAN_ALL.index('namespace ' + NS):].split('\n')
+ST, ENV = 'TriCrossoverUpperStatement', 'crossEnvelope'
+DECL = re.compile(r"^(?:noncomputable )?(theorem|def) ([^\s:({\[]+)")
+WORD = re.compile(r"[^\W\d][\w']*")
+
+
+def block(lines, name):
+    for i, l in enumerate(lines):
+        m = DECL.match(l)
+        if m and m.group(2) == name:
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {name}')
+
+
+def data_blocks():
+    res, cur = {}, []
+    for l in SAN[1:] + ['']:
+        if l.strip() == '':
+            for c in cur:
+                m = DECL.match(c)
+                if m:
+                    res[m.group(2)] = (len(res), '\n'.join(cur))
+                    break
+            cur = []
+        else:
+            cur.append(l)
+    return res
+
+
+DATA = data_blocks()
+
+
+def words(t):
+    ls = t.split('\n')
+    k = next(i for i, l in enumerate(ls) if DECL.match(l))
+    return set(WORD.findall('\n'.join(ls[k:])))
+
+
+def through(names):
+    """Sanity declarations (in file order) whose text names one of `names` or an earlier selected declaration."""
+    sel, known = [], set(names)
+    for n, (_, t) in sorted(DATA.items(), key=lambda kv: kv[1][0]):
+        if words(t) & known:
+            sel.append(n)
+            known.add(n)
+    return sel
+
+
+assert through([ST]), ST
+
+HEAD = f"""namespace {NS}
+
+open OscInt.Statements OscInt.API.TriangularDecaySanity OscInt.API.TriangularAnisoSanity
+"""
+CLOSE = f'\n\nend {NS}\n'
+
+
+def wrap(s):
+    return '\n'.join(textwrap.wrap('/-- ' + s + ' -/', 118))
+
+
+def rename(text, names):
+    ls = text.split('\n')
+    k = next(i for i, l in enumerate(ls) if DECL.match(l))
+    doc, decl = '\n'.join(ls[:k]), '\n'.join(ls[k:])
+    for n in sorted(names, key=len, reverse=True):
+        decl = re.sub(r"(?<![\w.'])" + re.escape(n) + r"(?![\w'])", 'P_' + n, decl)
+    return (doc + '\n' if doc else '') + decl
+
+
+def make(copies, mut, planted, note, witness=None):
+    old, new, count = mut
+    blocks = [block(STMT, c) for c in copies]
+    joined = '\n\n'.join(blocks)
+    if planted:
+        assert joined.count(old) == count, (copies, old, joined.count(old))
+        joined = joined.replace(old, new)
+    blocks = joined.split('\n\n')
+    assert len(blocks) == len(copies)
+    parts = []
+    for c, b in zip(copies, blocks):
+        doc = f'PLANTED copy of `{c}`: {note}.' if planted else f'Unplanted copy of `{c}`.'
+        parts.append(wrap(doc) + '\n' + b)
+    names = list(copies)
+    if witness is None:
+        th = through(copies)
+        parts += [DATA[n][1] for n in th]
+        names += th
+    text = '\n\n'.join(rename(p, names) for p in parts)
+    if witness is not None:
+        text += '\n\n' + witness.strip('\n')
+        for n in re.findall(r'^theorem ([A-Za-z_0-9]+)', witness, re.M):
+            text += f'\n\n#print axioms {n}'
+    return 'import OscInt.Front.TriangularCrossoverSanity\n\n' + HEAD + '\n' + text + CLOSE
+
+
+def compile_text(tag, text):
+    src = os.path.join(SCR, tag + '.lean')
+    open(src, 'w').write(text)
+    t0 = time.time()
+    r = subprocess.run([os.path.join(WORK, 'lean.sh'), src], capture_output=True, text=True, timeout=1800)
+    out = (r.stdout + r.stderr).replace(SCR + os.sep, '').replace(WORK + os.sep, '')
+    out = re.sub(r'elapsed [0-9.]+ s rc=\d+\n?', '', out)
+    return r.returncode, out, time.time() - t0
+
+
+DELTA = '''  obtain ⟨δ, hδ, hδr, hδa⟩ : ∃ δ : ℝ, 0 < δ ∧ δ ≤ r ∧ δ < triExceptional :=
+    ⟨min r triExceptional / 2, half_pos (lt_min hr hp),
+      (half_le_self (lt_min hr hp).le).trans (min_le_left _ _),
+      (half_lt_self (lt_min hr hp)).trans_le (min_le_right _ _)⟩'''
+
+TAIL34 = '''  calc ‖triKernel ALPHA t n‖ ≤ C * (t ^ (-(2 : ℝ) / 3) * crossEnvelope (triExceptional * t ^ ((1 : ℝ) / 3))) := h1
+    _ ≤ C * (triExceptional ^ (-(1 : ℝ) / 4) * t ^ (-(3 : ℝ) / 4)) :=
+        mul_le_mul_of_nonneg_left (a5u_envelope_le hp (by linarith)) hC0
+    _ = C * triExceptional ^ (-(1 : ℝ) / 4) * t ^ (-(3 / 4 : ℝ)) := by
+        rw [show (-(3 : ℝ) / 4) = -(3 / 4) by ring]
+        ring'''
+
+
+def proved(name, which):
+    return f'''
+/-- Unconditional, from the proved {which} (`OscInt.API.{'triDecayLower' if which == 'K2-D' else 'triDecayUpper'}`). -/
+theorem {name} : ¬ P_TriCrossoverUpperStatement :=
+  {name}_rel OscInt.API.{'triDecayLower' if which == 'K2-D' else 'triDecayUpper'}
+'''
+
+
+PLANTS = [
+    # id, copies, (old, new, count), note, witness kind, witness text
+    ('A-a', [ENV, ST], ('s ^ (-(1 : ℝ) / 4)', 's ^ (-(1 : ℝ) / 3)', 1), 'envelope exponent −1/4 ↦ −1/3', 'relp', r'''
+/-- Witness (relative to K2-D): at `α = a* + δ`, `0 < δ ≤ min(r, a*)/2`, `triRate α = 3/4`, but for `t > δ^{−3}` the
+planted envelope gives `C δ^{−1/3} t^{−7/9}`, a faster rate. -/
+theorem witness_A_a_rel (hD : TriDecayLowerStatement) : ¬ P_TriCrossoverUpperStatement := by
+  intro h
+  have hp := triExceptional_pos
+  obtain ⟨r, hr, C, hC⟩ := h triExceptional a5u_abs_exceptional
+''' + DELTA + r'''
+  refine a5u_rate_clash hD (triExceptional + δ) (7 / 9) (C * δ ^ (-(1 : ℝ) / 3)) (δ⁻¹ ^ 3 + 1)
+    (by rw [a5u_triRate_window a5u_abs_exceptional hδ hδa]; norm_num) fun t n ht => ?_
+  have h3 : 0 ≤ δ⁻¹ ^ 3 := by positivity
+  have ht1 : 1 ≤ t := by linarith
+  have ht0 : 0 < t := by linarith
+  have hs : 1 < δ * t ^ ((1 : ℝ) / 3) := a5u_scale_gt_one hδ (by linarith)
+  have h1 := hC (triExceptional + δ) t n (by rw [add_sub_cancel_left, abs_of_pos hδ]; exact hδr) ht1
+  have e : P_crossEnvelope (δ * t ^ ((1 : ℝ) / 3)) = (δ * t ^ ((1 : ℝ) / 3)) ^ (-(1 : ℝ) / 3) := by
+    simp only [P_crossEnvelope, not_le.mpr hs, ↓reduceIte]
+  rw [add_sub_cancel_left, abs_of_pos hδ, e] at h1
+  have e2 : t ^ (-(2 : ℝ) / 3) * (δ * t ^ ((1 : ℝ) / 3)) ^ (-(1 : ℝ) / 3) =
+      δ ^ (-(1 : ℝ) / 3) * t ^ (-(7 / 9 : ℝ)) := by
+    rw [Real.mul_rpow hδ.le (Real.rpow_nonneg ht0.le _), ← Real.rpow_mul ht0.le, mul_left_comm,
+      ← Real.rpow_add ht0]
+    norm_num
+  calc ‖triKernel (triExceptional + δ) t n‖ ≤
+        C * t ^ (-(2 : ℝ) / 3) * (δ * t ^ ((1 : ℝ) / 3)) ^ (-(1 : ℝ) / 3) := h1
+    _ = C * δ ^ (-(1 : ℝ) / 3) * t ^ (-(7 / 9 : ℝ)) := by rw [mul_assoc, e2, mul_assoc]
+''' + proved('witness_A_a', 'K2-D')),
+    ('A-b', [ST], ('|α - a₀| ≤ r → 1 ≤ t →', '|α - a₀| ≤ 1 → 1 ≤ t →', 1), 'window |α − a₀| ≤ r ↦ ≤ 1 (fixed radius)',
+     'relp', r'''
+/-- Witness (relative to K2-D): the window of radius `1` around `a*` contains `α = 0`, where the bound gives
+`C a*^{−1/4} t^{−3/4}` against K2-D's `c t^{−2/3}` (`triRate 0 = 2/3`). -/
+theorem witness_A_b_rel (hD : TriDecayLowerStatement) : ¬ P_TriCrossoverUpperStatement := by
+  intro h
+  have hp := triExceptional_pos
+  have hlt := triExceptional_lt_half
+  obtain ⟨r, -, C, hC⟩ := h triExceptional a5u_abs_exceptional
+  have h0 : |(0 : ℝ) - triExceptional| = triExceptional := by rw [zero_sub, abs_neg, a5u_abs_exceptional]
+  have hw : |(0 : ℝ) - triExceptional| ≤ 1 := by rw [h0]; linarith
+  have hC0 : 0 ≤ C := a5u_const_nonneg one_pos (hC 0 1 (0, 0) hw le_rfl)
+  refine a5u_rate_clash hD 0 (3 / 4) (C * triExceptional ^ (-(1 : ℝ) / 4)) 1 (by rw [triRate_zero]; norm_num)
+    fun t n ht => ?_
+  have h1 := hC 0 t n hw ht
+  rw [h0, mul_assoc] at h1
+''' + TAIL34.replace('ALPHA', '0') + '\n' + proved('witness_A_b', 'K2-D')),
+    ('A-c', [ST], ('C * t ^ (-(2 : ℝ) / 3) * crossEnvelope', 'C * t ^ (-(3 : ℝ) / 4) * crossEnvelope', 1),
+     'leading rate t^{−2/3} ↦ t^{−3/4}', 'relp', r'''
+/-- Witness (relative to K2-D): at the centre `α = a₀ = a*` the envelope is `1`, so the plant claims `C t^{−3/4}`
+where K2-D gives `c t^{−2/3}` (`triRate a* = 2/3`). -/
+theorem witness_A_c_rel (hD : TriDecayLowerStatement) : ¬ P_TriCrossoverUpperStatement := by
+  intro h
+  obtain ⟨r, hr, C, hC⟩ := h triExceptional a5u_abs_exceptional
+  refine a5u_rate_clash hD triExceptional (3 / 4) C 1 (by rw [triRate_exceptional]; norm_num) fun t n ht => ?_
+  have h1 := hC triExceptional t n (by rw [sub_self, abs_zero]; exact hr.le) ht
+  rw [sub_self, abs_zero, zero_mul, a5u_env_zero, mul_one, show (-(3 : ℝ) / 4) = -(3 / 4) by ring] at h1
+  exact h1
+''' + proved('witness_A_c', 'K2-D')),
+    ('A-m', [ST], ('C * t ^ (-(2 : ℝ) / 3) * crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 3))', 'C * t ^ (-(3 : ℝ) / 4)', 1),
+     'whole bound ↦ C t^{−3/4} (envelope ≡ 1, rate 3/4)', 'relp', r'''
+/-- Witness (relative to K2-D): at the centre `α = a₀ = a*` the plant claims `C t^{−3/4}` where K2-D gives
+`c t^{−2/3}` (`triRate a* = 2/3`). -/
+theorem witness_A_m_rel (hD : TriDecayLowerStatement) : ¬ P_TriCrossoverUpperStatement := by
+  intro h
+  obtain ⟨r, hr, C, hC⟩ := h triExceptional a5u_abs_exceptional
+  refine a5u_rate_clash hD triExceptional (3 / 4) C 1 (by rw [triRate_exceptional]; norm_num) fun t n ht => ?_
+  have h1 := hC triExceptional t n (by rw [sub_self, abs_zero]; exact hr.le) ht
+  rwa [show (-(3 : ℝ) / 4) = -(3 / 4) by ring] at h1
+''' + proved('witness_A_m', 'K2-D')),
+    ('A-d', [ST], ('|α - a₀| ≤ r → 1 ≤ t →', '|α - a₀| ≤ r →', 1), 'hypothesis 1 ≤ t dropped', 'not', r'''
+/-- Witness: at `t = 0`, `α = a₀ = a*` the right side is `0` (`0^{−2/3} = 0`) but `‖triKernel a* 0 (0, 0)‖ = (2π)²`
+(`a5u_time_zero_bite`). -/
+theorem witness_A_d : ¬ P_TriCrossoverUpperStatement := by
+  intro h
+  obtain ⟨r, hr, C, hC⟩ := h triExceptional a5u_abs_exceptional
+  exact a5u_time_zero_bite triExceptional triExceptional C
+    (hC triExceptional 0 (0, 0) (by rw [sub_self, abs_zero]; exact hr.le))
+'''),
+    ('A-e', [ST], ('|a₀| = triExceptional →', 'a₀ = triExceptional →', 1), '|a₀| = a* ↦ a₀ = a* (the centre −a* dropped)',
+     'weak', r'''
+/-- Witness: the draft implies the planted copy (`a₀ = a*` gives `|a₀| = a*`). -/
+theorem witness_A_e (h : TriCrossoverUpperStatement) : P_TriCrossoverUpperStatement :=
+  fun a₀ ha => h a₀ (by rw [ha]; exact a5u_abs_exceptional)
+'''),
+    ('A-f', [ST], ('∃ r > 0,', '∃ r ≥ 0,', 1), 'window radius r > 0 ↦ r ≥ 0', 'weak', r'''
+/-- Witness: the draft implies the planted copy. -/
+theorem witness_A_f (h : TriCrossoverUpperStatement) : P_TriCrossoverUpperStatement := fun a₀ ha => by
+  obtain ⟨r, hr, C, hC⟩ := h a₀ ha
+  exact ⟨r, hr.le, C, hC⟩
+
+/-- The planted copy is already K2-U at `a₀` (`r = 0`): the whole content of A5U is in `r > 0`. -/
+theorem witness_A_f_triU (hU : TriDecayUpperStatement) : P_TriCrossoverUpperStatement := fun a₀ ha => by
+  obtain ⟨C, hC⟩ := hU a₀
+  refine ⟨0, le_rfl, C, fun α t n hα ht => ?_⟩
+  have e : α - a₀ = 0 := abs_eq_zero.mp (le_antisymm hα (abs_nonneg _))
+  rw [e, abs_zero, zero_mul, a5u_env_zero, mul_one]
+  rw [sub_eq_zero] at e
+  subst e
+  have h1 := hC t n ht
+  rwa [a5u_triRate_center ha, show -(2 / 3 : ℝ) = -(2 : ℝ) / 3 by ring] at h1
+
+/-- The planted copy from the proved K2-U (`OscInt.API.triDecayUpper`). -/
+theorem witness_A_f_proved : P_TriCrossoverUpperStatement := witness_A_f_triU OscInt.API.triDecayUpper
+'''),
+    ('A-g', [ST], ('t ^ ((1 : ℝ) / 3))', 't ^ ((1 : ℝ) / 2))', 1), 'crossover scale t^{1/3} ↦ t^{1/2}', 'relp', r'''
+/-- Witness (relative to K2-D): at `α = a* + δ` (`triRate α = 3/4`) the plant gives
+`C t^{−2/3} (δ t^{1/2})^{−1/4} = C δ^{−1/4} t^{−19/24}`, a faster rate. -/
+theorem witness_A_g_rel (hD : TriDecayLowerStatement) : ¬ P_TriCrossoverUpperStatement := by
+  intro h
+  have hp := triExceptional_pos
+  obtain ⟨r, hr, C, hC⟩ := h triExceptional a5u_abs_exceptional
+''' + DELTA + r'''
+  have hw : |triExceptional + δ - triExceptional| ≤ r := by rw [add_sub_cancel_left, abs_of_pos hδ]; exact hδr
+  have hC0 : 0 ≤ C := a5u_const_nonneg one_pos (hC _ 1 (0, 0) hw le_rfl)
+  refine a5u_rate_clash hD (triExceptional + δ) (19 / 24) (C * δ ^ (-(1 : ℝ) / 4)) 1
+    (by rw [a5u_triRate_window a5u_abs_exceptional hδ hδa]; norm_num) fun t n ht => ?_
+  have ht0 : 0 < t := by linarith
+  have h1 := hC _ t n hw ht
+  rw [add_sub_cancel_left, abs_of_pos hδ, mul_assoc] at h1
+  have e2 : t ^ (-(2 : ℝ) / 3) * (δ * t ^ ((1 : ℝ) / 2)) ^ (-(1 : ℝ) / 4) =
+      δ ^ (-(1 : ℝ) / 4) * t ^ (-(19 / 24 : ℝ)) := by
+    rw [Real.mul_rpow hδ.le (Real.rpow_nonneg ht0.le _), ← Real.rpow_mul ht0.le, mul_left_comm,
+      ← Real.rpow_add ht0]
+    norm_num
+  calc ‖triKernel (triExceptional + δ) t n‖ ≤
+        C * (t ^ (-(2 : ℝ) / 3) * crossEnvelope (δ * t ^ ((1 : ℝ) / 2))) := h1
+    _ ≤ C * (t ^ (-(2 : ℝ) / 3) * (δ * t ^ ((1 : ℝ) / 2)) ^ (-(1 : ℝ) / 4)) :=
+        mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left (a5u_env_le_rpow (by positivity))
+          (Real.rpow_nonneg ht0.le _)) hC0
+    _ = C * δ ^ (-(1 : ℝ) / 4) * t ^ (-(19 / 24 : ℝ)) := by rw [e2, mul_assoc]
+''' + proved('witness_A_g', 'K2-D')),
+    ('A-h', [ST], ('t ^ ((1 : ℝ) / 3))', 't ^ ((1 : ℝ) / 4))', 1), 'crossover scale t^{1/3} ↦ t^{1/4}', 'weak', r'''
+/-- Witness: the draft implies the planted copy (`t^{1/4} ≤ t^{1/3}` for `t ≥ 1`, the envelope is antitone). -/
+theorem witness_A_h (h : TriCrossoverUpperStatement) : P_TriCrossoverUpperStatement := fun a₀ ha => by
+  obtain ⟨r, hr, C, hC⟩ := h a₀ ha
+  refine ⟨r, hr, C, fun α t n hα ht => ?_⟩
+  have h1 := hC α t n hα ht
+  have hC0 := a5u_const_nonneg (by linarith) h1
+  have hmono : crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 3)) ≤ crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 4)) :=
+    a5u_env_antitone (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le ht (by norm_num))
+      (abs_nonneg _))
+  exact h1.trans (mul_le_mul_of_nonneg_left hmono (mul_nonneg hC0 (Real.rpow_nonneg (by linarith) _)))
+'''),
+    ('A-i', [ENV, ST], ('then 1 else', 'then 0 else', 1), 'envelope plateau value 1 ↦ 0', 'relp', r'''
+/-- Witness (relative to K2-D): at the centre the planted envelope is `0`, so the plant claims `‖triKernel a* t n‖ ≤
+0`, against K2-D's `c t^{−2/3} > 0`. -/
+theorem witness_A_i_rel (hD : TriDecayLowerStatement) : ¬ P_TriCrossoverUpperStatement := by
+  intro h
+  obtain ⟨r, hr, C, hC⟩ := h triExceptional a5u_abs_exceptional
+  refine a5u_rate_clash hD triExceptional 1 0 1 (by rw [triRate_exceptional]; norm_num) fun t n ht => ?_
+  have h1 := hC triExceptional t n (by rw [sub_self, abs_zero]; exact hr.le) ht
+  have e : P_crossEnvelope (|triExceptional - triExceptional| * t ^ ((1 : ℝ) / 3)) = 0 := by
+    simp [P_crossEnvelope]
+  rw [e, mul_zero] at h1
+  rw [zero_mul]
+  exact h1
+''' + proved('witness_A_i', 'K2-D')),
+    ('A-j', [ST], ('crossEnvelope (|α - a₀| * t', 'crossEnvelope (|α| * t', 1),
+     'envelope argument |α − a₀| ↦ |α| (distance to 0, not to a₀)', 'relp', r'''
+/-- Witness (relative to K2-D): at the centre `α = a₀ = a*` the planted envelope argument is `a* t^{1/3}`, so the
+plant claims `C a*^{−1/4} t^{−3/4}` where K2-D gives `c t^{−2/3}`. -/
+theorem witness_A_j_rel (hD : TriDecayLowerStatement) : ¬ P_TriCrossoverUpperStatement := by
+  intro h
+  have hp := triExceptional_pos
+  obtain ⟨r, hr, C, hC⟩ := h triExceptional a5u_abs_exceptional
+  have hw : |triExceptional - triExceptional| ≤ r := by rw [sub_self, abs_zero]; exact hr.le
+  have hC0 : 0 ≤ C := a5u_const_nonneg one_pos (hC _ 1 (0, 0) hw le_rfl)
+  refine a5u_rate_clash hD triExceptional (3 / 4) (C * triExceptional ^ (-(1 : ℝ) / 4)) 1
+    (by rw [triRate_exceptional]; norm_num) fun t n ht => ?_
+  have h1 := hC _ t n hw ht
+  rw [a5u_abs_exceptional, mul_assoc] at h1
+''' + TAIL34.replace('ALPHA', 'triExceptional') + '\n' + proved('witness_A_j', 'K2-D')),
+    ('A-k', [ENV, ST], ('s ^ (-(1 : ℝ) / 4)', 's ^ (-(1 : ℝ) / 5)', 1), 'envelope exponent −1/4 ↦ −1/5', 'weak', r'''
+/-- Witness: the draft implies the planted copy (`s^{−1/4} ≤ s^{−1/5}` for `s > 1`). So `−1/4` is the strongest
+exponent compatible with K2-D (plant A-a), not the only compatible one. -/
+theorem witness_A_k (h : TriCrossoverUpperStatement) : P_TriCrossoverUpperStatement := fun a₀ ha => by
+  obtain ⟨r, hr, C, hC⟩ := h a₀ ha
+  refine ⟨r, hr, C, fun α t n hα ht => ?_⟩
+  have h1 := hC α t n hα ht
+  have hC0 := a5u_const_nonneg (by linarith) h1
+  have hle : ∀ s, crossEnvelope s ≤ P_crossEnvelope s := fun s => by
+    by_cases hs : s ≤ 1
+    · simp [crossEnvelope, P_crossEnvelope, hs]
+    · simp only [crossEnvelope, P_crossEnvelope, hs, ↓reduceIte]
+      exact Real.rpow_le_rpow_of_exponent_le (not_le.mp hs).le (by norm_num)
+  exact h1.trans (mul_le_mul_of_nonneg_left (hle _) (mul_nonneg hC0 (Real.rpow_nonneg (by linarith) _)))
+'''),
+    ('A-l', [ST], (' * crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 3))', '', 1), 'envelope factor dropped', 'weak', r'''
+/-- Witness: the draft implies the planted copy (`E ≤ 1`, `C ≥ 0`). -/
+theorem witness_A_l (h : TriCrossoverUpperStatement) : P_TriCrossoverUpperStatement := fun a₀ ha => by
+  obtain ⟨r, hr, C, hC⟩ := h a₀ ha
+  refine ⟨r, hr, C, fun α t n hα ht => ?_⟩
+  have h1 := hC α t n hα ht
+  have hC0 := a5u_const_nonneg (by linarith) h1
+  calc ‖triKernel α t n‖ ≤ C * t ^ (-(2 : ℝ) / 3) * crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 3)) := h1
+    _ ≤ C * t ^ (-(2 : ℝ) / 3) * 1 :=
+        mul_le_mul_of_nonneg_left (a5u_env_le_one _) (mul_nonneg hC0 (Real.rpow_nonneg (by linarith) _))
+    _ = C * t ^ (-(2 : ℝ) / 3) := mul_one _
+'''),
+]
+
+VERDICT = {
+    'not': 'DETECTED (witness compiled: ¬ planted statement)',
+    'relp': 'DETECTED via the proved batch-K2 statement (witness compiled: true statement → ¬ planted statement, '
+            'and ¬ planted statement from OscInt.API.*)',
+    'weak': 'TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it',
+}
+
+only = set(os.environ.get('ONLY', '').split(',')) - {''}
+log = []
+t_start = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+for pid, copies, mut, note, kind, wit in PLANTS:
+    if only and pid not in only:
+        continue
+    for tag, planted, w in (('ok-' + pid, False, None), ('plant-' + pid, True, None), ('witness-' + pid, True, wit)):
+        text = make(copies, mut, planted, note, w)
+        rc, out, dt = compile_text(tag, text)
+        want = 'recorded' if tag.startswith('plant-') else 'accepted'
+        got = 'accepted' if rc == 0 else 'rejected'
+        if w is not None and rc == 0:
+            ax = re.findall(r"depends on axioms: \[([^\]]*)\]", out)
+            nth = len(re.findall(r'^theorem ', w, re.M))
+            if len(ax) != nth or any(a.replace(' ', '') != 'propext,Classical.choice,Quot.sound' for a in ax):
+                got = 'rejected (axioms)'
+        open(os.path.join(OUT, tag + '.lean.txt'), 'w').write(text)
+        open(os.path.join(OUT, tag + '.out'), 'w').write(f'exit code {rc}\n' + out)
+        line = f'{tag}: {got} (want {want}) [{dt:.1f} s]'
+        if rc != 0:
+            first = next((l for l in out.split('\n') if 'error' in l), '')
+            line += '\n    first error: ' + first[:110]
+        log.append(line)
+        print(line, flush=True)
+        if tag.startswith('witness-'):
+            v = VERDICT[kind] if got == 'accepted' else 'NOT DETECTED (witness did not compile)'
+            log.append(f'  {pid} [{note}]: {v}')
+            print(log[-1], flush=True)
+t_end = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
+log.append(f'generator run {t_start} to {t_end} UTC')
+open(os.path.join(OUT, 'SUMMARY.txt' if not only else 'SUMMARY-partial.txt'), 'w').write('\n'.join(log) + '\n')

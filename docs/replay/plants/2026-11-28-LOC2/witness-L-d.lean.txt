@@ -1,0 +1,30 @@
+import OscInt.Front.TorusLocalizationC2Sanity
+
+namespace OscInt.API.TorusLocalizationC2Sanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularDecaySanity MeasureTheory
+open scoped ContDiff
+
+/-- PLANTED copy of `TorusLocalizationC2Statement`: hypothesis on all n ↦ on n ≠ 0 (zero mode dropped). -/
+def P_TorusLocalizationC2Statement : Prop :=
+  ∀ χ : ℝ × ℝ → ℂ, ContDiff ℝ 2 χ →
+    tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi →
+    ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, n ≠ 0 → ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ locConstC2 χ * B
+
+/-- Witness: zero phase, `t = 0`: the coefficients vanish off `n = 0`, so `B = 0` is valid, and the plant claims
+`‖∫ χ₁‖ ≤ 0`. -/
+theorem witness_L_d : ¬ P_TorusLocalizationC2Statement := by
+  intro h
+  have h1 := h chi1 loc2_chi1_contDiff chi1_tsupport (fun _ => 0) 0 0 0 continuous_const
+    (fun _ => rfl) (fun _ => rfl) (fun n hn => by rw [lattice_coeff_zero_phase 0 n hn, norm_zero])
+  rw [mul_zero] at h1
+  apply integral_chi1_ne_zero
+  simpa using h1
+
+#print axioms witness_L_d
+
+end OscInt.API.TorusLocalizationC2Sanity

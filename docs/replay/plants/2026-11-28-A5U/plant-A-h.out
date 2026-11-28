@@ -1,0 +1,74 @@
+exit code 1
+plant-A-h.lean:43:44: error: Application type mismatch: The argument
+  a5u_envelope_le hε ht0
+has type
+  t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3)) ≤ |α - a₀| ^ (-1 / 4) * t ^ (-3 / 4)
+but is expected to have type
+  t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 4)) ≤ |α - a₀| ^ (-1 / 4) * t ^ (-3 / 4)
+in the application
+  mul_le_mul_of_nonneg_left (a5u_envelope_le hε ht0)
+plant-A-h.lean:52:18: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ?m.144 ^ (-2 / 3) * crossEnvelope (|α - a₀| * ?m.144 ^ (1 / 3))
+in the target expression
+  ‖triKernel α t n‖ ≤ C * (t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 4)))
+
+h : P_TriCrossoverUpperStatement
+a₀ : ℝ
+ha : |a₀| = triExceptional
+r : ℝ
+hr : r > 0
+C : ℝ
+hC :
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ r → 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 4))
+α t : ℝ
+n : ℤ × ℤ
+hα : |α - a₀| ≤ r
+hne : α ≠ a₀
+ht : 1 ≤ t
+h1 : ‖triKernel α t n‖ ≤ C * (t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 4)))
+⊢ ‖triKernel α t n‖ ≤ C * min (t ^ (-2 / 3)) (|α - a₀| ^ (-1 / 4) * t ^ (-3 / 4))
+plant-A-h.lean:80:44: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ((16 / min r 1) ^ 3) ^ (1 / 3)
+in the target expression
+  ‖triKernel (a₀ + min r 1) ((16 / min r 1) ^ 3) n‖ ≤
+    C * ((16 / min r 1) ^ 3) ^ (-2 / 3) * crossEnvelope (min r 1 * ((16 / min r 1) ^ 3) ^ (1 / 4))
+
+h : P_TriCrossoverUpperStatement
+a₀ : ℝ
+ha : |a₀| = triExceptional
+r : ℝ
+hr : r > 0
+C : ℝ
+hC :
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ r → 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 4))
+hδ0 : 0 < min r 1
+n : ℤ × ℤ
+hroot : ((16 / min r 1) ^ 3) ^ (1 / 3) = 16 / min r 1
+ht : 1 ≤ (16 / min r 1) ^ 3
+e : min r 1 * (16 / min r 1) = 16
+this :
+  ‖triKernel (a₀ + min r 1) ((16 / min r 1) ^ 3) n‖ ≤
+    C * ((16 / min r 1) ^ 3) ^ (-2 / 3) * crossEnvelope (min r 1 * ((16 / min r 1) ^ 3) ^ (1 / 4))
+⊢ ‖triKernel (a₀ + min r 1) ((16 / min r 1) ^ 3) n‖ ≤ C * ((16 / min r 1) ^ 3) ^ (-2 / 3) * (1 / 2)
+plant-A-h.lean:98:43: error: Application type mismatch: The argument
+  hC
+has type
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ r → 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 4))
+but is expected to have type
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ r → 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+in the application
+  Exists.intro C hC
+plant-A-h.lean:98:36: error: Application type mismatch: The argument
+  hC
+has type
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ r → 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 4))
+but is expected to have type
+  ∀ (α t : ℝ) (n : ℤ × ℤ),
+    |α - a₀| ≤ r → 1 ≤ t → ‖triKernel α t n‖ ≤ ?m.112 * t ^ (-2 / 3) * crossEnvelope (|α - a₀| * t ^ (1 / 3))
+in the application
+  a5u_window_lt hD ha hC

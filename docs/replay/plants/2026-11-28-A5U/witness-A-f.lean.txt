@@ -1,0 +1,37 @@
+import OscInt.Front.TriangularCrossoverSanity
+
+namespace OscInt.API.TriangularCrossoverSanity
+
+open OscInt.Statements OscInt.API.TriangularDecaySanity OscInt.API.TriangularAnisoSanity
+
+/-- PLANTED copy of `TriCrossoverUpperStatement`: window radius r > 0 ↦ r ≥ 0. -/
+def P_TriCrossoverUpperStatement : Prop :=
+  ∀ a₀ : ℝ, |a₀| = triExceptional → ∃ r ≥ 0, ∃ C : ℝ, ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → 1 ≤ t →
+    ‖triKernel α t n‖ ≤ C * t ^ (-(2 : ℝ) / 3) * crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 3))
+
+/-- Witness: the draft implies the planted copy. -/
+theorem witness_A_f (h : TriCrossoverUpperStatement) : P_TriCrossoverUpperStatement := fun a₀ ha => by
+  obtain ⟨r, hr, C, hC⟩ := h a₀ ha
+  exact ⟨r, hr.le, C, hC⟩
+
+/-- The planted copy is already K2-U at `a₀` (`r = 0`): the whole content of A5U is in `r > 0`. -/
+theorem witness_A_f_triU (hU : TriDecayUpperStatement) : P_TriCrossoverUpperStatement := fun a₀ ha => by
+  obtain ⟨C, hC⟩ := hU a₀
+  refine ⟨0, le_rfl, C, fun α t n hα ht => ?_⟩
+  have e : α - a₀ = 0 := abs_eq_zero.mp (le_antisymm hα (abs_nonneg _))
+  rw [e, abs_zero, zero_mul, a5u_env_zero, mul_one]
+  rw [sub_eq_zero] at e
+  subst e
+  have h1 := hC t n ht
+  rwa [a5u_triRate_center ha, show -(2 / 3 : ℝ) = -(2 : ℝ) / 3 by ring] at h1
+
+/-- The planted copy from the proved K2-U (`OscInt.API.triDecayUpper`). -/
+theorem witness_A_f_proved : P_TriCrossoverUpperStatement := witness_A_f_triU OscInt.API.triDecayUpper
+
+#print axioms witness_A_f
+
+#print axioms witness_A_f_triU
+
+#print axioms witness_A_f_proved
+
+end OscInt.API.TriangularCrossoverSanity

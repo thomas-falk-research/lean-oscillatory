@@ -1,0 +1,41 @@
+import OscInt.Front.TriangularCrossoverSanity
+
+namespace OscInt.API.TriangularCrossoverSanity
+
+open OscInt.Statements OscInt.API.TriangularDecaySanity OscInt.API.TriangularAnisoSanity
+
+/-- PLANTED copy of `TriCrossoverUpperStatement`: window |α − a₀| ≤ r ↦ ≤ 1 (fixed radius). -/
+def P_TriCrossoverUpperStatement : Prop :=
+  ∀ a₀ : ℝ, |a₀| = triExceptional → ∃ r > 0, ∃ C : ℝ, ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ 1 → 1 ≤ t →
+    ‖triKernel α t n‖ ≤ C * t ^ (-(2 : ℝ) / 3) * crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 3))
+
+/-- Witness (relative to K2-D): the window of radius `1` around `a*` contains `α = 0`, where the bound gives
+`C a*^{−1/4} t^{−3/4}` against K2-D's `c t^{−2/3}` (`triRate 0 = 2/3`). -/
+theorem witness_A_b_rel (hD : TriDecayLowerStatement) : ¬ P_TriCrossoverUpperStatement := by
+  intro h
+  have hp := triExceptional_pos
+  have hlt := triExceptional_lt_half
+  obtain ⟨r, -, C, hC⟩ := h triExceptional a5u_abs_exceptional
+  have h0 : |(0 : ℝ) - triExceptional| = triExceptional := by rw [zero_sub, abs_neg, a5u_abs_exceptional]
+  have hw : |(0 : ℝ) - triExceptional| ≤ 1 := by rw [h0]; linarith
+  have hC0 : 0 ≤ C := a5u_const_nonneg one_pos (hC 0 1 (0, 0) hw le_rfl)
+  refine a5u_rate_clash hD 0 (3 / 4) (C * triExceptional ^ (-(1 : ℝ) / 4)) 1 (by rw [triRate_zero]; norm_num)
+    fun t n ht => ?_
+  have h1 := hC 0 t n hw ht
+  rw [h0, mul_assoc] at h1
+  calc ‖triKernel 0 t n‖ ≤ C * (t ^ (-(2 : ℝ) / 3) * crossEnvelope (triExceptional * t ^ ((1 : ℝ) / 3))) := h1
+    _ ≤ C * (triExceptional ^ (-(1 : ℝ) / 4) * t ^ (-(3 : ℝ) / 4)) :=
+        mul_le_mul_of_nonneg_left (a5u_envelope_le hp (by linarith)) hC0
+    _ = C * triExceptional ^ (-(1 : ℝ) / 4) * t ^ (-(3 / 4 : ℝ)) := by
+        rw [show (-(3 : ℝ) / 4) = -(3 / 4) by ring]
+        ring
+
+/-- Unconditional, from the proved K2-D (`OscInt.API.triDecayLower`). -/
+theorem witness_A_b : ¬ P_TriCrossoverUpperStatement :=
+  witness_A_b_rel OscInt.API.triDecayLower
+
+#print axioms witness_A_b_rel
+
+#print axioms witness_A_b
+
+end OscInt.API.TriangularCrossoverSanity

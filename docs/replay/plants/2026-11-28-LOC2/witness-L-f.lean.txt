@@ -1,0 +1,35 @@
+import OscInt.Front.TorusLocalizationC2Sanity
+
+namespace OscInt.API.TorusLocalizationC2Sanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularDecaySanity MeasureTheory
+open scoped ContDiff
+
+/-- PLANTED copy of `boxLaplacian`: Laplacian ∂₁² + ∂₂² ↦ 2∂₁². -/
+noncomputable def P_boxLaplacian (χ : ℝ × ℝ → ℂ) (k : ℝ × ℝ) : ℂ :=
+  iteratedFDeriv ℝ 2 χ k ![(1, 0), (1, 0)] + iteratedFDeriv ℝ 2 χ k ![(1, 0), (1, 0)]
+
+/-- PLANTED copy of `locConstC2`: Laplacian ∂₁² + ∂₂² ↦ 2∂₁². -/
+noncomputable def P_locConstC2 (χ : ℝ × ℝ → ℂ) : ℝ :=
+  4 * ((3 / 2) * boxL2 χ + boxL2 (boxPartial₁ χ) + boxL2 (boxPartial₂ χ) + boxL2 (P_boxLaplacian χ))
+
+/-- PLANTED copy of `TorusLocalizationC2Statement`: Laplacian ∂₁² + ∂₂² ↦ 2∂₁². -/
+def P_TorusLocalizationC2Statement : Prop :=
+  ∀ χ : ℝ × ℝ → ℂ, ContDiff ℝ 2 χ →
+    tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi →
+    ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ P_locConstC2 χ * B
+
+/-- Witness (characterisation): on `q(k) = k₁² + 3k₂²` the planted Laplacian at `0` is `4`, the draft's `8`; no
+refutation of the planted statement. -/
+theorem witness_L_f : P_boxLaplacian loc2Quad 0 = 4 ∧ boxLaplacian loc2Quad 0 = 8 := by
+  refine ⟨?_, loc2_quad_laplacian⟩
+  rw [P_boxLaplacian, loc2_quad_d11]
+  norm_num
+
+#print axioms witness_L_f
+
+end OscInt.API.TorusLocalizationC2Sanity

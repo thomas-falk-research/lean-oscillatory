@@ -1,0 +1,34 @@
+import OscInt.Front.TorusLocalizationC2Sanity
+
+namespace OscInt.API.TorusLocalizationC2Sanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularDecaySanity MeasureTheory
+open scoped ContDiff
+
+/-- PLANTED copy of `locConstC2`: the factor 4 ↦ 0. -/
+noncomputable def P_locConstC2 (χ : ℝ × ℝ → ℂ) : ℝ :=
+  0 * ((3 / 2) * boxL2 χ + boxL2 (boxPartial₁ χ) + boxL2 (boxPartial₂ χ) + boxL2 (boxLaplacian χ))
+
+/-- PLANTED copy of `TorusLocalizationC2Statement`: the factor 4 ↦ 0. -/
+def P_TorusLocalizationC2Statement : Prop :=
+  ∀ χ : ℝ × ℝ → ℂ, ContDiff ℝ 2 χ →
+    tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi →
+    ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ P_locConstC2 χ * B
+
+/-- Witness: zero phase, `t = 0`, `p = 0`, `B = (2π)²` (`loc2_zero_phase_coeff`): the plant claims `‖∫ χ₁‖ ≤ 0`, but
+`∫ χ₁ ≠ 0` (`integral_chi1_ne_zero`). -/
+theorem witness_L_b : ¬ P_TorusLocalizationC2Statement := by
+  intro h
+  have h1 := h chi1 loc2_chi1_contDiff chi1_tsupport (fun _ => 0) 0 0 ((2 * Real.pi) ^ 2) continuous_const
+    (fun _ => rfl) (fun _ => rfl) (loc2_zero_phase_coeff 0)
+  rw [P_locConstC2, zero_mul, zero_mul] at h1
+  apply integral_chi1_ne_zero
+  simpa using h1
+
+#print axioms witness_L_b
+
+end OscInt.API.TorusLocalizationC2Sanity

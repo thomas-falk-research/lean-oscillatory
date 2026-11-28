@@ -1,0 +1,7 @@
+exit code 1
+plant-L-f.lean:46:37: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (iteratedFDeriv ℝ 2 loc2Quad 0) ![(0, 1), (0, 1)]
+in the target expression
+  2 + 2 = 8
+
+⊢ 2 + 2 = 8

@@ -1,0 +1,30 @@
+import OscInt.Front.TriangularCrossoverSanity
+
+namespace OscInt.API.TriangularCrossoverSanity
+
+open OscInt.Statements OscInt.API.TriangularDecaySanity OscInt.API.TriangularAnisoSanity
+
+/-- PLANTED copy of `TriCrossoverUpperStatement`: leading rate t^{−2/3} ↦ t^{−3/4}. -/
+def P_TriCrossoverUpperStatement : Prop :=
+  ∀ a₀ : ℝ, |a₀| = triExceptional → ∃ r > 0, ∃ C : ℝ, ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → 1 ≤ t →
+    ‖triKernel α t n‖ ≤ C * t ^ (-(3 : ℝ) / 4) * crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 3))
+
+/-- Witness (relative to K2-D): at the centre `α = a₀ = a*` the envelope is `1`, so the plant claims `C t^{−3/4}`
+where K2-D gives `c t^{−2/3}` (`triRate a* = 2/3`). -/
+theorem witness_A_c_rel (hD : TriDecayLowerStatement) : ¬ P_TriCrossoverUpperStatement := by
+  intro h
+  obtain ⟨r, hr, C, hC⟩ := h triExceptional a5u_abs_exceptional
+  refine a5u_rate_clash hD triExceptional (3 / 4) C 1 (by rw [triRate_exceptional]; norm_num) fun t n ht => ?_
+  have h1 := hC triExceptional t n (by rw [sub_self, abs_zero]; exact hr.le) ht
+  rw [sub_self, abs_zero, zero_mul, a5u_env_zero, mul_one, show (-(3 : ℝ) / 4) = -(3 / 4) by ring] at h1
+  exact h1
+
+/-- Unconditional, from the proved K2-D (`OscInt.API.triDecayLower`). -/
+theorem witness_A_c : ¬ P_TriCrossoverUpperStatement :=
+  witness_A_c_rel OscInt.API.triDecayLower
+
+#print axioms witness_A_c_rel
+
+#print axioms witness_A_c
+
+end OscInt.API.TriangularCrossoverSanity
