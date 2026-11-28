@@ -230,8 +230,9 @@ plants closed without hypotheses (`docs/replay/2026-11-28-K2-plants-closed.txt`)
 SOUND, claims supported after changes (`review/2026-11-28-K2-post-proof-answers.md`). The proofs of K2-U and K2-D use
 the sanity layer's `span_of_hyps` (stamped with the statements). The full replay of 637972c passed
 (`docs/replay/2026-11-28-K2-verify-all.txt`: RESULT PASS, six kernels, isolated), so the rows say "machine-checked
-as stated". Open: plant F-a (a mutation of K2-F) is still not detected by any witness; it bears on the sanity layer,
-not on the proofs.
+as stated". Plant F-a (K2-F without its support condition): no compiled witness (outcome NOT DETECTED); refuted on
+paper by an external follow-up, checked by the lead with a numeric check of finite instances
+(`review/2026-11-28-K2-pr26-external-review-answers.md`); it bears on the sanity layer, not on the proofs.
 
 T6, T6L prior art (2026-11-08, session 7): both are classical, because the 2D kernel factorises into two 1D Bessel
 kernels; the rows above are unchanged (the proofs are unaffected), but they claim "machine-checked", not new

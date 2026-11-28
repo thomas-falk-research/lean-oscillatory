@@ -45,8 +45,13 @@ below it, and every rule is binding.
   - **Full isolated replay of 637972c: RESULT PASS** (`docs/replay/2026-11-28-K2-verify-all.txt`: 2833 of 2833
     theorems clean, six kernels, comparator-K2 accepted against the freeze stamp, watcher 177 of 177 clean). The six
     STATUS rows say "machine-checked as stated (replay of 637972c)".
-- **Open.** Plant F-a (a mutation of K2-F) is still not detected by any witness (sanity layer only, not the proofs).
-- **Exact next step.** The owner reviews and merges pull request 26. The next batch is the owner's choice from the
+- **Open.** Plant F-a (K2-F without its support condition): refuted on paper (external follow-up, checked by the
+  lead, numeric check `numerics/results-k2-fa-check-2026-11-28.txt`); no compiled witness, so the ledger outcome stays
+  NOT DETECTED. A Lean witness is a separate task (not started). Push-gate enforcement by a pre-push hook: recommended
+  by the external review, not done (own pull request, owner decision). Answers:
+  `review/2026-11-28-K2-pr26-external-review-answers.md`.
+- **Exact next step.** Pull request 26 is marked ready for review so that the clean-runner jobs of `verify.yml`
+  run on its final head; the owner merges (merge commit) once they pass, then checks CI on `main`. The next batch is the owner's choice from the
   list in the session-15 block below (SPL-N, Report D, the parameter-uniform A5 crossover); none is started.
 - **CI on pull request 26.** Green from ac65d22 on (the pre-freeze `static` and `consumer` failures were the
   designed state of an unstamped statement file).

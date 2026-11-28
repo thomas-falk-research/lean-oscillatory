@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: 2026 Thomas Falk III <research@thomas-falk-research.com>
+# SPDX-License-Identifier: CC-BY-4.0
+
+Erratum to docs/replay/2026-11-27-TRI-verify-all.txt (written 2026-11-28 by the session-16 lead; the record is not
+edited).
+
+The header of the record says "226 lines "PASS  leanchecker <Module>" (per-module replay), 9 of them modules of batch
+TRI". The run's log in the same file has 226 lines beginning "PASS  leanchecker", of which 224 name a module and 2
+are the checks of the whole-library export ("--from-export" by leanchecker and by leanchecker-paranoid); the log's
+line "PASS  no stale build products ... 224 module(s)" agrees. Correct reading: per-module leanchecker on 224
+modules, 9 of them of batch TRI, and six kernels on the export. No module is missing; nothing else in the header is
+affected. Found by the lead with grep -c while confirming the same finding against the K2 record
+(docs/replay/2026-11-28-K2-verify-all.erratum.txt).
