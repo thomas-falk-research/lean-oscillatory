@@ -30,14 +30,13 @@ below it, and every rule is binding.
   - **Plants.** The owed plants have compiled witnesses (`docs/replay/plants/2026-11-28-owed-A-2-L-i/`), and so has
     K2's F-a (`docs/replay/plants/2026-11-28-K2-F-a-witness/`).
   - **Push gate.** Made fail-closed (`review/2026-11-28-push-gate-review-answers.md`); no hook is installed.
-- **Exact next step.** First check whether the final isolated `make verify-all` of this branch's head has a record in
-  `docs/replay/` (file name 2026-11-28-session17-verify-all.txt).
-  - If it does: the six STATUS rows say "machine-checked as stated (replay of <commit>)".
-  - If it does not, run it alone on the machine, detached:
-    `setsid nohup make verify-all > <scratch>/verify-all.log 2>&1 &`. Run `python3 -I tools/replay_preflight.py`
-    first. Then write the record and change the six STATUS rows, the README line and the CHANGELOG ("final replay
-    pending").
-  - Then mark pull request 27 ready for review, so that `verify.yml` runs on the clean runner. The owner merges.
+- **Final replay done.** The isolated `make verify-all` of f5d53bd passed (RESULT PASS, exit 0, watcher 202 of 202
+  samples clean; `docs/replay/2026-11-28-session17-verify-all.txt`), so the six STATUS rows say "machine-checked as
+  stated (replay of f5d53bd)". Later commits change records and CI time limits only.
+- **Exact next step.** Pull request 27 is marked ready for review, so `verify.yml` runs on the clean runner. Read the
+  CI result of its head: `ci.yml` (`quick`, `tools`, `consumer` with its negative controls) and `verify.yml`
+  (`build`, `replay` with nanoda from source, `commitments`, 29 comparator jobs, `verdict`). If a job fails, fix
+  it on this branch, without another pull request. The owner reviews and merges.
 - **Not done, with the reason:**
   - **Report D** (38/5): the report is not available to the repository. The owner must supply it; intake would come
     first.
@@ -45,7 +44,9 @@ below it, and every rule is binding.
     Scoping, the lead's checks of the packet's constants and the plan (HOP-1, PDE-1, PDE-2):
     `docs/design/2026-11-28-HOP-PDE-scoping.md`.
   - **Owner items:** lessons.md entry 54 says "13 planted cases" (stale; rule files change only by owner decision);
-    whether to install `tools/pre-push-hook.sh`; CHANGELOG "Unreleased" lists no TRI or K2 entries (older omission).
+    whether to install `tools/pre-push-hook.sh` on the owner's machine (the lead's view: worth it for a person's
+    pushes; in an agent session it would repeat the `make push-gate RUN=1` that rule 18 already requires, so it was
+    not installed here). The missing TRI and K2 entries of CHANGELOG "Unreleased" were added in session 17.
 - **Order, said plainly.** Each batch's statements were frozen, stamped and blind-reviewed before any proof. Proof
   agents drafted parts in scratch while route referees read; for A5U, three of the six agents finished after that
   review ended, and no part changed in response to it. The answer files give the times.

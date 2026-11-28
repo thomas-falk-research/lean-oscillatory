@@ -26,9 +26,42 @@ two-sided case of Erdélyi's remainder representation, with one term folded into
 kernel (SPL-S, SPL-K) and their sharpness (SPL-A: the supremum of the kernel is the best constant; 7/8 is not sharp)
 were not found in the literature searched (`docs/prior_art.md`); nothing is claimed as new.
 
+Batch TRI (`OscInt/Statements/TriangularAniso.lean`, stamp `stamps/20261127T060115Z-bb3a05c4b143`): four new entries,
+proved in Lean on 2026-11-27, post-proof reviews answered, replayed (`docs/replay/2026-11-27-TRI-verify-all.txt`, with
+its erratum): machine-checked as stated, for the phase `cos k₁ + cos k₂ + α cos(k₁ + k₂)`,
+- TRI-K `TriClassificationStatement` (`proved_by` `OscInt.API.triClassification`): for `α ≠ 0` every point is A1/A2,
+  A3 or A5;
+- TRI-X `TriA5LocusStatement` (`proved_by` `OscInt.API.triA5Locus`): A5 points occur only for `|α| = 1/(2√2)`, only
+  at `(θ, −θ)`, `(−θ, θ)` mod 2π, `θ = arccos(−2α)`;
+- TRI-W `TriA5WitnessStatement` (`proved_by` `OscInt.API.triA5Witness`): both points are A5, and every reduced curve
+  gives sixth derivative `−60√2 · sign α`;
+- TRI-Q `TriQuarticStatement` (`proved_by` `OscInt.API.triQuartic`): the jet invariant
+  `D²[w,w]D⁴[v⁴] − 3(D³[v,v,w])²` is `−12` at `(π/2, π/2)` for `α ≠ 0` and `12(8α² − 1)` at `(θ, −θ)` for
+  `0 < |α| ≤ 1/2`.
+
+Batch K2 (`OscInt/Statements/TriangularDecay.lean`, stamp `stamps/20261128T013824Z-c5c04f495284`): six new entries,
+proved in Lean on 2026-11-28, post-proof reviews answered, replayed (`docs/replay/2026-11-28-K2-verify-all.txt`, with
+its erratum): machine-checked as stated,
+- K2-L `ReducedOrderBoundStatement` (`proved_by` `OscInt.API.reducedOrderBound`): a nonzero m-th reduced derivative
+  gives `t^{−(1/2 + 1/m)}` near `k₀`, uniformly over every linear term;
+- K2-MA `MonomialAsymptoticStatement` (`proved_by` `OscInt.API.monomialAsymptotic`): `Re C ≥ 1/(12m)` for
+  `C = ∫ e^{iσx^m} dx`, with an explicit remainder for plateau cutoffs;
+- K2-ML `MonomialLowerStatement` (`proved_by` `OscInt.API.monomialLower`): `|∫ b e^{itσx^m}| ≥ t^{−1/m}/(24m)` beyond
+  `t^{1−1/m} ≥ 96 r^{1−m}`;
+- K2-F `TorusLocalizationStatement` (`proved_by` `OscInt.API.torusLocalization`): a bound on every lattice coefficient
+  bounds a χ-localised integral at every real velocity;
+- K2-U `TriDecayUpperStatement` (`proved_by` `OscInt.API.triDecayUpper`): `|triKernel α t n| ≤ C_α t^{−triRate α}`
+  (2/3 at `α ∈ {0, ±1/(2√2)}`, else 3/4), all real `t ≥ 1`, all sites;
+- K2-D `TriDecayLowerStatement` (`proved_by` `OscInt.API.triDecayLower`): for real `t ≥ T_α` some site has
+  `|triKernel α t n| ≥ c_α t^{−triRate α}`.
+
+The TRI and K2 entries were added in session 17; they had been omitted from this section (`docs/STATUS.md` had
+them throughout). No existing statement's text, commitment or stamp changes.
+
 Batches SPL-N, A5U and LOC2 (stamp `stamps/20261128T135153Z-9d2a650ee1ec`; review answers stamped
-`stamps/20261128T154444Z-e9c0ea9fb732`): six new entries, proved in Lean on 2026-11-28, post-proof reviews answered,
-final replay pending (`docs/STATUS.md` has the current state),
+`stamps/20261128T154444Z-e9c0ea9fb732`): six new entries, proved in Lean on 2026-11-28, post-proof reviews answered
+(stamped `stamps/20261128T174120Z-0300fe13b7d5`), replayed (`docs/replay/2026-11-28-session17-verify-all.txt`, commit
+f5d53bd): machine-checked as stated,
 - SPL-NU `SplKernelCapStatement` (`proved_by` `OscInt.API.splKernelCap`): `|κ(τ)| ≤ 360987/500000` for every real τ;
 - SPL-NL `SplKernelLowerStatement` (`proved_by` `OscInt.API.splKernelLower`): `|κ(8123/5000)| > 72197399/10⁸`, a
   point value, not the location of the maximum;
