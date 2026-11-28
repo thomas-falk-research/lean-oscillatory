@@ -2,10 +2,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-.lake/
+.lake
 /tools/target/
 /numerics/target/
-/build/
+/build
 __pycache__/
 /rust/oscint-cert/target/
 *.egg-info/
