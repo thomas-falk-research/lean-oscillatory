@@ -22,7 +22,7 @@ below it, and every rule is binding.
   Sanity layer `OscInt/Front/TriangularDecaySanity.lean` (101 theorems); plants `docs/replay/plants/2026-11-28-K2/`
   (15 plants); challenge `Challenge/TriangularDecay.lean`; `comparator-K2.json`. Registered test K2: OVERALL PASS
   (`docs/prereg/LEDGER.md`). **Frozen 2026-11-28:** stamp `stamps/20261128T013824Z-c5c04f495284` on c5c04f4 (three
-  RFC 3161 tokens, 01:38:31Z), pinned; registry 100 statements (all 100 with a proving theorem since 96f003e; the six of K2 not yet replayed).
+  RFC 3161 tokens, 01:38:31Z), pinned; registry 100 statements, all 100 machine-checked as stated since the replay of 637972c.
 - **Evidence before the freeze:** the external packet and its route referee J, answered in
   `review/2026-11-28-K2-packet-answers.md` (sections 6 and 7 hold the findings and the decision record).
 - **Route as proved** (`docs/proof-K2.md`, sections 8 and 9):
@@ -34,17 +34,20 @@ below it, and every rule is binding.
     (`TriangularDecayFourier`, `TriangularDecayTorus`), and the witnesses in `TriangularDecayLower`.
   - Blueprint `Blueprint/TriangularDecay.lean`: 13 propositions, plus P4, the reused proved
     `OscInt.Cusp.transverseNonStat`.
-- **State at 04:0x on 2026-11-28 (all pushed).**
+- **State at 07:45 on 2026-11-28: batch K2 complete.**
   - Blind pre-proof review answered and stamped: `stamps/20261128T023440Z-e368c37563ab`;
     `review/2026-11-28-K2-preproof-answers.md`.
   - Route `docs/proof-K2.md` (section 8 after the route referee, `review/2026-11-28-K2-route-referee-answers.md`).
   - Blueprint `Blueprint/TriangularDecay.lean`: 13 parts, all proved by agents and verified by the lead.
-  - **All six K2 statements proved in Lean** (`OscInt/Front/TriangularDecayFinal.lean`, axioms propext,
-    Classical.choice, Quot.sound; `comparator-K2.json` accepted by six kernels against the stamped export).
-- **Exact next step.**
-  1. Post-proof reviews done and answered (`review/2026-11-28-K2-post-proof-answers.md`); stamp the answers.
-  2. The owed plants A1 and A2 (agent PL, launched 04:18).
-  3. The full isolated replay `make verify-all`; only then do the STATUS rows say "machine-checked as stated".
+  - All six K2 statements proved in Lean (`OscInt/Front/TriangularDecayFinal.lean`).
+  - Post-proof reviews answered (`review/2026-11-28-K2-post-proof-answers.md`), answers stamped
+    `stamps/20261128T043554Z-ae22fc831445`; owed plants A1 and A2 detected.
+  - **Full isolated replay of 637972c: RESULT PASS** (`docs/replay/2026-11-28-K2-verify-all.txt`: 2833 of 2833
+    theorems clean, six kernels, comparator-K2 accepted against the freeze stamp, watcher 177 of 177 clean). The six
+    STATUS rows say "machine-checked as stated (replay of 637972c)".
+- **Open.** Plant F-a (a mutation of K2-F) is still not detected by any witness (sanity layer only, not the proofs).
+- **Exact next step.** The owner reviews and merges pull request 26. The next batch is the owner's choice from the
+  list in the session-15 block below (SPL-N, Report D, the parameter-uniform A5 crossover); none is started.
 - **CI on pull request 26.** Green from ac65d22 on (the pre-freeze `static` and `consumer` failures were the
   designed state of an unstamped statement file).
 - **Out of scope** (owner): RH/GRH, parameter-uniform crossover, SPL-N, Report D.

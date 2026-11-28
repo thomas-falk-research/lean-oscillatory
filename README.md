@@ -21,10 +21,10 @@ statements.
 
 | | |
 |---|---|
-| **Proved** | 100 pinned statements, 94 of them machine-checked as stated ([`docs/STATUS.md`](docs/STATUS.md)): 86 in release v0.7.0; on the development branch only, the 4 of batch SPL and the 4 of batch TRI (the singularity types of the anisotropic triangular lattice phase; frozen, proved and replayed 2026-11-27, `docs/replay/2026-11-27-TRI-verify-all.txt`). Batch K2 (6 statements, sharp fixed-coupling decay on that lattice): frozen, blind-reviewed and proved in Lean (2026-11-28); post-proof reviews answered; full replay pending, so not yet machine-checked as stated |
+| **Proved** | 100 pinned statements, all 100 machine-checked as stated ([`docs/STATUS.md`](docs/STATUS.md)): 86 in release v0.7.0; on the development branch only, the 4 of batch SPL, the 4 of batch TRI (the singularity types of the anisotropic triangular lattice phase; frozen, proved and replayed 2026-11-27, `docs/replay/2026-11-27-TRI-verify-all.txt`) and the 6 of batch K2 (sharp fixed-coupling decay on that lattice; frozen, blind-reviewed, proved and replayed 2026-11-28, `docs/replay/2026-11-28-K2-verify-all.txt`) |
 | **Use it** | `import OscInt.API`. Which theorem: [`docs/which-theorem.md`](docs/which-theorem.md). Recipes: [`docs/cookbook.md`](docs/cookbook.md). Machine-readable index: [`docs/api.json`](docs/api.json) |
 | **Built with** | Lean package `OscInt`; toolchain v4.35.0; Mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679` (tag v4.35.0) |
-| **Releases** | v0.7.0 has 86 statements (all but the 4 of batch SPL and the 4 of batch TRI); v0.6.0 had the first 65 ([`docs/release-notes/`](docs/release-notes/), [`CHANGELOG.md`](CHANGELOG.md)) |
+| **Releases** | v0.7.0 has 86 statements (all but the 4 of batch SPL, the 4 of batch TRI and the 6 of batch K2); v0.6.0 had the first 65 ([`docs/release-notes/`](docs/release-notes/), [`CHANGELOG.md`](CHANGELOG.md)) |
 | **Reviewed by** | AI referees only, not yet a human expert: read [Known caveats](#known-caveats) before relying on a result |
 | **Cite** | [10.5281/zenodo.24021328](https://doi.org/10.5281/zenodo.24021328) (all versions); see [How to cite](#how-to-cite) |
 
