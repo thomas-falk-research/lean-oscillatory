@@ -9,6 +9,40 @@ SPDX-License-Identifier: CC-BY-4.0
 For a reader who saw nothing. Read "Rules in force" at the top of `docs/lessons.md` first; it distils the numbered entries
 below it, and every rule is binding.
 
+## Resume here (session 16, 2026-11-28, branch `claude/friendly-ramanujan-4aivas`, draft pull request 26; read first)
+
+- **Batch K2** (owner's decision 2026-11-27; integration requested 2026-11-28): sharp fixed-coupling decay of the
+  anisotropic triangular lattice kernel, `t^{−2/3}` at α ∈ {0, ±1/(2√2)}, `t^{−3/4}` otherwise, two-sided, all real
+  times. Six statements in `OscInt/Statements/TriangularDecay.lean`:
+  - K2-L, the local bound of order m;
+  - K2-MA and K2-ML, the monomial asymptotics and the monomial lower bound;
+  - K2-F, the Fourier localisation;
+  - K2-U and K2-D, the global upper and lower bounds.
+
+  Sanity layer `OscInt/Front/TriangularDecaySanity.lean` (101 theorems); plants `docs/replay/plants/2026-11-28-K2/`
+  (15 plants); challenge `Challenge/TriangularDecay.lean`; `comparator-K2.json`. Registered test K2: OVERALL PASS
+  (`docs/prereg/LEDGER.md`). **Frozen 2026-11-28:** stamp `stamps/20261128T013824Z-c5c04f495284` on c5c04f4 (three
+  RFC 3161 tokens, 01:38:31Z), pinned; registry 100 statements, 6 not proved.
+- **Evidence before the freeze:** the external packet and its route referee J, answered in
+  `review/2026-11-28-K2-packet-answers.md` (sections 6 and 7 hold the findings and the decision record).
+- **Route chosen** (section 7 there):
+  - Upper bound: clone `OscInt.Cusp.cuspBoundGen_of` at order m, with referee J's graph operator in
+    `ImplicitAux.exists_coreHyps` (finding J-1).
+  - Lower bound: the packet's elementary route, with three changes:
+    - the triangular substitution in place of a 2D change of variables;
+    - Parseval on `UnitAddTorus (Fin 2)`;
+    - a separable cutoff at α = 0.
+  - A draft blueprint, eleven propositions with P4 reused from a proved theorem, exists only in the lead's scratch.
+    It has not been elaborated, and it is not to be committed before the answers to the blind review are stamped.
+- **Exact next step.** Finish the blind pre-proof review (referees A and B, launched at ce39fcb). Then, in order:
+  1. answer the review in review/2026-11-28-K2-preproof-answers.md (to be written) and stamp the answers;
+  2. write the route docs/proof-K2.md (to be written), have a route referee read it, then commit the blueprint;
+  3. prove the parts (agents), assemble, run the post-proof reviews and the full replay.
+- **CI on pull request 26.** Job `static` stays INCOMPLETE until the freeze commit's CI; from db43739 on,
+  `statements check` should pass.
+- **Out of scope** (owner): RH/GRH, parameter-uniform crossover, SPL-N, Report D.
+- Session record: `docs/progress/2026-11-28-session16-log.md`.
+
 ## Resume here (session 15, 2026-11-26/27, branch `claude/jolly-euler-r4c7d1`; read before the session-13 block below)
 
 - **Batch TRI** (owner's decision 2026-11-27: the classification K1 and the coefficients K3 of the phase
