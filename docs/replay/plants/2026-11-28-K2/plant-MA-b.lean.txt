@@ -1,0 +1,52 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `MonomialAsymptoticStatement`: the remainder 4/(m t r^{m−1}) ↦ 4/(m t r^m). -/
+def P_MonomialAsymptoticStatement : Prop :=
+  ∀ (m : ℕ) (σ : ℝ), 2 ≤ m → (σ = 1 ∨ σ = -1) →
+    ∃ C : ℂ, 1 / (12 * (m : ℝ)) ≤ C.re ∧
+      Tendsto (fun R : ℝ => ∫ x in -R..R, Complex.exp (↑(σ * x ^ m) * Complex.I)) atTop (𝓝 C) ∧
+      ∀ (b : ℝ → ℝ) (r t : ℝ), PlateauCutoff b r → 0 < t →
+        ‖(∫ x : ℝ, (b x : ℂ) * Complex.exp (↑(t * σ * x ^ m) * Complex.I)) -
+            ((t ^ (-(1 : ℝ) / (m : ℝ)) : ℝ) : ℂ) * C‖ ≤ 4 / ((m : ℝ) * t * r ^ m)
+
+/-- **K2-MA** with the cutoff `plat r R` (any `0 < r < R`), every `m ≥ 2` and `σ = ±1`. -/
+theorem P_triMA_plat (h : P_MonomialAsymptoticStatement) (m : ℕ) (hm : 2 ≤ m) (σ : ℝ) (hσ : σ = 1 ∨ σ = -1)
+    {r R : ℝ} (hr : 0 < r) (hrR : r < R) :
+    ∃ C : ℂ, 1 / (12 * (m : ℝ)) ≤ C.re ∧ ∀ t : ℝ, 0 < t →
+      ‖(∫ x : ℝ, (plat r R x : ℂ) * Complex.exp (↑(t * σ * x ^ m) * Complex.I)) -
+          ((t ^ (-(1 : ℝ) / (m : ℝ)) : ℝ) : ℂ) * C‖ ≤ 4 / ((m : ℝ) * t * r ^ (m - 1)) := by
+  obtain ⟨C, hC, -, hb⟩ := h m σ hm hσ
+  exact ⟨C, hC, fun t ht => hb (plat r R) r t (plat_plateau hr hrR) ht⟩
+
+/-- **K2-MA** at `m = 2, 3, 4, 6`, `σ = ±1`, cutoff `plat 1 2`: remainder `4/(m t)`. -/
+theorem P_triMA_instances (h : P_MonomialAsymptoticStatement) :
+    ∀ m ∈ ({2, 3, 4, 6} : Finset ℕ), ∀ σ ∈ ({1, -1} : Finset ℝ), ∃ C : ℂ, 1 / (12 * (m : ℝ)) ≤ C.re ∧
+      ∀ t : ℝ, 0 < t → ‖(∫ x : ℝ, (plat 1 2 x : ℂ) * Complex.exp (↑(t * σ * x ^ m) * Complex.I)) -
+          ((t ^ (-(1 : ℝ) / (m : ℝ)) : ℝ) : ℂ) * C‖ ≤ 4 / ((m : ℝ) * t) := by
+  intro m hm σ hσ
+  have hm2 : 2 ≤ m := by simp only [Finset.mem_insert, Finset.mem_singleton] at hm; omega
+  have hσ' : σ = 1 ∨ σ = -1 := by simpa using hσ
+  obtain ⟨C, hC, hb⟩ := P_triMA_plat h m hm2 σ hσ' (r := 1) (R := 2) one_pos (by norm_num)
+  exact ⟨C, hC, fun t ht => by simpa using hb t ht⟩
+
+/-- **K2-MA**, the constant is bounded: `‖C‖ ≤ 2R + 4/(m r^{m−1})` (from the remainder at `t = 1`). -/
+theorem P_triMA_norm_le (h : P_MonomialAsymptoticStatement) (m : ℕ) (hm : 2 ≤ m) (σ : ℝ) (hσ : σ = 1 ∨ σ = -1)
+    {r R : ℝ} (hr : 0 < r) (hrR : r < R) :
+    ∃ C : ℂ, 1 / (12 * (m : ℝ)) ≤ C.re ∧ ‖C‖ ≤ 2 * R + 4 / ((m : ℝ) * r ^ (m - 1)) := by
+  obtain ⟨C, hC, hb⟩ := P_triMA_plat h m hm σ hσ hr hrR
+  refine ⟨C, hC, ?_⟩
+  have h1 := hb 1 one_pos
+  simp only [Real.one_rpow, Complex.ofReal_one, one_mul, mul_one] at h1
+  have h2 := norm_integral_plat_le hr.le hrR (fun x => σ * x ^ m)
+  beta_reduce at h2
+  have := norm_sub_norm_le C (∫ x : ℝ, (plat r R x : ℂ) * Complex.exp (↑(σ * x ^ m) * Complex.I))
+  rw [norm_sub_rev] at this
+  linarith
+
+end OscInt.API.TriangularDecaySanity

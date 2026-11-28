@@ -1,0 +1,68 @@
+# Batch K2: integration checks of the lead (2026-11-28), raw outputs
+
+Recorded by the lead from command output (post-proof referee C, finding m4). Commit under check: 96f003e (all six K2
+statements proved); the comparator ran on the same tree. Copied unchanged from the lead's scratch logs.
+
+## make quick on 96f003e (selected lines, grep of the full log)
+
+guard: ok: 243 file(s), 0 violations, 2833 theorem declaration(s)
+statements: ok: stamps/statements.json matches pins, manifests and sources (100 statements)
+test_gen_api: PASS (7 planted defects detected, clean copy accepted)
+api: ok: 100 statements annotated, outputs up to date
+axiom audit: 2833 of 2833 theorems clean (permitted: propext, Classical.choice, Quot.sound)
+TYPE-OK OscInt.API.monomialAsymptotic : OscInt.Statements.MonomialAsymptoticStatement
+TYPE-OK OscInt.API.monomialLower : OscInt.Statements.MonomialLowerStatement
+TYPE-OK OscInt.API.reducedOrderBound : OscInt.Statements.ReducedOrderBoundStatement
+TYPE-OK OscInt.API.torusLocalization : OscInt.Statements.TorusLocalizationStatement
+TYPE-OK OscInt.API.triDecayUpper : OscInt.Statements.TriDecayUpperStatement
+TYPE-OK OscInt.API.triDecayLower : OscInt.Statements.TriDecayLowerStatement
+entry-point: PASS (200 names from stamps/statements.json, all visible under import OscInt.API)
+
+## challenge check . comparator-K2.json stamps/20261128T013824Z-c5c04f495284 (03:53:15Z to 04:00:53Z, exit 0), full output
+
+challenge: export ./build/challenge/K2.ndjson sha256 3bf8576678403076a2d20239cd9edd659bc116cd2b12f7824bc5973d878a17d7
+challenge: export sha256 3bf8576678403076a2d20239cd9edd659bc116cd2b12f7824bc5973d878a17d7 matches the stamped manifest
+Resolving dependencies
+Building OscInt
+⚠ [9114/9289] Replayed OscInt.Cusp.Implicit4
+warning: OscInt/Cusp/Implicit4.lean:131:13: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: OscInt/Cusp/Implicit4.lean:131:13: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: OscInt/Cusp/Implicit4.lean:227:42: This simp argument is unused:
+  mul_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [Y2, hY, hxy, hT, zero_mul, add_zero, sub_zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: OscInt/Cusp/Implicit4.lean:229:8: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: OscInt/Cusp/Implicit4.lean:229:4: Unused tactic linter: `<;>` should be replaced with `;` or be removed.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: OscInt/Cusp/Implicit4.lean:229:8: Unused tactic linter: `ring` does nothing.
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+Build completed successfully (9289 jobs).
+Exporting #[Quot, Quot.mk, Quot.lift, Quot.ind, OscInt.API.reducedOrderBound, OscInt.API.monomialAsymptotic, OscInt.API.monomialLower, OscInt.API.torusLocalization, OscInt.API.triDecayUpper, OscInt.API.triDecayLower, propext, Quot.sound, Classical.choice, Nat.add, Nat.sub, Nat.mul, Nat.pow, Nat.gcd, Nat.div, Nat.mod, Nat.beq, Nat.ble, Nat.land, Nat.lor, Nat.xor, Nat.shiftLeft, Nat.shiftRight, String.ofList, Char.ofNat, List, eagerReduce, Nat, String, String.mk, Char, optParam, autoParam, semiOutParam, outParam] from OscInt
+Running Lean paranoid kernel on solution
+Lean paranoid kernel accepts the solution
+Running lean4lean kernel on solution
+checked 60726 declarations
+lean4lean kernel accepts the solution
+Running nanoda kernel on solution
+nanoda kernel accepts the solution
+Running con-leche kernel on solution
+con-leche: accepted 60729 declarations (--verified)
+con-leche kernel accepts the solution
+Running con-ron kernel on solution
+con-ron: accepted 60729 declarations (--verified)
+con-ron kernel accepts the solution
+Running Lean default kernel on solution
+Lean default kernel accepts the solution
+Your solution is okay!
+comparator: comparator-K2.json accepted against stamps/20261128T013824Z-c5c04f495284

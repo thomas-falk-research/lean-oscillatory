@@ -1,0 +1,54 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `ReducedOrderBoundStatement`: `ReducedCurve Ψ k₀ v w ε h` replaced by
+`ContDiff ℝ ∞ h ∧ h 0 = 0` (the curve equation dropped). -/
+def P_ReducedOrderBoundStatement : Prop :=
+  ∀ (Ψ : ℝ × ℝ → ℝ) (k₀ v w : ℝ × ℝ) (ε : ℝ) (h : ℝ → ℝ) (m : ℕ), ContDiff ℝ ∞ Ψ → 2 ≤ m →
+    v.1 * w.2 - v.2 * w.1 ≠ 0 → iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] ≠ 0 → 0 < ε → (ContDiff ℝ ∞ h ∧ h 0 = 0) →
+      iteratedDeriv m (reducedFn Ψ k₀ v w h) 0 ≠ 0 →
+      ∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (y : ℝ × ℝ) (t : ℝ),
+        AmpBound 2 (Metric.closedBall k₀ δ) A M → 1 ≤ t →
+          ‖oscInt2 (fun κ => t * Ψ κ + lin y κ) A‖ ≤ C * M * t ^ (-(1 / 2 + 1 / (m : ℝ)))
+
+/-- **K2-L** on the model `x^m + y²/2` (every `m ≥ 2`): decay `t^{−(1/2 + 1/m)}` near `0`, uniformly in `y`. -/
+theorem P_triL_model (h : P_ReducedOrderBoundStatement) (m : ℕ) (hm : 2 ≤ m) :
+    ∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (y : ℝ × ℝ) (t : ℝ),
+      AmpBound 2 (Metric.closedBall 0 δ) A M → 1 ≤ t →
+        ‖oscInt2 (fun κ => t * modelL m κ + lin y κ) A‖ ≤ C * M * t ^ (-(1 / 2 + 1 / (m : ℝ))) := by
+  obtain ⟨h1, h2, h3, h4, h5⟩ := modelL_hyps m hm
+  exact h (modelL m) 0 (1, 0) (0, 1) 1 (fun _ => 0) m h1 hm h2 h3 one_pos h4 h5
+
+/-- **K2-L** on the model at `m = 3` and `m = 6`, with the exponent substituted (`5/6`, `2/3`). -/
+theorem P_triL_model_36 (h : P_ReducedOrderBoundStatement) :
+    (∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (y : ℝ × ℝ) (t : ℝ),
+      AmpBound 2 (Metric.closedBall 0 δ) A M → 1 ≤ t →
+        ‖oscInt2 (fun κ => t * modelL 3 κ + lin y κ) A‖ ≤ C * M * t ^ (-(5 / 6 : ℝ))) ∧
+    ∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (y : ℝ × ℝ) (t : ℝ),
+      AmpBound 2 (Metric.closedBall 0 δ) A M → 1 ≤ t →
+        ‖oscInt2 (fun κ => t * modelL 6 κ + lin y κ) A‖ ≤ C * M * t ^ (-(2 / 3 : ℝ)) := by
+  obtain ⟨δ₃, hδ₃, C₃, h3⟩ := P_triL_model h 3 (by norm_num)
+  obtain ⟨δ₆, hδ₆, C₆, h6⟩ := P_triL_model h 6 (by norm_num)
+  refine ⟨⟨δ₃, hδ₃, C₃, fun A M y t hA ht => ?_⟩, ⟨δ₆, hδ₆, C₆, fun A M y t hA ht => ?_⟩⟩
+  · have := h3 A M y t hA ht
+    rwa [show -(1 / 2 + 1 / ((3 : ℕ) : ℝ)) = -(5 / 6 : ℝ) by norm_num] at this
+  · have := h6 A M y t hA ht
+    rwa [show -(1 / 2 + 1 / ((6 : ℕ) : ℝ)) = -(2 / 3 : ℝ) by norm_num] at this
+
+/-- **K2-L** on the sheared datum at order `4` (reduced curve `h(u) = −u²`): decay `t^{−3/4}`. -/
+theorem P_triL_shear (h : P_ReducedOrderBoundStatement) :
+    ∃ δ > 0, ∃ C : ℝ, ∀ (A : ℝ × ℝ → ℂ) (M : ℝ) (y : ℝ × ℝ) (t : ℝ),
+      AmpBound 2 (Metric.closedBall 0 δ) A M → 1 ≤ t →
+        ‖oscInt2 (fun κ => t * shear κ + lin y κ) A‖ ≤ C * M * t ^ (-(3 / 4 : ℝ)) := by
+  obtain ⟨h1, h2, h3, h4⟩ := shear_hyps
+  obtain ⟨δ, hδ, C, hC⟩ := h shear 0 (1, 0) (0, 1) 1 (fun u => -u ^ 2) 4 h1 (by norm_num) span_e1_e2 h2 one_pos h3 h4
+  refine ⟨δ, hδ, C, fun A M y t hA ht => ?_⟩
+  have := hC A M y t hA ht
+  rwa [show -(1 / 2 + 1 / ((4 : ℕ) : ℝ)) = -(3 / 4 : ℝ) by norm_num] at this
+
+end OscInt.API.TriangularDecaySanity

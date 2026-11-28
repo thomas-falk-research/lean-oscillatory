@@ -1,0 +1,74 @@
+ok-ML-a: accepted (want accepted) [3.6 s]
+plant-ML-a: accepted (want recorded) [3.7 s]
+witness-ML-a: accepted (want accepted) [3.3 s]
+  ML-a [the threshold constant 96 ↦ 0]: DETECTED (witness compiled: ¬ planted statement)
+ok-ML-b: accepted (want accepted) [3.7 s]
+plant-ML-b: rejected (want recorded) [3.7 s]
+    first error: plant-ML-b.lean:22:2: error: Tactic `apply` failed: could not unify the conclusion of `h1`
+witness-ML-b: accepted (want accepted) [3.3 s]
+  ML-b [the constant 1/(24m) ↦ 40/m]: DETECTED (witness compiled: ¬ planted statement)
+ok-MA-a: accepted (want accepted) [3.3 s]
+plant-MA-a: rejected (want recorded) [3.4 s]
+    first error: plant-MA-a.lean:25:12: error: Application type mismatch: The argument
+witness-MA-a: accepted (want accepted) [3.3 s]
+  MA-a [the bound Re C ≥ 1/(12m) ↦ Re C ≥ 12/m]: DETECTED (witness compiled: ¬ planted statement)
+ok-MA-b: accepted (want accepted) [3.4 s]
+plant-MA-b: rejected (want recorded) [3.4 s]
+    first error: plant-MA-b.lean:25:28: error: Type mismatch
+witness-MA-b: accepted (want accepted) [3.7 s]
+  MA-b [the remainder 4/(m t r^{m−1}) ↦ 4/(m t r^m)]: DETECTED (witness compiled: ¬ planted statement)
+ok-MA-c: accepted (want accepted) [3.4 s]
+plant-MA-c: rejected (want recorded) [3.5 s]
+    first error: plant-MA-c.lean:25:28: error: Function expected at
+witness-MA-c: accepted (want accepted) [3.3 s]
+  MA-c [the hypothesis 0 < t dropped]: DETECTED (witness compiled: ¬ planted statement)
+ok-L-a: accepted (want accepted) [3.3 s]
+plant-L-a: rejected (want recorded) [3.3 s]
+    first error: plant-L-a.lean:24:63: error: Application type mismatch: The argument
+witness-L-a: accepted (want accepted) [4.4 s]
+  L-a [the hypothesis D²Ψ(k₀)[w, w] ≠ 0 dropped]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: true statement → ¬ planted statement); NOT DETECTED unconditionally
+ok-L-b: accepted (want accepted) [3.3 s]
+plant-L-b: rejected (want recorded) [3.3 s]
+    first error: plant-L-b.lean:24:60: error: Application type mismatch: The argument
+witness-L-b: accepted (want accepted) [3.2 s]
+  L-b [the spanning hypothesis dropped]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it
+ok-F-a: accepted (want accepted) [3.1 s]
+plant-F-a: rejected (want recorded) [3.2 s]
+    first error: plant-F-a.lean:25:2: error: Function expected at
+witness-F-a: accepted (want accepted) [3.1 s]
+  F-a [the support condition dropped]: NOT DETECTED (compiled characterisation of what a detection would have to refute; no refutation)
+ok-F-b: accepted (want accepted) [2.8 s]
+plant-F-b: rejected (want recorded) [3.1 s]
+    first error: plant-F-b.lean:26:2: error: Type mismatch
+witness-F-b: accepted (want accepted) [2.9 s]
+  F-b [the zero mode n = 0 dropped from the hypothesis]: DETECTED (witness compiled: ¬ planted statement)
+ok-U-a: accepted (want accepted) [2.8 s]
+plant-U-a: rejected (want recorded) [3.1 s]
+    first error: plant-U-a.lean:18:22: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-U-a: accepted (want accepted) [3.2 s]
+  U-a [triRate ↦ 3/4 (exceptional branches dropped)]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: true statement → ¬ planted statement); NOT DETECTED unconditionally
+ok-U-b: accepted (want accepted) [2.8 s]
+plant-U-b: rejected (want recorded) [2.8 s]
+    first error: plant-U-b.lean:18:22: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-U-b: accepted (want accepted) [3.2 s]
+  U-b [in triRate, |α| = a* ↦ α = a* (the branch −a* dropped)]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: true statement → ¬ planted statement); NOT DETECTED unconditionally
+ok-U-c: accepted (want accepted) [2.8 s]
+plant-U-c: rejected (want recorded) [2.8 s]
+    first error: plant-U-c.lean:17:10: error: Function expected at
+witness-U-c: accepted (want accepted) [2.7 s]
+  U-c [the hypothesis 1 ≤ t dropped]: DETECTED (witness compiled: ¬ planted statement)
+ok-U-d: accepted (want accepted) [3.1 s]
+plant-U-d: rejected (want recorded) [3.1 s]
+    first error: plant-U-d.lean:18:22: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-U-d: accepted (want accepted) [2.8 s]
+  U-d [triRate ↦ 2/3 everywhere]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it
+ok-D-a: accepted (want accepted) [3.2 s]
+plant-D-a: rejected (want recorded) [2.8 s]
+    first error: plant-D-a.lean:17:22: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-D-a: accepted (want accepted) [3.2 s]
+  D-a [triRate ↦ 2/3 everywhere]: DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: true statement → ¬ planted statement); NOT DETECTED unconditionally
+ok-D-b: accepted (want accepted) [2.7 s]
+plant-D-b: rejected (want recorded) [2.8 s]
+    first error: plant-D-b.lean:17:22: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+witness-D-b: accepted (want accepted) [2.8 s]
+  D-b [triRate ↦ 3/4 everywhere]: TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it

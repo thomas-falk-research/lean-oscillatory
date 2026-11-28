@@ -1,0 +1,2 @@
+exit code 0
+'OscInt.API.TriangularDecaySanity.witness_U_c' depends on axioms: [propext, Classical.choice, Quot.sound]

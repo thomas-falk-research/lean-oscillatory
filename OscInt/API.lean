@@ -34,7 +34,9 @@ import OscInt.Front.FiniteRingSanity2
 import OscInt.Front.SecondDerivSharpSanity
 import OscInt.Statements.StationaryLeading
 import OscInt.Statements.TriangularAniso
+import OscInt.Statements.TriangularDecay
 import OscInt.Front.TriangularAnisoSanity
+import OscInt.Front.TriangularDecaySanity
 import OscInt.Front.StationaryLeadingSanity
 import OscInt.Front.SecondDerivSharpSanity2
 import OscInt.Front.HadamardWalkSanity
@@ -54,6 +56,16 @@ import OscInt.Front.HadamardWalkFinal
 import OscInt.Front.SecondDerivSharpFinal
 import OscInt.Front.StationaryLeadingFinal
 import OscInt.Front.TriangularAnisoFinal
+import OscInt.Front.TriangularDecayAssembly
+import OscInt.Front.TriangularDecayLocal
+import OscInt.Front.TriangularDecayTorus
+import OscInt.Front.TriangularDecayNormalized
+import OscInt.Front.TriangularDecayFinal
+import OscInt.Front.TriangularDecayParam
+import OscInt.Front.TriangularDecayNormalForm
+import OscInt.Front.TriangularDecayPatch
+import OscInt.Front.TriangularDecayUpper
+import OscInt.Front.TriangularDecayLower
 
 /-!
 # OscInt public API

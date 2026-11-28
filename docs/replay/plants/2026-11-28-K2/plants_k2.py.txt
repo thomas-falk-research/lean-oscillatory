@@ -1,0 +1,400 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the draft batch-K2 statements against copies of their sanity theorems.
+
+As the batch-TRI generator (docs/replay/plants/2026-11-27-TRI/plants_tri.py.txt). The draft statement module
+(OscInt/Statements/TriangularDecay.lean, not frozen, already built in the repository) is read from a copy
+(stmt/TriangularDecay.lean); the sanity layer (src/OscInt/Front/TriangularDecaySanity.lean, namespace
+OscInt.API.TriangularDecaySanity) is compiled into a scratch library placed first on LEAN_PATH, so every generated
+file imports OscInt.Front.TriangularDecaySanity (and, for one witness, the built OscInt.Front.Core) and contains,
+under the prefix P_: a copy of ONE statement constant, with exactly one textual mutation in the planted copy (none in
+the ok- copy), followed by copies of every sanity theorem that takes that statement constant as a hypothesis (renamed
+P_..., so that they go through the copy). Witness files contain the planted copy and compiled theorems of one kind:
+  not   : ¬ planted statement, from unconditional data of the sanity layer          -> DETECTED
+  rel   : true statement → ¬ planted statement                                    -> DETECTED RELATIVE TO THE TRUE
+                                                                                     STATEMENT
+  weak  : draft statement → planted statement                                     -> TRUE WEAKENING
+  char  : planted statement → (what a detection would have to refute)             -> NOT DETECTED (characterised)
+No file proves, or uses a proof of, a statement of the batch. A rejected script alone is never counted as a
+detection. Compiler output is recorded with the scratch directory removed from the paths.
+Usage: plants_k2.py WORK OUTDIR SCRATCHDIR
+"""
+import os, re, subprocess, sys, textwrap, time
+
+WORK, OUT, SCR = [os.path.abspath(a) for a in sys.argv[1:4]]
+os.makedirs(OUT, exist_ok=True)
+os.makedirs(SCR, exist_ok=True)
+STMT = open(os.path.join(WORK, 'stmt/TriangularDecay.lean')).read().split('\n')
+SAN_ALL = open(os.path.join(WORK, 'src/OscInt/Front/TriangularDecaySanity.lean')).read()
+SAN = SAN_ALL[SAN_ALL.index('namespace OscInt.API.TriangularDecaySanity'):].split('\n')
+L, MA, ML, F, U, D = ('ReducedOrderBoundStatement', 'MonomialAsymptoticStatement', 'MonomialLowerStatement',
+                      'TorusLocalizationStatement', 'TriDecayUpperStatement', 'TriDecayLowerStatement')
+STATEMENTS = [L, MA, ML, F, U, D]
+DECL = re.compile(r"^(?:noncomputable )?(theorem|def) ([A-Za-z_0-9']+)")
+WORD = re.compile(r"[A-Za-z_][A-Za-z_0-9']*")
+
+
+def block(lines, name):
+    for i, l in enumerate(lines):
+        m = DECL.match(l)
+        if m and m.group(2) == name:
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {name}')
+
+
+def data_blocks():
+    res, cur = {}, []
+    for l in SAN[1:] + ['']:
+        if l.strip() == '':
+            for c in cur:
+                m = DECL.match(c)
+                if m:
+                    res[m.group(2)] = (len(res), '\n'.join(cur))
+                    break
+            cur = []
+        else:
+            cur.append(l)
+    return res
+
+
+DATA = data_blocks()
+
+
+def words(t):
+    ls = t.split('\n')
+    k = next(i for i, l in enumerate(ls) if DECL.match(l))
+    return set(WORD.findall('\n'.join(ls[k:])))
+
+
+THROUGH = {st: [n for n, (_, t) in sorted(DATA.items(), key=lambda kv: kv[1][0]) if st in words(t)]
+           for st in STATEMENTS}
+for st in STATEMENTS:
+    assert THROUGH[st], st
+
+HEAD = """namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+"""
+CLOSE = '\n\nend OscInt.API.TriangularDecaySanity\n'
+
+
+def wrap(s):
+    return '\n'.join(textwrap.wrap('/-- ' + s + ' -/', 118))
+
+
+def rename(text, names):
+    ls = text.split('\n')
+    k = next(i for i, l in enumerate(ls) if DECL.match(l))
+    doc, decl = '\n'.join(ls[:k]), '\n'.join(ls[k:])
+    for n in sorted(names, key=len, reverse=True):
+        decl = re.sub(r"(?<![\w.'])" + re.escape(n) + r"(?![\w'])", 'P_' + n, decl)
+    return (doc + '\n' if doc else '') + decl
+
+
+def make(stmt, mut, planted, note, witness=None, imports=()):
+    old, new, count = mut
+    t = block(STMT, stmt)
+    if planted:
+        assert t.count(old) == count, (stmt, old, t.count(old))
+        t = t.replace(old, new)
+    doc = f'PLANTED copy of `{stmt}`: {note}.' if planted else f'Unplanted copy of `{stmt}`.'
+    parts = [wrap(doc) + '\n' + t]
+    names = [stmt]
+    if witness is None:
+        parts += [DATA[n][1] for n in THROUGH[stmt]]
+        names += THROUGH[stmt]
+    text = '\n\n'.join(rename(p, names) for p in parts)
+    if witness is not None:
+        text += '\n\n' + witness.strip('\n')
+        for n in re.findall(r'^theorem ([A-Za-z_0-9]+)', witness, re.M):
+            text += f'\n\n#print axioms {n}'
+    imp = ''.join(f'import {i}\n' for i in ('OscInt.Front.TriangularDecaySanity',) + tuple(imports))
+    return imp + '\n' + HEAD + '\n' + text + CLOSE
+
+
+def compile_text(tag, text):
+    src = os.path.join(SCR, tag + '.lean')
+    open(src, 'w').write(text)
+    t0 = time.time()
+    r = subprocess.run([os.path.join(WORK, 'lean.sh'), src], capture_output=True, text=True, timeout=1800)
+    out = (r.stdout + r.stderr).replace(SCR + os.sep, '').replace(WORK + os.sep, '')
+    out = re.sub(r'elapsed [0-9.]+ s rc=\d+\n?', '', out)
+    return r.returncode, out, time.time() - t0
+
+
+RATE_SEP = '''  obtain ⟨t, hTt, ht1, hlt⟩ := rate_separation (2 / 3) (3 / 4) c C T (by norm_num) hc
+  obtain ⟨n, hn⟩ := hT t hTt
+  have := hC t n ht1
+  linarith'''
+
+PLANTS = [
+    # id, statement, (old, new, count), note, witness kind, witness text, extra imports
+    ('ML-a', ML, ('96 * r ^', '0 * r ^', 1), 'the threshold constant 96 ↦ 0', 'not', r'''
+/-- Witness: with threshold `0` the claim applies at `m = 2`, `t = (1/200)²`, `b = plat 1 2`, where
+`t^{−1/2}/48 = 200/48 > 4 ≥ ‖∫ b e^{itx²}‖` (`ml_threshold_bite`). -/
+theorem witness_ML_a : ¬ P_MonomialLowerStatement := by
+  intro h
+  apply ml_threshold_bite
+  exact h 2 1 (plat 1 2) 1 ((1 / 200 : ℝ) ^ 2) le_rfl (Or.inl rfl) (plat_plateau one_pos (by norm_num))
+    (by positivity) (by rw [zero_mul]; exact Real.rpow_nonneg (by positivity) _)
+''', ()),
+    ('ML-b', ML, ('(24 * (m : ℝ))', '((m : ℝ) / 40)', 1), 'the constant 1/(24m) ↦ 40/m', 'not', r'''
+/-- Witness: at `m = 6`, `t = (5/2)⁶` (`t^{5/6} = (5/2)⁵ ≥ 96`), `b = plat 1 (5/4)`, `r = 1`, the planted bound is
+`(2/5)·(40/6) = 8/3`, but `‖∫ b e^{itx⁶}‖ ≤ 5/2` (`norm_integral_plat_le`). -/
+theorem witness_ML_b : ¬ P_MonomialLowerStatement := by
+  intro h
+  have h1 := h 6 1 (plat 1 (5 / 4)) 1 ((5 / 2 : ℝ) ^ 6) (by norm_num) (Or.inl rfl)
+    (plat_plateau one_pos (by norm_num)) (by positivity)
+    (by rw [Real.one_rpow, pow_rpow_one_sub (by norm_num) (by norm_num)]; norm_num)
+  rw [pow_rpow_neg_inv (by norm_num) (by norm_num)] at h1
+  have h2 := norm_integral_plat_le (r := 1) (R := 5 / 4) (by norm_num) (by norm_num)
+    (fun x => (5 / 2 : ℝ) ^ 6 * 1 * x ^ 6)
+  beta_reduce at h2
+  have e : (5 / 2 : ℝ)⁻¹ / (((6 : ℕ) : ℝ) / 40) = 8 / 3 := by norm_num
+  rw [e] at h1
+  linarith
+''', ()),
+    ('MA-a', MA, ('1 / (12 * (m : ℝ)) ≤ C.re', '12 / (m : ℝ) ≤ C.re', 1), 'the bound Re C ≥ 1/(12m) ↦ Re C ≥ 12/m',
+     'not', r'''
+/-- Witness: the planted statement's own remainder at `m = 2`, `t = 1`, `b = plat 1 (5/4)` gives
+`‖C‖ ≤ 5/2 + 2 < 6 = 12/m` (`norm_integral_plat_le`). -/
+theorem witness_MA_a : ¬ P_MonomialAsymptoticStatement := by
+  intro h
+  obtain ⟨C, hC, -, hb⟩ := h 2 1 le_rfl (Or.inl rfl)
+  have h1 := hb (plat 1 (5 / 4)) 1 1 (plat_plateau one_pos (by norm_num)) one_pos
+  simp only [Real.one_rpow, Complex.ofReal_one, one_mul, mul_one, one_pow] at h1
+  have h2 := norm_integral_plat_le (r := 1) (R := 5 / 4) (by norm_num) (by norm_num) (fun x => x ^ 2)
+  beta_reduce at h2
+  have h3 := norm_sub_norm_le C (∫ x : ℝ, (plat 1 (5 / 4) x : ℂ) * Complex.exp (↑(x ^ 2) * Complex.I))
+  rw [norm_sub_rev] at h3
+  have h4 := Complex.re_le_norm C
+  have e1 : (12 : ℝ) / ((2 : ℕ) : ℝ) = 6 := by norm_num
+  have e2 : (4 : ℝ) / ((2 : ℕ) : ℝ) = 2 := by norm_num
+  rw [e1] at hC
+  rw [e2] at h1
+  linarith
+''', ()),
+    ('MA-b', MA, ('r ^ (m - 1)', 'r ^ m', 1), 'the remainder 4/(m t r^{m−1}) ↦ 4/(m t r^m)', 'not', r'''
+/-- Witness: at `m = 2`, `r = 10⁶`, `b = plat r (2r)`, `t = (10⁻⁸)²` the planted remainder gives
+`10⁸ ‖C‖ ≤ 4·10⁶ + 2·10⁴`, i.e. `‖C‖ < 1/24 ≤ Re C` (`norm_integral_plat_le`). -/
+theorem witness_MA_b : ¬ P_MonomialAsymptoticStatement := by
+  intro h
+  obtain ⟨C, hC, -, hb⟩ := h 2 1 le_rfl (Or.inl rfl)
+  have h1 := hb (plat (10 ^ 6) (2 * 10 ^ 6)) (10 ^ 6) (((10 : ℝ) ^ 8)⁻¹ ^ 2)
+    (plat_plateau (by norm_num) (by norm_num)) (by positivity)
+  rw [pow_rpow_neg_inv (by positivity) (by norm_num), inv_inv] at h1
+  have h2 := norm_integral_plat_le (r := 10 ^ 6) (R := 2 * 10 ^ 6) (by norm_num) (by norm_num)
+    (fun x => ((10 : ℝ) ^ 8)⁻¹ ^ 2 * 1 * x ^ 2)
+  beta_reduce at h2
+  have h3 := norm_sub_norm_le (((10 ^ 8 : ℝ) : ℂ) * C)
+    (∫ x : ℝ, (plat (10 ^ 6) (2 * 10 ^ 6) x : ℂ) *
+      Complex.exp (((((10 : ℝ) ^ 8)⁻¹ ^ 2 * 1 * x ^ 2 : ℝ) : ℂ) * Complex.I))
+  rw [norm_sub_rev] at h3
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)] at h3
+  have h4 := Complex.re_le_norm C
+  have e : (4 : ℝ) / (((2 : ℕ) : ℝ) * (((10 : ℝ) ^ 8)⁻¹ ^ 2) * (10 ^ 6) ^ 2) = 2 * 10 ^ 4 := by norm_num
+  rw [e] at h1
+  have e2 : (1 : ℝ) / (12 * ((2 : ℕ) : ℝ)) = 1 / 24 := by norm_num
+  rw [e2] at hC
+  nlinarith
+''', ()),
+    ('MA-c', MA, ('PlateauCutoff b r → 0 < t →', 'PlateauCutoff b r →', 1), 'the hypothesis 0 < t dropped', 'not',
+     r'''
+/-- Witness: at `t = 0` the planted remainder reads `‖∫ b‖ ≤ 0`, but `∫ plat 1 2 ≥ 2` (`ma_time_zero_bite`). -/
+theorem witness_MA_c : ¬ P_MonomialAsymptoticStatement := by
+  intro h
+  obtain ⟨C, -, -, hb⟩ := h 2 1 le_rfl (Or.inl rfl)
+  exact ma_time_zero_bite 2 le_rfl 1 C one_pos (by norm_num) (hb (plat 1 2) 1 0 (plat_plateau one_pos (by norm_num)))
+''', ()),
+    ('L-a', L, ("iteratedFDeriv ℝ 2 Ψ k₀ ![w, w] ≠ 0 → ", '', 1), 'the hypothesis D²Ψ(k₀)[w, w] ≠ 0 dropped', 'rel',
+     r'''
+/-- Witness (relative to K2-ML): `x²` at `0` (`modelX_hyps`, `m = 2`) would give `t^{−1}` for the amplitude
+`b(κ₁) b(κ₂)`, `b = plat (δ/2) δ`; the integral factorises (`oscInt2_modelX_prodAmp`) and K2-ML bounds the first
+factor below by `t^{−1/2}/48` at `t = s²` once `s δ/2 ≥ 96`, while `∫ b ≥ δ`; impossible for large `s`. -/
+theorem witness_L_a (hML : MonomialLowerStatement) : ¬ P_ReducedOrderBoundStatement := by
+  intro hP
+  obtain ⟨h1, h2, -, h4, h5⟩ := modelX_hyps
+  obtain ⟨δ, hδ, C, hC⟩ := hP modelX 0 (1, 0) (0, 1) 1 (fun _ => 0) 2 h1 le_rfl h2 one_pos h4
+    (by rw [h5]; norm_num)
+  set c := δ / 2 with hc
+  have hc0 : 0 < c := by positivity
+  have hcδ : c < δ := by linarith
+  obtain ⟨M, hM⟩ := OscInt.API.ampBoundOfContDiff 2 (Metric.closedBall 0 δ) (prodAmp (plat c δ))
+    (isCompact_closedBall 0 δ) (contDiff_infty.mp (prodAmp_contDiff c δ) 2)
+    (prodAmp_tsupport hc0.le hcδ)
+  have hI : 2 * c ≤ ∫ x, plat c δ x := integral_plat_ge hc0.le hcδ
+  set s := max (max 1 (96 / c)) (24 * |C * M| / c + 1) with hs
+  have hs1 : 1 ≤ s := le_max_of_le_left (le_max_left _ _)
+  have hs0 : 0 < s := by linarith
+  have hsc : 96 ≤ s * c := by
+    have : 96 / c ≤ s := le_max_of_le_left (le_max_right _ _)
+    rwa [div_le_iff₀ hc0] at this
+  have hsK : 24 * |C * M| / c + 1 ≤ s := le_max_right _ _
+  have hlow := triML_plat hML 2 le_rfl 1 (Or.inl rfl) hc0 hcδ s hs0
+    (by rw [show 2 - 1 = 1 from rfl, pow_one]; exact hsc)
+  have hup := hC (prodAmp (plat c δ)) M 0 (s ^ 2) hM (by nlinarith)
+  rw [oscInt2_modelX_prodAmp] at hup
+  have e1 : (s ^ 2) ^ (-(1 / 2 + 1 / ((2 : ℕ) : ℝ))) = (s ^ 2)⁻¹ := by
+    rw [← Real.rpow_natCast_mul hs0.le]; norm_num
+  rw [e1, norm_mul] at hup
+  have e2 : ∫ y : ℝ, ((plat c δ y : ℝ) : ℂ) = ((∫ y, plat c δ y : ℝ) : ℂ) := integral_ofReal
+  rw [e2, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)] at hup
+  set I := ‖∫ x : ℝ, (plat c δ x : ℂ) * Complex.exp (((s ^ 2 * 1 * x ^ 2 : ℝ) : ℂ) * Complex.I)‖
+  have key : s⁻¹ / (24 * ((2 : ℕ) : ℝ)) * (2 * c) ≤ C * M * (s ^ 2)⁻¹ := by
+    calc s⁻¹ / (24 * ((2 : ℕ) : ℝ)) * (2 * c) ≤ I * (∫ x, plat c δ x) :=
+          mul_le_mul hlow hI (by positivity) (norm_nonneg _)
+      _ ≤ C * M * (s ^ 2)⁻¹ := hup
+  have key2 : s * c ≤ 24 * (C * M) := by
+    have : s⁻¹ / (24 * ((2 : ℕ) : ℝ)) * (2 * c) * (24 * s ^ 2) ≤ C * M * (s ^ 2)⁻¹ * (24 * s ^ 2) :=
+      mul_le_mul_of_nonneg_right key (by positivity)
+    field_simp at this
+    push_cast at this
+    nlinarith
+  have : (24 * |C * M| / c + 1) * c ≤ s * c := mul_le_mul_of_nonneg_right hsK hc0.le
+  rw [add_mul, div_mul_cancel₀ _ hc0.ne'] at this
+  linarith [le_abs_self (C * M)]
+''', ('OscInt.Front.Core',)),
+    ('L-b', L, ('v.1 * w.2 - v.2 * w.1 ≠ 0 → ', '', 1), 'the spanning hypothesis dropped', 'weak', r'''
+/-- Witness: the draft implies the planted copy, since the spanning condition follows from the other hypotheses
+(`span_of_hyps`); the two are equivalent. -/
+theorem witness_L_b (h : ReducedOrderBoundStatement) : P_ReducedOrderBoundStatement := by
+  intro Ψ k₀ v w ε c m hΨ hm hw hε hc hd
+  exact h Ψ k₀ v w ε c m hΨ hm (span_of_hyps Ψ k₀ v w ε c m hΨ (by omega) hw hε hc hd) hw hε hc hd
+''', ()),
+    ('F-a', F, ('ContDiff ℝ ∞ χ →\n    tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi →',
+                'ContDiff ℝ ∞ χ →', 1), 'the support condition dropped', 'char', r'''
+/-- Characterisation: at `χ = 1` the planted copy is the unlocalised bound below. A detection needs continuous
+biperiodic phases whose lattice coefficients are at most `B` while `‖∫_{[−π, π]²} e^{it(Ψ + p·k)}‖ / B` is unbounded
+(at non-integer `t p`); none is constructed here, and the zero phase is consistent with it (`triF_chi1_zero`'s
+data give `B = (2π)²`). -/
+theorem char_F_a (h : P_TorusLocalizationStatement) :
+    ∃ D : ℝ, ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ D * B := by
+  obtain ⟨D, hD⟩ := h (fun _ => 1) contDiff_const
+  exact ⟨D, fun Ψ t p B h1 h2 h3 h4 => by simpa using hD Ψ t p B h1 h2 h3 h4⟩
+''', ()),
+    ('F-b', F, ('(∀ n : ℤ × ℤ, ‖∫ k in torusBox,', '(∀ n : ℤ × ℤ, n ≠ 0 → ‖∫ k in torusBox,', 1),
+     'the zero mode n = 0 dropped from the hypothesis', 'not', r'''
+/-- Witness: the zero phase has all nonzero lattice coefficients `0` (`lattice_coeff_zero_phase`), so `B = 0` and
+the planted copy forces `∫ χ₁ = 0`; but `∫ χ₁ > 0` (`integral_chi1_ne_zero`). -/
+theorem witness_F_b : ¬ P_TorusLocalizationStatement := by
+  intro h
+  obtain ⟨D, hD⟩ := h chi1 chi1_contDiff chi1_tsupport
+  have h1 := hD (fun _ => 0) 1 0 0 continuous_const (fun _ => rfl) (fun _ => rfl)
+    (fun n hn => by rw [lattice_coeff_zero_phase 1 n hn, norm_zero])
+  rw [mul_zero] at h1
+  apply integral_chi1_ne_zero
+  have e : ∀ k : ℝ × ℝ,
+      chi1 k * Complex.exp (↑(1 * ((fun _ : ℝ × ℝ => (0 : ℝ)) k + lin 0 k)) * Complex.I) = chi1 k := by
+    intro k; simp [lin]
+  simp_rw [e] at h1
+  exact norm_le_zero_iff.mp h1
+''', ()),
+    ('U-a', U, ('C * t ^ (-triRate α)', 'C * t ^ (-(3 / 4 : ℝ))', 1), 'triRate ↦ 3/4 (exceptional branches dropped)',
+     'rel', r'''
+/-- Witness (relative to K2-D): at `α = 0` K2-D gives `c t^{−2/3}` at some site, against `C t^{−3/4}`
+(`rate_separation`). -/
+theorem witness_U_a (hD : TriDecayLowerStatement) : ¬ P_TriDecayUpperStatement := by
+  intro h
+  obtain ⟨C, hC⟩ := h 0
+  obtain ⟨c, hc, T, hT⟩ := hD 0
+  rw [triRate_zero] at hT
+''' + RATE_SEP + '\n', ()),
+    ('U-b', U, ('C * t ^ (-triRate α)', 'C * t ^ (-(if α = 0 ∨ α = triExceptional then 2 / 3 else 3 / 4 : ℝ))', 1),
+     'in triRate, |α| = a* ↦ α = a* (the branch −a* dropped)', 'rel', r'''
+/-- Witness (relative to K2-D): at `α = −a*` the planted rate is `3/4`, K2-D gives `c t^{−2/3}`. -/
+theorem witness_U_b (hD : TriDecayLowerStatement) : ¬ P_TriDecayUpperStatement := by
+  intro h
+  obtain ⟨C, hC⟩ := h (-triExceptional)
+  have hne : ¬ (-triExceptional = 0 ∨ -triExceptional = triExceptional) := by
+    have := triExceptional_pos
+    rintro (h | h) <;> linarith
+  simp only [if_neg hne] at hC
+  obtain ⟨c, hc, T, hT⟩ := hD (-triExceptional)
+  rw [triRate_neg_exceptional] at hT
+''' + RATE_SEP + '\n', ()),
+    ('U-c', U, ('(n : ℤ × ℤ), 1 ≤ t → ‖triKernel', '(n : ℤ × ℤ), ‖triKernel', 1), 'the hypothesis 1 ≤ t dropped',
+     'not', r'''
+/-- Witness: at `t = 0`, `‖triKernel 0 0 (0, 0)‖ = (2π)² > 0 = C · 0^{−2/3}` (`u_time_zero_bite`). -/
+theorem witness_U_c : ¬ P_TriDecayUpperStatement := by
+  intro h
+  obtain ⟨C, hC⟩ := h 0
+  exact u_time_zero_bite 0 C (hC 0 (0, 0))
+''', ()),
+    ('U-d', U, ('C * t ^ (-triRate α)', 'C * t ^ (-(2 / 3 : ℝ))', 1), 'triRate ↦ 2/3 everywhere', 'weak', r'''
+/-- Witness: the draft implies the planted copy (`triRate α ≥ 2/3`, `t ≥ 1`). -/
+theorem witness_U_d (h : TriDecayUpperStatement) : P_TriDecayUpperStatement := by
+  intro α
+  obtain ⟨C, hC⟩ := h α
+  refine ⟨|C|, fun t n ht => (hC t n ht).trans ?_⟩
+  have h1 : t ^ (-triRate α) ≤ t ^ (-(2 / 3 : ℝ)) :=
+    Real.rpow_le_rpow_of_exponent_le ht (by rcases triRate_cases α with e | e <;> rw [e] <;> norm_num)
+  have h2 : 0 ≤ t ^ (-triRate α) := Real.rpow_nonneg (by linarith) _
+  calc C * t ^ (-triRate α) ≤ |C| * t ^ (-triRate α) := mul_le_mul_of_nonneg_right (le_abs_self C) h2
+    _ ≤ |C| * t ^ (-(2 / 3 : ℝ)) := mul_le_mul_of_nonneg_left h1 (abs_nonneg C)
+''', ()),
+    ('D-a', D, ('c * t ^ (-triRate α)', 'c * t ^ (-(2 / 3 : ℝ))', 1), 'triRate ↦ 2/3 everywhere', 'rel', r'''
+/-- Witness (relative to K2-U): at `α = 1/4` K2-U gives `C t^{−3/4}` at every site, against `c t^{−2/3}`. -/
+theorem witness_D_a (hU : TriDecayUpperStatement) : ¬ P_TriDecayLowerStatement := by
+  intro h
+  obtain ⟨c, hc, T, hT⟩ := h (1 / 4)
+  obtain ⟨C, hC⟩ := hU (1 / 4)
+  rw [triRate_quarter] at hC
+''' + RATE_SEP + '\n', ()),
+    ('D-b', D, ('c * t ^ (-triRate α)', 'c * t ^ (-(3 / 4 : ℝ))', 1), 'triRate ↦ 3/4 everywhere', 'weak', r'''
+/-- Witness: the draft implies the planted copy (`triRate α ≤ 3/4`, `t ≥ max T 1`). -/
+theorem witness_D_b (h : TriDecayLowerStatement) : P_TriDecayLowerStatement := by
+  intro α
+  obtain ⟨c, hc, T, hT⟩ := h α
+  refine ⟨c, hc, max T 1, fun t ht => ?_⟩
+  obtain ⟨n, hn⟩ := hT t (le_of_max_le_left ht)
+  refine ⟨n, le_trans ?_ hn⟩
+  have h1 : t ^ (-(3 / 4 : ℝ)) ≤ t ^ (-triRate α) :=
+    Real.rpow_le_rpow_of_exponent_le (le_of_max_le_right ht)
+      (by rcases triRate_cases α with e | e <;> rw [e] <;> norm_num)
+  exact mul_le_mul_of_nonneg_left h1 hc.le
+''', ()),
+]
+
+VERDICT = {
+    'not': 'DETECTED (witness compiled: ¬ planted statement)',
+    'rel': 'DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: true statement → ¬ planted statement); '
+           'NOT DETECTED unconditionally',
+    'weak': 'TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it',
+    'char': 'NOT DETECTED (compiled characterisation of what a detection would have to refute; no refutation)',
+}
+
+only = set(os.environ.get('ONLY', '').split(',')) - {''}
+log = []
+for pid, st, mut, note, kind, wit, imps in PLANTS:
+    if only and pid not in only:
+        continue
+    for tag, planted, w in (('ok-' + pid, False, None), ('plant-' + pid, True, None), ('witness-' + pid, True, wit)):
+        text = make(st, mut, planted, note, w, imps if w is not None else ())
+        rc, out, dt = compile_text(tag, text)
+        want = 'recorded' if tag.startswith('plant-') else 'accepted'
+        got = 'accepted' if rc == 0 else 'rejected'
+        if w is not None and rc == 0:
+            ax = re.findall(r"depends on axioms: \[([^\]]*)\]", out)
+            if not ax or any(a.replace(' ', '') != 'propext,Classical.choice,Quot.sound' for a in ax):
+                got = 'rejected (axioms)'
+        open(os.path.join(OUT, tag + '.lean.txt'), 'w').write(text)
+        open(os.path.join(OUT, tag + '.out'), 'w').write(f'exit code {rc}\n' + out)
+        line = f'{tag}: {got} (want {want}) [{dt:.1f} s]'
+        if rc != 0:
+            first = next((l for l in out.split('\n') if 'error' in l), '')
+            line += '\n    first error: ' + first[:110]
+        log.append(line)
+        print(line, flush=True)
+        if tag.startswith('witness-'):
+            v = VERDICT[kind] if got == 'accepted' else 'NOT DETECTED (witness did not compile)'
+            log.append(f'  {pid} [{note}]: {v}')
+            print(log[-1], flush=True)
+open(os.path.join(OUT, 'SUMMARY.txt' if not only else 'SUMMARY-partial.txt'), 'w').write('\n'.join(log) + '\n')

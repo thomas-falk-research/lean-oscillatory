@@ -1,0 +1,33 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `TorusLocalizationStatement`: the support condition dropped. -/
+def P_TorusLocalizationStatement : Prop :=
+  ∀ χ : ℝ × ℝ → ℂ, ContDiff ℝ ∞ χ →
+    ∃ D : ℝ, ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ D * B
+
+/-- Characterisation: at `χ = 1` the planted copy is the unlocalised bound below. A detection needs continuous
+biperiodic phases whose lattice coefficients are at most `B` while `‖∫_{[−π, π]²} e^{it(Ψ + p·k)}‖ / B` is unbounded
+(at non-integer `t p`); none is constructed here, and the zero phase is consistent with it (`triF_chi1_zero`'s
+data give `B = (2π)²`). -/
+theorem char_F_a (h : P_TorusLocalizationStatement) :
+    ∃ D : ℝ, ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ D * B := by
+  obtain ⟨D, hD⟩ := h (fun _ => 1) contDiff_const
+  exact ⟨D, fun Ψ t p B h1 h2 h3 h4 => by simpa using hD Ψ t p B h1 h2 h3 h4⟩
+
+#print axioms char_F_a
+
+end OscInt.API.TriangularDecaySanity

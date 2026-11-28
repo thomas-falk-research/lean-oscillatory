@@ -1,0 +1,36 @@
+import OscInt.Front.TriangularDecayFinal
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `TriDecayUpperStatement`: in triRate, |α| = a* ↦ α = a* (the branch −a* dropped). -/
+def P_TriDecayUpperStatement : Prop :=
+  ∀ α : ℝ, ∃ C : ℝ, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-(if α = 0 ∨ α = triExceptional then 2 / 3 else 3 / 4 : ℝ))
+
+/-- Witness (relative to K2-D): at `α = −a*` the planted rate is `3/4`, K2-D gives `c t^{−2/3}`. -/
+theorem witness_U_b (hD : TriDecayLowerStatement) : ¬ P_TriDecayUpperStatement := by
+  intro h
+  obtain ⟨C, hC⟩ := h (-triExceptional)
+  have hne : ¬ (-triExceptional = 0 ∨ -triExceptional = triExceptional) := by
+    have := triExceptional_pos
+    rintro (h | h) <;> linarith
+  simp only [if_neg hne] at hC
+  obtain ⟨c, hc, T, hT⟩ := hD (-triExceptional)
+  rw [triRate_neg_exceptional] at hT
+  obtain ⟨t, hTt, ht1, hlt⟩ := rate_separation (2 / 3) (3 / 4) c C T (by norm_num) hc
+  obtain ⟨n, hn⟩ := hT t hTt
+  have := hC t n ht1
+  linarith
+
+
+end OscInt.API.TriangularDecaySanity
+
+/-- Closed after the proofs: the planted copy is refuted by the proved true statement, with no hypothesis. -/
+theorem OscInt.API.TriangularDecaySanity.closed_now_U_b : ¬ OscInt.API.TriangularDecaySanity.P_TriDecayUpperStatement :=
+  OscInt.API.TriangularDecaySanity.witness_U_b OscInt.API.triDecayLower
+
+#print axioms OscInt.API.TriangularDecaySanity.closed_now_U_b

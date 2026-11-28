@@ -1,0 +1,9 @@
+exit code 1
+plant-MA-c.lean:25:28: error: Function expected at
+  hb (plat r R) r t (plat_plateau hr hrR)
+but this term has type
+  ‖(∫ (x : ℝ), ↑(plat r R x) * Complex.exp (↑(t * σ * x ^ m) * Complex.I)) - ↑(t ^ (-1 / ↑m)) * C‖ ≤
+    4 / (↑m * t * r ^ (m - 1))
+
+Note: Expected a function because this term is being applied to the argument
+  ht

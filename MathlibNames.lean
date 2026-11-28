@@ -344,3 +344,13 @@ import Mathlib
 #check @Real.cos_arccos
 #check @Real.sin_arccos
 #check @Real.arcsin_lt_pi_div_two
+-- Batch K2: the route docs/proof-K2.md and its route referee R (2026-11-28; review/2026-11-28-K2-packet-answers.md).
+#check @UnitAddTorus.hasSum_prod_mFourierCoeff
+#check @UnitAddTorus.hasSum_mFourier_series_apply_of_summable
+#check @UnitAddTorus.mFourierCoeff_eq_integral
+#check @hasFDerivAt_integral_of_dominated_of_fderiv_le
+#check @ContDiffAt.contDiffAt_implicitFunction
+#check @intervalIntegral.integral_deriv_smul_comp
+#check @intervalIntegral.integral_comp_mul_deriv
+#check @contDiff_succ_iff_fderiv
+#check @Real.rpow_le_rpow_of_exponent_le

@@ -1520,6 +1520,105 @@
    ],
    "snippet_kind": "type",
    "snippet": "example : TriQuarticStatement := OscInt.API.triQuartic"
+  },
+  "K2-L": {
+   "hypotheses": [
+    "Ψ smooth on ℝ²; v, w spanning ℝ² (implied by the others), D²Ψ(k₀)[w, w] ≠ 0",
+    "h a reduced curve at k₀ for v, w on |u| < ε, ε > 0",
+    "m ≥ 2 with the m-th derivative of the reduced function nonzero at 0",
+    "A ∈ C², supported in closedBall k₀ δ, derivatives of order ≤ 2 bounded by M; t ≥ 1"
+   ],
+   "conclusion": "|∫ e^{i(tΨ(κ) + y·κ)} A(κ) dκ| ≤ C M t^{−(1/2 + 1/m)}, with δ, C independent of A, M, y, t",
+   "rate": "t^{−(1/2 + 1/m)}",
+   "uniform_over": "every linear term y ∈ ℝ², every amplitude in the ball, t ≥ 1",
+   "smoothness": "phase C^∞, amplitude C²",
+   "see_also": [
+    "S5.1′",
+    "S1.k",
+    "TRI-K"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : ReducedOrderBoundStatement := OscInt.API.reducedOrderBound"
+  },
+  "K2-MA": {
+   "hypotheses": [
+    "m ≥ 2, σ = ±1",
+    "(b, r) a plateau cutoff (C¹, compactly supported, even, 1 on [−r, r], nonincreasing on [0, ∞)); t > 0"
+   ],
+   "conclusion": "the improper integral C = ∫ e^{iσx^m} dx (symmetric limit) has Re C ≥ 1/(12m), and |∫ b(x) e^{itσx^m} dx − t^{−1/m} C| ≤ 4/(m t r^{m−1})",
+   "rate": "t^{−1/m} with remainder O(1/t)",
+   "uniform_over": "every plateau cutoff and every t > 0",
+   "smoothness": "cutoff C¹",
+   "see_also": [
+    "K2-ML"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : MonomialAsymptoticStatement := OscInt.API.monomialAsymptotic"
+  },
+  "K2-ML": {
+   "hypotheses": [
+    "m ≥ 2, σ = ±1, (b, r) a plateau cutoff, t > 0",
+    "t^{1−1/m} ≥ 96 r^{1−m}"
+   ],
+   "conclusion": "|∫ b(x) e^{itσx^m} dx| ≥ t^{−1/m}/(24m)",
+   "rate": "t^{−1/m} (lower bound)",
+   "uniform_over": "every plateau cutoff and every t beyond the threshold",
+   "smoothness": "cutoff C¹",
+   "see_also": [
+    "K2-MA"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : MonomialLowerStatement := OscInt.API.monomialLower"
+  },
+  "K2-F": {
+   "hypotheses": [
+    "χ smooth with tsupport inside the open box (−π, π)²",
+    "Ψ continuous and 2π-periodic in each variable; t, p real",
+    "every lattice coefficient |∫_{[−π,π]²} e^{i(tΨ + n·k)} dk| ≤ B"
+   ],
+   "conclusion": "|∫_{[−π,π]²} χ(k) e^{it(Ψ(k) + p·k)} dk| ≤ D B, D depending on χ only",
+   "rate": "— (localisation)",
+   "uniform_over": "every phase, every real t and every real velocity p",
+   "smoothness": "cutoff C^∞",
+   "see_also": [
+    "K2-D",
+    "T1"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : TorusLocalizationStatement := OscInt.API.torusLocalization"
+  },
+  "K2-U": {
+   "hypotheses": [
+    "α real",
+    "t ≥ 1 real, n ∈ ℤ²"
+   ],
+   "conclusion": "|triKernel α t n| ≤ C_α t^{−triRate α}, triRate α = 2/3 at α ∈ {0, ±1/(2√2)} and 3/4 otherwise (unnormalised kernel, triKernel 0 = latticeKernel)",
+   "rate": "t^{−2/3} or t^{−3/4}",
+   "uniform_over": "every lattice site and every real t ≥ 1 (not uniform in α)",
+   "smoothness": "—",
+   "see_also": [
+    "K2-D",
+    "TRI-K",
+    "T6E′"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : TriDecayUpperStatement := OscInt.API.triDecayUpper"
+  },
+  "K2-D": {
+   "hypotheses": [
+    "α real"
+   ],
+   "conclusion": "there are c_α > 0 and T_α with: for every real t ≥ T_α some n ∈ ℤ² has |triKernel α t n| ≥ c_α t^{−triRate α}",
+   "rate": "t^{−2/3} or t^{−3/4} (lower bound; with K2-U the rate is sharp)",
+   "uniform_over": "every real t ≥ T_α (the site depends on t; not uniform in α)",
+   "smoothness": "—",
+   "see_also": [
+    "K2-U",
+    "K2-ML",
+    "K2-F"
+   ],
+   "snippet_kind": "type",
+   "snippet": "example : TriDecayLowerStatement := OscInt.API.triDecayLower"
   }
  },
  "helpers": [

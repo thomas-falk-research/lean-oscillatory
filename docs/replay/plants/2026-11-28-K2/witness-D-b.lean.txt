@@ -1,0 +1,27 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `TriDecayLowerStatement`: triRate ↦ 3/4 everywhere. -/
+def P_TriDecayLowerStatement : Prop :=
+  ∀ α : ℝ, ∃ c > 0, ∃ T : ℝ, ∀ t : ℝ, T ≤ t → ∃ n : ℤ × ℤ, c * t ^ (-(3 / 4 : ℝ)) ≤ ‖triKernel α t n‖
+
+/-- Witness: the draft implies the planted copy (`triRate α ≤ 3/4`, `t ≥ max T 1`). -/
+theorem witness_D_b (h : TriDecayLowerStatement) : P_TriDecayLowerStatement := by
+  intro α
+  obtain ⟨c, hc, T, hT⟩ := h α
+  refine ⟨c, hc, max T 1, fun t ht => ?_⟩
+  obtain ⟨n, hn⟩ := hT t (le_of_max_le_left ht)
+  refine ⟨n, le_trans ?_ hn⟩
+  have h1 : t ^ (-(3 / 4 : ℝ)) ≤ t ^ (-triRate α) :=
+    Real.rpow_le_rpow_of_exponent_le (le_of_max_le_right ht)
+      (by rcases triRate_cases α with e | e <;> rw [e] <;> norm_num)
+  exact mul_le_mul_of_nonneg_left h1 hc.le
+
+#print axioms witness_D_b
+
+end OscInt.API.TriangularDecaySanity

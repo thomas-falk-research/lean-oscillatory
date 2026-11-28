@@ -1,0 +1,14 @@
+# Output of numerics/review/k2_fa_check.py (SHA-256 99a03894798a5db73b96edf0432a8059207457b53db01b2a3b23264261f7c69f),
+# run by the lead on 2026-11-28 with python3 -I (Python 3.13.18, numpy 2.5.3), exit code 0. Not registered; floating
+# point except criterion A; tooling, not evidence for a Lean theorem.
+PASS  A  Rudin-Shapiro |P|^2+|Q|^2 = 2M (autocorrelations), M = 1..2048
+PASS  B N=2  M=128: sup|hhat| = 0.123092 <= sqrt(2/M) = 0.125000; sup|G0hat| = 0.125000; frac = 0.148545; ratio = 1.1884 >= H_N/pi - 1/2 = -0.0225
+PASS  B N=4  M=512: sup|hhat| = 0.062282 <= sqrt(2/M) = 0.062500; sup|G0hat| = 0.062500; frac = 0.098019; ratio = 1.5683 >= H_N/pi - 1/2 = 0.1631
+PASS  B N=8  M=2048: sup|hhat| = 0.031166 <= sqrt(2/M) = 0.031250; sup|G0hat| = 0.031250; frac = 0.061721; ratio = 1.9751 >= H_N/pi - 1/2 = 0.3651
+PASS  B N=16  M=8192: sup|hhat| = 0.015584 <= sqrt(2/M) = 0.015625; sup|G0hat| = 0.015625; frac = 0.037467; ratio = 2.3979 >= H_N/pi - 1/2 = 0.5761
+PASS  B N=32  M=32768: sup|hhat| = 0.007805 <= sqrt(2/M) = 0.007812; sup|G0hat| = 0.007812; frac = 0.022106; ratio = 2.8296 >= H_N/pi - 1/2 = 0.7919
+PASS  C N=4  M=512, grid 128x16384: max lattice coeff B = 2.46740 <= 4pi^2/(2N) = 4.93480; |box integral at p=(1/2,0)| = 3.86963; ratio = 1.5683 >= 0.1631
+PASS  D N=4  trapezoid Nx=512: 3.869447, Nx=2048: 3.869632
+PASS  C N=8  M=2048, grid 128x65536: max lattice coeff B = 1.23370 <= 4pi^2/(2N) = 2.46740; |box integral at p=(1/2,0)| = 2.43662; ratio = 1.9750 >= 0.3651
+PASS  D N=8  trapezoid Nx=512: 2.436284, Nx=2048: 2.436616
+OVERALL: PASS

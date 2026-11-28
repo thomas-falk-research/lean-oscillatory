@@ -1,0 +1,43 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `MonomialAsymptoticStatement`: the remainder 4/(m t r^{m−1}) ↦ 4/(m t r^m). -/
+def P_MonomialAsymptoticStatement : Prop :=
+  ∀ (m : ℕ) (σ : ℝ), 2 ≤ m → (σ = 1 ∨ σ = -1) →
+    ∃ C : ℂ, 1 / (12 * (m : ℝ)) ≤ C.re ∧
+      Tendsto (fun R : ℝ => ∫ x in -R..R, Complex.exp (↑(σ * x ^ m) * Complex.I)) atTop (𝓝 C) ∧
+      ∀ (b : ℝ → ℝ) (r t : ℝ), PlateauCutoff b r → 0 < t →
+        ‖(∫ x : ℝ, (b x : ℂ) * Complex.exp (↑(t * σ * x ^ m) * Complex.I)) -
+            ((t ^ (-(1 : ℝ) / (m : ℝ)) : ℝ) : ℂ) * C‖ ≤ 4 / ((m : ℝ) * t * r ^ m)
+
+/-- Witness: at `m = 2`, `r = 10⁶`, `b = plat r (2r)`, `t = (10⁻⁸)²` the planted remainder gives
+`10⁸ ‖C‖ ≤ 4·10⁶ + 2·10⁴`, i.e. `‖C‖ < 1/24 ≤ Re C` (`norm_integral_plat_le`). -/
+theorem witness_MA_b : ¬ P_MonomialAsymptoticStatement := by
+  intro h
+  obtain ⟨C, hC, -, hb⟩ := h 2 1 le_rfl (Or.inl rfl)
+  have h1 := hb (plat (10 ^ 6) (2 * 10 ^ 6)) (10 ^ 6) (((10 : ℝ) ^ 8)⁻¹ ^ 2)
+    (plat_plateau (by norm_num) (by norm_num)) (by positivity)
+  rw [pow_rpow_neg_inv (by positivity) (by norm_num), inv_inv] at h1
+  have h2 := norm_integral_plat_le (r := 10 ^ 6) (R := 2 * 10 ^ 6) (by norm_num) (by norm_num)
+    (fun x => ((10 : ℝ) ^ 8)⁻¹ ^ 2 * 1 * x ^ 2)
+  beta_reduce at h2
+  have h3 := norm_sub_norm_le (((10 ^ 8 : ℝ) : ℂ) * C)
+    (∫ x : ℝ, (plat (10 ^ 6) (2 * 10 ^ 6) x : ℂ) *
+      Complex.exp (((((10 : ℝ) ^ 8)⁻¹ ^ 2 * 1 * x ^ 2 : ℝ) : ℂ) * Complex.I))
+  rw [norm_sub_rev] at h3
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)] at h3
+  have h4 := Complex.re_le_norm C
+  have e : (4 : ℝ) / (((2 : ℕ) : ℝ) * (((10 : ℝ) ^ 8)⁻¹ ^ 2) * (10 ^ 6) ^ 2) = 2 * 10 ^ 4 := by norm_num
+  rw [e] at h1
+  have e2 : (1 : ℝ) / (12 * ((2 : ℕ) : ℝ)) = 1 / 24 := by norm_num
+  rw [e2] at hC
+  nlinarith
+
+#print axioms witness_MA_b
+
+end OscInt.API.TriangularDecaySanity

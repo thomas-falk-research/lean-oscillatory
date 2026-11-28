@@ -1,0 +1,103 @@
+exit code 1
+plant-U-b.lean:18:22: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  triRate 0
+in the target expression
+  ‖latticeKernel t x‖ ≤ C * t ^ (-if 0 = 0 ∨ 0 = triExceptional then 2 / 3 else 3 / 4)
+
+h : P_TriDecayUpperStatement
+C : ℝ
+hC : ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel 0 t n‖ ≤ C * t ^ (-if 0 = 0 ∨ 0 = triExceptional then 2 / 3 else 3 / 4)
+t : ℝ
+x : ℤ × ℤ
+ht : 1 ≤ t
+this : ‖latticeKernel t x‖ ≤ C * t ^ (-if 0 = 0 ∨ 0 = triExceptional then 2 / 3 else 3 / 4)
+⊢ ‖latticeKernel t x‖ ≤ C * t ^ (-2 / 3)
+plant-U-b.lean:28:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  triRate triExceptional
+in the target expression
+  ∃ C,
+    ∀ (t : ℝ) (n : ℤ × ℤ),
+      1 ≤ t →
+        ‖triKernel triExceptional t n‖ ≤
+          C * t ^ (-if triExceptional = 0 ∨ triExceptional = triExceptional then 2 / 3 else 3 / 4)
+
+h : P_TriDecayUpperStatement
+h1 :
+  ∃ C,
+    ∀ (t : ℝ) (n : ℤ × ℤ),
+      1 ≤ t →
+        ‖triKernel triExceptional t n‖ ≤
+          C * t ^ (-if triExceptional = 0 ∨ triExceptional = triExceptional then 2 / 3 else 3 / 4)
+h2 :
+  ∃ C,
+    ∀ (t : ℝ) (n : ℤ × ℤ),
+      1 ≤ t →
+        ‖triKernel (-triExceptional) t n‖ ≤
+          C * t ^ (-if -triExceptional = 0 ∨ -triExceptional = triExceptional then 2 / 3 else 3 / 4)
+⊢ (∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel triExceptional t n‖ ≤ C * t ^ (-(2 / 3))) ∧
+    ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel (-triExceptional) t n‖ ≤ C * t ^ (-(2 / 3))
+plant-U-b.lean:37:9: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  triRate (1 / 4)
+in the target expression
+  ∃ C,
+    ∀ (t : ℝ) (n : ℤ × ℤ),
+      1 ≤ t → ‖triKernel (1 / 4) t n‖ ≤ C * t ^ (-if 1 / 4 = 0 ∨ 1 / 4 = triExceptional then 2 / 3 else 3 / 4)
+
+case inl
+h : P_TriDecayUpperStatement
+h1 :
+  ∃ C,
+    ∀ (t : ℝ) (n : ℤ × ℤ),
+      1 ≤ t → ‖triKernel (1 / 4) t n‖ ≤ C * t ^ (-if 1 / 4 = 0 ∨ 1 / 4 = triExceptional then 2 / 3 else 3 / 4)
+⊢ ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel (1 / 4) t n‖ ≤ C * t ^ (-(3 / 4))
+plant-U-b.lean:38:9: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  triRate 1
+in the target expression
+  ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel 1 t n‖ ≤ C * t ^ (-if 1 = 0 ∨ 1 = triExceptional then 2 / 3 else 3 / 4)
+
+case inr.inl
+h : P_TriDecayUpperStatement
+h1 :
+  ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel 1 t n‖ ≤ C * t ^ (-if 1 = 0 ∨ 1 = triExceptional then 2 / 3 else 3 / 4)
+⊢ ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel 1 t n‖ ≤ C * t ^ (-(3 / 4))
+plant-U-b.lean:39:9: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  triRate (-2)
+in the target expression
+  ∃ C,
+    ∀ (t : ℝ) (n : ℤ × ℤ),
+      1 ≤ t → ‖triKernel (-2) t n‖ ≤ C * t ^ (-if -2 = 0 ∨ -2 = triExceptional then 2 / 3 else 3 / 4)
+
+case inr.inr
+h : P_TriDecayUpperStatement
+h1 :
+  ∃ C,
+    ∀ (t : ℝ) (n : ℤ × ℤ),
+      1 ≤ t → ‖triKernel (-2) t n‖ ≤ C * t ^ (-if -2 = 0 ∨ -2 = triExceptional then 2 / 3 else 3 / 4)
+⊢ ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel (-2) t n‖ ≤ C * t ^ (-(3 / 4))
+plant-U-b.lean:45:7: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  triRate α
+in the target expression
+  ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-if α = 0 ∨ α = triExceptional then 2 / 3 else 3 / 4)
+
+h : P_TriDecayUpperStatement
+α : ℝ
+h0 : α ≠ 0
+h1 : |α| ≠ triExceptional
+h2 :
+  ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-if α = 0 ∨ α = triExceptional then 2 / 3 else 3 / 4)
+⊢ ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-(3 / 4))
+plant-U-b.lean:58:31: error: Application type mismatch: The argument
+  this
+has type
+  c * t ^ (-triRate α) ≤ C * t ^ (-if α = 0 ∨ α = triExceptional then 2 / 3 else 3 / 4)
+but is expected to have type
+  c * t ^ (-triRate α) ≤ C * t ^ (-triRate α)
+in the application
+  le_of_mul_le_mul_right this
+plant-U-b.lean:69:58: error: Type mismatch
+  hC t n ht
+has type
+  ‖triKernel α t n‖ ≤ C * t ^ (-if α = 0 ∨ α = triExceptional then 2 / 3 else 3 / 4)
+but is expected to have type
+  ‖∫ (k : ℝ × ℝ) in torusBox, Complex.exp (↑(t * triPhase α k + (↑n.1 * k.1 + ↑n.2 * k.2)) * Complex.I)‖ ≤
+    C * t ^ (-triRate α)

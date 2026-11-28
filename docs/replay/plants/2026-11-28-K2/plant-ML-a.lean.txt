@@ -1,0 +1,50 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `MonomialLowerStatement`: the threshold constant 96 ↦ 0. -/
+def P_MonomialLowerStatement : Prop :=
+  ∀ (m : ℕ) (σ : ℝ) (b : ℝ → ℝ) (r t : ℝ), 2 ≤ m → (σ = 1 ∨ σ = -1) → PlateauCutoff b r → 0 < t →
+    0 * r ^ (1 - (m : ℝ)) ≤ t ^ (1 - 1 / (m : ℝ)) →
+      t ^ (-(1 : ℝ) / (m : ℝ)) / (24 * (m : ℝ)) ≤
+        ‖∫ x : ℝ, (b x : ℂ) * Complex.exp (↑(t * σ * x ^ m) * Complex.I)‖
+
+/-- **K2-ML** with `plat r R` at `t = s^m`: once `(s r)^{m−1} ≥ 96`, `‖∫ b e^{i s^m σ x^m}‖ ≥ s⁻¹/(24m)`. -/
+theorem P_triML_plat (h : P_MonomialLowerStatement) (m : ℕ) (hm : 2 ≤ m) (σ : ℝ) (hσ : σ = 1 ∨ σ = -1)
+    {r R : ℝ} (hr : 0 < r) (hrR : r < R) (s : ℝ) (hs : 0 < s) (hth : 96 ≤ (s * r) ^ (m - 1)) :
+    s⁻¹ / (24 * (m : ℝ)) ≤ ‖∫ x : ℝ, (plat r R x : ℂ) * Complex.exp (↑(s ^ m * σ * x ^ m) * Complex.I)‖ := by
+  have h1 := h m σ (plat r R) r (s ^ m) hm hσ (plat_plateau hr hrR) (by positivity)
+  rw [pow_rpow_neg_inv hs (by omega)] at h1
+  apply h1
+  rw [pow_rpow_one_sub hs (by omega), rpow_one_sub_nat hr (by omega)]
+  have hr' : 0 < r ^ (m - 1) := by positivity
+  rw [mul_pow] at hth
+  rw [← div_eq_mul_inv, div_le_iff₀ hr']
+  linarith
+
+/-- **K2-ML** at `m = 2` (`s = 96`), `m = 3` (`s = 10`), `m = 4` (`s = 5`), `m = 6` (`s = 5/2`), `σ = ±1`, cutoff
+`plat 1 2`. -/
+theorem P_triML_instances (h : P_MonomialLowerStatement) (σ : ℝ) (hσ : σ = 1 ∨ σ = -1) :
+    (96 : ℝ)⁻¹ / 48 ≤ ‖∫ x : ℝ, (plat 1 2 x : ℂ) * Complex.exp (((((96 : ℝ) ^ 2 * σ * x ^ 2 : ℝ)) : ℂ) * Complex.I)‖ ∧
+    (10 : ℝ)⁻¹ / 72 ≤ ‖∫ x : ℝ, (plat 1 2 x : ℂ) * Complex.exp (((((10 : ℝ) ^ 3 * σ * x ^ 3 : ℝ)) : ℂ) * Complex.I)‖ ∧
+    (5 : ℝ)⁻¹ / 96 ≤ ‖∫ x : ℝ, (plat 1 2 x : ℂ) * Complex.exp (((((5 : ℝ) ^ 4 * σ * x ^ 4 : ℝ)) : ℂ) * Complex.I)‖ ∧
+    (5 / 2 : ℝ)⁻¹ / 144 ≤
+      ‖∫ x : ℝ, (plat 1 2 x : ℂ) * Complex.exp (((((5 / 2 : ℝ) ^ 6 * σ * x ^ 6 : ℝ)) : ℂ) * Complex.I)‖ := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · have := P_triML_plat h 2 le_rfl σ hσ (r := 1) (R := 2) one_pos (by norm_num) 96 (by norm_num) (by norm_num)
+    norm_num at this ⊢; exact this
+  · have := P_triML_plat h 3 (by norm_num) σ hσ (r := 1) (R := 2) one_pos (by norm_num) 10 (by norm_num)
+      (by norm_num)
+    norm_num at this ⊢; exact this
+  · have := P_triML_plat h 4 (by norm_num) σ hσ (r := 1) (R := 2) one_pos (by norm_num) 5 (by norm_num)
+      (by norm_num)
+    norm_num at this ⊢; exact this
+  · have := P_triML_plat h 6 (by norm_num) σ hσ (r := 1) (R := 2) one_pos (by norm_num) (5 / 2) (by norm_num)
+      (by norm_num)
+    norm_num at this ⊢; exact this
+
+end OscInt.API.TriangularDecaySanity

@@ -1,0 +1,26 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `TriDecayLowerStatement`: triRate ↦ 2/3 everywhere. -/
+def P_TriDecayLowerStatement : Prop :=
+  ∀ α : ℝ, ∃ c > 0, ∃ T : ℝ, ∀ t : ℝ, T ≤ t → ∃ n : ℤ × ℤ, c * t ^ (-(2 / 3 : ℝ)) ≤ ‖triKernel α t n‖
+
+/-- Witness (relative to K2-U): at `α = 1/4` K2-U gives `C t^{−3/4}` at every site, against `c t^{−2/3}`. -/
+theorem witness_D_a (hU : TriDecayUpperStatement) : ¬ P_TriDecayLowerStatement := by
+  intro h
+  obtain ⟨c, hc, T, hT⟩ := h (1 / 4)
+  obtain ⟨C, hC⟩ := hU (1 / 4)
+  rw [triRate_quarter] at hC
+  obtain ⟨t, hTt, ht1, hlt⟩ := rate_separation (2 / 3) (3 / 4) c C T (by norm_num) hc
+  obtain ⟨n, hn⟩ := hT t hTt
+  have := hC t n ht1
+  linarith
+
+#print axioms witness_D_a
+
+end OscInt.API.TriangularDecaySanity

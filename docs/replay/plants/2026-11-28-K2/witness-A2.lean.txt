@@ -1,0 +1,247 @@
+import OscInt.Front.TriangularDecaySanity
+import OscInt.Front.TriangularDecayFinal
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `TorusLocalizationStatement`: the hypothesis `ContDiff ℝ ∞ χ` dropped. -/
+def P_TorusLocalizationStatement : Prop :=
+  ∀ χ : ℝ × ℝ → ℂ,
+    tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi →
+    ∃ D : ℝ, ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ D * B
+
+/-- Weights `2^{−j}` and times `8^j`. -/
+noncomputable def aA2 (j : ℕ) : ℝ := (1 / 2 : ℝ) ^ j
+
+noncomputable def tA2 (j : ℕ) : ℝ := (8 : ℝ) ^ j
+
+/-- The cutoff `χ = χ₁ · Σ_j 2^{−j} e^{−i 8^j Ψ₀}`, `Ψ₀ = triPhase 0 = cos k₁ + cos k₂` (a uniformly convergent
+series of smooth functions; its continuity is not used, its non-smoothness is `chiA2_not_smooth`). -/
+noncomputable def chiA2 (k : ℝ × ℝ) : ℂ :=
+  chi1 k * ∑' j : ℕ, ((aA2 j : ℝ) : ℂ) * Complex.exp (↑(-(tA2 j * triPhase 0 k)) * Complex.I)
+
+theorem chiA2_tsupport : tsupport chiA2 ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi :=
+  (tsupport_mul_subset_left (f := chi1)).trans chi1_tsupport
+
+/-- `I(s) = ∫_{[−π, π]²} χ₁ e^{isΨ₀}`. -/
+noncomputable def IA2 (s : ℝ) : ℂ := ∫ k in torusBox, chi1 k * Complex.exp (↑(s * triPhase 0 k) * Complex.I)
+
+theorem IA2_neg (s : ℝ) : IA2 (-s) = (starRingEnd ℂ) (IA2 s) := by
+  unfold IA2
+  rw [← integral_conj]
+  congr 1
+  funext k
+  rw [map_mul, ← Complex.exp_conj, chi1, Complex.conj_ofReal, map_mul, Complex.conj_ofReal, Complex.conj_I]
+  congr 2
+  push_cast; ring
+
+theorem isCompact_torusBox : IsCompact torusBox := isCompact_Icc.prod isCompact_Icc
+
+theorem continuous_chi1 : Continuous chi1 := chi1_contDiff.continuous
+
+theorem norm_chi1_le (k : ℝ × ℝ) : ‖chi1 k‖ ≤ 1 := by
+  rw [chi1, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg bump1.nonneg]; exact bump1.le_one
+
+/-- `L = ∫ ‖χ₁‖`. -/
+noncomputable def LA2 : ℝ := ∫ k in torusBox, ‖chi1 k‖
+
+theorem norm_IA2_le (s : ℝ) : ‖IA2 s‖ ≤ LA2 := by
+  unfold IA2 LA2
+  refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
+  congr 1; funext k
+  rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]
+
+/-- `I(0) = ∫ χ₁ = ∫ bump1 > 0`. -/
+theorem IA2_zero : IA2 0 = ((∫ k, bump1 k : ℝ) : ℂ) := by
+  rw [← integral_chi1_eq, IA2]
+  congr 1; funext k; simp
+
+/-- Decay of `I` from the proved K2-F and K2-U at `α = 0`: `‖I(s)‖ ≤ K |s|^{−2/3}` for `|s| ≥ 1`. -/
+theorem IA2_decay : ∃ K : ℝ, 0 ≤ K ∧ ∀ s : ℝ, 1 ≤ |s| → ‖IA2 s‖ ≤ K * |s| ^ (-(2 / 3 : ℝ)) := by
+  obtain ⟨D, C, h⟩ := triF_triU_consistent OscInt.API.torusLocalization OscInt.API.triDecayUpper 0
+  have hpos : ∀ s : ℝ, 1 ≤ s → ‖IA2 s‖ ≤ D * C * s ^ (-(2 / 3 : ℝ)) := by
+    intro s hs
+    have := h s 0 hs
+    rw [triRate_zero] at this
+    have e : ∀ k : ℝ × ℝ, s * (triPhase 0 k + lin 0 k) = s * triPhase 0 k := by intro k; simp [lin]
+    simp_rw [e] at this
+    rw [IA2]; linarith
+  have hK : 0 ≤ D * C := by
+    have := hpos 1 le_rfl
+    rw [Real.one_rpow, mul_one] at this
+    exact (norm_nonneg _).trans this
+  refine ⟨D * C, hK, fun s hs => ?_⟩
+  rcases le_or_gt 0 s with h0 | h0
+  · rw [abs_of_nonneg h0] at hs ⊢; exact hpos s hs
+  · rw [abs_of_neg h0] at hs ⊢
+    have := hpos (-s) hs
+    rwa [show s = -(-s) by ring, IA2_neg, Complex.norm_conj, neg_neg]
+
+/-- The lattice coefficients of `8^J Ψ₀` (K2-U at `α = 0`): at most `C₀ t^{−2/3}`. -/
+theorem coeff_bound : ∃ C₀ : ℝ, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t →
+    ‖∫ k in torusBox, Complex.exp (↑(t * triPhase 0 k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤
+      C₀ * t ^ (-(2 / 3 : ℝ)) := by
+  obtain ⟨C, hC⟩ := OscInt.API.triDecayUpper 0
+  exact ⟨C, fun t n ht => by have := hC t n ht; rw [triRate_zero] at this; exact this⟩
+
+/-- `(8^n)^{−2/3} = (1/4)^n`. -/
+theorem eight_rpow (n : ℕ) : ((8 : ℝ) ^ n) ^ (-(2 / 3 : ℝ)) = (1 / 4 : ℝ) ^ n := by
+  rw [show (8 : ℝ) ^ n = (2 : ℝ) ^ (3 * n) by rw [pow_mul]; norm_num, ← Real.rpow_natCast_mul (by norm_num),
+    show ((3 * n : ℕ) : ℝ) * (-(2 / 3 : ℝ)) = -((2 * n : ℕ) : ℝ) by push_cast; ring, Real.rpow_neg (by norm_num),
+    Real.rpow_natCast, pow_mul]
+  norm_num
+  rw [one_div, inv_pow]
+
+/-- The gap: `|8^{n+1} − 8^j| ≥ 8^n` for `j ≠ n + 1`. -/
+theorem gapA2 (n j : ℕ) (hj : j ≠ n + 1) : (8 : ℝ) ^ n ≤ |tA2 (n + 1) - tA2 j| := by
+  unfold tA2
+  have h8 : (0 : ℝ) ≤ 8 ^ n := by positivity
+  rcases Nat.lt_or_gt_of_ne hj with h | h
+  · have : (8 : ℝ) ^ j ≤ 8 ^ n := pow_le_pow_right₀ (by norm_num) (by omega)
+    rw [abs_of_nonneg (by rw [pow_succ]; linarith)]
+    rw [pow_succ]; linarith
+  · have : (8 : ℝ) ^ (n + 2) ≤ 8 ^ j := pow_le_pow_right₀ (by norm_num) (by omega)
+    rw [abs_sub_comm, abs_of_nonneg (by rw [pow_succ] at *; rw [pow_succ] at this; nlinarith)]
+    rw [show n + 2 = n + 1 + 1 by ring, pow_succ, pow_succ] at this
+    rw [pow_succ]; nlinarith
+
+theorem summable_aA2 : Summable aA2 := summable_geometric_of_lt_one (by norm_num) (by norm_num)
+
+theorem tsum_aA2 : ∑' j, aA2 j = 2 := by
+  unfold aA2; rw [tsum_geometric_of_lt_one (by norm_num) (by norm_num)]; norm_num
+
+theorem aA2_nonneg (j : ℕ) : 0 ≤ aA2 j := by unfold aA2; positivity
+
+/-- The test integral at time `8^J` is the series `Σ_j 2^{−j} I(8^J − 8^j)`. -/
+theorem integral_chiA2 (t : ℝ) :
+    ∫ k in torusBox, chiA2 k * Complex.exp (↑(t * (triPhase 0 k + lin 0 k)) * Complex.I) =
+      ∑' j, ((aA2 j : ℝ) : ℂ) * IA2 (t - tA2 j) := by
+  set F : ℕ → ℝ × ℝ → ℂ := fun j k =>
+    ((aA2 j : ℝ) : ℂ) * (chi1 k * Complex.exp (↑((t - tA2 j) * triPhase 0 k) * Complex.I)) with hF
+  have hpt : ∀ k, chiA2 k * Complex.exp (↑(t * (triPhase 0 k + lin 0 k)) * Complex.I) = ∑' j, F j k := by
+    intro k
+    rw [chiA2, ← tsum_mul_left, ← tsum_mul_right]
+    congr 1; funext j
+    simp only [hF]
+    have : Complex.exp (↑(-(tA2 j * triPhase 0 k)) * Complex.I) *
+        Complex.exp (↑(t * (triPhase 0 k + lin 0 k)) * Complex.I) =
+        Complex.exp (↑((t - tA2 j) * triPhase 0 k) * Complex.I) := by
+      rw [← Complex.exp_add]; congr 1; simp only [lin, Prod.fst_zero, Prod.snd_zero]; push_cast; ring
+    rw [← this]; ring
+  have hint : ∀ j, Integrable (F j) (volume.restrict torusBox) := by
+    intro j
+    refine ContinuousOn.integrableOn_compact isCompact_torusBox (Continuous.continuousOn ?_)
+    have := (triPhase_periodic 0).1
+    have hc := continuous_chi1
+    simp only [hF]
+    fun_prop
+  have hnorm : ∀ j, ∫ k in torusBox, ‖F j k‖ = aA2 j * LA2 := by
+    intro j
+    rw [LA2, ← integral_const_mul]
+    congr 1; funext k
+    simp only [hF]
+    rw [norm_mul, norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (aA2_nonneg j)]
+  have hsum : Summable fun j => ∫ k in torusBox, ‖F j k‖ := by
+    simp_rw [hnorm]; exact summable_aA2.mul_right _
+  simp_rw [hpt]
+  rw [← integral_tsum_of_summable_integral_norm hint hsum]
+  congr 1; funext j
+  simp only [hF]
+  rw [integral_const_mul, IA2]
+
+/-- The core of **witness A2** (unconditional, from the proved K2-F and K2-U): without `ContDiff ℝ ∞ χ`, the
+cutoff `χ = χ₁ Σ_j 2^{−j} e^{−i 8^j Ψ₀}` (support inside `χ₁`'s) has no constant `D`. At `t = 8^J`, `Ψ = Ψ₀`, `p = 0`
+the lattice coefficients are at most `C₀ 4^{−J}` (K2-U), while the localised integral is
+`Σ_j 2^{−j} I(8^J − 8^j)`: the term `j = J` is `2^{−J} ∫ χ₁`, the others are at most `2^{−j} K 4^{1−J}`
+(K2-F with K2-U, gap `|8^J − 8^j| ≥ 8^{J−1}`). So `2^{−J} ∫ χ₁ − 8 K 4^{−J} ≤ D C₀ 4^{−J}`, false for large `J`. -/
+theorem a2_no_constant : ¬ ∃ D : ℝ, ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, chiA2 k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ D * B := by
+  rintro ⟨D, hD⟩
+  obtain ⟨K, hK0, hK⟩ := IA2_decay
+  obtain ⟨C₀, hC₀⟩ := coeff_bound
+  set L₀ := ∫ k, bump1 k with hL₀
+  have hL₀pos : 0 < L₀ := bump1.integral_pos
+  -- choose `n` with `(1/2)^n (2K + |D C₀|/4 + 1) < L₀/2`
+  obtain ⟨n, hn⟩ := exists_pow_lt_of_lt_one (x := L₀ / 2 / (2 * K + |D * C₀| / 4 + 1)) (y := 1 / 2)
+    (by positivity) (by norm_num)
+  set w := (1 / 2 : ℝ) ^ n with hw
+  have hw0 : 0 < w := by positivity
+  have hn' : w * (2 * K + |D * C₀| / 4 + 1) < L₀ / 2 := by
+    rwa [lt_div_iff₀ (by positivity)] at hn
+  set t := tA2 (n + 1) with ht
+  have ht1 : 1 ≤ t := one_le_pow₀ (by norm_num)
+  -- the planted upper bound
+  have hup := hD (triPhase 0) t 0 (C₀ * t ^ (-(2 / 3 : ℝ))) (triPhase_periodic 0).1 (triPhase_periodic 0).2.1
+    (triPhase_periodic 0).2.2 (fun n' => hC₀ t n' ht1)
+  have e8 : t ^ (-(2 / 3 : ℝ)) = (1 / 4 : ℝ) ^ (n + 1) := by rw [ht]; exact eight_rpow (n + 1)
+  rw [integral_chiA2, e8] at hup
+  -- split off the term `j = n + 1`
+  set E := K * (1 / 4 : ℝ) ^ n with hE
+  have hE0 : 0 ≤ E := by positivity
+  have hterm : ∀ j, ‖if j = n + 1 then 0 else ((aA2 j : ℝ) : ℂ) * IA2 (tA2 (n + 1) - tA2 j)‖ ≤ aA2 j * E := by
+    intro j
+    split_ifs with hj
+    · rw [norm_zero]; exact mul_nonneg (aA2_nonneg j) hE0
+    · rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (aA2_nonneg j)]
+      refine mul_le_mul_of_nonneg_left ?_ (aA2_nonneg j)
+      have hg := gapA2 n j hj
+      have h1 : 1 ≤ |tA2 (n + 1) - tA2 j| := (one_le_pow₀ (by norm_num)).trans hg
+      refine (hK _ h1).trans ?_
+      rw [hE, ← eight_rpow]
+      exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_nonpos (by positivity) hg (by norm_num)) hK0
+  have hsE : Summable fun j => aA2 j * E := summable_aA2.mul_right _
+  have hsum : Summable fun j => ((aA2 j : ℝ) : ℂ) * IA2 (tA2 (n + 1) - tA2 j) := by
+    refine Summable.of_norm_bounded (g := fun j => aA2 j * LA2) (summable_aA2.mul_right _) fun j => ?_
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (aA2_nonneg j)]
+    exact mul_le_mul_of_nonneg_left (norm_IA2_le _) (aA2_nonneg j)
+  rw [hsum.tsum_eq_add_tsum_ite (n + 1), sub_self, IA2_zero] at hup
+  set R := ∑' j, if j = n + 1 then 0 else ((aA2 j : ℝ) : ℂ) * IA2 (tA2 (n + 1) - tA2 j) with hR
+  have hRle : ‖R‖ ≤ 2 * E := by
+    have hs' : Summable fun j => ‖if j = n + 1 then 0 else ((aA2 j : ℝ) : ℂ) * IA2 (tA2 (n + 1) - tA2 j)‖ :=
+      Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hterm hsE
+    refine (norm_tsum_le_tsum_norm hs').trans ?_
+    refine (Summable.tsum_le_tsum hterm hs' hsE).trans (le_of_eq ?_)
+    rw [tsum_mul_right, tsum_aA2]
+  have hmain : ‖((aA2 (n + 1) : ℝ) : ℂ) * ((L₀ : ℝ) : ℂ)‖ = w / 2 * L₀ := by
+    rw [norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
+      abs_of_nonneg (aA2_nonneg _), abs_of_pos hL₀pos, aA2, pow_succ, hw]
+    ring
+  have hlow : w / 2 * L₀ - 2 * E ≤ D * (C₀ * (1 / 4 : ℝ) ^ (n + 1)) := by
+    rw [← hL₀] at hup
+    have := norm_sub_le (((aA2 (n + 1) : ℝ) : ℂ) * ((L₀ : ℝ) : ℂ) + R) R
+    rw [add_sub_cancel_right, hmain] at this
+    linarith
+  have h4 : (1 / 4 : ℝ) ^ n = w ^ 2 := by rw [hw, ← pow_mul, mul_comm, pow_mul]; norm_num
+  rw [hE, pow_succ, h4] at hlow
+  -- divide by `w`
+  have hlow2 : L₀ / 2 ≤ w * (2 * K + D * C₀ / 4) := by
+    have : w * (L₀ / 2) ≤ w * (w * (2 * K + D * C₀ / 4)) := by nlinarith
+    exact le_of_mul_le_mul_left this hw0
+  have : w * (2 * K + D * C₀ / 4) ≤ w * (2 * K + |D * C₀| / 4 + 1) := by
+    apply mul_le_mul_of_nonneg_left _ hw0.le
+    linarith [le_abs_self (D * C₀)]
+  linarith
+
+/-- **Witness A2**: the planted copy fails at `χ = chiA2`. -/
+theorem witness_A2 : ¬ P_TorusLocalizationStatement := fun hP => a2_no_constant (hP chiA2 chiA2_tsupport)
+
+/-- The datum violates exactly the dropped hypothesis: `chiA2` is not `C^∞` (else the proved K2-F would give the
+constant that `a2_no_constant` excludes). -/
+theorem chiA2_not_smooth : ¬ ContDiff ℝ ∞ chiA2 := fun h =>
+  a2_no_constant (OscInt.API.torusLocalization chiA2 h chiA2_tsupport)
+
+#print axioms witness_A2
+#print axioms chiA2_not_smooth
+
+end OscInt.API.TriangularDecaySanity

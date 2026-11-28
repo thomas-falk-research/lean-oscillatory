@@ -1,0 +1,75 @@
+exit code 1
+plant-U-c.lean:17:10: error: Function expected at
+  hC t x
+but this term has type
+  ‖triKernel 0 t x‖ ≤ C * t ^ (-triRate 0)
+
+Note: Expected a function because this term is being applied to the argument
+  ht
+plant-U-c.lean:14:87: error: unsolved goals
+h : P_TriDecayUpperStatement
+C : ℝ
+hC : ∀ (t : ℝ) (n : ℤ × ℤ), ‖triKernel 0 t n‖ ≤ C * t ^ (-triRate 0)
+t : ℝ
+x : ℤ × ℤ
+ht : 1 ≤ t
+⊢ ‖latticeKernel t x‖ ≤ C * t ^ (-2 / 3)
+plant-U-c.lean:30:9: error: Application type mismatch: The argument
+  h1
+has type
+  ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), ‖triKernel triExceptional t n‖ ≤ C * t ^ (-(2 / 3))
+but is expected to have type
+  ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel triExceptional t n‖ ≤ C * t ^ (-(2 / 3))
+in the application
+  And.intro h1
+plant-U-c.lean:37:4: error: Type mismatch: The rewritten hypothesis
+  h1
+has type
+  ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), ‖triKernel (1 / 4) t n‖ ≤ C * t ^ (-(3 / 4))
+but is expected to have type
+  ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel (1 / 4) t n‖ ≤ C * t ^ (-(3 / 4))
+plant-U-c.lean:38:4: error: Type mismatch: The rewritten hypothesis
+  h1
+has type
+  ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), ‖triKernel 1 t n‖ ≤ C * t ^ (-(3 / 4))
+but is expected to have type
+  ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel 1 t n‖ ≤ C * t ^ (-(3 / 4))
+plant-U-c.lean:39:4: error: Type mismatch: The rewritten hypothesis
+  h1
+has type
+  ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), ‖triKernel (-2) t n‖ ≤ C * t ^ (-(3 / 4))
+but is expected to have type
+  ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel (-2) t n‖ ≤ C * t ^ (-(3 / 4))
+plant-U-c.lean:45:2: error: Type mismatch: The rewritten hypothesis
+  h2
+has type
+  ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), ‖triKernel α t n‖ ≤ C * t ^ (-(3 / 4))
+but is expected to have type
+  ∃ C, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-(3 / 4))
+plant-U-c.lean:55:13: error: Function expected at
+  hC t n
+but this term has type
+  ‖triKernel α t n‖ ≤ C * t ^ (-triRate α)
+
+Note: Expected a function because this term is being applied to the argument
+  (le_max_right _ _)
+plant-U-c.lean:49:31: error: unsolved goals
+hU : P_TriDecayUpperStatement
+hD : TriDecayLowerStatement
+α C : ℝ
+hC : ∀ (t : ℝ) (n : ℤ × ℤ), ‖triKernel α t n‖ ≤ C * t ^ (-triRate α)
+c : ℝ
+hc : c > 0
+T : ℝ
+hT : ∀ (t : ℝ), T ≤ t → ∃ n, c * t ^ (-triRate α) ≤ ‖triKernel α t n‖
+t : ℝ := max T 1
+n : ℤ × ℤ
+hn : c * t ^ (-triRate α) ≤ ‖triKernel α t n‖
+⊢ c ≤ C
+plant-U-c.lean:69:58: error: Function expected at
+  hC t n
+but this term has type
+  ‖triKernel α t n‖ ≤ C * t ^ (-triRate α)
+
+Note: Expected a function because this term is being applied to the argument
+  ht

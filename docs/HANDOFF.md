@@ -9,6 +9,55 @@ SPDX-License-Identifier: CC-BY-4.0
 For a reader who saw nothing. Read "Rules in force" at the top of `docs/lessons.md` first; it distils the numbered entries
 below it, and every rule is binding.
 
+## Resume here (session 16, 2026-11-28, branch `claude/friendly-ramanujan-4aivas`, draft pull request 26; read first)
+
+- **Batch K2** (owner's decision 2026-11-27; integration requested 2026-11-28): sharp fixed-coupling decay of the
+  anisotropic triangular lattice kernel, `t^{−2/3}` at α ∈ {0, ±1/(2√2)}, `t^{−3/4}` otherwise: upper bound at every
+  site for real `t ≥ 1`, lower bound at some site for real `t ≥ T_α` (sup over sites). Six statements in `OscInt/Statements/TriangularDecay.lean`:
+  - K2-L, the local bound of order m;
+  - K2-MA and K2-ML, the monomial asymptotics and the monomial lower bound;
+  - K2-F, the Fourier localisation;
+  - K2-U and K2-D, the global upper and lower bounds.
+
+  Sanity layer `OscInt/Front/TriangularDecaySanity.lean` (101 theorems); plants `docs/replay/plants/2026-11-28-K2/`
+  (15 plants); challenge `Challenge/TriangularDecay.lean`; `comparator-K2.json`. Registered test K2: OVERALL PASS
+  (`docs/prereg/LEDGER.md`). **Frozen 2026-11-28:** stamp `stamps/20261128T013824Z-c5c04f495284` on c5c04f4 (three
+  RFC 3161 tokens, 01:38:31Z), pinned; registry 100 statements, all 100 machine-checked as stated since the replay of 637972c.
+- **Evidence before the freeze:** the external packet and its route referee J, answered in
+  `review/2026-11-28-K2-packet-answers.md` (sections 6 and 7 hold the findings and the decision record).
+- **Route as proved** (`docs/proof-K2.md`, sections 8 and 9):
+  - Upper bound: order-m clone of `OscInt.Cusp.cuspBoundGen_of` (`TriangularDecayLocal`), with the operator
+    `Gop` of `TriangularDecayNormalized` (route section 8, item 1, option (a)). The global patching uses the
+    repository's partition of unity (`TriangularDecayPatch`), and the case split is in `TriangularDecayUpper`.
+  - Lower bound: monomial bounds (`TriangularDecayMonomial`), the product normal forms (`TriangularDecayNormalForm`,
+    with the 1D triangular substitution and no separate plateau), the Fourier decay and the torus expansion
+    (`TriangularDecayFourier`, `TriangularDecayTorus`), and the witnesses in `TriangularDecayLower`.
+  - Blueprint `Blueprint/TriangularDecay.lean`: 13 propositions, plus P4, the reused proved
+    `OscInt.Cusp.transverseNonStat`.
+- **State at 07:45 on 2026-11-28: batch K2 complete.**
+  - Blind pre-proof review answered and stamped: `stamps/20261128T023440Z-e368c37563ab`;
+    `review/2026-11-28-K2-preproof-answers.md`.
+  - Route `docs/proof-K2.md` (section 8 after the route referee, `review/2026-11-28-K2-route-referee-answers.md`).
+  - Blueprint `Blueprint/TriangularDecay.lean`: 13 parts, all proved by agents and verified by the lead.
+  - All six K2 statements proved in Lean (`OscInt/Front/TriangularDecayFinal.lean`).
+  - Post-proof reviews answered (`review/2026-11-28-K2-post-proof-answers.md`), answers stamped
+    `stamps/20261128T043554Z-ae22fc831445`; owed plants A1 and A2 detected.
+  - **Full isolated replay of 637972c: RESULT PASS** (`docs/replay/2026-11-28-K2-verify-all.txt`: 2833 of 2833
+    theorems clean, six kernels, comparator-K2 accepted against the freeze stamp, watcher 177 of 177 clean). The six
+    STATUS rows say "machine-checked as stated (replay of 637972c)".
+- **Open.** Plant F-a (K2-F without its support condition): refuted on paper (external follow-up, checked by the
+  lead, numeric check `numerics/results-k2-fa-check-2026-11-28.txt`); no compiled witness, so the ledger outcome stays
+  NOT DETECTED. A Lean witness is a separate task (not started). Push-gate enforcement by a pre-push hook: recommended
+  by the external review, not done (own pull request, owner decision). Answers:
+  `review/2026-11-28-K2-pr26-external-review-answers.md`.
+- **Exact next step.** Pull request 26 is marked ready for review so that the clean-runner jobs of `verify.yml`
+  run on its final head; the owner merges (merge commit) once they pass, then checks CI on `main`. The next batch is the owner's choice from the
+  list in the session-15 block below (SPL-N, Report D, the parameter-uniform A5 crossover); none is started.
+- **CI on pull request 26.** Green from ac65d22 on (the pre-freeze `static` and `consumer` failures were the
+  designed state of an unstamped statement file).
+- **Out of scope** (owner): RH/GRH, parameter-uniform crossover, SPL-N, Report D.
+- Session record: `docs/progress/2026-11-28-session16-log.md`.
+
 ## Resume here (session 15, 2026-11-26/27, branch `claude/jolly-euler-r4c7d1`; read before the session-13 block below)
 
 - **Batch TRI** (owner's decision 2026-11-27: the classification K1 and the coefficients K3 of the phase

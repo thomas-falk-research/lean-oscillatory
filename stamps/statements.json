@@ -1038,6 +1038,72 @@
       "commitment": "4705b33e6aa9a1a9c2d754a62cc8f6a1e0d9916718513dfe575ba15e50b280a0",
       "stamp": "stamps/20261127T060115Z-bb3a05c4b143",
       "stamp_commit": "bb3a05c4b14358086e66276e0be20d8395872e3a"
+    },
+    {
+      "name": "OscInt.Statements.ReducedOrderBoundStatement",
+      "label": "K2-L",
+      "summary": "Local bound of order `m`: a nonzero `m`-th derivative of the reduced function gives decay `t^{−(1/2 + 1/m)}` near `k₀`, uniformly over every linear term.",
+      "proved_by": "OscInt.API.reducedOrderBound",
+      "file": "OscInt/Statements/TriangularDecay.lean",
+      "file_sha256": "32b99c3864b29dd7b22108e08f28926f6c470c68188b9b7b7dcd59e9f3a99cbc",
+      "commitment": "05f6c1c1f07cac527c1c51f62150899103c4fcf3c05de77668f980d259b3c676",
+      "stamp": "stamps/20261128T013824Z-c5c04f495284",
+      "stamp_commit": "c5c04f495284c3fef738371b8c2e3a66a6da5d1e"
+    },
+    {
+      "name": "OscInt.Statements.MonomialAsymptoticStatement",
+      "label": "K2-MA",
+      "summary": "Monomial asymptotics with an explicit remainder: the improper integral `C = ∫_ℝ e^{iσx^m} dx` has `Re C ≥ 1/(12m)`, and a plateau cutoff integral is `t^{−1/m} C` up to `4/(m t r^{m−1})`.",
+      "proved_by": "OscInt.API.monomialAsymptotic",
+      "file": "OscInt/Statements/TriangularDecay.lean",
+      "file_sha256": "32b99c3864b29dd7b22108e08f28926f6c470c68188b9b7b7dcd59e9f3a99cbc",
+      "commitment": "3540c466bd53cb1081d1459036d1354fed77407370079abeac462b0813998bf0",
+      "stamp": "stamps/20261128T013824Z-c5c04f495284",
+      "stamp_commit": "c5c04f495284c3fef738371b8c2e3a66a6da5d1e"
+    },
+    {
+      "name": "OscInt.Statements.MonomialLowerStatement",
+      "label": "K2-ML",
+      "summary": "Monomial lower bound: `|∫ b(x) e^{itσx^m} dx| ≥ t^{−1/m}/(24m)` once `t^{1−1/m} ≥ 96 r^{1−m}`.",
+      "proved_by": "OscInt.API.monomialLower",
+      "file": "OscInt/Statements/TriangularDecay.lean",
+      "file_sha256": "32b99c3864b29dd7b22108e08f28926f6c470c68188b9b7b7dcd59e9f3a99cbc",
+      "commitment": "ad68f9dc6ad1945755a23b1ad07d72716d6853a4180d343745c9334b40e79e3c",
+      "stamp": "stamps/20261128T013824Z-c5c04f495284",
+      "stamp_commit": "c5c04f495284c3fef738371b8c2e3a66a6da5d1e"
+    },
+    {
+      "name": "OscInt.Statements.TorusLocalizationStatement",
+      "label": "K2-F",
+      "summary": "Fourier localisation: for a smooth `χ` supported inside `(−π, π)²`, a bound on every lattice coefficient of `e^{itΨ}` bounds the `χ`-localised integral at every real velocity `p`.",
+      "proved_by": "OscInt.API.torusLocalization",
+      "file": "OscInt/Statements/TriangularDecay.lean",
+      "file_sha256": "32b99c3864b29dd7b22108e08f28926f6c470c68188b9b7b7dcd59e9f3a99cbc",
+      "commitment": "5928e65977f9d3bd10346a567961d933039b04eb6ae54e74c934e383601b053e",
+      "stamp": "stamps/20261128T013824Z-c5c04f495284",
+      "stamp_commit": "c5c04f495284c3fef738371b8c2e3a66a6da5d1e"
+    },
+    {
+      "name": "OscInt.Statements.TriDecayUpperStatement",
+      "label": "K2-U",
+      "summary": "Fixed-coupling upper bound: `|triKernel α t n| ≤ C_α t^{−triRate α}` for all real `t ≥ 1` and all `n ∈ ℤ²`.",
+      "proved_by": "OscInt.API.triDecayUpper",
+      "file": "OscInt/Statements/TriangularDecay.lean",
+      "file_sha256": "32b99c3864b29dd7b22108e08f28926f6c470c68188b9b7b7dcd59e9f3a99cbc",
+      "commitment": "7645b969298a05723663a5c0a5e8462365866c02bd9ecf9846f73408a7668d9c",
+      "stamp": "stamps/20261128T013824Z-c5c04f495284",
+      "stamp_commit": "c5c04f495284c3fef738371b8c2e3a66a6da5d1e"
+    },
+    {
+      "name": "OscInt.Statements.TriDecayLowerStatement",
+      "label": "K2-D",
+      "summary": "Fixed-coupling lower bound: for all real `t ≥ T_α` some lattice site has `|triKernel α t n| ≥ c_α t^{−triRate α}`, `c_α > 0`.",
+      "proved_by": "OscInt.API.triDecayLower",
+      "file": "OscInt/Statements/TriangularDecay.lean",
+      "file_sha256": "32b99c3864b29dd7b22108e08f28926f6c470c68188b9b7b7dcd59e9f3a99cbc",
+      "commitment": "5c3170878ce2c7b0dcc799ec0c3353089fead7ff1fec0eac9e57e20a3386073b",
+      "stamp": "stamps/20261128T013824Z-c5c04f495284",
+      "stamp_commit": "c5c04f495284c3fef738371b8c2e3a66a6da5d1e"
     }
   ],
   "statement_files": [
@@ -1060,7 +1126,8 @@
     {"file": "OscInt/Statements/SecondDerivSharp.lean", "sha256": "b0f5814eabf7541158b81697bf66cd55b01c70177252c6e35d045506b474eabb", "stamp": "stamps/20261116T225756Z-5792039264f0"},
     {"file": "OscInt/Statements/StationaryLeading.lean", "sha256": "12f8d3b622949cd8a9d3d518236da7f96ae84cc26f3d72dda64bb05bfb40c715", "stamp": "stamps/20261120T002727Z-5491b10bc8ae"},
     {"file": "OscInt/Statements/StationaryPhase.lean", "sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf", "stamp": "stamps/20261116T225756Z-5792039264f0"},
-    {"file": "OscInt/Statements/TriangularAniso.lean", "sha256": "3218aaeb07e577b46ea1f833b40bcf65d136a31d427fa609089d19b99190c7a2", "stamp": "stamps/20261127T060115Z-bb3a05c4b143"},
+    {"file": "OscInt/Statements/TriangularAniso.lean", "sha256": "3218aaeb07e577b46ea1f833b40bcf65d136a31d427fa609089d19b99190c7a2", "stamp": "stamps/20261128T013824Z-c5c04f495284"},
+    {"file": "OscInt/Statements/TriangularDecay.lean", "sha256": "32b99c3864b29dd7b22108e08f28926f6c470c68188b9b7b7dcd59e9f3a99cbc", "stamp": "stamps/20261128T013824Z-c5c04f495284"},
     {"file": "OscInt/Statements/VanDerCorput.lean", "sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44", "stamp": "stamps/20261116T225756Z-5792039264f0"},
     {"file": "OscInt/Statements/Vector.lean", "sha256": "784ca9a55318b8a9d212b7b37fe21699fb97c4764a5b7f511454a9edf376c2ba", "stamp": "stamps/20261116T225756Z-5792039264f0"}
   ]

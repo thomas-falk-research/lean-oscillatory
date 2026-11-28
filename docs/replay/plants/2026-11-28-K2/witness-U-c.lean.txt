@@ -1,0 +1,21 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `TriDecayUpperStatement`: the hypothesis 1 ≤ t dropped. -/
+def P_TriDecayUpperStatement : Prop :=
+  ∀ α : ℝ, ∃ C : ℝ, ∀ (t : ℝ) (n : ℤ × ℤ), ‖triKernel α t n‖ ≤ C * t ^ (-triRate α)
+
+/-- Witness: at `t = 0`, `‖triKernel 0 0 (0, 0)‖ = (2π)² > 0 = C · 0^{−2/3}` (`u_time_zero_bite`). -/
+theorem witness_U_c : ¬ P_TriDecayUpperStatement := by
+  intro h
+  obtain ⟨C, hC⟩ := h 0
+  exact u_time_zero_bite 0 C (hC 0 (0, 0))
+
+#print axioms witness_U_c
+
+end OscInt.API.TriangularDecaySanity

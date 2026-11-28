@@ -1,0 +1,14 @@
+k2_checks: numpy 2.3.5 mpmath 1.3.0 python 3.13.18
+MC: PASS  Re C > 1/(12m) for m = 2..40: True; partial integrals: max |S_R - C|/tail 0.5000; quadrature change 7.23e-13
+MA: PASS  80 cases; max error/bound 0.3112; max quadrature change 2.33e-12
+ML: PASS  32 cases (0 beyond the resolution cap, not run); min |I_b| / (t^(-1/m)/(24m)) = 85.0778
+F: PASS  max relative |L - sum c_j K| 4.80e-14; max |L|/(l1 * max|K|) 0.0479; grid change of L and of the l1 norm 4.57e-07
+L: PASS  fold y^2/2 + x^3: m=3 scaled=1.7259,2.0509,2.0051,2.0959,2.1197 ratio=1.0336; sheared A3 y^2/2 + y x^2 + x^4: m=4 scaled=1.3690,1.6225,1.8074,2.3676,2.5419 ratio=1.4064; A5 y^2/2 + x^6 + x^2 y^3: m=6 scaled=1.0874,1.2785,1.3880,1.5247,1.5658 ratio=1.1281
+G: PASS  a=+0.0000 beta=0.6667 band=[0.4477,0.4645]; a=+0.3536 beta=0.6667 band=[0.3733,0.3908]; a=-0.3536 beta=0.6667 band=[0.3733,0.3908]; a=-0.8000 beta=0.7500 band=[0.3693,0.4686]; a=+1.0000 beta=0.7500 band=[0.3151,0.4127]; a=+1.5000 beta=0.7500 band=[0.3507,0.4447]; a=+0.2500 beta=0.7500 band=[0.4842,0.5174]; a=+2.0000 beta=0.7500 band=[0.3022,0.3655]
+CMA (must FAIL): PASS  80 cases; max error/bound 24.8921; max quadrature change 2.33e-12
+CML (must FAIL): PASS  10 cases (0 beyond the resolution cap, not run); min |I_b| / (t^(-1/m)/(24m)) = 0.0072
+CL (must FAIL): PASS  sheared A3 claimed as m=2: m=2 scaled=2.8950,4.0803,5.4053,10.0138,12.7853 ratio=2.3653
+CG (must FAIL): PASS  a=+1.0000 beta=0.0000 band=[0.0072,0.0415]; a=-0.8000 beta=0.0000 band=[0.0085,0.0496]
+CF (must FAIL): PASS  max relative |L - sum c_j K| 1.39e+03; max |L|/(l1 * max|K|) 0.0479; grid change of L and of the l1 norm 4.57e-07
+elapsed 146 s
+OVERALL: PASS

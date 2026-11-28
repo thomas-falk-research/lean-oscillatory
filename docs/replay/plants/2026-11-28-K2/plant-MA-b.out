@@ -1,0 +1,9 @@
+exit code 1
+plant-MA-b.lean:25:28: error: Type mismatch
+  hb (plat r R) r t (plat_plateau hr hrR) ht
+has type
+  ‖(∫ (x : ℝ), ↑(plat r R x) * Complex.exp (↑(t * σ * x ^ m) * Complex.I)) - ↑(t ^ (-1 / ↑m)) * C‖ ≤
+    4 / (↑m * t * r ^ m)
+but is expected to have type
+  ‖(∫ (x : ℝ), ↑(plat r R x) * Complex.exp (↑(t * σ * x ^ m) * Complex.I)) - ↑(t ^ (-1 / ↑m)) * C‖ ≤
+    4 / (↑m * t * r ^ (m - 1))

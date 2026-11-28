@@ -1,0 +1,22 @@
+exit code 1
+plant-F-b.lean:26:2: error: Type mismatch
+  h chi1 chi1_contDiff chi1_tsupport
+has type
+  ∃ D,
+    ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ),
+      Continuous Ψ →
+        (∀ (k : ℝ × ℝ), Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) →
+          (∀ (k : ℝ × ℝ), Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+            (∀ (n : ℤ × ℤ),
+                n ≠ 0 →
+                  ‖∫ (k : ℝ × ℝ) in torusBox, Complex.exp (↑(t * Ψ k + (↑n.1 * k.1 + ↑n.2 * k.2)) * Complex.I)‖ ≤ B) →
+              ‖∫ (k : ℝ × ℝ) in torusBox, chi1 k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ D * B
+but is expected to have type
+  ∃ D,
+    ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ),
+      Continuous Ψ →
+        (∀ (k : ℝ × ℝ), Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) →
+          (∀ (k : ℝ × ℝ), Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+            (∀ (n : ℤ × ℤ),
+                ‖∫ (k : ℝ × ℝ) in torusBox, Complex.exp (↑(t * Ψ k + (↑n.1 * k.1 + ↑n.2 * k.2)) * Complex.I)‖ ≤ B) →
+              ‖∫ (k : ℝ × ℝ) in torusBox, chi1 k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ D * B

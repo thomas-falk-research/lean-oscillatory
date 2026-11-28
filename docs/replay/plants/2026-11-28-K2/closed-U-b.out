@@ -1,0 +1,6 @@
+/tmp/claude-0/-home-user-lean-oscillatory/13ccdd33-31f2-5b54-b822-54eeb9095f75/scratchpad/closed/closed-U-b.lean:21:13: warning: `if_neg` has been deprecated: Use `ite_eq_right` instead
+
+Hint: Replace the deprecated name:
+  i̵f̵_̵n̵e̵g̵i̲t̲e̲_̲e̲q̲_̲r̲i̲g̲h̲t̲
+'OscInt.API.TriangularDecaySanity.closed_now_U_b' depends on axioms: [propext, Classical.choice, Quot.sound]
+exit=0

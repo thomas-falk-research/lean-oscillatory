@@ -1,0 +1,61 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `TriDecayLowerStatement`: triRate ↦ 2/3 everywhere. -/
+def P_TriDecayLowerStatement : Prop :=
+  ∀ α : ℝ, ∃ c > 0, ∃ T : ℝ, ∀ t : ℝ, T ≤ t → ∃ n : ℤ × ℤ, c * t ^ (-(2 / 3 : ℝ)) ≤ ‖triKernel α t n‖
+
+/-- **K2-D** at `α = 0`: a lower bound `c t^{−2/3}` for the lattice Laplacian kernel at some site. -/
+theorem P_triD_zero (h : P_TriDecayLowerStatement) :
+    ∃ c > 0, ∃ T : ℝ, ∀ t : ℝ, T ≤ t → ∃ n : ℤ × ℤ, c * t ^ (-(2 / 3 : ℝ)) ≤ ‖latticeKernel t n‖ := by
+  have h1 := h 0
+  rw [triKernel_zero, triRate_zero] at h1
+  exact h1
+
+/-- **K2-D** at `±a*`: rate `2/3`. -/
+theorem P_triD_exceptional (h : P_TriDecayLowerStatement) :
+    (∃ c > 0, ∃ T : ℝ, ∀ t : ℝ, T ≤ t → ∃ n : ℤ × ℤ,
+        c * t ^ (-(2 / 3 : ℝ)) ≤ ‖triKernel triExceptional t n‖) ∧
+      ∃ c > 0, ∃ T : ℝ, ∀ t : ℝ, T ≤ t → ∃ n : ℤ × ℤ, c * t ^ (-(2 / 3 : ℝ)) ≤ ‖triKernel (-triExceptional) t n‖ := by
+  have h1 := h triExceptional
+  have h2 := h (-triExceptional)
+  rw [triRate_exceptional] at h1
+  rw [triRate_neg_exceptional] at h2
+  exact ⟨h1, h2⟩
+
+/-- **K2-D** at `α = 1/4`, `1`, `−2`: rate `3/4`. -/
+theorem P_triD_generic (h : P_TriDecayLowerStatement) (α : ℝ) (hα : α = 1 / 4 ∨ α = 1 ∨ α = -2) :
+    ∃ c > 0, ∃ T : ℝ, ∀ t : ℝ, T ≤ t → ∃ n : ℤ × ℤ, c * t ^ (-(3 / 4 : ℝ)) ≤ ‖triKernel α t n‖ := by
+  have h1 := h α
+  rcases hα with rfl | rfl | rfl
+  · rwa [triRate_quarter] at h1
+  · rwa [triRate_one] at h1
+  · rwa [triRate_neg_two] at h1
+
+/-- **K2-D** with the trivial bound: `c t^{−triRate α} ≤ (2π)²` for `t ≥ T`. -/
+theorem P_triD_trivial (h : P_TriDecayLowerStatement) (α : ℝ) :
+    ∃ c > 0, ∃ T : ℝ, ∀ t : ℝ, T ≤ t → c * t ^ (-triRate α) ≤ (2 * Real.pi) ^ 2 := by
+  obtain ⟨c, hc, T, hT⟩ := h α
+  refine ⟨c, hc, T, fun t ht => ?_⟩
+  obtain ⟨n, hn⟩ := hT t ht
+  exact hn.trans (norm_triKernel_le α t n)
+
+/-- **Consistency K2-U with K2-D** at every `α`: the constants satisfy `c ≤ C`. -/
+theorem P_triU_triD_consistent (hU : TriDecayUpperStatement) (hD : P_TriDecayLowerStatement) (α : ℝ) :
+    ∃ c > 0, ∃ C : ℝ, c ≤ C := by
+  obtain ⟨C, hC⟩ := hU α
+  obtain ⟨c, hc, T, hT⟩ := hD α
+  refine ⟨c, hc, C, ?_⟩
+  set t := max T 1
+  obtain ⟨n, hn⟩ := hT t (le_max_left _ _)
+  have h1 := hC t n (le_max_right _ _)
+  have hp : 0 < t ^ (-triRate α) := Real.rpow_pos_of_pos (by positivity) _
+  have := hn.trans h1
+  exact le_of_mul_le_mul_right this hp
+
+end OscInt.API.TriangularDecaySanity

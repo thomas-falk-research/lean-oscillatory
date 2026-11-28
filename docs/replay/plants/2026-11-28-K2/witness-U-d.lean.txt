@@ -1,0 +1,26 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `TriDecayUpperStatement`: triRate ↦ 2/3 everywhere. -/
+def P_TriDecayUpperStatement : Prop :=
+  ∀ α : ℝ, ∃ C : ℝ, ∀ (t : ℝ) (n : ℤ × ℤ), 1 ≤ t → ‖triKernel α t n‖ ≤ C * t ^ (-(2 / 3 : ℝ))
+
+/-- Witness: the draft implies the planted copy (`triRate α ≥ 2/3`, `t ≥ 1`). -/
+theorem witness_U_d (h : TriDecayUpperStatement) : P_TriDecayUpperStatement := by
+  intro α
+  obtain ⟨C, hC⟩ := h α
+  refine ⟨|C|, fun t n ht => (hC t n ht).trans ?_⟩
+  have h1 : t ^ (-triRate α) ≤ t ^ (-(2 / 3 : ℝ)) :=
+    Real.rpow_le_rpow_of_exponent_le ht (by rcases triRate_cases α with e | e <;> rw [e] <;> norm_num)
+  have h2 : 0 ≤ t ^ (-triRate α) := Real.rpow_nonneg (by linarith) _
+  calc C * t ^ (-triRate α) ≤ |C| * t ^ (-triRate α) := mul_le_mul_of_nonneg_right (le_abs_self C) h2
+    _ ≤ |C| * t ^ (-(2 / 3 : ℝ)) := mul_le_mul_of_nonneg_left h1 (abs_nonneg C)
+
+#print axioms witness_U_d
+
+end OscInt.API.TriangularDecaySanity

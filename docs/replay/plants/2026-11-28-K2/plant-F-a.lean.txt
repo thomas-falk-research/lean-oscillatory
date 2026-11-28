@@ -1,0 +1,53 @@
+import OscInt.Front.TriangularDecaySanity
+
+namespace OscInt.API.TriangularDecaySanity
+
+open OscInt.Statements OscInt.API.Poly OscInt.API.CuspSanity OscInt.API.TriangularAnisoSanity MeasureTheory
+open scoped ContDiff Topology
+open Filter
+
+/-- PLANTED copy of `TorusLocalizationStatement`: the support condition dropped. -/
+def P_TorusLocalizationStatement : Prop :=
+  ∀ χ : ℝ × ℝ → ℂ, ContDiff ℝ ∞ χ →
+    ∃ D : ℝ, ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ D * B
+
+/-- **K2-F** with `χ₁`: one constant `D` for every continuous biperiodic phase, time and velocity. -/
+theorem P_triF_chi1 (h : P_TorusLocalizationStatement) :
+    ∃ D : ℝ, ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →
+      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →
+      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,
+          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →
+        ‖∫ k in torusBox, chi1 k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ D * B :=
+  h chi1 chi1_contDiff chi1_tsupport
+
+/-- **K2-F** with `χ₁` and the zero phase: `‖∫ χ₁ e^{it p·k}‖ ≤ D (2π)²` (the zero mode is `(2π)²`). -/
+theorem P_triF_chi1_zero (h : P_TorusLocalizationStatement) :
+    ∃ D : ℝ, ∀ (t : ℝ) (p : ℝ × ℝ),
+      ‖∫ k in torusBox, chi1 k * Complex.exp (↑(t * ((fun _ : ℝ × ℝ => (0 : ℝ)) k + lin p k)) * Complex.I)‖ ≤
+        D * (2 * Real.pi) ^ 2 := by
+  obtain ⟨D, hD⟩ := P_triF_chi1 h
+  refine ⟨D, fun t p => hD _ t p _ continuous_const (fun _ => rfl) (fun _ => rfl) fun n => ?_⟩
+  by_cases hn : n = 0
+  · subst hn
+    simp only [mul_zero, Int.cast_zero, zero_mul, add_zero, Prod.fst_zero, Prod.snd_zero, Complex.ofReal_zero,
+      Complex.exp_zero, setIntegral_const, volume_real_torusBox, Complex.real_smul, mul_one, Complex.norm_real,
+      Real.norm_eq_abs]
+    exact le_of_eq (abs_of_pos (by positivity))
+  · rw [lattice_coeff_zero_phase t n hn, norm_zero]; positivity
+
+/-- **Consistency K2-F with K2-U**: the lattice coefficients of `triPhase α` are `triKernel α t n`, so the
+`χ₁`-localised integral at every real velocity decays at the rate `triRate α`. -/
+theorem P_triF_triU_consistent (hF : P_TorusLocalizationStatement) (hU : TriDecayUpperStatement) (α : ℝ) :
+    ∃ D C : ℝ, ∀ (t : ℝ) (p : ℝ × ℝ), 1 ≤ t →
+      ‖∫ k in torusBox, chi1 k * Complex.exp (↑(t * (triPhase α k + lin p k)) * Complex.I)‖ ≤
+        D * (C * t ^ (-triRate α)) := by
+  obtain ⟨D, hD⟩ := P_triF_chi1 hF
+  obtain ⟨C, hC⟩ := hU α
+  obtain ⟨h1, h2, h3⟩ := triPhase_periodic α
+  exact ⟨D, C, fun t p ht => hD _ t p _ h1 h2 h3 fun n => hC t n ht⟩
+
+end OscInt.API.TriangularDecaySanity
