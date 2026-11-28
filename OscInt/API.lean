@@ -63,6 +63,9 @@ import OscInt.Front.TriangularDecayNormalized
 import OscInt.Front.TriangularDecayFinal
 import OscInt.Front.TriangularDecayParam
 import OscInt.Front.TriangularDecayNormalForm
+import OscInt.Front.TriangularDecayPatch
+import OscInt.Front.TriangularDecayUpper
+import OscInt.Front.TriangularDecayLower
 
 /-!
 # OscInt public API

@@ -401,10 +401,10 @@ example : TorusLocalizationStatement := OscInt.API.torusLocalization
 
 /-! ### K2-U: Fixed-coupling upper bound: `|triKernel α t n| ≤ C_α t^{−triRate α}` for all real `t ≥ 1` and all `n ∈ ℤ²`. -/
 
-example (h : TriDecayUpperStatement) := OscInt.API.TriangularDecaySanity.triU_zero h
+example : TriDecayUpperStatement := OscInt.API.triDecayUpper
 
 /-! ### K2-D: Fixed-coupling lower bound: for all real `t ≥ T_α` some lattice site has `|triKernel α t n| ≥ c_α t^{−triRate α}`, `c_α > 0`. -/
 
-example (h : TriDecayLowerStatement) := OscInt.API.TriangularDecaySanity.triD_zero h
+example : TriDecayLowerStatement := OscInt.API.triDecayLower
 
 end OscIntSnippets

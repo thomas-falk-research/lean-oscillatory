@@ -1601,8 +1601,8 @@
     "TRI-K",
     "T6E′"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : TriDecayUpperStatement) := OscInt.API.TriangularDecaySanity.triU_zero h"
+   "snippet_kind": "type",
+   "snippet": "example : TriDecayUpperStatement := OscInt.API.triDecayUpper"
   },
   "K2-D": {
    "hypotheses": [
@@ -1617,8 +1617,8 @@
     "K2-ML",
     "K2-F"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : TriDecayLowerStatement) := OscInt.API.TriangularDecaySanity.triD_zero h"
+   "snippet_kind": "type",
+   "snippet": "example : TriDecayLowerStatement := OscInt.API.triDecayLower"
   }
  },
  "helpers": [

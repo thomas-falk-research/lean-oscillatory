@@ -2416,7 +2416,7 @@
   {
    "label": "K2-U",
    "name": "OscInt.Statements.TriDecayUpperStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.triDecayUpper",
    "summary": "Fixed-coupling upper bound: `|triKernel α t n| ≤ C_α t^{−triRate α}` for all real `t ≥ 1` and all `n ∈ ℤ²`.",
    "file": "OscInt/Statements/TriangularDecay.lean",
    "commitment": "7645b969298a05723663a5c0a5e8462365866c02bd9ecf9846f73408a7668d9c",
@@ -2435,13 +2435,13 @@
     "TRI-K",
     "T6E′"
    ],
-   "snippet": "example (h : TriDecayUpperStatement) := OscInt.API.TriangularDecaySanity.triU_zero h",
+   "snippet": "example : TriDecayUpperStatement := OscInt.API.triDecayUpper",
    "status": "see docs/STATUS.md (row K2-U)"
   },
   {
    "label": "K2-D",
    "name": "OscInt.Statements.TriDecayLowerStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.triDecayLower",
    "summary": "Fixed-coupling lower bound: for all real `t ≥ T_α` some lattice site has `|triKernel α t n| ≥ c_α t^{−triRate α}`, `c_α > 0`.",
    "file": "OscInt/Statements/TriangularDecay.lean",
    "commitment": "5c3170878ce2c7b0dcc799ec0c3353089fead7ff1fec0eac9e57e20a3386073b",
@@ -2459,7 +2459,7 @@
     "K2-ML",
     "K2-F"
    ],
-   "snippet": "example (h : TriDecayLowerStatement) := OscInt.API.TriangularDecaySanity.triD_zero h",
+   "snippet": "example : TriDecayLowerStatement := OscInt.API.triDecayLower",
    "status": "see docs/STATUS.md (row K2-D)"
   }
  ]
