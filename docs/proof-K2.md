@@ -191,3 +191,53 @@ makes the integral the square of `∫ b e^{itz³}`.
 - **P13.** The rescaling to `UnitAddTorus`.
 
 The fallbacks are those named in section 1 and in referee J's report (J-1, J-5, Q6).
+
+## 8. Revision after the route referee (2026-11-28; `review/2026-11-28-K2-route-referee-answers.md`)
+
+Sections 1 to 7 are left as written; this section supersedes them where they differ.
+
+1. **P2 (finding M1).** `ImplicitAux.exists_coreHyps` is not used unchanged. Its `hG` must hold for every
+   `SliceHyps` phase, which is only C⁴, and its output hides a C³ root. P2 is proved by either of two routes:
+   - **(a), recommended by R.** The operator `D f = f_x + Y1 f_y` does not depend on q, so `G(F + q·y) = G(F)`.
+     - State the operator identity `g⁽ʲ⁾ = (D^{j−1}Q_x)(·, y(·))` for any differentiable curve with
+       `Q_y(x, y(x)) = 0` on an open interval where `Q_yy ≠ 0`. Then `g⁽ᵐ⁾(0) = G(F)(0, 0)` along h directly.
+     - The lower bound ν near q = 0 comes from continuity of `G(F)` at 0 and of the roots in q.
+     - Smoothness of the box roots comes from a C^∞ version of `SliceHyps.contDiffAt`/`contDiffOn`, by the same
+       uniqueness argument with n = ∞.
+   - **(b).** A clone `exists_coreHypsM` with `ContDiff ℝ ∞` in its hypotheses, outputting `CoreHypsM`.
+
+   The C^∞ slice lemma is shared with P5: P2 and P5 go to one agent.
+2. **K2-F (finding M2).** New part P14 `TorusExpansionFacts`: the expansion of `χ e^{iδ·k}` integrated against any
+   continuous g on the box. Route: pointwise inversion on the torus
+   (`UnitAddTorus.hasSum_mFourier_series_apply_of_summable`) after rescaling, then `integral_tsum`. Only
+   `χ e^{iδ·k}` is lifted to the torus. K2-F is then P13 + P14 with `g = e^{i(tΨ + n·k)}` and `D = S/(4π²)`. This
+   replaces the Parseval sketch of section 4.
+3. **P11 (finding M3).** The cutoff of section 5, step 4, is neither localised nor globally smooth as written.
+   Repair:
+   - define z and w with smooth substitutes for `√·` and `(·)^{1/m}`, valid on the range where R and R_m keep their
+     sign;
+   - multiply by a spatial plateau cutoff ζ, equal to 1 on a box where `z` and `w(u, ·)` are increasing, containing
+     every point of a slightly larger box with `|z| < ρ₁` and `|w| < ρ₂`;
+   - choose ρ₁, ρ₂ against that box;
+   - for the complex integrand, use `intervalIntegral.integral_deriv_smul_comp`, not `integral_comp_mul_deriv`,
+     which is real-valued.
+4. **Small items:**
+   - (m1) P5 needs the C^∞ slice lemma of item 1, not a pointwise `ContDiffAt`.
+   - (m2) P3 is a part too.
+   - (m3) P11 and P12 take P9 as a hypothesis.
+   - (m5) At `(π/2, π/2)`: g′(0) = 0 by `ReducedBridge.hasDerivAt_reducedFn`; g″(0) = 0 by P6 and the kernel; at the
+     A5 point the spanning hypothesis comes from the sanity layer's `span_of_hyps`.
+   - (m6) At a nondegenerate point, P6's value is `hessDet · (v₁w₂ − v₂w₁)² / D²[w, w]`, or v, w are chosen among
+     e₁, e₂, e₁ + e₂.
+   - (N1) The clone of `phase_eq` carries the constant `lin y k₀`, and `lin (0, q) k` becomes `q * k.2`; in K2-U take
+     `max C 0` before comparing exponents.
+   - (N2) The CosMoment pairing is `OscInt.D4.CosMomentAux.integral_period_pos`, a pattern at exponent −4/3 only.
+   - (N3) P9's parameter is in ℝ × ℝ; the one-variable remainders compose with `u ↦ (u, 0)`.
+   - (N4) P13 more cheaply: `c_j(δ)` is the transform of χ alone at `j − δ`, and `1 + (j − δ)² ≥ (1 + j²)/4` for
+     δ ∈ [0, 1].
+   - (N5) P11 and P12 share a one-variable monomial-coordinate lemma, which goes to one agent.
+   - (N7) Part theorems are named in lowerCamel.
+5. **Rule 12 (m4).** The Mathlib names of the route are in `MathlibNames.lean`. `CosMoment.integral_period_pos` is
+   the repository name `OscInt.D4.CosMomentAux.integral_period_pos` (N2).
+
+Agents: P1; P2 with P5 and P6; P3; P7; P9; P10a with P10b; P11 with P12; P13; P14.
