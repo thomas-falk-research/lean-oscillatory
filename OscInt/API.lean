@@ -58,6 +58,11 @@ import OscInt.Front.StationaryLeadingFinal
 import OscInt.Front.TriangularAnisoFinal
 import OscInt.Front.TriangularDecayAssembly
 import OscInt.Front.TriangularDecayLocal
+import OscInt.Front.TriangularDecayTorus
+import OscInt.Front.TriangularDecayNormalized
+import OscInt.Front.TriangularDecayFinal
+import OscInt.Front.TriangularDecayParam
+import OscInt.Front.TriangularDecayNormalForm
 
 /-!
 # OscInt public API

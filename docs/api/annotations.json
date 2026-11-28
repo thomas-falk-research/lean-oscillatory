@@ -1537,8 +1537,8 @@
     "S1.k",
     "TRI-K"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : ReducedOrderBoundStatement) := OscInt.API.TriangularDecaySanity.triL_shear h"
+   "snippet_kind": "type",
+   "snippet": "example : ReducedOrderBoundStatement := OscInt.API.reducedOrderBound"
   },
   "K2-MA": {
    "hypotheses": [
@@ -1552,8 +1552,8 @@
    "see_also": [
     "K2-ML"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : MonomialAsymptoticStatement) := OscInt.API.TriangularDecaySanity.triMA_instances h"
+   "snippet_kind": "type",
+   "snippet": "example : MonomialAsymptoticStatement := OscInt.API.monomialAsymptotic"
   },
   "K2-ML": {
    "hypotheses": [
@@ -1567,8 +1567,8 @@
    "see_also": [
     "K2-MA"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : MonomialLowerStatement) (σ : ℝ) (hσ : σ = 1 ∨ σ = -1) := OscInt.API.TriangularDecaySanity.triML_instances h σ hσ"
+   "snippet_kind": "type",
+   "snippet": "example : MonomialLowerStatement := OscInt.API.monomialLower"
   },
   "K2-F": {
    "hypotheses": [
@@ -1584,8 +1584,8 @@
     "K2-D",
     "T1"
    ],
-   "snippet_kind": "unproved",
-   "snippet": "example (h : TorusLocalizationStatement) := OscInt.API.TriangularDecaySanity.triF_chi1 h"
+   "snippet_kind": "type",
+   "snippet": "example : TorusLocalizationStatement := OscInt.API.torusLocalization"
   },
   "K2-U": {
    "hypotheses": [

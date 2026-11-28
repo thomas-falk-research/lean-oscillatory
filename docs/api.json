@@ -2318,7 +2318,7 @@
   {
    "label": "K2-L",
    "name": "OscInt.Statements.ReducedOrderBoundStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.reducedOrderBound",
    "summary": "Local bound of order `m`: a nonzero `m`-th derivative of the reduced function gives decay `t^{−(1/2 + 1/m)}` near `k₀`, uniformly over every linear term.",
    "file": "OscInt/Statements/TriangularDecay.lean",
    "commitment": "05f6c1c1f07cac527c1c51f62150899103c4fcf3c05de77668f980d259b3c676",
@@ -2339,13 +2339,13 @@
     "S1.k",
     "TRI-K"
    ],
-   "snippet": "example (h : ReducedOrderBoundStatement) := OscInt.API.TriangularDecaySanity.triL_shear h",
+   "snippet": "example : ReducedOrderBoundStatement := OscInt.API.reducedOrderBound",
    "status": "see docs/STATUS.md (row K2-L)"
   },
   {
    "label": "K2-MA",
    "name": "OscInt.Statements.MonomialAsymptoticStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.monomialAsymptotic",
    "summary": "Monomial asymptotics with an explicit remainder: the improper integral `C = ∫_ℝ e^{iσx^m} dx` has `Re C ≥ 1/(12m)`, and a plateau cutoff integral is `t^{−1/m} C` up to `4/(m t r^{m−1})`.",
    "file": "OscInt/Statements/TriangularDecay.lean",
    "commitment": "3540c466bd53cb1081d1459036d1354fed77407370079abeac462b0813998bf0",
@@ -2362,13 +2362,13 @@
    "see_also": [
     "K2-ML"
    ],
-   "snippet": "example (h : MonomialAsymptoticStatement) := OscInt.API.TriangularDecaySanity.triMA_instances h",
+   "snippet": "example : MonomialAsymptoticStatement := OscInt.API.monomialAsymptotic",
    "status": "see docs/STATUS.md (row K2-MA)"
   },
   {
    "label": "K2-ML",
    "name": "OscInt.Statements.MonomialLowerStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.monomialLower",
    "summary": "Monomial lower bound: `|∫ b(x) e^{itσx^m} dx| ≥ t^{−1/m}/(24m)` once `t^{1−1/m} ≥ 96 r^{1−m}`.",
    "file": "OscInt/Statements/TriangularDecay.lean",
    "commitment": "ad68f9dc6ad1945755a23b1ad07d72716d6853a4180d343745c9334b40e79e3c",
@@ -2385,13 +2385,13 @@
    "see_also": [
     "K2-MA"
    ],
-   "snippet": "example (h : MonomialLowerStatement) (σ : ℝ) (hσ : σ = 1 ∨ σ = -1) := OscInt.API.TriangularDecaySanity.triML_instances h σ hσ",
+   "snippet": "example : MonomialLowerStatement := OscInt.API.monomialLower",
    "status": "see docs/STATUS.md (row K2-ML)"
   },
   {
    "label": "K2-F",
    "name": "OscInt.Statements.TorusLocalizationStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.torusLocalization",
    "summary": "Fourier localisation: for a smooth `χ` supported inside `(−π, π)²`, a bound on every lattice coefficient of `e^{itΨ}` bounds the `χ`-localised integral at every real velocity `p`.",
    "file": "OscInt/Statements/TriangularDecay.lean",
    "commitment": "5928e65977f9d3bd10346a567961d933039b04eb6ae54e74c934e383601b053e",
@@ -2410,7 +2410,7 @@
     "K2-D",
     "T1"
    ],
-   "snippet": "example (h : TorusLocalizationStatement) := OscInt.API.TriangularDecaySanity.triF_chi1 h",
+   "snippet": "example : TorusLocalizationStatement := OscInt.API.torusLocalization",
    "status": "see docs/STATUS.md (row K2-F)"
   },
   {
