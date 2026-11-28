@@ -130,3 +130,12 @@ OscInt.Statements.TorusLocalizationStatement stamps/20261128T013824Z-c5c04f49528
 OscInt.Statements.TriDecayUpperStatement stamps/20261128T013824Z-c5c04f495284
 OscInt.Statements.TriDecayLowerStatement stamps/20261128T013824Z-c5c04f495284
 challenge:comparator-K2.json stamps/20261128T013824Z-c5c04f495284
+OscInt.Statements.SplKernelCapStatement stamps/20261128T135153Z-9d2a650ee1ec
+OscInt.Statements.SplKernelLowerStatement stamps/20261128T135153Z-9d2a650ee1ec
+OscInt.Statements.StationaryLeadingSharpStatement stamps/20261128T135153Z-9d2a650ee1ec
+OscInt.Statements.StationaryLeadingSharpnessStatement stamps/20261128T135153Z-9d2a650ee1ec
+OscInt.Statements.TriCrossoverUpperStatement stamps/20261128T135153Z-9d2a650ee1ec
+OscInt.Statements.TorusLocalizationC2Statement stamps/20261128T135153Z-9d2a650ee1ec
+challenge:comparator-SPLN.json stamps/20261128T135153Z-9d2a650ee1ec
+challenge:comparator-A5U.json stamps/20261128T135153Z-9d2a650ee1ec
+challenge:comparator-LOC2.json stamps/20261128T135153Z-9d2a650ee1ec

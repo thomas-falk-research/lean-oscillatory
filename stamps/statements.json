@@ -1104,6 +1104,72 @@
       "commitment": "5c3170878ce2c7b0dcc799ec0c3353089fead7ff1fec0eac9e57e20a3386073b",
       "stamp": "stamps/20261128T013824Z-c5c04f495284",
       "stamp_commit": "c5c04f495284c3fef738371b8c2e3a66a6da5d1e"
+    },
+    {
+      "name": "OscInt.Statements.SplKernelCapStatement",
+      "label": "SPL-NU",
+      "summary": "The kernel is bounded by `360987/500000 = 0.721974`: `|κ(τ)| ≤ 360987/500000` for every real `τ`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/StationaryLeadingSharp.lean",
+      "file_sha256": "aa3eb596a39389712f2d03159606b5abe66262b835a6fbd77b42a5bf594b06f8",
+      "commitment": "b4c9bcacfa0b957e7cf54e2e74877c38fc23f51d71628bf8883cb92dcf8b2fbc",
+      "stamp": "stamps/20261128T135153Z-9d2a650ee1ec",
+      "stamp_commit": "9d2a650ee1ec336b083b241346bf58a1f57f9772"
+    },
+    {
+      "name": "OscInt.Statements.SplKernelLowerStatement",
+      "label": "SPL-NL",
+      "summary": "The kernel exceeds `72197399/10⁸ = 0.72197399` at `τ = 8123/5000`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/StationaryLeadingSharp.lean",
+      "file_sha256": "aa3eb596a39389712f2d03159606b5abe66262b835a6fbd77b42a5bf594b06f8",
+      "commitment": "516ecc24de2c997ea9c582db2064dd8f183b6bf0f0e0345448b9a77213f1afee",
+      "stamp": "stamps/20261128T135153Z-9d2a650ee1ec",
+      "stamp_commit": "9d2a650ee1ec336b083b241346bf58a1f57f9772"
+    },
+    {
+      "name": "OscInt.Statements.StationaryLeadingSharpStatement",
+      "label": "SPL-NK",
+      "summary": "The leading term of the quadratic-phase integral with remainder at most `(360987/500000) ‖g‴‖₁ λ^{−3/2}`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/StationaryLeadingSharp.lean",
+      "file_sha256": "aa3eb596a39389712f2d03159606b5abe66262b835a6fbd77b42a5bf594b06f8",
+      "commitment": "132872b68f5fdc06ebd97aca624c8a7d058223c9c76e29ca80a67d18c2c1861b",
+      "stamp": "stamps/20261128T135153Z-9d2a650ee1ec",
+      "stamp_commit": "9d2a650ee1ec336b083b241346bf58a1f57f9772"
+    },
+    {
+      "name": "OscInt.Statements.StationaryLeadingSharpnessStatement",
+      "label": "SPL-NC",
+      "summary": "No constant `c ≤ 72197399/10⁸` bounds the remainder: for each such `c` some amplitude and some `λ > 0` have `|R(g, λ)| > c ‖g‴‖₁ λ^{−3/2}`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/StationaryLeadingSharp.lean",
+      "file_sha256": "aa3eb596a39389712f2d03159606b5abe66262b835a6fbd77b42a5bf594b06f8",
+      "commitment": "82cbe0f427516e3564612da6915446ec0502e29f245be7fc9420511c54fbb8bc",
+      "stamp": "stamps/20261128T135153Z-9d2a650ee1ec",
+      "stamp_commit": "9d2a650ee1ec336b083b241346bf58a1f57f9772"
+    },
+    {
+      "name": "OscInt.Statements.TriCrossoverUpperStatement",
+      "label": "A5U",
+      "summary": "Upper bound uniform across an exceptional coupling `a₀ = ±1/(2√2)`: `|triKernel α t n| ≤ C t^{−2/3} E(|α − a₀| t^{1/3})` for `|α − a₀| ≤ r`, real `t ≥ 1` and every site `n`.",
+      "proved_by": null,
+      "file": "OscInt/Statements/TriangularCrossover.lean",
+      "file_sha256": "0b7f8c315ac531cf9507132db09e6bb61f2416363e3fd766469f2ae5015b60bf",
+      "commitment": "8ae0f754529469c333623d3ba76108fb848d64cdd6cf8cf54a60439742c681cf",
+      "stamp": "stamps/20261128T135153Z-9d2a650ee1ec",
+      "stamp_commit": "9d2a650ee1ec336b083b241346bf58a1f57f9772"
+    },
+    {
+      "name": "OscInt.Statements.TorusLocalizationC2Statement",
+      "label": "K2-FQ",
+      "summary": "Fourier localisation for a `C²` cutoff `χ` supported inside `(−π, π)²`, with the explicit constant `locConstC2 χ`: a bound `B` on every lattice coefficient of `e^{itΨ}` gives `locConstC2 χ · B` at every real velocity.",
+      "proved_by": null,
+      "file": "OscInt/Statements/TorusLocalizationC2.lean",
+      "file_sha256": "9310e8752e8cbe889385c32360cf5369fb151451bfb8e26a0bcaafb85a33a613",
+      "commitment": "c22306d6c6071ca3fbdb1ad2c8f8d67112ab9e7ab5bf5551d70f59692af18c42",
+      "stamp": "stamps/20261128T135153Z-9d2a650ee1ec",
+      "stamp_commit": "9d2a650ee1ec336b083b241346bf58a1f57f9772"
     }
   ],
   "statement_files": [
@@ -1125,9 +1191,12 @@
     {"file": "OscInt/Statements/PeriodicAnalytic.lean", "sha256": "08c99173efb62db40227c2705d7a1854563e38a9fd290a4b16388ba33096962c", "stamp": "stamps/20261116T225756Z-5792039264f0"},
     {"file": "OscInt/Statements/SecondDerivSharp.lean", "sha256": "b0f5814eabf7541158b81697bf66cd55b01c70177252c6e35d045506b474eabb", "stamp": "stamps/20261116T225756Z-5792039264f0"},
     {"file": "OscInt/Statements/StationaryLeading.lean", "sha256": "12f8d3b622949cd8a9d3d518236da7f96ae84cc26f3d72dda64bb05bfb40c715", "stamp": "stamps/20261120T002727Z-5491b10bc8ae"},
+    {"file": "OscInt/Statements/StationaryLeadingSharp.lean", "sha256": "aa3eb596a39389712f2d03159606b5abe66262b835a6fbd77b42a5bf594b06f8", "stamp": "stamps/20261128T135153Z-9d2a650ee1ec"},
     {"file": "OscInt/Statements/StationaryPhase.lean", "sha256": "cd43a1165ba49720614a6122032cbbc3b1e9f3a35fae1c056d61919053038dbf", "stamp": "stamps/20261116T225756Z-5792039264f0"},
-    {"file": "OscInt/Statements/TriangularAniso.lean", "sha256": "3218aaeb07e577b46ea1f833b40bcf65d136a31d427fa609089d19b99190c7a2", "stamp": "stamps/20261128T013824Z-c5c04f495284"},
-    {"file": "OscInt/Statements/TriangularDecay.lean", "sha256": "32b99c3864b29dd7b22108e08f28926f6c470c68188b9b7b7dcd59e9f3a99cbc", "stamp": "stamps/20261128T013824Z-c5c04f495284"},
+    {"file": "OscInt/Statements/TorusLocalizationC2.lean", "sha256": "9310e8752e8cbe889385c32360cf5369fb151451bfb8e26a0bcaafb85a33a613", "stamp": "stamps/20261128T135153Z-9d2a650ee1ec"},
+    {"file": "OscInt/Statements/TriangularAniso.lean", "sha256": "3218aaeb07e577b46ea1f833b40bcf65d136a31d427fa609089d19b99190c7a2", "stamp": "stamps/20261128T135153Z-9d2a650ee1ec"},
+    {"file": "OscInt/Statements/TriangularCrossover.lean", "sha256": "0b7f8c315ac531cf9507132db09e6bb61f2416363e3fd766469f2ae5015b60bf", "stamp": "stamps/20261128T135153Z-9d2a650ee1ec"},
+    {"file": "OscInt/Statements/TriangularDecay.lean", "sha256": "32b99c3864b29dd7b22108e08f28926f6c470c68188b9b7b7dcd59e9f3a99cbc", "stamp": "stamps/20261128T135153Z-9d2a650ee1ec"},
     {"file": "OscInt/Statements/VanDerCorput.lean", "sha256": "7cda5a990aca7e6e385d185848b7193189d28a48c6258da534ba15e533ae1e44", "stamp": "stamps/20261116T225756Z-5792039264f0"},
     {"file": "OscInt/Statements/Vector.lean", "sha256": "784ca9a55318b8a9d212b7b37fe21699fb97c4764a5b7f511454a9edf376c2ba", "stamp": "stamps/20261116T225756Z-5792039264f0"}
   ]

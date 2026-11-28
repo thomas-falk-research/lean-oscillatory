@@ -2461,6 +2461,152 @@
    ],
    "snippet": "example : TriDecayLowerStatement := OscInt.API.triDecayLower",
    "status": "see docs/STATUS.md (row K2-D)"
+  },
+  {
+   "label": "SPL-NU",
+   "name": "OscInt.Statements.SplKernelCapStatement",
+   "proved_by": null,
+   "summary": "The kernel is bounded by `360987/500000 = 0.721974`: `|κ(τ)| ≤ 360987/500000` for every real `τ`.",
+   "file": "OscInt/Statements/StationaryLeadingSharp.lean",
+   "commitment": "b4c9bcacfa0b957e7cf54e2e74877c38fc23f51d71628bf8883cb92dcf8b2fbc",
+   "stamp": "stamps/20261128T135153Z-9d2a650ee1ec",
+   "lean_statement": "def SplKernelCapStatement : Prop :=\n  ∀ τ : ℝ, ‖splKernel τ‖ ≤ (360987 / 500000 : ℝ)",
+   "hypotheses": [
+    "τ real"
+   ],
+   "conclusion": "|κ(τ)| ≤ 360987/500000 = 0.721974 for the odd kernel κ = splKernel of batch SPL",
+   "rate": "— (kernel bound)",
+   "uniform_over": "every real τ",
+   "smoothness": "—",
+   "see_also": [
+    "SPL-NL",
+    "SPL-NK",
+    "SPL-K"
+   ],
+   "snippet": "example (h : SplKernelCapStatement) : ‖splKernel 1‖ ≤ 360987 / 500000 := h 1",
+   "status": "see docs/STATUS.md (row SPL-NU)"
+  },
+  {
+   "label": "SPL-NL",
+   "name": "OscInt.Statements.SplKernelLowerStatement",
+   "proved_by": null,
+   "summary": "The kernel exceeds `72197399/10⁸ = 0.72197399` at `τ = 8123/5000`.",
+   "file": "OscInt/Statements/StationaryLeadingSharp.lean",
+   "commitment": "516ecc24de2c997ea9c582db2064dd8f183b6bf0f0e0345448b9a77213f1afee",
+   "stamp": "stamps/20261128T135153Z-9d2a650ee1ec",
+   "lean_statement": "def SplKernelLowerStatement : Prop :=\n  (72197399 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖",
+   "hypotheses": [
+    "none"
+   ],
+   "conclusion": "|κ(8123/5000)| > 72197399/10⁸ = 0.72197399 (a point value, not the location of the maximum)",
+   "rate": "— (kernel lower point)",
+   "uniform_over": "—",
+   "smoothness": "—",
+   "see_also": [
+    "SPL-NU",
+    "SPL-NC",
+    "SPL-A"
+   ],
+   "snippet": "example (h : SplKernelLowerStatement) : (72197399 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ := h",
+   "status": "see docs/STATUS.md (row SPL-NL)"
+  },
+  {
+   "label": "SPL-NK",
+   "name": "OscInt.Statements.StationaryLeadingSharpStatement",
+   "proved_by": null,
+   "summary": "The leading term of the quadratic-phase integral with remainder at most `(360987/500000) ‖g‴‖₁ λ^{−3/2}`.",
+   "file": "OscInt/Statements/StationaryLeadingSharp.lean",
+   "commitment": "132872b68f5fdc06ebd97aca624c8a7d058223c9c76e29ca80a67d18c2c1861b",
+   "stamp": "stamps/20261128T135153Z-9d2a650ee1ec",
+   "lean_statement": "def StationaryLeadingSharpStatement : Prop :=\n  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →\n    ‖splRemainder g lam‖ ≤ (360987 / 500000 : ℝ) * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2)",
+   "hypotheses": [
+    "g, g₁, g₂, g₃ : ℝ → ℂ with HasDerivAt chain everywhere, all four integrable (SplAmplitude)",
+    "λ > 0"
+   ],
+   "conclusion": "|∫ g e^{iλu²/2} du − g(0)√(2π/λ)e^{iπ/4}| ≤ (360987/500000) ‖g‴‖₁ λ^{−3/2}",
+   "rate": "λ^{−3/2}",
+   "uniform_over": "every amplitude of the class and every λ > 0",
+   "smoothness": "three derivatives (no continuity of g‴ asked)",
+   "see_also": [
+    "SPL-K",
+    "SPL-NU",
+    "SPL-NC"
+   ],
+   "snippet": "example (h : StationaryLeadingSharpStatement) : StationaryLeadingSharpStatement := h",
+   "status": "see docs/STATUS.md (row SPL-NK)"
+  },
+  {
+   "label": "SPL-NC",
+   "name": "OscInt.Statements.StationaryLeadingSharpnessStatement",
+   "proved_by": null,
+   "summary": "No constant `c ≤ 72197399/10⁸` bounds the remainder: for each such `c` some amplitude and some `λ > 0` have `|R(g, λ)| > c ‖g‴‖₁ λ^{−3/2}`.",
+   "file": "OscInt/Statements/StationaryLeadingSharp.lean",
+   "commitment": "82cbe0f427516e3564612da6915446ec0502e29f245be7fc9420511c54fbb8bc",
+   "stamp": "stamps/20261128T135153Z-9d2a650ee1ec",
+   "lean_statement": "def StationaryLeadingSharpnessStatement : Prop :=\n  ∀ c : ℝ, c ≤ (72197399 / 100000000 : ℝ) →\n    ¬ ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →\n      ‖splRemainder g lam‖ ≤ c * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2)",
+   "hypotheses": [
+    "c ≤ 72197399/10⁸"
+   ],
+   "conclusion": "the bound of SPL-NK with constant c fails for some amplitude and some λ > 0; with SPL-NK the best constant of SPL-K lies in (0.72197399, 0.721974]",
+   "rate": "λ^{−3/2}",
+   "uniform_over": "—",
+   "smoothness": "—",
+   "see_also": [
+    "SPL-NK",
+    "SPL-A",
+    "SPL-NL"
+   ],
+   "snippet": "example (h : StationaryLeadingSharpnessStatement) : StationaryLeadingSharpnessStatement := h",
+   "status": "see docs/STATUS.md (row SPL-NC)"
+  },
+  {
+   "label": "A5U",
+   "name": "OscInt.Statements.TriCrossoverUpperStatement",
+   "proved_by": null,
+   "summary": "Upper bound uniform across an exceptional coupling `a₀ = ±1/(2√2)`: `|triKernel α t n| ≤ C t^{−2/3} E(|α − a₀| t^{1/3})` for `|α − a₀| ≤ r`, real `t ≥ 1` and every site `n`.",
+   "file": "OscInt/Statements/TriangularCrossover.lean",
+   "commitment": "8ae0f754529469c333623d3ba76108fb848d64cdd6cf8cf54a60439742c681cf",
+   "stamp": "stamps/20261128T135153Z-9d2a650ee1ec",
+   "lean_statement": "def TriCrossoverUpperStatement : Prop :=\n  ∀ a₀ : ℝ, |a₀| = triExceptional → ∃ r > 0, ∃ C : ℝ, ∀ (α t : ℝ) (n : ℤ × ℤ), |α - a₀| ≤ r → 1 ≤ t →\n    ‖triKernel α t n‖ ≤ C * t ^ (-(2 : ℝ) / 3) * crossEnvelope (|α - a₀| * t ^ ((1 : ℝ) / 3))",
+   "hypotheses": [
+    "a₀ = ±1/(2√2)",
+    "then, for some r > 0 and C: |α − a₀| ≤ r, t ≥ 1 real, n ∈ ℤ²"
+   ],
+   "conclusion": "|triKernel α t n| ≤ C t^{−2/3} E(|α − a₀| t^{1/3}), E(s) = 1 for s ≤ 1 and s^{−1/4} for s > 1 (crossEnvelope)",
+   "rate": "min(t^{−2/3}, |α − a₀|^{−1/4} t^{−3/4})",
+   "uniform_over": "every α in the window, every real t ≥ 1 and every lattice site (one constant per a₀)",
+   "smoothness": "—",
+   "see_also": [
+    "K2-U",
+    "K2-D",
+    "TRI-W"
+   ],
+   "snippet": "example (h : TriCrossoverUpperStatement) : TriCrossoverUpperStatement := h",
+   "status": "see docs/STATUS.md (row A5U)"
+  },
+  {
+   "label": "K2-FQ",
+   "name": "OscInt.Statements.TorusLocalizationC2Statement",
+   "proved_by": null,
+   "summary": "Fourier localisation for a `C²` cutoff `χ` supported inside `(−π, π)²`, with the explicit constant `locConstC2 χ`: a bound `B` on every lattice coefficient of `e^{itΨ}` gives `locConstC2 χ · B` at every real velocity.",
+   "file": "OscInt/Statements/TorusLocalizationC2.lean",
+   "commitment": "c22306d6c6071ca3fbdb1ad2c8f8d67112ab9e7ab5bf5551d70f59692af18c42",
+   "stamp": "stamps/20261128T135153Z-9d2a650ee1ec",
+   "lean_statement": "def TorusLocalizationC2Statement : Prop :=\n  ∀ χ : ℝ × ℝ → ℂ, ContDiff ℝ 2 χ →\n    tsupport χ ⊆ Set.Ioo (-Real.pi) Real.pi ×ˢ Set.Ioo (-Real.pi) Real.pi →\n    ∀ (Ψ : ℝ × ℝ → ℝ) (t : ℝ) (p : ℝ × ℝ) (B : ℝ), Continuous Ψ →\n      (∀ k : ℝ × ℝ, Ψ (k.1 + 2 * Real.pi, k.2) = Ψ k) → (∀ k : ℝ × ℝ, Ψ (k.1, k.2 + 2 * Real.pi) = Ψ k) →\n      (∀ n : ℤ × ℤ, ‖∫ k in torusBox,\n          Complex.exp (↑(t * Ψ k + ((n.1 : ℝ) * k.1 + (n.2 : ℝ) * k.2)) * Complex.I)‖ ≤ B) →\n        ‖∫ k in torusBox, χ k * Complex.exp (↑(t * (Ψ k + lin p k)) * Complex.I)‖ ≤ locConstC2 χ * B",
+   "hypotheses": [
+    "χ of class C² with tsupport inside the open box (−π, π)²",
+    "Ψ continuous and 2π-periodic in each variable; t, p real",
+    "every lattice coefficient |∫_{[−π,π]²} e^{i(tΨ + n·k)} dk| ≤ B"
+   ],
+   "conclusion": "|∫_{[−π,π]²} χ(k) e^{it(Ψ(k) + p·k)} dk| ≤ locConstC2 χ · B, locConstC2 χ = 4((3/2)‖χ‖ + ‖∂₁χ‖ + ‖∂₂χ‖ + ‖Δχ‖) (normalised L² norms on the box)",
+   "rate": "— (localisation)",
+   "uniform_over": "every phase, every real t and every real velocity p",
+   "smoothness": "cutoff C²",
+   "see_also": [
+    "K2-F"
+   ],
+   "snippet": "example (h : TorusLocalizationC2Statement) : TorusLocalizationC2Statement := h",
+   "status": "see docs/STATUS.md (row K2-FQ)"
   }
  ]
 }
