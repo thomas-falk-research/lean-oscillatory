@@ -1,0 +1,24 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `StationaryLeadingSharpStatement`: the norm ‖g‴‖₁ ↦ ‖g″‖₁. -/
+def P_StationaryLeadingSharpStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    ‖splRemainder g lam‖ ≤ (360987 / 500000 : ℝ) * (∫ t, ‖g₂ t‖) * lam ^ (-(3 : ℝ) / 2)
+
+/-- Witness: at `G_4`, `λ = 1600` the planted bound is `(360987/500000) · 16e^{−1/2}/64000 ≤ 1.1·10⁻⁴`
+(`integral_norm_gauss2`), but `|R| ≥ 3.13·10⁻⁴` (`splRemainder_gauss_four_sixteen_hundred_lower`). -/
+theorem witness_NK_f : ¬ P_StationaryLeadingSharpStatement := by
+  intro h
+  have h1 := h (gauss 4) (gauss1 4) (gauss2 4) (gauss3 4) 1600 (gauss_splAmplitude 4 (by norm_num)) (by norm_num)
+  rw [integral_norm_gauss2 4 (by norm_num), rpow_sixteen_hundred] at h1
+  have h2 := splRemainder_gauss_four_sixteen_hundred_lower
+  have h3 := exp_neg_half_le
+  nlinarith
+
+#print axioms witness_NK_f
+
+end OscInt.API.StationaryLeadingSharpSanity

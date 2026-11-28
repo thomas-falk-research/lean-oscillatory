@@ -1,0 +1,74 @@
+# Floating/decimal evaluation of |kappa(tau)| (exploratory numerics, not a bound).
+from decimal import Decimal as D, getcontext
+getcontext().prec = 60
+import math
+PI = D('3.14159265358979323846264338327950288419716939937510582097494')
+def sqrt(x): return x.sqrt()
+def cexp_i(theta):  # e^{i theta}, theta Decimal
+    # use series for cos/sin
+    getcontext().prec += 10
+    th = theta % (2*PI)
+    c = s = D(0); term = D(1); n = 0
+    # cos
+    t = D(1); c = D(0); k = 0
+    while True:
+        c += t; k += 2; t = -t*th*th/((k-1)*k)
+        if abs(t) < D(10)**-70: break
+    t = th; s = D(0); k = 1
+    while True:
+        s += t; k += 2; t = -t*th*th/((k-1)*k)
+        if abs(t) < D(10)**-70: break
+    getcontext().prec -= 10
+    return (+c, +s)
+def F(x):  # sum_{n} (i/2)^n x^{2n+1} / (n! (2n+1))
+    getcontext().prec += 30
+    re = im = D(0); n = 0; p = x  # p = x^{2n+1}/(2^n n!)
+    x2 = x*x/2
+    while True:
+        v = p/(2*n+1)
+        r = n % 4
+        if r == 0: re += v
+        elif r == 1: im += v
+        elif r == 2: re -= v
+        else: im -= v
+        n += 1; p = p*x2/n
+        if p < D(10)**-80 and n > 5: break
+    getcontext().prec -= 30
+    return (+re, +im)
+FINF = (sqrt(PI)/2, sqrt(PI)/2)
+def kappa(t):
+    fr, fi = F(t)
+    c, s = cexp_i(t*t/2)
+    # F/2 + t e/2 + (i t^2/2)(Finf - F)
+    dr, di = FINF[0]-fr, FINF[1]-fi
+    a = t*t/2
+    kr = fr/2 + t*c/2 - a*di
+    ki = fi/2 + t*s/2 + a*dr
+    return (kr, ki)
+def nk(t):
+    kr, ki = kappa(t); return sqrt(kr*kr+ki*ki)
+if __name__ == '__main__':
+    import sys
+    t = D('8123')/D('5000')
+    print('|k(8123/5000)| =', nk(t))
+    print('|k(13/8)|      =', nk(D(13)/8))
+    print('|k(0)|=', nk(D(0)))
+    # coarse scan
+    best = (D(0), D(0))
+    for i in range(1, 801):
+        tt = D(i)/100
+        v = nk(tt)
+        if v > best[0]: best = (v, tt)
+    print('coarse max on (0,8]:', best)
+    # refine
+    lo, hi = best[1]-D('0.01'), best[1]+D('0.01')
+    for it in range(80):
+        m1 = lo + (hi-lo)/3; m2 = hi - (hi-lo)/3
+        if nk(m1) < nk(m2): lo = m1
+        else: hi = m2
+    print('refined argmax', lo, 'max', nk(lo))
+    # local maxima list on (0,8]
+    vals = [(D(i)/200, nk(D(i)/200)) for i in range(1, 1601)]
+    for j in range(1, len(vals)-1):
+        if vals[j][1] > vals[j-1][1] and vals[j][1] > vals[j+1][1]:
+            print('local max near', vals[j][0], float(vals[j][1]))

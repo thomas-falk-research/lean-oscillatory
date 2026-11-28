@@ -1,0 +1,18 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `SplKernelLowerStatement`: the strict inequality < ↦ ≤. -/
+def P_SplKernelLowerStatement : Prop :=
+  (72197399 / 100000000 : ℝ) ≤ ‖splKernel (8123 / 5000)‖
+
+/-- Witness: the draft implies the planted copy. -/
+theorem witness_NL_e (h : SplKernelLowerStatement) : P_SplKernelLowerStatement := by
+  have h1 : (72197399 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ := h
+  exact h1.le
+
+#print axioms witness_NL_e
+
+end OscInt.API.StationaryLeadingSharpSanity

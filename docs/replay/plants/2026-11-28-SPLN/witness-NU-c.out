@@ -1,0 +1,3 @@
+exit code 0
+'OscInt.API.StationaryLeadingSharpSanity.witness_NU_c' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.API.StationaryLeadingSharpSanity.witness_NU_c_proved' depends on axioms: [propext, Classical.choice, Quot.sound]

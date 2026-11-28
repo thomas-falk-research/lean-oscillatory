@@ -1,0 +1,72 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `StationaryLeadingSharpStatement`: the power λ^{−3/2} ↦ λ^{−1/2}. -/
+def P_StationaryLeadingSharpStatement : Prop :=
+  ∀ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ → 0 < lam →
+    ‖splRemainder g lam‖ ≤ (360987 / 500000 : ℝ) * (∫ t, ‖g₃ t‖) * lam ^ (-(1 : ℝ) / 2)
+
+/-- **Consistency of SPL-NK with SPL-NU, through the proved SPL-A**: SPL-NK implies SPL-NU (SPL-A gives `g ≠ 0`
+with `(|κ(|τ|)| − ε) ‖g₃‖₁ ≤ |R(g, 1)|`, SPL-NK bounds `|R(g, 1)|` by `(360987/500000) ‖g₃‖₁`, and `‖g₃‖₁ > 0`). -/
+theorem P_spln_cap_of_sharp (hK : P_StationaryLeadingSharpStatement) : SplKernelCapStatement := by
+  intro τ
+  rw [← norm_splKernel_abs]
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  obtain ⟨g, g₁, g₂, g₃, hamp, -, -, hne, hle⟩ := stationaryLeadingAttained |τ| ε (abs_nonneg τ) hε
+  have hK' := hK g g₁ g₂ g₃ 1 hamp one_pos
+  rw [Real.one_rpow, mul_one] at hK'
+  have hpos := integral_norm_pos_of_splAmplitude hamp hne
+  have h1 := le_of_mul_le_mul_right (hle.trans hK') hpos
+  linarith
+
+/-- SPL-NK on the Gaussian family, with `‖G_s‴‖₁ = s²(2 + 8e^{−3/2})`. -/
+theorem P_spln_sharp_gauss (h : P_StationaryLeadingSharpStatement) (s lam : ℝ) (hs : 0 < s) (hlam : 0 < lam) :
+    ‖gaussRoot s lam - splLead lam‖ ≤
+      360987 / 500000 * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-(3 : ℝ) / 2) := by
+  have h1 := h (gauss s) (gauss1 s) (gauss2 s) (gauss3 s) lam (gauss_splAmplitude s hs) hlam
+  rw [splRemainder_gauss s hs, integral_norm_gauss3 s hs] at h1
+  exact h1
+
+/-- SPL-NK at `G_1`, `λ = 4`, written out (the non-trivial regime, `spln_sharp_one_four_nontrivial`). -/
+theorem P_spln_sharp_one_four (h : P_StationaryLeadingSharpStatement) :
+    ‖splRemainder (gauss 1) 4‖ ≤ 360987 / 500000 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8) := by
+  have h1 := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 4 (gauss_splAmplitude 1 one_pos) (by norm_num)
+  rw [integral_norm_gauss3 1 one_pos, rpow_four, one_pow, one_mul] at h1
+  exact h1
+
+/-- SPL-NK at `G_{1/2}`, `λ = 1/16` (`λ < 1`, `(1/16)^{−3/2} = 64`). -/
+theorem P_spln_sharp_small (h : P_StationaryLeadingSharpStatement) :
+    ‖splRemainder (gauss (1 / 2)) (1 / 16)‖ ≤
+      360987 / 500000 * ((1 / 2) ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 64 := by
+  have h1 := h (gauss (1 / 2)) (gauss1 (1 / 2)) (gauss2 (1 / 2)) (gauss3 (1 / 2)) (1 / 16)
+    (gauss_splAmplitude (1 / 2) (by norm_num)) (by norm_num)
+  rw [integral_norm_gauss3 (1 / 2) (by norm_num), spln_rpow_sixteenth] at h1
+  exact h1
+
+/-- SPL-NK at `G_1`, `λ = 100`. -/
+theorem P_spln_sharp_hundred (h : P_StationaryLeadingSharpStatement) :
+    ‖splRemainder (gauss 1) 100‖ ≤ 360987 / 500000 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 1000) := by
+  have h1 := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 100 (gauss_splAmplitude 1 one_pos) (by norm_num)
+  rw [integral_norm_gauss3 1 one_pos, rpow_hundred, one_pow, one_mul] at h1
+  exact h1
+
+/-- SPL-NK at `G_4`, `λ = 1600`. -/
+theorem P_spln_sharp_sixteen_hundred (h : P_StationaryLeadingSharpStatement) :
+    ‖splRemainder (gauss 4) 1600‖ ≤ 360987 / 500000 * (4 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 64000) := by
+  have h1 := h (gauss 4) (gauss1 4) (gauss2 4) (gauss3 4) 1600 (gauss_splAmplitude 4 (by norm_num)) (by norm_num)
+  rw [integral_norm_gauss3 4 (by norm_num), rpow_sixteen_hundred] at h1
+  exact h1
+
+/-- **Consistency of SPL-NC with SPL-NK**: one amplitude and one `λ > 0` with
+`(72197399/10⁸) ‖g₃‖₁ λ^{−3/2} < |R(g, λ)| ≤ (360987/500000) ‖g₃‖₁ λ^{−3/2}`. -/
+theorem P_spln_sharp_and_sharpness (hK : P_StationaryLeadingSharpStatement) (hC : StationaryLeadingSharpnessStatement) :
+    ∃ (g g₁ g₂ g₃ : ℝ → ℂ) (lam : ℝ), SplAmplitude g g₁ g₂ g₃ ∧ 0 < lam ∧
+      72197399 / 100000000 * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2) < ‖splRemainder g lam‖ ∧
+      ‖splRemainder g lam‖ ≤ 360987 / 500000 * (∫ t, ‖g₃ t‖) * lam ^ (-(3 : ℝ) / 2) := by
+  obtain ⟨g, g₁, g₂, g₃, lam, hA, hl, hlt⟩ := spln_sharpness_exists hC _ le_rfl
+  exact ⟨g, g₁, g₂, g₃, lam, hA, hl, hlt, hK g g₁ g₂ g₃ lam hA hl⟩
+
+end OscInt.API.StationaryLeadingSharpSanity

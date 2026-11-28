@@ -1,0 +1,372 @@
+#!/usr/bin/env python3
+"""Generate and compile planted copies of the draft batch-SPL-N statements against copies of their sanity theorems.
+
+As the batch-K2 generator (docs/replay/plants/2026-11-28-K2/plants_k2.py.txt). The draft statement module
+(OscInt/Statements/StationaryLeadingSharp.lean, not frozen, already built in the repository) is read from a copy
+(stmt/StationaryLeadingSharp.lean); the sanity layer (src/OscInt/Front/StationaryLeadingSharpSanity.lean, namespace
+OscInt.API.StationaryLeadingSharpSanity) is compiled into a scratch library placed first on LEAN_PATH, so every
+generated file imports OscInt.Front.StationaryLeadingSharpSanity and contains, under the prefix P_: a copy of ONE
+statement constant, with exactly one textual mutation in the planted copy (none in the ok- copy), followed by copies
+of every sanity theorem that takes that statement constant as a hypothesis or names it (renamed P_..., so that they go
+through the copy). Witness files contain the planted copy and compiled theorems of one kind:
+  not   : ¬ planted statement, from unconditional data of the sanity layer and proved
+          repository theorems                                                     -> DETECTED
+  rel   : true statement → ¬ planted statement                                    -> DETECTED RELATIVE TO THE TRUE
+                                                                                     STATEMENT
+  weak  : draft statement → planted statement                                     -> TRUE WEAKENING
+  char  : planted statement ↔ (what a detection would have to refute)             -> NOT DETECTED (characterised)
+No file proves, or uses a proof of, a statement of the batch. A rejected script alone is never counted as a
+detection. Compiler output is recorded with the scratch directory removed from the paths.
+Usage: plants_spln.py WORK OUTDIR SCRATCHDIR
+"""
+import os, re, subprocess, sys, textwrap, time
+
+WORK, OUT, SCR = [os.path.abspath(a) for a in sys.argv[1:4]]
+os.makedirs(OUT, exist_ok=True)
+os.makedirs(SCR, exist_ok=True)
+STMT = open(os.path.join(WORK, 'stmt/StationaryLeadingSharp.lean')).read().split('\n')
+SAN_ALL = open(os.path.join(WORK, 'src/OscInt/Front/StationaryLeadingSharpSanity.lean')).read()
+SAN = SAN_ALL[SAN_ALL.index('namespace OscInt.API.StationaryLeadingSharpSanity'):].split('\n')
+NU, NL, NK, NC = ('SplKernelCapStatement', 'SplKernelLowerStatement', 'StationaryLeadingSharpStatement',
+                  'StationaryLeadingSharpnessStatement')
+STATEMENTS = [NU, NL, NK, NC]
+DECL = re.compile(r"^(?:noncomputable )?(theorem|def) ([A-Za-z_0-9']+)")
+WORD = re.compile(r"[A-Za-z_][A-Za-z_0-9']*")
+
+
+def block(lines, name):
+    for i, l in enumerate(lines):
+        m = DECL.match(l)
+        if m and m.group(2) == name:
+            j = i
+            while j < len(lines) and lines[j].strip() != '':
+                j += 1
+            return '\n'.join(lines[i:j])
+    raise SystemExit(f'not found: {name}')
+
+
+def data_blocks():
+    res, cur = {}, []
+    for l in SAN[1:] + ['']:
+        if l.strip() == '':
+            for c in cur:
+                m = DECL.match(c)
+                if m:
+                    res[m.group(2)] = (len(res), '\n'.join(cur))
+                    break
+            cur = []
+        else:
+            cur.append(l)
+    return res
+
+
+DATA = data_blocks()
+
+
+def words(t):
+    ls = t.split('\n')
+    k = next(i for i, l in enumerate(ls) if DECL.match(l))
+    return set(WORD.findall('\n'.join(ls[k:])))
+
+
+THROUGH = {st: [n for n, (_, t) in sorted(DATA.items(), key=lambda kv: kv[1][0]) if st in words(t)]
+           for st in STATEMENTS}
+for st in STATEMENTS:
+    assert THROUGH[st], st
+
+HEAD = """namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+"""
+CLOSE = '\n\nend OscInt.API.StationaryLeadingSharpSanity\n'
+
+
+def wrap(s):
+    return '\n'.join(textwrap.wrap('/-- ' + s + ' -/', 118))
+
+
+def rename(text, names):
+    ls = text.split('\n')
+    k = next(i for i, l in enumerate(ls) if DECL.match(l))
+    doc, decl = '\n'.join(ls[:k]), '\n'.join(ls[k:])
+    for n in sorted(names, key=len, reverse=True):
+        decl = re.sub(r"(?<![\w.'])" + re.escape(n) + r"(?![\w'])", 'P_' + n, decl)
+    return (doc + '\n' if doc else '') + decl
+
+
+def make(stmt, mut, planted, note, witness=None):
+    old, new, count = mut
+    t = block(STMT, stmt)
+    if planted:
+        assert t.count(old) == count, (stmt, old, t.count(old))
+        t = t.replace(old, new)
+    doc = f'PLANTED copy of `{stmt}`: {note}.' if planted else f'Unplanted copy of `{stmt}`.'
+    parts = [wrap(doc) + '\n' + t]
+    names = [stmt]
+    if witness is None:
+        parts += [DATA[n][1] for n in THROUGH[stmt]]
+        names += THROUGH[stmt]
+    text = '\n\n'.join(rename(p, names) for p in parts)
+    if witness is not None:
+        text += '\n\n' + witness.strip('\n')
+        for n in re.findall(r'^theorem ([A-Za-z_0-9]+)', witness, re.M):
+            text += f'\n\n#print axioms {n}'
+    return 'import OscInt.Front.StationaryLeadingSharpSanity\n\n' + HEAD + '\n' + text + CLOSE
+
+
+def compile_text(tag, text):
+    src = os.path.join(SCR, tag + '.lean')
+    open(src, 'w').write(text)
+    t0 = time.time()
+    r = subprocess.run([os.path.join(WORK, 'gen/lean.sh'), src], capture_output=True, text=True, timeout=1800)
+    out = (r.stdout + r.stderr).replace(SCR + os.sep, '').replace(WORK + os.sep, '')
+    return r.returncode, out, time.time() - t0
+
+
+CAP = '(360987 / 500000 : ℝ)'
+LOW = '(72197399 / 100000000 : ℝ)'
+EXP = 'lam ^ (-(3 : ℝ) / 2)'
+
+PLANTS = [
+    # id, statement, (old, new, count), note, witness kind, witness text
+    ('NU-a', NU, (CAP, LOW, 1), 'the cap 360987/500000 ↦ 72197399/10⁸ (the two rationals confused)', 'rel', r'''
+/-- Witness (relative to SPL-NL): SPL-NL's point exceeds the planted cap. -/
+theorem witness_NU_a (hL : SplKernelLowerStatement) : ¬ P_SplKernelCapStatement := by
+  intro h
+  have h1 : (72197399 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ := hL
+  have h2 := h (8123 / 5000)
+  linarith
+'''),
+    ('NU-b', NU, (CAP, '(360987 / 5000000 : ℝ)', 1), 'the cap 360987/500000 ↦ 360987/5000000 (a digit dropped)', 'not',
+     r'''
+/-- Witness: the proved SPL-S gives `|κ(τ)| ≥ 3/10 > 0.0722` at some `τ ≥ 0` (`spln_kernel_large`). -/
+theorem witness_NU_b : ¬ P_SplKernelCapStatement := by
+  intro h
+  obtain ⟨τ, -, hτ⟩ := spln_kernel_large
+  have := h τ
+  linarith
+'''),
+    ('NU-c', NU, (CAP, '(7 / 8 : ℝ)', 1), 'the cap 360987/500000 ↦ 7/8 (SPL-K\'s constant)', 'weak', r'''
+/-- Witness: the draft implies the planted copy (`360987/500000 ≤ 7/8`); the planted copy is moreover proved
+outright from the proved SPL-A and SPL-K (`spln_kernel_le_seven_eighths`). -/
+theorem witness_NU_c (h : SplKernelCapStatement) : P_SplKernelCapStatement := fun τ => (h τ).trans (by norm_num)
+
+theorem witness_NU_c_proved : P_SplKernelCapStatement := spln_kernel_le_seven_eighths
+'''),
+    ('NU-d', NU, ('∀ τ : ℝ, ‖splKernel τ‖', '∀ τ : ℝ, 0 ≤ τ → ‖splKernel τ‖', 1),
+     'the cap only for τ ≥ 0 (negative τ dropped)', 'weak', r'''
+/-- Witness: the draft implies the planted copy, and conversely (`|κ|` is even): the two are equivalent. -/
+theorem witness_NU_d (h : SplKernelCapStatement) : P_SplKernelCapStatement := fun τ _ => h τ
+
+theorem witness_NU_d_converse (h : P_SplKernelCapStatement) : SplKernelCapStatement := by
+  intro τ
+  rw [← norm_splKernel_abs]
+  exact h |τ| (abs_nonneg τ)
+'''),
+    ('NU-e', NU, ('‖splKernel τ‖', '‖splKernelPos τ‖', 1), 'the odd kernel κ ↦ κ₊ (the definition by cases dropped)',
+     'not', r'''
+/-- Witness: `|κ₊(−2)| > 3` (`spln_kernelPos_neg_two`: `κ₊(−2) = 4i F(∞) − κ₊(2)`, `|F(∞)| ≥ 5/4`, and the proved
+`|κ₊(2)| ≤ 7/8`). -/
+theorem witness_NU_e : ¬ P_SplKernelCapStatement := by
+  intro h
+  have h1 := h (-2)
+  have h2 := spln_kernelPos_neg_two
+  linarith
+'''),
+    ('NU-f', NU, (CAP, '(721973995 / 1000000000 : ℝ)', 1),
+     'the cap 360987/500000 ↦ 721973995/10⁹ (inside the window between the two rationals)', 'char', r'''
+/-- Characterisation: the planted cap `0.721973995` lies strictly between SPL-NL's value `0.72197399` and SPL-NU's
+cap, so neither statement refutes it (`char_NU_f_window`); a detection needs a point with `|κ| > 0.721973995`, i.e.
+a lower enclosure of `κ` sharper than SPL-NL's (a 60-digit decimal evaluation gives `|κ(8123/5000)| =
+0.72197399899…`, so the plant is false). -/
+theorem char_NU_f (h : P_SplKernelCapStatement) : ‖splKernel (8123 / 5000)‖ ≤ 721973995 / 1000000000 :=
+  h (8123 / 5000)
+
+theorem char_NU_f_window :
+    (72197399 / 100000000 : ℝ) < 721973995 / 1000000000 ∧ (721973995 / 1000000000 : ℝ) < 360987 / 500000 := by
+  norm_num
+'''),
+    ('NL-a', NL, ('splKernel (8123 / 5000)', 'splKernel 0', 1), 'the point 8123/5000 ↦ 0', 'not', r'''
+/-- Witness: `κ(0) = 0` (`spln_lower_fails_at_zero`). -/
+theorem witness_NL_a : ¬ P_SplKernelLowerStatement := spln_lower_fails_at_zero
+'''),
+    ('NL-b', NL, (LOW, '(72197399 / 10000000 : ℝ)', 1), 'the lower value 72197399/10⁸ ↦ 72197399/10⁷ (a digit dropped)',
+     'not', r'''
+/-- Witness: the proved `|κ| ≤ 7/8 < 7.2197399` (`spln_kernel_le_seven_eighths`). -/
+theorem witness_NL_b : ¬ P_SplKernelLowerStatement := by
+  intro h
+  have h1 : (72197399 / 10000000 : ℝ) < ‖splKernel (8123 / 5000)‖ := h
+  have := spln_kernel_le_seven_eighths (8123 / 5000)
+  linarith
+'''),
+    ('NL-c', NL, (LOW, '(72197401 / 100000000 : ℝ)', 1),
+     'the lower value 72197399/10⁸ ↦ 72197401/10⁸ (above the cap)', 'rel', r'''
+/-- Witness (relative to SPL-NU): the planted lower value exceeds the cap `72197400/10⁸`
+(`spln_cap_excludes_higher_lower`). -/
+theorem witness_NL_c (hU : SplKernelCapStatement) : ¬ P_SplKernelLowerStatement := by
+  intro h
+  have h1 : (72197401 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ := h
+  exact spln_cap_excludes_higher_lower hU h1
+'''),
+    ('NL-d', NL, ('splKernel (8123 / 5000)', 'splKernel (13 / 8)', 1),
+     'the point 8123/5000 ↦ 13/8 (= 8125/5000, the point of the session-15 prototype)', 'char', r'''
+/-- Characterisation: the planted copy holds iff `|κ(13/8)| ≤ 72197399/10⁸` fails. A detection needs an upper
+enclosure of `|κ(13/8)|` below `72197399/10⁸`, i.e. of width under `3.4·10⁻⁸` (a 60-digit decimal evaluation gives
+`|κ(13/8)| = 0.7219739659…`, so the plant is false); no proved theorem bounds `κ` above by less than `7/8`. -/
+theorem char_NL_d : P_SplKernelLowerStatement ↔ ¬ (‖splKernel (13 / 8)‖ ≤ 72197399 / 100000000) := not_le.symm
+'''),
+    ('NL-e', NL, (LOW + ' <', LOW + ' ≤', 1), 'the strict inequality < ↦ ≤', 'weak', r'''
+/-- Witness: the draft implies the planted copy. -/
+theorem witness_NL_e (h : SplKernelLowerStatement) : P_SplKernelLowerStatement := by
+  have h1 : (72197399 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ := h
+  exact h1.le
+'''),
+    ('NL-f', NL, (LOW, '(7219739995 / 10000000000 : ℝ)', 1),
+     'the lower value 72197399/10⁸ ↦ 7219739995/10¹⁰ (inside the window between the two rationals)', 'char', r'''
+/-- Characterisation: the planted lower value `0.7219739995` is below SPL-NU's cap (`char_NL_f_window`), so SPL-NU
+does not refute it; a detection needs an upper enclosure of `|κ(8123/5000)|` below `0.7219739995` (a 60-digit
+decimal evaluation gives `0.72197399899…`, so the plant is false). -/
+theorem char_NL_f : P_SplKernelLowerStatement ↔ ¬ (‖splKernel (8123 / 5000)‖ ≤ 7219739995 / 10000000000) :=
+  not_le.symm
+
+theorem char_NL_f_window : (7219739995 / 10000000000 : ℝ) < 360987 / 500000 := by norm_num
+'''),
+    ('NK-a', NK, (CAP, '(7 / 10 : ℝ)', 1), 'the constant 360987/500000 ↦ 7/10', 'rel', r'''
+/-- Witness (relative to SPL-NC): SPL-NC at `c = 7/10 ≤ 72197399/10⁸` (`spln_sharpness_refutes`). -/
+theorem witness_NK_a (hC : StationaryLeadingSharpnessStatement) : ¬ P_StationaryLeadingSharpStatement :=
+  spln_sharpness_refutes hC
+'''),
+    ('NK-b', NK, (CAP, '(7 / 8 : ℝ)', 1), 'the constant 360987/500000 ↦ 7/8 (SPL-K)', 'weak', r'''
+/-- Witness: the draft implies the planted copy (`360987/500000 ≤ 7/8`); the planted copy is the proved SPL-K. -/
+theorem witness_NK_b (h : StationaryLeadingSharpStatement) : P_StationaryLeadingSharpStatement := by
+  intro g g₁ g₂ g₃ lam hA hl
+  refine (h g g₁ g₂ g₃ lam hA hl).trans ?_
+  have h1 : 0 ≤ (∫ t, ‖g₃ t‖) := integral_nonneg fun t => norm_nonneg _
+  have h2 : 0 ≤ lam ^ (-(3 : ℝ) / 2) := Real.rpow_nonneg hl.le _
+  have h3 : (360987 / 500000 : ℝ) ≤ 7 / 8 := by norm_num
+  exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right h3 h1) h2
+
+theorem witness_NK_b_proved : P_StationaryLeadingSharpStatement := stationaryLeadingSevenEighths
+'''),
+    ('NK-c', NK, ('SplAmplitude g g₁ g₂ g₃ → 0 < lam →', 'SplAmplitude g g₁ g₂ g₃ →', 1), 'the hypothesis 0 < λ dropped',
+     'not', r'''
+/-- Witness: at `λ = 0`, `0^{−3/2} = 0` while `|R(G_1, 0)| = √(2π)` (`spln_sharp_conclusion_fails_lam_zero`). -/
+theorem witness_NK_c : ¬ P_StationaryLeadingSharpStatement := by
+  intro h
+  exact spln_sharp_conclusion_fails_lam_zero
+    (h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 0 (gauss_splAmplitude 1 one_pos))
+'''),
+    ('NK-d', NK, (EXP, 'lam ^ (-(1 : ℝ) / 2)', 1), 'the power λ^{−3/2} ↦ λ^{−1/2}', 'not', r'''
+/-- Witness: at `G_{1/2}`, `λ = 1/16` the planted bound is `(360987/500000) · (1/4)(2 + 8e^{−3/2}) · 4 ≤ 2.74`, but
+`|R| ≥ 4.8` (`spln_remainder_gauss_small_lower`). -/
+theorem witness_NK_d : ¬ P_StationaryLeadingSharpStatement := by
+  intro h
+  have h1 := h (gauss (1 / 2)) (gauss1 (1 / 2)) (gauss2 (1 / 2)) (gauss3 (1 / 2)) (1 / 16)
+    (gauss_splAmplitude (1 / 2) (by norm_num)) (by norm_num)
+  rw [integral_norm_gauss3 (1 / 2) (by norm_num), spln_rpow_sixteenth_half] at h1
+  have h2 := spln_remainder_gauss_small_lower
+  have h3 := normThree_le
+  nlinarith
+'''),
+    ('NK-e', NK, (EXP, 'lam ^ (-(5 : ℝ) / 2)', 1), 'the power λ^{−3/2} ↦ λ^{−5/2}', 'not', r'''
+/-- Witness: at `G_1`, `λ = 100` the planted bound is `(360987/500000)(2 + 8e^{−3/2}) · 10⁻⁵ ≤ 2.8·10⁻⁵`, but
+`|R| ≥ 1.24·10⁻³` (`splRemainder_gauss_one_hundred_lower`). -/
+theorem witness_NK_e : ¬ P_StationaryLeadingSharpStatement := by
+  intro h
+  have h1 := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 100 (gauss_splAmplitude 1 one_pos) (by norm_num)
+  rw [integral_norm_gauss3 1 one_pos, spln_rpow_hundred_five_halves, one_pow, one_mul] at h1
+  have h2 := splRemainder_gauss_one_hundred_lower
+  have h3 := normThree_le
+  nlinarith
+'''),
+    ('NK-f', NK, ('(∫ t, ‖g₃ t‖)', '(∫ t, ‖g₂ t‖)', 1), 'the norm ‖g‴‖₁ ↦ ‖g″‖₁', 'not', r'''
+/-- Witness: at `G_4`, `λ = 1600` the planted bound is `(360987/500000) · 16e^{−1/2}/64000 ≤ 1.1·10⁻⁴`
+(`integral_norm_gauss2`), but `|R| ≥ 3.13·10⁻⁴` (`splRemainder_gauss_four_sixteen_hundred_lower`). -/
+theorem witness_NK_f : ¬ P_StationaryLeadingSharpStatement := by
+  intro h
+  have h1 := h (gauss 4) (gauss1 4) (gauss2 4) (gauss3 4) 1600 (gauss_splAmplitude 4 (by norm_num)) (by norm_num)
+  rw [integral_norm_gauss2 4 (by norm_num), rpow_sixteen_hundred] at h1
+  have h2 := splRemainder_gauss_four_sixteen_hundred_lower
+  have h3 := exp_neg_half_le
+  nlinarith
+'''),
+    ('NK-g', NK, ('SplAmplitude g g₁ g₂ g₃ → ', '', 1), 'the hypothesis SplAmplitude dropped', 'not', r'''
+/-- Witness: the constant `1` with zero derivatives at `λ = 1` (`spln_sharp_amplitude_bite`). -/
+theorem witness_NK_g : ¬ P_StationaryLeadingSharpStatement := by
+  intro h
+  exact spln_sharp_amplitude_bite.2 (h (fun _ => 1) (fun _ => 0) (fun _ => 0) (fun _ => 0) 1 one_pos)
+'''),
+    ('NK-h', NK, (CAP, '(360987 / 5000000 : ℝ)', 1), 'the constant 360987/500000 ↦ 360987/5000000 (a digit dropped)',
+     'not', r'''
+/-- Witness: at `G_1`, `λ = 4` the planted bound is `0.0721974 · (2 + 8e^{−3/2})/8 ≤ 0.0343`, but `|R| ≥ 0.151`
+(`splRemainder_gauss_one_four_bounds`). -/
+theorem witness_NK_h : ¬ P_StationaryLeadingSharpStatement := by
+  intro h
+  have h1 := h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 4 (gauss_splAmplitude 1 one_pos) (by norm_num)
+  rw [integral_norm_gauss3 1 one_pos, rpow_four, one_pow, one_mul] at h1
+  have h2 := splRemainder_gauss_one_four_bounds.1
+  have h3 := normThree_le
+  nlinarith
+'''),
+    ('NC-a', NC, ('c ≤ ' + LOW, 'c ≤ (7 / 8 : ℝ)', 1), 'the range c ≤ 72197399/10⁸ ↦ c ≤ 7/8', 'not', r'''
+/-- Witness: at `c = 7/8` the negated bound is the proved SPL-K (`spln_sharpness_range_bite`). -/
+theorem witness_NC_a : ¬ P_StationaryLeadingSharpnessStatement := fun h => h (7 / 8) le_rfl spln_sharpness_range_bite
+'''),
+    ('NC-b', NC, ('c ≤ ' + LOW, 'c ≤ ' + CAP, 1), 'the range c ≤ 72197399/10⁸ ↦ c ≤ 360987/500000 (the cap)', 'rel', r'''
+/-- Witness (relative to SPL-NK): at `c = 360987/500000` the negated bound is SPL-NK. -/
+theorem witness_NC_b (hK : StationaryLeadingSharpStatement) : ¬ P_StationaryLeadingSharpnessStatement :=
+  fun h => h _ le_rfl hK
+'''),
+    ('NC-c', NC, ('c ≤ ' + LOW, 'c ≤ (72197 / 100000 : ℝ)', 1), 'the range c ≤ 72197399/10⁸ ↦ c ≤ 72197/10⁵', 'weak',
+     r'''
+/-- Witness: the draft implies the planted copy (`72197/10⁵ ≤ 72197399/10⁸`). -/
+theorem witness_NC_c (h : StationaryLeadingSharpnessStatement) : P_StationaryLeadingSharpnessStatement :=
+  fun c hc => h c (hc.trans (by norm_num))
+'''),
+    ('NC-d', NC, ('SplAmplitude g g₁ g₂ g₃ → 0 < lam →', 'SplAmplitude g g₁ g₂ g₃ →', 1),
+     'the hypothesis 0 < λ dropped inside the negation', 'weak', r'''
+/-- Witness: the draft implies the planted copy; the planted copy is moreover vacuous, proved for every `c` at
+`λ = 0` (`spln_sharpness_needs_pos_lam`). -/
+theorem witness_NC_d (h : StationaryLeadingSharpnessStatement) : P_StationaryLeadingSharpnessStatement :=
+  fun c hc H => h c hc fun g g₁ g₂ g₃ lam hA _ => H g g₁ g₂ g₃ lam hA
+
+theorem witness_NC_d_vacuous : P_StationaryLeadingSharpnessStatement := fun c _ => spln_sharpness_needs_pos_lam c
+'''),
+]
+
+VERDICT = {
+    'not': 'DETECTED (witness compiled: ¬ planted statement)',
+    'rel': 'DETECTED RELATIVE TO THE TRUE STATEMENT (witness compiled: true statement → ¬ planted statement); '
+           'NOT DETECTED unconditionally',
+    'weak': 'TRUE WEAKENING (compiled: draft statement → planted statement); no datum can refute it',
+    'char': 'NOT DETECTED (compiled characterisation of what a detection would have to refute; no refutation)',
+}
+
+only = set(os.environ.get('ONLY', '').split(',')) - {''}
+log = []
+for pid, st, mut, note, kind, wit in PLANTS:
+    if only and pid not in only:
+        continue
+    for tag, planted, w in (('ok-' + pid, False, None), ('plant-' + pid, True, None), ('witness-' + pid, True, wit)):
+        text = make(st, mut, planted, note, w)
+        rc, out, dt = compile_text(tag, text)
+        want = 'recorded' if tag.startswith('plant-') else 'accepted'
+        got = 'accepted' if rc == 0 else 'rejected'
+        if w is not None and rc == 0:
+            ax = re.findall(r"depends on axioms: \[([^\]]*)\]", out)
+            nwit = len(re.findall(r'^theorem ', w, re.M))
+            if len(ax) != nwit or any(re.sub(r'\s', '', a) != 'propext,Classical.choice,Quot.sound' for a in ax):
+                got = 'rejected (axioms)'
+        open(os.path.join(OUT, tag + '.lean.txt'), 'w').write(text)
+        open(os.path.join(OUT, tag + '.out'), 'w').write(f'exit code {rc}\n' + out)
+        line = f'{tag}: {got} (want {want}) [{dt:.1f} s]'
+        if rc != 0:
+            first = next((l for l in out.split('\n') if 'error' in l), '')
+            line += '\n    first error: ' + first[:110]
+        log.append(line)
+        print(line, flush=True)
+        if tag.startswith('witness-'):
+            v = VERDICT[kind] if got == 'accepted' else 'NOT DETECTED (witness did not compile)'
+            log.append(f'  {pid} [{note}]: {v}')
+            print(log[-1], flush=True)
+open(os.path.join(OUT, 'SUMMARY.txt' if not only else 'SUMMARY-partial.txt'), 'w').write('\n'.join(log) + '\n')

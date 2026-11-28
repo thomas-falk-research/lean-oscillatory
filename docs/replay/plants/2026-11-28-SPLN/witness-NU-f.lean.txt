@@ -1,0 +1,27 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `SplKernelCapStatement`: the cap 360987/500000 ↦ 721973995/10⁹ (inside the window between the two
+rationals). -/
+def P_SplKernelCapStatement : Prop :=
+  ∀ τ : ℝ, ‖splKernel τ‖ ≤ (721973995 / 1000000000 : ℝ)
+
+/-- Characterisation: the planted cap `0.721973995` lies strictly between SPL-NL's value `0.72197399` and SPL-NU's
+cap, so neither statement refutes it (`char_NU_f_window`); a detection needs a point with `|κ| > 0.721973995`, i.e.
+a lower enclosure of `κ` sharper than SPL-NL's (a 60-digit decimal evaluation gives `|κ(8123/5000)| =
+0.72197399899…`, so the plant is false). -/
+theorem char_NU_f (h : P_SplKernelCapStatement) : ‖splKernel (8123 / 5000)‖ ≤ 721973995 / 1000000000 :=
+  h (8123 / 5000)
+
+theorem char_NU_f_window :
+    (72197399 / 100000000 : ℝ) < 721973995 / 1000000000 ∧ (721973995 / 1000000000 : ℝ) < 360987 / 500000 := by
+  norm_num
+
+#print axioms char_NU_f
+
+#print axioms char_NU_f_window
+
+end OscInt.API.StationaryLeadingSharpSanity

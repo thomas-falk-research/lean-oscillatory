@@ -1,0 +1,21 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `SplKernelCapStatement`: the cap 360987/500000 ↦ 7/8 (SPL-K's constant). -/
+def P_SplKernelCapStatement : Prop :=
+  ∀ τ : ℝ, ‖splKernel τ‖ ≤ (7 / 8 : ℝ)
+
+/-- Witness: the draft implies the planted copy (`360987/500000 ≤ 7/8`); the planted copy is moreover proved
+outright from the proved SPL-A and SPL-K (`spln_kernel_le_seven_eighths`). -/
+theorem witness_NU_c (h : SplKernelCapStatement) : P_SplKernelCapStatement := fun τ => (h τ).trans (by norm_num)
+
+theorem witness_NU_c_proved : P_SplKernelCapStatement := spln_kernel_le_seven_eighths
+
+#print axioms witness_NU_c
+
+#print axioms witness_NU_c_proved
+
+end OscInt.API.StationaryLeadingSharpSanity

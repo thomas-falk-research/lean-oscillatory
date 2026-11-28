@@ -1,0 +1,26 @@
+# Exploratory 60-digit decimal evaluation (series truncation; NOT an enclosure, NOT a bound).
+import sys; sys.path.insert(0, sys.argv[1])
+from kappa import nk, D
+L = D(72197399)/D(10**8); U = D(360987)/D(500000)
+p = D(8123)/D(5000)
+print('|k(8123/5000)| =', nk(p)); print('  minus L =', nk(p)-L, ' U minus it =', U-nk(p))
+print('|k(13/8)| =', nk(D(13)/8), ' minus L =', nk(D(13)/8)-L)
+# argmax by ternary search
+lo, hi = D('1.61'), D('1.64')
+for _ in range(90):
+    m1 = lo+(hi-lo)/3; m2 = hi-(hi-lo)/3
+    if nk(m1) < nk(m2): lo = m1
+    else: hi = m2
+print('argmax ~', lo); print('max ~', nk(lo), ' U minus max =', U-nk(lo), ' max minus L =', nk(lo)-L)
+def edge(a, b):  # nk(a) > L >= nk(b) or reverse; bisect
+    fa = nk(a) > L
+    for _ in range(80):
+        m = (a+b)/2
+        if (nk(m) > L) == fa: a = m
+        else: b = m
+    return a
+print('super-level set {|k| > L} ~ (', edge(lo, D('1.60')), ',', edge(lo, D('1.65')), ')')
+print('in units of 1/5000: (', edge(lo, D('1.60'))*5000, ',', edge(lo, D('1.65'))*5000, ')')
+# far field: maxima beyond 8 decrease toward |F(inf)|/2 = sqrt(pi/8)
+for t in ['10','12','16','20']:
+    print('|k(%s)| =' % t, float(nk(D(t))))

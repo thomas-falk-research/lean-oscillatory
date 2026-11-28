@@ -1,0 +1,14 @@
+exit code 0
+witness-NK-g.lean:9:7: warning: Variable name `g₁` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _g₁
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+witness-NK-g.lean:9:10: warning: Variable name `g₂` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _g₂
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+'OscInt.API.StationaryLeadingSharpSanity.witness_NK_g' depends on axioms: [propext, Classical.choice, Quot.sound]

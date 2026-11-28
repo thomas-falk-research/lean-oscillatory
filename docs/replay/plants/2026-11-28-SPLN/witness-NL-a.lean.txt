@@ -1,0 +1,16 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `SplKernelLowerStatement`: the point 8123/5000 ↦ 0. -/
+def P_SplKernelLowerStatement : Prop :=
+  (72197399 / 100000000 : ℝ) < ‖splKernel 0‖
+
+/-- Witness: `κ(0) = 0` (`spln_lower_fails_at_zero`). -/
+theorem witness_NL_a : ¬ P_SplKernelLowerStatement := spln_lower_fails_at_zero
+
+#print axioms witness_NL_a
+
+end OscInt.API.StationaryLeadingSharpSanity

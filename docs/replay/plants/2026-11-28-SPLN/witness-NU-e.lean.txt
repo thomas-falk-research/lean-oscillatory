@@ -1,0 +1,21 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `SplKernelCapStatement`: the odd kernel κ ↦ κ₊ (the definition by cases dropped). -/
+def P_SplKernelCapStatement : Prop :=
+  ∀ τ : ℝ, ‖splKernelPos τ‖ ≤ (360987 / 500000 : ℝ)
+
+/-- Witness: `|κ₊(−2)| > 3` (`spln_kernelPos_neg_two`: `κ₊(−2) = 4i F(∞) − κ₊(2)`, `|F(∞)| ≥ 5/4`, and the proved
+`|κ₊(2)| ≤ 7/8`). -/
+theorem witness_NU_e : ¬ P_SplKernelCapStatement := by
+  intro h
+  have h1 := h (-2)
+  have h2 := spln_kernelPos_neg_two
+  linarith
+
+#print axioms witness_NU_e
+
+end OscInt.API.StationaryLeadingSharpSanity

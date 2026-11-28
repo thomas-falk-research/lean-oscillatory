@@ -1,0 +1,60 @@
+exit code 1
+plant-NK-f.lean:22:47: error: Application type mismatch: The argument
+  hK'
+has type
+  ‖splRemainder g 1‖ ≤ 360987 / 500000 * ∫ (t : ℝ), ‖g₂ t‖
+but is expected to have type
+  ‖splRemainder g 1‖ ≤ ?m.124 * ∫ (t : ℝ), ‖g₃ t‖
+in the application
+  LE.le.trans hle hK'
+plant-NK-f.lean:30:31: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (t : ℝ), ‖gauss3 s t‖
+in the target expression
+  ‖gaussRoot s lam - splLead lam‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖gauss2 s t‖) * lam ^ (-3 / 2)
+
+h : P_StationaryLeadingSharpStatement
+s lam : ℝ
+hs : 0 < s
+hlam : 0 < lam
+h1 : ‖gaussRoot s lam - splLead lam‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖gauss2 s t‖) * lam ^ (-3 / 2)
+⊢ ‖gaussRoot s lam - splLead lam‖ ≤ 360987 / 500000 * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-3 / 2)
+plant-NK-f.lean:37:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (t : ℝ), ‖gauss3 1 t‖
+in the target expression
+  ‖splRemainder (gauss 1) 4‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖gauss2 1 t‖) * 4 ^ (-3 / 2)
+
+h : P_StationaryLeadingSharpStatement
+h1 : ‖splRemainder (gauss 1) 4‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖gauss2 1 t‖) * 4 ^ (-3 / 2)
+⊢ ‖splRemainder (gauss 1) 4‖ ≤ 360987 / 500000 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8)
+plant-NK-f.lean:46:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (t : ℝ), ‖gauss3 (1 / 2) t‖
+in the target expression
+  ‖splRemainder (gauss (1 / 2)) (1 / 16)‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖gauss2 (1 / 2) t‖) * (1 / 16) ^ (-3 / 2)
+
+h : P_StationaryLeadingSharpStatement
+h1 : ‖splRemainder (gauss (1 / 2)) (1 / 16)‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖gauss2 (1 / 2) t‖) * (1 / 16) ^ (-3 / 2)
+⊢ ‖splRemainder (gauss (1 / 2)) (1 / 16)‖ ≤ 360987 / 500000 * ((1 / 2) ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 64
+plant-NK-f.lean:53:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (t : ℝ), ‖gauss3 1 t‖
+in the target expression
+  ‖splRemainder (gauss 1) 100‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖gauss2 1 t‖) * 100 ^ (-3 / 2)
+
+h : P_StationaryLeadingSharpStatement
+h1 : ‖splRemainder (gauss 1) 100‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖gauss2 1 t‖) * 100 ^ (-3 / 2)
+⊢ ‖splRemainder (gauss 1) 100‖ ≤ 360987 / 500000 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 1000)
+plant-NK-f.lean:60:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (t : ℝ), ‖gauss3 4 t‖
+in the target expression
+  ‖splRemainder (gauss 4) 1600‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖gauss2 4 t‖) * 1600 ^ (-3 / 2)
+
+h : P_StationaryLeadingSharpStatement
+h1 : ‖splRemainder (gauss 4) 1600‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖gauss2 4 t‖) * 1600 ^ (-3 / 2)
+⊢ ‖splRemainder (gauss 4) 1600‖ ≤ 360987 / 500000 * (4 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 64000)
+plant-NK-f.lean:70:42: error: Application type mismatch: The argument
+  hK g g₁ g₂ g₃ lam hA hl
+has type
+  ‖splRemainder g lam‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖g₂ t‖) * lam ^ (-3 / 2)
+but is expected to have type
+  ‖splRemainder g lam‖ ≤ (360987 / 500000 * ∫ (t : ℝ), ‖g₃ t‖) * lam ^ (-3 / 2)
+in the application
+  ⟨hlt, hK g g₁ g₂ g₃ lam hA hl⟩

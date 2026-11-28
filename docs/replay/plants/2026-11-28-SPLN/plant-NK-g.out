@@ -1,0 +1,96 @@
+exit code 1
+plant-NK-g.lean:9:7: warning: Variable name `g₁` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _g₁
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+plant-NK-g.lean:9:10: warning: Variable name `g₂` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _g₂
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+plant-NK-g.lean:19:30: error: Application type mismatch: The argument
+  hamp
+has type
+  SplAmplitude g g₁ g₂ g₃
+but is expected to have type
+  0 < 1
+in the application
+  hK g g₁ g₂ g₃ 1 hamp
+plant-NK-g.lean:14:96: error: unsolved goals
+hK : P_StationaryLeadingSharpStatement
+τ ε : ℝ
+hε : 0 < ε
+g g₁ g₂ g₃ : ℝ → ℂ
+hamp : SplAmplitude g g₁ g₂ g₃
+hne : ∃ x, g x ≠ 0
+hle : (‖splKernel |τ|‖ - ε) * ∫ (t : ℝ), ‖g₃ t‖ ≤ ‖splRemainder g 1‖
+⊢ ‖splKernel |τ|‖ ≤ 360987 / 500000 + ε
+plant-NK-g.lean:29:62: error: Application type mismatch: The argument
+  gauss_splAmplitude s hs
+has type
+  SplAmplitude (gauss s) (gauss1 s) (gauss2 s) (gauss3 s)
+but is expected to have type
+  0 < lam
+in the application
+  h (gauss s) (gauss1 s) (gauss2 s) (gauss3 s) lam (gauss_splAmplitude s hs)
+plant-NK-g.lean:28:90: error: unsolved goals
+h : P_StationaryLeadingSharpStatement
+s lam : ℝ
+hs : 0 < s
+hlam : 0 < lam
+⊢ ‖gaussRoot s lam - splLead lam‖ ≤ 360987 / 500000 * (s ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * lam ^ (-3 / 2)
+plant-NK-g.lean:36:60: error: Application type mismatch: The argument
+  gauss_splAmplitude 1 one_pos
+has type
+  SplAmplitude (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1)
+but is expected to have type
+  0 < 4
+in the application
+  h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 4 (gauss_splAmplitude 1 one_pos)
+plant-NK-g.lean:35:94: error: unsolved goals
+h : P_StationaryLeadingSharpStatement
+⊢ ‖splRemainder (gauss 1) 4‖ ≤ 360987 / 500000 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 8)
+plant-NK-g.lean:45:4: error: Application type mismatch: The argument
+  gauss_splAmplitude (1 / 2) ?m.134
+has type
+  SplAmplitude (gauss (1 / 2)) (gauss1 (1 / 2)) (gauss2 (1 / 2)) (gauss3 (1 / 2))
+but is expected to have type
+  0 < 1 / 16
+in the application
+  h (gauss (1 / 2)) (gauss1 (1 / 2)) (gauss2 (1 / 2)) (gauss3 (1 / 2)) (1 / 16) (gauss_splAmplitude (1 / 2) ?m.134)
+plant-NK-g.lean:43:78: error: unsolved goals
+h : P_StationaryLeadingSharpStatement
+⊢ ‖splRemainder (gauss (1 / 2)) (1 / 16)‖ ≤ 360987 / 500000 * ((1 / 2) ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * 64
+plant-NK-g.lean:52:62: error: Application type mismatch: The argument
+  gauss_splAmplitude 1 one_pos
+has type
+  SplAmplitude (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1)
+but is expected to have type
+  0 < 100
+in the application
+  h (gauss 1) (gauss1 1) (gauss2 1) (gauss3 1) 100 (gauss_splAmplitude 1 one_pos)
+plant-NK-g.lean:51:99: error: unsolved goals
+h : P_StationaryLeadingSharpStatement
+⊢ ‖splRemainder (gauss 1) 100‖ ≤ 360987 / 500000 * (2 + 8 * Real.exp (-(3 / 2))) * (1 / 1000)
+plant-NK-g.lean:59:63: error: Application type mismatch: The argument
+  gauss_splAmplitude 4 ?m.86
+has type
+  SplAmplitude (gauss 4) (gauss1 4) (gauss2 4) (gauss3 4)
+but is expected to have type
+  0 < 1600
+in the application
+  h (gauss 4) (gauss1 4) (gauss2 4) (gauss3 4) 1600 (gauss_splAmplitude 4 ?m.86)
+plant-NK-g.lean:58:111: error: unsolved goals
+h : P_StationaryLeadingSharpStatement
+⊢ ‖splRemainder (gauss 4) 1600‖ ≤ 360987 / 500000 * (4 ^ 2 * (2 + 8 * Real.exp (-(3 / 2)))) * (1 / 64000)
+plant-NK-g.lean:70:60: error: Application type mismatch: The argument
+  hA
+has type
+  SplAmplitude g g₁ g₂ g₃
+but is expected to have type
+  0 < lam
+in the application
+  hK g g₁ g₂ g₃ lam hA

@@ -1,0 +1,24 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `SplKernelLowerStatement`: the lower value 72197399/10⁸ ↦ 7219739995/10¹⁰ (inside the window
+between the two rationals). -/
+def P_SplKernelLowerStatement : Prop :=
+  (7219739995 / 10000000000 : ℝ) < ‖splKernel (8123 / 5000)‖
+
+/-- Characterisation: the planted lower value `0.7219739995` is below SPL-NU's cap (`char_NL_f_window`), so SPL-NU
+does not refute it; a detection needs an upper enclosure of `|κ(8123/5000)|` below `0.7219739995` (a 60-digit
+decimal evaluation gives `0.72197399899…`, so the plant is false). -/
+theorem char_NL_f : P_SplKernelLowerStatement ↔ ¬ (‖splKernel (8123 / 5000)‖ ≤ 7219739995 / 10000000000) :=
+  not_le.symm
+
+theorem char_NL_f_window : (7219739995 / 10000000000 : ℝ) < 360987 / 500000 := by norm_num
+
+#print axioms char_NL_f
+
+#print axioms char_NL_f_window
+
+end OscInt.API.StationaryLeadingSharpSanity

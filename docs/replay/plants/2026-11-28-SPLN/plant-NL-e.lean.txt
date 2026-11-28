@@ -1,0 +1,42 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `SplKernelLowerStatement`: the strict inequality < ↦ ≤. -/
+def P_SplKernelLowerStatement : Prop :=
+  (72197399 / 100000000 : ℝ) ≤ ‖splKernel (8123 / 5000)‖
+
+/-- SPL-NL makes the kernel nonzero at its point. -/
+theorem P_spln_lower_ne_zero (h : P_SplKernelLowerStatement) : splKernel (8123 / 5000) ≠ 0 := by
+  have h1 : (72197399 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ := h
+  intro h0
+  rw [h0, norm_zero] at h1
+  norm_num at h1
+
+/-- SPL-NL at the reflected point `−8123/5000` (the negative branch, by oddness). -/
+theorem P_spln_lower_neg_point (h : P_SplKernelLowerStatement) :
+    (72197399 / 100000000 : ℝ) < ‖splKernel (-(8123 / 5000))‖ := by
+  rw [norm_splKernel_neg]
+  exact h
+
+/-- SPL-NL excludes a cap `72197399/10⁸`. -/
+theorem P_spln_lower_excludes_cap (h : P_SplKernelLowerStatement) :
+    ¬ ∀ τ : ℝ, ‖splKernel τ‖ ≤ 72197399 / 100000000 := by
+  have h1 : (72197399 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ := h
+  intro h2
+  have := h2 (8123 / 5000)
+  linarith
+
+/-- SPL-NL is consistent with the proved `|κ| ≤ 7/8`. -/
+theorem P_spln_lower_below_seven_eighths (h : P_SplKernelLowerStatement) :
+    (72197399 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ ∧ ‖splKernel (8123 / 5000)‖ ≤ 7 / 8 :=
+  ⟨h, spln_kernel_le_seven_eighths _⟩
+
+/-- **Consistency of SPL-NL with SPL-NU**: both at the point `8123/5000`. -/
+theorem P_spln_lower_and_cap (hU : SplKernelCapStatement) (hL : P_SplKernelLowerStatement) :
+    (72197399 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ ∧ ‖splKernel (8123 / 5000)‖ ≤ 360987 / 500000 :=
+  ⟨hL, hU _⟩
+
+end OscInt.API.StationaryLeadingSharpSanity

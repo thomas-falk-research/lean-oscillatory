@@ -38,6 +38,7 @@ import OscInt.Statements.TriangularDecay
 import OscInt.Statements.StationaryLeadingSharp
 import OscInt.Statements.TriangularCrossover
 import OscInt.Statements.TorusLocalizationC2
+import OscInt.Front.StationaryLeadingSharpSanity
 import OscInt.Front.TriangularAnisoSanity
 import OscInt.Front.TriangularDecaySanity
 import OscInt.Front.StationaryLeadingSanity

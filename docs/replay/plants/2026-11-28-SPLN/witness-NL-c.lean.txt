@@ -1,0 +1,20 @@
+import OscInt.Front.StationaryLeadingSharpSanity
+
+namespace OscInt.API.StationaryLeadingSharpSanity
+
+open OscInt.Statements OscInt.API.StationaryLeadingSanity MeasureTheory
+
+/-- PLANTED copy of `SplKernelLowerStatement`: the lower value 72197399/10⁸ ↦ 72197401/10⁸ (above the cap). -/
+def P_SplKernelLowerStatement : Prop :=
+  (72197401 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖
+
+/-- Witness (relative to SPL-NU): the planted lower value exceeds the cap `72197400/10⁸`
+(`spln_cap_excludes_higher_lower`). -/
+theorem witness_NL_c (hU : SplKernelCapStatement) : ¬ P_SplKernelLowerStatement := by
+  intro h
+  have h1 : (72197401 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ := h
+  exact spln_cap_excludes_higher_lower hU h1
+
+#print axioms witness_NL_c
+
+end OscInt.API.StationaryLeadingSharpSanity

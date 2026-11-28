@@ -1,0 +1,13 @@
+# Independent float cross-check of |kappa(8123/5000)| by composite Simpson quadrature of F (not an enclosure).
+import cmath, math
+def F(x, n=200000):
+    h = x/n; s = 0
+    for k in range(n+1):
+        w = 1 if k in (0, n) else (4 if k % 2 else 2)
+        v = k*h; s += w*cmath.exp(1j*v*v/2)
+    return s*h/3
+Finf = math.sqrt(math.pi)*(1+1j)/2
+def kap(t):
+    f = F(t); return f/2 + t*cmath.exp(1j*t*t/2)/2 + 1j*t*t/2*(Finf - f)
+for t in (8123/5000, 13/8):
+    print(t, repr(abs(kap(t))))
