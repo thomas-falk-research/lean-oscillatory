@@ -56,6 +56,8 @@ import OscInt.Front.HadamardWalkFinal
 import OscInt.Front.SecondDerivSharpFinal
 import OscInt.Front.StationaryLeadingFinal
 import OscInt.Front.TriangularAnisoFinal
+import OscInt.Front.TriangularDecayAssembly
+import OscInt.Front.TriangularDecayLocal
 
 /-!
 # OscInt public API
