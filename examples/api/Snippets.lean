@@ -409,19 +409,19 @@ example : TriDecayLowerStatement := OscInt.API.triDecayLower
 
 /-! ### SPL-NU: The kernel is bounded by `360987/500000 = 0.721974`: `|κ(τ)| ≤ 360987/500000` for every real `τ`. -/
 
-example (h : SplKernelCapStatement) : ‖splKernel 1‖ ≤ 360987 / 500000 := h 1
+example : SplKernelCapStatement := OscInt.API.splKernelCap
 
 /-! ### SPL-NL: The kernel exceeds `72197399/10⁸ = 0.72197399` at `τ = 8123/5000`. -/
 
-example (h : SplKernelLowerStatement) : (72197399 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ := h
+example : SplKernelLowerStatement := OscInt.API.splKernelLower
 
 /-! ### SPL-NK: The leading term of the quadratic-phase integral with remainder at most `(360987/500000) ‖g‴‖₁ λ^{−3/2}`. -/
 
-example (h : StationaryLeadingSharpStatement) : StationaryLeadingSharpStatement := h
+example : StationaryLeadingSharpStatement := OscInt.API.stationaryLeadingSharp
 
 /-! ### SPL-NC: No constant `c ≤ 72197399/10⁸` bounds the remainder: for each such `c` some amplitude and some `λ > 0` have `|R(g, λ)| > c ‖g‴‖₁ λ^{−3/2}`. -/
 
-example (h : StationaryLeadingSharpnessStatement) : StationaryLeadingSharpnessStatement := h
+example : StationaryLeadingSharpnessStatement := OscInt.API.stationaryLeadingSharpness
 
 /-! ### A5U: Upper bound uniform across an exceptional coupling `a₀ = ±1/(2√2)`: `|triKernel α t n| ≤ C t^{−2/3} E(|α − a₀| t^{1/3})` for `|α − a₀| ≤ r`, real `t ≥ 1` and every site `n`. -/
 
@@ -429,6 +429,6 @@ example (h : TriCrossoverUpperStatement) : TriCrossoverUpperStatement := h
 
 /-! ### K2-FQ: Fourier localisation for a `C²` cutoff `χ` supported inside `(−π, π)²`, with the explicit constant `locConstC2 χ`: a bound `B` on every lattice coefficient of `e^{itΨ}` gives `locConstC2 χ · B` at every real velocity. -/
 
-example (h : TorusLocalizationC2Statement) : TorusLocalizationC2Statement := h
+example : TorusLocalizationC2Statement := OscInt.API.torusLocalizationC2
 
 end OscIntSnippets

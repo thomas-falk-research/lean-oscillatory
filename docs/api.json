@@ -2465,7 +2465,7 @@
   {
    "label": "SPL-NU",
    "name": "OscInt.Statements.SplKernelCapStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.splKernelCap",
    "summary": "The kernel is bounded by `360987/500000 = 0.721974`: `|κ(τ)| ≤ 360987/500000` for every real `τ`.",
    "file": "OscInt/Statements/StationaryLeadingSharp.lean",
    "commitment": "b4c9bcacfa0b957e7cf54e2e74877c38fc23f51d71628bf8883cb92dcf8b2fbc",
@@ -2483,13 +2483,13 @@
     "SPL-NK",
     "SPL-K"
    ],
-   "snippet": "example (h : SplKernelCapStatement) : ‖splKernel 1‖ ≤ 360987 / 500000 := h 1",
+   "snippet": "example : SplKernelCapStatement := OscInt.API.splKernelCap",
    "status": "see docs/STATUS.md (row SPL-NU)"
   },
   {
    "label": "SPL-NL",
    "name": "OscInt.Statements.SplKernelLowerStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.splKernelLower",
    "summary": "The kernel exceeds `72197399/10⁸ = 0.72197399` at `τ = 8123/5000`.",
    "file": "OscInt/Statements/StationaryLeadingSharp.lean",
    "commitment": "516ecc24de2c997ea9c582db2064dd8f183b6bf0f0e0345448b9a77213f1afee",
@@ -2507,13 +2507,13 @@
     "SPL-NC",
     "SPL-A"
    ],
-   "snippet": "example (h : SplKernelLowerStatement) : (72197399 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ := h",
+   "snippet": "example : SplKernelLowerStatement := OscInt.API.splKernelLower",
    "status": "see docs/STATUS.md (row SPL-NL)"
   },
   {
    "label": "SPL-NK",
    "name": "OscInt.Statements.StationaryLeadingSharpStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.stationaryLeadingSharp",
    "summary": "The leading term of the quadratic-phase integral with remainder at most `(360987/500000) ‖g‴‖₁ λ^{−3/2}`.",
    "file": "OscInt/Statements/StationaryLeadingSharp.lean",
    "commitment": "132872b68f5fdc06ebd97aca624c8a7d058223c9c76e29ca80a67d18c2c1861b",
@@ -2532,13 +2532,13 @@
     "SPL-NU",
     "SPL-NC"
    ],
-   "snippet": "example (h : StationaryLeadingSharpStatement) : StationaryLeadingSharpStatement := h",
+   "snippet": "example : StationaryLeadingSharpStatement := OscInt.API.stationaryLeadingSharp",
    "status": "see docs/STATUS.md (row SPL-NK)"
   },
   {
    "label": "SPL-NC",
    "name": "OscInt.Statements.StationaryLeadingSharpnessStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.stationaryLeadingSharpness",
    "summary": "No constant `c ≤ 72197399/10⁸` bounds the remainder: for each such `c` some amplitude and some `λ > 0` have `|R(g, λ)| > c ‖g‴‖₁ λ^{−3/2}`.",
    "file": "OscInt/Statements/StationaryLeadingSharp.lean",
    "commitment": "82cbe0f427516e3564612da6915446ec0502e29f245be7fc9420511c54fbb8bc",
@@ -2556,7 +2556,7 @@
     "SPL-A",
     "SPL-NL"
    ],
-   "snippet": "example (h : StationaryLeadingSharpnessStatement) : StationaryLeadingSharpnessStatement := h",
+   "snippet": "example : StationaryLeadingSharpnessStatement := OscInt.API.stationaryLeadingSharpness",
    "status": "see docs/STATUS.md (row SPL-NC)"
   },
   {
@@ -2587,7 +2587,7 @@
   {
    "label": "K2-FQ",
    "name": "OscInt.Statements.TorusLocalizationC2Statement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.torusLocalizationC2",
    "summary": "Fourier localisation for a `C²` cutoff `χ` supported inside `(−π, π)²`, with the explicit constant `locConstC2 χ`: a bound `B` on every lattice coefficient of `e^{itΨ}` gives `locConstC2 χ · B` at every real velocity.",
    "file": "OscInt/Statements/TorusLocalizationC2.lean",
    "commitment": "c22306d6c6071ca3fbdb1ad2c8f8d67112ab9e7ab5bf5551d70f59692af18c42",
@@ -2605,7 +2605,7 @@
    "see_also": [
     "K2-F"
    ],
-   "snippet": "example (h : TorusLocalizationC2Statement) : TorusLocalizationC2Statement := h",
+   "snippet": "example : TorusLocalizationC2Statement := OscInt.API.torusLocalizationC2",
    "status": "see docs/STATUS.md (row K2-FQ)"
   }
  ]

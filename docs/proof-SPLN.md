@@ -96,3 +96,19 @@ of derivatives), so `g₃ = 0`, `g` is a polynomial of degree ≤ 2 with compact
   `Complex.normSq_apply`, `MeasureTheory.integral_eq_zero_iff_of_nonneg`. `intervalIntegral.integral_pow` and
   `Complex.abs_re_le_abs` do not exist at the pin.
 - N5: which of the two proofs is cheaper in Lean.
+
+## Revision after the route referee (2026-11-28; `review/2026-11-28-SPLN-LOC2-route-answers.md`)
+
+Parts as proved (the table in section 1 named three propositions that the blueprint merged):
+- `SplnTaylorFacts` (N1 + N2), `SplnSecondFacts` (N4), the small branch of `SplnBranchFacts`: agent T,
+  `OscInt/Front/StationaryLeadingSharpTaylor.lean`. N1 by an explicit primitive of `(x − v)² E(v)/2` in one
+  fundamental-theorem step, not by comparing second derivatives.
+- The tail branch of `SplnBranchFacts`: agent L, `OscInt/Front/StationaryLeadingSharpTail.lean`, with one primitive
+  `G(v) = E(v)(−iv⁻¹ − v⁻³ + 3iv⁻⁵)` that does the three integrations by parts at once on finite intervals; bound
+  `‖κ₊ − L/2‖ ≤ 5/(2x³) + 3/x⁵` for `x ≥ 4`.
+- `SplnInterpFacts` (N5, the convexity route), `SplnCellsFacts` (N3, N6, N7: the 40 cells by `decide +kernel` on a
+  Boolean checker proved sound), `SplnLowerFacts` (N9), `SplnThirdPosFacts` (N10): agent C,
+  `OscInt/Front/StationaryLeadingSharp{Interp,CellsCore,CellsData,Cells,Third}.lean`.
+- SPL-NK comes from SPL-NU and the proved SPL-S (`OscInt.API.stationaryLeading`), not from SPL-I directly.
+- `Real.pi_lt_d2` (π < 3.15) suffices for `‖L‖ ≤ 4/3` and `‖L‖/2 ≤ 63/100`; it lives in
+  `Mathlib.Analysis.Real.Pi.Bounds`, which the parts import explicitly.

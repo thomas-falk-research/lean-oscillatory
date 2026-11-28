@@ -1634,7 +1634,7 @@
     "SPL-K"
    ],
    "snippet_kind": "type",
-   "snippet": "example (h : SplKernelCapStatement) : ‖splKernel 1‖ ≤ 360987 / 500000 := h 1"
+   "snippet": "example : SplKernelCapStatement := OscInt.API.splKernelCap"
   },
   "SPL-NL": {
    "hypotheses": [
@@ -1650,7 +1650,7 @@
     "SPL-A"
    ],
    "snippet_kind": "type",
-   "snippet": "example (h : SplKernelLowerStatement) : (72197399 / 100000000 : ℝ) < ‖splKernel (8123 / 5000)‖ := h"
+   "snippet": "example : SplKernelLowerStatement := OscInt.API.splKernelLower"
   },
   "SPL-NK": {
    "hypotheses": [
@@ -1667,7 +1667,7 @@
     "SPL-NC"
    ],
    "snippet_kind": "type",
-   "snippet": "example (h : StationaryLeadingSharpStatement) : StationaryLeadingSharpStatement := h"
+   "snippet": "example : StationaryLeadingSharpStatement := OscInt.API.stationaryLeadingSharp"
   },
   "SPL-NC": {
    "hypotheses": [
@@ -1683,7 +1683,7 @@
     "SPL-NL"
    ],
    "snippet_kind": "type",
-   "snippet": "example (h : StationaryLeadingSharpnessStatement) : StationaryLeadingSharpnessStatement := h"
+   "snippet": "example : StationaryLeadingSharpnessStatement := OscInt.API.stationaryLeadingSharpness"
   },
   "A5U": {
    "hypotheses": [
@@ -1716,7 +1716,7 @@
     "K2-F"
    ],
    "snippet_kind": "type",
-   "snippet": "example (h : TorusLocalizationC2Statement) : TorusLocalizationC2Statement := h"
+   "snippet": "example : TorusLocalizationC2Statement := OscInt.API.torusLocalizationC2"
   }
  },
  "helpers": [

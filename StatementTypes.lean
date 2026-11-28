@@ -125,3 +125,8 @@ elab "#assert_type_is " thm:ident stmt:ident : command => do
 #assert_type_is OscInt.API.torusLocalization OscInt.Statements.TorusLocalizationStatement
 #assert_type_is OscInt.API.triDecayUpper OscInt.Statements.TriDecayUpperStatement
 #assert_type_is OscInt.API.triDecayLower OscInt.Statements.TriDecayLowerStatement
+#assert_type_is OscInt.API.splKernelCap OscInt.Statements.SplKernelCapStatement
+#assert_type_is OscInt.API.splKernelLower OscInt.Statements.SplKernelLowerStatement
+#assert_type_is OscInt.API.stationaryLeadingSharp OscInt.Statements.StationaryLeadingSharpStatement
+#assert_type_is OscInt.API.stationaryLeadingSharpness OscInt.Statements.StationaryLeadingSharpnessStatement
+#assert_type_is OscInt.API.torusLocalizationC2 OscInt.Statements.TorusLocalizationC2Statement
