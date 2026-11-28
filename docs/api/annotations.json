@@ -1700,7 +1700,7 @@
     "TRI-W"
    ],
    "snippet_kind": "type",
-   "snippet": "example (h : TriCrossoverUpperStatement) : TriCrossoverUpperStatement := h"
+   "snippet": "example : TriCrossoverUpperStatement := OscInt.API.triCrossoverUpper"
   },
   "K2-FQ": {
    "hypotheses": [

@@ -425,7 +425,7 @@ example : StationaryLeadingSharpnessStatement := OscInt.API.stationaryLeadingSha
 
 /-! ### A5U: Upper bound uniform across an exceptional coupling `a₀ = ±1/(2√2)`: `|triKernel α t n| ≤ C t^{−2/3} E(|α − a₀| t^{1/3})` for `|α − a₀| ≤ r`, real `t ≥ 1` and every site `n`. -/
 
-example (h : TriCrossoverUpperStatement) : TriCrossoverUpperStatement := h
+example : TriCrossoverUpperStatement := OscInt.API.triCrossoverUpper
 
 /-! ### K2-FQ: Fourier localisation for a `C²` cutoff `χ` supported inside `(−π, π)²`, with the explicit constant `locConstC2 χ`: a bound `B` on every lattice coefficient of `e^{itΨ}` gives `locConstC2 χ · B` at every real velocity. -/
 

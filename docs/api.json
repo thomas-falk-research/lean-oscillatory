@@ -2562,7 +2562,7 @@
   {
    "label": "A5U",
    "name": "OscInt.Statements.TriCrossoverUpperStatement",
-   "proved_by": null,
+   "proved_by": "OscInt.API.triCrossoverUpper",
    "summary": "Upper bound uniform across an exceptional coupling `a₀ = ±1/(2√2)`: `|triKernel α t n| ≤ C t^{−2/3} E(|α − a₀| t^{1/3})` for `|α − a₀| ≤ r`, real `t ≥ 1` and every site `n`.",
    "file": "OscInt/Statements/TriangularCrossover.lean",
    "commitment": "8ae0f754529469c333623d3ba76108fb848d64cdd6cf8cf54a60439742c681cf",
@@ -2581,7 +2581,7 @@
     "K2-D",
     "TRI-W"
    ],
-   "snippet": "example (h : TriCrossoverUpperStatement) : TriCrossoverUpperStatement := h",
+   "snippet": "example : TriCrossoverUpperStatement := OscInt.API.triCrossoverUpper",
    "status": "see docs/STATUS.md (row A5U)"
   },
   {

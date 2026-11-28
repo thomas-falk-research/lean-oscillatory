@@ -1,0 +1,4 @@
+'OscInt.SPLNAux.n1' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.SPLNAux.n2' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.SPLNAux.n3' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OscInt.SPLNAux.n4' depends on axioms: [propext, Classical.choice, Quot.sound]
