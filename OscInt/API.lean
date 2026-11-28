@@ -34,6 +34,7 @@ import OscInt.Front.FiniteRingSanity2
 import OscInt.Front.SecondDerivSharpSanity
 import OscInt.Statements.StationaryLeading
 import OscInt.Statements.TriangularAniso
+import OscInt.Statements.TriangularDecay
 import OscInt.Front.TriangularAnisoSanity
 import OscInt.Front.StationaryLeadingSanity
 import OscInt.Front.SecondDerivSharpSanity2

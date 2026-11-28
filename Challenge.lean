@@ -20,6 +20,7 @@ import Challenge.SecondDerivSharp
 import Challenge.HadamardWalk
 import Challenge.StationaryLeading
 import Challenge.TriangularAniso
+import Challenge.TriangularDecay
 
 /-! Root of the frozen challenge library. Never a default target, never imported. -/
 

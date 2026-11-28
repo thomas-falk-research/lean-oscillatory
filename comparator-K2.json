@@ -1,0 +1,4 @@
+{"challenge_module": "Challenge", "solution_module": "OscInt",
+ "theorem_names": ["OscInt.API.reducedOrderBound", "OscInt.API.monomialAsymptotic", "OscInt.API.monomialLower", "OscInt.API.torusLocalization", "OscInt.API.triDecayUpper", "OscInt.API.triDecayLower"],
+ "definition_names": [],
+ "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]}
